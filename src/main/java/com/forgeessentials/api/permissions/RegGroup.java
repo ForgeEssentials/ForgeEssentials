@@ -36,21 +36,25 @@ public enum RegGroup {
      * will most likely be able to use basic commands as well as break blocks
      * and stuff in the world.
      */
-    MEMBERS("Members", " ", " ", null, 0, RegisteredPermValue.NONOP),
+    MEMBERS("Members", " ", " ", null, 0, RegisteredPermValue.OP2),
 
     /**
      * This is usually for players that are admins or owners of a given zone
      * They will most likely have WorldEdit access, as well as the power to edit
      * permissions in the zone.
      */
-    ZONE_ADMINS("ZoneAdmins", EnumChatFormatting.RED + "[ZoneAdmin]", " ", null, 0, RegisteredPermValue.OP),
+    ZONE_ADMINS("ZoneAdmins", EnumChatFormatting.RED + "[ZoneAdmin]", " ", null, 0, RegisteredPermValue.OP3),
 
     /**
      * This is automatically assigned to the server owner when they make a world
      * available to the LAN. This is also best kept for players that have direct
      * access to the server's console and filesystem.
      */
-    OWNERS("Owners", EnumChatFormatting.RED + "[OWNER]", " ", null, 999, RegisteredPermValue.OP);
+    OWNERS("Owners", EnumChatFormatting.RED + "[OWNER]", " ", null, 999, RegisteredPermValue.OP4);
+    public static final String LADDER = "mainLadder";
+    private Group group;
+    private String name;
+    private RegisteredPermValue equivalent;
 
     private RegGroup(String name, String parent, String prefix, String suffix, int priority, RegisteredPermValue equivalent)
     {
@@ -58,28 +62,6 @@ public enum RegGroup {
         this.equivalent = equivalent;
         group = new Group(name, parent, prefix, suffix, APIRegistry.zones.getGLOBAL().getZoneName(), priority);
     }
-
-    @Override
-    public String toString()
-    {
-        return name;
-    }
-
-    public Group getGroup()
-    {
-        return group;
-    }
-
-    public RegisteredPermValue getEquivalent()
-    {
-        return equivalent;
-    }
-
-    private Group group;
-    private String name;
-    private RegisteredPermValue equivalent;
-
-    public static final String LADDER = "mainLadder";
 
     public static RegGroup fromInt(int level)
     {
@@ -98,5 +80,21 @@ public enum RegGroup {
         }
         return null;
 
+    }
+
+    @Override
+    public String toString()
+    {
+        return name;
+    }
+
+    public Group getGroup()
+    {
+        return group;
+    }
+
+    public RegisteredPermValue getEquivalent()
+    {
+        return equivalent;
     }
 }

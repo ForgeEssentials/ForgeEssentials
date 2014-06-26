@@ -4,21 +4,19 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import com.forgeessentials.util.FunctionHelper;
-import cpw.mods.fml.common.IPlayerTracker;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 
-public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker {
+public class ForgeEssentialsEventFactory {
     // TICK STUFF
 
     private HashMap<String, WarpPoint> befores;
@@ -28,13 +26,22 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
         befores = new HashMap<String, WarpPoint>();
     }
 
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData)
+    public static boolean onBlockPlace(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitx, float hity, float hitz)
     {
+        // calculate offsets.
+        ForgeDirection dir = ForgeDirection.getOrientation(side);
+
+        x = +dir.offsetX;
+        y = +dir.offsetY;
+        z = +dir.offsetZ;
+
+        PlayerBlockPlace ev = new PlayerBlockPlace(itemStack, player, world, x, y, z, side, hitx, hity, hitz);
+        MinecraftForge.EVENT_BUS.post(ev);
+        return !ev.isCanceled();
     }
 
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData)
+    @SubscribeEvent
+    public void handlePlayerMove(TickEvent.PlayerTickEvent e)
     {
         EntityPlayerMP player = (EntityPlayerMP) tickData[0];
 
@@ -73,40 +80,13 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
         }
     }
 
-    // PLAYER TRACKER STUFF
-
-    @Override
-    public void onPlayerLogout(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
         befores.remove(player.username);
     }
 
-    @Override
-    public EnumSet<TickType> ticks()
-    {
-        return EnumSet.of(TickType.PLAYER);
-    }
-
-    @Override
-    public String getLabel()
-    {
-        return "PlayerMoveHandler";
-    }
-
-    @Override
-    public void onPlayerLogin(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void onPlayerChangedDimension(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void onPlayerRespawn(EntityPlayer player)
-    {
-    }
+    // BLOCK STUFF
 
     // ZONE STUFF
     @SubscribeEvent
@@ -121,21 +101,5 @@ public class ForgeEssentialsEventFactory implements ITickHandler, IPlayerTracker
             MinecraftForge.EVENT_BUS.post(event);
             e.setCanceled(event.isCanceled());
         }
-    }
-
-    // BLOCK STUFF
-
-    public static boolean onBlockPlace(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitx, float hity, float hitz)
-    {
-        // calculate offsets.
-        ForgeDirection dir = ForgeDirection.getOrientation(side);
-
-        x = +dir.offsetX;
-        y = +dir.offsetY;
-        z = +dir.offsetZ;
-
-        PlayerBlockPlace ev = new PlayerBlockPlace(itemStack, player, world, x, y, z, side, hitx, hity, hitz);
-        MinecraftForge.EVENT_BUS.post(ev);
-        return !ev.isCanceled();
     }
 }

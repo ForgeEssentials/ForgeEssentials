@@ -36,6 +36,12 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
     }
 
     @Override
+    public String getAccessTransformerClass()
+    {
+        return "com.forgeessentials.core.preloader.asm.FEAccessTransformer";
+    }
+
+    @Override
     public void injectData(Map<String, Object> data)
     {
 

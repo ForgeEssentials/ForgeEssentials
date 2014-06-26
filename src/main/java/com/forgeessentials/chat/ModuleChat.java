@@ -15,7 +15,6 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.*;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
@@ -69,8 +68,8 @@ public class ModuleChat {
         {
             ircPlayerHandler = new PlayerEventHandler();
             MinecraftForge.EVENT_BUS.register(ircPlayerHandler);
+            FMLCommonHandler.instance().bus().register(ircPlayerHandler);
             MinecraftForge.EVENT_BUS.register(new IRCChatFormatter());
-            GameRegistry.registerPlayerTracker(ircPlayerHandler);
         }
 
         PacketAnalyzerRegistry.register(new PacketAnalyzerChat(), new int[] { 201 });
@@ -139,7 +138,7 @@ public class ModuleChat {
         removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
         new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
         MailSystem.LoadAll();
-        GameRegistry.registerPlayerTracker(mailsystem);
+        FMLCommonHandler.instance().bus().register(mailsystem);
         if (connectToIRC)
         {
             IRCHelper.connectToServer();

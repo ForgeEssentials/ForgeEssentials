@@ -1,9 +1,9 @@
-package com.forgeessentials.api.snooper;
+package com.forgeessentials.servervote;
 
 import com.forgeessentials.api.json.JSONException;
 import com.forgeessentials.api.json.JSONObject;
-import net.minecraftforge.event.Cancelable;
-import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.eventhandler.Cancelable;
+import cpw.mods.fml.common.eventhandler.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,8 @@ public class VoteEvent extends Event {
     public String serviceName;
     public String ip;
     public String timeStamp;
-    private boolean sane = false;
     List<String> feedback = new ArrayList<String>();
+    private boolean sane = false;
 
     public VoteEvent(String player, String serviceName, String ip, String timeStamp)
     {
@@ -76,13 +76,13 @@ public class VoteEvent extends Event {
         return sane;
     }
 
-    public void setFeedback(String text)
-    {
-        feedback.add(text);
-    }
-
     public List<String> getFeedback()
     {
         return feedback;
+    }
+
+    public void setFeedback(String text)
+    {
+        feedback.add(text);
     }
 }

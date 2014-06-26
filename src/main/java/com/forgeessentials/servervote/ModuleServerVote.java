@@ -1,6 +1,5 @@
 package com.forgeessentials.servervote;
 
-import com.forgeessentials.api.snooper.VoteEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.*;
@@ -13,15 +12,13 @@ import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet3Chat;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.eventhandler.EventPriority;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,7 +27,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 @FEModule(name = "ServerVoteModule", parentMod = ForgeEssentials.class, configClass = ConfigServerVote.class)
-public class ModuleServerVote  {
+public class ModuleServerVote {
     @Config
     public static ConfigServerVote config;
 
@@ -45,6 +42,11 @@ public class ModuleServerVote  {
     public ModuleServerVote()
     {
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    public static void log(VoteEvent vote)
+    {
+        OutputHandler.felog.finer("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
     }
 
     @Init
@@ -164,36 +166,13 @@ public class ModuleServerVote  {
         }
     }
 
-    public static void log(VoteEvent vote)
-    {
-        OutputHandler.felog.finer("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
-    }
-
-    @Override
-    public void onPlayerLogin(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
         if (offlineList.containsKey(player.username))
         {
             doPlayer(player, offlineList.remove(player.username));
         }
-    }
-
-    @Override
-    public void onPlayerLogout(EntityPlayer player)
-    {
-
-    }
-
-    @Override
-    public void onPlayerChangedDimension(EntityPlayer player)
-    {
-
-    }
-
-    @Override
-    public void onPlayerRespawn(EntityPlayer player)
-    {
-
     }
 
     private void doPlayer(EntityPlayer player, VoteEvent vote)

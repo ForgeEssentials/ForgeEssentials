@@ -7,6 +7,7 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
@@ -238,4 +239,7 @@ public class Deathchest {
             DimensionManager.getWorld(grave.point.dim).destroyBlock(grave.point.x, grave.point.y - 1, grave.point.z, false);
         }
     }
+
+    @SubscribeEvent
+    public void tickGraves(TickEvent.ServerTickEvent)
 }

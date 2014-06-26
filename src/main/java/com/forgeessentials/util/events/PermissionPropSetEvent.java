@@ -2,8 +2,8 @@ package com.forgeessentials.util.events;
 
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.permission.PermissionProp;
-import net.minecraftforge.event.Cancelable;
-import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.eventhandler.Cancelable;
+import cpw.mods.fml.common.eventhandler.Event;
 
 @Cancelable
 /**

@@ -16,7 +16,7 @@ public class InventoryGrave extends InventoryBasic {
     }
 
     @Override
-    public void openChest()
+    public void openInventory()
     {
         for (int i = 0; i < getSizeInventory(); i++)
         {
@@ -31,11 +31,11 @@ public class InventoryGrave extends InventoryBasic {
             }
         }
 
-        super.openChest();
+        super.openInventory();
     }
 
     @Override
-    public void closeChest()
+    public void closeInventory()
     {
         List<ItemStack> list = new ArrayList<ItemStack>();
         for (int i = 0; i < getSizeInventory(); i++)
@@ -49,6 +49,6 @@ public class InventoryGrave extends InventoryBasic {
         grave.inv = list.toArray(new ItemStack[list.size()]);
 
         grave.checkGrave();
-        super.closeChest();
+        super.closeInventory();
     }
 }

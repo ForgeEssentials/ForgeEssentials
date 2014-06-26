@@ -18,8 +18,8 @@
 
 package com.forgeessentials.servervote.Votifier;
 
-import com.forgeessentials.api.snooper.VoteEvent;
 import com.forgeessentials.servervote.ModuleServerVote;
+import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLLog;

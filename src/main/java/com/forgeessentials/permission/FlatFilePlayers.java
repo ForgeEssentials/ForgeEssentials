@@ -1,7 +1,7 @@
 package com.forgeessentials.permission;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.util.PlayerInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;

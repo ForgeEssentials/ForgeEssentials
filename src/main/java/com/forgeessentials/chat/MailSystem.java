@@ -5,11 +5,12 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.google.common.collect.HashMultimap;
-import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 
-public class MailSystem implements IPlayerTracker {
+public class MailSystem {
     private static HashMultimap<String, Mail> map = HashMultimap.create();
 
     public static void AddMail(Mail mail)
@@ -56,24 +57,9 @@ public class MailSystem implements IPlayerTracker {
         }
     }
 
-    @Override
-    public void onPlayerLogin(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        receiveMail(player);
-    }
-
-    @Override
-    public void onPlayerLogout(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void onPlayerChangedDimension(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void onPlayerRespawn(EntityPlayer player)
-    {
+        receiveMail(e.player);
     }
 }

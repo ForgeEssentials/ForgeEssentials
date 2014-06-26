@@ -1,10 +1,14 @@
 package com.forgeessentials.auth;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerMoveEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -17,9 +21,19 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class EventHandler {
+
+    public static String banned;
+    public static String notvip;
+    public static String notwhitelisted;
+    public static boolean whitelist;
+    public static int vipslots;
+    public static int offset;
+    public int counter;
+    public int maxcounter;
+
     public EventHandler()
     {
-        // nothing
+        OutputHandler.felog.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -231,6 +245,55 @@ public class EventHandler {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onLogin(PlayerEvent.PlayerLoggedInEvent e)
+    {
+        if (!ModuleAuth.isEnabled())
+        {
+            return;
+        }
+        PlayerPassData data = PlayerPassData.getData(e.player.username);
+
+        if (data == null)
+        {
+            OutputHandler.chatError(e.player, "Registration required. Try /auth help.");
+            ModuleAuth.unRegistered.add(e.player.username);
+        }
+        else
+        {
+            OutputHandler.chatError(e.player, "Login required. Try /auth help.");
+        }
+
+        maxcounter = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipslots - offset;
+        if (whitelist)
+        {
+            if (!APIRegistry.perms.checkPermAllowed(e.player, "fe.auth.isWhiteListed"))
+            {
+                ((EntityPlayerMP) e.player).playerNetServerHandler.kickPlayerFromServer(notwhitelisted);
+            }
+        }
+        if (APIRegistry.perms.checkPermAllowed(e.player, "fe.auth.isVIP"))
+        {
+            return;
+        }
+        else if (counter == maxcounter)
+        {
+            ((EntityPlayerMP) e.player).playerNetServerHandler.kickPlayerFromServer(notvip);
+        }
+        else
+        {
+            counter = counter + 1;
+        }
+    }
+
+    @SubscribeEvent
+    public void onLogout(PlayerEvent.PlayerLoggedOutEvent e)
+    {
+        ModuleAuth.unLogged.remove(e.player.username);
+        ModuleAuth.unRegistered.remove(e.player.username);
+        PlayerPassData.discardData(e.player.username);
     }
 
 }

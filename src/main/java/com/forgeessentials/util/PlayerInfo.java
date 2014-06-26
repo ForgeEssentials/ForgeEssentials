@@ -1,4 +1,4 @@
-package com.forgeessentials.core;
+package com.forgeessentials.util;
 
 import com.forgeessentials.core.network.PacketSelectionUpdate;
 import com.forgeessentials.data.api.ClassContainer;
@@ -11,7 +11,6 @@ import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
-import com.forgeessentials.util.BackupArea;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -28,12 +27,6 @@ import java.util.Stack;
 @SaveableObject
 public class PlayerInfo {
     private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
-
-    @SubscribeEvent
-    public void initForPlayer(PlayerEvent.LoadFromFile event)
-    {
-        getPlayerInfo(event.entityPlayer);
-    }
     // -------------------------------------------------------------------------------------------
     // ---------------------------------- Actual Class Starts Now --------------------------------
     // -------------------------------------------------------------------------------------------
@@ -153,6 +146,12 @@ public class PlayerInfo {
 
         info.firstJoin = (Long) tag.getFieldValue("firstJoin");
         return info;
+    }
+
+    @SubscribeEvent
+    public void initForPlayer(PlayerEvent.LoadFromFile event)
+    {
+        getPlayerInfo(event.entityPlayer);
     }
 
     /**

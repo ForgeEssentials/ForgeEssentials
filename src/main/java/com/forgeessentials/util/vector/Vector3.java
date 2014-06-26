@@ -1,5 +1,6 @@
 package com.forgeessentials.util.vector;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -66,6 +67,83 @@ public class Vector3 extends Vector2 implements Cloneable {
         z = par1.posZ;
     }
 
+    @Deprecated
+    public static Vector3 get(Entity par1)
+    {
+        return new Vector3(par1);
+    }
+
+    @Deprecated
+    public static Vector3 get(TileEntity par1)
+    {
+        return new Vector3(par1);
+    }
+
+    @Deprecated
+    public static Vector3 get(Vec3 par1)
+    {
+        return new Vector3(par1);
+    }
+
+    @Deprecated
+    public static Vector3 get(MovingObjectPosition par1)
+    {
+        return new Vector3(par1);
+    }
+
+    @Deprecated
+    public static Vector3 get(ChunkCoordinates par1)
+    {
+        return new Vector3(par1);
+    }
+
+    /**
+     * Gets the distance between two vectors
+     *
+     * @return The distance
+     */
+    public static double distance(Vector3 par1, Vector3 par2)
+    {
+        double var2 = par1.x - par2.x;
+        double var4 = par1.y - par2.y;
+        double var6 = par1.z - par2.z;
+        return MathHelper.sqrt_double(var2 * var2 + var4 * var4 + var6 * var6);
+    }
+
+    public static Vector3 subtract(Vector3 par1, Vector3 par2)
+    {
+        return new Vector3(par1.x - par2.x, par1.y - par2.y, par1.z - par2.z);
+    }
+
+    public static Vector3 add(Vector3 par1, Vector3 par2)
+    {
+        return new Vector3(par1.x + par2.x, par1.y + par2.y, par1.z + par2.z);
+    }
+
+    public static Vector3 add(Vector3 par1, double par2)
+    {
+        return new Vector3(par1.x + par2, par1.y + par2, par1.z + par2);
+    }
+
+    public static Vector3 multiply(Vector3 vec1, Vector3 vec2)
+    {
+        return new Vector3(vec1.x * vec2.x, vec1.y * vec2.y, vec1.z * vec2.z);
+    }
+
+    public static Vector3 multiply(Vector3 vec1, double vec2)
+    {
+        return new Vector3(vec1.x * vec2, vec1.y * vec2, vec1.z * vec2);
+    }
+
+    public static Vector3 readFromNBT(String prefix, NBTTagCompound par1NBTTagCompound)
+    {
+        Vector3 tempVector = new Vector3();
+        tempVector.x = par1NBTTagCompound.getDouble(prefix + "X");
+        tempVector.y = par1NBTTagCompound.getDouble(prefix + "Y");
+        tempVector.z = par1NBTTagCompound.getDouble(prefix + "Z");
+        return tempVector;
+    }
+
     /**
      * Returns the coordinates as integers
      */
@@ -100,39 +178,9 @@ public class Vector3 extends Vector2 implements Cloneable {
         return new Vector3(x, y, z);
     }
 
-    @Deprecated
-    public static Vector3 get(Entity par1)
+    public Block getBlock(IBlockAccess world)
     {
-        return new Vector3(par1);
-    }
-
-    @Deprecated
-    public static Vector3 get(TileEntity par1)
-    {
-        return new Vector3(par1);
-    }
-
-    @Deprecated
-    public static Vector3 get(Vec3 par1)
-    {
-        return new Vector3(par1);
-    }
-
-    @Deprecated
-    public static Vector3 get(MovingObjectPosition par1)
-    {
-        return new Vector3(par1);
-    }
-
-    @Deprecated
-    public static Vector3 get(ChunkCoordinates par1)
-    {
-        return new Vector3(par1);
-    }
-
-    public int getBlockID(IBlockAccess world)
-    {
-        return world.getBlockId(intX(), intY(), intZ());
+        return world.getBlock(intX(), intY(), intZ());
     }
 
     public int getBlockMetadata(IBlockAccess world)
@@ -142,22 +190,22 @@ public class Vector3 extends Vector2 implements Cloneable {
 
     public TileEntity getTileEntity(IBlockAccess world)
     {
-        return world.getBlockTileEntity(intX(), intY(), intZ());
+        return world.getTileEntity(intX(), intY(), intZ());
     }
 
-    public void setBlock(World world, int id, int metadata)
+    public void setBlock(World world, Block block, int metadata)
     {
-        world.setBlock(intX(), intY(), intZ(), id, metadata, 1);
+        world.setBlock(intX(), intY(), intZ(), block, metadata, 1);
     }
 
-    public void setBlock(World world, int id)
+    public void setBlock(World world, Block block)
     {
-        world.setBlock(intX(), intY(), intZ(), id);
+        world.setBlock(intX(), intY(), intZ(), block);
     }
 
-    public void setBlockWithNotify(World world, int id, int metadata)
+    public void setBlockWithNotify(World world, Block block, int metadata)
     {
-        world.setBlock(intX(), intY(), intZ(), id, metadata, 1);
+        world.setBlock(intX(), intY(), intZ(), block, metadata, 1);
     }
 
     /**
@@ -184,40 +232,12 @@ public class Vector3 extends Vector2 implements Cloneable {
         return x == vector3.x && y == vector3.y && z == vector3.z;
     }
 
-    /**
-     * Gets the distance between two vectors
-     *
-     * @return The distance
-     */
-    public static double distance(Vector3 par1, Vector3 par2)
-    {
-        double var2 = par1.x - par2.x;
-        double var4 = par1.y - par2.y;
-        double var6 = par1.z - par2.z;
-        return MathHelper.sqrt_double(var2 * var2 + var4 * var4 + var6 * var6);
-    }
-
     public double distanceTo(Vector3 vector3)
     {
         double var2 = vector3.x - x;
         double var4 = vector3.y - y;
         double var6 = vector3.z - z;
         return MathHelper.sqrt_double(var2 * var2 + var4 * var4 + var6 * var6);
-    }
-
-    public static Vector3 subtract(Vector3 par1, Vector3 par2)
-    {
-        return new Vector3(par1.x - par2.x, par1.y - par2.y, par1.z - par2.z);
-    }
-
-    public static Vector3 add(Vector3 par1, Vector3 par2)
-    {
-        return new Vector3(par1.x + par2.x, par1.y + par2.y, par1.z + par2.z);
-    }
-
-    public static Vector3 add(Vector3 par1, double par2)
-    {
-        return new Vector3(par1.x + par2, par1.y + par2, par1.z + par2);
     }
 
     public void add(Vector3 par1)
@@ -255,25 +275,6 @@ public class Vector3 extends Vector2 implements Cloneable {
         x *= vec.x;
         y *= vec.y;
         z *= vec.z;
-    }
-
-    public static Vector3 multiply(Vector3 vec1, Vector3 vec2)
-    {
-        return new Vector3(vec1.x * vec2.x, vec1.y * vec2.y, vec1.z * vec2.z);
-    }
-
-    public static Vector3 multiply(Vector3 vec1, double vec2)
-    {
-        return new Vector3(vec1.x * vec2, vec1.y * vec2, vec1.z * vec2);
-    }
-
-    public static Vector3 readFromNBT(String prefix, NBTTagCompound par1NBTTagCompound)
-    {
-        Vector3 tempVector = new Vector3();
-        tempVector.x = par1NBTTagCompound.getDouble(prefix + "X");
-        tempVector.y = par1NBTTagCompound.getDouble(prefix + "Y");
-        tempVector.z = par1NBTTagCompound.getDouble(prefix + "Z");
-        return tempVector;
     }
 
     /**

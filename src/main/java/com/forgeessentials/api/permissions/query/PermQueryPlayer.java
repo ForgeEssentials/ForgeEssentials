@@ -1,15 +1,15 @@
 package com.forgeessentials.api.permissions.query;
 
 import com.forgeessentials.permission.PermissionChecker;
+import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.event.Event.HasResult;
 
 /**
  * Reuslts are: default, allow, deny.
  *
  * @author AbrarSyed
  */
-@HasResult
+@Event.HasResult
 public class PermQueryPlayer extends PermQuery {
     public EntityPlayer doer;
     public boolean dOverride;

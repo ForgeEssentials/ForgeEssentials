@@ -2,16 +2,16 @@ package com.forgeessentials.api.permissions.query;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
+import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.event.Event.HasResult;
 
 /**
  * Reuslts are: default, allow, deny.
  *
  * @author AbrarSyed
  */
-@HasResult
+@Event.HasResult
 public class PermQueryPlayerZone extends PermQueryPlayer {
     public final Zone toCheck;
 

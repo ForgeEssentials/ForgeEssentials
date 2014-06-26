@@ -4,9 +4,7 @@ import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.commands.ircCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.IPlayerTracker;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 import org.pircbotx.PircBotX;
@@ -22,9 +20,9 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 
     public static int port;
     public static String server, name, channel, password, serverPass;
-    private static PircBotX bot;
     public static boolean suppressEvents;
     public static ircCommands ircCmds;
+    private static PircBotX bot;
 
     public static void connectToServer()
     {
@@ -213,38 +211,6 @@ public class IRCHelper extends ListenerAdapter implements Listener {
         if (!suppressEvents)
         {
             postMinecraft(EnumChatFormatting.YELLOW + e.getOldNick() + " changed nick to " + e.getNewNick());
-        }
-
-        // Minecraft events
-        class EventListener implements IPlayerTracker {
-
-            @Override
-            public void onPlayerLogin(EntityPlayer player)
-            {
-                if (!suppressEvents)
-                {
-                    postIRC("Player " + player.username + " joined the game.");
-                }
-            }
-
-            @Override
-            public void onPlayerLogout(EntityPlayer player)
-            {
-                if (!suppressEvents)
-                {
-                    postIRC("Player " + player.username + " left the game.");
-                }
-            }
-
-            @Override
-            public void onPlayerChangedDimension(EntityPlayer player)
-            {
-            }
-
-            @Override
-            public void onPlayerRespawn(EntityPlayer player)
-            {
-            }
         }
     }
 

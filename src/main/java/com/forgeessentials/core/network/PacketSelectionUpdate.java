@@ -1,8 +1,8 @@
 package com.forgeessentials.core.network;
 
-import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;

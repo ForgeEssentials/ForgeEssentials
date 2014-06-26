@@ -1,6 +1,6 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.core.PlayerInfo;
+import com.forgeessentials.util.PlayerInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
@@ -64,7 +64,7 @@ public class TickHandlerCommands implements IScheduledTickHandler {
     private void doWorldTick(World world)
     {
         /*
-	     * Time settings
+         * Time settings
 	     */
         if (!CommandDataManager.WTmap.containsKey(world.provider.dimensionId))
         {

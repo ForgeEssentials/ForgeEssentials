@@ -1,11 +1,11 @@
 package com.forgeessentials.core.misc;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.compat.CompatReiMinimap;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;

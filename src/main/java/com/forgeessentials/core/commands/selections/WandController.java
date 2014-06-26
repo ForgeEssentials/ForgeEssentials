@@ -4,15 +4,14 @@ package com.forgeessentials.core.commands.selections;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
-import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class WandController {

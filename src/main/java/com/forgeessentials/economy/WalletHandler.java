@@ -63,10 +63,6 @@ public class WalletHandler implements IEconManager {
         return am + " " + currency(am);
     }
 
-	/*
-     * Player tracker stuff
-	 */
-
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {

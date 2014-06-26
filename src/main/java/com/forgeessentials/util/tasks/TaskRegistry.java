@@ -1,26 +1,30 @@
 package com.forgeessentials.util.tasks;
 
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TaskRegistry {
+    public static final int MAX_BLOCK_UPDATES = 10;
+    private static TaskRegistry instance;
+    protected ConcurrentLinkedQueue<ITickTask> tasks = new ConcurrentLinkedQueue<ITickTask>();
     private TimeTaskHandler timed;
     private TickTaskHandler ticks;
-    private static TaskRegistry instance;
 
     public TaskRegistry()
     {
         instance = this;
-        ticks = new TickTaskHandler();
         timed = new TimeTaskHandler();
-        TickRegistry.registerTickHandler(ticks, Side.SERVER);
+        FMLCommonHandler.instance().bus().register(instance);
+
     }
 
     public static void registerTask(ITickTask task)
     {
-        instance.ticks.tasks.offer(task);
+        instance.tasks.offer(task);
     }
 
     public static void registerSingleTask(TimerTask task, int hours, int minutes, int seconds, int milliseconds)
@@ -68,32 +72,6 @@ public class TaskRegistry {
         instance.timed.removeTask(wrapper);
     }
 
-    public void onServerStop()
-    {
-        instance.timed.kill();
-        instance.timed = null;
-    }
-
-    public void onServerStart()
-    {
-        instance.timed = new TimeTaskHandler();
-    }
-
-    private static class TimedTaskWrapper extends TimerTask {
-        private final Runnable runner;
-
-        public TimedTaskWrapper(Runnable runner)
-        {
-            this.runner = runner;
-        }
-
-        @Override
-        public void run()
-        {
-            runner.run();
-        }
-    }
-
     private static long getMillis(int hrs, int min, int sec, int milli)
     {
         long time = 0;
@@ -111,6 +89,61 @@ public class TaskRegistry {
         time = time * 1000 + milli;
 
         return time;
+    }
+
+    public void onServerStop()
+    {
+        instance.timed.kill();
+        instance.timed = null;
+    }
+
+    public void onServerStart()
+    {
+        instance.timed = new TimeTaskHandler();
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent.ServerTickEvent e)
+    {
+        int blockCounter = 0;
+
+        for (ITickTask task : tasks)
+        {
+            // remove the compelte ones
+            if (task.isComplete())
+            {
+                task.onComplete();
+                tasks.remove(task);
+            }
+
+            // add the blockCounter if it edits blocks
+            else if (task.editsBlocks() && blockCounter <= MAX_BLOCK_UPDATES)
+            {
+                task.tick();
+                blockCounter++;
+            }
+
+            // otherwise just tick
+            else
+            {
+                task.tick();
+            }
+        }
+    }
+
+    private static class TimedTaskWrapper extends TimerTask {
+        private final Runnable runner;
+
+        public TimedTaskWrapper(Runnable runner)
+        {
+            this.runner = runner;
+        }
+
+        @Override
+        public void run()
+        {
+            runner.run();
+        }
     }
 
 }

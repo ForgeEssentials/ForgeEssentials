@@ -2,19 +2,20 @@ package com.forgeessentials.util;
 
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.core.CoreConfig;
-import com.forgeessentials.core.misc.FriendlyItemList;
 import com.forgeessentials.permission.SqlHelper;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import com.google.common.base.Joiner;
+import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.block.Block;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -37,6 +38,10 @@ import java.util.regex.Pattern;
 public final class FunctionHelper {
     public static Pattern groupRegex = Pattern.compile("\\{[a-zA-Z0-9._]*\\<\\:\\>[a-zA-Z0-9._]*\\}");
 
+    public static SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("ForgeEssentials");
+    // used for niceJoin method.
+    private static Joiner joiner = Joiner.on(", ").skipNulls();
+
     /**
      * Get player's looking spot.
      *
@@ -53,7 +58,7 @@ public final class FunctionHelper {
         double var7 = player.prevPosX + (player.posX - player.prevPosX) * var4;
         double var9 = player.prevPosY + (player.posY - player.prevPosY) * var4 + 1.62D - player.yOffset;
         double var11 = player.prevPosZ + (player.posZ - player.prevPosZ) * var4;
-        Vec3 var13 = player.worldObj.getWorldVec3Pool().getVecFromPool(var7, var9, var11);
+        Vec3 var13 = Vec3.createVectorHelper(var7, var9, var11);
         float var14 = MathHelper.cos(-var6 * 0.017453292F - (float) Math.PI);
         float var15 = MathHelper.sin(-var6 * 0.017453292F - (float) Math.PI);
         float var16 = -MathHelper.cos(-var5 * 0.017453292F);
@@ -61,12 +66,14 @@ public final class FunctionHelper {
         float var18 = var15 * var16;
         float var20 = var14 * var16;
         double var21 = 500D;
+
         if (player instanceof EntityPlayerMP && restrict)
         {
             var21 = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
         }
         Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
-        return player.worldObj.rayTraceBlocks_do_do(var13, var23, false, !true);
+        return player.worldObj.rayTraceBlocks(var13, var23, false);
+
     }
 
     /**
@@ -124,7 +131,7 @@ public final class FunctionHelper {
     {
         // tru exact match first.
         {
-            EntityPlayerMP tempPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(name);
+            EntityPlayerMP tempPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getp;
             if (tempPlayer != null)
             {
                 return tempPlayer;
@@ -137,12 +144,12 @@ public final class FunctionHelper {
                 .getConfigurationManager().playerEntityList;
         for (EntityPlayerMP player : temp)
         {
-            if (player.username.equalsIgnoreCase(name))
+            if (player.getGameProfile().getName().equalsIgnoreCase(name))
             {
                 return player;
             }
 
-            if (player.username.toLowerCase().contains(name.toLowerCase()))
+            if (player.getGameProfile().getName().toLowerCase().contains(name.toLowerCase()))
             {
                 possibles.add(player);
             }
@@ -256,34 +263,6 @@ public final class FunctionHelper {
                 { ID, meta };
     }
 
-    public static int getItemIDFromName(String name, boolean blockOnly)
-    {
-        if (blockOnly)
-        {
-            Block block = FriendlyItemList.instance().getBlockForName(name);
-            if (block == null)
-            {
-                return 0;
-            }
-            else
-            {
-                return block.blockID;
-            }
-        }
-        else
-        {
-            Item item = FriendlyItemList.instance().getItemForName(name);
-            if (item == null)
-            {
-                return 0;
-            }
-            else
-            {
-                return item.itemID;
-            }
-        }
-    }
-
     /**
      * please use your module dir!
      *
@@ -292,7 +271,6 @@ public final class FunctionHelper {
     public static File getBaseDir()
     {
         if (FMLCommonHandler.instance().getSide().isClient())
-        // TODO Check if this is the directory we want to store our stuff in
         {
             return Minecraft.getMinecraft().mcDataDir;
         }
@@ -308,7 +286,7 @@ public final class FunctionHelper {
      * @param player
      * @return
      */
-    public static boolean isPlayerOp(String player)
+    public static boolean isPlayerOp(GameProfile player)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
         {
@@ -320,14 +298,14 @@ public final class FunctionHelper {
         // SP and LAN
         if (server.isSinglePlayer())
         {
-            if (server instanceof IntegratedServer && server.getServerOwner().equalsIgnoreCase(player))
+            if (server instanceof IntegratedServer && server.getServerOwner().equalsIgnoreCase(player.getName()))
             {
                 return true;
             }
         }
 
         // SMP
-        return server.getConfigurationManager().getOps().contains(player);
+        return server.getConfigurationManager().func_152596_g(player);
     }
 
     /**
@@ -578,9 +556,6 @@ public final class FunctionHelper {
         return joiner.join(array);
     }
 
-    // used for niceJoin method.
-    private static Joiner joiner = Joiner.on(", ").skipNulls();
-
     public static boolean isNumeric(String string)
     {
         try
@@ -740,12 +715,12 @@ public final class FunctionHelper {
         for (Object fakePlayer : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
         {
             EntityPlayer player = (EntityPlayer) fakePlayer;
-            String name = player.username;
+            String name = player.getDisplayName();
             if (player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).hasKey("nickname"))
             {
                 name = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
             }
-            name = getGroupRankString(player.username) + ":" + name;
+            name = getGroupRankString(player.getDisplayName()) + ":" + name;
             sb.append(name + ", ");
         }
         return sb.toString().substring(0, sb.toString().lastIndexOf(","));
@@ -871,7 +846,7 @@ public final class FunctionHelper {
         tag.setString("title", file.getName().replace(".txt", ""));
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Item.writtenBook);
+        ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }
@@ -948,7 +923,7 @@ public final class FunctionHelper {
         tag.setString("title", title);
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Item.writtenBook);
+        ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }
@@ -1007,7 +982,7 @@ public final class FunctionHelper {
         tag.setString("title", file.getName().replace(".txt", ""));
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Item.writtenBook);
+        ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }
@@ -1066,7 +1041,7 @@ public final class FunctionHelper {
         tag.setString("title", title);
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Item.writtenBook);
+        ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }
@@ -1149,7 +1124,7 @@ public final class FunctionHelper {
         tag.setString("title", folder.getName());
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Item.writtenBook);
+        ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }
@@ -1232,7 +1207,7 @@ public final class FunctionHelper {
         tag.setString("title", title);
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Item.writtenBook);
+        ItemStack is = new ItemStack(Items.written_bookBook);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }

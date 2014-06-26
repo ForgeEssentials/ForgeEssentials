@@ -25,9 +25,9 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 minecraft {
-    version = "1.7.10_pre4-10.12.2.1138-prerelease"
+    version = "1.7.10_pre4-10.12.2.1142-prerelease"
     assetDir = "rundir/assets"
-    forgeVersion = "10.12.2.1138-prerelease"
+    forgeVersion = "10.12.2.1142-prerelease"
 
     replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
     replace "%VERSION%", project.version

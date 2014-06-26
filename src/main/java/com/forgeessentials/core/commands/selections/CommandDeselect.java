@@ -1,9 +1,9 @@
 package com.forgeessentials.core.commands.selections;
 
 import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 

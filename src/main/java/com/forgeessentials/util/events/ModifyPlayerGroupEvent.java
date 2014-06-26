@@ -1,7 +1,7 @@
 package com.forgeessentials.util.events;
 
-import net.minecraftforge.event.Cancelable;
-import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.eventhandler.Cancelable;
+import cpw.mods.fml.common.eventhandler.Event;
 
 @Cancelable
 public class ModifyPlayerGroupEvent extends Event {
@@ -41,6 +41,10 @@ public class ModifyPlayerGroupEvent extends Event {
         }
     }
 
+    public static enum Type {
+        SET, ADD, REMOVE
+    }
+
     @Cancelable
     public static class SetPlayerGroupEvent extends ModifyPlayerGroupEvent {
         public SetPlayerGroupEvent(String group, String player, String zone)
@@ -63,9 +67,5 @@ public class ModifyPlayerGroupEvent extends Event {
         {
             super(group, player, zone, Type.REMOVE);
         }
-    }
-
-    public static enum Type {
-        SET, ADD, REMOVE
     }
 }

@@ -3,8 +3,8 @@ package com.forgeessentials.api.permissions.query;
 import com.forgeessentials.util.AreaSelector.AreaBase;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.AreaSelector.WorldArea;
+import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.event.Event.HasResult;
 
 import java.util.ArrayList;
 
@@ -13,11 +13,11 @@ import java.util.ArrayList;
  *
  * @author AbrarSyed
  */
-@HasResult
+@Event.HasResult
 public class PermQueryPlayerArea extends PermQueryPlayer {
-    public ArrayList<AreaBase> applicable;
     public final WorldArea doneTo;
     public final boolean allOrNothing;
+    public ArrayList<AreaBase> applicable;
 
     public PermQueryPlayerArea(EntityPlayer player, String permission, AreaBase doneTo, boolean allOrNothing)
     {

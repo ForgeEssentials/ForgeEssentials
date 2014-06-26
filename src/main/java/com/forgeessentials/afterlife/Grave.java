@@ -42,7 +42,7 @@ public class Grave {
     {
         key = point.toString();
         this.point = point;
-        owner = player.username;
+        owner = player.getUniqueID().toString();
         if (Deathchest.enableXP)
         {
             xp = player.experienceLevel;
@@ -61,13 +61,6 @@ public class Grave {
         deathchest.gravemap.put(point.toString(), this);
     }
 
-    @Reconstructor
-    private static Grave reconstruct(IReconstructData tag)
-    {
-        return new Grave(tag.getUniqueKey(), tag.getFieldValue("point"), tag.getFieldValue("owner"), tag.getFieldValue("inv"), tag.getFieldValue("xp"),
-                tag.getFieldValue("protTime"), tag.getFieldValue("protEnable"));
-    }
-
     private Grave(String key, Object point, Object owner, Object inv, Object xp, Object protTime, Object protEnable)
     {
         this.key = key;
@@ -77,6 +70,13 @@ public class Grave {
         this.xp = (Integer) xp;
         this.protTime = (Integer) protTime;
         this.protEnable = (Boolean) protEnable;
+    }
+
+    @Reconstructor
+    private static Grave reconstruct(IReconstructData tag)
+    {
+        return new Grave(tag.getUniqueKey(), tag.getFieldValue("point"), tag.getFieldValue("owner"), tag.getFieldValue("inv"), tag.getFieldValue("xp"),
+                tag.getFieldValue("protTime"), tag.getFieldValue("protEnable"));
     }
 
     public void checkGrave()
@@ -114,7 +114,7 @@ public class Grave {
         {
             return true;
         }
-        if (player.username.equals(owner))
+        if (player.getUniqueID().toString().equals(owner))
         {
             return true;
         }

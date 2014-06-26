@@ -1,8 +1,8 @@
 package com.forgeessentials.util.events;
 
 import com.forgeessentials.util.AreaSelector.WarpPoint;
+import cpw.mods.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 @Cancelable

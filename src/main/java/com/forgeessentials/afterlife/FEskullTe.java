@@ -1,7 +1,7 @@
 package com.forgeessentials.afterlife;
 
 import com.forgeessentials.util.AreaSelector.WorldPoint;
-import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
 
 public class FEskullTe extends TileEntitySkull {
@@ -18,7 +18,7 @@ public class FEskullTe extends TileEntitySkull {
         }
         if (grave.protEnable)
         {
-            this.worldObj.setBlock(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
+            this.worldObj.setBlock(point.x, point.y, point.z, Blocks.skull, 1, 1);
             FEskullTe te = new FEskullTe();
             te.setSkullType(3, grave.owner);
             this.worldObj.setBlockTileEntity(point.x, point.y, point.z, te);

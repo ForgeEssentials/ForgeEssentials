@@ -2,7 +2,6 @@ package com.forgeessentials.util;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IScheduledTickHandler;
@@ -20,14 +19,12 @@ import java.util.EnumSet;
  */
 
 public class TeleportCenter implements IScheduledTickHandler {
-    private static ArrayList<TPdata> queue = new ArrayList<TPdata>();
-    private static ArrayList<TPdata> removeQueue = new ArrayList<TPdata>();
-
-    public static int tpWarmup;
-    public static int tpCooldown;
-
     public static final String BYPASS_WARMUP = "fe.teleport.bypasswarmup";
     public static final String BYPASS_COOLDOWN = "fe.teleport.bypasscooldown";
+    public static int tpWarmup;
+    public static int tpCooldown;
+    private static ArrayList<TPdata> queue = new ArrayList<TPdata>();
+    private static ArrayList<TPdata> removeQueue = new ArrayList<TPdata>();
 
     public static void addToTpQue(WarpPoint point, EntityPlayer player)
     {

@@ -1,8 +1,6 @@
 package com.forgeessentials.core.preloader;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Kindly do not reference any FE classes outside the coremod package in this
@@ -19,26 +17,12 @@ import java.util.List;
 
 public class Data {
 
-    protected static String[] transformers = {
-            "com.forgeessentials.core.preloader.asm.FEAccessTransformer",
-            "com.forgeessentials.core.preloader.asm.FEeventAdder",
-            "com.forgeessentials.core.preloader.asm.FEPacketAnalyzer"
-    };
-
     public static HashMap<String, String> ISob = new HashMap<String, String>();// ItemStack, OBF, placeEvent
     public static HashMap<String, String> ISdev = new HashMap<String, String>();// ItemStack, DEV, placeEvent
-
     public static HashMap<String, String> MCob = new HashMap<String, String>();// MemoryConnection, OBF, packet sniffer
     public static HashMap<String, String> MCdev = new HashMap<String, String>();// MemoryConnection, DEV, packet sniffer
-
     public static HashMap<String, String> TCob = new HashMap<String, String>();// TcpConnection, OBF, packet sniffer
     public static HashMap<String, String> TCdev = new HashMap<String, String>();// TcpConnection, DEV, packet sniffer
-
-    public static List<String> cmdClassesob = new ArrayList<String>();// any class with canCommandSenderUseCommand, OBF, permission checks
-    public static List<String> cmdClassesdev = new ArrayList<String>();// any class with canCommandSenderUseCommand, DEV, permission checks
-
-    public static final String cCSUC = "a";//canCommandSenderUseCommand method name, OBF, permission checks
-    public static final String ics = "ad";// ICommandSender class name, OBF, permission checks
 
     static
     {
@@ -77,17 +61,10 @@ public class Data {
         TCdev.put("targetMethod2", "readPacket");
         TCdev.put("packetName", "net/minecraft/network/packet/Packet");
 
-        cmdClassesob.add("z");
-        cmdClassesob.add("ht");
-        cmdClassesob.add("hs");
-        cmdClassesob.add("if");
-        cmdClassesob.add("ie");
-
-        cmdClassesdev.add("net.minecraft.command.CommandBase");
-        cmdClassesdev.add("net.minecraft.command.CommandServerBan");
-        cmdClassesdev.add("net.minecraft.command.CommandServerBanIp");
-        cmdClassesdev.add("net.minecraft.command.CommandServerPardon");
-        cmdClassesdev.add("net.minecraft.command.CommandServerPardonIp");
-
     }
+
+    protected static String[] transformers = {
+            "com.forgeessentials.core.preloader.asm.FEeventAdder",
+            "com.forgeessentials.core.preloader.asm.FEPacketAnalyzer"
+    };
 }

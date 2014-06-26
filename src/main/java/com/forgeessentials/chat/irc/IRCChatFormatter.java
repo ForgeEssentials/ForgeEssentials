@@ -3,14 +3,14 @@ package com.forgeessentials.chat.irc;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.chat.ConfigChat;
-import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.PlayerInfo;
 import com.google.common.base.Strings;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 
 import java.util.ArrayList;

@@ -4,16 +4,16 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.chat.commands.CommandPm;
-import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.PlayerInfo;
 import com.google.common.base.Strings;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
-import cpw.mods.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.event.ServerChatEvent;
 
 import java.util.ArrayList;
@@ -195,7 +195,7 @@ public class ChatFormatter {
 
         // finally make it the chat line.
         // TODO: This is probably incorrect with regards to coloring
-        event.component = ChatMessageComponent.createFromText(format);
+        event.component = (ChatComponentTranslation) ChatUtils.createFromText(format);
 
         if (ConfigChat.logchat && ModuleChat.chatLog != null)
         {
