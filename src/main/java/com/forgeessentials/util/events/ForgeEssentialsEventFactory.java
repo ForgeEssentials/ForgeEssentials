@@ -15,15 +15,16 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class ForgeEssentialsEventFactory {
     // TICK STUFF
 
-    private HashMap<String, WarpPoint> befores;
+    private HashMap<UUID, WarpPoint> befores;
 
     public ForgeEssentialsEventFactory()
     {
-        befores = new HashMap<String, WarpPoint>();
+        befores = new HashMap<UUID, WarpPoint>();
     }
 
     public static boolean onBlockPlace(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitx, float hity, float hitz)
@@ -43,22 +44,22 @@ public class ForgeEssentialsEventFactory {
     @SubscribeEvent
     public void handlePlayerMove(TickEvent.PlayerTickEvent e)
     {
-        EntityPlayerMP player = (EntityPlayerMP) tickData[0];
+        EntityPlayerMP player = (EntityPlayerMP) e.player;
 
-        WarpPoint before = befores.get(player.username);
+        WarpPoint before = befores.get(player.getPersistentID());
         WarpPoint current = new WarpPoint(player);
 
         // obviously.. if there IS no before.. don't worry about it.
         if (before == null)
         {
-            befores.put(player.username, current);
+            befores.put(player.getPersistentID(), current);
             return;
         }
 
         // no respawn stuff or respawn stuff
         if (player.isDead || player.worldObj == null || before.dim != current.dim)
         {
-            befores.remove(player.username);
+            befores.remove(player.getPersistentID());
             return;
         }
 
@@ -76,14 +77,14 @@ public class ForgeEssentialsEventFactory {
         }
         else
         {
-            befores.put(player.username, current);
+            befores.put(player.getPersistentID(), current);
         }
     }
 
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
-        befores.remove(player.username);
+        befores.remove(e.player.getPersistentID());
     }
 
     // BLOCK STUFF

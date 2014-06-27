@@ -7,7 +7,6 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.network.FEServerPacketHandler;
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -19,14 +18,13 @@ import com.forgeessentials.permission.commands.CommandZone;
 import com.forgeessentials.permission.network.PacketPermNodeList;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.events.modules.*;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
 
 import java.io.File;
 

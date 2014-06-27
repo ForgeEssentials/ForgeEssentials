@@ -7,7 +7,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Init;
 import com.forgeessentials.core.moduleLauncher.FEModule.PreInit;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerInit;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerStop;
-import com.forgeessentials.core.network.FEServerPacketHandler;
 import com.forgeessentials.playerlogger.network.PacketPlayerLogger;
 import com.forgeessentials.playerlogger.network.PacketRollback;
 import com.forgeessentials.playerlogger.rollback.CommandPl;
@@ -42,10 +41,7 @@ public class ModulePlayerLogger {
     public static String password;
     public static boolean ragequitOn;
     public static boolean enable = false;
-
-    private static Connection connection;
     public static EventLogger eLogger;
-
     public static HashSet<logEntry> logTypes = new HashSet<logEntry>();
 
     static
@@ -55,9 +51,94 @@ public class ModulePlayerLogger {
         logTypes.add(new blockChangeLog());
     }
 
+    private static Connection connection;
+
     public ModulePlayerLogger()
     {
         MinecraftForge.EVENT_BUS.register(new EventHandler());
+    }
+
+    public static Connection getConnection()
+    {
+        try
+        {
+            if (connection.isClosed())
+            {
+                connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return connection;
+    }
+
+    public static void error(Exception e)
+    {
+        if (ragequitOn)
+        {
+            MinecraftServer.getServer().stopServer();
+        }
+        else
+        {
+            OutputHandler.felog.severe("PlayerLogger error: " + e.getLocalizedMessage());
+        }
+    }
+
+    public static ArrayList<blockChange> getBlockChangesWithinParameters(String username, boolean undo, int timeBack, WorldPoint p, int rad)
+    {
+        ArrayList<blockChange> data = new ArrayList<blockChange>();
+        try
+        {
+            Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
+            Statement st = connection.createStatement();
+
+            String sql = "SELECT * FROM  `blockChange` WHERE  `player` LIKE  '" + username + "'";
+
+            if (timeBack != 0)
+            {
+                Date date = new Date();
+                Timestamp time = new Timestamp(date.getTime());
+                //                                 Hours,  mins, sec, nano
+                time.setNanos(time.getNanos() - (timeBack * 60 * 60 * 1000 * 1000));
+                sql = sql + " AND `time` = '" + time.toString() + "'";
+            }
+
+            if (p != null && rad != 0)
+            {
+                sql = sql + " AND `Dim` = " + p.dim;
+                sql = sql + " AND `X` BETWEEN " + (p.x - rad) + " AND " + (p.x + rad);
+                sql = sql + " AND `Z` BETWEEN " + (p.z - rad) + " AND " + (p.z + rad);
+            }
+
+            if (undo)
+            {
+                sql = sql + " ORDER BY time ASC";
+            }
+            else
+            {
+                sql = sql + " ORDER BY time DESC";
+            }
+
+            st.execute(sql);
+            ResultSet rs = st.getResultSet();
+
+            while (rs.next())
+            {
+                data.add(new blockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"),
+                        blockChangeLog.blockChangeLogCategory.valueOf(rs.getString("category")).ordinal(), rs.getString("block"), rs.getBlob("te")));
+            }
+
+            rs.close();
+            st.close();
+            connection.close();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return data;
     }
 
     @PreInit
@@ -170,88 +251,5 @@ public class ModulePlayerLogger {
             OutputHandler.felog.warning("WARNING! MySQLConnector for playerLogger failed!");
             ex.printStackTrace();
         }
-    }
-
-    public static Connection getConnection()
-    {
-        try
-        {
-            if (connection.isClosed())
-            {
-                connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
-            }
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-        return connection;
-    }
-
-    public static void error(Exception e)
-    {
-        if (ragequitOn)
-        {
-            MinecraftServer.getServer().stopServer();
-        }
-        else
-        {
-            OutputHandler.felog.severe("PlayerLogger error: " + e.getLocalizedMessage());
-        }
-    }
-
-    public static ArrayList<blockChange> getBlockChangesWithinParameters(String username, boolean undo, int timeBack, WorldPoint p, int rad)
-    {
-        ArrayList<blockChange> data = new ArrayList<blockChange>();
-        try
-        {
-            Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
-            Statement st = connection.createStatement();
-
-            String sql = "SELECT * FROM  `blockChange` WHERE  `player` LIKE  '" + username + "'";
-
-            if (timeBack != 0)
-            {
-                Date date = new Date();
-                Timestamp time = new Timestamp(date.getTime());
-                //                                 Hours,  mins, sec, nano
-                time.setNanos(time.getNanos() - (timeBack * 60 * 60 * 1000 * 1000));
-                sql = sql + " AND `time` = '" + time.toString() + "'";
-            }
-
-            if (p != null && rad != 0)
-            {
-                sql = sql + " AND `Dim` = " + p.dim;
-                sql = sql + " AND `X` BETWEEN " + (p.x - rad) + " AND " + (p.x + rad);
-                sql = sql + " AND `Z` BETWEEN " + (p.z - rad) + " AND " + (p.z + rad);
-            }
-
-            if (undo)
-            {
-                sql = sql + " ORDER BY time ASC";
-            }
-            else
-            {
-                sql = sql + " ORDER BY time DESC";
-            }
-
-            st.execute(sql);
-            ResultSet rs = st.getResultSet();
-
-            while (rs.next())
-            {
-                data.add(new blockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"),
-                        blockChangeLog.blockChangeLogCategory.valueOf(rs.getString("category")).ordinal(), rs.getString("block"), rs.getBlob("te")));
-            }
-
-            rs.close();
-            st.close();
-            connection.close();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-        return data;
     }
 }

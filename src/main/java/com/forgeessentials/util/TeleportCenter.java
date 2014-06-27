@@ -4,12 +4,11 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.IScheduledTickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 /**
  * Use this for all TPs. This system does it all for you: warmup, cooldown,
@@ -18,7 +17,7 @@ import java.util.EnumSet;
  * @author Dries007
  */
 
-public class TeleportCenter implements IScheduledTickHandler {
+public class TeleportCenter {
     public static final String BYPASS_WARMUP = "fe.teleport.bypasswarmup";
     public static final String BYPASS_COOLDOWN = "fe.teleport.bypasscooldown";
     public static int tpWarmup;
@@ -28,14 +27,16 @@ public class TeleportCenter implements IScheduledTickHandler {
 
     public static void addToTpQue(WarpPoint point, EntityPlayer player)
     {
-        if (PlayerInfo.getPlayerInfo(player.username).TPcooldown != 0 && !APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
+        if (PlayerInfo.getPlayerInfo(player.getPersistentID()).TPcooldown != 0 && !APIRegistry.perms
+                .checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
         {
             ChatUtils.sendMessage(player,
-                    String.format("Cooldown still active. %s seconds to go.", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).TPcooldown)));
+                    String.format("Cooldown still active. %s seconds to go.",
+                            FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).TPcooldown)));
         }
         else
         {
-            PlayerInfo.getPlayerInfo(player.username).TPcooldown = tpCooldown;
+            PlayerInfo.getPlayerInfo(player.getPersistentID()).TPcooldown = tpCooldown;
             TPdata data = new TPdata(point, player);
             if (tpWarmup == 0 || APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASS_WARMUP)))
             {
@@ -61,8 +62,8 @@ public class TeleportCenter implements IScheduledTickHandler {
         ChatUtils.sendMessage(tpData.getPlayer(), "Teleported.");
     }
 
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData)
+    @SubscribeEvent
+    public void tickStart(TickEvent.ServerTickEvent e)
     {
         for (TPdata data : queue)
         {
@@ -72,32 +73,8 @@ public class TeleportCenter implements IScheduledTickHandler {
         removeQueue.clear();
         for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
         {
-            PlayerInfo.getPlayerInfo(((EntityPlayer) player).username).TPcooldownTick();
+            PlayerInfo.getPlayerInfo(((EntityPlayer) player).getPersistentID()).TPcooldownTick();
         }
-    }
-
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData)
-    {
-        // Not needed here
-    }
-
-    @Override
-    public EnumSet<TickType> ticks()
-    {
-        return EnumSet.of(TickType.SERVER);
-    }
-
-    @Override
-    public String getLabel()
-    {
-        return "TeleportCenter";
-    }
-
-    @Override
-    public int nextTickSpacing()
-    {
-        return 20;
     }
 
 }

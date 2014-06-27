@@ -127,7 +127,7 @@ public final class FunctionHelper {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static EntityPlayerMP getPlayerForName(String name)
+    public static EntityPlayerMP getPlayerForUUID(UUID id)
     {
         // tru exact match first.
         {
@@ -144,14 +144,9 @@ public final class FunctionHelper {
                 .getConfigurationManager().playerEntityList;
         for (EntityPlayerMP player : temp)
         {
-            if (player.getGameProfile().getName().equalsIgnoreCase(name))
+            if (player.getGameProfile().getId().equals(id))
             {
                 return player;
-            }
-
-            if (player.getGameProfile().getName().toLowerCase().contains(name.toLowerCase()))
-            {
-                possibles.add(player);
             }
         }
         if (possibles.size() == 1)
@@ -839,7 +834,7 @@ public final class FunctionHelper {
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString("", name + map.get(name)));
+            pages.appendTag(new NBTTagString(name + map.get(name)));
         }
 
         tag.setString("author", "ForgeEssentials");
@@ -916,7 +911,7 @@ public final class FunctionHelper {
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString("", name + map.get(name)));
+            pages.appendTag(new NBTTagString(name + map.get(name)));
         }
 
         tag.setString("author", "ForgeEssentials");
@@ -975,7 +970,7 @@ public final class FunctionHelper {
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString("", name + map.get(name)));
+            pages.appendTag(new NBTTagString(name + map.get(name)));
         }
 
         tag.setString("author", "ForgeEssentials");
@@ -1034,7 +1029,7 @@ public final class FunctionHelper {
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString("", name + map.get(name)));
+            pages.appendTag(new NBTTagString(name + map.get(name)));
         }
 
         tag.setString("author", "ForgeEssentials");
@@ -1117,7 +1112,7 @@ public final class FunctionHelper {
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString("", name + map.get(name)));
+            pages.appendTag(new NBTTagString(name + map.get(name)));
         }
 
         tag.setString("author", "ForgeEssentials");
@@ -1200,14 +1195,14 @@ public final class FunctionHelper {
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString("", name + map.get(name)));
+            pages.appendTag(new NBTTagString(name + map.get(name)));
         }
 
         tag.setString("author", "ForgeEssentials");
         tag.setString("title", title);
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Items.written_bookBook);
+        ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }

@@ -32,7 +32,7 @@ public class WandController {
 
         // get info now rather than later
         EntityPlayer player = event.entityPlayer;
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
+        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
 
         int id = player.getCurrentEquippedItem() == null ? 0 : player.getCurrentEquippedItem().itemID;
         int damage = 0;

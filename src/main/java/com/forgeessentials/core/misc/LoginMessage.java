@@ -134,7 +134,7 @@ public class LoginMessage {
         line = FunctionHelper.formatColors(line); // colors...
         line = FunctionHelper.format(line);
 
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.username); // username
+        line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.getDisplayName()); // username
         line = FunctionHelper.replaceAllIgnoreCase(line, "%players%", online()); // players online
         line = FunctionHelper.replaceAllIgnoreCase(line, "%uptime%", getUptime()); // uptime
         line = FunctionHelper.replaceAllIgnoreCase(line, "%uniqueplayers%", uniqueplayers()); // unique players

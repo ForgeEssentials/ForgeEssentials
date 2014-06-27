@@ -5,7 +5,6 @@ import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.auth.lists.PlayerTracker;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.ClassContainer;
@@ -25,11 +24,9 @@ import java.util.List;
 
 @FEModule(name = "Tickets", parentMod = ForgeEssentials.class, configClass = ConfigTickets.class)
 public class ModuleTickets {
+    public static final String PERMBASE = "fe.tickets";
     @FEModule.Config
     public static ConfigTickets config;
-
-    public static final String PERMBASE = "fe.tickets";
-
     @FEModule.ModuleDir
     public static File moduleDir;
     public static ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
@@ -37,30 +34,7 @@ public class ModuleTickets {
 
     public static int currentID;
 
-    private PlayerTracker playerTracker;
-
     private static ClassContainer ticketContainer = new ClassContainer(Ticket.class);
-
-    @FEModule.Init
-    public void load(FEModuleInitEvent e)
-    {
-        playerTracker = new PlayerTracker();
-        FMLCommonHandler.instance().bus().register(this);
-    }
-
-    @FEModule.ServerInit
-    public void serverStarting(FEModuleServerInitEvent e)
-    {
-        e.registerServerCommand(new Command());
-        loadAll();
-    }
-
-    @FEModule.ServerStop
-    public void serverStopping(FEModuleServerStopEvent e)
-    {
-        saveAll();
-        config.forceSave();
-    }
 
     @PermRegister
     public static void registerPermissions(IPermRegisterEvent event)
@@ -109,6 +83,26 @@ public class ModuleTickets {
             }
         }
         return null;
+    }
+
+    @FEModule.Init
+    public void load(FEModuleInitEvent e)
+    {
+        FMLCommonHandler.instance().bus().register(this);
+    }
+
+    @FEModule.ServerInit
+    public void serverStarting(FEModuleServerInitEvent e)
+    {
+        e.registerServerCommand(new Command());
+        loadAll();
+    }
+
+    @FEModule.ServerStop
+    public void serverStopping(FEModuleServerStopEvent e)
+    {
+        saveAll();
+        config.forceSave();
     }
 
     @SubscribeEvent

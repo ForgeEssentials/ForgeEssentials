@@ -6,10 +6,9 @@ import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
@@ -50,7 +49,7 @@ public class Deathchest {
     {
         TileEntity.addMapping(FEskullTe.class, "FESkull");
         MinecraftForge.EVENT_BUS.register(this);
-        TickRegistry.registerScheduledTickHandler(new GraveProtectionTicker(this), Side.SERVER);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     public void load()
@@ -242,4 +241,10 @@ public class Deathchest {
 
     @SubscribeEvent
     public void tickGraves(TickEvent.ServerTickEvent)
+    {
+        for (Grave grave : gravemap.values())
+        {
+            grave.tick();
+        }
+    }
 }

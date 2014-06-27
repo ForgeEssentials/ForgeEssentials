@@ -1,6 +1,5 @@
 package com.forgeessentials.playerlogger.network;
 
-import com.forgeessentials.core.network.ForgeEssentialsPacket;
 import com.forgeessentials.playerlogger.blockChange;
 import com.forgeessentials.util.OutputHandler;
 import net.minecraft.network.packet.Packet250CustomPayload;

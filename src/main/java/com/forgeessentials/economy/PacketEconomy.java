@@ -1,7 +1,6 @@
 package com.forgeessentials.economy;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.network.ForgeEssentialsPacket;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;

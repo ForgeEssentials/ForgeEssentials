@@ -10,8 +10,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ModListFile {
     public static void makeModList()
@@ -49,8 +47,7 @@ public class ModListFile {
         }
         catch (Exception e)
         {
-            Logger lof = OutputHandler.felog;
-            lof.logp(Level.SEVERE, "FEConfig", "Generating modlist", "Error writing the modlist file: " + ForgeEssentials.modlistLocation, e);
+            OutputHandler.felog.severe("Error writing the modlist file: " + ForgeEssentials.modlistLocation);
         }
     }
 }

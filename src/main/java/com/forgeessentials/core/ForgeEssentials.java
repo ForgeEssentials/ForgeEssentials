@@ -10,7 +10,7 @@ import com.forgeessentials.core.compat.CompatMCStats;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.misc.*;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.network.FEServerPacketHandler;
+import com.forgeessentials.core.network.PacketSelectionUpdate;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.forgeessentials.data.ForgeConfigDataDriver;
 import com.forgeessentials.data.NBTDataDriver;
@@ -124,8 +124,6 @@ public class ForgeEssentials {
         LoginMessage.loadFile();
         mdlaunch = new ModuleLauncher();
         mdlaunch.preLoad(e);
-
-        FEServerPacketHandler.init();
     }
 
     @EventHandler
@@ -156,6 +154,7 @@ public class ForgeEssentials {
         bannedItems.postLoad(e);
 
         new FriendlyItemList();
+        FunctionHelper.netHandler.registerMessage(PacketSelectionUpdate.class, PacketSelectionUpdate.Message.class, 0, Side.SERVER);
     }
 
     @EventHandler
@@ -165,10 +164,6 @@ public class ForgeEssentials {
         ((StorageManager) DataStorageManager.manager).serverStart(e);
 
         ModListFile.makeModList();
-
-        // Central TP system
-        TickRegistry.registerScheduledTickHandler(new TeleportCenter(),
-                Side.SERVER);
 
         // commands
         e.registerServerCommand(new CommandFEInfo());

@@ -1,6 +1,5 @@
 package com.forgeessentials.permission.network;
 
-import com.forgeessentials.core.network.ForgeEssentialsPacket;
 import com.forgeessentials.permission.ModulePermissions;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.network.Player;
@@ -16,9 +15,8 @@ import java.util.Set;
 public class PacketPermNodeList extends ForgeEssentialsPacket {
 
     public static final byte packetID = 3;
-
-    private Packet250CustomPayload packet;
     private static ModulePermissions sendthru;
+    private Packet250CustomPayload packet;
 
     public PacketPermNodeList(Set<String> permissions)
     {
@@ -51,18 +49,18 @@ public class PacketPermNodeList extends ForgeEssentialsPacket {
         }
     }
 
-    @Override
-    public Packet250CustomPayload getPayload()
-    {
-
-        return packet;
-    }
-
     public static void readServer(DataInputStream stream, WorldServer world,
             EntityPlayer player)
     {
         sendthru.sendPermList((Player) player);
 
+    }
+
+    @Override
+    public Packet250CustomPayload getPayload()
+    {
+
+        return packet;
     }
 
 }

@@ -1,14 +1,15 @@
 package com.forgeessentials.util;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 
 public class MiscEventHandler {
+    public static boolean MajoritySleep = false;
     private static MiscEventHandler instance;
 
     public MiscEventHandler()
@@ -17,16 +18,14 @@ public class MiscEventHandler {
         instance = this;
     }
 
-    public static MiscEventHandler instance()
-    {
-        return instance;
-    }
-
 	/*
      * MajoritySleep
 	 */
 
-    public static boolean MajoritySleep = false;
+    public static MiscEventHandler instance()
+    {
+        return instance;
+    }
 
     @SubscribeEvent
     public void playerSleepInBedEvent(PlayerSleepInBedEvent e)

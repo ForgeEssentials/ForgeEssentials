@@ -8,13 +8,14 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Call these methods to modify a target's Wallet.
  */
 public class WalletHandler implements IEconManager {
     private static ClassContainer con = new ClassContainer(Wallet.class);
-    private static HashMap<String, Wallet> wallets = new HashMap<String, Wallet>();
+    private static HashMap<UUID, Wallet> wallets = new HashMap<UUID, Wallet>();
 
     @Override
     public void addToWallet(int amountToAdd, String player)
@@ -40,7 +41,7 @@ public class WalletHandler implements IEconManager {
     @Override
     public void setWallet(int setAmount, EntityPlayer player)
     {
-        wallets.get(player.username).amount = setAmount;
+        wallets.get(player.getUniqueID()).amount = setAmount;
     }
 
     @Override
@@ -66,20 +67,20 @@ public class WalletHandler implements IEconManager {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
-        Wallet wallet = (Wallet) DataStorageManager.getReccomendedDriver().loadObject(con, player.username);
+        Wallet wallet = (Wallet) DataStorageManager.getReccomendedDriver().loadObject(con, event.player.getUniqueID());
         if (wallet == null)
         {
             wallet = new Wallet(event.player, ModuleEconomy.startbuget);
         }
-        wallets.put(player.username, wallet);
+        wallets.put(event.player.getUniqueID(), wallet);
     }
 
     @SubscribeEvent
-    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent)
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if (wallets.containsKey(player.username))
+        if ( wallets.containsKey(event.player.getUniqueID());
         {
-            DataStorageManager.getReccomendedDriver().saveObject(con, wallets.remove(player.username));
+            DataStorageManager.getReccomendedDriver().saveObject(con, wallets.remove(event.player.getUniqueID()));
         }
     }
 }

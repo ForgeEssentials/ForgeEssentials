@@ -121,7 +121,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
+        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
         if (info.wandEnabled)
         {
             return true;

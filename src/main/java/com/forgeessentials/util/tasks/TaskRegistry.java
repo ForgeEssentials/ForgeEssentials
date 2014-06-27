@@ -12,7 +12,6 @@ public class TaskRegistry {
     private static TaskRegistry instance;
     protected ConcurrentLinkedQueue<ITickTask> tasks = new ConcurrentLinkedQueue<ITickTask>();
     private TimeTaskHandler timed;
-    private TickTaskHandler ticks;
 
     public TaskRegistry()
     {

@@ -29,50 +29,33 @@ import net.minecraft.world.chunk.Chunk;
 
 @SaveableObject
 public class TickTaskFill implements ITickTask {
+    final ClassContainer con = new ClassContainer(TickTaskFill.class);
+    @SaveableField
+    public int speed = 1;
+    public WorldBorder border;
     @UniqueLoadingKey
     @SaveableField
     String dimID;
     boolean isComplete = false;
-
     WorldServer world;
-
     int minX;
     int minZ;
-
     int maxX;
     int maxZ;
-
     int centerX;
     int centerZ;
     int rad;
-
     @SaveableField
     long ticks = 0L;
     @SaveableField
     long todo = 0L;
-
     MinecraftServer server = MinecraftServer.getServer();
-
+    ICommandSender source;
+    boolean stopped = false;
     @SaveableField
     private int X;
     @SaveableField
     private int Z;
-
-    @SaveableField
-    public int speed = 1;
-
-    public WorldBorder border;
-
-    ICommandSender source;
-
-    boolean stopped = false;
-    final ClassContainer con = new ClassContainer(TickTaskFill.class);
-
-    @Reconstructor
-    private static TickTaskFill reconstruct(IReconstructData tag)
-    {
-        return new TickTaskFill(tag);
-    }
 
     private TickTaskFill(IReconstructData tag)
     {
@@ -135,6 +118,12 @@ public class TickTaskFill implements ITickTask {
         TaskRegistry.registerTask(this);
 
         OutputHandler.chatWarning(source, "This filler will take about " + getETA() + " at current speed.");
+    }
+
+    @Reconstructor
+    private static TickTaskFill reconstruct(IReconstructData tag)
+    {
+        return new TickTaskFill(tag);
     }
 
     private String getETA()
@@ -246,10 +235,10 @@ public class TickTaskFill implements ITickTask {
     {
         try
         {
-            boolean var6 = world.canNotSave;
-            world.canNotSave = false;
+            boolean var6 = world.levelSaving;
+            world.levelSaving = false;
             world.saveAllChunks(true, (IProgressUpdate) null);
-            world.canNotSave = var6;
+            world.levelSaving = var6;
         }
         catch (MinecraftException var7)
         {

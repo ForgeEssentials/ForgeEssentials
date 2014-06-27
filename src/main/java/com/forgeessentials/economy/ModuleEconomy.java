@@ -3,12 +3,10 @@ package com.forgeessentials.economy;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.network.FEServerPacketHandler;
 import com.forgeessentials.economy.commands.*;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.io.File;
 

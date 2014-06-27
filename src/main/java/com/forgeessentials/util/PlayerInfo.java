@@ -1,6 +1,6 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.core.network.PacketSelectionUpdate;
+import com.forgeessentials.core.network.PacketSelectionUpdate.Message;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.api.IReconstructData;
@@ -11,28 +11,22 @@ import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 @SaveableObject
 public class PlayerInfo {
-    private static HashMap<String, PlayerInfo> playerInfoMap = new HashMap<String, PlayerInfo>();
+    private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
     // -------------------------------------------------------------------------------------------
     // ---------------------------------- Actual Class Starts Now --------------------------------
     // -------------------------------------------------------------------------------------------
     @UniqueLoadingKey()
     @SaveableField()
-    public final String username;
+    public final UUID playerID;
     // wand stuff
     public int wandID = 0;
     public int wandDmg = 0;
@@ -67,12 +61,12 @@ public class PlayerInfo {
     @SaveableField
     private List<ItemStack> hiddenItems;
 
-    private PlayerInfo(String username)
+    private PlayerInfo(UUID playerID)
     {
         sel1 = null;
         sel2 = null;
         selection = null;
-        this.username = username;
+        this.playerID = playerID;
 
         undos = new Stack<BackupArea>();
         redos = new Stack<BackupArea>();
@@ -91,25 +85,25 @@ public class PlayerInfo {
     // @Deprecated Why? it doesn't have to be removed?
     public static PlayerInfo getPlayerInfo(EntityPlayer player)
     {
-        return getPlayerInfo(player.username);
+        return getPlayerInfo(player.getPersistentID());
     }
 
-    public static PlayerInfo getPlayerInfo(String username)
+    public static PlayerInfo getPlayerInfo(UUID playerID)
     {
-        PlayerInfo info = playerInfoMap.get(username);
+        PlayerInfo info = playerInfoMap.get(playerID);
 
         // load or create one
         if (info == null)
         {
             // Attempt to populate this info with some data from our storage.
-            info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), username);
+            info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), playerID.toString());
 
             if (info == null)
             {
-                info = new PlayerInfo(username);
+                info = new PlayerInfo(playerID);
             }
 
-            playerInfoMap.put(username, info);
+            playerInfoMap.put(playerID, info);
         }
 
         return info;
@@ -127,7 +121,7 @@ public class PlayerInfo {
     @Reconstructor()
     public static PlayerInfo reconstruct(IReconstructData tag)
     {
-        String username = (String) tag.getFieldValue("username");
+        UUID username = UUID.fromString((String) tag.getFieldValue("username"));
 
         PlayerInfo info = new PlayerInfo(username);
 
@@ -241,9 +235,7 @@ public class PlayerInfo {
             }
         }
 
-        // send packets.
-        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-        PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
+        FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
     }
 
     public Point getPoint2()
@@ -270,9 +262,7 @@ public class PlayerInfo {
             }
         }
 
-        // send packets.
-        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-        PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
+        FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
     }
 
     public Selection getSelection()
@@ -319,8 +309,7 @@ public class PlayerInfo {
         selection = null;
         sel1 = null;
         sel2 = null;
-        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(username);
-        PacketDispatcher.sendPacketToPlayer(new PacketSelectionUpdate(this).getPayload(), (Player) player);
+        FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
     }
 
     public List<ItemStack> getHiddenItems()
