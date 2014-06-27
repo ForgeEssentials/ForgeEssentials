@@ -232,10 +232,10 @@ public class Deathchest {
                 }
             }
         }
-        DimensionManager.getWorld(grave.point.dim).destroyBlock(grave.point.x, grave.point.y, grave.point.z, false);
+        DimensionManager.getWorld(grave.point.dim).setBlock(grave.point.x, grave.point.y - 1, grave.point.z, Blocks.air);
         if (enableFencePost)
         {
-            DimensionManager.getWorld(grave.point.dim).destroyBlock(grave.point.x, grave.point.y - 1, grave.point.z, false);
+            DimensionManager.getWorld(grave.point.dim).setBlock(grave.point.x, grave.point.y - 1, grave.point.z, Blocks.air);
         }
     }
 

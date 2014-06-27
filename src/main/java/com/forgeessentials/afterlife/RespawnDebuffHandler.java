@@ -9,7 +9,7 @@ import net.minecraft.potion.PotionEffect;
 
 import java.util.ArrayList;
 
-public class RespawnDebuffHandler{
+public class RespawnDebuffHandler {
     public static final String BYPASSPOTION = ModuleAfterlife.BASEPERM + ".bypassPotions";
     public static final String BYPASSSTATS = ModuleAfterlife.BASEPERM + ".bypassStats";
     public static ArrayList<PotionEffect> potionEffects;

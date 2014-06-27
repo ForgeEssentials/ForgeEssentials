@@ -19,6 +19,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.HashSet;
+import java.util.UUID;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, configClass = AuthConfig.class)
 public class ModuleAuth {
@@ -32,8 +33,8 @@ public class ModuleAuth {
     public static boolean canMoveWithoutLogin;
 
     public static VanillaServiceChecker vanillaCheck;
-    public static HashSet<String> unLogged = new HashSet<String>();
-    public static HashSet<String> unRegistered = new HashSet<String>();
+    public static HashSet<UUID> unLogged = new HashSet<UUID>();
+    public static HashSet<UUID> unRegistered = new HashSet<UUID>();
     public static String salt = EncryptionHelper.generateSalt();
     public static int checkInterval;
     private static EncryptionHelper pwdEnc;

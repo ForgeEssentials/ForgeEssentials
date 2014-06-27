@@ -20,6 +20,8 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import java.util.UUID;
+
 public class EventHandler {
 
     public static String banned;
@@ -39,7 +41,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerMove(PlayerMoveEvent event)
     {
-        String username = event.entityPlayer.username;
+        UUID username = event.entityPlayer.getPersistentID();
 
         if (event.before.xd == event.after.xd && event.before.zd == event.after.zd)
         {
@@ -67,7 +69,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerChat(ServerChatEvent event)
     {
-        String username = event.player.username;
+        UUID username = event.player.getPersistentID();
 
         if (ModuleAuth.unLogged.contains(username))
         {
@@ -92,13 +94,13 @@ public class EventHandler {
 
         EntityPlayer player = (EntityPlayer) event.sender;
 
-        if (ModuleAuth.unLogged.contains(player.username) && !(event.command instanceof CommandAuth))
+        if (ModuleAuth.unLogged.contains(player.getPersistentID()) && !(event.command instanceof CommandAuth))
         {
             event.setCanceled(true);
             OutputHandler.chatError(player, "Login required. Try /auth help.");
         }
 
-        if (ModuleAuth.unRegistered.contains(player.username) && !(event.command instanceof CommandAuth))
+        if (ModuleAuth.unRegistered.contains(player.getPersistentID()) && !(event.command instanceof CommandAuth))
         {
             event.setCanceled(true);
             OutputHandler.chatError(player, "Registration required. Try /auth help.");
@@ -108,7 +110,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-        String username = event.entityPlayer.username;
+        UUID username = event.entityplayer.getPersistentID();
 
         if (ModuleAuth.unLogged.contains(username))
         {
@@ -126,7 +128,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(EntityInteractEvent event)
     {
-        String username = event.entityPlayer.username;
+        UUID username = event.entityplayer.getPersistentID();
 
         if (ModuleAuth.unLogged.contains(username))
         {
@@ -144,7 +146,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(MinecartInteractEvent event)
     {
-        String username = event.player.username;
+        UUID username = event.player.getPersistentID();
 
         if (ModuleAuth.unLogged.contains(username))
         {
@@ -162,7 +164,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerTossItem(ItemTossEvent event)
     {
-        String username = event.player.username;
+        UUID username = event.player.getPersistentID();
 
         boolean cancel = false;
 
@@ -191,7 +193,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerPickupItem(EntityItemPickupEvent event)
     {
-        String username = event.entityPlayer.username;
+        UUID username = event.entityplayer.getPersistentID();
 
         if (ModuleAuth.unLogged.contains(username))
         {
@@ -216,13 +218,13 @@ public class EventHandler {
 
         EntityPlayer player = (EntityPlayer) event.entityLiving;
 
-        if (ModuleAuth.unLogged.contains(player.username))
+        if (ModuleAuth.unLogged.contains(player.getPersistentID()))
         {
             event.setCanceled(true);
             OutputHandler.chatError(player, "Login required. Try /auth help.");
         }
 
-        if (ModuleAuth.unRegistered.contains(player.username))
+        if (ModuleAuth.unRegistered.contains(player.getPersistentID()))
         {
             event.setCanceled(true);
             OutputHandler.chatError(player, "Registration required. Try /auth help.");
@@ -232,7 +234,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerAttack(AttackEntityEvent event)
     {
-        String username = event.entityPlayer.username;
+        UUID username = event.entityplayer.getPersistentID();
 
         if (ModuleAuth.unLogged.contains(username))
         {
@@ -254,12 +256,12 @@ public class EventHandler {
         {
             return;
         }
-        PlayerPassData data = PlayerPassData.getData(e.player.username);
+        PlayerPassData data = PlayerPassData.getData(e.player.getPersistentID());
 
         if (data == null)
         {
             OutputHandler.chatError(e.player, "Registration required. Try /auth help.");
-            ModuleAuth.unRegistered.add(e.player.username);
+            ModuleAuth.unRegistered.add(e.player.getPersistentID());
         }
         else
         {
@@ -291,9 +293,9 @@ public class EventHandler {
     @SubscribeEvent
     public void onLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
-        ModuleAuth.unLogged.remove(e.player.username);
-        ModuleAuth.unRegistered.remove(e.player.username);
-        PlayerPassData.discardData(e.player.username);
+        ModuleAuth.unLogged.remove(e.player.getPersistentID());
+        ModuleAuth.unRegistered.remove(e.player.getPersistentID());
+        PlayerPassData.discardData(e.player.getPersistentID());
     }
 
 }

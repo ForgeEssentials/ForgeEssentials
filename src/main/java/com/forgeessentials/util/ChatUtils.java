@@ -3,6 +3,8 @@ package com.forgeessentials.util;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
 public class ChatUtils {
@@ -30,9 +32,24 @@ public class ChatUtils {
         configurationManager.sendChatMsg(createFromText(message));
     }
 
-    public static IChatComponent createFromText(String string) {
+    public static IChatComponent createFromText(String string)
+    {
         ChatComponentText component = new ChatComponentText(string);
         return component;
+    }
+
+    /**
+     * Processes an IChatComponent and adds formatting to it.
+     *
+     * @param toColour
+     * @param colour
+     * @param others
+     * @return
+     */
+    public static IChatComponent colourize(IChatComponent toColour, EnumChatFormatting colour, boolean[] others)
+    {
+        ChatStyle style = new ChatStyle().setColor(colour);
+        toColour.setChatStyle(style);
     }
 
 }

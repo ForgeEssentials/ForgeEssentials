@@ -6,7 +6,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -59,7 +59,7 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
 
         HashMap<String, String> map = new HashMap<String, String>();
 
-        if (sender.inventory.hasItemStack(new ItemStack(Item.writtenBook)))
+        if (sender.inventory.hasItemStack(new ItemStack(Items.written_book)))
         {
             int i = 0;
             for (ItemStack e : sender.inventory.mainInventory)
@@ -133,14 +133,14 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString("", name + map.get(name)));
+            pages.appendTag(new NBTTagString(name + map.get(name)));
         }
 
         tag.setString("author", "ForgeEssentials");
         tag.setString("title", "CommandBook");
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Item.writtenBook);
+        ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         sender.inventory.addItemStackToInventory(is);
     }
