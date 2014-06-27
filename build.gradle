@@ -131,7 +131,7 @@ task completeZip(type: Zip, dependsOn: 'reobf') {
     destinationDir = jar.destinationDir
     from(project.tasks.jar.getArchivePath()) { into 'mods' }
 
-    from(sourceSets.main.output) { include 'FEReadme.txt', 'HowToGetFESupport.txt' }
+    from(sourceSets.main.output) { include 'FEReadme.txt' }
     from(project.configurations.serverLibs) {
         include '*'
         into('ForgeEssentials/lib')
