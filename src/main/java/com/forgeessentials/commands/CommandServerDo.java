@@ -2,12 +2,14 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.world.World;
 
 public class CommandServerDo extends FEcmdModuleCommands {
 
@@ -27,8 +29,7 @@ public class CommandServerDo extends FEcmdModuleCommands {
             {
                 cmd = cmd + " " + args[i];
             }
-            String result = MinecraftServer.getServer().executeCommand(cmd);
-            ChatUtils.sendMessage(player, result);
+            MinecraftServer.getServer().getCommandManager().executeCommand(new DummyCommandSender(player), cmd);
         }
     }
 
@@ -49,5 +50,46 @@ public class CommandServerDo extends FEcmdModuleCommands {
     {
 
         return "/serverdo Run a command as the console.";
+    }
+
+    public class DummyCommandSender implements ICommandSender {
+
+        private EntityPlayer player;
+
+        public DummyCommandSender(EntityPlayer player)
+        {
+            this.player = player;
+        }
+
+        @Override public String getCommandSenderName()
+        {
+            return "FEServerDo";
+        }
+
+        @Override public IChatComponent func_145748_c_()
+        {
+            return null;
+        }
+
+        @Override public void addChatMessage(IChatComponent iChatComponent)
+        {
+            player.addChatMessage(iChatComponent);
+
+        }
+
+        @Override public boolean canCommandSenderUseCommand(int i, String s)
+        {
+            return true;
+        }
+
+        @Override public ChunkCoordinates getPlayerCoordinates()
+        {
+            return null;
+        }
+
+        @Override public World getEntityWorld()
+        {
+            return null;
+        }
     }
 }

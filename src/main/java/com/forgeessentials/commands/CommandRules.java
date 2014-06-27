@@ -11,7 +11,7 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -21,8 +21,6 @@ import net.minecraftforge.common.config.Configuration;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CommandRules extends FEcmdModuleCommands {
 
@@ -75,8 +73,7 @@ public class CommandRules extends FEcmdModuleCommands {
             }
             catch (Exception e)
             {
-                Logger lof = OutputHandler.felog;
-                lof.logp(Level.SEVERE, "FEConfig", "Generating Rules", "Error writing the Rules file: " + rulesFile.getName(), e);
+                OutputHandler.felog.severe("Error writing the Rules file: " + rulesFile.getName());
             }
         }
         else
@@ -119,8 +116,7 @@ public class CommandRules extends FEcmdModuleCommands {
             }
             catch (Exception e)
             {
-                Logger lof = OutputHandler.felog;
-                lof.logp(Level.SEVERE, "FEConfig", "Constructor-Rules", "Error reading or writing the Rules file: " + rulesFile.getName(), e);
+                OutputHandler.felog.severe("Error writing the Rules file: " + rulesFile.getName());
             }
         }
 
@@ -160,8 +156,7 @@ public class CommandRules extends FEcmdModuleCommands {
         }
         catch (Exception e)
         {
-            Logger lof = OutputHandler.felog;
-            lof.logp(Level.SEVERE, "FEConfig", "Saving Rules", "Error writing the Rules file: " + rulesFile.getName(), e);
+            OutputHandler.felog.severe("Error writing the Rules file: " + rulesFile.getName());
         }
     }
 
@@ -197,14 +192,14 @@ public class CommandRules extends FEcmdModuleCommands {
             SortedSet<String> keys = new TreeSet<String>(map.keySet());
             for (String name : keys)
             {
-                pages.appendTag(new NBTTagString("", name + map.get(name)));
+                pages.appendTag(new NBTTagString(name + map.get(name)));
             }
 
             tag.setString("author", "ForgeEssentials");
             tag.setString("title", "Rule Book");
             tag.setTag("pages", pages);
 
-            ItemStack is = new ItemStack(Item.writtenBook);
+            ItemStack is = new ItemStack(Items.written_book);
             is.setTagCompound(tag);
             sender.inventory.addItemStackToInventory(is);
             return;

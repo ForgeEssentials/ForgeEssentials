@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 
 public class PlayerUtils {
@@ -72,7 +73,7 @@ public class PlayerUtils {
      * @param username the player's username
      * @return the player's UUID
      */
-    public static String getUUID(final String username)
+    public static UUID getUUID(final String username)
     {
 
         String uuid = "";
@@ -115,9 +116,7 @@ public class PlayerUtils {
             OutputHandler.felog.getWrapper().warn("Failed to fetch UUID  from username", e);
         }
 
-        uuid = uuid.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"); // Add the dashes back into the UUID
-
-        return uuid;
+        return UUID.fromString(uuid);
     }
 
     public static class Account {

@@ -4,6 +4,7 @@ import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.BlockSaveable;
 import com.forgeessentials.util.tasks.ITickTask;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
 public class TickTaskPulseHelper implements ITickTask {
@@ -29,7 +30,7 @@ public class TickTaskPulseHelper implements ITickTask {
         {
             //place block
             back.before.add(new BlockSaveable(WorldObj, BlockCord.x, BlockCord.y, BlockCord.z));
-            WorldObj.setBlock(BlockCord.x, BlockCord.y, BlockCord.z, 152);
+            WorldObj.setBlock(BlockCord.x, BlockCord.y, BlockCord.z, Blocks.redstone_block);
             back.after.add(new BlockSaveable(WorldObj, BlockCord.x, BlockCord.y, BlockCord.z));
 
         }

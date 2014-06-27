@@ -13,9 +13,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Init;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerPostInit;
 import com.forgeessentials.teleport.util.ConfigTeleport;
-import com.forgeessentials.teleport.util.PlayerTrackerTP;
 import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.FunctionHelper;
@@ -28,8 +26,6 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
@@ -47,6 +43,7 @@ public class TeleportModule {
     public static List<TPAdata> tpaListToAdd = new ArrayList<TPAdata>();
     public static List<TPAdata> tpaListToRemove = new ArrayList<TPAdata>();
     private static List<ForgeEssentialsCommandBase> commands = new ArrayList<ForgeEssentialsCommandBase>();
+
     static
     {
         commands.add(new CommandBack());
@@ -132,9 +129,6 @@ public class TeleportModule {
                     APIRegistry.zones.getGLOBAL().getZoneName());
         }
 
-        GameRegistry.registerPlayerTracker(new PlayerTrackerTP());
-        TickRegistry.registerScheduledTickHandler(new TickHandlerTP(),
-                Side.SERVER);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

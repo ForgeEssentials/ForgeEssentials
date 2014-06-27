@@ -166,7 +166,7 @@ public final class FunctionHelper {
         }
         else
         {
-            return getPlayerForName(name);
+            return getPlayerForUUID(PlayerUtils.getUUID(name));
         }
     }
 

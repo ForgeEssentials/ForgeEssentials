@@ -9,7 +9,6 @@ import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.chat.irc.PlayerEventHandler;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.CommandSetChecker;
-import com.forgeessentials.core.misc.packetInspector.PacketAnalyzerRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -71,8 +70,6 @@ public class ModuleChat {
             FMLCommonHandler.instance().bus().register(ircPlayerHandler);
             MinecraftForge.EVENT_BUS.register(new IRCChatFormatter());
         }
-
-        PacketAnalyzerRegistry.register(new PacketAnalyzerChat(), new int[] { 201 });
     }
 
     @FEModule.PostInit

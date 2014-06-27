@@ -10,13 +10,13 @@ public class PlayerEventHandler {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        IRCHelper.postIRC(arg0.username + " joined the server.");
+        IRCHelper.postIRC(e.player.getDisplayName() + " joined the server.");
     }
 
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
-        IRCHelper.postIRC(arg0.username + " left the server.");
+        IRCHelper.postIRC(e.player.getDisplayName() + " left the server.");
     }
 
     @SubscribeEvent
@@ -24,7 +24,7 @@ public class PlayerEventHandler {
     {
         if (e.entityLiving instanceof EntityPlayer)
         {
-            IRCHelper.postIRC(e.source.getDeathMessage(e.entityLiving).toString());
+            IRCHelper.postIRC(e.source.func_151519_b(e.entityLiving).toString());
         }
     }
 

@@ -105,7 +105,7 @@ public class CommandButcher extends FEcmdModuleCommands {
                 Z = parseInt(sender, split[2], sender.posZ);
             }
         }
-        AxisAlignedBB pool = AxisAlignedBB.getAABBPool().getAABB(X - radius, Y - radius, Z - radius, X + radius + 1, Y + radius + 1, Z + radius + 1);
+        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(X - radius, Y - radius, Z - radius, X + radius + 1, Y + radius + 1, Z + radius + 1);
         TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, pool, radius, sender.dimension));
     }
 
@@ -190,8 +190,8 @@ public class CommandButcher extends FEcmdModuleCommands {
             }
         }
         WorldPoint center = new WorldPoint(worldID, x, y, z);
-        AxisAlignedBB pool = AxisAlignedBB.getAABBPool()
-                .getAABB(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1, center.z + radius + 1);
+        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1,
+                center.z + radius + 1);
         TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, pool, radius, worldID));
     }
 

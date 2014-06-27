@@ -13,9 +13,6 @@ import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -32,21 +29,27 @@ public class ModuleCommands {
     public static EventHandler eventHandler = new EventHandler();
     private static MCStatsHelper mcstats = new MCStatsHelper();
 
+    @PermRegister
+    public static void registerPermissions(IPermRegisterEvent event)
+    {
+        CommandRegistrar.registerPermissions(event);
+        event.registerPermissionLevel("fe.commands._ALL_", RegGroup.OWNERS);
+    }
+
     @FEModule.PreInit
     public void preLoad(FEModulePreInitEvent e)
     {
         MobTypeLoader.preLoad(e);
-        GameRegistry.registerPlayerTracker(new PlayerTrackerCommands());
+        MinecraftForge.EVENT_BUS.register(eventHandler);
     }
 
     @FEModule.Init
     public void load(FEModuleInitEvent e)
     {
-        MinecraftForge.EVENT_BUS.register(eventHandler);
+
         CommandRegistrar.commandConfigs(conf.config);
         ShortcutCommands.loadConfig(cmddir);
         CompatMCStats.registerStats(mcstats);
-        TickRegistry.registerScheduledTickHandler(new TickHandlerCommands(), Side.SERVER);
         new PacketAnalyzerCmd();
     }
 
@@ -63,13 +66,6 @@ public class ModuleCommands {
     {
         ShortcutCommands.parseConfig();
         ShortcutCommands.load();
-    }
-
-    @PermRegister
-    public static void registerPermissions(IPermRegisterEvent event)
-    {
-        CommandRegistrar.registerPermissions(event);
-        event.registerPermissionLevel("fe.commands._ALL_", RegGroup.OWNERS);
     }
 
     @FEModule.ServerStop

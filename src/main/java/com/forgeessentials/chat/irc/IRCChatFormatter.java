@@ -85,7 +85,7 @@ public class IRCChatFormatter {
         String gPrefix = "";
         String gSuffix = "";
 
-        PlayerInfo info = PlayerInfo.getPlayerInfo(event.player.username);
+        PlayerInfo info = PlayerInfo.getPlayerInfo(event.player.getPersistentID());
         String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
         String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
 

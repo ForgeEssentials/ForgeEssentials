@@ -12,11 +12,12 @@ import net.minecraft.network.packet.Packet20NamedEntitySpawn;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.HashSet;
+import java.util.UUID;
 
 public class CommandVanish extends FEcmdModuleCommands {
     public static final String TAGNAME = "vanish";
 
-    public static HashSet<Integer> vanishedPlayers = new HashSet<Integer>();
+    public static HashSet<UUID> vanishedPlayers = new HashSet<UUID>();
 
     @Override
     public String getCommandName()

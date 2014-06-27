@@ -118,16 +118,16 @@ public class Kit {
 
     public void giveKit(EntityPlayer player)
     {
-        if (PlayerInfo.getPlayerInfo(player.username).kitCooldown.containsKey(getName()))
+        if (PlayerInfo.getPlayerInfo(player.getPersistentID()).kitCooldown.containsKey(getName()))
         {
             ChatUtils.sendMessage(player, "Kit cooldown active, %c seconds to go!"
-                    .replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.username).kitCooldown.get(getName()))));
+                    .replaceAll("%c", "" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).kitCooldown.get(getName()))));
         }
         else
         {
             if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
             {
-                PlayerInfo.getPlayerInfo(player.username).kitCooldown.put(getName(), getCooldown());
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).kitCooldown.put(getName(), getCooldown());
             }
 
 			/*

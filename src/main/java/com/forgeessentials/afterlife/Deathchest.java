@@ -13,9 +13,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet100OpenWindow;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -137,7 +137,7 @@ public class Deathchest {
             if (gravemap.containsKey(point.toString()))
             {
                 Grave grave = gravemap.get(point.toString());
-                if (e.entity.worldObj.getBlockId(e.x, e.y, e.z) == Block.skull.blockID)
+                if (e.entity.worldObj.getBlock(e.x, e.y, e.z) == Blocks.skull)
                 {
                     if (!grave.canOpen(e.entityPlayer))
                     {
