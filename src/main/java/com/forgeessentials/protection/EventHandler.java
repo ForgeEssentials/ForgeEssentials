@@ -352,6 +352,7 @@ public class EventHandler {
         }
     }
 
+    /*
     @ForgeSubscribe
     public void manageZoneBannedItems(PlayerChangedZone e)
     {
@@ -376,5 +377,6 @@ public class EventHandler {
             }
         }
     }
+    */
 
 }
