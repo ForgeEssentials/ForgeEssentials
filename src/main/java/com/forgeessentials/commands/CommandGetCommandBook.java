@@ -88,14 +88,14 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
 			 * =========================
 			 * [GOLD] /commandName
 			 * [GOLD] aliases
-			 * [DARKRED] permission
+			 * [DARKRED] permissions
 			 * [Black] usage
 			 */
 
             // Cast to command
             ICommand cmd = (ICommand) cmdObj;
 
-            // Skip commands for which the user has no permission
+            // Skip commands for which the user has no permissions
             if (!cmd.canCommandSenderUseCommand(sender))
             {
                 continue;
@@ -114,7 +114,7 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
                 text += EnumChatFormatting.GOLD + "No aliases.\n\n";
             }
 
-            // Display permission node (If applicable)
+            // Display permissions node (If applicable)
             if (cmd instanceof ForgeEssentialsCommandBase)// Was: FEcmdModuleCommands
             {
                 text += EnumChatFormatting.DARK_RED + ((ForgeEssentialsCommandBase) cmd).getCommandPerm() + "\n\n";

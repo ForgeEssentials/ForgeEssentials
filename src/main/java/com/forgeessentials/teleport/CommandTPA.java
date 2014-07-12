@@ -5,7 +5,6 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import com.forgeessentials.util.*;
 import net.minecraft.command.ICommandSender;
@@ -36,7 +35,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
 
         if (args[0].equalsIgnoreCase("accept"))
         {
-            for (TPAdata data : TickHandlerTP.tpaList)
+            for (TPAdata data : TeleportModule.tpaList)
             {
                 if (!data.tphere)
                 {
@@ -44,10 +43,10 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
                     {
                         ChatUtils.sendMessage(data.sender, "Teleport request accepted.");
                         ChatUtils.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
-                        PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(data.sender.username);
+                        PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(data.sender.getPersistentID());
                         playerInfo.back = new WarpPoint(data.sender);
-                        CommandBack.justDied.remove(data.sender.username);
-                        TickHandlerTP.tpaListToRemove.add(data);
+                        CommandBack.justDied.remove(data.sender.getPersistentID());
+                        TeleportModule.tpaListToRemove.add(data);
                         TeleportCenter.addToTpQue(new WarpPoint(data.receiver), data.sender);
                         return;
                     }
@@ -58,7 +57,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
 
         if (args[0].equalsIgnoreCase("decline"))
         {
-            for (TPAdata data : TickHandlerTP.tpaList)
+            for (TPAdata data : TeleportModule.tpaList)
             {
                 if (!data.tphere)
                 {
@@ -66,7 +65,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
                     {
                         ChatUtils.sendMessage(data.sender, "Teleport request declined.");
                         ChatUtils.sendMessage(data.receiver, "Teleport request declined by other party.");
-                        TickHandlerTP.tpaListToRemove.add(data);
+                        TeleportModule.tpaListToRemove.add(data);
                         return;
                     }
                 }
@@ -77,7 +76,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".sendrequest")))
         {
             OutputHandler.chatError(sender,
-                    "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
+                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
             return;
         }
 
@@ -88,11 +87,11 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         }
         else
         {
-            TickHandlerTP.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, false));
+            TeleportModule.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, false));
 
-            ChatUtils.sendMessage(sender, String.format("Teleport request sent to %s", receiver.username));
+            ChatUtils.sendMessage(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
             ChatUtils.sendMessage(receiver,
-                    String.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.", sender.username));
+                    String.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.", sender.getCommandSenderName()));
         }
     }
 

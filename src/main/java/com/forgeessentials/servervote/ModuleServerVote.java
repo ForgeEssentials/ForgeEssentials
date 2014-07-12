@@ -15,9 +15,9 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.BufferedReader;
@@ -155,7 +155,7 @@ public class ModuleServerVote {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void defVoteResponces(VoteEvent vote)
     {
-        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(vote.player);
+        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152612_a(vote.player);
         if (player != null)
         {
             doPlayer(player, vote);
@@ -169,19 +169,18 @@ public class ModuleServerVote {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (offlineList.containsKey(player.username))
+        if (offlineList.containsKey(e.player.getCommandSenderName()))
         {
-            doPlayer(player, offlineList.remove(player.username));
+            doPlayer((EntityPlayerMP)e.player, offlineList.remove(e.player.getCommandSenderName()));
         }
     }
 
-    private void doPlayer(EntityPlayer player, VoteEvent vote)
+    private void doPlayer(EntityPlayerMP player, VoteEvent vote)
     {
         if (!config.msgAll.equals(""))
         {
-            FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager()
-                    .sendPacketToAllPlayers(new Packet3Chat(
-                            FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player))));
+            player.playerNetServerHandler.sendPacket(new S02PacketChat(ChatUtils
+                    .createFromText(FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
         }
 
         if (!config.msgVoter.equals(""))

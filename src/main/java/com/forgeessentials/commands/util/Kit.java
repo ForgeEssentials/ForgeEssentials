@@ -125,7 +125,7 @@ public class Kit {
         }
         else
         {
-            if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TickHandlerCommands.BYPASS_KIT_COOLDOWN)))
+            if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, EventHandler.BYPASS_KIT_COOLDOWN)))
             {
                 PlayerInfo.getPlayerInfo(player.getPersistentID()).kitCooldown.put(getName(), getCooldown());
             }

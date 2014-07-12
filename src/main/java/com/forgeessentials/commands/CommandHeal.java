@@ -111,7 +111,7 @@ public class CommandHeal extends FEcmdModuleCommands {
     public String getCommandUsage(ICommandSender sender)
     {
 
-        return "/heal <player> Heal yourself. You can also heal other players if you have permission.";
+        return "/heal <player> Heal yourself. You can also heal other players if you have permissions.";
     }
 
 }

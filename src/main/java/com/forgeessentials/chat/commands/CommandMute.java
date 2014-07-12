@@ -45,7 +45,7 @@ public class CommandMute extends ForgeEssentialsCommandBase {
             }
             NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
             tag.setBoolean("mute", true);
-            receiver.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+            receiver.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
             OutputHandler.chatError(sender, String.format("You muted %s.", args[0]));
             OutputHandler.chatError(receiver, String.format("You were muted by %s.", sender.getCommandSenderName()));
         }

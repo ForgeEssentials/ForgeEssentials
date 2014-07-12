@@ -15,15 +15,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class CommandSetSpawn extends ForgeEssentialsCommandBase {
     public static final String SPAWN_PROP = "fe.teleport.spawnPoint";
     public static final String SPAWN_TYPE_PROP = "fe.teleport.spawnType";
-    public static HashMap<String, WarpPoint> spawns = new HashMap<String, WarpPoint>();
+    public static HashMap<UUID, WarpPoint> spawns = new HashMap<UUID, WarpPoint>();
     public static HashSet<Integer> dimsWithProp = new HashSet<Integer>();
 
     public static void setSpawnPoint(WorldPoint p, Zone zone)
@@ -197,7 +194,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
             String name = args[2];
             if (args[2].equalsIgnoreCase("_ME_"))
             {
-                name = sender.username;
+                name = sender.getCommandSenderName();
             }
             else
             {
@@ -209,7 +206,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
                 }
                 else
                 {
-                    name = player.username;
+                    name = player.getCommandSenderName();
                 }
             }
 
@@ -369,7 +366,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
             }
             else
             {
-                name = player.username;
+                name = player.getCommandSenderName();
             }
 
             APIRegistry.perms.setPlayerPermissionProp(name, permProp, prop, zone.getZoneName());

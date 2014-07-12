@@ -32,7 +32,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
             int x = Math.round((float) player.getLookVec().xCoord);
             int y = Math.round((float) player.getLookVec().yCoord);
             int z = Math.round((float) player.getLookVec().zCoord);
-            PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
+            PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
             int expandby = Integer.decode(args[0]);
 
             // Check to see if selection is valid for expand.
@@ -114,7 +114,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 2)
         {
-            PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
+            PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
             int expandby = 0;
             try
             {

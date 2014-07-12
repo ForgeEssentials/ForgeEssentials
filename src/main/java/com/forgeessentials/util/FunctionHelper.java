@@ -2,11 +2,10 @@ package com.forgeessentials.util;
 
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.core.CoreConfig;
-import com.forgeessentials.permission.SqlHelper;
+import com.forgeessentials.permissions.SqlHelper;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import com.google.common.base.Joiner;
-import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -15,13 +14,14 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -41,6 +41,8 @@ public final class FunctionHelper {
     public static SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("ForgeEssentials");
     // used for niceJoin method.
     private static Joiner joiner = Joiner.on(", ").skipNulls();
+
+    public static Item AIR = Item.getItemFromBlock(Blocks.air);
 
     /**
      * Get player's looking spot.
@@ -123,22 +125,12 @@ public final class FunctionHelper {
     /**
      * DO NOT use this for commands
      *
-     * @param name
+     * @param id
      * @return
      */
     @SuppressWarnings("unchecked")
     public static EntityPlayerMP getPlayerForUUID(UUID id)
     {
-        // tru exact match first.
-        {
-            EntityPlayerMP tempPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getp;
-            if (tempPlayer != null)
-            {
-                return tempPlayer;
-            }
-        }
-
-        // now try getting others
         List<EntityPlayerMP> possibles = new LinkedList<EntityPlayerMP>();
         ArrayList<EntityPlayerMP> temp = (ArrayList<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer()
                 .getConfigurationManager().playerEntityList;
@@ -166,8 +158,18 @@ public final class FunctionHelper {
         }
         else
         {
-            return getPlayerForUUID(PlayerUtils.getUUID(name));
+            return getPlayerForUUID(getPlayerID(name));
         }
+    }
+
+    public static UUID getPlayerID(String username)
+    {
+        return MinecraftServer.getServer().func_152358_ax().func_152655_a(username).getId();
+    }
+
+    public static String getPlayerName(UUID playerID)
+    {
+        return MinecraftServer.getServer().func_152358_ax().func_152652_a(playerID).toString();
     }
 
     /**
@@ -273,34 +275,6 @@ public final class FunctionHelper {
         {
             return new File(".");
         }
-    }
-
-    /**
-     * OP detection
-     *
-     * @param player
-     * @return
-     */
-    public static boolean isPlayerOp(GameProfile player)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-        {
-            return true;
-        }
-
-        MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
-
-        // SP and LAN
-        if (server.isSinglePlayer())
-        {
-            if (server instanceof IntegratedServer && server.getServerOwner().equalsIgnoreCase(player.getName()))
-            {
-                return true;
-            }
-        }
-
-        // SMP
-        return server.getConfigurationManager().func_152596_g(player);
     }
 
     /**
@@ -745,7 +719,7 @@ public final class FunctionHelper {
                         BufferedWriter out = new BufferedWriter(fstream);
                         for (int c = 0; c < pages.tagCount(); c++)
                         {
-                            String line = pages.tagAt(c).toString();
+                            String line = pages.getCompoundTagAt(c).toString();
                             while (line.contains("\n"))
                             {
                                 out.write(line.substring(0, line.indexOf("\n")));

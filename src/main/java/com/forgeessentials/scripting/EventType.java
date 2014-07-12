@@ -46,12 +46,12 @@ public enum EventType {
     public static void run(EntityPlayer player, EventType event)
     {
         ArrayList<String> scripts = new ArrayList<String>();
-        OutputHandler.felog.info("Running command scripts for player " + player.username);
+        OutputHandler.felog.info("Running command scripts for player " + player.getCommandSenderName());
 
         //  run player scripts
         try
         {
-            File pscript = new File(event.player, player.username + ".txt");
+            File pscript = new File(event.player, player.getPersistentID() + ".txt");
 
             OutputHandler.felog.info("Reading command script file " + pscript.getAbsolutePath());
             FileInputStream stream = new FileInputStream(pscript);
@@ -81,7 +81,7 @@ public enum EventType {
         }
         catch (Exception e)
         {
-            OutputHandler.felog.warning("Could not find command script for player " + player.username + ", ignoring!");
+            OutputHandler.felog.warning("Could not find command script for player " + player.getCommandSenderName() + ", ignoring!");
         }
         // now run group scripts - must be global
         try
@@ -123,7 +123,7 @@ public enum EventType {
             {
                 String s1 = s.toString();
                 MinecraftServer.getServer().getCommandManager().executeCommand(player, s1);
-                OutputHandler.felog.info("Successfully run command scripts for player " + player.username);
+                OutputHandler.felog.info("Successfully run command scripts for player " + player.getCommandSenderName());
             }
         }
     }

@@ -34,14 +34,14 @@ public class ConfigAfterlife extends ModuleConfigBase {
                 .get(subcat, "protectionTime", 300, "Time in seconds a grave is protected. After this time anyone can take all stuff.").getInt();
 
         subcat = cat + ".respawnStats";
-        config.addCustomCategoryComment(subcat, "Bypass permission:\n" + RespawnDebuffHandler.BYPASSSTATS);
+        config.addCustomCategoryComment(subcat, "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSSTATS);
 
         RespawnDebuffHandler.hp = config.get(subcat, "hp", 20, "On respawn, respawn with X half hearts.").getInt();
         RespawnDebuffHandler.food = config.get(subcat, "foodlvl", 20, "On respawn, respawn with X half whatevertheyare.").getInt();
 
         subcat = cat + ".RespawnDebuffHandler";
         config.addCustomCategoryComment(subcat,
-                "Bypass permission:\n" + RespawnDebuffHandler.BYPASSPOTION
+                "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSPOTION
                         + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
 
         RespawnDebuffHandler.potionEffects = new ArrayList<PotionEffect>();
@@ -67,14 +67,14 @@ public class ConfigAfterlife extends ModuleConfigBase {
         config.get(subcat, "enableFencePost", true, "Put the skull on a spike.").set(Deathchest.enableFencePost);
 
         subcat = cat + ".respawnStats";
-        config.addCustomCategoryComment(subcat, "Bypass permission:\n" + RespawnDebuffHandler.BYPASSSTATS);
+        config.addCustomCategoryComment(subcat, "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSSTATS);
 
         config.get(subcat, "hp", 20, "On respawn, respawn with X half hearts.").set(RespawnDebuffHandler.hp);
         config.get(subcat, "foodlvl", 20, "On respawn, respawn with X half whatevertheyare.").set(RespawnDebuffHandler.food);
 
         subcat = cat + ".RespawnDebuffHandler";
         config.addCustomCategoryComment(subcat,
-                "Bypass permission:\n" + RespawnDebuffHandler.BYPASSPOTION
+                "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSPOTION
                         + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
 
         ArrayList<String> list = new ArrayList<String>();
@@ -100,14 +100,14 @@ public class ConfigAfterlife extends ModuleConfigBase {
         Deathchest.enableFencePost = config.get(subcat, "enableFencePost", true, "Put the skull on a spike.").getBoolean(true);
 
         subcat = cat + ".respawnStats";
-        config.addCustomCategoryComment(subcat, "Bypass permission:\n" + RespawnDebuffHandler.BYPASSSTATS);
+        config.addCustomCategoryComment(subcat, "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSSTATS);
 
         RespawnDebuffHandler.hp = config.get(subcat, "hp", 20, "On respawn, respawn with X half hearts.").getInt();
         RespawnDebuffHandler.food = config.get(subcat, "foodlvl", 20, "On respawn, respawn with X half whatevertheyare.").getInt();
 
         subcat = cat + ".RespawnDebuffHandler";
         config.addCustomCategoryComment(subcat,
-                "Bypass permission:\n" + RespawnDebuffHandler.BYPASSPOTION
+                "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSPOTION
                         + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
 
         RespawnDebuffHandler.potionEffects = new ArrayList<PotionEffect>();

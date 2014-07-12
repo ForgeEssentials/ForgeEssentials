@@ -40,7 +40,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
             }
             else
             {
-                APIRegistry.wallet.removeFromWallet(amountToSubtract, player.username);
+                APIRegistry.wallet.removeFromWallet(amountToSubtract, player.getPersistentID());
 
                 if (sender != player)
                 {
@@ -69,7 +69,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
             }
             else
             {
-                APIRegistry.wallet.removeFromWallet(amountToSubtract, player.username);
+                APIRegistry.wallet.removeFromWallet(amountToSubtract, player.getPersistentID());
 
                 ChatUtils.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
                 ChatUtils.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");

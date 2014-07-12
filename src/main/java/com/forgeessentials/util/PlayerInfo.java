@@ -10,16 +10,19 @@ import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.AreaSelector.Selection;
+import com.forgeessentials.util.AreaSelector.SelectionHandler;
+import com.forgeessentials.util.AreaSelector.SelectionHandler.ISelectionProvider;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import java.util.*;
 
 @SaveableObject
-public class PlayerInfo {
+public class PlayerInfo implements ISelectionProvider {
     private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
     // -------------------------------------------------------------------------------------------
     // ---------------------------------- Actual Class Starts Now --------------------------------
@@ -28,8 +31,8 @@ public class PlayerInfo {
     @SaveableField()
     public final UUID playerID;
     // wand stuff
-    public int wandID = 0;
-    public int wandDmg = 0;
+    public String wandID;
+    public int wandDmg;
     public boolean wandEnabled = false;
     @SaveableField()
     public WarpPoint home;
@@ -109,7 +112,7 @@ public class PlayerInfo {
         return info;
     }
 
-    public static void discardInfo(String username)
+    public static void discardInfo(UUID username)
     {
         PlayerInfo info = playerInfoMap.remove(username);
         if (info != null)
@@ -211,13 +214,16 @@ public class PlayerInfo {
     // ------------ Selection stuff -----------------
     // ----------------------------------------------
 
-    public Point getPoint1()
+    @Override
+    public Point getPoint1(EntityPlayerMP player)
     {
         return sel1;
     }
 
     public void setPoint1(Point sel1)
     {
+        if (SelectionHandler.selectionProvider != this)return;
+
         this.sel1 = sel1;
 
         if (sel1 != null)
@@ -238,13 +244,16 @@ public class PlayerInfo {
         FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
     }
 
-    public Point getPoint2()
+    @Override
+    public Point getPoint2(EntityPlayerMP player)
     {
         return sel2;
     }
 
     public void setPoint2(Point sel2)
     {
+        if (SelectionHandler.selectionProvider != this)return;
+
         this.sel2 = sel2;
 
         if (sel2 != null)
@@ -265,9 +274,25 @@ public class PlayerInfo {
         FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
     }
 
-    public Selection getSelection()
+    @Override
+    public Selection getSelection(EntityPlayerMP player)
     {
         return selection;
+    }
+
+    public Point getPoint1()
+    {
+        return SelectionHandler.selectionProvider.getPoint1(FunctionHelper.getPlayerForUUID(playerID));
+    }
+
+    public Point getPoint2()
+    {
+        return SelectionHandler.selectionProvider.getPoint2(FunctionHelper.getPlayerForUUID(playerID));
+    }
+
+    public Selection getSelection()
+    {
+        return SelectionHandler.selectionProvider.getSelection(FunctionHelper.getPlayerForUUID(playerID));
     }
 
     // ----------------------------------------------
@@ -306,6 +331,7 @@ public class PlayerInfo {
 
     public void clearSelection()
     {
+        if (SelectionHandler.selectionProvider != this)return;
         selection = null;
         sel1 = null;
         sel2 = null;

@@ -42,7 +42,7 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase {
             }
             else
             {
-                APIRegistry.wallet.addToWallet(amountToAdd, player.username);
+                APIRegistry.wallet.addToWallet(amountToAdd, player.getPersistentID());
 
                 ChatUtils.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to wallet.");
                 ChatUtils.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to your wallet.");

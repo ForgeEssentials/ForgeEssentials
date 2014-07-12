@@ -8,11 +8,10 @@ import net.minecraft.world.MinecraftException;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import java.util.EnumSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 
-public class WorldSaver{
+public class WorldSaver {
     public static String start;
     public static String done;
     public static String failed;
@@ -20,6 +19,11 @@ public class WorldSaver{
     private static boolean isSaving;
 
     private static ConcurrentLinkedQueue<Integer> worlds = new ConcurrentLinkedQueue<Integer>();
+
+    public WorldSaver()
+    {
+        // nthing
+    }
 
     public static void addWorldNeedsSave(World world)
     {
@@ -31,10 +35,7 @@ public class WorldSaver{
         worlds.add(id);
     }
 
-    public WorldSaver()
-    {
-        // nthing
-    }public static boolean isSaving()
+    public static boolean isSaving()
     {
         return isSaving;
     }
@@ -56,9 +57,9 @@ public class WorldSaver{
             {
                 world.saveAllChunks(true, (IProgressUpdate) null);
             }
-            catch (MinecraftException e)
+            catch (MinecraftException e1)
             {
-                OutputHandler.exception(Level.SEVERE, String.format(failed, name), e);
+                OutputHandler.exception(Level.SEVERE, String.format(failed, name), e1);
                 ModuleBackup.msg(String.format(failed, name));
             }
             world.levelSaving = bl;

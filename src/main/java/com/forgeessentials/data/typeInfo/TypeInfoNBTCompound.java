@@ -47,11 +47,11 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
         NBTTagCompound nbt = (NBTTagCompound) obj;
 
         TypeData data;
-        for (NBTBase tag : (Collection<NBTBase>) nbt.getTags())
+        for (NBTBase tag : (Collection<NBTBase>) nbt.getTagList())
         {
             data = getEntryData();
             data.putField(TYPE, tag.getId());
-            data.putField(KEY, tag.getName());
+            data.putField(KEY, tag);
 
             if (tag instanceof NBTTagCompound)
             {
@@ -59,11 +59,11 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
             }
             else if (tag instanceof NBTTagIntArray)
             {
-                data.putField(I_ARRAY, ((NBTTagIntArray) tag).intArray);
+                data.putField(I_ARRAY, ((NBTTagIntArray) tag).func_150302_c());
             }
             else if (tag instanceof NBTTagByteArray)
             {
-                data.putField(B_ARRAY, ((NBTTagByteArray) tag).byteArray);
+                data.putField(B_ARRAY, ((NBTTagByteArray) tag).func_150292_c());
             }
             else
             {
@@ -146,7 +146,7 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
                 nbt.setString(name, (String) dat.getFieldValue(PRIMITIVE));
                 break;
             case 10:
-                nbt.setCompoundTag(name, (NBTTagCompound) dat.getFieldValue(COMPOUND));
+                nbt.setTag(name, (NBTTagCompound) dat.getFieldValue(COMPOUND));
                 break;
             case 11:
                 nbt.setIntArray(name, (int[]) dat.getFieldValue(I_ARRAY));

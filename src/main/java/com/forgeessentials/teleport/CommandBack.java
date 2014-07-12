@@ -14,9 +14,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CommandBack extends ForgeEssentialsCommandBase {
-    public static List justDied = new ArrayList<String>();
+    public static List justDied = new ArrayList<UUID>();
 
     @Override
     public String getCommandName()
@@ -27,11 +28,11 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        if (justDied.contains(sender.username))
+        if (justDied.contains(sender.getPersistentID()))
         {
             if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "fe.teleport.back.ondeath")))
             {
-                PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
+                PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
                 if (info.back != null)
                 {
                     WarpPoint death = info.back;
@@ -43,7 +44,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
                 {
                     OutputHandler.chatError(sender, "You have nowhere to get back to");
                 }
-                justDied.remove(sender.username);
+                justDied.remove(sender.getPersistentID());
                 return;
             }
             else
@@ -53,7 +54,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
         }
         else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "fe.teleport.back.ontp")))
         {
-            PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
+            PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
             if (info.back != null)
             {
                 WarpPoint back = info.back;

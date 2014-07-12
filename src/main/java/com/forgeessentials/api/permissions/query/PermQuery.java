@@ -1,6 +1,6 @@
 package com.forgeessentials.api.permissions.query;
 
-import com.forgeessentials.permission.PermissionChecker;
+import com.forgeessentials.permissions.PermissionChecker;
 
 public abstract class PermQuery {
     public enum PermResult {

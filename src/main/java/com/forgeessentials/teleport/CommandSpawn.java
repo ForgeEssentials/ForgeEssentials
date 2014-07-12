@@ -32,13 +32,13 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
             if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
             {
                 OutputHandler.chatError(sender,
-                        "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
+                        "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                 return;
             }
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
             if (player != null)
             {
-                PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(player);
 
                 PropQueryPlayerZone query = new PropQueryPlayerZone(player, CommandSetSpawn.SPAWN_PROP, zone, true);
                 APIRegistry.perms.getPermissionProp(query);
@@ -78,7 +78,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
             int z = Integer.parseInt(split[3]);
 
             WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, sender.cameraYaw, sender.cameraPitch);
-            PlayerInfo.getPlayerInfo(sender.username).back = new WarpPoint(sender);
+            PlayerInfo.getPlayerInfo(sender.getPersistentID()).back = new WarpPoint(sender);
             TeleportCenter.addToTpQue(spawn, sender);
             ChatUtils.sendMessage(sender, "Teleported to spawn.");
         }
@@ -92,7 +92,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
             if (player != null)
             {
-                PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(player);
 
                 WarpPoint spawn;
                 ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();

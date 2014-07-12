@@ -46,10 +46,11 @@ public class ChatUtils {
      * @param others
      * @return
      */
-    public static IChatComponent colourize(IChatComponent toColour, EnumChatFormatting colour, boolean[] others)
+    public static IChatComponent colourize(IChatComponent toColour, EnumChatFormatting colour)
     {
         ChatStyle style = new ChatStyle().setColor(colour);
         toColour.setChatStyle(style);
+        return toColour;
     }
 
 }

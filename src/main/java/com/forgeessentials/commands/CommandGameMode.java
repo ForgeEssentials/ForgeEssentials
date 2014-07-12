@@ -10,7 +10,7 @@ import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.EnumGameType;
+import net.minecraft.world.WorldSettings;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EnumGameType gm;
+        WorldSettings.GameType gm;
         switch (args.length)
         {
         case 0:
@@ -66,7 +66,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        EnumGameType gm;
+        WorldSettings.GameType gm;
         switch (args.length)
         {
         case 0:
@@ -101,7 +101,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
 
     public void setGameMode(EntityPlayer sender)
     {
-        setGameMode(sender, sender, sender.capabilities.isCreativeMode ? EnumGameType.SURVIVAL : EnumGameType.CREATIVE);
+        setGameMode(sender, sender, sender.capabilities.isCreativeMode ? WorldSettings.GameType.SURVIVAL : WorldSettings.GameType.CREATIVE);
     }
 
     public void setGameMode(ICommandSender sender, String target)
@@ -118,7 +118,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
         }
         if (player != null)
         {
-            setGameMode(sender, target, player.capabilities.isCreativeMode ? EnumGameType.SURVIVAL : EnumGameType.CREATIVE);
+            setGameMode(sender, target, player.capabilities.isCreativeMode ? WorldSettings.GameType.SURVIVAL : WorldSettings.GameType.CREATIVE);
         }
         else
         {
@@ -126,7 +126,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
         }
     }
 
-    public void setGameMode(ICommandSender sender, String target, EnumGameType mode)
+    public void setGameMode(ICommandSender sender, String target, WorldSettings.GameType mode)
     {
         EntityPlayer player;
         try
@@ -148,27 +148,27 @@ public class CommandGameMode extends FEcmdModuleCommands {
         }
     }
 
-    public void setGameMode(ICommandSender sender, EntityPlayer target, EnumGameType mode)
+    public void setGameMode(ICommandSender sender, EntityPlayer target, WorldSettings.GameType mode)
     {
         target.setGameType(mode);
         target.fallDistance = 0.0F;
         String modeName = StatCollector.translateToLocal("gameMode." + mode.getName());
-        OutputHandler.chatConfirmation(sender, String.format("%1$s's gamemode was changed to %2$s.", target.username, modeName));
+        OutputHandler.chatConfirmation(sender, String.format("%1$s's gamemode was changed to %2$s.", target.getCommandSenderName(), modeName));
     }
 
-    private EnumGameType getGameTypeFromString(String string)
+    private WorldSettings.GameType getGameTypeFromString(String string)
     {
-        if (string.equalsIgnoreCase(EnumGameType.SURVIVAL.getName()) || string.equalsIgnoreCase("s") || string.equals("0"))
+        if (string.equalsIgnoreCase(WorldSettings.GameType.SURVIVAL.getName()) || string.equalsIgnoreCase("s") || string.equals("0"))
         {
-            return EnumGameType.SURVIVAL;
+            return WorldSettings.GameType.SURVIVAL;
         }
-        else if (string.equalsIgnoreCase(EnumGameType.CREATIVE.getName()) || string.equalsIgnoreCase("c") || string.equals("1"))
+        else if (string.equalsIgnoreCase(WorldSettings.GameType.CREATIVE.getName()) || string.equalsIgnoreCase("c") || string.equals("1"))
         {
-            return EnumGameType.CREATIVE;
+            return WorldSettings.GameType.CREATIVE;
         }
-        else if (string.equalsIgnoreCase(EnumGameType.ADVENTURE.getName()) || string.equalsIgnoreCase("a") || string.equals("2"))
+        else if (string.equalsIgnoreCase(WorldSettings.GameType.ADVENTURE.getName()) || string.equalsIgnoreCase("a") || string.equals("2"))
         {
-            return EnumGameType.ADVENTURE;
+            return WorldSettings.GameType.ADVENTURE;
         }
         else
         {

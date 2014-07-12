@@ -3,7 +3,6 @@ package com.forgeessentials.commands;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
-import com.forgeessentials.core.misc.FriendlyItemList;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
@@ -65,7 +64,7 @@ public class CommandFindblock extends FEcmdModuleCommands {
     {
         if (args.length == 1)
         {
-            return getListOfStringsFromIterableMatchingLastWord(args, FriendlyItemList.instance().getItemList());
+            return getListOfStringsFromIterableMatchingLastWord(args, );
         }
         else if (args.length == 2)
         {

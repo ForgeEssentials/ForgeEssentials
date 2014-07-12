@@ -6,13 +6,13 @@ import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.network.PacketRollback;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.TaskRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
 import java.sql.SQLException;
@@ -74,7 +74,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
         }
 
 		/* 
-		 * Only 1 arg
+         * Only 1 arg
 		 */
         if (args[0].equalsIgnoreCase("ok"))
         {
@@ -95,7 +95,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             {
                 que.remove(sender);
 
-                PacketDispatcher.sendPacketToPlayer(new PacketRollback(((EntityPlayer) sender).dimension, null).getPayload(), (Player) sender);
+                FunctionHelper.netHandler.sendTo(new PacketRollback.Message(((EntityPlayer) sender).dimension, null), ((EntityPlayerMP) sender));
 
                 OutputHandler.chatConfirmation(sender, "Command aborted");
             }
@@ -214,8 +214,8 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             que.put(sender, sb.toString().trim());
             if (sender instanceof EntityPlayer)
             {
-                PacketDispatcher.sendPacketToPlayer(new PacketRollback(((EntityPlayer) sender).dimension,
-                        ModulePlayerLogger.getBlockChangesWithinParameters(args[1], undo, time, point, rad)).getPayload(), (Player) sender);
+                FunctionHelper.netHandler.sendTo(new PacketRollback.Message(((EntityPlayer) sender).dimension,
+                        ModulePlayerLogger.getBlockChangesWithinParameters(args[1], undo, time, point, rad)), (EntityPlayerMP) sender);
             }
         }
     }

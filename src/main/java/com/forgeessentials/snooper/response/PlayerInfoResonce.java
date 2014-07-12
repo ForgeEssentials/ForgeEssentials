@@ -32,13 +32,13 @@ public class PlayerInfoResonce extends Response {
             return new JSONObject().put(getName(), "This responce needs a username!");
         }
 
-        EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input.getString("username"));
+        EntityPlayerMP player = server.getConfigurationManager().func_152612_a(input.getString("username"));
         if (player == null)
         {
             return new JSONObject().put(getName(), input.getString("username") + " not online!");
         }
 
-        PlayerInfo pi = PlayerInfo.getPlayerInfo(player.username);
+        PlayerInfo pi = PlayerInfo.getPlayerInfo(player.getPersistentID());
         if (pi != null && sendhome)
         {
             if (pi.home != null)
@@ -60,7 +60,7 @@ public class PlayerInfoResonce extends Response {
         {
             if (sendMoney)
             {
-                PlayerData.put("Money", "" + APIRegistry.wallet.getWallet(player.username));
+                PlayerData.put("Money", "" + APIRegistry.wallet.getWallet(player.getPersistentID()));
             }
         }
         catch (Exception e)
@@ -112,8 +112,8 @@ public class PlayerInfoResonce extends Response {
         {
         }
 
-        PlayerData.put("firstJoin", PlayerInfo.getPlayerInfo(player.username).getFirstJoin());
-        PlayerData.put("timePlayed", PlayerInfo.getPlayerInfo(player.username).getTimePlayed());
+        PlayerData.put("firstJoin", PlayerInfo.getPlayerInfo(player.getPersistentID()).getFirstJoin());
+        PlayerData.put("timePlayed", PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed());
 
         return new JSONObject().put(getName(), PlayerData);
 

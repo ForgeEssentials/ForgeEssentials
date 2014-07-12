@@ -41,7 +41,8 @@ public class CommandLocate extends FEcmdModuleCommands {
             else
             {
                 OutputHandler.chatConfirmation(sender,
-                        String.format("%1$s is at %2$d, %3$d, %4$d in dim %5$d with gamemode %6$s", player.username, (int) player.posX, (int) player.posY,
+                        String.format("%1$s is at %2$d, %3$d, %4$d in dim %5$d with gamemode %6$s", player.getCommandSenderName(), (int) player.posX,
+                                (int) player.posY,
                                 (int) player.posZ, player.dimension, player.theItemInWorldManager.getGameType().getName()));
             }
         }

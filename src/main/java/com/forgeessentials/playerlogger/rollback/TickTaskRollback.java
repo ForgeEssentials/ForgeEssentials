@@ -5,7 +5,8 @@ import com.forgeessentials.playerlogger.blockChange;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.tasks.ITickTask;
-import com.forgeessentials.worldcontrol.ConfigWorldControl;
+import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
@@ -26,12 +27,7 @@ public class TickTaskRollback implements ITickTask {
 
     /**
      * @param sender
-     * @param username
-     * @param undo
-     * @param timeBack 0 means forever. Time in hours
-     * @param p        null means no radius. (console)
-     * @param rad      0 means no radius.
-     * @throws SQLException
+     * @param undo@throws SQLException
      */
     public TickTaskRollback(ICommandSender sender, boolean undo, ArrayList<blockChange> changes) throws SQLException
     {
@@ -90,7 +86,7 @@ public class TickTaskRollback implements ITickTask {
                 e.printStackTrace();
             }
 
-            if (isComplete || currentTickChanged >= ConfigWorldControl.blocksPerTick)
+            if (isComplete || currentTickChanged >= 20)
             {
                 // Stop running this tick.
                 changed += currentTickChanged;
@@ -102,6 +98,8 @@ public class TickTaskRollback implements ITickTask {
     public void place() throws SQLException
     {
         String[] block = bc.block.split(":");
+
+        Block blockPlace = GameData.getBlockRegistry().getObjectById(block[0]); //legacy
         world.setBlock(bc.X, bc.Y, bc.Z, Integer.parseInt(block[0]), Integer.parseInt(block[1]), 2);
         if (bc.te != null)
         {
@@ -111,7 +109,7 @@ public class TickTaskRollback implements ITickTask {
                 byte[] bdata = blob.getBytes(1, (int) blob.length());
                 System.out.println(new String(bdata));
                 TileEntity te = TextFormatter.reconstructTE(new String(bdata));
-                world.setBlockTileEntity(bc.X, bc.Y, bc.Z, te);
+                world.setTileEntity(bc.X, bc.Y, bc.Z, te);
             }
             catch (Exception e)
             {
@@ -123,7 +121,7 @@ public class TickTaskRollback implements ITickTask {
 
     public void remove() throws SQLException
     {
-        world.removeBlockTileEntity(bc.X, bc.Y, bc.Z);
+        world.removeTileEntity(bc.X, bc.Y, bc.Z);
         world.setBlock(bc.X, bc.Y, bc.Z, 0);
     }
 

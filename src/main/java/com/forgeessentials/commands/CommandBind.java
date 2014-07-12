@@ -70,24 +70,24 @@ public class CommandBind extends FEcmdModuleCommands {
                 nbt.setString(args[0].toLowerCase(), cmd.toString().trim());
 
                 NBTTagCompound display = is.getTagCompound().getCompoundTag("display");
-                NBTTagList list = display.getTagList("Lore");
+                NBTTagList list = display.getTagList("Lore", 9);
                 if (list.tagCount() != 0)
                 {
                     System.out.println("NOT 0");
                     for (int j = 0; j < list.tagCount(); ++j)
                     {
-                        if (((NBTTagString) list.tagAt(j)).data.startsWith(color + args[0].toLowerCase()))
+                        if (((NBTTagString) list.getCompoundTagAt(j).getString("FEbinding").startsWith(color + args[0].toLowerCase())))
                         {
-                            System.out.println("Macht found");
+                            System.out.println("Match found");
                             list.removeTag(j);
                         }
                     }
                 }
-                list.appendTag(new NBTTagString("list", color + args[0].toLowerCase() + "> " + cmd));
+                list.appendTag(new NBTTagString(color + args[0].toLowerCase() + "> " + cmd));
                 display.setTag("Lore", list);
 
-                is.getTagCompound().setCompoundTag("display", display);
-                is.getTagCompound().setCompoundTag("FEbinding", nbt);
+                is.getTagCompound().setTag("display", display);
+                is.getTagCompound().setTag("FEbinding", nbt);
             }
             OutputHandler.chatConfirmation(sender, "Command bound to object.");
         }

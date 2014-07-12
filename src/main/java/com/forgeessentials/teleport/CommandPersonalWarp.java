@@ -43,12 +43,12 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        HashMap<String, PWarp> map = TeleportDataManager.pwMap.get(sender.username);
+        HashMap<String, PWarp> map = TeleportDataManager.pwMap.get(sender.getPersistentID());
 
         if (map == null)
         {
             map = new HashMap<String, PWarp>();
-            TeleportDataManager.pwMap.put(sender.username, map);
+            TeleportDataManager.pwMap.put(sender.getPersistentID().toString(), map);
         }
 
         if (args.length == 0)
@@ -63,9 +63,9 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
                 if (map.containsKey(args[1]))
                 {
                     PWarp warp = map.get(args[1]);
-                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.username);
+                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
                     playerInfo.back = new WarpPoint(sender);
-                    CommandBack.justDied.remove(sender.username);
+                    CommandBack.justDied.remove(sender.getPersistentID());
                     TeleportCenter.addToTpQue(warp.getPoint(), sender);
                 }
                 else
@@ -81,12 +81,12 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
                     APIRegistry.perms.getPermissionProp(prop);
                     if (!prop.hasValue() || prop.getNumberValue() == -1)
                     {
-                        map.put(args[1], new PWarp(sender.username, args[1], new WarpPoint(sender)));
+                        map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
                         OutputHandler.chatConfirmation(sender, "Personal warp sucessfully added.");
                     }
                     else if (map.size() < prop.getNumberValue())
                     {
-                        map.put(args[1], new PWarp(sender.username, args[1], new WarpPoint(sender)));
+                        map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
                         OutputHandler.chatConfirmation(sender, "Personal warp sucessfully added.");
                     }
                     else
@@ -127,11 +127,11 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
                     }
                     else if (args[1].equalsIgnoreCase("me"))
                     {
-                        target = "p:" + sender.username;
+                        target = "p:" + sender.getCommandSenderName();
                     }
                     else
                     {
-                        target = "p:" + FunctionHelper.getPlayerForName(sender, args[1]).username;
+                        target = "p:" + FunctionHelper.getPlayerForName(sender, args[1]).getCommandSenderName();
                     }
 
                     if (args.length == 2)
@@ -151,8 +151,8 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
                 OutputHandler.chatConfirmation(sender, String.format("The current limit is %s.", getLimit(sender)));
             }
         }
-        TeleportDataManager.pwMap.put(sender.username, map);
-        TeleportDataManager.savePWarps(sender.username);
+        TeleportDataManager.pwMap.put(sender.getPersistentID().toString(), map);
+        TeleportDataManager.savePWarps(sender.getPersistentID().toString());
     }
 
     private String getLimit(EntityPlayer sender)

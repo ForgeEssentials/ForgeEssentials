@@ -8,8 +8,11 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.util.EnumChatFormatting;
 
 public class CommandWand extends ForgeEssentialsCommandBase {
@@ -25,20 +28,20 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     {
         boolean allowed = checkCommandPerm(sender);
 
-        PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
-        int currentID = sender.getCurrentEquippedItem() == null ? 0 : sender.getCurrentEquippedItem().itemID;
+        PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
+        Item currentID = sender.getCurrentEquippedItem() == null ? Item.getItemFromBlock(Blocks.air) : sender.getCurrentEquippedItem().getItem();
         int currentDmg = 0;
 
-        if (currentID != 0 && sender.getCurrentEquippedItem().getHasSubtypes())
+        if (currentID != FunctionHelper.AIR && sender.getCurrentEquippedItem().getHasSubtypes())
         {
             currentDmg = sender.getCurrentEquippedItem().getItemDamage();
         }
 
-        String currentName = currentID == 0 ? "your fists" : sender.getCurrentEquippedItem().getDisplayName();
+        String currentName = currentID == FunctionHelper.AIR ? "your fists" : sender.getCurrentEquippedItem().getDisplayName();
         String wandName = "";
         if (info.wandEnabled)
         {
-            if (sender.getCurrentEquippedItem() == null || info.wandID == 0)
+            if (sender.getCurrentEquippedItem() == null || info.wandID == FunctionHelper.AIR.getUnlocalizedName())
             {
                 wandName = "your fists";
             }
@@ -55,7 +58,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
                 if (allowed)
                 {
                     info.wandEnabled = true;
-                    info.wandID = currentID;
+                    info.wandID = currentID.getUnlocalizedName();
                     info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
                     OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
                     return;
@@ -77,10 +80,10 @@ public class CommandWand extends ForgeEssentialsCommandBase {
                 if (allowed)
                 {
                     int[] parsed = FunctionHelper.parseIdAndMetaFromString(args[0], false);
-                    currentID = parsed[0];
+                    currentID = ((Item)GameData.getItemRegistry().getObject(parsed[0]));
                     currentDmg = parsed[1];
                     info.wandEnabled = true;
-                    info.wandID = currentID;
+                    info.wandID = currentID.getUnlocalizedName();
                     info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
                     OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
                 }
@@ -104,7 +107,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
                 if (allowed)
                 {
                     info.wandEnabled = true;
-                    info.wandID = currentID;
+                    info.wandID = currentID.getUnlocalizedName();
                     info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
                     OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
                     return;
@@ -121,7 +124,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
+        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
         if (info.wandEnabled)
         {
             return true;

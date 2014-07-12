@@ -38,11 +38,12 @@ public class CommandPay extends ForgeEssentialsCommandBase {
             else
             {
                 int amount = parseIntWithMin(sender, args[1], 0);
-                if (APIRegistry.wallet.getWallet(sender.username) >= amount)
+                if (APIRegistry.wallet.getWallet(sender.getPersistentID()) >= amount)
                 {
-                    APIRegistry.wallet.removeFromWallet(amount, sender.username);
-                    APIRegistry.wallet.addToWallet(amount, player.username);
-                    OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + APIRegistry.wallet.currency(amount));
+                    APIRegistry.wallet.removeFromWallet(amount, sender.getPersistentID());
+                    APIRegistry.wallet.addToWallet(amount, player.getPersistentID());
+                    OutputHandler.chatConfirmation(sender,
+                            "You have payed " + player.getCommandSenderName() + " " + amount + " " + APIRegistry.wallet.currency(amount));
                     OutputHandler.chatConfirmation(player,
                             "You have been payed " + amount + " " + APIRegistry.wallet.currency(amount) + " by " + sender.getCommandSenderName());
                 }
@@ -75,8 +76,9 @@ public class CommandPay extends ForgeEssentialsCommandBase {
             else
             {
                 int amount = parseIntWithMin(sender, args[1], 0);
-                APIRegistry.wallet.addToWallet(amount, player.username);
-                OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + APIRegistry.wallet.currency(amount));
+                APIRegistry.wallet.addToWallet(amount, player.getPersistentID());
+                OutputHandler
+                        .chatConfirmation(sender, "You have payed " + player.getCommandSenderName() + " " + amount + " " + APIRegistry.wallet.currency(amount));
                 OutputHandler.chatConfirmation(player,
                         "You have been payed " + amount + " " + APIRegistry.wallet.currency(amount) + " by " + sender.getCommandSenderName());
             }

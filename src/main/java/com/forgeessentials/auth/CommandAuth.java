@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CommandAuth extends ForgeEssentialsCommandBase {
     private static String[] playerCommands = new String[] { "help", "login", "register", "changepass", "kick", "setpass", "unregister" };
@@ -78,10 +79,10 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             // parse login
             if (args[0].equalsIgnoreCase("login"))
             {
-                PlayerPassData data = PlayerPassData.getData(sender.username);
+                PlayerPassData data = PlayerPassData.getData(sender.getPersistentID());
                 if (data == null)
                 {
-                    OutputHandler.chatError(sender, String.format("Player %s is not registered!", sender.username));
+                    OutputHandler.chatError(sender, String.format("Player %s is not registered!", sender.getPersistentID()));
                     return;
                 }
 
@@ -90,7 +91,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
                 // login worked
                 if (data.password.equals(pass))
                 {
-                    ModuleAuth.unLogged.remove(sender.username);
+                    ModuleAuth.unLogged.remove(sender.getPersistentID());
                     OutputHandler.chatConfirmation(sender, "Login successful.");
                 }
                 else
@@ -104,9 +105,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             // parse register
             else if (args[0].equalsIgnoreCase("register"))
             {
-                if (PlayerPassData.getData(sender.username) != null)
+                if (PlayerPassData.getData(sender.getPersistentID()) != null)
                 {
-                    OutputHandler.chatError(sender, String.format("Player %s is already registered!", sender.username));
+                    OutputHandler.chatError(sender, String.format("Player %s is already registered!", sender.getPersistentID()));
                     return;
                 }
 
@@ -117,30 +118,30 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
                 }
 
                 String pass = ModuleAuth.encrypt(args[1]);
-                PlayerPassData.registerData(sender.username, pass);
-                ModuleAuth.unRegistered.remove(sender.username);
+                PlayerPassData.registerData(sender.getPersistentID(), pass);
+                ModuleAuth.unRegistered.remove(sender.getPersistentID());
                 OutputHandler.chatConfirmation(sender, "Registration successful.");
                 return;
             }
 
             // stop if unlogged.
-            if (ModuleAuth.unLogged.contains(sender.username))
+            if (ModuleAuth.unLogged.contains(sender.getPersistentID()))
             {
                 OutputHandler.chatError(sender, "Login required. Try /auth help.");
                 return;
             }
-            else if (ModuleAuth.unRegistered.contains(sender.username))
+            else if (ModuleAuth.unRegistered.contains(sender.getPersistentID()))
             {
                 OutputHandler.chatError(sender, "Registration required. Try /auth help.");
                 return;
             }
 
             // check for players.. all the rest of these should be greated than 1.
-            String name = args[1];
+            UUID name = FunctionHelper.getPlayerID(args[1]);
             boolean isLogged = true;
 
             // check if the player is logged.
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
+            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[1]);
             if (player == null)
             {
                 OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -204,12 +205,12 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         // 3 args? must be a comtmand - player - pass
         else if (args.length == 3)
         {
-            if (ModuleAuth.unLogged.contains(sender.username))
+            if (ModuleAuth.unLogged.contains(sender.getPersistentID()))
             {
                 OutputHandler.chatError(sender, "Login required. Try /auth help.");
                 return;
             }
-            else if (ModuleAuth.unRegistered.contains(sender.username))
+            else if (ModuleAuth.unRegistered.contains(sender.getPersistentID()))
             {
                 OutputHandler.chatError(sender, "Registration required. Try /auth help.");
                 return;
@@ -218,7 +219,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             // parse changePass
             if (args[0].equalsIgnoreCase("changepass"))
             {
-                PlayerPassData data = PlayerPassData.getData(sender.username);
+                PlayerPassData data = PlayerPassData.getData(sender.getPersistentID());
                 String oldpass = ModuleAuth.encrypt(args[1]);
                 String newPass = ModuleAuth.encrypt(args[2]);
 
@@ -243,9 +244,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             }
 
             // check for players.. all the rest of these should be greated than 1.
-            String name = args[1];
+            UUID name = FunctionHelper.getPlayerID(args[1]);
             // check if the player is logged.
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
+            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[1]);
             if (player == null)
             {
                 OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -301,11 +302,11 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         }
 
         // check for players.. all the rest of these should be greated than 1.
-        String name = args[1];
+        UUID name = FunctionHelper.getPlayerID(args[1]);
         boolean isLogged = true;
 
         // check if the player is logged.
-        EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
+        EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[1]);
         if (player == null)
         {
             ChatUtils.sendMessage(sender, "A player of that name is not on the server. Doing the action anyways.");

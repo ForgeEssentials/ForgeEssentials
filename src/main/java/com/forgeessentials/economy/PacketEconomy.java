@@ -1,60 +1,43 @@
 package com.forgeessentials.economy;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.world.WorldServer;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.util.UUID;
 
-public class PacketEconomy extends ForgeEssentialsPacket {
+public class PacketEconomy implements IMessageHandler<PacketEconomy.Message, IMessage> {
 
-    private Packet250CustomPayload packet;
-
-    public PacketEconomy(int amount)
+    @Override public IMessage onMessage(PacketEconomy.Message message, MessageContext ctx)
     {
-        packet = new Packet250CustomPayload();
+        return new Message(ctx.getServerHandler().playerEntity.getPersistentID());
+    }
 
-        ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
-        DataOutputStream stream = new DataOutputStream(streambyte);
+    public static class Message implements IMessage {
 
-        try
+        private UUID player;
+
+        public Message()
         {
-            stream.write(3);
-
-            stream.write(amount);
-
-            stream.close();
-            streambyte.close();
-
-            packet.channel = FECHANNEL;
-            packet.data = streambyte.toByteArray();
-            packet.length = packet.data.length;
         }
 
-        catch (Exception e)
+        public Message(UUID player)
         {
-            OutputHandler.felog.info("Error creating packet >> " + this.getClass());
+            this.player = player;
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf)
+        {
+        }
+
+        @Override public void toBytes(ByteBuf buf)
+        {
+            buf.writeInt(APIRegistry.wallet.getWallet(player));
+
         }
     }
-
-    public static void readServer(DataInputStream stream, WorldServer world,
-            EntityPlayer player)
-    {
-        PacketEconomy packet = new PacketEconomy(APIRegistry.wallet.getWallet(player.username));
-        PacketDispatcher.sendPacketToPlayer(packet.getPayload(), (Player) player);
-    }
-
-    @Override
-    public Packet250CustomPayload getPayload()
-    {
-
-        return packet;
-    }
-
 }
+

@@ -60,7 +60,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
             if (player != null)
             {
-                OutputHandler.chatConfirmation(sender, String.format("Capabilities for %s:", player.username));
+                OutputHandler.chatConfirmation(sender, String.format("Capabilities for %s:", player.getCommandSenderName()));
                 ChatUtils.sendMessage(sender, names.get(0) + " = " + player.capabilities.disableDamage);
                 ChatUtils.sendMessage(sender, names.get(1) + " = " + player.capabilities.isFlying);
                 ChatUtils.sendMessage(sender, names.get(2) + " = " + player.capabilities.allowFlying);
@@ -78,7 +78,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
             {
                 if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
                 {
-                    OutputHandler.chatError(sender, "You don't have permission for that.");
+                    OutputHandler.chatError(sender, "You don't have permissions for that.");
                     return;
                 }
             }
@@ -87,23 +87,23 @@ public class CommandCapabilities extends FEcmdModuleCommands {
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
                 {
-                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
+                    ChatUtils.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(1)))
                 {
-                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(1) + " = " + player.capabilities.isFlying);
+                    ChatUtils.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(1) + " = " + player.capabilities.isFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(2)))
                 {
-                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
+                    ChatUtils.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(3)))
                 {
-                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
+                    ChatUtils.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(4)))
                 {
-                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
+                    ChatUtils.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
                 }
                 else
                 {
@@ -118,7 +118,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
             {
                 if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
                 {
-                    OutputHandler.chatError(sender, "You don't have permission for that.");
+                    OutputHandler.chatError(sender, "You don't have permissions for that.");
                     return;
                 }
             }

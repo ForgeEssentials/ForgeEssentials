@@ -1,80 +1,55 @@
 package com.forgeessentials.questioner;
 
-import cpw.mods.fml.common.IScheduledTickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class QuestionCenter {
-    private static Map<String, QuestionData> queue = new HashMap<String, QuestionData>();
-    private static ArrayList<String> removeQueue = new ArrayList<String>();
-    private static ArrayList<String> playerQueue = new ArrayList<String>();
+    private static Map<UUID, QuestionData> queue = new HashMap<UUID, QuestionData>();
+    private static ArrayList<UUID> removeQueue = new ArrayList<UUID>();
+    private static ArrayList<UUID> playerQueue = new ArrayList<UUID>();
 
     public static int defaultTime = 120;
     public static int defaultInterval = 30;
 
     public static void addToQuestionQue(QuestionData question)
     {
-        queue.put(question.getTarget().username, question);
+        queue.put(question.getTarget().getPersistentID(), question);
     }
 
     public static void abort(QuestionData questionData)
     {
-        removeQueue.add(questionData.getTarget().username);
+        removeQueue.add(questionData.getTarget().getPersistentID());
     }
 
     public static void questionDone(QuestionData questionData)
     {
-        removeQueue.add(questionData.getTarget().username);
+        removeQueue.add(questionData.getTarget().getPersistentID());
     }
-
-
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData)
+    @SubscribeEvent
+    public void tickStart(TickEvent.ServerTickEvent e)
     {
         for (QuestionData data : queue.values())
         {
             data.count();
         }
-        for (String name : removeQueue)
+        for (UUID name : removeQueue)
         {
             queue.remove(name);
             playerQueue.remove(name);
         }
         removeQueue.clear();
-    }
 
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData)
-    {
-        // Not needed here
-    }
-
-    @Override
-    public EnumSet<TickType> ticks()
-    {
-        return EnumSet.of(TickType.SERVER);
-    }
-
-    @Override
-    public String getLabel()
-    {
-        return "QuestionCenter";
-    }
-
-    @Override
-    public int nextTickSpacing()
-    {
-        return 20;
     }
 
     public static void processAnswer(EntityPlayer player, boolean affirmative)
     {
-        if (playerQueue.contains(player.username))
+        if (playerQueue.contains(player.getPersistentID()))
         {
             for (Object dataObject : queue.values())
             {

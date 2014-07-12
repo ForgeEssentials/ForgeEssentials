@@ -5,7 +5,6 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
@@ -38,15 +37,15 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
 
         if (args[0].equalsIgnoreCase("accept"))
         {
-            for (TPAdata data : TickHandlerTP.tpaList)
+            for (TPAdata data : TeleportModule.tpaList)
             {
                 if (data.tphere)
                 {
-                    if (data.receiver.username.equalsIgnoreCase(sender.username))
+                    if (data.receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()))
                     {
                         ChatUtils.sendMessage(data.sender, "Teleport request accepted.");
                         ChatUtils.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
-                        TickHandlerTP.tpaListToRemove.add(data);
+                        TeleportModule.tpaListToRemove.add(data);
                         TeleportCenter.addToTpQue(new WarpPoint(data.sender), data.receiver);
                         return;
                     }
@@ -57,15 +56,15 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
 
         if (args[0].equalsIgnoreCase("decline"))
         {
-            for (TPAdata data : TickHandlerTP.tpaList)
+            for (TPAdata data : TeleportModule.tpaList)
             {
                 if (data.tphere)
                 {
-                    if (data.receiver.username.equalsIgnoreCase(sender.username))
+                    if (data.receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()))
                     {
                         ChatUtils.sendMessage(data.sender, "Teleport request declined.");
                         ChatUtils.sendMessage(data.receiver, "Teleport request declined by other party.");
-                        TickHandlerTP.tpaListToRemove.add(data);
+                        TeleportModule.tpaListToRemove.add(data);
                         return;
                     }
                 }
@@ -76,7 +75,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
         if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".sendrequest")))
         {
             OutputHandler.chatError(sender,
-                    "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
+                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
             return;
         }
 
@@ -87,11 +86,12 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
         }
         else
         {
-            TickHandlerTP.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
+            TeleportModule.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
 
-            ChatUtils.sendMessage(sender, String.format("Teleport request sent to %s", receiver.username));
+            ChatUtils.sendMessage(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
             ChatUtils.sendMessage(receiver,
-                    String.format("Received teleport request from %s. Enter '/tpahere accept' to accept, '/tpahere decline' to decline.", sender.username));
+                    String.format("Received teleport request from %s. Enter '/tpahere accept' to accept, '/tpahere decline' to decline.",
+                            sender.getCommandSenderName()));
         }
     }
 

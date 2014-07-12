@@ -1,66 +1,68 @@
 package com.forgeessentials.playerlogger.network;
 
 import com.forgeessentials.playerlogger.blockChange;
-import com.forgeessentials.util.OutputHandler;
-import net.minecraft.network.packet.Packet250CustomPayload;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
-public class PacketRollback extends ForgeEssentialsPacket {
-    public static final byte packetID = 2;
+public class PacketRollback implements IMessageHandler<PacketRollback.Message, IMessage> {
 
-    private Packet250CustomPayload packet = new Packet250CustomPayload();
-
-    public PacketRollback(int dim, ArrayList<blockChange> changes)
+    @Override
+    public IMessage onMessage(PacketRollback.Message message, MessageContext ctx)
     {
-        ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
-        DataOutputStream stream = new DataOutputStream(streambyte);
+        return null;
+    }
 
-        try
+    public static class Message implements IMessage {
+        private int dim;
+        private List<blockChange> changes;
+
+        public Message(int dim, ArrayList<blockChange> changes)
         {
-            stream.write(packetID);
+            this.dim = dim;
+            this.changes = changes;
+        }
+
+        public Message()
+        {
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf)
+        {
+
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
             if (changes == null)
             {
-                stream.writeByte(0);
+                buf.writeByte(0);
             }
             else
             {
-                stream.writeByte(1);
-                stream.writeInt(changes.size());
+                buf.writeByte(1);
+                buf.writeInt(changes.size());
                 System.out.println("Sending " + changes.size());
                 for (blockChange bc : changes)
                 {
                     if (bc.dim == dim)
                     {
                         System.out.println(bc.toString());
-                        stream.writeInt(bc.X);
-                        stream.writeInt(bc.Y);
-                        stream.writeInt(bc.Z);
+                        buf.writeInt(bc.X);
+                        buf.writeInt(bc.Y);
+                        buf.writeInt(bc.Z);
                         // True if the change was a placement.
-                        stream.writeInt(bc.type);
+                        buf.writeInt(bc.type);
                     }
                 }
             }
 
-            packet.channel = FECHANNEL;
-            packet.data = streambyte.toByteArray();
-            packet.length = packet.data.length;
-
-            stream.close();
-            streambyte.close();
         }
-        catch (Exception e)
-        {
-            OutputHandler.felog.info("Error creating packet >> " + this.getClass());
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public Packet250CustomPayload getPayload()
-    {
-        return packet;
     }
 }

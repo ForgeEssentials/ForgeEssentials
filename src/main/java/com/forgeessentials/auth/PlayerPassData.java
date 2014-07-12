@@ -21,9 +21,9 @@ public class PlayerPassData {
     @SaveableField
     public String password;
 
-    public PlayerPassData(String username, String password)
+    public PlayerPassData(UUID username, String password)
     {
-        this.username = username;
+        this.username = username.toString();
         this.password = password;
     }
 
@@ -33,13 +33,13 @@ public class PlayerPassData {
      * @param username
      * @return
      */
-    public static PlayerPassData getData(String username)
+    public static PlayerPassData getData(UUID username)
     {
         PlayerPassData data = datas.get(username);
 
         if (data == null)
         {
-            data = (PlayerPassData) DataStorageManager.getReccomendedDriver().loadObject(container, username);
+            data = (PlayerPassData) DataStorageManager.getReccomendedDriver().loadObject(container, username.toString());
         }
 
         return data;
@@ -57,7 +57,7 @@ public class PlayerPassData {
         data.save();
         if (datas.get(data.username) != null)
         {
-            datas.put(data.username, data);
+            datas.put(UUID.fromString(data.username), data);
         }
     }
 
@@ -86,7 +86,7 @@ public class PlayerPassData {
     public static void deleteData(UUID username)
     {
         PlayerPassData data = datas.remove(username);
-        DataStorageManager.getReccomendedDriver().deleteObject(container, username);
+        DataStorageManager.getReccomendedDriver().deleteObject(container, username.toString());
         if (data != null)
         {
             ModuleAuth.unRegistered.add(username);
@@ -99,7 +99,7 @@ public class PlayerPassData {
         String username = data.getUniqueKey();
         String pass = (String) data.getFieldValue("password");
 
-        return new PlayerPassData(username, pass);
+        return new PlayerPassData(UUID.fromString(username), pass);
     }
 
     public void save()

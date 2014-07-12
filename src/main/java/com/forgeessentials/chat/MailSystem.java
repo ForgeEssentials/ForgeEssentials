@@ -4,7 +4,6 @@ import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.PlayerUtils;
 import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -21,7 +20,7 @@ public class MailSystem {
         map.put(mail.getReceiver(), mail);
         DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(Mail.class), mail);
 
-        EntityPlayer player = FunctionHelper.getPlayerForUUID(PlayerUtils.getUUID(mail.getReceiver()));
+        EntityPlayer player = FunctionHelper.getPlayerForUUID(mail.getReceiver());
 
         if (player != null)
         {
@@ -34,7 +33,7 @@ public class MailSystem {
         for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(new ClassContainer(Mail.class)))
         {
             Mail mail = (Mail) obj;
-            map.put(mail.getReceiver()., mail);
+            map.put(mail.getReceiver(), mail);
         }
     }
 

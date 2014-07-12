@@ -5,7 +5,6 @@ import com.forgeessentials.api.permissions.query.PermQuery;
 import com.forgeessentials.api.permissions.query.PermQueryBlanketSpot;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
-import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -15,6 +14,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -235,7 +235,7 @@ public class EventHandler {
 
         if (!result)
         {
-            String name = UnfriendlyItemList.getName(stack.itemID);
+            String name = stack.getUnlocalizedName().split(":")[1];
             name = ModuleProtection.PERM_ITEM_USE + "." + name;
             name = name + "." + stack.getItemDamage();
 
@@ -368,13 +368,18 @@ public class EventHandler {
             String[] split = element.split(":");
             int id = Integer.parseInt(split[0]);
             int meta = Integer.parseInt(split[1]);
-            ItemStack is = new ItemStack(id, 0, meta);
+            ItemStack is = new ItemStack(element, 0, meta);
 
             if (e.entityPlayer.inventory.hasItemStack(is))
             {
                 PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems().add(is);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void manageCrafting(PlayerEvent.ItemCraftedEvent e)
+    {
     }
 
 }

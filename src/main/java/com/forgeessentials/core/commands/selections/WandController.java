@@ -6,12 +6,17 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.util.AreaSelector.Point;
+import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class WandController {
@@ -32,16 +37,16 @@ public class WandController {
 
         // get info now rather than later
         EntityPlayer player = event.entityPlayer;
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
+        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
 
-        int id = player.getCurrentEquippedItem() == null ? 0 : player.getCurrentEquippedItem().itemID;
+        Item id = player.getCurrentEquippedItem().getItem();
         int damage = 0;
-        if (id != 0 && player.getCurrentEquippedItem().getHasSubtypes())
+        if (id.getUnlocalizedName() != Blocks.air.getUnlocalizedName() && player.getCurrentEquippedItem().getHasSubtypes())
         {
             damage = player.getCurrentEquippedItem().getItemDamage();
         }
 
-        if (id != info.wandID || !info.wandEnabled || damage != info.wandDmg)
+        if (id.getUnlocalizedName() != info.wandID || !info.wandEnabled || damage != info.wandDmg)
         {
             return; // wand does not activate
         }
@@ -51,7 +56,7 @@ public class WandController {
         if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, "ForgeEssentials.CoreCommands.select.pos", point)))
         {
             OutputHandler.chatError(player,
-                    "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
+                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
             return;
         }
 
@@ -59,14 +64,16 @@ public class WandController {
         if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
         {
             info.setPoint1(point);
-            player.addChatMessage(EnumChatFormatting.DARK_PURPLE + "Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
+            IChatComponent format = ChatUtils.createFromText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
+            player.addChatMessage(ChatUtils.colourize(format, EnumChatFormatting.DARK_PURPLE));
             event.setCanceled(true);
         }
         // right Click
         else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
         {
             info.setPoint2(point);
-            player.addChatMessage(EnumChatFormatting.DARK_PURPLE + "Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
+            IChatComponent format = ChatUtils.createFromText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
+            player.addChatMessage(ChatUtils.colourize(format, EnumChatFormatting.DARK_PURPLE));
             event.setCanceled(true);
         }
     }

@@ -1,36 +1,44 @@
 package com.forgeessentials.client.network;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.multiplayer.WorldClient;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.world.WorldServer;
-
-import java.io.DataInputStream;
-import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
-public class C1PacketPlayerLogger extends ForgeEssentialsPacketClient {
-    public static final byte packetID = 1;
+public class C1PacketPlayerLogger implements IMessageHandler<C1PacketPlayerLogger.Message, IMessage> {
 
-    private Packet250CustomPayload packet;
-
-    @SideOnly(Side.CLIENT)
-    public static void readClient(DataInputStream stream, WorldClient world, EntityPlayer player) throws IOException
+    @Override public IMessage onMessage(C1PacketPlayerLogger.Message message, MessageContext ctx)
     {
-        ForgeEssentialsClient.getInfo().playerLogger = stream.readBoolean();
+        return null;
     }
 
-    public static void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException
+    public static class Message implements IMessage
     {
-        // should never be received here.
-    }
+        private EntityPlayer player;
 
-    @Override
-    public Packet250CustomPayload getPayload()
-    {
-        return packet;
+        public Message()
+        {
+        }
+
+        public Message(EntityPlayer player)
+        {
+            this.player = player;
+        }
+
+        @Override public void fromBytes(ByteBuf buf)
+        {
+            ForgeEssentialsClient.getInfo().playerLogger = buf.readBoolean();
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
+
+        }
     }
 }

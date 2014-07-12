@@ -27,7 +27,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
+        PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
         info.clearSelection();
 
         OutputHandler.chatConfirmation(sender, "Selection cleared.");

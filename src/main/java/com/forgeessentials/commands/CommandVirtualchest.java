@@ -7,7 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
-import net.minecraft.network.packet.Packet100OpenWindow;
+import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.common.config.Configuration;
 
 /**
@@ -47,10 +47,10 @@ public class CommandVirtualchest extends FEcmdModuleCommands {
         {
             player.closeScreen();
         }
-        player.incrementWindowID();
+        player.getNextWindowId();
 
         VirtualChest chest = new VirtualChest(player);
-        player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, name, size, true));
+        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, name, size, true));
         player.openContainer = new ContainerChest(player.inventory, chest);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addCraftingToCrafters(player);

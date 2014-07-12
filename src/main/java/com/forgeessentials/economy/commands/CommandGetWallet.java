@@ -22,7 +22,7 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase {
     {
         if (args.length == 1)
         {
-            EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+            EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(args[0]);
 
             if (player == null)
             {
@@ -30,7 +30,7 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase {
             }
             else
             {
-                ChatUtils.sendMessage(sender, player.username + "'s wallet contains:" + APIRegistry.wallet.getMoneyString(player.username));
+                ChatUtils.sendMessage(sender, player.getCommandSenderName() + "'s wallet contains:" + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
             }
         }
         else

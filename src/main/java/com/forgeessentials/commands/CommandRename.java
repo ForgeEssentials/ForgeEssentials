@@ -41,7 +41,7 @@ public class CommandRename extends FEcmdModuleCommands {
                 {
                     sb.append(arg + " ");
                 }
-                is.setItemName(sb.toString().trim());
+                is.setStackDisplayName(sb.toString().trim());
             }
         }
     }

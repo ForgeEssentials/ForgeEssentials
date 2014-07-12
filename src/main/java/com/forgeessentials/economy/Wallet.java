@@ -9,20 +9,19 @@ import net.minecraft.entity.player.EntityPlayer;
 
 @SaveableObject
 public class Wallet {
+    @SaveableField
+    public int amount;
     @UniqueLoadingKey
     @SaveableField
     private String username;
 
-    @SaveableField
-    public int amount;
-
     public Wallet(EntityPlayer player, int startAmount)
     {
-        if (player.getEntityData().hasKey("Economy-" + player.username))
+        if (player.getEntityData().hasKey("FE-Economy"))
         {
-            startAmount = player.getEntityData().getInteger("Economy-" + player.username);
+            startAmount = player.getEntityData().getInteger("FE-Economy");
         }
-        username = player.username;
+        username = player.getPersistentID().toString();
         amount = startAmount;
     }
 

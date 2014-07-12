@@ -12,7 +12,7 @@ public interface IGroup {
      *
      * @param player player to add
      */
-    void addPlayerToGroup(EntityPlayer player);
+    void addPlayer(UUID playerID);
  
     /**
      * Remove an EntityPlayer from the group
@@ -20,7 +20,7 @@ public interface IGroup {
      * @param player player to remove
      * @return if the player was in the group
      */
-    boolean removePlayerFromGroup(EntityPlayer player);
+    boolean removePlayer(UUID playerID);
  
     /**
      * Get all players in the group
@@ -35,7 +35,7 @@ public interface IGroup {
      * @param player player to check
      * @return if the player was in the group
      */
-    boolean isPlayerInGroup(EntityPlayer player);
+    boolean isMember(UUID playerID);
     
     /**
      * Get the parent of the group
@@ -48,8 +48,9 @@ public interface IGroup {
      * Set the parent of the group
      * 
      * @param parent the parent group
+     * @return 
      */
-    void setParent(IGroup parent);
+    IGroup setParent(IGroup parent);
  
     /**
      * Get the group name

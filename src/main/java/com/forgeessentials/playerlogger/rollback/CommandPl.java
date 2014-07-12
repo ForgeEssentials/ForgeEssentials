@@ -4,11 +4,11 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.playerlogger.network.PacketPlayerLogger;
 import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +61,7 @@ public class CommandPl extends ForgeEssentialsCommandBase {
             sender.getEntityData().setBoolean("lb", false);
         }
 
-        PacketDispatcher.sendPacketToPlayer(new PacketPlayerLogger(sender).getPayload(), (Player) sender);
+        FunctionHelper.netHandler.sendTo(new PacketPlayerLogger.Message(sender), (EntityPlayerMP)sender);
     }
 
     @Override

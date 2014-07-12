@@ -4,6 +4,7 @@ import com.forgeessentials.util.AreaSelector.Point;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.forgeessentials.util.tasks.TaskRegistry;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class TickTaskBlockFinder implements ITickTask {
     World world;
     EntityPlayer player;
-    int id;
+    String id;
     int meta;
     int targetRange;
     int targetAmount;
@@ -37,21 +38,21 @@ public class TickTaskBlockFinder implements ITickTask {
 
     ArrayList<Point> results = new ArrayList<Point>();
 
-    public TickTaskBlockFinder(EntityPlayer player, int[] id, int range, int amount, int speed)
+    public TickTaskBlockFinder(EntityPlayer player, String id, int meta, int range, int amount, int speed)
     {
         this.player = player;
         this.world = player.worldObj;
-        this.id = id[0];
-        this.meta = id[1];
+        this.id = id;
+        this.meta = meta;
         this.targetRange = range;
         this.targetAmount = amount;
         this.speed = speed;
-        this.stack = new ItemStack(id[0], id[1], 1);
+        this.stack = new ItemStack(GameData.getBlockRegistry().getObject(id), 1, meta);
         this.centerX = (int) player.posX;
         this.centerZ = (int) player.posZ;
         if (stack == null)
         {
-            msg("Error. " + id[0] + ":" + id[1] + " unkown.");
+            msg("Error. " + id + ":" + meta + " unkown.");
         }
         else
         {
@@ -72,7 +73,8 @@ public class TickTaskBlockFinder implements ITickTask {
             int y = world.getActualHeight();
             while (!isComplete() && y >= 0)
             {
-                if (world.getBlockId(centerX + i, y, centerZ + j) == id && (meta == -1 || world.getBlockMetadata(centerX + i, y, centerZ + j) == meta))
+                if (world.getBlock(centerX + i, y, centerZ + j).getUnlocalizedName() == id && (meta == -1
+                        || world.getBlockMetadata(centerX + i, y, centerZ + j) == meta))
                 {
                     Point p = new Point(centerX + i, y, centerZ + j);
                     results.add(p);

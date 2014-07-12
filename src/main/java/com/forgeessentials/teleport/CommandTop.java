@@ -12,6 +12,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     {
         WarpPoint point = new WarpPoint(player);
         point.y = player.worldObj.getActualHeight();
-        while (player.worldObj.getBlockId(point.x, point.y, point.z) == 0)
+        while (player.worldObj.getBlock(point.x, point.y, point.z) == Blocks.air)
         {
             point.y--;
         }

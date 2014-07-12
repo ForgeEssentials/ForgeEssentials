@@ -119,7 +119,7 @@ public class CommandButcher extends FEcmdModuleCommands {
         if (sender instanceof TileEntityCommandBlock)
         {
             TileEntityCommandBlock cb = (TileEntityCommandBlock) sender;
-            worldID = cb.worldObj.provider.dimensionId;
+            worldID = cb.getWorldObj().provider.dimensionId;
             x = cb.xCoord;
             y = cb.yCoord;
             z = cb.zCoord;

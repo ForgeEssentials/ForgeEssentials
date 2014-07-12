@@ -43,11 +43,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
                 if (type == 1)
                 {
-                    PlayerInfo.getPlayerInfo(player.getUniqueId()).setPoint1(new Point(x, y, z));
+                    PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint1(new Point(x, y, z));
                 }
                 else
                 {
-                    PlayerInfo.getPlayerInfo(player.getUniqueId()).setPoint2(new Point(x, y, z));
+                    PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint2(new Point(x, y, z));
                 }
 
                 OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -83,11 +83,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
             if (type == 1)
             {
-                PlayerInfo.getPlayerInfo(player.getUniqueId()).setPoint1(new Point(x, y, z));
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint1(new Point(x, y, z));
             }
             else
             {
-                PlayerInfo.getPlayerInfo(player.getUniqueId()).setPoint2(new Point(x, y, z));
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint2(new Point(x, y, z));
             }
 
             OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -115,11 +115,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
         if (type == 1)
         {
-            PlayerInfo.getPlayerInfo(player.getUniqueId()).setPoint1(point);
+            PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint1(point);
         }
         else
         {
-            PlayerInfo.getPlayerInfo(player.getUniqueId()).setPoint2(point);
+            PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint2(point);
         }
 
         OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);

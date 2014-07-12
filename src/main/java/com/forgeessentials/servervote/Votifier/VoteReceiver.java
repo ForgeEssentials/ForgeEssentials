@@ -20,10 +20,10 @@ package com.forgeessentials.servervote.Votifier;
 
 import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.crypto.BadPaddingException;
@@ -172,7 +172,7 @@ public class VoteReceiver extends Thread {
 
                 ModuleServerVote.log(vote);
 
-                EntityPlayerMP player = FunctionHelper.getPlayerForName(vote.player);
+                EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(vote.player);
                 if (player == null)
                 {
                     if (!ModuleServerVote.config.allowOfflineVotes)

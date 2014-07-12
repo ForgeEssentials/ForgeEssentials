@@ -27,7 +27,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
     {
         if (args.length == 0)
         {
-            WarpPoint home = PlayerInfo.getPlayerInfo(sender.username).home;
+            WarpPoint home = PlayerInfo.getPlayerInfo(sender.getPersistentID()).home;
             if (home == null)
             {
                 OutputHandler.chatError(sender, "No home set. Try this: [here|x, y, z]");
@@ -35,9 +35,9 @@ public class CommandHome extends ForgeEssentialsCommandBase {
             else
             {
                 EntityPlayerMP player = (EntityPlayerMP) sender;
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.back = new WarpPoint(player);
-                CommandBack.justDied.remove(player.username);
+                CommandBack.justDied.remove(player.getPersistentID());
                 TeleportCenter.addToTpQue(home, player);
             }
         }
@@ -46,7 +46,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
             if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
             {
                 WarpPoint p = new WarpPoint(sender);
-                PlayerInfo.getPlayerInfo(sender.username).home = p;
+                PlayerInfo.getPlayerInfo(sender.getPersistentID()).home = p;
                 ChatUtils.sendMessage(sender, String.format("Home set to: %1$d, %2$d, %3$d", p.x, p.y, p.z));
             }
         }

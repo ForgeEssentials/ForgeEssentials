@@ -36,21 +36,21 @@ public enum RegGroup {
      * will most likely be able to use basic commands as well as break blocks
      * and stuff in the world.
      */
-    MEMBERS("Members", " ", " ", null, 0, RegisteredPermValue.OP2),
+    MEMBERS("Members", " ", " ", null, 0, RegisteredPermValue.OP),
 
     /**
      * This is usually for players that are admins or owners of a given zone
      * They will most likely have WorldEdit access, as well as the power to edit
      * permissions in the zone.
      */
-    ZONE_ADMINS("ZoneAdmins", EnumChatFormatting.RED + "[ZoneAdmin]", " ", null, 0, RegisteredPermValue.OP3),
+    ZONE_ADMINS("ZoneAdmins", EnumChatFormatting.RED + "[ZoneAdmin]", " ", null, 0, RegisteredPermValue.OP),
 
     /**
      * This is automatically assigned to the server owner when they make a world
      * available to the LAN. This is also best kept for players that have direct
      * access to the server's console and filesystem.
      */
-    OWNERS("Owners", EnumChatFormatting.RED + "[OWNER]", " ", null, 999, RegisteredPermValue.OP4);
+    OWNERS("Owners", EnumChatFormatting.RED + "[OWNER]", " ", null, 999, RegisteredPermValue.OP);
     public static final String LADDER = "mainLadder";
     private Group group;
     private String name;

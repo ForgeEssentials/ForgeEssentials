@@ -34,9 +34,10 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
             else
             {
                 int amount = parseIntWithMin(sender, args[1], 0);
-                OutputHandler.chatConfirmation(sender, "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.username + ".");
+                OutputHandler.chatConfirmation(sender,
+                        "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.getCommandSenderName() + ".");
                 OutputHandler.chatConfirmation(player,
-                        "You been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.username + ".");
+                        "You have been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.getCommandSenderName() + ".");
             }
         }
         else
@@ -58,9 +59,10 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
             else
             {
                 int amount = parseIntWithMin(sender, args[1], 0);
-                OutputHandler.chatConfirmation(sender, "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.username + ".");
+                OutputHandler.chatConfirmation(sender,
+                        "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.getCommandSenderName() + ".");
                 OutputHandler.chatConfirmation(player,
-                        "You been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.username + ".");
+                        "You been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.getCommandSenderName() + ".");
             }
         }
         else

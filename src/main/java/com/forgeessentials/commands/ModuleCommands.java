@@ -6,7 +6,6 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.shortcut.ShortcutCommands;
 import com.forgeessentials.commands.util.*;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.CompatMCStats;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
@@ -27,7 +26,6 @@ public class ModuleCommands {
     public static File cmddir;
 
     public static EventHandler eventHandler = new EventHandler();
-    private static MCStatsHelper mcstats = new MCStatsHelper();
 
     @PermRegister
     public static void registerPermissions(IPermRegisterEvent event)
@@ -49,8 +47,6 @@ public class ModuleCommands {
 
         CommandRegistrar.commandConfigs(conf.config);
         ShortcutCommands.loadConfig(cmddir);
-        CompatMCStats.registerStats(mcstats);
-        new PacketAnalyzerCmd();
     }
 
     @FEModule.ServerInit

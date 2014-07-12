@@ -6,9 +6,9 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.selections.*;
 import com.forgeessentials.core.compat.CommandSetChecker;
-import com.forgeessentials.core.compat.CompatMCStats;
 import com.forgeessentials.core.compat.EnvironmentChecker;
-import com.forgeessentials.core.misc.*;
+import com.forgeessentials.core.misc.BlockModListFile;
+import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.network.PacketSelectionUpdate;
 import com.forgeessentials.core.preloader.FEModContainer;
@@ -58,8 +58,6 @@ public class ForgeEssentials {
     public static String version;
     public static boolean sanitycheck;
     public ModuleLauncher mdlaunch;
-    public BannedItems bannedItems;
-    private CompatMCStats mcstatscompat;
     private TaskRegistry tasks;
 
     public ForgeEssentials()
@@ -92,8 +90,6 @@ public class ForgeEssentials {
         EnvironmentChecker.checkBukkit();
         EnvironmentChecker.checkWorldEdit();
 
-        mcstatscompat = new CompatMCStats();
-
         // Data API stuff
         {
             // setup
@@ -119,8 +115,6 @@ public class ForgeEssentials {
         }
 
         new MiscEventHandler();
-        bannedItems = new BannedItems();
-        MinecraftForge.EVENT_BUS.register(bannedItems);
         LoginMessage.loadFile();
         mdlaunch = new ModuleLauncher();
         mdlaunch.preLoad(e);
@@ -140,20 +134,13 @@ public class ForgeEssentials {
         MinecraftForge.EVENT_BUS.register(factory);
 
         MinecraftForge.EVENT_BUS.register(new WandController());
-
-        mcstatscompat.load();
     }
 
     @EventHandler
     public void postLoad(FMLPostInitializationEvent e)
     {
-        UnfriendlyItemList.modStep();
-        UnfriendlyItemList.output(new File(FEDIR, "UnfriendlyItemList.txt"));
-
         mdlaunch.postLoad(e);
-        bannedItems.postLoad(e);
 
-        new FriendlyItemList();
         FunctionHelper.netHandler.registerMessage(PacketSelectionUpdate.class, PacketSelectionUpdate.Message.class, 0, Side.SERVER);
     }
 
@@ -163,7 +150,7 @@ public class ForgeEssentials {
         // load up DataAPI
         ((StorageManager) DataStorageManager.manager).serverStart(e);
 
-        ModListFile.makeModList();
+        BlockModListFile.makeModList();
 
         // commands
         e.registerServerCommand(new CommandFEInfo());
@@ -191,7 +178,6 @@ public class ForgeEssentials {
     {
         CommandSetChecker.remove();
 
-        CompatMCStats.doMCStats();
         mdlaunch.serverStarted(e);
     }
 

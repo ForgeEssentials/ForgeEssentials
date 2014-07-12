@@ -36,7 +36,7 @@ public class blockChangeLog extends logEntry {
         try
         {
             PreparedStatement ps = ModulePlayerLogger.getConnection().prepareStatement(getprepareStatementSQL());
-            ps.setString(1, player.username);
+            ps.setString(1, player.getPersistentID().toString());
             ps.setString(2, cat.toString());
             ps.setString(3, block);
             ps.setInt(4, player.dimension);

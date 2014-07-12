@@ -3,7 +3,10 @@ package com.forgeessentials.snooper;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.snooper.response.*;
+import com.forgeessentials.snooper.response.PlayerInfoResonce;
+import com.forgeessentials.snooper.response.PlayerInv;
+import com.forgeessentials.snooper.response.Responces;
+import com.forgeessentials.snooper.response.ServerInfo;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
@@ -19,19 +22,14 @@ import java.io.FileOutputStream;
 public class ModuleSnooper {
     @FEModule.Config
     public static ConfigSnooper configSnooper;
-
-    @FEModule.ModuleDir
-    public File folder;
-
     public static int port;
     public static String hostname;
     public static boolean enable;
-
     public static SocketListner socketListner;
-
-    private static int id = 0;
-
     public static String key;
+    private static int id = 0;
+    @FEModule.ModuleDir
+    public File folder;
 
     public ModuleSnooper()
     {
@@ -40,10 +38,24 @@ public class ModuleSnooper {
         APIRegistry.registerResponse(0, new Responces());
 
         APIRegistry.registerResponse(1, new ServerInfo());
-        APIRegistry.registerResponse(2, new MCstatsInfo());
 
         APIRegistry.registerResponse(5, new PlayerInfoResonce());
         APIRegistry.registerResponse(6, new PlayerInv());
+    }
+
+    public static void start()
+    {
+        socketListner = new SocketListner();
+    }
+
+    public static void stop()
+    {
+        socketListner.stop();
+    }
+
+    public static int id()
+    {
+        return id++;
     }
 
     @FEModule.PreInit
@@ -107,20 +119,5 @@ public class ModuleSnooper {
         stop();
         getKey();
         start();
-    }
-
-    public static void start()
-    {
-        socketListner = new SocketListner();
-    }
-
-    public static void stop()
-    {
-        socketListner.stop();
-    }
-
-    public static int id()
-    {
-        return id++;
     }
 }

@@ -12,7 +12,7 @@ public interface IPermissionsHelper {
     // Javadocs please
 
     /**
-     * Check if a permission is allowed
+     * Check if a permissions is allowed
      *
      * @param query A PermQuery object
      * @return true if allowed, false if not.
@@ -21,7 +21,7 @@ public interface IPermissionsHelper {
     boolean checkPermAllowed(PermQuery query);
 
     /**
-     * Check if a permission is allowed. Use if you do not want to create PermQuery objects.
+     * Check if a permissions is allowed. Use if you do not want to create PermQuery objects.
      *
      * @param player
      * @param node
@@ -50,45 +50,45 @@ public interface IPermissionsHelper {
     Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority);
 
     /**
-     * Set a permission for a player
+     * Set a permissions for a player
      *
      * @param username   The player's username
-     * @param permission The permission node name
-     * @param allow      Is the permission allowed or denied
-     * @param zoneID     The zone in which the permission takes effect
+     * @param permission The permissions node name
+     * @param allow      Is the permissions allowed or denied
+     * @param zoneID     The zone in which the permissions takes effect
      * @return
      */
     String setPlayerPermission(String username, String permission, boolean allow, String zoneID);
 
     /**
-     * Set a permission for a group
+     * Set a permissions for a group
      *
-     * @param username   The group name
-     * @param permission The permission node name
-     * @param allow      Is the permission allowed or denied
-     * @param zoneID     The zone in which the permission takes effect
+     * @param group   The group name
+     * @param permission The permissions node name
+     * @param allow      Is the permissions allowed or denied
+     * @param zoneID     The zone in which the permissions takes effect
      * @return
      */
     String setGroupPermission(String group, String permission, boolean allow, String zoneID);
 
     /**
-     * Set a permission prop for a player
+     * Set a permissions prop for a player
      *
      * @param username   The player's username
-     * @param permission The permission node name
-     * @param value      Value of the permission prop
-     * @param zoneID     The zone in which the permission takes effect
+     * @param permission The permissions node name
+     * @param value      Value of the permissions prop
+     * @param zoneID     The zone in which the permissions takes effect
      * @return
      */
     String setPlayerPermissionProp(String username, String permission, String value, String zoneID);
 
     /**
-     * Set a permission for a player
+     * Set a permissions for a player
      *
      * @param username   The player's username
-     * @param permission The permission node name
-     * @param value      Value of the permission prop
-     * @param zoneID     The zone in which the permission takes effect
+     * @param permission The permissions node name
+     * @param value      Value of the permissions prop
+     * @param zoneID     The zone in which the permissions takes effect
      * @return
      */
     String setGroupPermissionProp(String group, String permission, String value, String zoneID);

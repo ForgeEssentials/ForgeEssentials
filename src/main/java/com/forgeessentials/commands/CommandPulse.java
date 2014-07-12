@@ -41,7 +41,7 @@ public class CommandPulse extends FEcmdModuleCommands {
                 var3 = (int) this.func_82368_a(var1, (double) ((TileEntityCommandBlock) var1).xCoord, var2[0]);
                 var4 = (int) this.func_82367_a(var1, (double) ((TileEntityCommandBlock) var1).yCoord, var2[1], 0, 0);
                 var5 = (int) this.func_82368_a(var1, (double) ((TileEntityCommandBlock) var1).zCoord, var2[2]);
-                var11 = ((TileEntityCommandBlock) var1).worldObj;
+                var11 = ((TileEntityCommandBlock) var1).getWorldObj();
             }
             else if (var1 instanceof EntityPlayerMP)
             {
@@ -124,7 +124,7 @@ public class CommandPulse extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.username);
+        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.getCommandSenderName());
         processCommand(playermp, args);
     }
 

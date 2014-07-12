@@ -9,13 +9,13 @@ import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -28,12 +28,12 @@ import java.util.HashMap;
 
 public class Deathchest {
     /**
-     * This permission is needed to get the skull, Default = members.
+     * This permissions is needed to get the skull, Default = members.
      */
     public static final String PERMISSION_MAKE = ModuleAfterlife.BASEPERM + ".deathchest.make";
 
     /**
-     * This is the permission that allows you to bypass the protection timer.
+     * This is the permissions that allows you to bypass the protection timer.
      */
     public static final String PERMISSION_BYPASS = ModuleAfterlife.BASEPERM + ".deathchest.protectionBypass";
 
@@ -88,36 +88,39 @@ public class Deathchest {
         }
         if (enableFencePost)
         {
-            while (world.getBlockMaterial(point.x, point.y, point.z) == Material.water || world.getBlockMaterial(point.x, point.y, point.z) == Material.lava)
+            while (world.getBlock(point.x, point.y, point.z).getMaterial() == Material.water
+                    || world.getBlock(point.x, point.y, point.z).getMaterial() == Material.lava)
             {
                 point.y++;
             }
-            if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable() && world.getBlockMaterial(point.x, point.y + 1, point.z).isReplaceable())
+            if (world.getBlock(point.x, point.y, point.z).getMaterial().isReplaceable() && world.getBlock(point.x, point.y + 1, point.z).getMaterial()
+                    .isReplaceable())
             {
                 e.setCanceled(true);
-                world.setBlock(point.x, point.y, point.z, Block.fence.blockID);
+                world.setBlock(point.x, point.y, point.z, Blocks.fence);
                 point.y++;
                 new Grave(point, e.entityPlayer, e.drops, this);
-                world.setBlock(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
+                world.setBlock(point.x, point.y, point.z, Blocks.skull, 1, 1);
                 FEskullTe te = new FEskullTe();
-                te.setSkullType(3, e.entityPlayer.username);
-                world.setBlockTileEntity(point.x, point.y, point.z, te);
+                te.func_152106_a(e.entityPlayer.getGameProfile());
+                world.setTileEntity(point.x, point.y, point.z, te);
                 return;
             }
         }
         else
         {
-            while (world.getBlockMaterial(point.x, point.y, point.z) == Material.water || world.getBlockMaterial(point.x, point.y, point.z) == Material.lava)
+            while (world.getBlock(point.x, point.y, point.z).getMaterial() == Material.water
+                    || world.getBlock(point.x, point.y, point.z).getMaterial() == Material.lava)
             {
                 point.y++;
             }
-            if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable())
+            if (world.getBlock(point.x, point.y, point.z).getMaterial().isReplaceable())
             {
                 e.setCanceled(true);
-                world.setBlock(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
+                world.setBlock(point.x, point.y, point.z, Blocks.skull, 1, 1);
                 FEskullTe te = new FEskullTe();
-                te.setSkullType(3, e.entityPlayer.username);
-                world.setBlockTileEntity(point.x, point.y, point.z, te);
+                te.func_152106_a(e.entityPlayer.getGameProfile());
+                world.setTileEntity(point.x, point.y, point.z, te);
                 return;
             }
         }
@@ -157,11 +160,11 @@ public class Deathchest {
                         {
                             player.closeScreen();
                         }
-                        player.incrementWindowID();
+                        player.getNextWindowId();
 
                         InventoryGrave invGrave = new InventoryGrave(grave);
-                        player.playerNetServerHandler.sendPacketToPlayer(
-                                new Packet100OpenWindow(player.currentWindowId, 0, invGrave.getInvName(), invGrave.getSizeInventory(), true));
+                        player.playerNetServerHandler.sendPacket(
+                                new S2DPacketOpenWindow(player.currentWindowId, 0, invGrave.getInventoryName(), invGrave.getSizeInventory(), true));
                         player.openContainer = new ContainerChest(player.inventory, invGrave);
                         player.openContainer.windowId = player.currentWindowId;
                         player.openContainer.addCraftingToCrafters(player);
@@ -240,7 +243,7 @@ public class Deathchest {
     }
 
     @SubscribeEvent
-    public void tickGraves(TickEvent.ServerTickEvent)
+    public void tickGraves(TickEvent.ServerTickEvent e)
     {
         for (Grave grave : gravemap.values())
         {

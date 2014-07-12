@@ -28,7 +28,6 @@ public class ModuleEconomy {
     {
         APIRegistry.wallet = new WalletHandler();
         FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
-        FEServerPacketHandler.registerPacket(4, PacketEconomy.class);
     }
 
     @FEModule.ServerInit

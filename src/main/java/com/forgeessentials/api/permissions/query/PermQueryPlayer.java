@@ -1,6 +1,6 @@
 package com.forgeessentials.api.permissions.query;
 
-import com.forgeessentials.permission.PermissionChecker;
+import com.forgeessentials.permissions.PermissionChecker;
 import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -33,7 +33,7 @@ public class PermQueryPlayer extends PermQuery {
      * @param player
      * @param permission
      * @param checkForward Specifies to only return allow if all the children of the
-     *                     permission are allowed.
+     *                     permissions are allowed.
      */
     public PermQueryPlayer(EntityPlayer player, String permission, boolean checkForward)
     {

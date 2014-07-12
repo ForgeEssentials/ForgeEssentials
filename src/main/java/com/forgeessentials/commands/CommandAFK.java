@@ -17,10 +17,11 @@ import net.minecraftforge.common.config.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CommandAFK extends FEcmdModuleCommands {
     public static CommandAFK instance;
-    public static List<String> afkList = new ArrayList<String>();
+    public static List<UUID> afkList = new ArrayList<UUID>();
     // Config
     public static int warmup = 5;
     public static String outMessage, inMessage, selfOutMessage, selfInMessage;
@@ -68,13 +69,13 @@ public class CommandAFK extends FEcmdModuleCommands {
             afkData.player.capabilities.disableDamage = false;
         }
         afkData.player.sendPlayerAbilities();
-        afkList.remove(afkData.player.username);
-        TickHandlerCommands.afkListToRemove.add(afkData);
+        afkList.remove(afkData.player.getPersistentID());
+        EventHandler.afkListToRemove.add(afkData);
 
         if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
         {
             ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    String.format(outMessage, afkData.player.username));
+                    String.format(outMessage, afkData.player.getPersistentID()));
         }
         else
         {
@@ -86,12 +87,12 @@ public class CommandAFK extends FEcmdModuleCommands {
     {
         afkData.player.capabilities.disableDamage = true;
         afkData.player.sendPlayerAbilities();
-        afkList.add(afkData.player.username);
+        afkList.add(afkData.player.getPersistentID());
 
         if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
         {
             ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    String.format(inMessage, afkData.player.username));
+                    String.format(inMessage, afkData.player.getPersistentID()));
         }
         else
         {

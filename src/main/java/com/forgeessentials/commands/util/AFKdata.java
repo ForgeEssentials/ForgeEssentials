@@ -7,10 +7,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 public class AFKdata {
     public EntityPlayerMP player;
+    public boolean needstowait;
+    int waittime;
     private WorldPoint lastPos;
     private WorldPoint currentPos;
-    int waittime;
-    public boolean needstowait;
 
     public AFKdata(EntityPlayerMP player)
     {
@@ -24,7 +24,7 @@ public class AFKdata {
     {
         if (player == null)
         {
-            TickHandlerCommands.afkListToRemove.add(this);
+            EventHandler.afkListToRemove.add(this);
             return;
         }
 

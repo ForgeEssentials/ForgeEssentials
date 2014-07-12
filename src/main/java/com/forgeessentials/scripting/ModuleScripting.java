@@ -5,8 +5,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.io.File;
 
@@ -19,21 +17,6 @@ public class ModuleScripting {
     static File logingroup = new File(moduleDir, "login/group/");
     static File respawngroup = new File(moduleDir, "respawn/group/");
     static File respawnplayer = new File(moduleDir, "respawn/player/");
-
-    @FEModule.PreInit
-    public void preInit(FEModulePreInitEvent e)
-    {
-        OutputHandler.felog.info("Scripts are being read from " + moduleDir.getAbsolutePath());
-        startup();
-        FMLCommonHandler.instance().
-    }
-
-    @FEModule.ServerInit
-    public void serverStarting(FEModuleServerInitEvent e)
-    {
-        e.registerServerCommand(new CommandScript());
-        e.registerServerCommand(new TimedTaskManager());
-    }
 
     public static void startup()
     {
@@ -50,5 +33,19 @@ public class ModuleScripting {
         {
             OutputHandler.felog.warning("Could not setup scripting folders - you might have to do it yourself.");
         }
+    }
+
+    @FEModule.PreInit
+    public void preInit(FEModulePreInitEvent e)
+    {
+        OutputHandler.felog.info("Scripts are being read from " + moduleDir.getAbsolutePath());
+        startup();
+    }
+
+    @FEModule.ServerInit
+    public void serverStarting(FEModuleServerInitEvent e)
+    {
+        e.registerServerCommand(new CommandScript());
+        e.registerServerCommand(new TimedTaskManager());
     }
 }

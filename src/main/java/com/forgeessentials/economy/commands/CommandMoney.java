@@ -26,7 +26,7 @@ public class CommandMoney extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        OutputHandler.chatConfirmation(sender, "Your wallet contains: " + APIRegistry.wallet.getMoneyString(sender.username));
+        OutputHandler.chatConfirmation(sender, "Your wallet contains: " + APIRegistry.wallet.getMoneyString(sender.getPersistentID()));
     }
 
     @Override

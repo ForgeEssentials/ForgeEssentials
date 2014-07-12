@@ -3,6 +3,7 @@ package net.minecraftforge.permissions.api;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import net.minecraft.dispenser.ILocation;
 import net.minecraft.entity.Entity;
@@ -13,7 +14,7 @@ import net.minecraftforge.permissions.api.context.IContext;
 
 import com.google.gson.JsonObject;
 
-public interface PermBuilderFactory<T extends PermBuilder>
+public interface PermBuilderFactory
 {
     /**
      * The name of this permissions provider (usually the modid)
@@ -22,16 +23,14 @@ public interface PermBuilderFactory<T extends PermBuilder>
     String getName();
     
     /**
-     * This method should return a fresh unadulterated PermBuilder instance with no default values.
-     * @return a new instance of your PermBuilder.
+     * Check permissions
+     * 
+     * @param player
+     * @param node
+     * @param contextInfo
+     * @return 
      */
-    T builder();
-
-    /**
-     * This method should return a PermBuilder instance with the player and PermNode set.
-     * @return a new instance of your PermBuilder.
-     */
-    T builder(EntityPlayer player, String permNode);
+    boolean checkPerm(EntityPlayer player, String node, Map<String, IContext> contextInfo);
 
     /**
      * @return The default IContext instance of this object for this Implementation.
@@ -74,20 +73,14 @@ public interface PermBuilderFactory<T extends PermBuilder>
      * This is where permissions are registered with their default value.
      * @param perms
      */
-    void registerPermissions(List<PermReg> perms);
-    
-    /**
-     * Called on ServerStarted, during Forge's init
-     * Do any implementation-specific handling here.
-     */
-    void initialize();
+    void registerPermission(String node, RegisteredPermValue allow);
     
     /**
      * Get the groups a player is in
      * @param player
      * @return A list of groups the player is in
      */
-    Collection<IGroup> getGroup(EntityPlayer player);
+    Collection<IGroup> getGroups(UUID playerID);
     
     /**
      * Get a group with a given name
@@ -101,18 +94,29 @@ public interface PermBuilderFactory<T extends PermBuilder>
      * @return A list of all groups
      */
     Collection<IGroup> getAllGroups();
-
-    public static class PermReg
+    
+    /**
+     * Based on Bukkit's PermissionDefault system.
+     * Accepted names: True, False, Op
+     *
+     */
+    public static enum RegisteredPermValue
     {
-        public final String              key;
-        public final RegisteredPermValue role;
-        public final JsonObject          data;
-
-        public PermReg(String key, RegisteredPermValue value, JsonObject obj)
+        TRUE, FALSE, OP;
+        
+        public static RegisteredPermValue fromBoolean(boolean toConvert)
         {
-            this.key = key;
-            this.role = value;
-            this.data = obj;
+            if (toConvert) return TRUE;
+            else return FALSE;
+        }
+        
+        public static RegisteredPermValue fromString(String name)
+        {
+            for (RegisteredPermValue value : values())
+            {
+                if (value.name().equalsIgnoreCase(name)) return value;
+            }
+            return null;
         }
     }
 }

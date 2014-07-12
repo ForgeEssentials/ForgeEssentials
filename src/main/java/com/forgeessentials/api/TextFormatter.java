@@ -26,7 +26,7 @@ public class TextFormatter {
         {
             data.put("amount", "" + stack.stackSize);
         }
-        data.put("id", "" + stack.itemID);
+        data.put("id", "" + stack.getUnlocalizedName());
         if (stack.getItemDamage() != 0)
         {
             data.put("dam", "" + stack.getItemDamage());
@@ -41,8 +41,8 @@ public class TextFormatter {
             {
                 for (int var7 = 0; var7 < var10.tagCount(); ++var7)
                 {
-                    short var8 = ((NBTTagCompound) var10.tagAt(var7)).getShort("id");
-                    short var9 = ((NBTTagCompound) var10.tagAt(var7)).getShort("lvl");
+                    short var8 = ((NBTTagCompound) var10.getCompoundTagAt(var7)).getShort("id");
+                    short var9 = ((NBTTagCompound) var10.getCompoundTagAt(var7)).getShort("lvl");
 
                     if (Enchantment.enchantmentsList[var8] != null)
                     {
@@ -133,19 +133,19 @@ public class TextFormatter {
         JSONArray data = new JSONArray();
         for (int i = 0; i < nbt.tagCount(); i++)
         {
-            data.put(toJSONnbtBase(nbt.tagAt(i)));
+            data.put(toJSONnbtBase(nbt.getCompoundTagAt(i)));
         }
         return data;
     }
 
     public static JSONArray toJSONnbtIntArray(NBTTagIntArray nbt)
     {
-        return new JSONArray().put(nbt.intArray);
+        return new JSONArray().put(nbt.func_150302_c());
     }
 
     public static JSONArray toJSONnbtBtArray(NBTTagByteArray nbt)
     {
-        return new JSONArray().put(nbt.byteArray);
+        return new JSONArray().put(nbt.func_150292_c());
     }
 
     public static TileEntity reconstructTE(String JSON)
@@ -226,11 +226,11 @@ public class TextFormatter {
         try
         {
             NBTTagByteArray list = new NBTTagByteArray(null);
-            list.byteArray = new byte[dataArray.length()];
+            list.func_150292_c() = new byte[dataArray.length()];
             for (int i = 0; i < dataArray.length(); i++)
             {
                 System.out.println(dataArray.get(i).toString());
-                list.byteArray[i] = (byte) dataArray.getInt(i);
+                list.func_150292_c()[i] = (byte) dataArray.getInt(i);
             }
             return list;
         }
@@ -250,7 +250,7 @@ public class TextFormatter {
             for (int i = 0; i < dataArray.length(); i++)
             {
                 System.out.println(dataArray.get(i).toString());
-                list.intArray[i] = Integer.parseInt(dataArray.get(i).toString());
+                list.func_150292_c()[i] = Integer.parseInt(dataArray.get(i).toString());
             }
             return list;
         }
@@ -284,7 +284,7 @@ public class TextFormatter {
                 ((NBTTagShort) tag).data = (short) top.getInt(key);
                 break;
             case 3:
-                ((NBTTagInt) tag).data = top.getInt(key);
+                ((NBTTagInt) tag).data = (int) top.getInt(key);
                 break;
             case 4:
                 ((NBTTagLong) tag).data = top.getLong(key);

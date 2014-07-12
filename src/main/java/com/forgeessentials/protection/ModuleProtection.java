@@ -4,17 +4,19 @@ import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister
 import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.permission.Permission;
+import com.forgeessentials.permissions.Permission;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -39,10 +41,9 @@ public class ModuleProtection {
     public static ConfigProtection config;
     public static boolean enable = false;
     public static boolean enableMobSpawns = false;
-
+    public static HashMap<String, AdditionalZoneData> itemsList = new HashMap<String, AdditionalZoneData>();
     private static AbstractDataDriver data;
     private static ClassContainer zoneBannedItems = new ClassContainer(AdditionalZoneData.class);
-    public static HashMap<String, AdditionalZoneData> itemsList = new HashMap<String, AdditionalZoneData>();
 
     @FEModule.PreInit
     public void preLoad(FEModulePreInitEvent e)
@@ -97,9 +98,14 @@ public class ModuleProtection {
         event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + Permission.ALL, RegGroup.ZONE);
         event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + Permission.ALL, RegGroup.ZONE);
 
-        for (String perm : UnfriendlyItemList.getNameSet())
+        for (Item item : GameData.getItemRegistry().typeSafeIterable())
         {
-            event.registerPermissionLevel(PERM_ITEM_USE + "." + perm, RegGroup.MEMBERS);
+            event.registerPermissionLevel(PERM_ITEM_USE + "." + item.getUnlocalizedName(), RegGroup.MEMBERS);
+        }
+
+        for (Block item : GameData.getBlockRegistry().typeSafeIterable())
+        {
+            event.registerPermissionLevel(PERM_ITEM_USE + "." + item.getUnlocalizedName(), RegGroup.MEMBERS);
         }
 
         event.registerPermissionLevel(PERM_ITEM_USE + "." + Permission.ALL, RegGroup.MEMBERS);

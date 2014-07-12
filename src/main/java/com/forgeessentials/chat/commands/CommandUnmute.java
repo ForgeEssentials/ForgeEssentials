@@ -45,8 +45,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase {
             }
             NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
             tag.setBoolean("mute", false);
-            receiver.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-
+            receiver.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
             OutputHandler.chatError(sender, String.format("command.unmute.youMuted", args[0]));
             OutputHandler.chatError(receiver, String.format("command.unmute.muted", sender.getCommandSenderName()));
         }

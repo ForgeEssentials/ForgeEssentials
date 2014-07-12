@@ -18,7 +18,7 @@ public class PlayerInv extends Response {
             return new JSONObject().put(getName(), "This responce needs a username!");
         }
 
-        EntityPlayerMP player = server.getConfigurationManager().getPlayerForUsername(input.getString("username"));
+        EntityPlayerMP player = server.getConfigurationManager().func_152612_a(input.getString("username"));
         if (player == null)
         {
             return new JSONObject().put(getName(), input.getString("username") + " not online!");

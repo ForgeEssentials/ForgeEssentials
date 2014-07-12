@@ -42,9 +42,9 @@ public class CommandTp extends ForgeEssentialsCommandBase {
             if (target != null)
             {
                 EntityPlayerMP player = (EntityPlayerMP) sender;
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.back = new WarpPoint(player);
-                CommandBack.justDied.remove(player.username);
+                CommandBack.justDied.remove(player.getPersistentID());
                 TeleportCenter.addToTpQue(new WarpPoint(target), player);
             }
             else
@@ -62,7 +62,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 
                 if (target != null)
                 {
-                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                     playerInfo.back = new WarpPoint(player);
                     WarpPoint point = new WarpPoint(target);
                     FunctionHelper.setPlayer(player, point);
@@ -85,7 +85,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
             {
                 EntityPlayerMP player = (EntityPlayerMP) sender;
                 int x = parseInt(sender, args[0], player.posX), y = parseInt(sender, args[1], player.posY), z = parseInt(sender, args[2], player.posZ);
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.back = new WarpPoint(player);
                 TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
             }
@@ -95,7 +95,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
                 if (player != null)
                 {
                     int x = parseInt(sender, args[1], player.posX), y = parseInt(sender, args[2], player.posY), z = parseInt(sender, args[3], player.posZ);
-                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                     playerInfo.back = new WarpPoint(player);
                     TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
                 }
@@ -130,7 +130,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
                 }
                 if (target != null)
                 {
-                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                     playerInfo.back = new WarpPoint(player);
                     TeleportCenter.addToTpQue(new WarpPoint(target), player);
                 }
@@ -152,7 +152,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
             if (player != null)
             {
                 int x = parseInt(sender, args[1], player.posX), y = parseInt(sender, args[2], player.posY), z = parseInt(sender, args[3], player.posZ);
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.back = new WarpPoint(player);
                 TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
             }

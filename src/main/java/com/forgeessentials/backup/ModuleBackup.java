@@ -13,7 +13,6 @@ import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -34,6 +33,38 @@ public class ModuleBackup {
     public static File moduleDir;
 
     public static File baseFolder;
+
+    public static void msg(String msg)
+    {
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (!BackupConfig.enableMsg)
+        {
+            return;
+        }
+        try
+        {
+            if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            {
+                OutputHandler.felog.info(msg);
+            }
+            else
+            {
+                ChatUtils.sendMessage(server, "[ForgeEssentials] " + msg);
+            }
+            ServerConfigurationManager manager = server.getConfigurationManager();
+            for (String username : manager.getAllUsernames())
+            {
+                EntityPlayerMP player = manager.func_152612_a(username);
+                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
+                {
+                    ChatUtils.sendMessage(player, EnumChatFormatting.AQUA + "[ForgeEssentials] " + msg);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+        }
+    }
 
     @FEModule.Init
     public void load(FEModuleInitEvent e)
@@ -81,38 +112,6 @@ public class ModuleBackup {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
             ((WorldServer) e.world).levelSaving = !BackupConfig.worldSaving;
-        }
-    }
-
-    public static void msg(String msg)
-    {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        if (!BackupConfig.enableMsg)
-        {
-            return;
-        }
-        try
-        {
-            if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            {
-                OutputHandler.felog.info(msg);
-            }
-            else
-            {
-                ChatUtils.sendMessage(server, "[ForgeEssentials] " + msg);
-            }
-            ServerConfigurationManager manager = server.getConfigurationManager();
-            for (String username : manager.getAllUsernames())
-            {
-                EntityPlayerMP player = manager.getPlayerForUsername(username);
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
-                {
-                    ChatUtils.sendMessage(player, EnumChatFormatting.AQUA + "[ForgeEssentials] " + msg);
-                }
-            }
-        }
-        catch (Exception e)
-        {
         }
     }
 

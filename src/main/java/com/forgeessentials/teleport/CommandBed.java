@@ -10,6 +10,7 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.TeleportCenter;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -69,7 +70,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
                 {
                     world = DimensionManager.getWorld(0);
                 }
-                PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(player);
                 // Doesnt work
                 // FunctionHelper.setPlayer(player, new Point(spawn), world);
                 //player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);

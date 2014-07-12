@@ -10,8 +10,6 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 import java.io.File;
 
@@ -34,8 +32,6 @@ public class ModuleQuestioner {
     public void serverStarting(FEModuleServerInitEvent e)
     {
         data = DataStorageManager.getReccomendedDriver();
-
-        TickRegistry.registerScheduledTickHandler(new QuestionCenter(), Side.SERVER);
     }
 
     @ServerStop

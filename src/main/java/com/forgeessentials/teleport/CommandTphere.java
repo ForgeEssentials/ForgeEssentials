@@ -38,7 +38,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
             if (player != null)
             {
                 EntityPlayerMP target = (EntityPlayerMP) sender;
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.back = new WarpPoint(player);
                 TeleportCenter.addToTpQue(new WarpPoint(target), player);
             }

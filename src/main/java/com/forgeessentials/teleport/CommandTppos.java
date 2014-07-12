@@ -34,9 +34,9 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
         {
             int x = parseInt(sender, args[0], sender.posX), y = parseInt(sender, args[1], sender.posY), z = parseInt(sender, args[2], sender.posZ);
             EntityPlayerMP player = (EntityPlayerMP) sender;
-            PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
+            PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
             playerInfo.back = new WarpPoint(player);
-            CommandBack.justDied.remove(player.username);
+            CommandBack.justDied.remove(player.getPersistentID());
             TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.cameraPitch, player.cameraYaw), player);
         }
         else

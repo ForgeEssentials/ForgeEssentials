@@ -75,13 +75,9 @@ dependencies {
 jar {
     from project.sourceSets.main.output
     include "com/forgeessentials/core/**"
-    include "com/forgeessentials/permission/**"
     include "com/forgeessentials/util/**"
     include "com/forgeessentials/data/**"
-    include "com/forgeessentials/api/*.class"
-    include "com/forgeessentials/api/permissions/**"
-    include "com/forgeessentials/api/packetInspector/**"
-    include "com/forgeessentials/api/json/**"
+    include "com/forgeessentials/api/**"
     include "org/mcstats/**"
     include "logo.png"
     include "mcmod.info"
@@ -166,6 +162,7 @@ def list = [
         'worldcontrol',
         'afterlife',
         'teleport',
+        'permissions'
 ]
 
 list.each { name ->
@@ -175,7 +172,6 @@ list.each { name ->
         classifier = name
         appendix = project.minecraft.version
         include "com/forgeessentials/$name/**"
-        include "com/forgeessentials/api/$name/**"
     }
 
     reobf {
@@ -219,7 +215,6 @@ task weJar(dependsOn: "jar", type: Jar) {
 task devDeobfJar(dependsOn: "jar", type: Jar) {
     from project.sourceSets.main.output
     include "com/forgeessentials/core/**"
-    include "com/forgeessentials/permission/**"
     include "com/forgeessentials/util/**"
     include "com/forgeessentials/data/**"
     include "com/forgeessentials/api/**"

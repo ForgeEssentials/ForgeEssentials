@@ -18,19 +18,19 @@ public class WalletHandler implements IEconManager {
     private static HashMap<UUID, Wallet> wallets = new HashMap<UUID, Wallet>();
 
     @Override
-    public void addToWallet(int amountToAdd, String player)
+    public void addToWallet(int amountToAdd, UUID player)
     {
         wallets.get(player).amount = wallets.get(player).amount + amountToAdd;
     }
 
     @Override
-    public int getWallet(String player)
+    public int getWallet(UUID player)
     {
         return wallets.get(player).amount;
     }
 
     @Override
-    public void removeFromWallet(int amountToSubtract, String player)
+    public void removeFromWallet(int amountToSubtract, UUID player)
     {
         if (wallets.get(player).amount - amountToSubtract >= 0)
         {
@@ -58,7 +58,7 @@ public class WalletHandler implements IEconManager {
     }
 
     @Override
-    public String getMoneyString(String username)
+    public String getMoneyString(UUID username)
     {
         int am = getWallet(username);
         return am + " " + currency(am);
@@ -67,7 +67,7 @@ public class WalletHandler implements IEconManager {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
-        Wallet wallet = (Wallet) DataStorageManager.getReccomendedDriver().loadObject(con, event.player.getUniqueID());
+        Wallet wallet = (Wallet) DataStorageManager.getReccomendedDriver().loadObject(con, event.player.getUniqueID().toString());
         if (wallet == null)
         {
             wallet = new Wallet(event.player, ModuleEconomy.startbuget);
@@ -78,7 +78,8 @@ public class WalletHandler implements IEconManager {
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if ( wallets.containsKey(event.player.getUniqueID());
+        if (wallets.containsKey(event.player.getUniqueID()))
+            ;
         {
             DataStorageManager.getReccomendedDriver().saveObject(con, wallets.remove(event.player.getUniqueID()));
         }

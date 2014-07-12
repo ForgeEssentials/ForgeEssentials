@@ -7,8 +7,9 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.IPlayerTracker;
-import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -20,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTracker {
+public class CommandPm extends ForgeEssentialsCommandBase {
     private static Map<String, String> persistentMessage;
     private List<String> aliasList;
 
@@ -30,7 +31,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
         persistentMessage = new HashMap<String, String>();
         aliasList = new LinkedList<String>();
         aliasList.add("persistentmessage");
-        GameRegistry.registerPlayerTracker(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     public static boolean isMessagePersistent(String username)
@@ -258,25 +259,10 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
         return null;
     }
 
-    @Override
-    public void onPlayerLogin(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
-    }
-
-    @Override
-    public void onPlayerLogout(EntityPlayer player)
-    {
-        persistentMessage.remove(player.username);
-    }
-
-    @Override
-    public void onPlayerChangedDimension(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void onPlayerRespawn(EntityPlayer player)
-    {
+        persistentMessage.remove(e.player.getPersistentID());
     }
 
     @Override

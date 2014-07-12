@@ -142,9 +142,9 @@ public class TeleportModule {
         if (e.entity instanceof EntityPlayer)
         {
             EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
-            PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(
+            PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(
                     player);
-            CommandBack.justDied.add(player.username);
+            CommandBack.justDied.add(player.getPersistentID());
 
             // generate for un-generated dimension
             {
@@ -165,7 +165,7 @@ public class TeleportModule {
                     WarpPoint p = new WarpPoint(currentDim, dimPoint.posX + .5,
                             dimPoint.posY + 1, dimPoint.posZ + .5,
                             player.cameraYaw, player.cameraPitch);
-                    CommandSetSpawn.spawns.put(player.username, p);
+                    CommandSetSpawn.spawns.put(player.getPersistentID(), p);
                     return;
                 }
             }
@@ -190,7 +190,7 @@ public class TeleportModule {
                             player.worldObj.provider.dimensionId,
                             spawn.posX + .5, spawn.posY + 1, spawn.posZ + .5,
                             player.cameraYaw, player.cameraPitch);
-                    CommandSetSpawn.spawns.put(player.username, point);
+                    CommandSetSpawn.spawns.put(player.getPersistentID(), point);
 
                     return;
                 }
@@ -216,11 +216,11 @@ public class TeleportModule {
 
                 WarpPoint point = new WarpPoint(dim, x + .5, y + 1, z + .5,
                         player.cameraYaw, player.cameraPitch);
-                CommandSetSpawn.spawns.put(player.username, point);
+                CommandSetSpawn.spawns.put(player.getPersistentID(), point);
             }
             catch (Exception exception)
             {
-                CommandSetSpawn.spawns.put(player.username, null);
+                CommandSetSpawn.spawns.put(player.getPersistentID(), null);
             }
         }
     }
@@ -229,7 +229,7 @@ public class TeleportModule {
     public void doRespawn(PlayerEvent.PlayerRespawnEvent e)
     {
         // send to spawn point
-        WarpPoint p = CommandSetSpawn.spawns.get(e.player.username);
+        WarpPoint p = CommandSetSpawn.spawns.get(e.player.getPersistentID());
         if (p != null)
         {
             FunctionHelper.setPlayer((EntityPlayerMP) e.player, p);

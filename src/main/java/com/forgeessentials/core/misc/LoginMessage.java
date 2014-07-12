@@ -127,7 +127,7 @@ public class LoginMessage {
      */
     private static String Format(String line, String playerName)
     {
-        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(playerName);
+        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(playerName);
         Calendar cal = Calendar.getInstance();
 
         // int WalletHandler = WalletHandler.getWalletHandler(player); //needed to return WalletHandler info
@@ -154,7 +154,7 @@ public class LoginMessage {
         line = FunctionHelper.replaceAllIgnoreCase(line, "%groupPrefix%", FunctionHelper.formatColors(FunctionHelper.getGroupPrefixString(playerName)).trim());
         line = FunctionHelper.replaceAllIgnoreCase(line, "%groupSuffix%", FunctionHelper.formatColors(FunctionHelper.getGroupSuffixString(playerName)).trim());
 
-        PlayerInfo info = PlayerInfo.getPlayerInfo(playerName);
+        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
         line = FunctionHelper.replaceAllIgnoreCase(line, "%playerPrefix%", info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim());
         line = FunctionHelper.replaceAllIgnoreCase(line, "%playerSuffix%", info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim());
 

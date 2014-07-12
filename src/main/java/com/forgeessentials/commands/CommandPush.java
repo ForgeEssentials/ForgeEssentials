@@ -4,7 +4,6 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockButton;
 import net.minecraft.block.BlockLever;
 import net.minecraft.command.CommandException;
@@ -13,6 +12,7 @@ import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -40,14 +40,14 @@ public class CommandPush extends FEcmdModuleCommands {
             int var3 = 0;
             int var4 = 0;
             int var5 = 0;
-            Object var7 = null;
+            World var7 = null;
 
             if (var1 instanceof TileEntity)
             {
                 var3 = (int) this.func_82368_a(var1, (double) ((TileEntity) var1).xCoord, var2[0]);
                 var4 = (int) this.func_82367_a(var1, (double) ((TileEntity) var1).yCoord, var2[1], 0, 0);
                 var5 = (int) this.func_82368_a(var1, (double) ((TileEntity) var1).zCoord, var2[2]);
-                var7 = ((TileEntity) var1).worldObj;
+                var7 = ((TileEntity) var1).getWorldObj();
             }
             else if (var1 instanceof EntityPlayerMP)
             {
@@ -64,15 +64,14 @@ public class CommandPush extends FEcmdModuleCommands {
                 var7 = ((DedicatedServer) var1).worldServerForDimension(0);
             }
 
-            if ((((World) var7).getBlockId(var3, var4, var5) == 0 || !(Block.blocksList[((World) var7).getBlockId(var3, var4, var5)] instanceof BlockButton))
-                    && !(Block.blocksList[((World) var7).getBlockId(var3, var4, var5)] instanceof BlockLever))
+            if ((var7.getBlock(var3, var4, var5) == Blocks.air || !((var7.getBlock(var3, var4, var5)) instanceof BlockButton))
+                    && !(((var7.getBlock(var3, var4, var5)) instanceof BlockLever)))
             {
                 throw new CommandException("Button/Lever Not Found");
             }
             else
             {
-                Block.blocksList[((World) var7).getBlockId(var3, var4, var5)]
-                        .onBlockActivated((World) var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
+                var7.getBlock(var3, var4, var5).onBlockActivated(var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
                 ChatUtils.sendMessage(var1, "Button/Lever Pushed");
             }
         }
@@ -81,7 +80,7 @@ public class CommandPush extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.username);
+        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.getCommandSenderName());
         if (args.length != 3)
         {
             throw new WrongUsageException("/push <X> <Y> <Z>", new Object[0]);
@@ -91,22 +90,21 @@ public class CommandPush extends FEcmdModuleCommands {
             int var3 = 0;
             int var4 = 0;
             int var5 = 0;
-            Object var7 = null;
+            World var7 = null;
 
             var3 = (int) this.func_82368_a(playermp, ((EntityPlayerMP) playermp).posX, args[0]);
             var4 = (int) this.func_82367_a(playermp, ((EntityPlayerMP) playermp).posY, args[1], 0, 0);
             var5 = (int) this.func_82368_a(playermp, ((EntityPlayerMP) playermp).posZ, args[2]);
             var7 = ((EntityPlayerMP) playermp).worldObj;
 
-            if ((((World) var7).getBlockId(var3, var4, var5) == 0 || !(Block.blocksList[((World) var7).getBlockId(var3, var4, var5)] instanceof BlockButton))
-                    && !(Block.blocksList[((World) var7).getBlockId(var3, var4, var5)] instanceof BlockLever))
+            if ((var7.getBlock(var3, var4, var5) == Blocks.air || !((var7.getBlock(var3, var4, var5)) instanceof BlockButton))
+                    && !(((var7.getBlock(var3, var4, var5)) instanceof BlockLever)))
             {
                 throw new CommandException("Button/Lever Not Found");
             }
             else
             {
-                Block.blocksList[((World) var7).getBlockId(var3, var4, var5)]
-                        .onBlockActivated((World) var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
+                var7.getBlock(var3, var4, var5).onBlockActivated(var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
                 ChatUtils.sendMessage(sender, "Button/Lever Pushed");
             }
         }

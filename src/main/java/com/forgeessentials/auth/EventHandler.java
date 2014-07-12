@@ -110,7 +110,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-        UUID username = event.entityplayer.getPersistentID();
+        UUID username = event.entityPlayer.getPersistentID();
 
         if (ModuleAuth.unLogged.contains(username))
         {
@@ -128,7 +128,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(EntityInteractEvent event)
     {
-        UUID username = event.entityplayer.getPersistentID();
+        UUID username = event.entityPlayer.getPersistentID();
 
         if (ModuleAuth.unLogged.contains(username))
         {
@@ -193,7 +193,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerPickupItem(EntityItemPickupEvent event)
     {
-        UUID username = event.entityplayer.getPersistentID();
+        UUID username = event.entityPlayer.getPersistentID();
 
         if (ModuleAuth.unLogged.contains(username))
         {
@@ -234,7 +234,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerAttack(AttackEntityEvent event)
     {
-        UUID username = event.entityplayer.getPersistentID();
+        UUID username = event.entityPlayer.getPersistentID();
 
         if (ModuleAuth.unLogged.contains(username))
         {

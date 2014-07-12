@@ -40,9 +40,9 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
             if (player != null)
             {
                 int amount = parseIntWithMin(sender, args[1], 0);
-                if (APIRegistry.wallet.getWallet(player.username) >= amount)
+                if (APIRegistry.wallet.getWallet(player.getPersistentID()) >= amount)
                 {
-                    APIRegistry.wallet.removeFromWallet(amount, player.username);
+                    APIRegistry.wallet.removeFromWallet(amount, player.getPersistentID());
                     // Do command in name of player
 
                     StringBuilder cmd = new StringBuilder(args.toString().length());

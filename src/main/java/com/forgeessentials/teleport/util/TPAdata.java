@@ -7,8 +7,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 public class TPAdata {
     public EntityPlayerMP sender;
     public EntityPlayerMP receiver;
-    int timeout;
     public boolean tphere;
+    int timeout;
 
     public TPAdata(EntityPlayerMP sender, EntityPlayerMP receiver, boolean tpaHere)
     {
@@ -23,28 +23,28 @@ public class TPAdata {
     {
         if (sender == null)
         {
-            TickHandlerTP.tpaListToRemove.add(this);
+            TeleportModule.tpaListToRemove.add(this);
             return;
         }
 
         if (receiver == null)
         {
-            TickHandlerTP.tpaListToRemove.add(this);
+            TeleportModule.tpaListToRemove.add(this);
             return;
         }
 
         if (timeout == 0)
         {
-            TickHandlerTP.tpaListToRemove.add(this);
+            TeleportModule.tpaListToRemove.add(this);
             if (tphere)
             {
-                OutputHandler.chatWarning(receiver, String.format("TPA from %s timed out.", sender.username));
-                OutputHandler.chatWarning(sender, String.format("TPA to %s timed out.", receiver.username));
+                OutputHandler.chatWarning(receiver, String.format("TPA from %s timed out.", sender.getCommandSenderName()));
+                OutputHandler.chatWarning(sender, String.format("TPA to %s timed out.", receiver.getCommandSenderName()));
             }
             else
             {
-                OutputHandler.chatWarning(receiver, String.format("TPA from %s timed out", sender.username));
-                OutputHandler.chatWarning(sender, String.format("TPA to %s timed out.", receiver.username));
+                OutputHandler.chatWarning(receiver, String.format("TPA from %s timed out", sender.getCommandSenderName()));
+                OutputHandler.chatWarning(sender, String.format("TPA to %s timed out.", receiver.getCommandSenderName()));
             }
         }
         timeout--;

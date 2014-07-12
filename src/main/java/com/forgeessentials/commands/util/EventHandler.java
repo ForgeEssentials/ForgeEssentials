@@ -75,7 +75,7 @@ public class EventHandler {
         if (e.entityPlayer.getEntityData().getBoolean("colorize"))
         {
             e.setCanceled(true);
-            TileEntity te = e.entityPlayer.worldObj.getBlockTileEntity(e.x, e.y, e.z);
+            TileEntity te = e.entityPlayer.worldObj.getTileEntity(e.x, e.y, e.z);
             if (te != null)
             {
                 if (te instanceof TileEntitySign)
@@ -88,7 +88,7 @@ public class EventHandler {
                     signText[3] = FunctionHelper.formatColors(signText[3]);
 
                     ((TileEntitySign) te).signText = signText;
-                    e.entityPlayer.worldObj.setBlockTileEntity(e.x, e.y, e.z, te);
+                    e.entityPlayer.worldObj.setTileEntity(e.x, e.y, e.z, te);
                     e.entityPlayer.worldObj.markBlockForUpdate(e.x, e.y, e.z);
                 }
                 else
@@ -174,7 +174,7 @@ public class EventHandler {
         else
         {
             WeatherTimeData wt = CommandDataManager.WTmap.get(e.world.provider.dimensionId);
-	        /*
+            /*
 	         * Weather part
 	         */
             if (wt.weatherSpecified)
@@ -231,7 +231,7 @@ public class EventHandler {
          */
         for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
         {
-            PlayerInfo.getPlayerInfo(((EntityPlayer) player).username).KitCooldownTick();
+            PlayerInfo.getPlayerInfo(((EntityPlayer) player).getPersistentID()).KitCooldownTick();
         }
 
         /*
@@ -248,9 +248,9 @@ public class EventHandler {
             afkList.removeAll(afkListToRemove);
             afkListToRemove.clear();
         }
-        catch (Exception e)
+        catch (Exception e1)
         {
-            e.printStackTrace();
+            e1.printStackTrace();
         }
     }
 

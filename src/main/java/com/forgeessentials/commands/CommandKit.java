@@ -7,7 +7,6 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
-import com.forgeessentials.commands.util.TickHandlerCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -52,7 +51,7 @@ public class CommandKit extends FEcmdModuleCommands {
             return;
         }
         /*
-		 * Give kit
+         * Give kit
 		 */
         if (args.length == 1)
         {
@@ -65,7 +64,7 @@ public class CommandKit extends FEcmdModuleCommands {
                 else
                 {
                     OutputHandler.chatError(sender,
-                            "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
+                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                 }
             }
             else
@@ -131,7 +130,6 @@ public class CommandKit extends FEcmdModuleCommands {
     public void registerExtraPermissions(IPermRegisterEvent event)
     {
         event.registerPermissionLevel(getCommandPerm() + ".admin", RegGroup.OWNERS);
-        event.registerPermissionLevel(TickHandlerCommands.BYPASS_KIT_COOLDOWN, RegGroup.OWNERS);
     }
 
     @Override

@@ -1,14 +1,14 @@
 package com.forgeessentials.util.events;
 
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.permission.Permission;
+import com.forgeessentials.permissions.Permission;
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
 
 @Cancelable
 /**
  * @author AbrarSyed
- * This is thrown after the permissions are checked but before the permission is actually sent.
+ * This is thrown after the permissions are checked but before the permissions is actually sent.
  */
 public class PermissionSetEvent extends Event {
     public Permission perm;

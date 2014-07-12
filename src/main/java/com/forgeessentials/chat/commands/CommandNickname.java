@@ -38,14 +38,14 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
             {
                 NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
                 tag.removeTag("nickname");
-                sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+                sender.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
                 ChatUtils.sendMessage(sender, "Nickname removed.");
             }
             else
             {
                 NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
                 tag.setString("nickname", args[0]);
-                sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+                sender.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
                 ChatUtils.sendMessage(sender, "Nickname set to " + args[0]);
             }
         }
@@ -67,7 +67,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
             }
             else
             {
-                OutputHandler.chatError(sender, "You don't have permission for that.");
+                OutputHandler.chatError(sender, "You don't have permissions for that.");
             }
         }
         else
@@ -90,12 +90,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
             if (args.length == 2)
             {
                 player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-                ChatUtils.sendMessage(sender, "Nickname of player " + player.username + " set to " + args[1]);
+                ChatUtils.sendMessage(sender, "Nickname of player " + player.getCommandSenderName() + " set to " + args[1]);
             }
             else if (args.length == 1)
             {
                 player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
-                ChatUtils.sendMessage(sender, "Nickname of player " + player.username + " removed");
+                ChatUtils.sendMessage(sender, "Nickname of player " + player.getCommandSenderName() + " removed");
             }
             else
             {

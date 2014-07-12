@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerInfo extends Response {
+    private static final DecimalFormat DF = new DecimalFormat("########0.000");
+    public static Integer ServerID = 0;
+    public static String serverHash = "";
     private JSONObject data = new JSONObject();
     private boolean sendWB;
     private boolean sendMotd;
@@ -27,8 +30,38 @@ public class ServerInfo extends Response {
     private boolean sendMods;
     private int[] TPSList;
     private boolean overrideIP;
-    public static Integer ServerID = 0;
-    public static String serverHash = "";
+
+    /**
+     * @param par1ArrayOfLong
+     * @return amount of time for 1 tick in ms
+     */
+    private static double func_79015_a(long[] par1ArrayOfLong)
+    {
+        long var2 = 0L;
+        long[] var4 = par1ArrayOfLong;
+        int var5 = par1ArrayOfLong.length;
+
+        for (int var6 = 0; var6 < var5; ++var6)
+        {
+            long var7 = var4[var6];
+            var2 += var7;
+        }
+
+        return (double) var2 / (double) par1ArrayOfLong.length * 1.0E-6D;
+    }
+
+    public static String getTPSFromData(long[] par1ArrayOfLong)
+    {
+        double tps = func_79015_a(par1ArrayOfLong);
+        if (tps < 50)
+        {
+            return "20";
+        }
+        else
+        {
+            return DF.format(1000 / tps);
+        }
+    }
 
     @Override
     public JSONObject getResponce(JSONObject input) throws JSONException
@@ -72,11 +105,11 @@ public class ServerInfo extends Response {
         }
 
         data.put("Gamemode", server.getGameType().getName());
-        data.put("Difficulty", "" + server.getDifficulty());
+        data.put("Difficulty", "" + server.getEntityWorld().difficultySetting);
         data.put("OnlinePlayers", "" + server.getCurrentPlayerCount());
         if (sendMotd)
         {
-            data.put("MOTD", server.getServerMOTD());
+            data.put("MOTD", server.getMOTD());
         }
 
         data.put("Uptime", getUptime());
@@ -108,6 +141,10 @@ public class ServerInfo extends Response {
         serverHash = config.get(category, "serverHash", "", "This is here to make it easy for other sites (server lists) to help authenticate the server.")
                 .getString();
     }
+
+	/*
+     * TPS needed functions
+	 */
 
     @Override
     public void writeConfig(String category, Configuration config)
@@ -154,44 +191,6 @@ public class ServerInfo extends Response {
         catch (Exception e)
         {
             return new JSONObject();
-        }
-    }
-
-	/*
-     * TPS needed functions
-	 */
-
-    private static final DecimalFormat DF = new DecimalFormat("########0.000");
-
-    /**
-     * @param par1ArrayOfLong
-     * @return amount of time for 1 tick in ms
-     */
-    private static double func_79015_a(long[] par1ArrayOfLong)
-    {
-        long var2 = 0L;
-        long[] var4 = par1ArrayOfLong;
-        int var5 = par1ArrayOfLong.length;
-
-        for (int var6 = 0; var6 < var5; ++var6)
-        {
-            long var7 = var4[var6];
-            var2 += var7;
-        }
-
-        return (double) var2 / (double) par1ArrayOfLong.length * 1.0E-6D;
-    }
-
-    public static String getTPSFromData(long[] par1ArrayOfLong)
-    {
-        double tps = func_79015_a(par1ArrayOfLong);
-        if (tps < 50)
-        {
-            return "20";
-        }
-        else
-        {
-            return DF.format(1000 / tps);
         }
     }
 

@@ -17,7 +17,7 @@ public class playerTrackerLog extends logEntry {
         try
         {
             PreparedStatement ps = ModulePlayerLogger.getConnection().prepareStatement(getprepareStatementSQL());
-            ps.setString(1, player.username);
+            ps.setString(1, player.getCommandSenderName());
             ps.setString(2, cat.toString());
             ps.setString(3, extra);
             ps.setTimestamp(4, time);

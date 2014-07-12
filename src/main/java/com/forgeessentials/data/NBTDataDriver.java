@@ -13,21 +13,6 @@ import java.util.zip.GZIPOutputStream;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class NBTDataDriver extends BinaryDataDriver {
-    @Override
-    protected boolean saveData(ClassContainer type, TypeData data)
-    {
-        boolean successful = true;
-
-        // Create file object
-        File file = getFilePath(type, data.getUniqueKey());
-
-        NBTTagCompound compound = new NBTTagCompound();
-        writeClassToTag(compound, data);
-        writeNBT(compound, file);
-
-        return successful;
-    }
-
     private static void writeNBT(NBTTagCompound tag, File file)
     {
         try
@@ -90,6 +75,21 @@ public class NBTDataDriver extends BinaryDataDriver {
             OutputHandler.exception(Level.FINEST, "Error tryong to read NBT frole from " + file, e);
             return null;
         }
+    }
+
+    @Override
+    protected boolean saveData(ClassContainer type, TypeData data)
+    {
+        boolean successful = true;
+
+        // Create file object
+        File file = getFilePath(type, data.getUniqueKey());
+
+        NBTTagCompound compound = new NBTTagCompound();
+        writeClassToTag(compound, data);
+        writeNBT(compound, file);
+
+        return successful;
     }
 
     @Override
@@ -335,7 +335,7 @@ public class NBTDataDriver extends BinaryDataDriver {
             boolean[] array = new boolean[list.tagCount()];
             for (int i = 0; i < array.length; i++)
             {
-                array[i] = ((NBTTagByte) list.tagAt(i)).data != 0;
+                array[i] = ((NBTTagByte) list.getCompoundTagAt(i)).func_150290_f() != 0;
             }
 
             return array;
@@ -350,7 +350,7 @@ public class NBTDataDriver extends BinaryDataDriver {
             String[] array = new String[list.tagCount()];
             for (int i = 0; i < array.length; i++)
             {
-                array[i] = ((NBTTagString) list.tagAt(i)).data;
+                array[i] = ((NBTTagString) list.getCompoundTagAt(i)).data;
             }
 
             return array;
