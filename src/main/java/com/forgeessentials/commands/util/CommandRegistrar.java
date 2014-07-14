@@ -53,6 +53,7 @@ public class CommandRegistrar {
         cmdList.add(new CommandDrop());
         cmdList.add(new CommandPulse());
         cmdList.add(new CommandFindblock());
+        cmdList.add(new CommandMemusage());
     }
 
     public static void commandConfigs(Configuration config)
