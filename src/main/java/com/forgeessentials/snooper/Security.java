@@ -1,7 +1,6 @@
 package com.forgeessentials.snooper;
 
 import com.forgeessentials.api.json.JSONArray;
-import org.bouncycastle.util.encoders.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;

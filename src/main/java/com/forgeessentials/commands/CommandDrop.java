@@ -64,7 +64,7 @@ public class CommandDrop extends FEcmdModuleCommands {
         }
         String var7 = var2[3];
         int var8 = parseIntWithMin(var1, var2[4], 0);
-        int var9 = parseIntBounded(var1, var2[5], 1, GameData.getItemRegistry().getId(var7).getItemStackLimit());
+        int var9 = parseIntBounded(var1, var2[5], 1, GameData.getItemRegistry().getObject(var7).getItemStackLimit());
         int var11;
         ItemStack var10000;
 
@@ -76,11 +76,11 @@ public class CommandDrop extends FEcmdModuleCommands {
             {
                 if (var10.getStackInSlot(var11) == null)
                 {
-                    var10.setInventorySlotContents(var11, new ItemStack(var7, var9, var8));
+                    var10.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
                     break;
                 }
 
-                if (var10.getStackInSlot(var11).itemID == var7 && var10.getStackInSlot(var11).getItemDamage() == var8)
+                if (var10.getStackInSlot(var11).getUnlocalizedName() == var7 && var10.getStackInSlot(var11).getItemDamage() == var8)
                 {
                     if (var10.getStackInSlot(var11).getMaxStackSize() - var10.getStackInSlot(var11).stackSize >= var9)
                     {
@@ -102,11 +102,11 @@ public class CommandDrop extends FEcmdModuleCommands {
             {
                 if (var13.getStackInSlot(var11) == null)
                 {
-                    var13.setInventorySlotContents(var11, new ItemStack(var7, var9, var8));
+                    var13.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
                     break;
                 }
 
-                if (var13.getStackInSlot(var11).itemID == var7 && var13.getStackInSlot(var11).getItemDamage() == var8)
+                if (var13.getStackInSlot(var11).getUnlocalizedName() == var7 && var13.getStackInSlot(var11).getItemDamage() == var8)
                 {
                     if (var13.getStackInSlot(var11).getMaxStackSize() - var13.getStackInSlot(var11).stackSize >= var9)
                     {
@@ -128,11 +128,11 @@ public class CommandDrop extends FEcmdModuleCommands {
             {
                 if (var14.getStackInSlot(var11) == null)
                 {
-                    var14.setInventorySlotContents(var11, new ItemStack(var7, var9, var8));
+                    var14.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
                     break;
                 }
 
-                if (var14.getStackInSlot(var11).itemID == var7 && var14.getStackInSlot(var11).getItemDamage() == var8)
+                if (var14.getStackInSlot(var11).getUnlocalizedName() == var7 && var14.getStackInSlot(var11).getItemDamage() == var8)
                 {
                     if (var14.getStackInSlot(var11).getMaxStackSize() - var14.getStackInSlot(var11).stackSize >= var9)
                     {
@@ -154,12 +154,12 @@ public class CommandDrop extends FEcmdModuleCommands {
             {
                 if (var12.getStackInSlot(var11) == null)
                 {
-                    var12.setInventorySlotContents(var11, new ItemStack(var7, var9, var8));
+                    var12.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
                     var9 = 0;
                     break;
                 }
 
-                if (var12.getStackInSlot(var11).itemID == var7 && var12.getStackInSlot(var11).getItemDamage() == var8)
+                if (var12.getStackInSlot(var11).getUnlocalizedName() == var7 && var12.getStackInSlot(var11).getItemDamage() == var8)
                 {
                     if (var12.getStackInSlot(var11).getMaxStackSize() - var12.getStackInSlot(var11).stackSize >= var9)
                     {

@@ -12,7 +12,7 @@ import com.forgeessentials.api.APIRegistry;
  */
 
 @SuppressWarnings("rawtypes")
-public class Group implements Comparable {
+public class Group implements Comparable{
 
     public String name;
     public String parent;

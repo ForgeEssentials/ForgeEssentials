@@ -8,6 +8,7 @@ import com.forgeessentials.util.tasks.ITickTask;
 import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
 
@@ -99,8 +100,8 @@ public class TickTaskRollback implements ITickTask {
     {
         String[] block = bc.block.split(":");
 
-        Block blockPlace = GameData.getBlockRegistry().getObjectById(block[0]); //legacy
-        world.setBlock(bc.X, bc.Y, bc.Z, Integer.parseInt(block[0]), Integer.parseInt(block[1]), 2);
+        Block blockPlace = GameData.getBlockRegistry().getObject(block[0]); //legacy
+        world.setBlock(bc.X, bc.Y, bc.Z, blockPlace, Integer.parseInt(block[1]), 2);
         if (bc.te != null)
         {
             try
@@ -122,7 +123,7 @@ public class TickTaskRollback implements ITickTask {
     public void remove() throws SQLException
     {
         world.removeTileEntity(bc.X, bc.Y, bc.Z);
-        world.setBlock(bc.X, bc.Y, bc.Z, 0);
+        world.setBlock(bc.X, bc.Y, bc.Z, Blocks.air);
     }
 
     @Override

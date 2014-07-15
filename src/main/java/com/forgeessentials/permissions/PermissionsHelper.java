@@ -20,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
+import java.util.UUID;
 
 @SuppressWarnings("rawtypes")
 public class PermissionsHelper implements IPermissionsHelper{
@@ -27,6 +28,13 @@ public class PermissionsHelper implements IPermissionsHelper{
     private String EPPrefix = "";
     private String EPSuffix = "";
     private Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, APIRegistry.zones.getGLOBAL().getZoneName(), 0);
+
+    public static PermissionsHelper INSTANCE;
+
+    public PermissionsHelper()
+    {
+        INSTANCE = this;
+    }
 
     @Override
     public boolean checkPermAllowed(PermQuery query)
@@ -41,12 +49,6 @@ public class PermissionsHelper implements IPermissionsHelper{
         }
 
         return query.isAllowed();
-    }
-
-    @Override
-    public boolean checkPermAllowed(EntityPlayer player, String node)
-    {
-        return checkPermAllowed(new PermQueryPlayer(player, node));
     }
 
     @Override
@@ -79,7 +81,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
-    public String setPlayerPermission(String username, String permission, boolean allow, String zoneID)
+    public String setPlayerPermission(UUID username, String permission, boolean allow, String zoneID)
     {
         try
         {
@@ -99,7 +101,7 @@ public class PermissionsHelper implements IPermissionsHelper{
             }
 
             SqlHelper.generatePlayer(username);
-            boolean worked = SqlHelper.setPermission(username, false, perm, zoneID);
+            boolean worked = SqlHelper.setPermission(username.toString(), false, perm, zoneID);
 
             if (!worked)
             {
@@ -115,7 +117,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
-    public String setPlayerPermissionProp(String username, String permission, String value, String zoneID)
+    public String setPlayerPermissionProp(UUID username, String permission, String value, String zoneID)
     {
         try
         {
@@ -135,7 +137,7 @@ public class PermissionsHelper implements IPermissionsHelper{
             }
 
             SqlHelper.generatePlayer(username);
-            boolean worked = SqlHelper.setPermProp(username, false, perm, zoneID);
+            boolean worked = SqlHelper.setPermProp(username.toString(), false, perm, zoneID);
 
             if (!worked)
             {
@@ -238,11 +240,11 @@ public class PermissionsHelper implements IPermissionsHelper{
     {
         Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(player));
 
-        return getApplicableGroups(player.username, includeDefaults, zone.getZoneName());
+        return getApplicableGroups(player.getPersistentID(), includeDefaults, zone.getZoneName());
     }
 
     @Override
-    public ArrayList<Group> getApplicableGroups(String player, boolean includeDefaults, String zoneID)
+    public ArrayList<Group> getApplicableGroups(UUID player, boolean includeDefaults, String zoneID)
     {
         ArrayList<Group> list = new ArrayList<Group>();
 
@@ -306,13 +308,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
-    public Group getGroupForName(String name)
-    {
-        return SqlHelper.getGroupForName(name);
-    }
-
-    @Override
-    public String setPlayerGroup(String group, String player, String zone)
+    public String setPlayerGroup(String group, UUID player, String zone)
     {
         SetPlayerGroupEvent event = new SetPlayerGroupEvent(group, player, zone);
         if (MinecraftForge.EVENT_BUS.post(event))
@@ -325,7 +321,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
-    public String addPlayerToGroup(String group, String player, String zone)
+    public String addPlayerToGroup(String group, UUID player, String zone)
     {
         SqlHelper.generatePlayer(player);
         if (getApplicableGroups(player, false, zone).contains(getGroupForName(group)))
@@ -345,7 +341,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
-    public String clearPlayerGroup(String group, String player, String zone)
+    public String clearPlayerGroup(String group, UUID player, String zone)
     {
         RemovePlayerGroupEvent event = new RemovePlayerGroupEvent(group, player, zone);
         if (MinecraftForge.EVENT_BUS.post(event))
@@ -358,14 +354,14 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
-    public String clearPlayerPermission(String player, String node, String zone)
+    public String clearPlayerPermission(UUID player, String node, String zone)
     {
         SqlHelper.generatePlayer(player);
         return SqlHelper.removePermission(player, false, node, zone);
     }
 
     @Override
-    public String clearPlayerPermissionProp(String player, String node, String zone)
+    public String clearPlayerPermissionProp(UUID player, String node, String zone)
     {
         SqlHelper.generatePlayer(player);
         return SqlHelper.removePermissionProp(player, false, node, zone);
@@ -402,13 +398,13 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
-    public String getPermissionForPlayer(String target, String zone, String perm)
+    public String getPermissionForPlayer(UUID target, String zone, String perm)
     {
         return SqlHelper.getPermission(target, false, perm, zone);
     }
 
     @Override
-    public String getPermissionPropForPlayer(String target, String zone, String perm)
+    public String getPermissionPropForPlayer(UUID target, String zone, String perm)
     {
         return SqlHelper.getPermissionProp(target, false, perm, zone);
     }
@@ -426,7 +422,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
-    public ArrayList getPlayerPermissions(String target, String zone)
+    public ArrayList getPlayerPermissions(UUID target, String zone)
     {
         ArrayList<String> output = new ArrayList<String>();
 
@@ -446,7 +442,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
-    public ArrayList getPlayerPermissionProps(String target, String zone)
+    public ArrayList getPlayerPermissionProps(UUID target, String zone)
     {
         ArrayList<String> output = new ArrayList<String>();
 

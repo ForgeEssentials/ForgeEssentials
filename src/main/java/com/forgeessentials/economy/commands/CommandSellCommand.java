@@ -5,6 +5,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -44,7 +45,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                 boolean found = false;
                 // Set needed parm
                 int amount = 1, item = 0, meta = -1;
-                ItemStack target = new ItemStack(item, amount, meta);
+                ItemStack target = new ItemStack(GameData.getItemRegistry().getObject(item), amount, meta);
 
                 if (args[1].contains("x"))
                 {

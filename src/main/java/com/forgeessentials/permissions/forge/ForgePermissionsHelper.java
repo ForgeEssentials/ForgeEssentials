@@ -1,5 +1,10 @@
 package com.forgeessentials.permissions.forge;
 
+import com.forgeessentials.api.permissions.Group;
+import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import com.forgeessentials.permissions.PermissionsHelper;
+import com.forgeessentials.permissions.SqlHelper;
+import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.dispenser.ILocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,14 +14,13 @@ import net.minecraftforge.permissions.api.IGroup;
 import net.minecraftforge.permissions.api.PermBuilderFactory;
 import net.minecraftforge.permissions.api.context.IContext;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * This class is allowed to call PermissionsHelper directly, being in the same module.
- */
 public class ForgePermissionsHelper implements PermBuilderFactory{
+
     @Override public String getName()
     {
         return "ForgeEssentials";
@@ -24,7 +28,7 @@ public class ForgePermissionsHelper implements PermBuilderFactory{
 
     @Override public boolean checkPerm(EntityPlayer player, String node, Map<String, IContext> contextInfo)
     {
-        return false;
+        return PermissionsHelper.INSTANCE.checkPermAllowed(new PermQueryPlayer(player, node));
     }
 
     @Override public IContext getDefaultContext(EntityPlayer player)
@@ -69,16 +73,28 @@ public class ForgePermissionsHelper implements PermBuilderFactory{
 
     @Override public Collection<IGroup> getGroups(UUID playerID)
     {
-        return null;
+        ArrayList<IGroup> returned = new ArrayList<>();
+        for (Group g : PermissionsHelper.INSTANCE.getApplicableGroups(FunctionHelper.getPlayerForUUID(playerID), true))
+        {
+            returned.add(ForgeGroup.make(g));
+        }
+
+        return returned;
     }
 
     @Override public IGroup getGroup(String name)
     {
-        return null;
+        return ForgeGroup.make(SqlHelper.getGroupForName(name));
     }
 
     @Override public Collection<IGroup> getAllGroups()
     {
-        return null;
+        ArrayList<IGroup> returned = new ArrayList<>();
+        for (Group g : PermissionsHelper.INSTANCE.getGroupsInZone())
+        {
+            returned.add(ForgeGroup.make(g));
+        }
+
+        return returned;
     }
 }

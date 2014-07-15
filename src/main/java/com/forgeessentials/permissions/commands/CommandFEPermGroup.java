@@ -9,6 +9,7 @@ import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +68,7 @@ public class CommandFEPermGroup {
                 OutputHandler.chatConfirmation(sender, "Usage: /p group delete <groupname>");
                 return;
             }
-            if (APIRegistry.perms.getGroupForName(args[1]) == null)
+            if (PermissionsManager.getGroup(args[1]) == null)
             {
                 OutputHandler.chatError(sender, args[1] + " does not exist as a group!");
                 return;
@@ -139,7 +140,7 @@ public class CommandFEPermGroup {
             return;
         }
 
-        Group group = APIRegistry.perms.getGroupForName(args[0]);
+        Group group = PermissionsManager.getGroup(args[0]);
         if (group == null)
         {
             OutputHandler.chatError(sender, args[0] + " does not exist as a group!");
@@ -505,7 +506,7 @@ public class CommandFEPermGroup {
                 ChatUtils.sendMessage(sender, "Usage: /p group delete <groupname>");
                 return;
             }
-            if (APIRegistry.perms.getGroupForName(args[1]) == null)
+            if (PermissionsManager.getGroup(args[1]) == null)
             {
                 ChatUtils.sendMessage(sender, args[0] + " does not exist as a group!");
                 return;
@@ -559,7 +560,7 @@ public class CommandFEPermGroup {
             return;
         }
 
-        Group group = APIRegistry.perms.getGroupForName(args[0]);
+        Group group = PermissionsManager.getGroup(args[0]);
         if (group == null)
         {
             ChatUtils.sendMessage(sender, args[0] + " does not exist as a group!");

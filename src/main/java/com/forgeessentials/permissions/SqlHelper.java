@@ -6,18 +6,19 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
 
 import java.io.File;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeSet;
 
+/**
+ * Usernames are only kept for ease of updating - this class should be receiving UUIDs that have been toString'ed.
+ */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class SqlHelper {
     private static final String DATABASE_TABLE_PREFIX = "fepermissions_";
@@ -319,10 +320,10 @@ public class SqlHelper {
     }
 
     /**
-     * @param groupName
+     * @param group
      * @return NULL if no group in existence. or an SQL error happened.
      */
-    protected static synchronized Group getGroupForName(String group)
+    public static synchronized Group getGroupForName(String group)
     {
         try
         {
@@ -1256,11 +1257,12 @@ public class SqlHelper {
     }
 
     /**
-     * @param username
+     * @param user
      * @return false if SQL error or the player already exists.
      */
     public static synchronized boolean generatePlayer(String username)
     {
+
         try
         {
             if (doesPlayerExist(username))
@@ -1478,7 +1480,6 @@ public class SqlHelper {
     }
 
     /**
-     * @param ladderID
      * @return null if the Ladder does not exist.
      * @throws SQLException
      */

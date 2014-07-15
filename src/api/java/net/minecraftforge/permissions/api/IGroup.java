@@ -32,7 +32,7 @@ public interface IGroup {
     /**
      * Is the player in the group
      * 
-     * @param player player to check
+     * @param playerID player to check
      * @return if the player was in the group
      */
     boolean isMember(UUID playerID);

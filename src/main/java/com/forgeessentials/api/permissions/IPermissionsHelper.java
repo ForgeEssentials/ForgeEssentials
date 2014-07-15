@@ -6,10 +6,10 @@ import com.forgeessentials.api.permissions.query.PropQuery;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 @SuppressWarnings("rawtypes")
 public interface IPermissionsHelper {
-    // Javadocs please
 
     /**
      * Check if a permissions is allowed
@@ -19,15 +19,9 @@ public interface IPermissionsHelper {
      */
 
     boolean checkPermAllowed(PermQuery query);
-
-    /**
-     * Check if a permissions is allowed. Use if you do not want to create PermQuery objects.
-     *
-     * @param player
-     * @param node
-     * @return true if allowed, false if not.
-     */
-    boolean checkPermAllowed(EntityPlayer player, String node);
+    
+    // moved to forge API 
+    // boolean checkPermAllowed(EntityPlayer player, String node);
 
     PermResult checkPermResult(PermQuery query);
 
@@ -58,7 +52,7 @@ public interface IPermissionsHelper {
      * @param zoneID     The zone in which the permissions takes effect
      * @return
      */
-    String setPlayerPermission(String username, String permission, boolean allow, String zoneID);
+    String setPlayerPermission(UUID username, String permission, boolean allow, String zoneID);
 
     /**
      * Set a permissions for a group
@@ -80,12 +74,11 @@ public interface IPermissionsHelper {
      * @param zoneID     The zone in which the permissions takes effect
      * @return
      */
-    String setPlayerPermissionProp(String username, String permission, String value, String zoneID);
+    String setPlayerPermissionProp(UUID username, String permission, String value, String zoneID);
 
     /**
      * Set a permissions for a player
      *
-     * @param username   The player's username
      * @param permission The permissions node name
      * @param value      Value of the permissions prop
      * @param zoneID     The zone in which the permissions takes effect
@@ -95,23 +88,28 @@ public interface IPermissionsHelper {
 
     ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults);
 
-    ArrayList<Group> getApplicableGroups(String player, boolean includeDefaults, String zoneID);
+    ArrayList<Group> getApplicableGroups(UUID player, boolean includeDefaults, String zoneID);
 
-    Group getGroupForName(String name);
+    // moved to forge
+    // Group getGroupForName(String name);
 
     Group getHighestGroup(EntityPlayer player);
 
+    /**
+     * These methods are zone aware - if you don't care about the zone, use the methods provided in the ForgePerms API
+     */
+
     ArrayList<String> getPlayersInGroup(String group, String zone);
 
-    String setPlayerGroup(String group, String player, String zone);
+    String setPlayerGroup(String group, UUID player, String zone);
 
-    String addPlayerToGroup(String group, String player, String zone);
+    String addPlayerToGroup(String group, UUID player, String zone);
 
-    String clearPlayerGroup(String group, String player, String zone);
+    String clearPlayerGroup(String group, UUID player, String zone);
 
-    String clearPlayerPermission(String player, String node, String zone);
+    String clearPlayerPermission(UUID player, String node, String zone);
 
-    String clearPlayerPermissionProp(String player, String node, String zone);
+    String clearPlayerPermissionProp(UUID player, String node, String zone);
 
     void deleteGroupInZone(String group, String zone);
 
@@ -127,13 +125,13 @@ public interface IPermissionsHelper {
 
     String getPermissionPropForGroup(String target, String zone, String perm);
 
-    String getPermissionForPlayer(String target, String zone, String perm);
+    String getPermissionForPlayer(UUID target, String zone, String perm);
 
-    String getPermissionPropForPlayer(String target, String zone, String perm);
+    String getPermissionPropForPlayer(UUID target, String zone, String perm);
 
-    ArrayList getPlayerPermissions(String target, String zone);
+    ArrayList getPlayerPermissions(UUID target, String zone);
 
-    ArrayList getPlayerPermissionProps(String target, String zone);
+    ArrayList getPlayerPermissionProps(UUID target, String zone);
 
     ArrayList getGroupPermissions(String target, String zone);
 
