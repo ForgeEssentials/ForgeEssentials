@@ -166,7 +166,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
     {
         if (target.startsWith("p:"))
         {
-            return APIRegistry.perms.getPermissionPropForPlayer(target.replaceFirst("p:", ""), APIRegistry.zones.getGLOBAL().getZoneName(), PERMPROP);
+            return APIRegistry.perms.getPermissionPropForPlayer(FunctionHelper.getPlayerID(target.replaceFirst("p:", "")), APIRegistry.zones.getGLOBAL().getZoneName(), PERMPROP);
         }
         else if (target.startsWith("g:"))
         {
@@ -182,7 +182,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
     {
         if (target.startsWith("p:"))
         {
-            APIRegistry.perms.setPlayerPermissionProp(target.replaceFirst("p:", ""), PERMPROP, "" + limit, APIRegistry.zones.getGLOBAL().getZoneName());
+            APIRegistry.perms.setPlayerPermissionProp(FunctionHelper.getPlayerID(target.replaceFirst("p:", "")), PERMPROP, "" + limit, APIRegistry.zones.getGLOBAL().getZoneName());
         }
         else if (target.startsWith("g:"))
         {

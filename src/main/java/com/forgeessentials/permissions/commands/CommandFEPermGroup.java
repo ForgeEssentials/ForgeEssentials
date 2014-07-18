@@ -3,6 +3,7 @@ package com.forgeessentials.permissions.commands;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.permissions.forge.ForgeGroup;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
@@ -140,7 +141,8 @@ public class CommandFEPermGroup {
             return;
         }
 
-        Group group = PermissionsManager.getGroup(args[0]);
+        // this is allowed to be our def. of groups
+        Group group = ((ForgeGroup)PermissionsManager.getGroup(args[0])).asFEGroup();
         if (group == null)
         {
             OutputHandler.chatError(sender, args[0] + " does not exist as a group!");
@@ -560,7 +562,8 @@ public class CommandFEPermGroup {
             return;
         }
 
-        Group group = PermissionsManager.getGroup(args[0]);
+        // this is allowed to be our def. of groups
+        Group group = ((ForgeGroup)PermissionsManager.getGroup(args[0])).asFEGroup();
         if (group == null)
         {
             ChatUtils.sendMessage(sender, args[0] + " does not exist as a group!");

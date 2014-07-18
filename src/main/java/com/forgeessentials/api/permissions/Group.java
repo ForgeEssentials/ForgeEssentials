@@ -1,6 +1,12 @@
 package com.forgeessentials.api.permissions;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.permissions.SqlHelper;
+import net.minecraftforge.permissions.api.IGroup;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.UUID;
 
 /**
  * This class is not a format that is designed to actually be saved in any way.
@@ -12,7 +18,7 @@ import com.forgeessentials.api.APIRegistry;
  */
 
 @SuppressWarnings("rawtypes")
-public class Group implements Comparable{
+public class Group implements Comparable, IGroup{
 
     public String name;
     public String parent;
@@ -116,6 +122,54 @@ public class Group implements Comparable{
     public String toString()
     {
         return name + "[" + parent + ", " + prefix + ", " + suffix + ", " + zoneName + ", " + priority + "]";
+    }
+
+    @Override public void addPlayer(UUID playerID)
+    {
+        APIRegistry.perms.addPlayerToGroup(name, playerID, zoneName);
+
+    }
+
+    @Override public boolean removePlayer(UUID playerID)
+    {
+        APIRegistry.perms.clearPlayerGroup(name, playerID, zoneName);
+        return true;
+    }
+
+    @Override public Collection<UUID> getAllPlayers()
+    {
+        ArrayList<UUID> returned = new ArrayList<UUID>();
+        for (String pname : APIRegistry.perms.getPlayersInGroup(name, zoneName))
+        {
+            returned.add(UUID.fromString(pname));
+        }
+
+        return returned;
+    }
+
+    @Override public boolean isMember(UUID playerID)
+    {
+        return APIRegistry.perms.getPlayersInGroup(name, zoneName).contains(playerID.toString());
+    }
+
+    @Override public IGroup getParent()
+    {
+        return SqlHelper.getGroupForName(parent);
+    }
+
+    @Override public IGroup setParent(IGroup parent)
+    {
+        return null;
+    }
+
+    @Override public String getName()
+    {
+        return name;
+    }
+
+    @Override public void setName(String name)
+    {
+        this.name = name;
     }
 
 }

@@ -3,6 +3,7 @@ package com.forgeessentials.auth.lists;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.command.ICommandSender;
 
 public class CommandVIP extends ForgeEssentialsCommandBase {
@@ -18,11 +19,11 @@ public class CommandVIP extends ForgeEssentialsCommandBase {
     {
         if (args.length >= 2 && args[0].equalsIgnoreCase("add"))
         {
-            APIRegistry.perms.setPlayerPermission(args[1], "fe.auth.vip", true, "_GLOBAL_");
+            APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.vip", true, "_GLOBAL_");
         }
         else if (args.length >= 2 && args[0].equalsIgnoreCase("remove"))
         {
-            APIRegistry.perms.setPlayerPermission(args[1], "fe.auth.vip", false, "_GLOBAL_");
+            APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.vip", false, "_GLOBAL_");
         }
     }
 

@@ -169,7 +169,7 @@ public final class FunctionHelper {
 
     public static String getPlayerName(UUID playerID)
     {
-        return MinecraftServer.getServer().func_152358_ax().func_152652_a(playerID).toString();
+        return MinecraftServer.getServer().func_152358_ax().func_152652_a(playerID).getName();
     }
 
     /**

@@ -192,9 +192,11 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         if (args[1].equalsIgnoreCase("player"))
         {
             String name = args[2];
+            UUID id = null;
             if (args[2].equalsIgnoreCase("_ME_"))
             {
                 name = sender.getCommandSenderName();
+                id = FunctionHelper.getPlayerID(name);
             }
             else
             {
@@ -207,10 +209,11 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
                 else
                 {
                     name = player.getCommandSenderName();
+                    id = player.getPersistentID();
                 }
             }
 
-            APIRegistry.perms.setPlayerPermissionProp(name, permProp, prop, zone.getZoneName());
+            APIRegistry.perms.setPlayerPermissionProp(id, permProp, prop, zone.getZoneName());
             OutputHandler.chatConfirmation(sender, output);
         }
         else if (args[1].equalsIgnoreCase("group"))
@@ -358,6 +361,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         if (args[1].equalsIgnoreCase("player"))
         {
             String name = args[2];
+            UUID id = null;
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
             if (player == null)
             {
@@ -367,9 +371,10 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
             else
             {
                 name = player.getCommandSenderName();
+                id = player.getPersistentID()
             }
 
-            APIRegistry.perms.setPlayerPermissionProp(name, permProp, prop, zone.getZoneName());
+            APIRegistry.perms.setPlayerPermissionProp(id, permProp, prop, zone.getZoneName());
             OutputHandler.chatConfirmation(sender, output);
         }
         else if (args[1].equalsIgnoreCase("group"))

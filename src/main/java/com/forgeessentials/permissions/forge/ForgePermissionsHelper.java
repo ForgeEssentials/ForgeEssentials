@@ -1,5 +1,6 @@
 package com.forgeessentials.permissions.forge;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.permissions.PermissionsHelper;
@@ -76,7 +77,7 @@ public class ForgePermissionsHelper implements PermBuilderFactory{
         ArrayList<IGroup> returned = new ArrayList<>();
         for (Group g : PermissionsHelper.INSTANCE.getApplicableGroups(FunctionHelper.getPlayerForUUID(playerID), true))
         {
-            returned.add(ForgeGroup.make(g));
+            returned.add(g);
         }
 
         return returned;
@@ -84,15 +85,15 @@ public class ForgePermissionsHelper implements PermBuilderFactory{
 
     @Override public IGroup getGroup(String name)
     {
-        return ForgeGroup.make(SqlHelper.getGroupForName(name));
+        return SqlHelper.getGroupForName(name);
     }
 
     @Override public Collection<IGroup> getAllGroups()
     {
         ArrayList<IGroup> returned = new ArrayList<>();
-        for (Group g : PermissionsHelper.INSTANCE.getGroupsInZone())
+        for (Group g : PermissionsHelper.INSTANCE.getGroupsInZone(APIRegistry.zones.getGLOBAL().getZoneName()))
         {
-            returned.add(ForgeGroup.make(g));
+            returned.add(g);
         }
 
         return returned;

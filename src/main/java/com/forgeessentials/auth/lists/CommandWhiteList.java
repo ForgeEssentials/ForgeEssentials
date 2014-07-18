@@ -5,6 +5,7 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.auth.EventHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.command.ICommandSender;
 
 public class CommandWhiteList extends ForgeEssentialsCommandBase {
@@ -44,11 +45,11 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("add"))
             {
-                APIRegistry.perms.setPlayerPermission(args[1], "fe.auth.whitelist", true, "_GLOBAL_");
+                APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.whitelist", true, "_GLOBAL_");
             }
             else if (args[0].equalsIgnoreCase("remove"))
             {
-                APIRegistry.perms.setPlayerPermission(args[1], "fe.auth.whitelist", false, "_GLOBAL_");
+                APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.whitelist", false, "_GLOBAL_");
             }
         }
     }

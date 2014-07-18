@@ -145,7 +145,7 @@ public class ModulePermissions {
         ICommand command = e.command;
         if (e.command.getClass().getCanonicalName().startsWith("net.minecraft.command"))
         {
-            boolean allow = APIRegistry.perms.checkPermAllowed((EntityPlayer) e.sender, "mc." + e.command.getCommandName());
+            boolean allow = PermissionsManager.checkPerm((EntityPlayer) e.sender, "mc." + e.command.getCommandName());
             if (!allow)
             {
                 e.setCanceled(true);

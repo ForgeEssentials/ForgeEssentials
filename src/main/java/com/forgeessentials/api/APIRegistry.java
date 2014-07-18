@@ -27,7 +27,6 @@ public class APIRegistry {
     // Use to access the zone manager.
     public static IZoneManager zones;
     private static Method ResponseRegistry_regsisterResponce;
-    private static Method PacketAnalyzerRegistry_register;
 
     /**
      * Snooper method to register your responses.

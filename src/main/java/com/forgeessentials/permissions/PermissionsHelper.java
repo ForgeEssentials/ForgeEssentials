@@ -17,6 +17,8 @@ import com.forgeessentials.util.events.PermissionPropSetEvent;
 import com.forgeessentials.util.events.PermissionSetEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.api.IGroup;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -100,7 +102,7 @@ public class PermissionsHelper implements IPermissionsHelper{
                 return event.getCancelReason();
             }
 
-            SqlHelper.generatePlayer(username);
+            SqlHelper.generatePlayer(username.toString());
             boolean worked = SqlHelper.setPermission(username.toString(), false, perm, zoneID);
 
             if (!worked)
@@ -136,7 +138,7 @@ public class PermissionsHelper implements IPermissionsHelper{
                 return event.getCancelReason();
             }
 
-            SqlHelper.generatePlayer(username);
+            SqlHelper.generatePlayer(username.toString());
             boolean worked = SqlHelper.setPermProp(username.toString(), false, perm, zoneID);
 
             if (!worked)
@@ -252,7 +254,7 @@ public class PermissionsHelper implements IPermissionsHelper{
 
         while (zone != null)
         {
-            list.addAll(SqlHelper.getGroupsForPlayer(player, zone.getZoneName()));
+            list.addAll(SqlHelper.getGroupsForPlayer(player.toString(), zone.getZoneName()));
 
             if (zone == APIRegistry.zones.getGLOBAL())
             {
@@ -287,7 +289,7 @@ public class PermissionsHelper implements IPermissionsHelper{
         ArrayList<Group> temp;
         while (zone != null && list.size() <= 0)
         {
-            temp = SqlHelper.getGroupsForPlayer(player.username, zone.getZoneName());
+            temp = SqlHelper.getGroupsForPlayer(player.getPersistentID().toString(), zone.getZoneName());
 
             if (!temp.isEmpty())
             {
@@ -316,14 +318,14 @@ public class PermissionsHelper implements IPermissionsHelper{
             return event.getCancelReason();
         }
 
-        SqlHelper.generatePlayer(player);
-        return SqlHelper.setPlayerGroup(group, player, zone);
+        SqlHelper.generatePlayer(player.toString());
+        return SqlHelper.setPlayerGroup(group, player.toString(), zone);
     }
 
     @Override
     public String addPlayerToGroup(String group, UUID player, String zone)
     {
-        SqlHelper.generatePlayer(player);
+        SqlHelper.generatePlayer(player.toString());
         if (getApplicableGroups(player, false, zone).contains(getGroupForName(group)))
         {
             return "Player already in group.";
@@ -336,7 +338,7 @@ public class PermissionsHelper implements IPermissionsHelper{
                 return event.getCancelReason();
             }
 
-            return SqlHelper.addPlayerGroup(group, player, zone);
+            return SqlHelper.addPlayerGroup(group, player.toString(), zone);
         }
     }
 
@@ -349,22 +351,22 @@ public class PermissionsHelper implements IPermissionsHelper{
             return event.getCancelReason();
         }
 
-        SqlHelper.generatePlayer(player);
-        return SqlHelper.removePlayerGroup(group, player, zone);
+        SqlHelper.generatePlayer(player.toString());
+        return SqlHelper.removePlayerGroup(group, player.toString(), zone);
     }
 
     @Override
     public String clearPlayerPermission(UUID player, String node, String zone)
     {
-        SqlHelper.generatePlayer(player);
-        return SqlHelper.removePermission(player, false, node, zone);
+        SqlHelper.generatePlayer(player.toString());
+        return SqlHelper.removePermission(player.toString(), false, node, zone);
     }
 
     @Override
     public String clearPlayerPermissionProp(UUID player, String node, String zone)
     {
-        SqlHelper.generatePlayer(player);
-        return SqlHelper.removePermissionProp(player, false, node, zone);
+        SqlHelper.generatePlayer(player.toString());
+        return SqlHelper.removePermissionProp(player.toString(), false, node, zone);
     }
 
     @Override
@@ -400,13 +402,13 @@ public class PermissionsHelper implements IPermissionsHelper{
     @Override
     public String getPermissionForPlayer(UUID target, String zone, String perm)
     {
-        return SqlHelper.getPermission(target, false, perm, zone);
+        return SqlHelper.getPermission(target.toString(), false, perm, zone);
     }
 
     @Override
     public String getPermissionPropForPlayer(UUID target, String zone, String perm)
     {
-        return SqlHelper.getPermissionProp(target, false, perm, zone);
+        return SqlHelper.getPermissionProp(target.toString(), false, perm, zone);
     }
 
     @Override
@@ -432,7 +434,7 @@ public class PermissionsHelper implements IPermissionsHelper{
         }
         else
         {
-            for (Permission perm : SqlHelper.getAllPermissions(target, zone, false))
+            for (Permission perm : SqlHelper.getAllPermissions(target.toString(), zone, false))
             {
                 output.add(perm.toString());
             }
@@ -452,7 +454,7 @@ public class PermissionsHelper implements IPermissionsHelper{
         }
         else
         {
-            for (Permission perm : SqlHelper.getAllPermissions(target, zone, true))
+            for (Permission perm : SqlHelper.getAllPermissions(target.toString(), zone, true))
             {
                 output.add(perm.toString());
             }

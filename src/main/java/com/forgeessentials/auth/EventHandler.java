@@ -1,6 +1,5 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -19,6 +18,7 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.permissions.PermissionsManager;
 
 import java.util.UUID;
 
@@ -271,12 +271,12 @@ public class EventHandler {
         maxcounter = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipslots - offset;
         if (whitelist)
         {
-            if (!APIRegistry.perms.checkPermAllowed(e.player, "fe.auth.isWhiteListed"))
+            if (!PermissionsManager.checkPerm(e.player, "fe.auth.isWhiteListed"))
             {
                 ((EntityPlayerMP) e.player).playerNetServerHandler.kickPlayerFromServer(notwhitelisted);
             }
         }
-        if (APIRegistry.perms.checkPermAllowed(e.player, "fe.auth.isVIP"))
+        if (PermissionsManager.checkPerm(e.player, "fe.auth.isVIP"))
         {
             return;
         }

@@ -192,8 +192,8 @@ public class SqlHelper {
     }
 
     /**
-     * @param groupName
-     * @param zoneName
+     * @param group
+     * @param zone
      * @return NULL if no ladder in existence.
      */
     public static synchronized PromotionLadder getLadderForGroup(String group, String zone)
@@ -359,7 +359,7 @@ public class SqlHelper {
     }
 
     /**
-     * @param groupID
+     * @param group
      * @return NULL if no group in existence, or an SQL erorr happenend. TDOD:
      * remove?? its unused...
      */
@@ -1257,7 +1257,7 @@ public class SqlHelper {
     }
 
     /**
-     * @param user
+     * @param username
      * @return false if SQL error or the player already exists.
      */
     public static synchronized boolean generatePlayer(String username)
