@@ -20,7 +20,7 @@ import java.util.List;
 
 public class CommandFEPerm extends ForgeEssentialsCommandBase {
     // Variables for auto-complete
-    String[] args2 = { "user", "group", "export", "promote" };
+    String[] args2 = { "user", "group", "export", "promote", "test" };
     String[] groupargs = { "prefix", "suffix", "parent", "priority", "allow", "true", "deny", "false", "clear" };
     String[] playerargs = { "prefix", "suffix", "group", "set", "add", "remove", "allow", "true", "deny", "false", "clear" };
     String[] playergargs = { "set", "add", "remove" };
@@ -85,6 +85,12 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase {
         else if (first.equalsIgnoreCase("promote"))
         {
             CommandFEPermPromote.processCommandPlayer(sender, newArgs);
+        }
+        else if (first.equalsIgnoreCase("test"))
+        {
+            boolean allow = APIRegistry.perms.checkPermAllowed(sender, args[1]);
+            String returned =  args[1] + "is " + (allow ? "allowed" : "denied");
+            ChatUtils.sendMessage(sender, returned);
         }
         else if (first.equalsIgnoreCase("default"))
         {

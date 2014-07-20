@@ -15,6 +15,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Init;
 import com.forgeessentials.core.moduleLauncher.FEModule.ServerPostInit;
 import com.forgeessentials.teleport.util.ConfigTeleport;
 import com.forgeessentials.teleport.util.PlayerTrackerTP;
+import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.teleport.util.TickHandlerTP;
 import com.forgeessentials.util.AreaSelector.WarpPoint;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
@@ -22,6 +23,7 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -131,7 +133,11 @@ public class TeleportModule {
         GameRegistry.registerPlayerTracker(new PlayerTrackerTP());
         TickRegistry.registerScheduledTickHandler(new TickHandlerTP(),
                 Side.SERVER);
+        TeleportDataManager.load();
     }
+
+    @FEModule.ServerStop
+    public void serverStop(FEModuleServerStopEvent e){ TeleportDataManager.save();}
 
     @ForgeSubscribe(priority = EventPriority.LOW)
     public void onPlayerDeath(LivingDeathEvent e)

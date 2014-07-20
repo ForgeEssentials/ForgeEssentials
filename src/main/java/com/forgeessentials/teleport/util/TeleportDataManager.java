@@ -10,14 +10,13 @@ public class TeleportDataManager {
     private static ClassContainer conWarp = new ClassContainer(Warp.class);
     private static ClassContainer conPWarp = new ClassContainer(PWarp.class);
 
-    private static AbstractDataDriver data;
+    private static AbstractDataDriver data = DataStorageManager.getReccomendedDriver();
 
     public static HashMap<String, Warp> warps = new HashMap<String, Warp>();
     public static HashMap<String, HashMap<String, PWarp>> pwMap = new HashMap<String, HashMap<String, PWarp>>();
 
     public static void load()
     {
-        data = DataStorageManager.getReccomendedDriver();
 
         loadWarps();
         loadPWarps();
@@ -95,6 +94,7 @@ public class TeleportDataManager {
     public static void addWarp(Warp warp)
     {
         warps.put(warp.getName(), warp);
+        System.out.println(warp.getName());
         data.saveObject(conWarp, warp);
     }
 
