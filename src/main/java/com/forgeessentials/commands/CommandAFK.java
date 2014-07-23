@@ -75,11 +75,11 @@ public class CommandAFK extends FEcmdModuleCommands {
         if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
         {
             ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    String.format(outMessage, afkData.player.getPersistentID()));
+                    String.format(inMessage, afkData.player.getPersistentID()));
         }
         else
         {
-            OutputHandler.chatConfirmation(afkData.player, selfOutMessage);
+            OutputHandler.chatConfirmation(afkData.player, selfInMessage);
         }
     }
 
@@ -92,11 +92,11 @@ public class CommandAFK extends FEcmdModuleCommands {
         if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
         {
             ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    String.format(inMessage, afkData.player.getPersistentID()));
+                    String.format(outMessage, afkData.player.getPersistentID()));
         }
         else
         {
-            OutputHandler.chatConfirmation(afkData.player, selfInMessage);
+            OutputHandler.chatConfirmation(afkData.player, selfOutMessage);
         }
     }
 
