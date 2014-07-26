@@ -2,7 +2,6 @@ package com.forgeessentials.teleport;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
@@ -256,13 +255,13 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
         return RegGroup.GUESTS;
     }
 
-    public void registerExtraPermissions(IPermRegisterEvent event)
+    public void registerExtraPermissions()
     {
-        event.registerPermissionLevel(PERMSETLIMIT, RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(PERMSETLIMIT, RegGroup.OWNERS);
 
-        event.registerGroupPermissionprop(PERMPROP, 0, RegGroup.GUESTS);
-        event.registerGroupPermissionprop(PERMPROP, 10, RegGroup.MEMBERS);
-        event.registerGroupPermissionprop(PERMPROP, -1, RegGroup.OWNERS);
+        APIRegistry.permReg.registerGroupPermissionprop(PERMPROP, 0, RegGroup.GUESTS);
+        APIRegistry.permReg.registerGroupPermissionprop(PERMPROP, 10, RegGroup.MEMBERS);
+        APIRegistry.permReg.registerGroupPermissionprop(PERMPROP, -1, RegGroup.OWNERS);
     }
 
     @Override

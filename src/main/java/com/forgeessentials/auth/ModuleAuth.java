@@ -1,7 +1,6 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.auth.lists.CommandVIP;
 import com.forgeessentials.auth.lists.CommandWhiteList;
@@ -84,15 +83,11 @@ public class ModuleAuth {
         }
 
         onStatusChange();
-    }
 
-    @PermRegister
-    public static void registerPerms(IPermRegisterEvent event)
-    {
-        event.registerPermissionLevel("fe.auth.admin", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.auth", RegGroup.GUESTS);
-        event.registerPermissionLevel("fe.auth.vip", null);
-        event.registerPermissionLevel("fe.auth.whitelist", RegGroup.GUESTS);
+        APIRegistry.permReg.registerPermissionLevel("fe.auth.admin", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.auth", RegGroup.GUESTS);
+        APIRegistry.permReg.registerPermissionLevel("fe.auth.vip", null);
+        APIRegistry.permReg.registerPermissionLevel("fe.auth.whitelist", RegGroup.GUESTS);
     }
 
     public static boolean vanillaMode()

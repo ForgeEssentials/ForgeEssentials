@@ -1,7 +1,6 @@
 package com.forgeessentials.tickets;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -46,6 +45,11 @@ public class ModuleTickets {
     {
         e.registerServerCommand(new Command());
         loadAll();
+        APIRegistry.permReg.registerPermissionLevel(PERMBASE + ".new", RegGroup.GUESTS);
+        APIRegistry.permReg.registerPermissionLevel(PERMBASE + ".view", RegGroup.GUESTS);
+
+        APIRegistry.permReg.registerPermissionLevel(PERMBASE + ".tp", RegGroup.GUESTS);
+        APIRegistry.permReg.registerPermissionLevel(PERMBASE + ".admin", RegGroup.OWNERS);
     }
 
     @FEModule.ServerStop
@@ -53,16 +57,6 @@ public class ModuleTickets {
     {
         saveAll();
         config.forceSave();
-    }
-
-    @PermRegister
-    public static void registerPermissions(IPermRegisterEvent event)
-    {
-        event.registerPermissionLevel(PERMBASE + ".new", RegGroup.GUESTS);
-        event.registerPermissionLevel(PERMBASE + ".view", RegGroup.GUESTS);
-
-        event.registerPermissionLevel(PERMBASE + ".tp", RegGroup.GUESTS);
-        event.registerPermissionLevel(PERMBASE + ".admin", RegGroup.OWNERS);
     }
 
     /**

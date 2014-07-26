@@ -1,7 +1,6 @@
 package com.forgeessentials.commands;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
@@ -160,9 +159,9 @@ public class CommandPotion extends FEcmdModuleCommands {
     }
 
     @Override
-    public void registerExtraPermissions(IPermRegisterEvent event)
+    public void registerExtraPermissions()
     {
-        event.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
     }
 
     @Override

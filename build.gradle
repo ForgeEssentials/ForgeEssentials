@@ -13,7 +13,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.3.0.1"
+version = "1.3.1"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
@@ -53,7 +53,7 @@ dependencies {
     compile 'mysql:mysql-connector-java:5.1.22'
 
     // WE integration - 
-    // compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT' don't use this for time being, we want one with forge, and deobfed
+    compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT'// use BOTH
     compile files('lib/worldedit-forge-6.0.0-SNAPSHOT-deobf.jar')
 
     // perms API (TEMPORARY, until it gets pulled into Forge!) use deobf one to compile

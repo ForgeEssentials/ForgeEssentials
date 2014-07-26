@@ -1,7 +1,6 @@
 package com.forgeessentials.protection;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.UnfriendlyItemList;
@@ -12,6 +11,7 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.permission.Permission;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
+import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -76,37 +76,37 @@ public class ModuleProtection {
     }
 
     @SuppressWarnings("unchecked")
-    @PermRegister
-    public void registerPermissions(IPermRegisterEvent event)
+    @FEModule.ServerInit
+    public void registerPermissions(FEModuleServerInitEvent ev)
     {
-        event.registerPermissionLevel(PERM_PVP, RegGroup.GUESTS);
-        event.registerPermissionLevel(PERM_EDITS, RegGroup.MEMBERS);
-        event.registerPermissionLevel(PERM_INTERACT_BLOCK, RegGroup.MEMBERS);
-        event.registerPermissionLevel(PERM_INTERACT_ENTITY, RegGroup.MEMBERS);
-        event.registerPermissionLevel(PERM_OVERRIDE, RegGroup.OWNERS);
-        event.registerPermissionLevel(PERM_OVERRIDE_BANNEDITEMS, RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(PERM_PVP, RegGroup.GUESTS);
+        APIRegistry.permReg.registerPermissionLevel(PERM_EDITS, RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel(PERM_INTERACT_BLOCK, RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel(PERM_INTERACT_ENTITY, RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel(PERM_OVERRIDE, RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(PERM_OVERRIDE_BANNEDITEMS, RegGroup.OWNERS);
 
         for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
         {
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
             {
-                event.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + e.getKey());
-                event.registerPermission(PERM_MOB_SPAWN_FORCED + "." + e.getKey());
+                APIRegistry.permReg.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + e.getKey());
+                APIRegistry.permReg.registerPermission(PERM_MOB_SPAWN_FORCED + "." + e.getKey());
             }
         }
-        event.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + Permission.ALL, RegGroup.ZONE);
-        event.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + Permission.ALL, RegGroup.ZONE);
+        APIRegistry.permReg.registerPermissionLevel(PERM_MOB_SPAWN_NATURAL + "." + Permission.ALL, RegGroup.ZONE);
+        APIRegistry.permReg.registerPermissionLevel(PERM_MOB_SPAWN_FORCED + "." + Permission.ALL, RegGroup.ZONE);
 
         for (String perm : UnfriendlyItemList.getNameSet())
         {
-            event.registerPermissionLevel(PERM_ITEM_USE + "." + perm, RegGroup.MEMBERS);
+            APIRegistry.permReg.registerPermissionLevel(PERM_ITEM_USE + "." + perm, RegGroup.MEMBERS);
         }
 
-        event.registerPermissionLevel(PERM_ITEM_USE + "." + Permission.ALL, RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel(PERM_ITEM_USE + "." + Permission.ALL, RegGroup.MEMBERS);
 
         for (int i : DimensionManager.getIDs())
         {
-            event.registerPermissionLevel(PERM_DIMENSION + i, RegGroup.MEMBERS);
+            APIRegistry.permReg.registerPermissionLevel(PERM_DIMENSION + i, RegGroup.MEMBERS);
         }
     }
 }

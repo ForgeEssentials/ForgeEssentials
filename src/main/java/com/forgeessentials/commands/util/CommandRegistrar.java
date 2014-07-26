@@ -1,6 +1,6 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.*;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.Configuration;
@@ -107,14 +107,14 @@ public class CommandRegistrar {
         }
     }
 
-    public static void registerPermissions(IPermRegisterEvent event)
+    public static void registerPermissions()
     {
         for (FEcmdModuleCommands cmd : cmdList)
         {
             if (cmd.getCommandPerm() != null && cmd.getReggroup() != null)
             {
-                event.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
-                cmd.registerExtraPermissions(event);
+                APIRegistry.permReg.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
+                cmd.registerExtraPermissions();
             }
         }
     }

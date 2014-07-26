@@ -1,5 +1,6 @@
 package com.forgeessentials.api;
 
+import com.forgeessentials.api.permissions.IPermRegHelper;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.IZoneManager;
 import com.forgeessentials.api.snooper.Response;
@@ -26,6 +27,10 @@ public class APIRegistry {
 
     // Use to access the zone manager.
     public static IZoneManager zones;
+
+    // Use to access permissions registration helper.
+    public static IPermRegHelper permReg;
+
 
     /**
      * Snooper method to register your responses.
@@ -86,16 +91,6 @@ public class APIRegistry {
     @Target({ ElementType.TYPE })
     public @interface ForgeEssentialsRegistrar {
         String ident();
-
-        /**
-         * Called before Pre-Init
-         *
-         * @param event IPermRegisterEvent
-         */
-        @Retention(RetentionPolicy.RUNTIME)
-        @Target({ ElementType.METHOD })
-        public @interface PermRegister {
-        }
     }
 
 }

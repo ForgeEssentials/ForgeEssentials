@@ -1,8 +1,5 @@
 package com.forgeessentials.core;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.selections.*;
 import com.forgeessentials.core.compat.CommandSetChecker;
@@ -71,13 +68,6 @@ public class ForgeEssentials {
     public ForgeEssentials()
     {
         tasks = new TaskRegistry();
-    }
-
-    @PermRegister
-    private static void registerPerms(IPermRegisterEvent event)
-    {
-        CommandSetChecker.regMCOverrides(event);
-        event.registerPermissionLevel("fe.core.info", RegGroup.OWNERS);
     }
 
     @EventHandler

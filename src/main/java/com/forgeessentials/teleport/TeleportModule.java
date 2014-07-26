@@ -1,8 +1,6 @@
 package com.forgeessentials.teleport;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PropQueryBlanketZone;
@@ -64,36 +62,6 @@ public class TeleportModule {
 
     }
 
-    @PermRegister
-    public static void registerPermissions(IPermRegisterEvent event)
-    {// ensures
-        // on
-        // ServerStart
-        // event.registerPermissionProp("fe.teleport.spawnPoint",
-        // "0;0;0;0");
-        event.registerPermissionProp(CommandSetSpawn.SPAWN_TYPE_PROP, "bed"); // bed,
-        // point,
-        // none
-        event.registerPermissionLevel("fe.teleport.back.ondeath",
-                RegGroup.MEMBERS);
-        event.registerPermissionLevel("fe.teleport.back.ontp", RegGroup.MEMBERS);
-        event.registerPermissionLevel("fe.teleport.bed.others", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.teleport.home.set", RegGroup.MEMBERS);
-        event.registerPermissionLevel("fe.teleport.spawn.others",
-                RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.teleport.top.others", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.teleport.tpa.sendrequest",
-                RegGroup.MEMBERS);
-        event.registerPermissionLevel("fe.teleport.tpahere.sendrequest",
-                RegGroup.MEMBERS);
-        event.registerPermissionLevel("fe.teleport.warp.admin", RegGroup.OWNERS);
-
-        for (ForgeEssentialsCommandBase cmd : commands)
-        {
-            event.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
-        }
-    }
-
     @Init
     public void load(FEModuleInitEvent e)
     {
@@ -106,6 +74,33 @@ public class TeleportModule {
         for (ForgeEssentialsCommandBase cmd : commands)
         {
             e.registerServerCommand(cmd);
+        }
+
+        // ensures
+        // on
+        // ServerStart
+        // event.registerPermissionProp("fe.teleport.spawnPoint",
+        // "0;0;0;0");
+        APIRegistry.permReg.registerPermissionProp(CommandSetSpawn.SPAWN_TYPE_PROP, "bed"); // bed,
+        // point,
+        // none
+        APIRegistry.permReg.registerPermissionLevel("fe.teleport.back.ondeath",
+                RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.teleport.back.ontp", RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.teleport.bed.others", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.teleport.home.set", RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.teleport.spawn.others",
+                RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.teleport.top.others", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.teleport.tpa.sendrequest",
+                RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.teleport.tpahere.sendrequest",
+                RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.teleport.warp.admin", RegGroup.OWNERS);
+
+        for (ForgeEssentialsCommandBase cmd : commands)
+        {
+            APIRegistry.permReg.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
         }
 
     }

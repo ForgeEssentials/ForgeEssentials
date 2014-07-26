@@ -1,8 +1,6 @@
 package com.forgeessentials.worldborder;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
@@ -42,13 +40,6 @@ public class ModuleWorldBorder {
     public static HashMap<String, WorldBorder> borderMap = new HashMap<String, WorldBorder>();
     public static HashMap<Integer, IEffect[]> effectsList = new HashMap<Integer, IEffect[]>();
     public static int overGenerate = 345;
-
-    @PermRegister
-    public static void registerPerms(IPermRegisterEvent event)
-    {
-        event.registerPermissionLevel("fe.worldborder.admin", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.worldborder.filler", RegGroup.OWNERS);
-    }
 
     public static void loadAll()
     {
@@ -131,6 +122,9 @@ public class ModuleWorldBorder {
     {
         e.registerServerCommand(new CommandWB());
         e.registerServerCommand(new CommandFiller());
+
+        APIRegistry.permReg.registerPermissionLevel("fe.worldborder.admin", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.worldborder.filler", RegGroup.OWNERS);
     }
 
 	/*
