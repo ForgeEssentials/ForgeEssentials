@@ -9,6 +9,7 @@ import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 
@@ -44,8 +45,9 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
 
                 boolean found = false;
                 // Set needed parm
-                int amount = 1, item = 0, meta = -1;
-                ItemStack target = new ItemStack(GameData.getItemRegistry().getObject(item), amount, meta);
+                int amount = 1, meta = -1;
+                String item = null;
+                ItemStack target = new ItemStack((Item)GameData.getItemRegistry().getObject(item), amount, meta);
 
                 if (args[1].contains("x"))
                 {
@@ -59,14 +61,14 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                     target.setItemDamage(meta = parseInt(sender, split[1]));
                     args[1] = split[0];
                 }
-                target.itemID = item = parseIntWithMin(sender, args[1], 0);
+                item = args[1];
                 // Loop though inv and find a stack big enough to support the sell cmd
                 for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
                 {
                     ItemStack is = player.inventory.mainInventory[slot];
                     if (is != null)
                     {
-                        if (is.itemID == item)
+                        if (is.getUnlocalizedName() == item)
                         {
                             if (meta == -1 || meta == is.getItemDamage())
                             {

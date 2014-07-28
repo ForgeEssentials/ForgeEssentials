@@ -1,9 +1,13 @@
 package com.forgeessentials.api;
 
+import com.forgeessentials.api.permissions.Group;
+import com.forgeessentials.api.permissions.IPermRegHelper;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.IZoneManager;
 import com.forgeessentials.api.snooper.Response;
 import cpw.mods.fml.common.FMLLog;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.api.IGroup;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,6 +31,10 @@ public class APIRegistry {
     // Use to access the zone manager.
     public static IZoneManager zones;
     private static Method ResponseRegistry_regsisterResponce;
+
+    // Use to access permissions registration helper.
+    public static IPermRegHelper permReg;
+
 
     /**
      * Snooper method to register your responses.
@@ -52,6 +60,19 @@ public class APIRegistry {
         }
     }
 
+    public static Group getAsFEGroup(String name)
+    {
+        IGroup g = PermissionsManager.getGroup(name);
+        if (g instanceof Group)
+            return (Group)g;
+
+        else
+        {
+            FMLLog.warning("[FE API] FEPermissions is not set as permissions handler - bad things could happen!");
+            return null;
+        }
+    }
+
     /**
      * Use this annotation to mark classes where static methods with other FE annotations might be.
      *
@@ -61,16 +82,6 @@ public class APIRegistry {
     @Target({ ElementType.TYPE })
     public @interface ForgeEssentialsRegistrar {
         String ident();
-
-        /**
-         * Called before Pre-Init
-         *
-         * @param event IPermRegisterEvent
-         */
-        @Retention(RetentionPolicy.RUNTIME)
-        @Target({ ElementType.METHOD })
-        public @interface PermRegister {
-        }
     }
 
 }

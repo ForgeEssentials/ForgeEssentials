@@ -90,8 +90,8 @@ public interface IPermissionsHelper {
 
     ArrayList<Group> getApplicableGroups(UUID player, boolean includeDefaults, String zoneID);
 
-    // moved to forge
-    Group getGroupForName(String name);
+    // moved to forge, use APIRegistry.getAsFEGroup if you need the group
+    // Group getGroupForName(String name);
 
     Group getHighestGroup(EntityPlayer player);
 

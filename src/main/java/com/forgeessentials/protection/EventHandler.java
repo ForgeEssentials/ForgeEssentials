@@ -7,14 +7,11 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.PlayerBlockPlace;
-import com.forgeessentials.util.events.PlayerChangedZone;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,9 +26,6 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-
-import java.util.List;
-import java.util.ListIterator;
 
 import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
 import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
@@ -235,7 +229,7 @@ public class EventHandler {
 
         if (!result)
         {
-            String name = stack.getUnlocalizedName().split(":")[1];
+            String name = stack.getUnlocalizedName();
             name = ModuleProtection.PERM_ITEM_USE + "." + name;
             name = name + "." + stack.getItemDamage();
 
@@ -352,6 +346,7 @@ public class EventHandler {
         }
     }
 
+    /*
     @SubscribeEvent
     public void manageZoneBannedItems(PlayerChangedZone e)
     {
@@ -381,5 +376,6 @@ public class EventHandler {
     public void manageCrafting(PlayerEvent.ItemCraftedEvent e)
     {
     }
+    */
 
 }

@@ -91,7 +91,7 @@ public class TextFormatter {
 
     public static JSONArray toJSONnbtComp(NBTTagCompound nbt) throws JSONException
     {
-        Object[] obj = nbt.getTags().toArray();
+        Object[] obj = nbt.getTagList().toArray();
         JSONArray data = new JSONArray();
         for (int i = 0; i < obj.length; i++)
         {
@@ -274,7 +274,6 @@ public class TextFormatter {
             byte type = new Byte(split[0]);
             String name = split[1];
 
-            NBTBase tag = NBTBase.newTag(type, name);
             switch (type)
             {
             case 1:

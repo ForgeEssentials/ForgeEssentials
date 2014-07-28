@@ -1,7 +1,6 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.shortcut.ShortcutCommands;
 import com.forgeessentials.commands.util.*;
@@ -27,13 +26,6 @@ public class ModuleCommands {
 
     public static EventHandler eventHandler = new EventHandler();
 
-    @PermRegister
-    public static void registerPermissions(IPermRegisterEvent event)
-    {
-        CommandRegistrar.registerPermissions(event);
-        event.registerPermissionLevel("fe.commands._ALL_", RegGroup.OWNERS);
-    }
-
     @FEModule.PreInit
     public void preLoad(FEModulePreInitEvent e)
     {
@@ -55,6 +47,8 @@ public class ModuleCommands {
         CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
         ShortcutCommands.load();
         CommandDataManager.load();
+        CommandRegistrar.registerPermissions();
+        APIRegistry.permReg.registerPermissionLevel("fe.commands._ALL_", RegGroup.OWNERS);
     }
 
     @FEModule.Reload

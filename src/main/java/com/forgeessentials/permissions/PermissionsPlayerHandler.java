@@ -67,7 +67,7 @@ public final class PermissionsPlayerHandler {
     private static void checkPlayerSupers(PermQueryPlayer event)
     {
         PermResult result = SqlHelper
-                .getPermissionResult(event.doer.username, false, event.checker, APIRegistry.zones.getSUPER().getZoneName(), event.checkForward);
+                .getPermissionResult(event.doer.getPersistentID().toString(), false, event.checker, APIRegistry.zones.getSUPER().getZoneName(), event.checkForward);
         if (!result.equals(PermResult.UNKNOWN))
         {
             event.setResult(result);
@@ -115,13 +115,11 @@ public final class PermissionsPlayerHandler {
 
     /**
      * @param zone   Zone to check permissions in.
-     * @param perm   The permissions to check.
-     * @param player Player to check/
      * @return the result for the perm.
      */
     private static PermResult getResultFromZone(Zone zone, PermQueryPlayer event)
     {
-        ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(event.doer.username, false, zone.getZoneName());
+        ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(event.doer.getPersistentID(), false, zone.getZoneName());
         PermResult result = PermResult.UNKNOWN;
         Zone tempZone = zone;
         Group group;
@@ -129,7 +127,7 @@ public final class PermissionsPlayerHandler {
         {
             // get the permissions... This automatically checks permissions
             // parents...
-            result = SqlHelper.getPermissionResult(event.doer.username, false, event.checker, tempZone.getZoneName(), event.checkForward);
+            result = SqlHelper.getPermissionResult(event.doer.getPersistentID().toString(), false, event.checker, tempZone.getZoneName(), event.checkForward);
 
             // if its unknown still
             if (result.equals(PermResult.UNKNOWN))

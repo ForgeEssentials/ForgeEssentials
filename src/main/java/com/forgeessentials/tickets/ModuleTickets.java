@@ -1,8 +1,6 @@
 package com.forgeessentials.tickets;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.ForgeEssentials;
@@ -36,14 +34,29 @@ public class ModuleTickets {
 
     private static ClassContainer ticketContainer = new ClassContainer(Ticket.class);
 
-    @PermRegister
-    public static void registerPermissions(IPermRegisterEvent event)
+    @FEModule.Init
+    public void load(FEModuleInitEvent e)
     {
-        event.registerPermissionLevel(PERMBASE + ".new", RegGroup.GUESTS);
-        event.registerPermissionLevel(PERMBASE + ".view", RegGroup.GUESTS);
+        FMLCommonHandler.instance().bus().register(this);
+    }
 
-        event.registerPermissionLevel(PERMBASE + ".tp", RegGroup.GUESTS);
-        event.registerPermissionLevel(PERMBASE + ".admin", RegGroup.OWNERS);
+    @FEModule.ServerInit
+    public void serverStarting(FEModuleServerInitEvent e)
+    {
+        e.registerServerCommand(new Command());
+        loadAll();
+        APIRegistry.permReg.registerPermissionLevel(PERMBASE + ".new", RegGroup.GUESTS);
+        APIRegistry.permReg.registerPermissionLevel(PERMBASE + ".view", RegGroup.GUESTS);
+
+        APIRegistry.permReg.registerPermissionLevel(PERMBASE + ".tp", RegGroup.GUESTS);
+        APIRegistry.permReg.registerPermissionLevel(PERMBASE + ".admin", RegGroup.OWNERS);
+    }
+
+    @FEModule.ServerStop
+    public void serverStopping(FEModuleServerStopEvent e)
+    {
+        saveAll();
+        config.forceSave();
     }
 
     /**
@@ -84,29 +97,9 @@ public class ModuleTickets {
         }
         return null;
     }
-
-    @FEModule.Init
-    public void load(FEModuleInitEvent e)
-    {
-        FMLCommonHandler.instance().bus().register(this);
-    }
-
-    @FEModule.ServerInit
-    public void serverStarting(FEModuleServerInitEvent e)
-    {
-        e.registerServerCommand(new Command());
-        loadAll();
-    }
-
-    @FEModule.ServerStop
-    public void serverStopping(FEModuleServerStopEvent e)
-    {
-        saveAll();
-        config.forceSave();
-    }
-
+    
     @SubscribeEvent
-    public void loadData(PlayerEvent.PlayerLoggedInEvent e)
+     public void loadData(PlayerEvent.PlayerLoggedInEvent e)
     {
         if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.player, ModuleTickets.PERMBASE + ".admin")))
         {

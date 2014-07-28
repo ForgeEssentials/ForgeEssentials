@@ -78,8 +78,6 @@ public final class PermissionsPropHandler {
 
     /**
      * @param zone   Zone to check permProps in.
-     * @param perm   The permissions to check.
-     * @param player Player to check/
      * @return the resulting permProp
      */
     private static String getResultFromZone(Zone zone, PropQueryPlayer event)
@@ -92,13 +90,13 @@ public final class PermissionsPropHandler {
         {
             // get the permissions... Tis automatically checks permision
             // parents...
-            result = SqlHelper.getPermissionProp(event.player.username, false, event.perm, tempZone.getZoneName());
+            result = SqlHelper.getPermissionProp(event.player.getPersistentID().toString(), false, event.perm, tempZone.getZoneName());
 
             // if its unknown still
             if (result == null)
             {
                 // get all the players groups here.
-                groups = APIRegistry.perms.getApplicableGroups(event.player.username, false, tempZone.getZoneName());
+                groups = APIRegistry.perms.getApplicableGroups(event.player.getPersistentID(), false, tempZone.getZoneName());
 
                 // iterates through the groups.
                 for (int i = 0; result == null && i < groups.size(); i++)
@@ -142,7 +140,6 @@ public final class PermissionsPropHandler {
     /**
      * @param zone   Zone to check permissions in.
      * @param perm   The permissions to check.
-     * @param player Player to check/
      * @return the result for the perm.
      */
     private static String getResultFromZone(Zone zone, String perm, boolean checkParents)

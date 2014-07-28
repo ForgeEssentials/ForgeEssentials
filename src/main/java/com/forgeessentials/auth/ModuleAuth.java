@@ -1,7 +1,6 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.auth.lists.CommandVIP;
 import com.forgeessentials.auth.lists.CommandWhiteList;
@@ -41,13 +40,42 @@ public class ModuleAuth {
     private static EventHandler eventHandler;
     private static boolean oldEnabled = false;
 
-    @PermRegister
-    public static void registerPerms(IPermRegisterEvent event)
+    @PreInit
+    public void preInit(FEModulePreInitEvent e)
     {
-        event.registerPermissionLevel("fe.auth.admin", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.auth", RegGroup.GUESTS);
-        event.registerPermissionLevel("fe.auth.vip", null);
-        event.registerPermissionLevel("fe.auth.whitelist", RegGroup.GUESTS);
+        // No Auth Module on client
+        if (e.getFMLEvent().getSide().isClient())
+        {
+            e.getModuleContainer().isLoadable = false;
+        }
+    }
+
+    @Init
+    public void load(FEModuleInitEvent e)
+    {
+        pwdEnc = new EncryptionHelper();
+        eventHandler = new EventHandler();
+    }
+
+    @ServerInit
+    public void serverStarting(FEModuleServerInitEvent e)
+    {
+        e.registerServerCommand(new CommandAuth());
+        e.registerServerCommand(new CommandWhiteList());
+        e.registerServerCommand(new CommandVIP());
+
+        if (checkVanillaAuthStatus && !forceEnabled)
+        {
+            vanillaCheck = new VanillaServiceChecker();
+            TaskRegistry.registerRecurringTask(vanillaCheck, 0, checkInterval, 0, 0, 0, checkInterval, 0, 0);
+        }
+
+        onStatusChange();
+        
+        APIRegistry.permReg.registerPermissionLevel("fe.auth.admin", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.auth", RegGroup.GUESTS);
+        APIRegistry.permReg.registerPermissionLevel("fe.auth.vip", null);
+        APIRegistry.permReg.registerPermissionLevel("fe.auth.whitelist", RegGroup.GUESTS);
     }
 
     public static boolean vanillaMode()
@@ -94,39 +122,5 @@ public class ModuleAuth {
     public static String encrypt(String str)
     {
         return pwdEnc.sha1(str);
-    }
-
-    @PreInit
-    public void preInit(FEModulePreInitEvent e)
-    {
-        // No Auth Module on client
-        if (e.getFMLEvent().getSide().isClient())
-        {
-            e.getModuleContainer().isLoadable = false;
-        }
-    }
-
-    @Init
-    public void load(FEModuleInitEvent e)
-    {
-        pwdEnc = new EncryptionHelper();
-        eventHandler = new EventHandler();
-
-    }
-
-    @ServerInit
-    public void serverStarting(FEModuleServerInitEvent e)
-    {
-        e.registerServerCommand(new CommandAuth());
-        e.registerServerCommand(new CommandWhiteList());
-        e.registerServerCommand(new CommandVIP());
-
-        if (checkVanillaAuthStatus && !forceEnabled)
-        {
-            vanillaCheck = new VanillaServiceChecker();
-            TaskRegistry.registerRecurringTask(vanillaCheck, 0, checkInterval, 0, 0, 0, checkInterval, 0, 0);
-        }
-
-        onStatusChange();
     }
 }

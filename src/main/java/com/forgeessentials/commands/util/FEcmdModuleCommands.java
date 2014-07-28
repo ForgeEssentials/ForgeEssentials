@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.ICommandSender;
@@ -58,9 +57,8 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase {
     /**
      * You don't need to register the commandpermission.
      *
-     * @param event
      */
-    public void registerExtraPermissions(IPermRegisterEvent event)
+    public void registerExtraPermissions()
     {
     }
 

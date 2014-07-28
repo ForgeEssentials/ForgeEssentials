@@ -1,7 +1,6 @@
 package com.forgeessentials.chat;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.chat.commands.*;
 import com.forgeessentials.chat.irc.IRCChatFormatter;
@@ -43,19 +42,6 @@ public class ModuleChat {
     public ModuleChat()
     {
     }
-
-    @PermRegister
-    public static void registerPermissions(IPermRegisterEvent event)
-    {
-        event.registerPermissionLevel("fe.chat.usecolor", RegGroup.MEMBERS);
-        event.registerPermissionLevel("fe.chat.nickname.others", RegGroup.OWNERS);
-    }
-
-    @FEModule.PreInit
-    public void load(FEModulePreInitEvent e)
-    {
-    }
-
     @FEModule.Init
     public void load(FEModuleInitEvent e)
     {
@@ -127,6 +113,9 @@ public class ModuleChat {
         {
             OutputHandler.felog.warning("Could not create command log file!");
         }
+
+        APIRegistry.permReg.registerPermissionLevel("fe.chat.usecolor", RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.chat.nickname.others", RegGroup.OWNERS);
     }
 
     @FEModule.ServerPostInit()

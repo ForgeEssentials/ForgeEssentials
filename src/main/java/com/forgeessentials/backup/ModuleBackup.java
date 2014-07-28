@@ -1,8 +1,6 @@
 package com.forgeessentials.backup;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.ForgeEssentials;
@@ -86,12 +84,8 @@ public class ModuleBackup {
             new AutoWorldSave();
         }
         makeReadme();
-    }
 
-    @PermRegister
-    public void registerPermissions(IPermRegisterEvent event)
-    {
-        event.registerPermissionLevel("fe.backup.msg", RegGroup.GUESTS);
+        APIRegistry.permReg.registerPermissionLevel("fe.backup.msg", RegGroup.GUESTS);
     }
 
     @SubscribeEvent

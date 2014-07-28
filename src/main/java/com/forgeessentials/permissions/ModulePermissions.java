@@ -1,11 +1,10 @@
 package com.forgeessentials.permissions;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
@@ -39,29 +38,29 @@ public class ModulePermissions {
     public static File permsFolder;
 
     protected static AbstractDataDriver data;
-    // permissions registrations here...
-    protected PermRegLoader permLoader;
     private AutoPromoteManager autoPromoteManager;
 
-    @PermRegister
-    public static void registerPermissions(IPermRegisterEvent event)
+    public static void regPerms()
     {
-        event.registerPermissionLevel("fe.perm", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.perm._ALL_", RegGroup.OWNERS, true);
-        event.registerPermissionLevel("fe.perm.zone.define", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.perm.zone.redefine._ALL_", RegGroup.OWNERS);
-        event.registerPermissionLevel("fe.perm.zone.remove._ALL_", RegGroup.OWNERS);
-        event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
-        event.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm._ALL_", RegGroup.OWNERS, true);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.define", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.redefine._ALL_", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.remove._ALL_", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
 
-        event.registerPermissionLevel("fe.perm.zone", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("fe.perm.zone.setparent", RegGroup.ZONE_ADMINS);
-        event.registerPermissionLevel("fe.perm.autoPromote", RegGroup.ZONE_ADMINS);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone", RegGroup.ZONE_ADMINS);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.setparent", RegGroup.ZONE_ADMINS);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm.autoPromote", RegGroup.ZONE_ADMINS);
 
-        event.registerPermissionLevel("fe.perm.zone.info._ALL_", RegGroup.MEMBERS);
-        event.registerPermissionLevel("fe.perm.zone.list", RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.info._ALL_", RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.list", RegGroup.MEMBERS);
 
-        event.registerPermissionLevel("fe.perm.list", RegGroup.GUESTS);
+        APIRegistry.permReg.registerPermissionLevel("fe.perm.list", RegGroup.GUESTS);
+
+        CommandSetChecker.regMCOverrides();
+        APIRegistry.permReg.registerPermissionLevel("fe.core.info", RegGroup.OWNERS);
 
     }
 
@@ -73,7 +72,7 @@ public class ModulePermissions {
 
         MinecraftForge.EVENT_BUS.register(APIRegistry.zones);
         MinecraftForge.EVENT_BUS.register(this);
-        permLoader = new PermRegLoader(e.getCallableMap().getCallable(PermRegister.class));
+        APIRegistry.permReg = new PermRegLoader();
 
         DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 
@@ -111,15 +110,14 @@ public class ModulePermissions {
 
         autoPromoteManager = new AutoPromoteManager();
 
+        regPerms();
+
     }
 
     @FEModule.ServerPostInit
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
-        permLoader.loadAllPerms();
-        permLoader.clearMethods();
-
-        sql.putRegistrationPerms(permLoader.registerredPerms);
+        sql.putRegistrationPerms(APIRegistry.permReg.getRegisteredPerms());
     }
 
     @FEModule.ServerStop
@@ -143,7 +141,7 @@ public class ModulePermissions {
     {
         if (!(e.sender instanceof EntityPlayer)) {return;}
         ICommand command = e.command;
-        if (e.command.getClass().getCanonicalName().startsWith("net.minecraft.command"))
+        if (e.command.getClass().getName().startsWith("net.minecraft.command"))
         {
             boolean allow = PermissionsManager.checkPerm((EntityPlayer) e.sender, "mc." + e.command.getCommandName());
             if (!allow)

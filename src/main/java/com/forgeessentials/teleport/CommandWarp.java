@@ -75,8 +75,13 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                     }
                     else
                     {
-                        TeleportDataManager.addWarp(new Warp(args[1].toLowerCase(), new WarpPoint(sender)));
-                        OutputHandler.chatConfirmation(sender, "Done!");
+                        Warp warp = new Warp(args[1].toLowerCase(), new WarpPoint(sender.dimension, sender.posX, sender.posY, sender.posZ, sender.rotationPitch, sender.rotationYaw));
+                        TeleportDataManager.addWarp(warp);
+                        if (!TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
+                            {
+                                ChatUtils.sendMessage(sender, "Could not make warp! This is an error!");
+                            }
+                        else OutputHandler.chatConfirmation(sender, "Done!");
                     }
                 }
                 else if (args[0].equalsIgnoreCase("del"))

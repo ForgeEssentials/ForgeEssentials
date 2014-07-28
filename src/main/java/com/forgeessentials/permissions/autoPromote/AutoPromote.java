@@ -75,7 +75,7 @@ public class AutoPromote {
             {
                 String groupName = promoteList.get(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() + "");
                 // Only add player to group if he isn't already.
-                if (!APIRegistry.perms.getApplicableGroups(player.getPersistentID(), false, zone).contains(APIRegistry.perms.getGroupForName(groupName)))
+                if (!APIRegistry.perms.getApplicableGroups(player.getPersistentID(), false, zone).contains(APIRegistry.getAsFEGroup(groupName)))
                 {
                     APIRegistry.perms.addPlayerToGroup(groupName, player.getPersistentID(), zone);
                     if (sendMsg)

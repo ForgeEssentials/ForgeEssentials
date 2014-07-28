@@ -1,6 +1,6 @@
 package com.forgeessentials.core.compat;
 
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
@@ -143,13 +143,13 @@ public class CommandSetChecker {
         }
     }
 
-    public static void regMCOverrides(IPermRegisterEvent event)
+    public static void regMCOverrides()
     {
         Iterator it = permList.entrySet().iterator();
         while (it.hasNext())
         {
             Map.Entry pairs = (Map.Entry) it.next();
-            event.registerPermissionLevel((String) pairs.getKey(), (RegGroup) pairs.getValue());
+            APIRegistry.permReg.registerPermissionLevel((String) pairs.getKey(), (RegGroup) pairs.getValue());
             it.remove(); // avoids a ConcurrentModificationException
         }
 

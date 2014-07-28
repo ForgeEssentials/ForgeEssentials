@@ -1,7 +1,6 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar.PermRegister;
-import com.forgeessentials.api.permissions.IPermRegisterEvent;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -43,24 +42,19 @@ public class ModuleAfterlife {
     {
         deathchest.load();
         FMLCommonHandler.instance().bus().register(respawnDebuff);
+        APIRegistry.permReg.registerPermissionLevel(BASEPERM, RegGroup.OWNERS);
+
+        APIRegistry.permReg.registerPermissionLevel(RespawnDebuffHandler.BYPASSPOTION, RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(RespawnDebuffHandler.BYPASSSTATS, RegGroup.OWNERS);
+
+        APIRegistry.permReg.registerPermissionLevel(Deathchest.PERMISSION_BYPASS, null);
+        APIRegistry.permReg.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.MEMBERS);
+        APIRegistry.permReg.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.OWNERS);
     }
 
     @FEModule.ServerStop
     public void serverStopping(FEModuleServerStopEvent e)
     {
         deathchest.save();
-    }
-
-    @PermRegister
-    public void registerPermissions(IPermRegisterEvent event)
-    {
-        event.registerPermissionLevel(BASEPERM, RegGroup.OWNERS);
-
-        event.registerPermissionLevel(RespawnDebuffHandler.BYPASSPOTION, RegGroup.OWNERS);
-        event.registerPermissionLevel(RespawnDebuffHandler.BYPASSSTATS, RegGroup.OWNERS);
-
-        event.registerPermissionLevel(Deathchest.PERMISSION_BYPASS, null);
-        event.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.MEMBERS);
-        event.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.OWNERS);
     }
 }

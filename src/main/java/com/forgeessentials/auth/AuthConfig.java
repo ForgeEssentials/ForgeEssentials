@@ -27,7 +27,7 @@ public class AuthConfig extends ModuleConfigBase {
         ModuleAuth.canMoveWithoutLogin = config.get(CATEGORY_MAIN, "canMoveWithoutLogin", false,
                 "Allow players not registered/not logged in with the authentication service to move in the world.").getBoolean(false);
         ModuleAuth.checkVanillaAuthStatus = config
-                .get(CATEGORY_MAIN, "autoEnable", true, "Enables authentication server if and when the Minecraft Auth servers go down.").getBoolean(false);
+                .get(CATEGORY_MAIN, "autoEnable", false, "Enables authentication server if and when the Minecraft Auth servers go down.").getBoolean(false);
         ModuleAuth.allowOfflineReg = config.get(CATEGORY_MAIN, "allowOfflineReg", false,
                 "Allows people to register usernames while server is offline. Don't allow this for primarily Online servers.").getBoolean(false);
         ModuleAuth.salt = config.get(CATEGORY_MAIN, "salt", ModuleAuth.salt, "The salt to be used when hashing passwords").getString();
@@ -79,7 +79,7 @@ public class AuthConfig extends ModuleConfigBase {
     {
         config.load();
         ModuleAuth.forceEnabled = config.get(CATEGORY_MAIN, "forceEnable", false).getBoolean(false);
-        ModuleAuth.checkVanillaAuthStatus = config.get(CATEGORY_MAIN, "autoEnable", true).getBoolean(false);
+        ModuleAuth.checkVanillaAuthStatus = config.get(CATEGORY_MAIN, "autoEnable", false).getBoolean(false);
         ModuleAuth.allowOfflineReg = config.get(CATEGORY_MAIN, "allowOfflineReg", false).getBoolean(false);
         ModuleAuth.canMoveWithoutLogin = config.get(CATEGORY_MAIN, "canMoveWithoutLogin", false).getBoolean(false);
         ModuleAuth.salt = config.get(CATEGORY_MAIN, "salt", ModuleAuth.salt).getString();

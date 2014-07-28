@@ -371,7 +371,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
             else
             {
                 name = player.getCommandSenderName();
-                id = player.getPersistentID()
+                id = player.getPersistentID();
             }
 
             APIRegistry.perms.setPlayerPermissionProp(id, permProp, prop, zone.getZoneName());

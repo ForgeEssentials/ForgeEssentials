@@ -7,14 +7,14 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.world.WorldSettings;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class CommandServerSettings extends FEcmdModuleCommands {
-    public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MOTD", "onlineMode", "spawnProtection");
+    public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MOTD", "spawnProtection", "gamemode");
 
     @Override
     public String getCommandName()
@@ -29,19 +29,7 @@ public class CommandServerSettings extends FEcmdModuleCommands {
                 { "ss" };
     }
 
-    @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
-    {
-        doStuff(sender, args);
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-        doStuff(sender, args);
-    }
-
-    public void doStuff(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args)
     {
         if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
         {
@@ -137,6 +125,23 @@ public class CommandServerSettings extends FEcmdModuleCommands {
                 OutputHandler.chatConfirmation(sender, "spawnProtection: " + server.getSpawnProtectionSize());
             }
             return;
+        }
+
+        if (args[0].equalsIgnoreCase("gamemode"))
+        {
+            if (args.length == 1)
+            {
+                OutputHandler.chatConfirmation(sender, "gamemode: " + server.getGameType().getName());
+            }
+            else
+            {
+                server.setProperty("gamemode", args[1]);
+                server.setGameType(WorldSettings.GameType.getByID(Integer.parseInt(args[1])));
+                server.saveProperties();
+                OutputHandler.chatConfirmation(sender, "gamemode: " + server.getGameType().getName());
+            }
+            return;
+
         }
     }
 

@@ -1,6 +1,8 @@
 package com.forgeessentials.api.permissions;
 
-public interface IPermRegisterEvent {
+import com.google.common.collect.HashMultimap;
+
+public interface IPermRegHelper {
 
     /**
      * This should be done for large ammounts of permissions, where
@@ -83,4 +85,6 @@ public interface IPermRegisterEvent {
      * @param group
      */
     public void registerGroupPermissionprop(String permission, float value, RegGroup group);
+
+    public HashMultimap getRegisteredPerms();
 }
