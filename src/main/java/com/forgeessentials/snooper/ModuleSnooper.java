@@ -67,7 +67,7 @@ public class ModuleSnooper {
     {
         try
         {
-            File file = new File(folder.getAbsolutePath(), "key.key");
+            File file = new File(folder, "key.key");
             if (file.exists())
             {
                 FileInputStream in = new FileInputStream(file);
