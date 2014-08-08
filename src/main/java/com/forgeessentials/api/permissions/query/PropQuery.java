@@ -8,7 +8,7 @@ public abstract class PropQuery {
 
     public PropQuery(String permKey)
     {
-        perm = permKey;
+        perm = permKey.toLowerCase();
     }
 
     public void setValue(String value)
