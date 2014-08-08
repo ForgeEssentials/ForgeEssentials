@@ -51,17 +51,17 @@ public class ModuleProtection {
         {
             e.getModuleContainer().isLoadable = false;
             return;
+
+            if (!enable)
+            {
+                e.getModuleContainer().isLoadable = false;
+            }
         }
     }
 
     @FEModule.Init
     public void load(FEModuleInitEvent e)
     {
-
-        if (!enable)
-        {
-            e.getModuleContainer().isLoadable = false;
-        }
 
         data = DataStorageManager.getReccomendedDriver();
 
