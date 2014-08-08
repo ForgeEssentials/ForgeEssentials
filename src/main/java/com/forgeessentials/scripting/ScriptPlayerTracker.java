@@ -1,7 +1,9 @@
 package com.forgeessentials.scripting;
 
+import com.forgeessentials.util.events.PlayerChangedZone;
 import cpw.mods.fml.common.IPlayerTracker;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.ForgeSubscribe;
 
 public class ScriptPlayerTracker implements IPlayerTracker {
     @Override
@@ -28,5 +30,8 @@ public class ScriptPlayerTracker implements IPlayerTracker {
     {
         EventType.run(player, EventType.RESPAWN);
     }
+
+    @ForgeSubscribe
+    public void onPlayerChangeZone(PlayerChangedZone e) { EventType.run(e.entityPlayer, EventType.ZONECHANGE);}
 
 }

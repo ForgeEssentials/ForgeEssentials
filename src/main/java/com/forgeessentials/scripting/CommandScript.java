@@ -19,7 +19,7 @@ public class CommandScript extends ForgeEssentialsCommandBase {
     {
         if (args[0].equalsIgnoreCase("run"))
         {
-            EventType e = EventType.getEventTypeForName(args[1]);
+            EventType e = EventType.valueOf(args[1].toUpperCase());
             if (args[2] != null)
             {
                 EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[2]);
@@ -37,7 +37,7 @@ public class CommandScript extends ForgeEssentialsCommandBase {
     {
         if (args[0].equalsIgnoreCase("run"))
         {
-            EventType e = EventType.getEventTypeForName(args[1]);
+            EventType e = EventType.valueOf(args[1].toUpperCase());
             EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[2]);
             EventType.run(player, e);
 

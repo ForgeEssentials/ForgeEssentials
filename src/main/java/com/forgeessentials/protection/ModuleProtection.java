@@ -47,15 +47,10 @@ public class ModuleProtection {
     @FEModule.PreInit
     public void preLoad(FEModulePreInitEvent e)
     {
-        if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+        if (!FMLCommonHandler.instance().getEffectiveSide().isServer() || !enable)
         {
             e.getModuleContainer().isLoadable = false;
             return;
-
-            if (!enable)
-            {
-                e.getModuleContainer().isLoadable = false;
-            }
         }
     }
 

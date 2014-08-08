@@ -12,12 +12,8 @@ import java.io.File;
 @FEModule(name = "scripting", parentMod = ForgeEssentials.class, isCore = false)
 public class ModuleScripting {
 
+    @FEModule.ModuleDir
     public static File moduleDir = new File(ForgeEssentials.FEDIR, "scripting/");
-
-    static File loginplayer = new File(moduleDir, "login/player/");
-    static File logingroup = new File(moduleDir, "login/group/");
-    static File respawngroup = new File(moduleDir, "respawn/group/");
-    static File respawnplayer = new File(moduleDir, "respawn/player/");
 
     @FEModule.PreInit
     public void preInit(FEModulePreInitEvent e)
@@ -39,10 +35,10 @@ public class ModuleScripting {
         try
         {
             moduleDir.mkdirs();
-            loginplayer.mkdirs();
-            logingroup.mkdirs();
-            respawngroup.mkdirs();
-            respawnplayer.mkdirs();
+            for (EventType e : EventType.values())
+            {
+                e.mkdirs();
+            }
 
         }
         catch (Exception e)
