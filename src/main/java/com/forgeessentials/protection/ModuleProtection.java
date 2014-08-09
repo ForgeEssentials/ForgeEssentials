@@ -37,8 +37,8 @@ public class ModuleProtection {
 
     @FEModule.Config
     public static ConfigProtection config;
-    public static boolean enable = false;
-    public static boolean enableMobSpawns = false;
+    public static boolean enable;
+    public static boolean enableMobSpawns;
 
     private static AbstractDataDriver data;
     private static ClassContainer zoneBannedItems = new ClassContainer(AdditionalZoneData.class);
@@ -47,7 +47,7 @@ public class ModuleProtection {
     @FEModule.PreInit
     public void preLoad(FEModulePreInitEvent e)
     {
-        if (!FMLCommonHandler.instance().getEffectiveSide().isServer() || !enable)
+        if (FMLCommonHandler.instance().getSide().isClient() || !enable)
         {
             e.getModuleContainer().isLoadable = false;
             return;
