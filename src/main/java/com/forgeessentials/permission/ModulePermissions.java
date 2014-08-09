@@ -84,7 +84,7 @@ public class ModulePermissions {
         DataStorageManager.registerSaveableType(Zone.class);
         DataStorageManager.registerSaveableType(AutoPromote.class);
 
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        MinecraftForge.EVENT_BUS.register(new PermsEventHandler());
     }
 
     @FEModule.ServerInit

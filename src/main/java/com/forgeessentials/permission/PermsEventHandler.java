@@ -8,7 +8,7 @@ import com.forgeessentials.util.events.PlayerChangedZone;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
-public class EventHandler {
+public class PermsEventHandler {
     @ForgeSubscribe(priority = EventPriority.LOW)
     public void onZoneChange(PlayerChangedZone event)
     {

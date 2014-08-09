@@ -18,7 +18,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
-public class EventHandler {
+public class CommandsEventHandler {
     @ForgeSubscribe
     public void playerInteractEvent(PlayerInteractEvent e)
     {

@@ -36,7 +36,7 @@ public class ModuleAuth {
     private static EncryptionHelper pwdEnc;
 
     private static LoginHandler loginHandler;
-    private static EventHandler eventHandler;
+    private static AuthEventHandler eventHandler;
 
     public static HashSet<String> unLogged = new HashSet<String>();
     public static HashSet<String> unRegistered = new HashSet<String>();
@@ -61,7 +61,7 @@ public class ModuleAuth {
     public void load(FEModuleInitEvent e)
     {
         pwdEnc = new EncryptionHelper();
-        eventHandler = new EventHandler();
+        eventHandler = new AuthEventHandler();
 
         loginHandler = new LoginHandler();
         GameRegistry.registerPlayerTracker(loginHandler);

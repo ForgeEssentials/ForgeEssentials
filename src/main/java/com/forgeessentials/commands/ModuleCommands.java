@@ -28,7 +28,7 @@ public class ModuleCommands {
     @FEModule.ModuleDir
     public static File cmddir;
 
-    public static EventHandler eventHandler = new EventHandler();
+    public static CommandsEventHandler eventHandler = new CommandsEventHandler();
     private static MCStatsHelper mcstats = new MCStatsHelper();
 
     @FEModule.PreInit

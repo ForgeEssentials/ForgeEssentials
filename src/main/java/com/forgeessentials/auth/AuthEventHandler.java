@@ -16,8 +16,8 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public class EventHandler {
-    public EventHandler()
+public class AuthEventHandler {
+    public AuthEventHandler()
     {
         // nothing
     }

@@ -5,12 +5,10 @@ import com.forgeessentials.api.permissions.query.PermQuery;
 import com.forgeessentials.api.permissions.query.PermQueryBlanketSpot;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
-import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerBlockPlace;
-import com.forgeessentials.util.events.PlayerChangedZone;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -30,13 +28,10 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
-import java.util.List;
-import java.util.ListIterator;
-
 import static net.minecraftforge.event.Event.Result.ALLOW;
 import static net.minecraftforge.event.Event.Result.DENY;
 
-public class EventHandler {
+public class ProtectionEventHandler {
     @ForgeSubscribe(priority = EventPriority.LOW)
     public void playerAttack(AttackEntityEvent e)
     {
@@ -164,16 +159,15 @@ public class EventHandler {
         }
 
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
-        PermQuery query = new PermQueryPlayerArea(e.getPlayer(), ModuleProtection.PERM_OVERRIDE, point);
-        boolean result = APIRegistry.perms.checkPermAllowed(query);
+        boolean overall = APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(e.getPlayer(), ModuleProtection.PERM_OVERRIDE, point));
+        boolean breaks = APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(e.getPlayer(), ModuleProtection.PERM_EDITS, point));
 
-        if (!result)
+        if (!overall)
         {
-            query = new PermQueryPlayerArea(e.getPlayer(), ModuleProtection.PERM_EDITS, point);
-            result = APIRegistry.perms.checkPermAllowed(query);
+            if (!breaks)
+                e.setCanceled(true);
         }
 
-        e.setCanceled(!result);
     }
 
     @ForgeSubscribe(priority = EventPriority.LOW)
@@ -185,15 +179,14 @@ public class EventHandler {
         }
 
         WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
-        PermQuery query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point);
-        boolean result = APIRegistry.perms.checkPermAllowed(query);
+        boolean overall = APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point));
+        boolean breaks = APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(e.player, ModuleProtection.PERM_EDITS, point));
 
-        if (!result)
+        if (!overall)
         {
-            query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_EDITS, point);
-            result = APIRegistry.perms.checkPermAllowed(query);
+            if (!breaks)
+                e.setCanceled(true);
         }
-        e.setCanceled(!result);
     }
 
     @ForgeSubscribe(priority = EventPriority.LOW)

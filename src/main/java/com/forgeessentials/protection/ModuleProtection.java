@@ -60,7 +60,7 @@ public class ModuleProtection {
 
         data = DataStorageManager.getReccomendedDriver();
 
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        MinecraftForge.EVENT_BUS.register(new ProtectionEventHandler());
 
         Object[] objs = data.loadAllObjects(zoneBannedItems);
         for (Object obj : objs)
