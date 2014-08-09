@@ -143,6 +143,23 @@ public class CommandServerSettings extends FEcmdModuleCommands {
             return;
 
         }
+
+        if (args[0].equalsIgnoreCase("difficulty"))
+        {
+            if (args.length == 1)
+            {
+                OutputHandler.chatConfirmation(sender, "difficulty: " + server.getDifficulty());
+            }
+            else
+            {
+                server.setProperty("difficulty", args[1]);
+                server.setDifficultyForAllWorlds(Integer.parseInt(args[1]));
+                server.saveProperties();
+                OutputHandler.chatConfirmation(sender, "difficulty: " + server.getDifficulty());
+            }
+            return;
+
+        }
     }
 
     @Override
