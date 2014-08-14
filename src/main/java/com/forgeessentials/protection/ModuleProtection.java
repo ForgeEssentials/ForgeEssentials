@@ -38,8 +38,9 @@ public class ModuleProtection {
 
     @FEModule.Config
     public static ConfigProtection config;
-    public static boolean enable = false;
-    public static boolean enableMobSpawns = false;
+    public static boolean enable;
+    public static boolean enableMobSpawns;
+
     private static AbstractDataDriver data;
     private static ClassContainer zoneBannedItems = new ClassContainer(AdditionalZoneData.class);
     public static HashMap<String, AdditionalZoneData> itemsList = new HashMap<String, AdditionalZoneData>();
@@ -47,7 +48,7 @@ public class ModuleProtection {
     @FEModule.PreInit
     public void preLoad(FEModulePreInitEvent e)
     {
-        if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+        if (FMLCommonHandler.instance().getSide().isClient() || !enable)
         {
             e.getModuleContainer().isLoadable = false;
             return;
@@ -58,14 +59,9 @@ public class ModuleProtection {
     public void load(FEModuleInitEvent e)
     {
 
-        if (!enable)
-        {
-            e.getModuleContainer().isLoadable = false;
-        }
-
         data = DataStorageManager.getReccomendedDriver();
 
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        MinecraftForge.EVENT_BUS.register(new ProtectionEventHandler());
 
         Object[] objs = data.loadAllObjects(zoneBannedItems);
         for (Object obj : objs)

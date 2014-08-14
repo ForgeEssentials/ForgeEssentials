@@ -12,35 +12,23 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public enum EventType {
-    LOGIN("login", ModuleScripting.logingroup, ModuleScripting.loginplayer),
-    RESPAWN("respawn", ModuleScripting.respawngroup, ModuleScripting.respawnplayer);
+    LOGIN("login"),
+    RESPAWN("respawn"),
+    ZONECHANGE("zonechange");
 
-    protected String name;
     protected File group;
     protected File player;
 
-    private EventType(String name, File group, File player)
+    private EventType(String name)
     {
-        this.name = name;
-        this.group = group;
-        this.player = player;
-
+        this.group = new File(ModuleScripting.moduleDir, name + "/group");
+        this.player = new File(ModuleScripting.moduleDir, name + "/player");
     }
 
-    public static EventType getEventTypeForName(String name)
+    protected void mkdirs() throws Exception
     {
-        if (name.equals("login"))
-        {
-            return EventType.LOGIN;
-        }
-        else if (name.equals("respawn"))
-        {
-            return EventType.RESPAWN;
-        }
-        else
-        {
-            return null;
-        }
+        this.group.mkdirs();
+        this.player.mkdirs();
     }
 
     public static void run(EntityPlayer player, EventType event)

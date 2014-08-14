@@ -152,10 +152,10 @@ public class CommandBed extends ForgeEssentialsCommandBase {
         else
         {
             this.sleepPoint.x = e.x;
+            this.sleepPoint.y = e.y;
+            this.sleepPoint.z = e.z;
         }
-        this.sleepPoint.y = e.y;
-        this.sleepPoint.z = e.z;
-        e.setCanceled(false);
+
     }
 
     @Override

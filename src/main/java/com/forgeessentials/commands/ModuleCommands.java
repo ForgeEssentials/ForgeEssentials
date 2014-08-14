@@ -24,7 +24,7 @@ public class ModuleCommands {
     @FEModule.ModuleDir
     public static File cmddir;
 
-    public static EventHandler eventHandler = new EventHandler();
+    public static CommandsEventHandler eventHandler = new CommandsEventHandler();
 
     @FEModule.PreInit
     public void preLoad(FEModulePreInitEvent e)

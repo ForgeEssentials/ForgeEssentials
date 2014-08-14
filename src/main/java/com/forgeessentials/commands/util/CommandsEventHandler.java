@@ -29,7 +29,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventHandler {
+public class CommandsEventHandler {
     public static final String BYPASS_KIT_COOLDOWN = "fe.TickHandlerCommands.BypassKitCooldown";
     public static List<AFKdata> afkList = new ArrayList<AFKdata>();
     public static List<AFKdata> afkListToAdd = new ArrayList<AFKdata>();
@@ -129,10 +129,6 @@ public class EventHandler {
                 }
             }
         }
-
-		/*
-         *
-		 */
         if (e.entityPlayer.getCurrentEquippedItem() != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
             ItemStack is = e.entityPlayer.inventory.getCurrentItem();

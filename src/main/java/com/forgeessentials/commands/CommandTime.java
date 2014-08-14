@@ -2,7 +2,7 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.CommandDataManager;
-import com.forgeessentials.commands.util.EventHandler;
+import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.WeatherTimeData;
 import com.forgeessentials.util.FunctionHelper;
@@ -160,11 +160,11 @@ public class CommandTime extends FEcmdModuleCommands {
         {
             if (args[1].equalsIgnoreCase("day"))
             {
-                EventHandler.makeWorldTimeHours(world, WeatherTimeData.dayTimeStart);
+                CommandsEventHandler.makeWorldTimeHours(world, WeatherTimeData.dayTimeStart);
             }
             else if (args[1].equalsIgnoreCase("night"))
             {
-                EventHandler.makeWorldTimeHours(world, WeatherTimeData.nightTimeStart);
+                CommandsEventHandler.makeWorldTimeHours(world, WeatherTimeData.nightTimeStart);
             }
             else
             {

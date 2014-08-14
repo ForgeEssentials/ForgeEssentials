@@ -5,6 +5,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -52,7 +53,6 @@ public class CommandGive extends FEcmdModuleCommands {
         {
             ItemStack stack = new ItemStack(id, amount, dam);
             player.inventory.addItemStackToInventory(stack.copy());
-            String name = Item.itemsList[id].getItemStackDisplayName(stack);
             OutputHandler.chatConfirmation(sender, String.format("Giving %1$s %2$d of %3$s", args[0], amount, name));
         }
         else

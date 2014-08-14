@@ -22,7 +22,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 
 import java.util.UUID;
 
-public class EventHandler {
+public class AuthEventHandler {
 
     public static String banned;
     public static String notvip;
@@ -33,7 +33,7 @@ public class EventHandler {
     public int counter;
     public int maxcounter;
 
-    public EventHandler()
+    public AuthEventHandler()
     {
         OutputHandler.felog.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
     }

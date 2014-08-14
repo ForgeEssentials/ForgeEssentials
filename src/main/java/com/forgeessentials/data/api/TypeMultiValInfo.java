@@ -127,6 +127,7 @@ public abstract class TypeMultiValInfo implements ITypeInfo {
 
     public static String getUIDFromUnique(String unique)
     {
+        if (unique.lastIndexOf('_') == -1) return unique;
         return unique.substring(unique.lastIndexOf('_'));
     }
 

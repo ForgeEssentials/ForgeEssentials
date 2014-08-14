@@ -9,6 +9,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.permission.PermsEventHandler;
 import com.forgeessentials.permissions.autoPromote.AutoPromote;
 import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
 import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
@@ -88,7 +89,7 @@ public class ModulePermissions {
         DataStorageManager.registerSaveableType(Zone.class);
         DataStorageManager.registerSaveableType(AutoPromote.class);
 
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        MinecraftForge.EVENT_BUS.register(new PermsEventHandler());
     }
 
     @FEModule.ServerInit

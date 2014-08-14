@@ -24,7 +24,7 @@ public class AFKdata {
     {
         if (player == null)
         {
-            EventHandler.afkListToRemove.add(this);
+            CommandsEventHandler.afkListToRemove.add(this);
             return;
         }
 

@@ -2,7 +2,7 @@ package com.forgeessentials.auth.lists;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.auth.EventHandler;
+import com.forgeessentials.auth.AuthEventHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
@@ -20,7 +20,7 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        if (!EventHandler.whitelist)
+        if (!AuthEventHandler.whitelist)
         {
             ChatUtils.sendMessage(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
             ChatUtils.sendMessage(sender, "Note that server.properties will take precedent over the auth config.");
@@ -29,14 +29,14 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 
         else if (args.length == 1 && args[0].equalsIgnoreCase("toggle"))
         {
-            if (EventHandler.whitelist)
+            if (AuthEventHandler.whitelist)
             {
-                EventHandler.whitelist = false;
+                AuthEventHandler.whitelist = false;
                 ChatUtils.sendMessage(sender, "FE Whitelist was on, it is now turned off.");
             }
             else
             {
-                EventHandler.whitelist = true;
+                AuthEventHandler.whitelist = true;
                 ChatUtils.sendMessage(sender, "FE Whitelist was off, it is now turned on.");
             }
         }

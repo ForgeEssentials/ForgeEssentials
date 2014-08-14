@@ -18,7 +18,7 @@ public class PlayerInvChest extends InventoryBasic {
     @Override
     public void openInventory()
     {
-        EventHandler.register(this);
+        CommandsEventHandler.register(this);
         allowUpdate = false;
         for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
         {
@@ -31,7 +31,7 @@ public class PlayerInvChest extends InventoryBasic {
     @Override
     public void closeInventory()
     {
-        EventHandler.remove(this);
+        CommandsEventHandler.remove(this);
         if (allowUpdate)
         {
             for (int id = 0; id < owner.inventory.mainInventory.length; ++id)

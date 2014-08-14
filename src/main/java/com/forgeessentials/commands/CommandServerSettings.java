@@ -8,6 +8,7 @@ import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
 
 import java.util.Arrays;
@@ -139,6 +140,23 @@ public class CommandServerSettings extends FEcmdModuleCommands {
                 server.setGameType(WorldSettings.GameType.getByID(Integer.parseInt(args[1])));
                 server.saveProperties();
                 OutputHandler.chatConfirmation(sender, "gamemode: " + server.getGameType().getName());
+            }
+            return;
+
+        }
+
+        if (args[0].equalsIgnoreCase("difficulty"))
+        {
+            if (args.length == 1)
+            {
+                OutputHandler.chatConfirmation(sender, "difficulty: " + server.func_147135_j().name());
+            }
+            else
+            {
+                server.setProperty("difficulty", args[1]);
+                server.func_147139_a(EnumDifficulty.getDifficultyEnum(Integer.parseInt(args[1])));
+                server.saveProperties();
+                OutputHandler.chatConfirmation(sender, "difficulty: " + server.func_147135_j().name());
             }
             return;
 

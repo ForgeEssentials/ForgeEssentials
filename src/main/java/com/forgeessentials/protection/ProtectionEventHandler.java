@@ -30,7 +30,7 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
 import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
 
-public class EventHandler {
+public class ProtectionEventHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void playerAttack(AttackEntityEvent e)
     {
@@ -158,16 +158,15 @@ public class EventHandler {
         }
 
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
-        PermQuery query = new PermQueryPlayerArea(e.getPlayer(), ModuleProtection.PERM_OVERRIDE, point);
-        boolean result = APIRegistry.perms.checkPermAllowed(query);
+        boolean overall = APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(e.getPlayer(), ModuleProtection.PERM_OVERRIDE, point));
+        boolean breaks = APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(e.getPlayer(), ModuleProtection.PERM_EDITS, point));
 
-        if (!result)
+        if (!overall)
         {
-            query = new PermQueryPlayerArea(e.getPlayer(), ModuleProtection.PERM_EDITS, point);
-            result = APIRegistry.perms.checkPermAllowed(query);
+            if (!breaks)
+                e.setCanceled(true);
         }
 
-        e.setCanceled(!result);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -179,15 +178,14 @@ public class EventHandler {
         }
 
         WorldPoint point = new WorldPoint(e.player.dimension, e.blockX, e.blockY, e.blockZ);
-        PermQuery query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point);
-        boolean result = APIRegistry.perms.checkPermAllowed(query);
+        boolean overall = APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(e.player, ModuleProtection.PERM_OVERRIDE, point));
+        boolean breaks = APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(e.player, ModuleProtection.PERM_EDITS, point));
 
-        if (!result)
+        if (!overall)
         {
-            query = new PermQueryPlayerArea(e.player, ModuleProtection.PERM_EDITS, point);
-            result = APIRegistry.perms.checkPermAllowed(query);
+            if (!breaks)
+                e.setCanceled(true);
         }
-        e.setCanceled(!result);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

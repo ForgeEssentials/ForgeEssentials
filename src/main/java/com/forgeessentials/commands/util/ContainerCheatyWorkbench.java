@@ -43,7 +43,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench {
 
                 if (var3 != null)
                 {
-                    par1EntityPlayer.dropPlayerItemWithRandomChoice(var3)
+                    par1EntityPlayer.dropPlayerItemWithRandomChoice(var3, true);
                 }
             }
         }

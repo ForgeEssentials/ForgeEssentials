@@ -113,12 +113,6 @@ public class ModuleLauncher {
             map.scanObject(module);
         }
 
-        // run the preinits.
-        for (ModuleContainer module : modules)
-        {
-            module.runPreInit(e, map);
-        }
-
         // run the config init methods..
         boolean generate = false;
         for (ModuleContainer module : modules)
@@ -143,6 +137,12 @@ public class ModuleLauncher {
                 cfg.setGenerate(generate);
                 cfg.init();
             }
+        }
+
+        // run the preinits.
+        for (ModuleContainer module : modules)
+        {
+            module.runPreInit(e, map);
         }
     }
 

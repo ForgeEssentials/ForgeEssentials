@@ -17,8 +17,6 @@ import com.forgeessentials.util.events.PermissionPropSetEvent;
 import com.forgeessentials.util.events.PermissionSetEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.api.IGroup;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -326,7 +324,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     public String addPlayerToGroup(String group, UUID player, String zone)
     {
         SqlHelper.generatePlayer(player.toString());
-        if (getApplicableGroups(player, false, zone).contains(getGroupForName(group)))
+        if (getApplicableGroups(player, false, zone).contains(APIRegistry.getAsFEGroup(group)))
         {
             return "Player already in group.";
         }

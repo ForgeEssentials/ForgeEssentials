@@ -4,7 +4,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.AFKdata;
-import com.forgeessentials.commands.util.EventHandler;
+import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
@@ -51,7 +51,7 @@ public class CommandAFK extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EventHandler.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
+        CommandsEventHandler.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
         OutputHandler.chatConfirmation(sender, String.format("Stand still for %d seconds.", warmup));
     }
 
@@ -69,7 +69,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         }
         afkData.player.sendPlayerAbilities();
         afkList.remove(afkData.player.getPersistentID());
-        EventHandler.afkListToRemove.add(afkData);
+        CommandsEventHandler.afkListToRemove.add(afkData);
 
         if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
         {

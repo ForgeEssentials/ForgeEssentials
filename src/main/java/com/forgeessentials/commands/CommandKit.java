@@ -4,7 +4,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.commands.util.CommandDataManager;
-import com.forgeessentials.commands.util.EventHandler;
+import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
 import com.forgeessentials.util.ChatUtils;
@@ -130,7 +130,7 @@ public class CommandKit extends FEcmdModuleCommands {
     public void registerExtraPermissions()
     {
         APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".admin", RegGroup.OWNERS);
-        APIRegistry.permReg.registerPermissionLevel(EventHandler.BYPASS_KIT_COOLDOWN, RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(CommandsEventHandler.BYPASS_KIT_COOLDOWN, RegGroup.OWNERS);
     }
 
     @Override

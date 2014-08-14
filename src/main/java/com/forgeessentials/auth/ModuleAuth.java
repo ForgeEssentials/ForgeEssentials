@@ -37,7 +37,7 @@ public class ModuleAuth {
     public static String salt = EncryptionHelper.generateSalt();
     public static int checkInterval;
     private static EncryptionHelper pwdEnc;
-    private static EventHandler eventHandler;
+    private static AuthEventHandler handler;
     private static boolean oldEnabled = false;
 
     @PreInit
@@ -54,7 +54,7 @@ public class ModuleAuth {
     public void load(FEModuleInitEvent e)
     {
         pwdEnc = new EncryptionHelper();
-        eventHandler = new EventHandler();
+        handler = new AuthEventHandler();
     }
 
     @ServerInit
@@ -109,13 +109,13 @@ public class ModuleAuth {
 
         if (isEnabled())
         {
-            MinecraftForge.EVENT_BUS.register(eventHandler);
-            FMLCommonHandler.instance().bus().register(eventHandler);
+            MinecraftForge.EVENT_BUS.register(handler);
+            FMLCommonHandler.instance().bus().register(handler);
         }
         else
         {
-            MinecraftForge.EVENT_BUS.unregister(eventHandler);
-            FMLCommonHandler.instance().bus().unregister(eventHandler);
+            MinecraftForge.EVENT_BUS.unregister(handler);
+            FMLCommonHandler.instance().bus().unregister(handler);
         }
     }
 

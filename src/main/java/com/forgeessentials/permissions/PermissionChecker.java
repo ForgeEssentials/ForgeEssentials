@@ -12,7 +12,6 @@ public class PermissionChecker implements Comparable {
      * should only be used for temporary Perm checking.
      *
      * @param qualifiedName
-     * @param allowed
      */
     public PermissionChecker(String qualifiedName)
     {
@@ -32,7 +31,7 @@ public class PermissionChecker implements Comparable {
         }
         else
         {
-            name = qualifiedName;
+            name = qualifiedName.toLowerCase();
             isAll = false;
         }
     }
