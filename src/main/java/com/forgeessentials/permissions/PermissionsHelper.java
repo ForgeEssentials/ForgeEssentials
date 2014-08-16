@@ -24,9 +24,6 @@ import java.util.UUID;
 
 @SuppressWarnings("rawtypes")
 public class PermissionsHelper implements IPermissionsHelper{
-    public final String EntryPlayer = "_ENTRY_PLAYER_";
-    private String EPPrefix = "";
-    private String EPSuffix = "";
     private Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, APIRegistry.zones.getGLOBAL().getZoneName(), 0);
 
     public static PermissionsHelper INSTANCE;
@@ -512,38 +509,8 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
-    public String getEPPrefix()
-    {
-        return EPPrefix;
-    }
-
-    @Override
     public Group getDEFAULT()
     {
         return DEFAULT;
-    }
-
-    @Override
-    public void setEPPrefix(String ePPrefix)
-    {
-        EPPrefix = ePPrefix;
-    }
-
-    @Override
-    public String getEPSuffix()
-    {
-        return EPSuffix;
-    }
-
-    @Override
-    public void setEPSuffix(String ePSuffix)
-    {
-        EPSuffix = ePSuffix;
-    }
-
-    @Override
-    public String getEntryPlayer()
-    {
-        return EntryPlayer;
     }
 }

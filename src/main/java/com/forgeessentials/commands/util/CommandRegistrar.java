@@ -37,7 +37,6 @@ public class CommandRegistrar {
         cmdList.add(new CommandRepair());
         cmdList.add(new CommandHeal());
         cmdList.add(new CommandKill());
-        cmdList.add(new CommandGive());
         cmdList.add(new CommandGameMode());
         cmdList.add(new CommandDoAs());
         cmdList.add(new CommandServerSettings());

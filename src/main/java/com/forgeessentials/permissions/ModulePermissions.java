@@ -9,7 +9,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.permission.PermsEventHandler;
 import com.forgeessentials.permissions.autoPromote.AutoPromote;
 import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
 import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;

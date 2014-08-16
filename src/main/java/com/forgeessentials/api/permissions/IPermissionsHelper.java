@@ -137,15 +137,5 @@ public interface IPermissionsHelper {
 
     ArrayList getGroupPermissionProps(String target, String zone);
 
-    String getEPPrefix();
-
-    void setEPPrefix(String ePPrefix);
-
-    String getEPSuffix();
-
-    void setEPSuffix(String ePSuffix);
-
     Group getDEFAULT();
-
-    String getEntryPlayer();
 }

@@ -6,15 +6,17 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
 
 import java.io.File;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
 /**
  * Usernames are only kept for ease of updating - this class should be receiving UUIDs that have been toString'ed.
@@ -72,7 +74,6 @@ public class SqlHelper {
     private static SqlHelper instance;
     private static int GLOBAL_ID = 1;
     private static int SUPER_ID = 2;
-    private static int ENTRY_PLAYER_ID = 1;
     private static int DEFAULT_ID = 1;
     private Connection db;
     private boolean generate = false;
@@ -1554,11 +1555,6 @@ public class SqlHelper {
         ResultSet set = getInstance().statementGetPlayerIDFromName.executeQuery();
         getInstance().statementGetPlayerIDFromName.clearParameters();
 
-        if (!set.next())
-        {
-            return getPlayerIDFromPlayerName(APIRegistry.perms.getEntryPlayer());
-        }
-
         return set.getInt(1);
     }
 
@@ -2625,13 +2621,6 @@ public class SqlHelper {
             query = new StringBuilder("INSERT INTO ").append(TABLE_ZONE).append(" (").append(COLUMN_ZONE_NAME).append(", ").append(COLUMN_ZONE_ZONEID)
                     .append(") ").append(" VALUES ").append(" ('").append(APIRegistry.zones.getSUPER().getZoneName())
                     .append("', ").append(SUPER_ID).append(")");
-            ;
-            db.createStatement().executeUpdate(query.toString());
-
-            // Entry player...
-            query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_USERNAME).append(", ")
-                    .append(COLUMN_PLAYER_PLAYERID).append(") ").append(" VALUES ").append(" ('").append(APIRegistry.perms.getEntryPlayer())
-                    .append("', ").append(ENTRY_PLAYER_ID).append(")");
             db.createStatement().executeUpdate(query.toString());
 
         }
@@ -2720,14 +2709,6 @@ public class SqlHelper {
                 }
             }
 
-            // put the EntryPlayer to GUESTS for the GLOBAL zone
-            s = statementPutPlayerInGroup;
-            s.setInt(1, groups.get(RegGroup.GUESTS));
-            s.setInt(2, ENTRY_PLAYER_ID);
-            s.setInt(3, GLOBAL_ID); // zoneID
-            s.executeUpdate();
-            s.clearParameters();
-
             // make default ladder
             s = statementPutLadderName;
             s.setString(1, RegGroup.LADDER);
@@ -2812,14 +2793,9 @@ public class SqlHelper {
 
             // call generate to remake the stuff that should be there
             {
-                // recreate EntryPlayer player
-                StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_USERNAME).append(", ")
-                        .append(COLUMN_PLAYER_PLAYERID).append(") ").append(" VALUES ").append(" ('")
-                        .append(APIRegistry.perms.getEntryPlayer()).append("', ").append(ENTRY_PLAYER_ID).append(")");
-                db.createStatement().executeUpdate(query.toString());
 
                 // recreate DEFAULT group
-                query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (").append(COLUMN_GROUP_GROUPID).append(", ").append(COLUMN_GROUP_NAME)
+                StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (").append(COLUMN_GROUP_GROUPID).append(", ").append(COLUMN_GROUP_NAME)
                         .append(", ").append(COLUMN_GROUP_PRIORITY).append(", ").append(COLUMN_GROUP_ZONE)
                         .append(") ").append(" VALUES ").append(" (").append(DEFAULT_ID).append(", ") // groupID
                         .append("'").append(APIRegistry.perms.getDEFAULT().name).append("', ").append("0, ").append(GLOBAL_ID).append(")"); // priority, zone

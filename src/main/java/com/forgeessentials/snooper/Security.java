@@ -1,6 +1,7 @@
 package com.forgeessentials.snooper;
 
 import com.forgeessentials.api.json.JSONArray;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,7 +16,7 @@ public class Security {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, skey);
             crypted = cipher.doFinal(input.getBytes());
-            return new String(Base64.encode(crypted));
+            return new String(Base64.encodeBase64String(crypted));
         }
         catch (Exception e)
         {
@@ -32,7 +33,7 @@ public class Security {
             SecretKeySpec skey = new SecretKeySpec(key.getBytes(), "AES");
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, skey);
-            output = cipher.doFinal(Base64.decode(input));
+            output = cipher.doFinal(Base64.decodeBase64(input));
             return new String(output);
         }
         catch (Exception e)

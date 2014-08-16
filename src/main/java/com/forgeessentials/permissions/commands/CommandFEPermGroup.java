@@ -10,6 +10,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.api.IGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +56,13 @@ public class CommandFEPermGroup {
                 else
                 {
                     OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
+                }
+            }
+            for (IGroup g : PermissionsManager.getAllGroups())
+            {
+                if (g.getName().equalsIgnoreCase(args[1])){
+                    OutputHandler.chatError(sender, String.format("A group by the name of %s already exists!", args[1]));
+                    return;
                 }
             }
             APIRegistry.perms.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
@@ -494,6 +502,13 @@ public class CommandFEPermGroup {
                 else
                 {
                     ChatUtils.sendMessage(sender, String.format("No zone by the name %s exists!", args[2]));
+                }
+            }
+            for (IGroup g : PermissionsManager.getAllGroups())
+            {
+                if (g.getName().equalsIgnoreCase(args[1])){
+                    OutputHandler.chatError(sender, String.format("A group by the name of %s already exists!", args[1]));
+                    return;
                 }
             }
             APIRegistry.perms.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
