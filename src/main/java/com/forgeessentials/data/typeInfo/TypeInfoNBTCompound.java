@@ -4,9 +4,11 @@ import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.data.api.TypeMultiValInfo;
+
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagIntArray;
 
 import java.util.Collection;
@@ -47,8 +49,10 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
         NBTTagCompound nbt = (NBTTagCompound) obj;
 
         TypeData data;
-        for (NBTBase tag : (Collection<NBTBase>) nbt.getTagList())
+        NBTBase tag;
+        for (String name : (Collection<String>) nbt.func_150296_c())
         {
+            tag = nbt.getTag(name);
             data = getEntryData();
             data.putField(TYPE, tag.getId());
             data.putField(KEY, tag);
@@ -65,32 +69,13 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
             {
                 data.putField(B_ARRAY, ((NBTTagByteArray) tag).func_150292_c());
             }
-            else
+            else if (tag instanceof NBTBase.NBTPrimitive)
             {
-                String val = null;
-                switch (tag.getId())
+                String val = tag.toString();
+                
+                if (tag.getId() != new NBTTagInt(0).getId())
                 {
-                case 1:
-                    val = "" + nbt.getByte(tag.getName());
-                    break;
-                case 2:
-                    val = "" + nbt.getShort(tag.getName());
-                    break;
-                case 3:
-                    val = "" + nbt.getInteger(tag.getName());
-                    break;
-                case 4:
-                    val = "" + nbt.getLong(tag.getName());
-                    break;
-                case 5:
-                    val = "" + nbt.getFloat(tag.getName());
-                    break;
-                case 6:
-                    val = "" + nbt.getDouble(tag.getName());
-                    break;
-                case 8:
-                    val = "" + nbt.getString(tag.getName());
-                    break;
+                    val = val.substring(0, val.length()-1);
                 }
 
                 data.putField(PRIMITIVE, val);
