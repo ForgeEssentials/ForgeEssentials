@@ -93,7 +93,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
             double x = mop.blockX + 0.5D;
             double y = mop.blockY + 1;
             double z = mop.blockZ + 0.5D;
-            if (args.length >= 2)
+            if (args.length >= 2 && !args[1].equalsIgnoreCase("name"))
             {
                 amount = parseIntWithMin(sender, args[1], 1);
 
@@ -124,6 +124,14 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                 }
                 mob.setPosition(x, y, z);
                 sender.worldObj.spawnEntityInWorld(mob);
+                if (args.length >= 3 && args[1].equalsIgnoreCase("name")) {
+                	StringBuilder sb = new StringBuilder();
+                	for(int index = 2; index < args.length; index++)
+                	{
+                		sb.append(" " + args[index]);
+                	}
+                	mob.setCustomNameTag(sb.toString());
+                }
                 mob.spawnExplosionParticle();
             }
         }
@@ -138,16 +146,17 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
     {
         if (args.length >= 6)
         {
-            int amount;
-            int x;
-            int y;
-            int z;
+            int amount, x, y, z;
             int dimension = 0;
+            
+            String name;
+            
             amount = parseInt(sender, args[1]);
             x = parseInt(sender, args[2]);
             y = parseInt(sender, args[3]);
             z = parseInt(sender, args[4]);
             dimension = parseInt(sender, args[5]);
+            
             for (int i = 0; i < amount; i++)
             {
                 World world = FunctionHelper.getDimension(dimension);
@@ -159,9 +168,9 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                 }
                 if (args.length >= 6) {
                 	StringBuilder sb = new StringBuilder();
-                	for(int index = 6; i > args.length; i++)
+                	for(int index = 6; index < args.length; index++)
                 	{
-                		sb.append(" " + args[i]);
+                		sb.append(" " + args[index]);
                 	}
                 	mob.setCustomNameTag(sb.toString());
                 }
@@ -176,7 +185,6 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
         else
         {
             ChatUtils.sendMessage(sender, "Improper syntax.");
-            OutputHandler.debug("test");
         }
     }
 
