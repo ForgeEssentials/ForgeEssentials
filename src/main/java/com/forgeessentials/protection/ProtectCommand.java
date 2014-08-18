@@ -14,6 +14,7 @@ public class ProtectCommand extends ForgeEssentialsCommandBase{
         {
         case 0:
             ChatUtils.sendMessage(var1, "List of settings: gamemode");
+            break;
         case 3:
         if (var2[0].equalsIgnoreCase("gamemode"))
         {
@@ -26,9 +27,11 @@ public class ProtectCommand extends ForgeEssentialsCommandBase{
             ModuleProtection.itemsList.put(var2[1], data);
             ChatUtils.sendMessage(var1, "Gamemode in zone " + var2[1] + " set to " + EnumGameType.getByID(Integer.parseInt(var2[2])).getName());
         }
+            break;
 
         default:
             ChatUtils.sendMessage(var1, "Command syntax is wrong. Try " + getCommandUsage(var1));
+            break;
         }
     }
 

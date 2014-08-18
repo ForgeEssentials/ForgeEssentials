@@ -2,6 +2,7 @@ package com.forgeessentials.protection;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -13,6 +14,7 @@ import com.forgeessentials.util.events.ZoneEvent;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -42,7 +44,7 @@ public class ModuleProtection {
     public static boolean enable;
     public static boolean enableMobSpawns;
 
-    private static AbstractDataDriver data;
+    private static AbstractDataDriver datadriver;
     private static ClassContainer zoneBannedItems = new ClassContainer(AdditionalZoneData.class);
     public static HashMap<String, AdditionalZoneData> itemsList = new HashMap<String, AdditionalZoneData>();
 
@@ -59,17 +61,9 @@ public class ModuleProtection {
     @FEModule.Init
     public void load(FEModuleInitEvent e)
     {
-
-        data = DataStorageManager.getReccomendedDriver();
+        datadriver = DataStorageManager.getReccomendedDriver();
 
         MinecraftForge.EVENT_BUS.register(new ProtectionEventHandler());
-
-        Object[] objs = data.loadAllObjects(zoneBannedItems);
-        for (Object obj : objs)
-        {
-            AdditionalZoneData bi = (AdditionalZoneData) obj;
-            itemsList.put(bi.getName(), bi);
-        }
     }
 
     @ForgeSubscribe
@@ -77,10 +71,15 @@ public class ModuleProtection {
     {
         AdditionalZoneData data = new AdditionalZoneData(e.getZone());
         itemsList.put(e.getZone().getZoneName(), data);
+        datadriver.saveObject(zoneBannedItems, data);
     }
 
     @ForgeSubscribe
-    public void onZoneDelete(ZoneEvent.Delete e){itemsList.remove(e.getZone().getZoneName());}
+    public void onZoneDelete(ZoneEvent.Delete e)
+    {
+        itemsList.remove(e.getZone().getZoneName());
+        datadriver.deleteObject(zoneBannedItems, e.getZone().getZoneName());
+    }
 
     @SuppressWarnings("unchecked")
     @FEModule.ServerInit
@@ -116,6 +115,34 @@ public class ModuleProtection {
         for (int i : DimensionManager.getIDs())
         {
             APIRegistry.permReg.registerPermissionLevel(PERM_DIMENSION + i, RegGroup.MEMBERS);
+        }
+
+        Object[] objs = datadriver.loadAllObjects(zoneBannedItems);
+        for (Object obj : objs)
+        {
+            AdditionalZoneData bi = (AdditionalZoneData) obj;
+            itemsList.put(bi.getName(), bi);
+            datadriver.saveObject(zoneBannedItems, bi);
+            System.out.println("added " + bi.getName());
+        }
+
+        for (Zone zone : APIRegistry.zones.getZoneList())
+        {
+            if (!itemsList.containsKey(zone.getZoneName())){
+            AdditionalZoneData data = new AdditionalZoneData(zone);
+            itemsList.put(zone.getZoneName(), data);
+            datadriver.saveObject(zoneBannedItems, data);
+            }
+
+        }
+    }
+
+    @FEModule.ServerStop
+    public void saveAdditionalData(FEModuleServerStopEvent e)
+    {
+        for (AdditionalZoneData data : itemsList.values())
+        {
+            datadriver.saveObject(zoneBannedItems, data);
         }
     }
 }

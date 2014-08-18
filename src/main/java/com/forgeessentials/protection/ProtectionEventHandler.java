@@ -9,7 +9,6 @@ import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerBlockPlace;
-import com.forgeessentials.util.events.PlayerChangedZone;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -371,14 +370,16 @@ public class ProtectionEventHandler {
             }
         }
     }
-    */
 
     @ForgeSubscribe
     public void manageZoneGameModes(PlayerChangedZone e)
     {
         AdditionalZoneData bi = ModuleProtection.itemsList.get(e.afterZone);
-        e.entityPlayer.setGameType(bi.getGameMode());
+        if (e.entityPlayer != null)
+        e.entityPlayer.setGameType(EnumGameType.getByID(bi.getGameMode().intValue()));
+        System.out.println("yoohoo!");
 
     }
+    */
 
 }

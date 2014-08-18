@@ -133,7 +133,6 @@ public class ZoneHelper implements IZoneManager {
         onZoneDeleted(deleted);
         SqlHelper.delZone(zoneID);
         ModulePermissions.data.deleteObject(new ClassContainer(Zone.class), zoneID);
-        MinecraftForge.EVENT_BUS.post(new ZoneEvent.Delete(deleted));
     }
 
     @Override
@@ -194,7 +193,6 @@ public class ZoneHelper implements IZoneManager {
         SqlHelper.createZone(zoneID);
         DataStorageManager.getReccomendedDriver().saveObject(ZoneHelper.container, created);
         onZoneCreated(created);
-        MinecraftForge.EVENT_BUS.post(new ZoneEvent.Create(created));
         return true;
     }
 
@@ -374,6 +372,7 @@ public class ZoneHelper implements IZoneManager {
                 areaCache.remove(a);
             }
         }
+        MinecraftForge.EVENT_BUS.post(new ZoneEvent.Create(created));
     }
 
     private void onZoneDeleted(Zone deleted)
@@ -393,6 +392,7 @@ public class ZoneHelper implements IZoneManager {
                 areaCache.remove(entry.getKey());
             }
         }
+        MinecraftForge.EVENT_BUS.post(new ZoneEvent.Delete(deleted));
     }
 
     @Override
