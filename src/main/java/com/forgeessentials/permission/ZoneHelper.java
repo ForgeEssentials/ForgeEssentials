@@ -8,8 +8,10 @@ import com.forgeessentials.util.AreaSelector.Selection;
 import com.forgeessentials.util.AreaSelector.WorldArea;
 import com.forgeessentials.util.AreaSelector.WorldPoint;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.events.ZoneEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent.Load;
@@ -131,6 +133,7 @@ public class ZoneHelper implements IZoneManager {
         onZoneDeleted(deleted);
         SqlHelper.delZone(zoneID);
         ModulePermissions.data.deleteObject(new ClassContainer(Zone.class), zoneID);
+        MinecraftForge.EVENT_BUS.post(new ZoneEvent.Delete(deleted));
     }
 
     @Override
@@ -191,6 +194,7 @@ public class ZoneHelper implements IZoneManager {
         SqlHelper.createZone(zoneID);
         DataStorageManager.getReccomendedDriver().saveObject(ZoneHelper.container, created);
         onZoneCreated(created);
+        MinecraftForge.EVENT_BUS.post(new ZoneEvent.Create(created));
         return true;
     }
 
@@ -254,8 +258,6 @@ public class ZoneHelper implements IZoneManager {
     /**
      * used for AllorNothing areas..
      *
-     * @param area
-     * @param world
      * @return
      */
     @Override

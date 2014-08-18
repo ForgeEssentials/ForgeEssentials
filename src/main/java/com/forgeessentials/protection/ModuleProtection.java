@@ -9,6 +9,7 @@ import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.permission.Permission;
+import com.forgeessentials.util.events.ZoneEvent;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
@@ -17,6 +18,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -70,10 +72,22 @@ public class ModuleProtection {
         }
     }
 
+    @ForgeSubscribe
+    public void onZoneCreate(ZoneEvent.Create e)
+    {
+        AdditionalZoneData data = new AdditionalZoneData(e.getZone());
+        itemsList.put(e.getZone().getZoneName(), data);
+    }
+
+    @ForgeSubscribe
+    public void onZoneDelete(ZoneEvent.Delete e){itemsList.remove(e.getZone().getZoneName());}
+
     @SuppressWarnings("unchecked")
     @FEModule.ServerInit
     public void registerPermissions(FEModuleServerInitEvent ev)
     {
+        ev.registerServerCommand(new ProtectCommand());
+
         APIRegistry.permReg.registerPermissionLevel(PERM_PVP, RegGroup.GUESTS);
         APIRegistry.permReg.registerPermissionLevel(PERM_EDITS, RegGroup.MEMBERS);
         APIRegistry.permReg.registerPermissionLevel(PERM_INTERACT_BLOCK, RegGroup.MEMBERS);
