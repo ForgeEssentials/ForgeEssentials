@@ -8,9 +8,9 @@ The code on this branch is for Minecraft 1.6.4. File issues at the issue tracker
 
 *******************
 
-The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality. Development by the team has officially stopped, though PRs are welcome, be it to fix bugs, or add modules, or whatever.
+The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality. Development by the team has officially stalled, though PRs are welcome, be it to fix bugs, or add modules, or whatever.
 
-*More information can be found at the [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki).*
+*More information can be found at the (wip - rewrite in progress) [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki).*
 
 ####This repo is for a port to Minecraft 1.6.4. There are compiled builds [here](http://dries007.net:8080/job/FE_164/). Please make backups before attempting to use this on a live server.####
 
@@ -23,11 +23,14 @@ Set up for ForgeEssentials development is simalar to any other ForgeGradle-based
 *Note: ForgeGradle versions for Minecraft 1.6 requires Java 7.*
 
 1. Clone this repo.
-2. Open a terminal, and navigate to the cloned repo.
-3. Depending on your system, run either 'gradlew.bat eclipse' (Windows) or './gradlew eclipse' (Unix)
-4. Open the newly created workspace in Eclipse, and you will be good to go!
+2. Download the respective MinecraftForge ForgeGradle version into the repo.
+3. Open a terminal, and navigate to the cloned repo.
+4. Depending on your system, run either 'gradlew.bat setupDecompWorkspace eclipse' (Windows Command Prompt), './gradlew.bat setupDecompWorkspace eclipse' (Windows PowerShell), or './gradlew setupDecompWorkspace eclipse' (Unix)
+5. Open the newly created workspace in Eclipse, and you will be good to go!
 
-*Note: Please consider squashing all commits before initially sumitting pull requests.*
+*Notes:*
+*1. Please consider squashing all commits before initially submitting pull requests.*
+*2. For a local .gitignore use .git/info/exclude*
 
 <br>
 
@@ -48,13 +51,15 @@ FE Team Members:
 
 <a href="https://github.com/MysteriousAges">MysteriousAges</a> (inactive)
 
-<a href="https://github.com/dries007">Dries007</a>
+<a href="https://github.com/dries007">Dries007</a> (inactive)
 
 <a href="https://github.com/Weneg">Weneg</a> (inactive)
 
 <a href="https://github.com/Malkerian">Malkerian</a>  (inactive)
 
 <a href="https://github.com/Jgdovin">Jgdovin</a>  (inactive)
+
+<a href="https://github.com/RlonRyan">RlonRyan</a>
 
 With localization credits to:
 

@@ -5,9 +5,11 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -21,8 +23,13 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
 
     public CommandSpawnMob()
     {
+    	// Some type of nested table might be nice here...
         mobNames.put("creeper", "Creeper");
         mobNames.put("skeleton", "Skeleton");
+        mobNames.put("skele", "Skeleton");
+        mobNames.put("witherskeleton", "Skeleton");
+        mobNames.put("wskeleton", "Skeleton");
+        mobNames.put("wskele", "Skeleton");
         mobNames.put("spider", "Spider");
         mobNames.put("giant", "Giant");
         mobNames.put("zombie", "Zombie");
@@ -99,6 +106,13 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                     OutputHandler.chatError(sender, String.format("%s was not recognized as a mob.", args[0]));
                     return;
                 }
+                if (args[0].toLowerCase().equals("witherskeleton") || args[0].toLowerCase().equals("wskeleton") || args[0].toLowerCase().equals("wskele"))
+                {
+                	// Better safe than sorry...
+                	if (mob instanceof EntitySkeleton) {
+                		((EntitySkeleton)mob).setSkeletonType(1);
+                	}
+                }
                 mob.setPosition(x, y, z);
                 sender.worldObj.spawnEntityInWorld(mob);
             }
@@ -132,6 +146,14 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                 {
                     ChatUtils.sendMessage(sender, String.format("%s was not recognized as a mob.", args[0]));
                     return;
+                }
+                if (args.length >= 6) {
+                	StringBuilder sb = new StringBuilder();
+                	for(int index = 6; i > args.length; i++)
+                	{
+                		sb.append(" " + args[i]);
+                	}
+                	mob.setCustomNameTag(sb.toString());
                 }
                 mob.setPosition(x, y, z);
                 world.spawnEntityInWorld(mob);
