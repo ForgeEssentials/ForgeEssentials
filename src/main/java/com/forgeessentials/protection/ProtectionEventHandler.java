@@ -374,10 +374,9 @@ public class ProtectionEventHandler {
     @ForgeSubscribe
     public void manageZoneGameModes(PlayerChangedZone e)
     {
-        AdditionalZoneData bi = ModuleProtection.itemsList.get(e.afterZone);
-        if (e.entityPlayer != null)
-        e.entityPlayer.setGameType(EnumGameType.getByID(bi.getGameMode().intValue()));
-        System.out.println("yoohoo!");
+        String val = APIRegistry.perms.getPermissionPropForPlayer(e.entityPlayer.username, e.afterZone.getZoneName(), ModuleProtection.PERMPROP_ZONE_GAMEMODE);
+        e.entityPlayer.setGameType(EnumGameType.getByID(Integer.parseInt(val)));
+        System.out.println("yoohoo");
 
     }
     */

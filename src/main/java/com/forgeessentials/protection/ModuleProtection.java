@@ -2,27 +2,19 @@ package com.forgeessentials.protection;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.UnfriendlyItemList;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.data.AbstractDataDriver;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.permission.Permission;
-import com.forgeessentials.util.events.ZoneEvent;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 
-import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -38,15 +30,12 @@ public class ModuleProtection {
     public final static String PERM_MOB_SPAWN_FORCED = "fe.protection.mobSpawn.forced";
     public final static String PERM_DIMENSION = "fe.protection.dimension.";
     public final static String PERM_OVERRIDE_BANNEDITEMS = "fe.protection.overrideProtection.banneditems";
+    public final static String PERMPROP_ZONE_GAMEMODE = "fe.protection.data.zonegamemode";
 
     @FEModule.Config
     public static ConfigProtection config;
     public static boolean enable;
     public static boolean enableMobSpawns;
-
-    private static AbstractDataDriver datadriver;
-    private static ClassContainer zoneBannedItems = new ClassContainer(AdditionalZoneData.class);
-    public static HashMap<String, AdditionalZoneData> itemsList = new HashMap<String, AdditionalZoneData>();
 
     @FEModule.PreInit
     public void preLoad(FEModulePreInitEvent e)
@@ -61,24 +50,7 @@ public class ModuleProtection {
     @FEModule.Init
     public void load(FEModuleInitEvent e)
     {
-        datadriver = DataStorageManager.getReccomendedDriver();
-
         MinecraftForge.EVENT_BUS.register(new ProtectionEventHandler());
-    }
-
-    @ForgeSubscribe
-    public void onZoneCreate(ZoneEvent.Create e)
-    {
-        AdditionalZoneData data = new AdditionalZoneData(e.getZone());
-        itemsList.put(e.getZone().getZoneName(), data);
-        datadriver.saveObject(zoneBannedItems, data);
-    }
-
-    @ForgeSubscribe
-    public void onZoneDelete(ZoneEvent.Delete e)
-    {
-        itemsList.remove(e.getZone().getZoneName());
-        datadriver.deleteObject(zoneBannedItems, e.getZone().getZoneName());
     }
 
     @SuppressWarnings("unchecked")
@@ -117,32 +89,6 @@ public class ModuleProtection {
             APIRegistry.permReg.registerPermissionLevel(PERM_DIMENSION + i, RegGroup.MEMBERS);
         }
 
-        Object[] objs = datadriver.loadAllObjects(zoneBannedItems);
-        for (Object obj : objs)
-        {
-            AdditionalZoneData bi = (AdditionalZoneData) obj;
-            itemsList.put(bi.getName(), bi);
-            datadriver.saveObject(zoneBannedItems, bi);
-            System.out.println("added " + bi.getName());
-        }
-
-        for (Zone zone : APIRegistry.zones.getZoneList())
-        {
-            if (!itemsList.containsKey(zone.getZoneName())){
-            AdditionalZoneData data = new AdditionalZoneData(zone);
-            itemsList.put(zone.getZoneName(), data);
-            datadriver.saveObject(zoneBannedItems, data);
-            }
-
-        }
-    }
-
-    @FEModule.ServerStop
-    public void saveAdditionalData(FEModuleServerStopEvent e)
-    {
-        for (AdditionalZoneData data : itemsList.values())
-        {
-            datadriver.saveObject(zoneBannedItems, data);
-        }
+        APIRegistry.permReg.registerPermissionProp(PERMPROP_ZONE_GAMEMODE, 0);
     }
 }
