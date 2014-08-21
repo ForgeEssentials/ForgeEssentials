@@ -12,7 +12,6 @@ The Forge Essentials project consists of a permissions and protection system to 
 
 *More information can be found at the (wip - rewrite in progress) [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki).*
 
-####This repo is for a port to Minecraft 1.6.4. There are compiled builds [here](http://dries007.net:8080/job/FE_164/). Please make backups before attempting to use this on a live server.####
 
 <br>
 
@@ -37,11 +36,17 @@ Set up for ForgeEssentials development is simalar to any other ForgeGradle-based
 Downloads
 =========
 
-If you would like test builds, go [here](http://dries007.net:8080/job/FE_164/). Untested and probably buggy!
+If you would like test builds, go [here](http://ci.forgeessentials.com). Untested and probably buggy!
 
 FE Team Members:
 ================
-<a href="https://github.com/luacs1998">luacs1998</a>
+<a href="https://github.com/luacs1998">luacs1998</a> (lead developer)
+
+<a href="https://github.com/RlonRyan">RlonRyan</a>
+
+<a href="https://github.com/helinus">Helinus</a>
+
+Retired:
 
 <a href="https://github.com/AbrarSyed">AbrarSyed</a>  (inactive)
 
@@ -59,11 +64,5 @@ FE Team Members:
 
 <a href="https://github.com/Jgdovin">Jgdovin</a>  (inactive)
 
-<a href="https://github.com/RlonRyan">RlonRyan</a>
 
-With localization credits to:
-
-<a href="https://github.com/helinus">Helinus</a>
-
-<a href="https://github.com/jovino">Jovino</a> (inactive)
 
