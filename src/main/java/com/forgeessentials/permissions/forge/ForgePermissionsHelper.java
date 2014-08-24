@@ -6,28 +6,29 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.permissions.PermissionsHelper;
 import com.forgeessentials.permissions.SqlHelper;
 import com.forgeessentials.util.FunctionHelper;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.dispenser.ILocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.api.IGroup;
-import net.minecraftforge.permissions.api.PermBuilderFactory;
+import net.minecraftforge.permissions.api.IPermissionsProvider;
 import net.minecraftforge.permissions.api.context.IContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.UUID;
 
-public class ForgePermissionsHelper implements PermBuilderFactory{
+public class ForgePermissionsHelper implements IPermissionsProvider{
 
     @Override public String getName()
     {
         return "ForgeEssentials";
     }
 
-    @Override public boolean checkPerm(EntityPlayer player, String node, Map<String, IContext> contextInfo)
+    @Override public boolean checkPerm(EntityPlayer player, String node, ImmutableMap<String, IContext> contextInfo)
     {
         return PermissionsHelper.INSTANCE.checkPermAllowed(new PermQueryPlayer(player, node));
     }
@@ -67,7 +68,7 @@ public class ForgePermissionsHelper implements PermBuilderFactory{
         return null;
     }
 
-    @Override public void registerPermission(String node, RegisteredPermValue allow)
+    @Override public void registerPermission(String node, PermissionsManager.RegisteredPermValue allow)
     {
 
     }

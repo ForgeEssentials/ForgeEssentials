@@ -6,6 +6,9 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.permissions.api.context.IContext.ILocationContext;
 import net.minecraftforge.permissions.api.context.IContext.IRotationContext;
 
+/**
+ * Default context for entities. Feel free to use or override.
+ */
 public class EntityContext implements ILocationContext, IRotationContext
 {
     private final double x, y, z;
@@ -23,7 +26,6 @@ public class EntityContext implements ILocationContext, IRotationContext
         pitch = entity.rotationPitch;
         yaw = entity.rotationYaw;
     }
-    
 
     public double getX()
     {

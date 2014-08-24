@@ -15,6 +15,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumChatFormatting;
 
+import java.util.List;
+
 public class CommandWand extends ForgeEssentialsCommandBase {
 
     @Override
@@ -79,9 +81,9 @@ public class CommandWand extends ForgeEssentialsCommandBase {
             {
                 if (allowed)
                 {
-                    int[] parsed = FunctionHelper.parseIdAndMetaFromString(args[0], false);
-                    currentID = ((Item)GameData.getItemRegistry().getObject(parsed[0]));
-                    currentDmg = parsed[1];
+                    List<Object> data = FunctionHelper.parseIdAndMetaFromString(args[0], false);
+                    currentID = ((Item)GameData.getItemRegistry().getObject(data.get(0)));
+                    currentDmg = (int)data.get(1);
                     info.wandEnabled = true;
                     info.wandID = currentID.getUnlocalizedName();
                     info.wandDmg = currentDmg == -1 ? 0 : currentDmg;

@@ -3,6 +3,9 @@ package net.minecraftforge.permissions.api.context;
 import net.minecraft.dispenser.ILocation;
 import net.minecraftforge.permissions.api.context.IContext.ILocationContext;
 
+/**
+ * Default context for storing a point. Feel free to use or override.
+ */
 public class Point implements ILocationContext
 {
     private final double x, y, z;

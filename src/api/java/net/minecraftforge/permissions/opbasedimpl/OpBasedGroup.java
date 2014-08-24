@@ -18,7 +18,7 @@ import net.minecraftforge.permissions.api.IGroup;
  
 /**
  * This class acts as merely a wrapper around the currently existing ops system in minecraft.
- * It does not provide any additional functionality, nor does it allow for group manipulation.
+ * It does not provide any additional functionality.
  * You are not recommended to use this in your mods, as this class is not guaranteed to exist, especially
  * when another permissions framework is installed.
  *
@@ -26,24 +26,12 @@ import net.minecraftforge.permissions.api.IGroup;
 public class OpBasedGroup implements IGroup
 {
     private String name;
-    private IGroup parent;
     
-    private MinecraftServer server;
+    private MinecraftServer server = MinecraftServer.getServer();
     
     public OpBasedGroup(String name)
     {
         this.name = name;
-        this.server = MinecraftServer.getServer();
-    }
-    
-    // noop - groups in opBased are just wrappers around the ops list
-    @Override
-    public void addPlayer(UUID playerID){}
- 
-    @Override
-    public boolean removePlayer(UUID playerID)
-    {
-        return false; // use op/deop to remove players from ops group
     }
     
     @Override
@@ -88,29 +76,10 @@ public class OpBasedGroup implements IGroup
         }
         return players;
     }
-    
-    @Override
-    public IGroup setParent(IGroup parent)
-    {
-        this.parent = parent;
-        return this;
-    }
-    
-    @Override
-    public IGroup getParent()
-    {
-        return parent;
-    }
  
     @Override
     public String getName()
     {
         return name;
-    }
- 
-    @Override
-    public void setName(String name)
-    {
-        this.name = name;
     }
 }

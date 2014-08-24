@@ -245,14 +245,13 @@ public class TextFormatter {
     {
         try
         {
-            NBTTagIntArray list = new NBTTagIntArray(null);
-            list.intArray = new int[dataArray.length()];
+            int[] data = new int[dataArray.length()];
             for (int i = 0; i < dataArray.length(); i++)
             {
                 System.out.println(dataArray.get(i).toString());
-                list.func_150292_c()[i] = Integer.parseInt(dataArray.get(i).toString());
+                data[i] = Integer.parseInt(dataArray.get(i).toString());
             }
-            return list;
+            return new NBTTagIntArray(data);
         }
         catch (Exception e)
         {
@@ -273,6 +272,7 @@ public class TextFormatter {
             String[] split = key.split("~", 2);
             byte type = new Byte(split[0]);
             String name = split[1];
+            NBTBase tag;
 
             switch (type)
             {

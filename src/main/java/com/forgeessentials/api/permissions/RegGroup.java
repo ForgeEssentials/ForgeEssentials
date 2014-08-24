@@ -2,7 +2,7 @@ package com.forgeessentials.api.permissions;
 
 import com.forgeessentials.api.APIRegistry;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permissions.api.RegisteredPermValue;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 /**
  * RegistrationGroups

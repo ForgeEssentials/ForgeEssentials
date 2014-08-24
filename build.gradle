@@ -29,9 +29,9 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 minecraft {
-    version = "1.7.10-10.13.0.1151"
+    version = "1.7.10-10.13.0.1207"
     assetDir = "rundir/assets"
-    ext.forgeVersion = "10.13.0.1151"
+    ext.forgeVersion = "10.13.0.1207"
 
     replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
     replaceIn "com/forgeessentials/client/ForgeEssentialsClient.java"
@@ -62,17 +62,17 @@ dependencies {
 
     // WE integration - 
     compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT'// use BOTH
-    compile files('lib/worldedit-forge-6.0.0-SNAPSHOT-deobf.jar')
+    //compile files('lib/worldedit-forge-6.0.0-SNAPSHOT-deobf.jar')
 
     // perms API (TEMPORARY, until it gets pulled into Forge!) use deobf one to compile
-    compile files('lib/minecraftforge-9.11.1.965-permsAPIonly-deobf.jar')
+    //compile files('lib/minecraftforge-9.11.1.965-permsAPIonly-deobf.jar')
 
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
     serverLibs 'mysql:mysql-connector-java:5.1.22'
-    serverLibs files('lib/minecraftforge-9.11.1.965-permsAPIonly.jar')
+    //serverLibs files('lib/minecraftforge-9.11.1.965-permsAPIonly.jar')
 
-    devDeps files('lib/minecraftforge-9.11.1.965-permsAPIonly-deobf.jar')
+    //devDeps files('lib/minecraftforge-9.11.1.965-permsAPIonly-deobf.jar')
 }
 
 jar {
@@ -100,10 +100,12 @@ sourceSets {
         compileClasspath = project.sourceSets.main.compileClasspath
     }
 
+/*
     weintegration {
         compileClasspath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
 
     }
+    */
 }
 
 
@@ -162,10 +164,8 @@ def list = [
         'scripting',
         'tickets',
         'worldborder',
-        'worldcontrol',
         'afterlife',
         'teleport',
-        'permissions'
 ]
 
 list.each { name ->
@@ -206,6 +206,7 @@ task clientJar(dependsOn: "jar", type: Jar) {
 }
 
 //worldedit
+/*
 task weJar(dependsOn: "jar", type: Jar) {
     weJar.mustRunAfter jar
     from sourceSets.weintegration.output
@@ -213,6 +214,7 @@ task weJar(dependsOn: "jar", type: Jar) {
     appendix = project.minecraft.version
     include "**"
 }
+*/
 
 //core DEOBF use for development
 task devDeobfJar(dependsOn: "jar", type: Jar) {
@@ -250,9 +252,11 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 reobf {
+    /*
     reobf(weJar) { reobfSpec ->
         reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
     }
+    */
     reobf(clientJar) { reobfSpec ->
         reobfSpec.classpath = project.sourceSets.main.compileClasspath
     }
@@ -262,7 +266,7 @@ reobf {
 
 artifacts {
     archives clientJar
-    archives weJar
+    //archives weJar
     archives devDeobfJar
     archives javadocJar
     archives sourceJar

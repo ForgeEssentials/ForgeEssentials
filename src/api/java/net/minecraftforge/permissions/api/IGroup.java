@@ -5,22 +5,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import java.util.Collection;
 import java.util.UUID;
  
+/**
+ * A group object in the API.
+ * 
+ * Framework authors:
+ * If you choose to support groups, they must be retrievable via a class implementing this interface.
+ */
 public interface IGroup {
- 
-    /**
-     * Add an EntityPlayer to the group
-     *
-     * @param player player to add
-     */
-    void addPlayer(UUID playerID);
- 
-    /**
-     * Remove an EntityPlayer from the group
-     *
-     * @param player player to remove
-     * @return if the player was in the group
-     */
-    boolean removePlayer(UUID playerID);
  
     /**
      * Get all players in the group
@@ -32,25 +23,10 @@ public interface IGroup {
     /**
      * Is the player in the group
      * 
-     * @param playerID player to check
+     * @param player player to check
      * @return if the player was in the group
      */
     boolean isMember(UUID playerID);
-    
-    /**
-     * Get the parent of the group
-     * 
-     * @return parent of group
-     */
-    IGroup getParent();
-    
-    /**
-     * Set the parent of the group
-     * 
-     * @param parent the parent group
-     * @return 
-     */
-    IGroup setParent(IGroup parent);
  
     /**
      * Get the group name
@@ -58,11 +34,4 @@ public interface IGroup {
      * @return the group name
      */
     String getName();
- 
-    /**
-     * Set the group name
-     *
-     * @param name new group name
-     */
-    void setName(String name);
 }

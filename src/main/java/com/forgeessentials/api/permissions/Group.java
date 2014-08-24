@@ -1,7 +1,6 @@
 package com.forgeessentials.api.permissions;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.permissions.SqlHelper;
 import net.minecraftforge.permissions.api.IGroup;
 
 import java.util.ArrayList;
@@ -124,18 +123,6 @@ public class Group implements Comparable, IGroup{
         return name + "[" + parent + ", " + prefix + ", " + suffix + ", " + zoneName + ", " + priority + "]";
     }
 
-    @Override public void addPlayer(UUID playerID)
-    {
-        APIRegistry.perms.addPlayerToGroup(name, playerID, zoneName);
-
-    }
-
-    @Override public boolean removePlayer(UUID playerID)
-    {
-        APIRegistry.perms.clearPlayerGroup(name, playerID, zoneName);
-        return true;
-    }
-
     @Override public Collection<UUID> getAllPlayers()
     {
         ArrayList<UUID> returned = new ArrayList<UUID>();
@@ -152,24 +139,9 @@ public class Group implements Comparable, IGroup{
         return APIRegistry.perms.getPlayersInGroup(name, zoneName).contains(playerID.toString());
     }
 
-    @Override public IGroup getParent()
-    {
-        return SqlHelper.getGroupForName(parent);
-    }
-
-    @Override public IGroup setParent(IGroup parent)
-    {
-        return null;
-    }
-
     @Override public String getName()
     {
         return name;
-    }
-
-    @Override public void setName(String name)
-    {
-        this.name = name;
     }
 
 }

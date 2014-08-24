@@ -213,51 +213,31 @@ public final class FunctionHelper {
      * @return never NULL. always {0, -1}. Meta by default is -1.
      * @throws NumberFormatException the message is a formatted chat string.
      */
-    public static int[] parseIdAndMetaFromString(String msg, boolean blocksOnly) throws NumberFormatException
+    public static List<Object> parseIdAndMetaFromString(String msg, boolean blocksOnly) throws NumberFormatException
     {
-        int ID;
+        String ID = null;
         int meta = -1;
 
-        // perhaps the ID:Meta format
+        // must be the ID:Meta format
         if (msg.contains(":"))
         {
-            String[] pair = msg.split(":", 2);
+            String[] pair = msg.split(":", 3);
+
+            ID = pair[0] + ":" + pair[1];
 
             try
             {
-                ID = Integer.parseInt(pair[0]);
-            }
-            catch (NumberFormatException e)
-            {
-                ID = getItemIDFromName(pair[0], blocksOnly);
-            }
-
-            try
-            {
-                meta = Integer.parseInt(pair[1]);
+                meta = Integer.parseInt(pair[2]);
             }
             catch (NumberFormatException e)
             {
                 throw new NumberFormatException(String.format("%s param was not recognized as number. Please try again.", pair[1]));
             }
         }
-        else
-        {
-            try
-            {
-                ID = Integer.parseInt(msg);
-                meta = -1;
-            }
-            catch (NumberFormatException e)
-            {
-                ID = getItemIDFromName(msg, blocksOnly);
-            }
-        }
-
-        // try checking if its just an ID
-
-        return new int[]
-                { ID, meta };
+        List returned = new ArrayList<Object>();
+        returned.add(0, ID);
+        returned.add(1, meta);
+        return returned;
     }
 
     /**
@@ -500,7 +480,6 @@ public final class FunctionHelper {
      *
      * @param player
      * @param world
-     * @param p
      */
     public static void setPlayer(EntityPlayerMP player, Point point, World world)
     {
@@ -517,7 +496,6 @@ public final class FunctionHelper {
     /**
      * Join string[] to print to users. "str1, str2, str3, ..., strn"
      *
-     * @param par0ArrayOfObj
      * @return
      */
     public static String niceJoin(Object[] array)
