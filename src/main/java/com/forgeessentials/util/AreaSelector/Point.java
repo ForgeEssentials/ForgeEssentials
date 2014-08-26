@@ -191,23 +191,4 @@ public class Point implements Serializable, Comparable<Point> {
     {
         return "Point[" + x + ", " + y + ", " + z + "]";
     }
-
-    public JSONObject toJSON() throws JSONException
-    {
-        JSONObject data = new JSONObject();
-        data.put("x", "" + x);
-        data.put("y", "" + y);
-        data.put("z", "" + z);
-        if (this instanceof WorldPoint)
-        {
-            data.put("dim", "" + ((WorldPoint) this).dim);
-        }
-        if (this instanceof WarpPoint)
-        {
-            data.put("dim", "" + ((WarpPoint) this).dim);
-            data.put("pitch", "" + ((WarpPoint) this).pitch);
-            data.put("yaw", "" + ((WarpPoint) this).yaw);
-        }
-        return data;
-    }
 }

@@ -1,13 +1,16 @@
 package com.forgeessentials.snooper;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+
+import java.util.Collection;
+
+import scala.actors.threadpool.Arrays;
+
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.util.OutputHandler;
 
-import java.util.Collection;
-import java.util.HashMap;
-
 public class ResponseRegistry {
-    private static HashMap<Integer, Response> map = new HashMap<Integer, Response>();
+    private static TIntObjectHashMap<Response> map = new TIntObjectHashMap<Response>();
 
     /**
      * Register a response for an ID. Use the API!
@@ -35,11 +38,11 @@ public class ResponseRegistry {
      * @param ID
      * @return
      */
-    public static Response getResponse(byte ID)
+    public static Response getResponse(int ID)
     {
-        if (map.containsKey((int) ID))
+        if (map.containsKey(ID))
         {
-            return map.get((int) ID);
+            return map.get(ID);
         }
         else
         {
@@ -52,8 +55,9 @@ public class ResponseRegistry {
      *
      * @return
      */
+    @SuppressWarnings("unchecked")
     public static Collection<Response> getAllresponses()
     {
-        return map.values();
+        return Arrays.asList(map.values());
     }
 }
