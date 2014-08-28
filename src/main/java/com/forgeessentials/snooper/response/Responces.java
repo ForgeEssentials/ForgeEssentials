@@ -1,23 +1,25 @@
 package com.forgeessentials.snooper.response;
 
-import com.forgeessentials.api.json.JSONArray;
-import com.forgeessentials.api.json.JSONException;
-import com.forgeessentials.api.json.JSONObject;
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.snooper.ResponseRegistry;
-import net.minecraftforge.common.config.Configuration;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 public class Responces extends Response {
     @Override
-    public JSONObject getResponce(JSONObject input) throws JSONException
+    public JsonElement getResponce(JsonObject input)
     {
-        JSONArray data = new JSONArray();
+        JsonArray data = new JsonArray();
         for (Response responce : ResponseRegistry.getAllresponses())
         {
-            data.put(responce.id + " " + responce.getName());
+            data.add(new JsonPrimitive(responce.id + " " + responce.getName()));
         }
 
-        return new JSONObject().put(getName(), data);
+        return data;
     }
 
     @Override
@@ -35,5 +37,4 @@ public class Responces extends Response {
     public void writeConfig(String category, Configuration config)
     {
     }
-
 }

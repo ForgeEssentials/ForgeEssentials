@@ -1,16 +1,17 @@
 package com.forgeessentials.playerlogger.types;
 
-import com.forgeessentials.api.TextFormatter;
-import com.forgeessentials.api.json.JSONObject;
-import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.OutputHandler;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.sql.rowset.serial.SerialBlob;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-import javax.sql.rowset.serial.SerialBlob;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
+import com.forgeessentials.util.OutputHandler;
+import com.google.common.base.Charsets;
 
 public class blockChangeLog extends logEntry {
     public blockChangeLog(blockChangeLogCategory cat, EntityPlayer player, String block, int X, int Y, int Z, TileEntity te)
@@ -21,10 +22,11 @@ public class blockChangeLog extends logEntry {
         {
             NBTTagCompound nbt = new NBTTagCompound();
             te.writeToNBT(nbt);
+            nbt.setString("TE_CLASS", te.getClass().getCanonicalName());
 
             try
             {
-                teBlob = new SerialBlob(new JSONObject().put(te.getClass().getName(), TextFormatter.toJSONnbtComp(nbt).toString()).toString().getBytes());
+                teBlob = new SerialBlob(nbt.toString().getBytes(Charsets.UTF_8));
             }
             catch (Exception e)
             {

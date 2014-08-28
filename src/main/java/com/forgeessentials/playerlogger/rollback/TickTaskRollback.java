@@ -1,21 +1,25 @@
 package com.forgeessentials.playerlogger.rollback;
 
-import com.forgeessentials.api.TextFormatter;
-import com.forgeessentials.playerlogger.blockChange;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.tasks.ITickTask;
-import cpw.mods.fml.common.registry.GameData;
-import net.minecraft.block.Block;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.WorldServer;
-
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import net.minecraft.block.Block;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.init.Blocks;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldServer;
+
+import com.forgeessentials.playerlogger.blockChange;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.tasks.ITickTask;
+import com.google.common.base.Charsets;
+
+import cpw.mods.fml.common.registry.GameData;
 
 public class TickTaskRollback implements ITickTask {
     private boolean isComplete = false;
@@ -109,7 +113,12 @@ public class TickTaskRollback implements ITickTask {
                 Blob blob = bc.te;
                 byte[] bdata = blob.getBytes(1, (int) blob.length());
                 System.out.println(new String(bdata));
-                TileEntity te = TextFormatter.reconstructTE(new String(bdata));
+                
+                // reconstruct TE
+                NBTTagCompound compound = (NBTTagCompound) JsonToNBT.func_150315_a(new String(bdata, Charsets.UTF_8));
+                TileEntity te = (TileEntity) Class.forName(compound.getString("TE_CLASS")).newInstance();
+                te.readFromNBT(compound);
+                
                 world.setTileEntity(bc.X, bc.Y, bc.Z, te);
             }
             catch (Exception e)
