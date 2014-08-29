@@ -12,7 +12,7 @@ The Forge Essentials project consists of a permissions and protection system to 
 
 *More information can be found at the (wip - rewrite in progress) [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki).*
 
-####This repo is for a port to Minecraft 1.6.4. There are compiled builds [here](http://198.23.242.205:8080/job/ForgeEssentials-17/). Betas are to be considered very unstable. Approach with caution. Please make backups before attempting to use this on a live server.####
+####This repo is for a port to Minecraft 1.7.10. There are compiled builds [here](http://198.23.242.205:8080/job/ForgeEssentials-17/). Betas are to be considered very unstable. Approach with caution. Please make backups before attempting to use this on a live server.####
 
 <br>
 
@@ -20,7 +20,7 @@ Development Setup
 =================
 Set up for ForgeEssentials development is simalar to any other ForgeGradle-based mod.
 
-*Note: ForgeGradle versions for Minecraft 1.7 reccomend Java 7.*
+*Note: ForgeGradle versions for Minecraft 1.7 recommends Java 7.*
 
 1. Clone this repo.
 2. Download the respective MinecraftForge ForgeGradle version into the repo.
@@ -41,7 +41,13 @@ If you would like test builds, go [here](http://198.23.242.205:8080/job/ForgeEss
 
 FE Team Members:
 ================
-<a href="https://github.com/luacs1998">luacs1998</a>
+<a href="https://github.com/luacs1998">luacs1998</a> (lead developer)
+
+<a href="https://github.com/RlonRyan">RlonRyan</a>
+
+<a href="https://github.com/helinus">Helinus</a>
+
+Retired:
 
 <a href="https://github.com/AbrarSyed">AbrarSyed</a>  (inactive)
 
@@ -58,11 +64,5 @@ FE Team Members:
 <a href="https://github.com/Malkerian">Malkerian</a>  (inactive)
 
 <a href="https://github.com/Jgdovin">Jgdovin</a>  (inactive)
-
-<a href="https://github.com/RlonRyan">RlonRyan</a>
-
-With localization credits to:
-
-<a href="https://github.com/helinus">Helinus</a>
 
 <a href="https://github.com/jovino">Jovino</a> (inactive)

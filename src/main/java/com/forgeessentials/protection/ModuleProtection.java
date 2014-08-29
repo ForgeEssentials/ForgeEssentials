@@ -19,7 +19,6 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -35,15 +34,12 @@ public class ModuleProtection {
     public final static String PERM_MOB_SPAWN_FORCED = "fe.protection.mobSpawn.forced";
     public final static String PERM_DIMENSION = "fe.protection.dimension.";
     public final static String PERM_OVERRIDE_BANNEDITEMS = "fe.protection.overrideProtection.banneditems";
+    public final static String PERMPROP_ZONE_GAMEMODE = "fe.protection.data.zonegamemode";
 
     @FEModule.Config
     public static ConfigProtection config;
     public static boolean enable;
     public static boolean enableMobSpawns;
-
-    private static AbstractDataDriver data;
-    private static ClassContainer zoneBannedItems = new ClassContainer(AdditionalZoneData.class);
-    public static HashMap<String, AdditionalZoneData> itemsList = new HashMap<String, AdditionalZoneData>();
 
     @FEModule.PreInit
     public void preLoad(FEModulePreInitEvent e)
@@ -58,23 +54,15 @@ public class ModuleProtection {
     @FEModule.Init
     public void load(FEModuleInitEvent e)
     {
-
-        data = DataStorageManager.getReccomendedDriver();
-
         MinecraftForge.EVENT_BUS.register(new ProtectionEventHandler());
-
-        Object[] objs = data.loadAllObjects(zoneBannedItems);
-        for (Object obj : objs)
-        {
-            AdditionalZoneData bi = (AdditionalZoneData) obj;
-            itemsList.put(bi.getName(), bi);
-        }
     }
 
     @SuppressWarnings("unchecked")
     @FEModule.ServerInit
     public void registerPermissions(FEModuleServerInitEvent ev)
     {
+        ev.registerServerCommand(new ProtectCommand());
+
         APIRegistry.permReg.registerPermissionLevel(PERM_PVP, RegGroup.GUESTS);
         APIRegistry.permReg.registerPermissionLevel(PERM_EDITS, RegGroup.MEMBERS);
         APIRegistry.permReg.registerPermissionLevel(PERM_INTERACT_BLOCK, RegGroup.MEMBERS);
@@ -104,5 +92,7 @@ public class ModuleProtection {
         {
             APIRegistry.permReg.registerPermissionLevel(PERM_DIMENSION + i, RegGroup.MEMBERS);
         }
+
+        APIRegistry.permReg.registerPermissionProp(PERMPROP_ZONE_GAMEMODE, 0);
     }
 }

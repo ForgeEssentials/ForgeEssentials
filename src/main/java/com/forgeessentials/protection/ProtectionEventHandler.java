@@ -374,6 +374,15 @@ public class ProtectionEventHandler {
     public void manageCrafting(PlayerEvent.ItemCraftedEvent e)
     {
     }
+    
+    @SubscribeEvent
+    public void manageZoneGameModes(PlayerChangedZone e)
+    {
+        String val = APIRegistry.perms.getPermissionPropForPlayer(e.entityPlayer.username, e.afterZone.getZoneName(), ModuleProtection.PERMPROP_ZONE_GAMEMODE);
+        e.entityPlayer.setGameType(EnumGameType.getByID(Integer.parseInt(val)));
+        System.out.println("yoohoo");
+
+    }
     */
 
 }

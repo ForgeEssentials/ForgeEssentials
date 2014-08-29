@@ -15,19 +15,23 @@ public class ProtectCommand extends ForgeEssentialsCommandBase{
         case 0:
             ChatUtils.sendMessage(var1, "List of settings: gamemode");
             break;
+        /*
         case 3:
         if (var2[0].equalsIgnoreCase("gamemode"))
         {
-            if (!APIRegistry.zones.doesZoneExist(var2[1]))
+            *//*Zone zone = APIRegistry.zones.getZone(var2[1]);
+            for (Group g : APIRegistry.perms.getGroupsInZone(zone.getZoneName()))
             {
-                ChatUtils.sendMessage(var1, "No zone by the name of " + var2[1] + " exists!");
+                APIRegistry.perms.setGroupPermissionProp(g.name, ModuleProtection.PERMPROP_ZONE_GAMEMODE, var2[2], zone.getZoneName());
             }
-            AdditionalZoneData data = (AdditionalZoneData)ModuleProtection.itemsList.get(var2[1]);
-            data.setGameMode(Integer.parseInt(var2[2]));
-            ModuleProtection.itemsList.put(var2[1], data);
-            ChatUtils.sendMessage(var1, "Gamemode in zone " + var2[1] + " set to " + WorldSettings.getGameTypeById(Integer.parseInt(var2[2])).getName());
+            if (var1 instanceof EntityPlayer)
+            {
+                ((EntityPlayer)var1).setGameType(EnumGameType.getByID(Integer.parseInt(var2[2])));
+            }
+            ChatUtils.sendMessage(var1, String.format("Successfully set gamemode of zone %s1 to %s2", zone.getZoneName(), EnumGameType.getByID(Integer.parseInt(var2[2])).getName()));*//*
         }
             break;
+            */
 
         default:
             ChatUtils.sendMessage(var1, "Command syntax is wrong. Try " + getCommandUsage(var1));

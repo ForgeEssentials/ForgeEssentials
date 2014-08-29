@@ -5,13 +5,21 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingData;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemMonsterPlacer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,8 +29,13 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
 
     public CommandSpawnMob()
     {
+    	// Some type of nested table might be nice here...
         mobNames.put("creeper", "Creeper");
         mobNames.put("skeleton", "Skeleton");
+        mobNames.put("skele", "Skeleton");
+        mobNames.put("witherskeleton", "Skeleton");
+        mobNames.put("wskeleton", "Skeleton");
+        mobNames.put("wskele", "Skeleton");
         mobNames.put("spider", "Spider");
         mobNames.put("giant", "Giant");
         mobNames.put("zombie", "Zombie");
@@ -80,7 +93,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
             double x = mop.blockX + 0.5D;
             double y = mop.blockY + 1;
             double z = mop.blockZ + 0.5D;
-            if (args.length >= 2)
+            if (args.length >= 2 && !args[1].equalsIgnoreCase("name"))
             {
                 amount = parseIntWithMin(sender, args[1], 1);
 
@@ -99,8 +112,27 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                     OutputHandler.chatError(sender, String.format("%s was not recognized as a mob.", args[0]));
                     return;
                 }
+                if (args[0].toLowerCase().equals("witherskeleton") || args[0].toLowerCase().equals("wskeleton") || args[0].toLowerCase().equals("wskele"))
+                {
+                	// Better safe than sorry...
+                	if (mob instanceof EntitySkeleton) {
+                		((EntitySkeleton)mob).setSkeletonType(1);
+                	}
+                }
+                if (mob instanceof EntityLiving) {
+                	((EntityLiving)mob).onSpawnWithEgg(new EntityLivingData() {});
+                }
                 mob.setPosition(x, y, z);
                 sender.worldObj.spawnEntityInWorld(mob);
+                if (args.length >= 3 && args[1].equalsIgnoreCase("name")) {
+                	StringBuilder sb = new StringBuilder();
+                	for(int index = 2; index < args.length; index++)
+                	{
+                		sb.append(" " + args[index]);
+                	}
+                	mob.setCustomNameTag(sb.toString());
+                }
+                mob.spawnExplosionParticle();
             }
         }
         else
@@ -114,16 +146,17 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
     {
         if (args.length >= 6)
         {
-            int amount;
-            int x;
-            int y;
-            int z;
+            int amount, x, y, z;
             int dimension = 0;
+            
+            String name;
+            
             amount = parseInt(sender, args[1]);
             x = parseInt(sender, args[2]);
             y = parseInt(sender, args[3]);
             z = parseInt(sender, args[4]);
             dimension = parseInt(sender, args[5]);
+            
             for (int i = 0; i < amount; i++)
             {
                 World world = FunctionHelper.getDimension(dimension);
@@ -133,14 +166,25 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                     ChatUtils.sendMessage(sender, String.format("%s was not recognized as a mob.", args[0]));
                     return;
                 }
+                if (args.length >= 6) {
+                	StringBuilder sb = new StringBuilder();
+                	for(int index = 6; index < args.length; index++)
+                	{
+                		sb.append(" " + args[index]);
+                	}
+                	mob.setCustomNameTag(sb.toString());
+                }
+                if (mob instanceof EntityLiving) {
+                	((EntityLiving)mob).onSpawnWithEgg(new EntityLivingData() {});
+                }
                 mob.setPosition(x, y, z);
                 world.spawnEntityInWorld(mob);
+                mob.spawnExplosionParticle();
             }
         }
         else
         {
             ChatUtils.sendMessage(sender, "Improper syntax.");
-            OutputHandler.debug("test");
         }
     }
 
