@@ -3,6 +3,7 @@ package com.forgeessentials.client;
 import com.forgeessentials.client.cui.CUIPlayerLogger;
 import com.forgeessentials.client.cui.CUIRenderrer;
 import com.forgeessentials.client.cui.CUIRollback;
+import cpw.mods.fml.client.IModGuiFactory;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -10,19 +11,23 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = "%VERSION%")
+import java.util.Set;
+
+@Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = "%VERSION%", guiFactory = "com.forgeessentials.client.ForgeEssentialsClient.FEGUIFactory")
 public class ForgeEssentialsClient {
 
     public static Logger feclientlog;
     @SideOnly(Side.CLIENT)
     private static PlayerInfoClient info;
-    private boolean allowCUI;
+    protected static boolean allowCUI;
+    private ClientConfig config;
 
     @SideOnly(Side.CLIENT)
     public static PlayerInfoClient getInfo()
@@ -67,22 +72,12 @@ public class ForgeEssentialsClient {
 
         if (FMLCommonHandler.instance().getSide().isClient())
         {
-            config(new Configuration(e.getSuggestedConfigurationFile()));
+            config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));
+            config.init();
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    public void config(Configuration config)
-    {
-        config.load();
-        config.addCustomCategoryComment("Core", "Configure ForgeEssentials .");
 
-        Property prop = config.get("Core", "allowCUI", true);
-        prop.comment = "Set to false to disable graphical selections.";
-        allowCUI = prop.getBoolean(true);
-        // any other parts please config here
-        config.save();
-    }
 
     @SideOnly(Side.CLIENT)
     @EventHandler
@@ -95,6 +90,28 @@ public class ForgeEssentialsClient {
             MinecraftForge.EVENT_BUS.register(new CUIRenderrer());
             MinecraftForge.EVENT_BUS.register(new CUIPlayerLogger());
             MinecraftForge.EVENT_BUS.register(new CUIRollback());
+        }
+    }
+
+    public class FEGUIFactory implements IModGuiFactory {
+        @Override public void initialize(Minecraft minecraftInstance)
+        {
+
+        }
+
+        @Override public Class<? extends GuiScreen> mainConfigGuiClass()
+        {
+            return ClientConfig.FEConfigGUI.class;
+        }
+
+        @Override public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
+        {
+            return null;
+        }
+
+        @Override public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
+        {
+            return null;
         }
     }
 
