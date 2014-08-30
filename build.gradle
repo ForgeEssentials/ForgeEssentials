@@ -26,10 +26,9 @@ targetCompatibility = 1.7
 minecraft {
     version = "1.6.4-9.11.1.964"
     assetDir = "rundir/assets"
-    forgeVersion = "9.11.1.964"
+    ext.forgeVersion = "9.11.1.964"
 
     replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
-    replace "%VERSION%", project.version
     replaceIn "com/forgeessentials/client/ForgeEssentialsClient.java"
     replace "%VERSION%", project.version
 }
@@ -272,6 +271,6 @@ artifacts {
 build.dependsOn "cleanModules"
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
+    gradleVersion = '2.0'
 }
 
