@@ -19,11 +19,11 @@ import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.events.modules.*;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.server.CommandHandlerForge;
 
 import java.io.File;
 
@@ -76,7 +76,7 @@ public class ModulePermissions {
 
         DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 
-        PermissionsManager.setPermFactory(new ForgePermissionsHelper());
+        PermissionsManager.setPermProvider(new ForgePermissionsHelper());
     }
 
     @FEModule.Init
@@ -140,15 +140,7 @@ public class ModulePermissions {
     public void checkCommandPerm(CommandEvent e)
     {
         if (!(e.sender instanceof EntityPlayer)) {return;}
-        ICommand command = e.command;
-        if (e.command.getClass().getName().startsWith("net.minecraft.command"))
-        {
-            boolean allow = PermissionsManager.checkPerm((EntityPlayer) e.sender, "mc." + e.command.getCommandName());
-            if (!allow)
-            {
-                e.setCanceled(true);
-            }
-
-        }
+        else if (!CommandHandlerForge.canUse(e.command, e.sender));
+        e.setCanceled(true);
     }
 }

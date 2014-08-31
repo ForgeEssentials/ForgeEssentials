@@ -7,7 +7,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.util.AreaSelector.Point;
+import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;

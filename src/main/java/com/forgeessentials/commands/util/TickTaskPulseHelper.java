@@ -1,6 +1,6 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.util.AreaSelector.Point;
+import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.BlockSaveable;
 import com.forgeessentials.util.tasks.ITickTask;

@@ -6,9 +6,9 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.AreaSelector.Selection;
-import com.forgeessentials.util.AreaSelector.WorldArea;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.Selection;
+import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.world.World;
 

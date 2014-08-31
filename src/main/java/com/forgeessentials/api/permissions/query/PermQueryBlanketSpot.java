@@ -1,7 +1,7 @@
 package com.forgeessentials.api.permissions.query;
 
 import com.forgeessentials.permissions.PermissionChecker;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class PermQueryBlanketSpot extends PermQuery {
     public WorldPoint spot;

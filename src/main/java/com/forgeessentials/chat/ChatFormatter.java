@@ -4,7 +4,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.chat.commands.CommandPm;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;

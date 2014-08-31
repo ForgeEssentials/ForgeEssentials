@@ -2,6 +2,7 @@ package com.forgeessentials.permissions.forge;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
+import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.permissions.PermissionsHelper;
 import com.forgeessentials.permissions.SqlHelper;
@@ -70,6 +71,7 @@ public class ForgePermissionsHelper implements IPermissionsProvider{
 
     @Override public void registerPermission(String node, PermissionsManager.RegisteredPermValue allow)
     {
+        APIRegistry.permReg.registerPermissionLevel(node, RegGroup.fromForgeLevel(allow));
 
     }
 

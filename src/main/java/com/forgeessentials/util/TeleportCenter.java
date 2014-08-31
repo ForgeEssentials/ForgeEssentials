@@ -2,7 +2,7 @@ package com.forgeessentials.util;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
+import com.forgeessentials.util.selections.WarpPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;

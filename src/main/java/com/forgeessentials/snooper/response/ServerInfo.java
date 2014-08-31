@@ -1,10 +1,8 @@
 package com.forgeessentials.snooper.response;
 
-import com.forgeessentials.api.json.JSONArray;
-import com.forgeessentials.api.json.JSONException;
-import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.util.FunctionHelper;
+import com.google.gson.*;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -22,7 +20,7 @@ public class ServerInfo extends Response {
     private static final DecimalFormat DF = new DecimalFormat("########0.000");
     public static Integer ServerID = 0;
     public static String serverHash = "";
-    private JSONObject data = new JSONObject();
+    private JsonObject data = new JsonObject();
     private boolean sendWB;
     private boolean sendMotd;
     private boolean sendIP;
@@ -64,60 +62,69 @@ public class ServerInfo extends Response {
     }
 
     @Override
-    public JSONObject getResponce(JSONObject input) throws JSONException
+    public JsonObject getResponce(JsonObject input) throws JsonParseException
     {
         if (sendMods)
         {
-            JSONArray temp = new JSONArray();
+            JsonArray temp = new JsonArray();
+            Gson gson = new Gson();
             List<ModContainer> modlist = Loader.instance().getActiveModList();
             for (int i = 0; i < modlist.size(); i++)
             {
-                ArrayList<String> ModData = new ArrayList<String>();
-                ModData.add(modlist.get(i).getName());
-                ModData.add(modlist.get(i).getDisplayVersion());
-                temp.put(ModData);
+                ArrayList<String> modData = new ArrayList<String>();
+                modData.add(modlist.get(i).getName());
+                modData.add(modlist.get(i).getDisplayVersion());
+                temp.add(new JsonPrimitive(gson.toJson(modData)));
             }
-            data.put("Mods", temp);
+            data.add("Mods", temp);
         }
 
         if (sendIP)
         {
             if (overrideIP)
             {
-                data.put("Hostname", "" + overrideIPValue + ":" + server.getPort());
+                data.add("Hostname", new JsonPrimitive("" + overrideIPValue + ":" + server.getPort()));
             }
             else
             {
-                data.put("Hostname", getIP() + ":" + server.getPort());
+                data.add("Hostname", new JsonPrimitive(getIP() + ":" + server.getPort()));
             }
         }
-        data.put("MCversion", server.getMinecraftVersion());
-        data.put("WorldName", server.getFolderName());
-        data.put("Slots", "" + server.getMaxPlayers());
+        data.add("MCversion", new JsonPrimitive(server.getMinecraftVersion()));
+        data.add("WorldName", new JsonPrimitive(server.getFolderName()));
+        data.add("Slots", new JsonPrimitive(server.getMaxPlayers()));
 
         if (ServerID != 0)
         {
-            data.put("ServerID", ServerID + "");
+            data.add("ServerID", new JsonPrimitive(ServerID + ""));
         }
         if (!serverHash.equals(""))
         {
-            data.put("ServerHash", serverHash + "");
+            data.add("ServerHash", new JsonPrimitive(serverHash + ""));
         }
 
-        data.put("Gamemode", server.getGameType().getName());
-        data.put("Difficulty", "" + server.getEntityWorld().difficultySetting);
-        data.put("OnlinePlayers", "" + server.getCurrentPlayerCount());
+        data.add("Gamemode", new JsonPrimitive(server.getGameType().getName()));
+        data.add("Difficulty", new JsonPrimitive("" + server.getEntityWorld().difficultySetting));
+        data.add("OnlinePlayers", new JsonPrimitive("" + server.getCurrentPlayerCount()));
         if (sendMotd)
         {
-            data.put("MOTD", server.getMOTD());
+            data.add("MOTD", new JsonPrimitive(server.getMOTD()));
         }
 
-        data.put("Uptime", getUptime());
-        data.put("TPS", getTPS());
+        data.add("Uptime", new JsonPrimitive(getUptime()));
+        data.add("TPS", getTPS());
 
-        data.put("Players", server.getAllUsernames());
+        JsonArray users = new JsonArray();
+        for (String name : server.getAllUsernames())
+        {
+            users.add(new JsonPrimitive(name));
+        }
 
-        return new JSONObject().put(getName(), data);
+        data.add("Players", users);
+
+        JsonObject out = new JsonObject();
+        out.add(getName(), data);
+        return out;
     }
 
     @Override
@@ -174,23 +181,23 @@ public class ServerInfo extends Response {
         return FunctionHelper.parseTime(secsIn);
     }
 
-    public JSONObject getTPS()
+    public JsonObject getTPS()
     {
         try
         {
-            JSONObject data = new JSONObject();
+            JsonObject data = new JsonObject();
             for (int id : TPSList)
             {
                 if (server.worldTickTimes.containsKey(id))
                 {
-                    data.put("Dim " + id, "" + getTPSFromData(server.worldTickTimes.get(id)));
+                    data.add("Dim " + id, new JsonPrimitive("" + getTPSFromData(server.worldTickTimes.get(id))));
                 }
             }
             return data;
         }
         catch (Exception e)
         {
-            return new JSONObject();
+            return new JsonObject();
         }
     }
 

@@ -4,7 +4,7 @@ package com.forgeessentials.core.commands.selections;
 
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.AreaSelector.Point;
+import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;

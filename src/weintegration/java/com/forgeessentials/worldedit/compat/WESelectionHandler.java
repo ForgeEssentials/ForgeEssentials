@@ -1,8 +1,8 @@
 package com.forgeessentials.worldedit.compat;
 
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.AreaSelector.Selection;
-import com.forgeessentials.util.AreaSelector.SelectionHandler;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.Selection;
+import com.forgeessentials.util.selections.SelectionHandler;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.Vector;

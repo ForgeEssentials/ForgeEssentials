@@ -2,7 +2,7 @@ package com.forgeessentials.questioner;
 
 import com.forgeessentials.api.questioner.AnswerEnum;
 import com.forgeessentials.api.questioner.RunnableAnswer;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
+import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayer;
 

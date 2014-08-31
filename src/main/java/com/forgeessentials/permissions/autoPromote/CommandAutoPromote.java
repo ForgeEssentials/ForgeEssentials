@@ -6,7 +6,7 @@ import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.permissions.SqlHelper;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;

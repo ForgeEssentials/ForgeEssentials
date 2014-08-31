@@ -1,6 +1,7 @@
 package com.forgeessentials.snooper;
 
-import com.forgeessentials.api.json.JSONArray;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonPrimitive;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
@@ -21,7 +22,9 @@ public class Security {
         catch (Exception e)
         {
             System.out.println(e.toString());
-            return new JSONArray().put("wtf").toString();
+            JsonArray out = new JsonArray();
+            out.add(new JsonPrimitive("wtf"));
+            return out.getAsString();
         }
     }
 
@@ -39,7 +42,9 @@ public class Security {
         catch (Exception e)
         {
             System.out.println(e.toString());
-            return new JSONArray().put("KeyInvalid").toString();
+            JsonArray out = new JsonArray();
+            out.add(new JsonPrimitive("KeyInvalid"));
+            return out.getAsString();
         }
     }
 }

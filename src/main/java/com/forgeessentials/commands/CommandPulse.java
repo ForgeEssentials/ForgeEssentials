@@ -3,7 +3,7 @@ package com.forgeessentials.commands;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskPulseHelper;
-import com.forgeessentials.util.AreaSelector.Point;
+import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.tasks.TaskRegistry;

@@ -7,8 +7,8 @@ import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerZone;
-import com.forgeessentials.util.AreaSelector.AreaBase;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.ArrayList;

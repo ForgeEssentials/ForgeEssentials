@@ -4,7 +4,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Init;
-import com.forgeessentials.util.AreaSelector.SelectionHandler;
+import com.forgeessentials.util.selections.SelectionHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePostInitEvent;

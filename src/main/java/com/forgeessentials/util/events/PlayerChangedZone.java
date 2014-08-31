@@ -1,7 +1,7 @@
 package com.forgeessentials.util.events;
 
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
+import com.forgeessentials.util.selections.WarpPoint;
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;

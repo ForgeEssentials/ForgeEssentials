@@ -6,7 +6,7 @@ import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.teleport.util.Warp;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
+import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;

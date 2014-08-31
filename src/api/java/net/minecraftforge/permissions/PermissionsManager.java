@@ -34,7 +34,7 @@ public final class PermissionsManager
     
     public static void initialize()
     {
-        setPermFactory(null);
+        setPermProvider(null);
     }
 
     private static       boolean            wasSet  = false;
@@ -106,7 +106,7 @@ public final class PermissionsManager
      * FOR ADVANCED OPERATIONS
      * @return the current permission implementor
      */
-    public static IPermissionsProvider getPermFactory()
+    public static IPermissionsProvider getPermProvider()
     {
         return FACTORY;
     }
@@ -128,7 +128,7 @@ public final class PermissionsManager
      * @param factory your permission framework class implementing IPermissionsProvider
      * @throws IllegalStateException
      */
-    public static void setPermFactory(IPermissionsProvider factory) throws IllegalStateException
+    public static void setPermProvider(IPermissionsProvider factory) throws IllegalStateException
     {
         if (factory == null)
         {

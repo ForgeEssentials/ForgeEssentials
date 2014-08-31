@@ -11,6 +11,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -251,37 +252,37 @@ public class CommandsEventHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerLogin(EntityPlayer player)
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean(CommandVanish.TAGNAME))
+        if (e.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean(CommandVanish.TAGNAME))
         {
-            CommandVanish.vanishedPlayers.add(player.getPersistentID());
+            CommandVanish.vanishedPlayers.add(e.player.getPersistentID());
         }
-        LoginMessage.sendLoginMessage(player);
+        LoginMessage.sendLoginMessage(e.player);
     }
 
     @SubscribeEvent
-    public void onPlayerLogout(EntityPlayer player)
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
-        CommandVanish.vanishedPlayers.remove(player.getPersistentID());
+        CommandVanish.vanishedPlayers.remove(e.player.getPersistentID());
     }
 
     @SubscribeEvent
-    public void onPlayerChangedDimension(EntityPlayer player)
+    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent e)
     {
-        if (player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean(CommandVanish.TAGNAME))
+        if (e.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean(CommandVanish.TAGNAME))
         {
-            CommandVanish.vanishedPlayers.add(player.getPersistentID());
+            CommandVanish.vanishedPlayers.add(e.player.getPersistentID());
         }
     }
 
     @SubscribeEvent
-    public void onPlayerRespawn(EntityPlayer player)
+    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent e)
     {
 
-        if (player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean(CommandVanish.TAGNAME))
+        if (e.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean(CommandVanish.TAGNAME))
         {
-            CommandVanish.vanishedPlayers.add(player.getPersistentID());
+            CommandVanish.vanishedPlayers.add(e.player.getPersistentID());
         }
     }
 

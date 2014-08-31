@@ -1,7 +1,7 @@
 package com.forgeessentials.playerlogger.rollback;
 
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.AreaSelector.Point;
+import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.ChatUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;

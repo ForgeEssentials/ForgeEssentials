@@ -6,7 +6,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PropQueryPlayerZone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
+import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.*;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;

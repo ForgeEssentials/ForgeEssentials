@@ -1,6 +1,6 @@
 package com.forgeessentials.api.permissions.query;
 
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class PropQueryBlanketSpot extends PropQuery {
     public final WorldPoint spot;

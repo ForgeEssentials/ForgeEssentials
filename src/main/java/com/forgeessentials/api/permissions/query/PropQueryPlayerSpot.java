@@ -1,6 +1,6 @@
 package com.forgeessentials.api.permissions.query;
 
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class PropQueryPlayerSpot extends PropQueryPlayer {

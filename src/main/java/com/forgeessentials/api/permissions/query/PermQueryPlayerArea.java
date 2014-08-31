@@ -1,8 +1,8 @@
 package com.forgeessentials.api.permissions.query;
 
-import com.forgeessentials.util.AreaSelector.AreaBase;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.AreaSelector.WorldArea;
+import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WorldArea;
 import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.entity.player.EntityPlayer;
 

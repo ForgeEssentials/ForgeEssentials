@@ -1,4 +1,4 @@
-package com.forgeessentials.util.AreaSelector;
+package com.forgeessentials.util.selections;
 
 public class Selection extends AreaBase {
     // only really used for copying.. the points it was defined from.

@@ -6,15 +6,15 @@ import com.forgeessentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.server.CommandHandlerForge;
 
 import java.util.*;
 
 public class CommandSetChecker {
-    public static final String[] FIELDNAME = { "commandSet", "b", "field_71561_b", "aa/b" };
+    public static final String[] FIELDNAME = { "commandSet", "c", "field_71561_b", "z/c" };
     public static boolean removeDuplicateCommands;
     private static Map<String, RegGroup> permList = new HashMap<String, RegGroup>();
 
@@ -44,10 +44,7 @@ public class CommandSetChecker {
                         duplicates.put(cmd.getCommandName(), keep);
                         continue;
                     }
-                    else if (cmd.getClass().getName().startsWith("net.minecraft.command") && cmd instanceof CommandBase)
-                    {
-                        permList.put("mc." + cmd.getCommandName(), RegGroup.fromInt(((CommandBase) cmd).getRequiredPermissionLevel()));
-                    }
+                    CommandHandlerForge.doPermissionReg(cmd);
                 }
 
                 Set<ICommand> toRemove = new HashSet<ICommand>();

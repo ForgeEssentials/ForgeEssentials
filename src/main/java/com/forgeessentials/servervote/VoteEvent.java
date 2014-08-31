@@ -1,7 +1,7 @@
 package com.forgeessentials.servervote;
 
-import com.forgeessentials.api.json.JSONException;
-import com.forgeessentials.api.json.JSONObject;
+
+import com.google.gson.*;
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
 
@@ -38,12 +38,20 @@ public class VoteEvent extends Event {
     {
         try
         {
-            JSONObject json = new JSONObject(decoded);
+            /*JSONObject json = new JSONObject(decoded);
             player = json.getString("player");
             serviceName = json.getString("serviceName");
             ip = json.getString("ip");
             timeStamp = json.getJSONObject("timeStamp").getString("date");
-            sane = true;
+            sane = true;*/
+
+            Gson gson = new Gson();
+            JsonElement element = gson.fromJson (decoded, JsonElement.class);
+            JsonObject json = element.getAsJsonObject();
+            player = json.get("player").getAsString();
+            serviceName = json.get("serviceName").getAsString();
+            ip = json.get("ip").getAsString();
+            timeStamp = json.get("timeStamp").getAsJsonObject().get("date").getAsString();
         }
         catch (Exception e)
         {
@@ -56,15 +64,18 @@ public class VoteEvent extends Event {
     {
         try
         {
-            JSONObject json = new JSONObject();
-            json.put("player", player);
-            json.put("serviceName", serviceName);
-            json.put("ip", ip);
-            json.put("ip", ip);
-            json.put("timeStamp", new JSONObject().put("date", timeStamp));
+            JsonObject json = new JsonObject();
+            json.add("player", new JsonPrimitive(player));
+            json.add("serviceName", new JsonPrimitive(serviceName));
+            json.add("ip", new JsonPrimitive(ip));
+
+            JsonObject time = new JsonObject();
+            time.add("date", new JsonPrimitive(timeStamp));
+
+            json.add("timeStamp", time);
             return json.toString();
         }
-        catch (JSONException e)
+        catch (JsonParseException e)
         {
             e.printStackTrace();
         }

@@ -8,7 +8,7 @@ import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.permissions.PermsEventHandler;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;

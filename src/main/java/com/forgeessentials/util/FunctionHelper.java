@@ -3,15 +3,20 @@ package com.forgeessentials.util;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.core.CoreConfig;
 import com.forgeessentials.permissions.SqlHelper;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WarpPoint;
 import com.google.common.base.Joiner;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -1157,5 +1162,46 @@ public final class FunctionHelper {
         ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
+    }
+
+    public static JsonObject toJSON(ItemStack stack, Boolean listEnch) throws JsonParseException
+    {
+        JsonObject data = new JsonObject();
+        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display") && stack.stackTagCompound.getCompoundTag("display").hasKey("Name"))
+        {
+            data.add("item", new JsonPrimitive(stack.getDisplayName().replaceAll("item.", "").replaceAll("tile.", "")));
+        }
+        if (stack.stackSize != 1)
+        {
+            data.add("amount", new JsonPrimitive("" + stack.stackSize));
+        }
+        data.add("id", new JsonPrimitive("" + stack.getUnlocalizedName()));
+        if (stack.getItemDamage() != 0)
+        {
+            data.add("dam", new JsonPrimitive("" + stack.getItemDamage()));
+        }
+        data.add("name", new JsonPrimitive(stack.getDisplayName()));
+
+        if (listEnch)
+        {
+            JsonArray tempArgs = new JsonArray();
+            NBTTagList var10 = stack.getEnchantmentTagList();
+            if (var10 != null)
+            {
+                for (int var7 = 0; var7 < var10.tagCount(); ++var7)
+                {
+                    short var8 = (var10.getCompoundTagAt(var7)).getShort("id");
+                    short var9 = (var10.getCompoundTagAt(var7)).getShort("lvl");
+
+                    if (Enchantment.enchantmentsList[var8] != null)
+                    {
+                        tempArgs.add(new JsonPrimitive(Enchantment.enchantmentsList[var8].getTranslatedName(var9)));
+                    }
+                }
+                data.add("ench", tempArgs);
+            }
+        }
+
+        return data;
     }
 }

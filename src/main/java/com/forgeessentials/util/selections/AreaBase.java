@@ -1,4 +1,4 @@
-package com.forgeessentials.util.AreaSelector;
+package com.forgeessentials.util.selections;
 
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;

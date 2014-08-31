@@ -5,21 +5,16 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingData;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemMonsterPlacer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -120,7 +115,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                 	}
                 }
                 if (mob instanceof EntityLiving) {
-                	((EntityLiving)mob).onSpawnWithEgg(new EntityLivingData() {});
+                	((EntityLiving)mob).onSpawnWithEgg((IEntityLivingData)null);
                 }
                 mob.setPosition(x, y, z);
                 sender.worldObj.spawnEntityInWorld(mob);
@@ -175,7 +170,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                 	mob.setCustomNameTag(sb.toString());
                 }
                 if (mob instanceof EntityLiving) {
-                	((EntityLiving)mob).onSpawnWithEgg(new EntityLivingData() {});
+                	((EntityLiving)mob).onSpawnWithEgg((IEntityLivingData)null);
                 }
                 mob.setPosition(x, y, z);
                 world.spawnEntityInWorld(mob);

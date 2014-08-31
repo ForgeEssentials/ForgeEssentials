@@ -9,7 +9,7 @@ import com.forgeessentials.api.permissions.query.PermQuery;
 import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PropQuery;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.events.ModifyPlayerGroupEvent.AddPlayerGroupEvent;
 import com.forgeessentials.util.events.ModifyPlayerGroupEvent.RemovePlayerGroupEvent;
 import com.forgeessentials.util.events.ModifyPlayerGroupEvent.SetPlayerGroupEvent;

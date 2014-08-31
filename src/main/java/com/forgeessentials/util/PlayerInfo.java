@@ -1,5 +1,6 @@
 package com.forgeessentials.util;
 
+import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.network.PacketSelectionUpdate.Message;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -8,11 +9,11 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.AreaSelector.Selection;
-import com.forgeessentials.util.AreaSelector.SelectionHandler;
-import com.forgeessentials.util.AreaSelector.SelectionHandler.ISelectionProvider;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.Selection;
+import com.forgeessentials.util.selections.SelectionHandler;
+import com.forgeessentials.util.selections.SelectionHandler.ISelectionProvider;
+import com.forgeessentials.util.selections.WarpPoint;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,12 +23,14 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import java.util.*;
 
 @SaveableObject
-public class PlayerInfo implements ISelectionProvider {
+public class PlayerInfo{
     private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
     // -------------------------------------------------------------------------------------------
     // ---------------------------------- Actual Class Starts Now --------------------------------
     // -------------------------------------------------------------------------------------------
     @UniqueLoadingKey()
+    public final String name;
+
     @SaveableField()
     public final UUID playerID;
     // wand stuff
@@ -64,12 +67,15 @@ public class PlayerInfo implements ISelectionProvider {
     @SaveableField
     private List<ItemStack> hiddenItems;
 
+    private ISelectionProvider selprovider;
+
     private PlayerInfo(UUID playerID)
     {
         sel1 = null;
         sel2 = null;
         selection = null;
         this.playerID = playerID;
+        name = playerID.toString();
 
         undos = new Stack<BackupArea>();
         redos = new Stack<BackupArea>();
@@ -83,6 +89,9 @@ public class PlayerInfo implements ISelectionProvider {
         timePlayed = 0;
 
         hiddenItems = new ArrayList<ItemStack>();
+
+        if (!EnvironmentChecker.worldEditFEtoolsInstalled)
+        selprovider = new FESelectionProvider();
     }
 
     // @Deprecated Why? it doesn't have to be removed?
@@ -214,12 +223,6 @@ public class PlayerInfo implements ISelectionProvider {
     // ------------ Selection stuff -----------------
     // ----------------------------------------------
 
-    @Override
-    public Point getPoint1(EntityPlayerMP player)
-    {
-        return sel1;
-    }
-
     public void setPoint1(Point sel1)
     {
         if (SelectionHandler.selectionProvider != this)return;
@@ -244,12 +247,6 @@ public class PlayerInfo implements ISelectionProvider {
         FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
     }
 
-    @Override
-    public Point getPoint2(EntityPlayerMP player)
-    {
-        return sel2;
-    }
-
     public void setPoint2(Point sel2)
     {
         if (SelectionHandler.selectionProvider != this)return;
@@ -272,12 +269,6 @@ public class PlayerInfo implements ISelectionProvider {
         }
 
         FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
-    }
-
-    @Override
-    public Selection getSelection(EntityPlayerMP player)
-    {
-        return selection;
     }
 
     public Point getPoint1()
@@ -342,5 +333,23 @@ public class PlayerInfo implements ISelectionProvider {
     {
         return hiddenItems;
 
+    }
+
+    public class FESelectionProvider implements ISelectionProvider
+    {
+        @Override public Point getPoint1(EntityPlayerMP player)
+        {
+            return sel1;
+        }
+
+        @Override public Point getPoint2(EntityPlayerMP player)
+        {
+            return sel2;
+        }
+
+        @Override public Selection getSelection(EntityPlayerMP player)
+        {
+            return selection;
+        }
     }
 }

@@ -14,7 +14,7 @@ import com.forgeessentials.playerlogger.types.blockChangeLog;
 import com.forgeessentials.playerlogger.types.commandLog;
 import com.forgeessentials.playerlogger.types.logEntry;
 import com.forgeessentials.playerlogger.types.playerTrackerLog;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;

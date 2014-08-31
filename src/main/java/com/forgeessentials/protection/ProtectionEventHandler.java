@@ -5,7 +5,7 @@ import com.forgeessentials.api.permissions.query.PermQuery;
 import com.forgeessentials.api.permissions.query.PermQueryBlanketSpot;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerBlockPlace;
 import cpw.mods.fml.common.FMLCommonHandler;

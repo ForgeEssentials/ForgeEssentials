@@ -1,8 +1,8 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.util.AreaSelector.Selection;
-import com.forgeessentials.util.AreaSelector.WorldArea;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
+import com.forgeessentials.util.selections.Selection;
+import com.forgeessentials.util.selections.WorldArea;
+import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;

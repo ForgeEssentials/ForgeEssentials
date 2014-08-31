@@ -1,4 +1,4 @@
-package com.forgeessentials.util.AreaSelector;
+package com.forgeessentials.util.selections;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 

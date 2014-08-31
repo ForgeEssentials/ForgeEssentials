@@ -7,8 +7,8 @@ import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.api.permissions.query.PermQueryBlanketArea;
 import com.forgeessentials.api.permissions.query.PermQueryBlanketSpot;
 import com.forgeessentials.api.permissions.query.PermQueryBlanketZone;
-import com.forgeessentials.util.AreaSelector.AreaBase;
-import com.forgeessentials.util.AreaSelector.WorldArea;
+import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.FunctionHelper;
 
 import java.util.ArrayList;

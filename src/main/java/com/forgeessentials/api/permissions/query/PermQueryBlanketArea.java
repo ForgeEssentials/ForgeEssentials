@@ -1,7 +1,7 @@
 package com.forgeessentials.api.permissions.query;
 
-import com.forgeessentials.util.AreaSelector.AreaBase;
-import com.forgeessentials.util.AreaSelector.WorldArea;
+import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.util.selections.WorldArea;
 
 import java.util.ArrayList;
 

@@ -97,4 +97,18 @@ public enum RegGroup {
     {
         return equivalent;
     }
+
+    public static RegGroup fromForgeLevel(RegisteredPermValue level)
+    {
+        switch (level)
+        {
+        case TRUE:
+            return GUESTS;
+        case OP:
+            return OWNERS;
+        case FALSE:
+            return null;
+        }
+        return null;
+    }
 }
