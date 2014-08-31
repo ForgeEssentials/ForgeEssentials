@@ -1,16 +1,15 @@
 package com.forgeessentials.snooper;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
-import java.util.Collection;
-
-import scala.actors.threadpool.Arrays;
-
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.util.OutputHandler;
+import com.google.common.collect.ImmutableList;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ResponseRegistry {
-    private static TIntObjectHashMap<Response> map = new TIntObjectHashMap<Response>();
+    private static List<Response> map = new ArrayList<>();
 
     /**
      * Register a response for an ID. Use the API!
@@ -20,7 +19,7 @@ public class ResponseRegistry {
      */
     public static void registerResponse(Integer ID, Response response)
     {
-        if (map.containsKey(ID))
+        if (map.get(ID) != null)
         {
             throw new RuntimeException("You are attempting to register a response on an used ID: " + ID);
         }
@@ -28,7 +27,7 @@ public class ResponseRegistry {
         {
             OutputHandler.felog.finer("Response " + response.getName() + " ID: " + ID + " registered!");
             response.id = ID;
-            map.put(ID, response);
+            map.add(ID, response);
         }
     }
 
@@ -40,7 +39,7 @@ public class ResponseRegistry {
      */
     public static Response getResponse(int ID)
     {
-        if (map.containsKey(ID))
+        if (map.get(ID) != null)
         {
             return map.get(ID);
         }
@@ -58,6 +57,6 @@ public class ResponseRegistry {
     @SuppressWarnings("unchecked")
     public static Collection<Response> getAllresponses()
     {
-        return Arrays.asList(map.values());
+        return ImmutableList.copyOf(map);
     }
 }

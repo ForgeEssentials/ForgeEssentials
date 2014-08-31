@@ -36,7 +36,7 @@ public enum RegGroup {
      * will most likely be able to use basic commands as well as break blocks
      * and stuff in the world.
      */
-    MEMBERS("Members", " ", " ", null, 0, RegisteredPermValue.OP),
+    MEMBERS("Members", " ", " ", null, 0, RegisteredPermValue.TRUE),
 
     /**
      * This is usually for players that are admins or owners of a given zone
@@ -52,7 +52,7 @@ public enum RegGroup {
      */
     OWNERS("Owners", EnumChatFormatting.RED + "[OWNER]", " ", null, 999, RegisteredPermValue.OP);
     public static final String LADDER = "mainLadder";
-    private Group group;
+    private Group group = null;
     private String name;
     private RegisteredPermValue equivalent;
 
@@ -60,7 +60,7 @@ public enum RegGroup {
     {
         this.name = name;
         this.equivalent = equivalent;
-        group = new Group(name, parent, prefix, suffix, APIRegistry.zones.getGLOBAL().getZoneName(), priority);
+        group = new Group(name, parent, prefix, suffix, "_GLOBAL_", priority);
     }
 
     public static RegGroup fromInt(int level)
