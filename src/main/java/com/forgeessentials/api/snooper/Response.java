@@ -1,25 +1,14 @@
 package com.forgeessentials.api.snooper;
 
-import java.lang.reflect.Type;
-
+import com.google.gson.*;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.lang.reflect.Type;
 
 /**
  * If you want your own query response, extend this file and override
@@ -56,17 +45,22 @@ public abstract class Response
         }
 
         @Override
-        public NBTBase deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public NBTBase deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)throws JsonParseException
         {
             try
             {
-                return JsonToNBT.func_150315_a(GSON.toJson(json));
+                return parseAsJson(GSON.toJson(json));
             }
             catch (NBTException e)
             {
                 e.printStackTrace();
                 return null;
             }
+        }
+
+        private NBTBase parseAsJson(String string) throws NBTException
+        {
+         return JsonToNBT.func_150315_a(string)   ;
         }
     }
 }
