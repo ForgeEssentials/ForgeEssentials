@@ -1,6 +1,9 @@
 package com.forgeessentials.core;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.CommandFEInfo;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.HelpFixer;
 import com.forgeessentials.core.commands.selections.*;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.compat.EnvironmentChecker;
@@ -35,6 +38,8 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main mod class
@@ -142,16 +147,28 @@ public class ForgeEssentials {
 
         BlockModListFile.makeModList();
 
+        List<ForgeEssentialsCommandBase> commands = new ArrayList();
+
         // commands
-        e.registerServerCommand(new CommandFEInfo());
+        commands.add(new CommandFEInfo());
+        e.registerServerCommand(new HelpFixer());
 
         if (!EnvironmentChecker.worldEditInstalled)
         {
-            e.registerServerCommand(new CommandPos(1));
-            e.registerServerCommand(new CommandPos(2));
-            e.registerServerCommand(new CommandWand());
-            e.registerServerCommand(new CommandDeselect());
-            e.registerServerCommand(new CommandExpand());
+            commands.add(new CommandPos(1));
+            commands.add(new CommandPos(2));
+            commands.add(new CommandWand());
+            commands.add(new CommandDeselect());
+            commands.add(new CommandExpand());
+        }
+
+        for (ForgeEssentialsCommandBase command : commands)
+        {
+            if (command.getCommandPerm() != null && command.getReggroup() != null)
+                {
+                    APIRegistry.permReg.registerPermissionLevel(command.getCommandPerm(), command.getReggroup());
+                }
+                e.registerServerCommand(command);
         }
 
         tasks.onServerStart();

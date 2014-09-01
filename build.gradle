@@ -273,6 +273,6 @@ artifacts {
 build.dependsOn "cleanModules"
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
+    gradleVersion = '2.0'
 }
 

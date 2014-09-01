@@ -38,6 +38,8 @@ public class Grave {
     @SaveableField
     public boolean protEnable = true;
 
+    private boolean opened;
+
     public Grave(WorldPoint point, EntityPlayer player, ArrayList<EntityItem> drops, Deathchest deathchest)
     {
         key = point.toString();
@@ -124,5 +126,15 @@ public class Grave {
         }
 
         return false;
+    }
+
+    public void setOpen(boolean open)
+    {
+        opened = open;
+    }
+
+    public boolean isOpen()
+    {
+        return opened;
     }
 }

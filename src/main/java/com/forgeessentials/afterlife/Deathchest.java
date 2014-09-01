@@ -161,6 +161,7 @@ public class Deathchest {
                             player.closeScreen();
                         }
                         player.getNextWindowId();
+                        grave.setOpen(true);
 
                         InventoryGrave invGrave = new InventoryGrave(grave);
                         player.playerNetServerHandler.sendPacket(
@@ -178,30 +179,38 @@ public class Deathchest {
     @SubscribeEvent
     public void mineGrave(BreakEvent e)
     {
+        WorldPoint point = new WorldPoint(e.world, e.x, e.y, e.z); // the grave, or fencepost if fence is enabled
+        WorldPoint point2 = new WorldPoint(e.world, e.x, e.y + 1, e.z); // the grave, if fencepost is enabled
         if (e.world.isRemote)
         {
             return;
         }
+
         if (enableFencePost)
         {
-            WorldPoint point = new WorldPoint(e.world, e.x, e.y, e.z);
-            WorldPoint point2 = new WorldPoint(e.world, e.x, e.y + 1, e.z);
-            if (gravemap.containsKey(point.toString()))
+            if (gravemap.containsKey(point2.toString()))
+            {
+                e.setCanceled(true);
+                if (e.world.getBlock(e.x, e.y, e.z) == Blocks.fence)
+                {
+                    OutputHandler.chatError(e.getPlayer(), "You may not defile the grave of a player.");
+                }
+                else
+                {
+                    Grave grave = gravemap.get(point2.toString());
+                    removeGrave(grave, true);
+                }
+            }
+            else if (gravemap.containsKey(point.toString()))
             {
                 e.setCanceled(true);
                 Grave grave = gravemap.get(point.toString());
                 removeGrave(grave, true);
             }
-            else if (gravemap.containsKey(point2.toString()))
-            {
-                e.setCanceled(true);
-                Grave grave = gravemap.get(point2.toString());
-                removeGrave(grave, true);
-            }
         }
+
         else
         {
-            WorldPoint point = new WorldPoint(e.world, e.x, e.y, e.z);
             if (gravemap.containsKey(point.toString()))
             {
                 e.setCanceled(true);

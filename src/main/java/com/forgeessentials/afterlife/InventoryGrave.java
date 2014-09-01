@@ -49,6 +49,7 @@ public class InventoryGrave extends InventoryBasic {
         grave.inv = list.toArray(new ItemStack[list.size()]);
 
         grave.checkGrave();
+        grave.setOpen(false);
         super.closeInventory();
     }
 }
