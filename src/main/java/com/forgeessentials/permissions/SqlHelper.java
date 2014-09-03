@@ -467,7 +467,7 @@ public class SqlHelper {
             e.printStackTrace();
         }
 
-        return null;
+        return new ArrayList<Group>();
     }
 
     /**
