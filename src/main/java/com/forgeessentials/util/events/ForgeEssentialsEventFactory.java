@@ -44,6 +44,8 @@ public class ForgeEssentialsEventFactory {
     @SubscribeEvent
     public void handlePlayerMove(TickEvent.PlayerTickEvent e)
     {
+    	if (!(e.player instanceof EntityPlayerMP))
+    		return;
         EntityPlayerMP player = (EntityPlayerMP) e.player;
 
         WarpPoint before = befores.get(player.getPersistentID());
