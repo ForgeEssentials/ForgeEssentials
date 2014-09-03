@@ -106,12 +106,12 @@ public class CommandTp extends ForgeEssentialsCommandBase {
             }
             else
             {
-                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
+                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /tp [player] <player|<x> <y> <z>>");
             }
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /tp [player] <player|<x> <y> <z>>");
         }
     }
 
@@ -164,6 +164,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
         else
         {
             ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: ");
+            ChatUtils.sendMessage(sender, getCommandUsage(sender));
         }
     }
 

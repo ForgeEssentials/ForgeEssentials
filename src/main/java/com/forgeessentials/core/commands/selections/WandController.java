@@ -9,6 +9,7 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -24,35 +25,29 @@ public class WandController {
     public void playerInteractEvent(PlayerInteractEvent event)
     {
         // if worldedit is installed, don't do anything
-        if (EnvironmentChecker.worldEditFEtoolsInstalled)
-        {
+        // and only handle server events
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || EnvironmentChecker.worldEditFEtoolsInstalled)
             return;
-        }
-
-        // only server events please.
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-        {
-            return;
-        }
 
         // get info now rather than later
         EntityPlayer player = event.entityPlayer;
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
-
-        Item id = player.getCurrentEquippedItem().getItem();
-        int damage = 0;
-        if (id.getUnlocalizedName() != Blocks.air.getUnlocalizedName() && player.getCurrentEquippedItem().getHasSubtypes())
-        {
-            damage = player.getCurrentEquippedItem().getItemDamage();
-        }
-
-        if (id.getUnlocalizedName() != info.wandID || !info.wandEnabled || damage != info.wandDmg)
-        {
-            return; // wand does not activate
+        
+        if (!info.wandEnabled)
+        	return;
+        
+        // Check if wand should activate
+        if (player.getCurrentEquippedItem() == null) {
+        	if (info.wandID != null)
+        		return;
+        } else {
+        	if (!(player.getCurrentEquippedItem().getItem().getUnlocalizedName().equals(info.wandID)))
+        		return;
+        	if (player.getCurrentEquippedItem().getItemDamage() != info.wandDmg)
+        		return;
         }
 
         Point point = new Point(event.x, event.y, event.z);
-
         if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, "ForgeEssentials.CoreCommands.select.pos", point)))
         {
             OutputHandler.chatError(player,

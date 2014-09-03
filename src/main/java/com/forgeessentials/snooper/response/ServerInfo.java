@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ServerInfo extends Response {
     private static final DecimalFormat DF = new DecimalFormat("########0.000");
-    public static Integer ServerID = 0;
+    public static int ServerID = 0;
     public static String serverHash = "";
     private JsonObject data = new JsonObject();
     private boolean sendWB;

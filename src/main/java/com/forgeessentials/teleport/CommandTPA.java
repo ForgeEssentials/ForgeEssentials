@@ -29,7 +29,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /tpa [player] <player|<x> <y> <z>|accept|decline>");
             return;
         }
 
@@ -134,6 +134,6 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
     public String getCommandUsage(ICommandSender sender)
     {
 
-        return "/tpa [player] <player|<x> <y> <z|accept|decline>> Request to teleport yourself or another player.";
+        return "/tpa [player] <player|<x> <y> <z>|accept|decline> Request to teleport yourself or another player.";
     }
 }

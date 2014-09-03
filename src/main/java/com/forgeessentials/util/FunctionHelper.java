@@ -10,6 +10,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+import com.mojang.authlib.GameProfile;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -169,7 +171,8 @@ public final class FunctionHelper {
 
     public static UUID getPlayerID(String username)
     {
-        return MinecraftServer.getServer().func_152358_ax().func_152655_a(username).getId();
+    	GameProfile profile = MinecraftServer.getServer().func_152358_ax().func_152655_a(username);
+        return profile == null ? null : profile.getId();
     }
 
     public static String getPlayerName(UUID playerID)

@@ -14,7 +14,7 @@ public class Responces extends Response {
     public JsonElement getResponce(JsonObject input)
     {
         JsonArray data = new JsonArray();
-        for (Response responce : ResponseRegistry.getAllresponses())
+        for (Response responce : ResponseRegistry.getAllResponses().values())
         {
             data.add(new JsonPrimitive(responce.id + " " + responce.getName()));
         }

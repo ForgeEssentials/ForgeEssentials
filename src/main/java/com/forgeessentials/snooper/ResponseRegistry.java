@@ -3,13 +3,16 @@ package com.forgeessentials.snooper;
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ResponseRegistry {
-    private static List<Response> map = new ArrayList<>();
+	
+    private static Map<Integer, Response> map = new HashMap<>();
 
     /**
      * Register a response for an ID. Use the API!
@@ -19,7 +22,7 @@ public class ResponseRegistry {
      */
     public static void registerResponse(Integer ID, Response response)
     {
-        if (map.get(ID) != null)
+        if (map.containsKey(ID))
         {
             throw new RuntimeException("You are attempting to register a response on an used ID: " + ID);
         }
@@ -27,7 +30,7 @@ public class ResponseRegistry {
         {
             OutputHandler.felog.finer("Response " + response.getName() + " ID: " + ID + " registered!");
             response.id = ID;
-            map.add(ID, response);
+            map.put(ID, response);
         }
     }
 
@@ -39,7 +42,7 @@ public class ResponseRegistry {
      */
     public static Response getResponse(int ID)
     {
-        if (map.get(ID) != null)
+        if (map.containsKey(ID))
         {
             return map.get(ID);
         }
@@ -55,8 +58,8 @@ public class ResponseRegistry {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static Collection<Response> getAllresponses()
+    public static ImmutableMap<Integer, Response> getAllResponses()
     {
-        return ImmutableList.copyOf(map);
+    	return ImmutableMap.copyOf(map);
     }
 }
