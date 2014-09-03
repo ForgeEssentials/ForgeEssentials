@@ -39,6 +39,10 @@ public class WandController {
         EntityPlayer player = event.entityPlayer;
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
 
+        if (player.getCurrentEquippedItem() == null)
+        {
+        	return;
+        }
         Item id = player.getCurrentEquippedItem().getItem();
         int damage = 0;
         if (id.getUnlocalizedName() != Blocks.air.getUnlocalizedName() && player.getCurrentEquippedItem().getHasSubtypes())
