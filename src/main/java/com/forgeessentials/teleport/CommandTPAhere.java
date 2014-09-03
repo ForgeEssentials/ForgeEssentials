@@ -31,7 +31,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /tpahere [player] <player|<x> <y> <z>|accept|decline>");
             return;
         }
 
@@ -139,6 +139,6 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
     public String getCommandUsage(ICommandSender sender)
     {
 
-        return "/tpahere [player] <player|<x> <y> <z|accept|decline>> Teleports you or a player to a player or x y z.";
+        return "/tpahere [player] <player|<x> <y> <z>|accept|decline> Teleports you or a player to a player or x y z.";
     }
 }
