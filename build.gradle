@@ -79,6 +79,7 @@ jar {
     include "com/forgeessentials/util/**"
     include "com/forgeessentials/data/**"
     include "com/forgeessentials/api/**"
+    include "com/forgeessentials/permissions/**"
     include "org/mcstats/**"
     include "logo.png"
     include "mcmod.info"
