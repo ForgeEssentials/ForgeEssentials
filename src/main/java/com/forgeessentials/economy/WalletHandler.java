@@ -79,7 +79,6 @@ public class WalletHandler implements IEconManager {
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
         if (wallets.containsKey(event.player.getUniqueID()))
-            ;
         {
             DataStorageManager.getReccomendedDriver().saveObject(con, wallets.remove(event.player.getUniqueID()));
         }
