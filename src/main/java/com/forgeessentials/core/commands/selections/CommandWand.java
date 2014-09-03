@@ -28,99 +28,55 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        boolean allowed = checkCommandPerm(sender);
+		// Get the wand item (or hands)
+		Item wandItem;
+		String wandId = null, wandName;
+		int wandDmg = 0;
+		if (sender.getCurrentEquippedItem() != null) {
+			wandName = sender.getCurrentEquippedItem().getDisplayName();
+			wandItem = sender.getCurrentEquippedItem().getItem();
+			wandDmg = sender.getCurrentEquippedItem().getItemDamage();
+			wandId = wandItem.getUnlocalizedName();
+			if (wandDmg == -1) {
+				wandDmg = 0;
+			}
+		} else {
+			wandName = "your hands";
+		}
 
         PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-        Item currentID = sender.getCurrentEquippedItem() == null ? Item.getItemFromBlock(Blocks.air) : sender.getCurrentEquippedItem().getItem();
-        int currentDmg = 0;
 
-        if (currentID != FunctionHelper.AIR && sender.getCurrentEquippedItem().getHasSubtypes())
-        {
-            currentDmg = sender.getCurrentEquippedItem().getItemDamage();
-        }
+        // Check for rebind
+        boolean rebind = args.length > 0 && args[0].equalsIgnoreCase("rebind");
+        
+		// Check for unbind
+		if (!rebind && ((info.wandEnabled && info.wandID.equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind")))) {
+			ChatUtils.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
+			info.wandEnabled = false;
+			return;
+		}
 
-        String currentName = currentID == FunctionHelper.AIR ? "your fists" : sender.getCurrentEquippedItem().getDisplayName();
-        String wandName = "";
-        if (info.wandEnabled)
-        {
-            if (sender.getCurrentEquippedItem() == null || info.wandID == FunctionHelper.AIR.getUnlocalizedName())
-            {
-                wandName = "your fists";
-            }
-            else
-            {
-                wandName = sender.getCurrentEquippedItem().getDisplayName();
-            }
-        }
+		// Check for permissions
+		if (!checkCommandPerm(sender)) {
+			OutputHandler.chatError(sender, "You have no permission to use fewand!");
+			return;
+		}
 
-        if (args.length > 0)
-        {
-            if (args[0].equalsIgnoreCase("rebind"))
-            {
-                if (allowed)
-                {
-                    info.wandEnabled = true;
-                    info.wandID = currentID.getUnlocalizedName();
-                    info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
-                    OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
-                    return;
-                }
-                else
-                {
-                    OutputHandler.chatError(sender, "Could not bind wand to " + currentName);
-                    return;
-                }
-            }
-            else if (args[0].equalsIgnoreCase("unbind"))
-            {
-                info.wandEnabled = false;
-                ChatUtils.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
-                return;
-            }
-            else
-            {
-                if (allowed)
-                {
-                    List<Object> data = FunctionHelper.parseIdAndMetaFromString(args[0], false);
-                    currentID = ((Item)GameData.getItemRegistry().getObject(data.get(0)));
-                    currentDmg = (int)data.get(1);
-                    info.wandEnabled = true;
-                    info.wandID = currentID.getUnlocalizedName();
-                    info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
-                    OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
-                }
-                else
-                {
-                    OutputHandler.chatError(sender, "Could not bind wand to " + currentName);
-                    return;
-                }
-            }
-        }
-        else
-        {
-            if (info.wandEnabled)
-            {
-                info.wandEnabled = false;
-                ChatUtils.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
-                return;
-            }
-            else
-            {
-                if (allowed)
-                {
-                    info.wandEnabled = true;
-                    info.wandID = currentID.getUnlocalizedName();
-                    info.wandDmg = currentDmg == -1 ? 0 : currentDmg;
-                    OutputHandler.chatConfirmation(sender, "Wand bound to " + currentName);
-                    return;
-                }
-                else
-                {
-                    OutputHandler.chatError(sender, "Could not bind wand to " + currentName);
-                    return;
-                }
-            }
-        }
+		if (args.length > 0 && !rebind) {
+			List<Object> data = FunctionHelper.parseIdAndMetaFromString(args[0], false);
+			wandItem = ((Item) GameData.getItemRegistry().getObject(data.get(0)));
+			wandId = wandItem.getUnlocalizedName();
+			wandDmg = (int) data.get(1);
+			if (wandDmg == -1) {
+				wandDmg = 0;
+			}
+		}
+		
+		// Bind wand
+		info.wandEnabled = true;
+		info.wandID = wandId;
+		info.wandDmg = wandDmg;
+		OutputHandler.chatConfirmation(sender, "Wand bound to " + wandName);
     }
 
     @Override
