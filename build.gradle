@@ -41,7 +41,6 @@ minecraft {
 configurations {
     serverLibs
     modules
-    devDeps
 }
 
 repositories {
@@ -218,16 +217,9 @@ task weJar(dependsOn: "jar", type: Jar) {
 //core DEOBF use for development
 task devDeobfJar(dependsOn: "jar", type: Jar) {
     from project.sourceSets.main.output
-    include "com/forgeessentials/core/**"
-    include "com/forgeessentials/util/**"
-    include "com/forgeessentials/data/**"
-    include "com/forgeessentials/api/**"
-    include "org/mcstats/**"
-    include "logo.png"
-    include "mcmod.info"
-    include "forgeessentials_at.cfg"
+    include "**"
 
-    from project.configurations.devDeps
+    from project.sourceSets.api.output
     include "**"
 
     manifest {
