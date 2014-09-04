@@ -60,7 +60,7 @@ Retired:
 
 <a href="https://github.com/Weneg">Weneg</a> (inactive)
 
-<a href="https://github.com/Malkerian">Malkerian</a>  (inactive)
+<a href="https://github.com/Malkierian">Malkierian</a>  (inactive)
 
 <a href="https://github.com/Jgdovin">Jgdovin</a>  (inactive)
 
