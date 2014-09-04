@@ -45,7 +45,7 @@ import java.util.List;
  * Main mod class
  */
 
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version)
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*")
 public class ForgeEssentials {
 
     @Instance(value = "ForgeEssentials")
