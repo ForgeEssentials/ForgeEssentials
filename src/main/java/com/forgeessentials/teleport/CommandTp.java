@@ -84,7 +84,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
             if (args.length == 3)
             {
                 EntityPlayerMP player = (EntityPlayerMP) sender;
-                int x = parseInt(sender, args[0], player.posX), y = parseInt(sender, args[1], player.posY), z = parseInt(sender, args[2], player.posZ);
+                double x = parseDouble(sender, args[0]), y = parseDouble(sender, args[1]), z = parseDouble(sender, args[2]);
                 PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.back = new WarpPoint(player);
                 TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
@@ -94,7 +94,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
                 EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
                 if (player != null)
                 {
-                    int x = parseInt(sender, args[1], player.posX), y = parseInt(sender, args[2], player.posY), z = parseInt(sender, args[3], player.posZ);
+                    double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);
                     PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                     playerInfo.back = new WarpPoint(player);
                     TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
@@ -151,7 +151,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
             if (player != null)
             {
-                int x = parseInt(sender, args[1], player.posX), y = parseInt(sender, args[2], player.posY), z = parseInt(sender, args[3], player.posZ);
+                double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);
                 PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.back = new WarpPoint(player);
                 TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
