@@ -72,6 +72,8 @@ public class SqlHelper {
     private static final String COLUMN_PERMPROP_PROP = "property";
     private static final String COLUMN_PERMPROP_ZONEID = "zoneID";
     private static SqlHelper instance;
+    private static int ENTRY_PLAYER_ID = 1;
+    private static String ENTRY_PLAYER_NAME = "_ENTRY_PLAYER_";
     private static int GLOBAL_ID = 1;
     private static int SUPER_ID = 2;
     private static int DEFAULT_ID = 1;
@@ -1555,6 +1557,11 @@ public class SqlHelper {
         ResultSet set = getInstance().statementGetPlayerIDFromName.executeQuery();
         getInstance().statementGetPlayerIDFromName.clearParameters();
 
+        if (!set.next())
+        {
+            return getPlayerIDFromPlayerName(ENTRY_PLAYER_NAME);
+        }
+
         return set.getInt(1);
     }
 
@@ -2623,6 +2630,12 @@ public class SqlHelper {
                     .append("', ").append(SUPER_ID).append(")");
             db.createStatement().executeUpdate(query.toString());
 
+            // Entry player...
+            query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_USERNAME).append(", ")
+                    .append(COLUMN_PLAYER_PLAYERID).append(") ").append(" VALUES ").append(" ('").append(ENTRY_PLAYER_NAME)
+                    .append("', ").append(ENTRY_PLAYER_ID).append(")");
+            db.createStatement().executeUpdate(query.toString());
+
         }
         catch (Exception e)
         {
@@ -2709,6 +2722,14 @@ public class SqlHelper {
                 }
             }
 
+            // put the EntryPlayer to GUESTS for the GLOBAL zone
+            s = statementPutPlayerInGroup;
+            s.setInt(1, groups.get(RegGroup.GUESTS));
+            s.setInt(2, ENTRY_PLAYER_ID);
+            s.setInt(3, GLOBAL_ID); // zoneID
+            s.executeUpdate();
+            s.clearParameters();
+
             // make default ladder
             s = statementPutLadderName;
             s.setString(1, RegGroup.LADDER);
@@ -2794,8 +2815,14 @@ public class SqlHelper {
             // call generate to remake the stuff that should be there
             {
 
+                // recreate EntryPlayer player
+                StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_USERNAME).append(", ")
+                        .append(COLUMN_PLAYER_PLAYERID).append(") ").append(" VALUES ").append(" ('")
+                        .append(ENTRY_PLAYER_NAME).append("', ").append(ENTRY_PLAYER_ID).append(")");
+                db.createStatement().executeUpdate(query.toString());
+
                 // recreate DEFAULT group
-                StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (").append(COLUMN_GROUP_GROUPID).append(", ").append(COLUMN_GROUP_NAME)
+                query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (").append(COLUMN_GROUP_GROUPID).append(", ").append(COLUMN_GROUP_NAME)
                         .append(", ").append(COLUMN_GROUP_PRIORITY).append(", ").append(COLUMN_GROUP_ZONE)
                         .append(") ").append(" VALUES ").append(" (").append(DEFAULT_ID).append(", ") // groupID
                         .append("'").append(APIRegistry.perms.getDEFAULT().name).append("', ").append("0, ").append(GLOBAL_ID).append(")"); // priority, zone
