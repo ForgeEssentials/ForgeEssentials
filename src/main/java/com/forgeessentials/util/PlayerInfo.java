@@ -9,10 +9,9 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.Selection;
-import com.forgeessentials.util.selections.SelectionHandler;
-import com.forgeessentials.util.selections.SelectionHandler.ISelectionProvider;
 import com.forgeessentials.util.selections.WarpPoint;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
@@ -90,8 +89,8 @@ public class PlayerInfo{
 
         hiddenItems = new ArrayList<ItemStack>();
 
-        if (!EnvironmentChecker.worldEditFEtoolsInstalled)
-        selprovider = new FESelectionProvider();
+        //if (!EnvironmentChecker.worldEditFEtoolsInstalled)
+        selprovider = new FESelectionProvider(playerID);
     }
 
     // @Deprecated Why? it doesn't have to be removed?
@@ -225,7 +224,7 @@ public class PlayerInfo{
 
     public void setPoint1(Point sel1)
     {
-        if (SelectionHandler.selectionProvider != this)return;
+        if (EnvironmentChecker.worldEditFEtoolsInstalled)return;
 
         this.sel1 = sel1;
 
@@ -249,7 +248,7 @@ public class PlayerInfo{
 
     public void setPoint2(Point sel2)
     {
-        if (SelectionHandler.selectionProvider != this)return;
+        if (EnvironmentChecker.worldEditFEtoolsInstalled)return;
 
         this.sel2 = sel2;
 
@@ -273,17 +272,17 @@ public class PlayerInfo{
 
     public Point getPoint1()
     {
-        return SelectionHandler.selectionProvider.getPoint1(FunctionHelper.getPlayerForUUID(playerID));
+        return selprovider.getPoint1(FunctionHelper.getPlayerForUUID(playerID));
     }
 
     public Point getPoint2()
     {
-        return SelectionHandler.selectionProvider.getPoint2(FunctionHelper.getPlayerForUUID(playerID));
+        return selprovider.getPoint2(FunctionHelper.getPlayerForUUID(playerID));
     }
 
     public Selection getSelection()
     {
-        return SelectionHandler.selectionProvider.getSelection(FunctionHelper.getPlayerForUUID(playerID));
+        return selprovider.getSelection(FunctionHelper.getPlayerForUUID(playerID));
     }
 
     // ----------------------------------------------
@@ -322,7 +321,7 @@ public class PlayerInfo{
 
     public void clearSelection()
     {
-        if (SelectionHandler.selectionProvider != this)return;
+        if (EnvironmentChecker.worldEditFEtoolsInstalled) return;
         selection = null;
         sel1 = null;
         sel2 = null;
@@ -337,6 +336,13 @@ public class PlayerInfo{
 
     public class FESelectionProvider implements ISelectionProvider
     {
+        private UUID user;
+
+        protected FESelectionProvider(UUID username)
+        {
+            user = username;
+        }
+
         @Override public Point getPoint1(EntityPlayerMP player)
         {
             return sel1;
