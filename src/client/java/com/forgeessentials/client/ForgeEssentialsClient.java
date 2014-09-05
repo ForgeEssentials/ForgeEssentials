@@ -15,7 +15,7 @@ import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = "%VERSION%", guiFactory = "com.forgeessentials.client.gui.FEGUIFactory")
+@Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = "%VERSION%", guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true)
 public class ForgeEssentialsClient {
 
     public static Logger feclientlog;

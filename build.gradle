@@ -112,20 +112,12 @@ processClientResources {
         expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeversion': project.minecraft.forgeVersion
         include 'mcmod.info'
     }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
 }
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeVersion': project.minecraft.forgeVersion
         include 'mcmod.info'
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
     }
 }
 

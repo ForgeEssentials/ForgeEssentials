@@ -1,6 +1,5 @@
-package com.forgeessentials.client.gui;
+package com.forgeessentials.client.gui.forge;
 
-import com.forgeessentials.client.ClientConfig;
 import cpw.mods.fml.client.IModGuiFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -15,7 +14,7 @@ public class FEGUIFactory implements IModGuiFactory {
 
     @Override public Class<? extends GuiScreen> mainConfigGuiClass()
     {
-        return ClientConfig.FEConfigGUI.class;
+        return FEConfigGUI.class;
     }
 
     @Override public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
