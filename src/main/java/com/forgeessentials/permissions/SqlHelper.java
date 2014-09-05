@@ -73,7 +73,7 @@ public class SqlHelper {
     private static final String COLUMN_PERMPROP_ZONEID = "zoneID";
     private static SqlHelper instance;
     private static int ENTRY_PLAYER_ID = 1;
-    private static String ENTRY_PLAYER_NAME = "_ENTRY_PLAYER_";
+    private static String ENTRY_PLAYER_NAME = "2ecbdcc0-0e4b-4a0d-92a1-221dda46b784";
     private static int GLOBAL_ID = 1;
     private static int SUPER_ID = 2;
     private static int DEFAULT_ID = 1;

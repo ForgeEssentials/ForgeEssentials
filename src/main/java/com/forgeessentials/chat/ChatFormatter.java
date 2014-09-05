@@ -195,7 +195,7 @@ public class ChatFormatter {
 
         // finally make it the chat line.
         // TODO: This is probably incorrect with regards to coloring
-        event.component = (ChatComponentTranslation) ChatUtils.createFromText(format);
+        event.component = new ChatComponentTranslation(format);
 
         if (ConfigChat.logchat && ModuleChat.chatLog != null)
         {
