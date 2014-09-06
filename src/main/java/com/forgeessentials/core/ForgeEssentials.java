@@ -164,9 +164,9 @@ public class ForgeEssentials {
 
         for (ForgeEssentialsCommandBase command : commands)
         {
-            if (command.getCommandPerm() != null && command.getReggroup() != null)
+            if (command.getPermissionNode() != null && command.getReggroup() != null)
                 {
-                    APIRegistry.permReg.registerPermissionLevel(command.getCommandPerm(), command.getReggroup());
+                    APIRegistry.permReg.registerPermissionLevel(command.getPermissionNode(), command.getReggroup());
                 }
                 e.registerServerCommand(command);
         }

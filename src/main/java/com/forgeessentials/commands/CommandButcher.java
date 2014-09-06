@@ -9,6 +9,8 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.TaskRegistry;
+
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -55,9 +57,9 @@ public class CommandButcher extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
         int radius = -1;
-        int X = (int) sender.posX;
-        int Y = (int) sender.posY;
-        int Z = (int) sender.posZ;
+        double X = sender.posX;
+        double Y = sender.posY;
+        double Z = sender.posZ;
         String mobType = EnumMobType.HOSTILE.toString();
 
         if (args.length > 0)
@@ -100,9 +102,9 @@ public class CommandButcher extends FEcmdModuleCommands {
             }
             else
             {
-                X = parseInt(sender, split[0], sender.posX);
-                Y = parseInt(sender, split[1], sender.posY);
-                Z = parseInt(sender, split[2], sender.posZ);
+                X = parseDouble(sender, split[0], sender.posX);
+                Y = parseDouble(sender, split[1], sender.posY);
+                Z = parseDouble(sender, split[2], sender.posZ);
             }
         }
         AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(X - radius, Y - radius, Z - radius, X + radius + 1, Y + radius + 1, Z + radius + 1);
@@ -177,18 +179,10 @@ public class CommandButcher extends FEcmdModuleCommands {
                 z = parseInt(sender, split[2]);
             }
         }
-        if (args.length == 4)
-        {
-            try
-            {
-                worldID = Integer.parseInt(args[3]);
-            }
-            catch (NumberFormatException e)
-            {
-                ChatUtils.sendMessage(sender, String.format("'%s' param was not recognized as number. Please try again.", args[0]));
-                return;
-            }
-        }
+		if (args.length == 4) 
+		{
+			worldID = parseInt(sender, args[3]);
+		}
         WorldPoint center = new WorldPoint(worldID, x, y, z);
         AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1,
                 center.z + radius + 1);

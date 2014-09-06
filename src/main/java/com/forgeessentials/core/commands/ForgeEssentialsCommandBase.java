@@ -16,36 +16,9 @@ import java.util.List;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
-    /**
-     * Parse int with support for relative int.
-     *
-     * @param sender
-     * @param string
-     * @param relativeStart
-     * @return
-     */
-    public static int parseInt(ICommandSender sender, String string, double relativeStart)
-    {
-        if (string.startsWith("~"))
-        {
-            string = string.substring(1);
-            return (int) (relativeStart + parseInt(sender, string));
-        }
-        else
-        {
-            return parseInt(sender, string);
-        }
-    }
-
     // ---------------------------
     // processing command
     // ---------------------------
-
-    @Override
-    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par1)
-    {
-        return true;
-    }
 
     @Override
     public void processCommand(ICommandSender var1, String[] var2)
@@ -76,8 +49,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         processCommandConsole(block, args);
     }
 
-    ;
-
     // ---------------------------
     // command usage
     // ---------------------------
@@ -89,9 +60,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
     // ---------------------------
     // permissions
     // ---------------------------
-
-    @Override
-    public abstract String getCommandUsage(ICommandSender sender);
 
     @Override
     public boolean canCommandSenderUseCommand(ICommandSender sender)
@@ -157,7 +125,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
     public boolean checkCommandPerm(EntityPlayer player)
     {
-        String perm = getCommandPerm();
+        String perm = getPermissionNode();
         if (perm == null)
         {
             return true;
@@ -176,7 +144,10 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         return null;
     }
 
-    public abstract String getCommandPerm();
+    /**
+     * Get the permission node
+     */
+    public abstract String getPermissionNode();
 
     public abstract RegGroup getReggroup();
 
@@ -190,6 +161,52 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         else
         {
             return 0;
+        }
+    }
+
+    // ---------------------------
+    // utility
+    // ---------------------------
+
+    /**
+     * Parse int with support for relative int.
+     *
+     * @param sender
+     * @param string
+     * @param relativeStart
+     * @return
+     */
+    public static int parseInt(ICommandSender sender, String string, int relativeStart)
+    {
+        if (string.startsWith("~"))
+        {
+            string = string.substring(1);
+            return relativeStart + parseInt(sender, string);
+        }
+        else
+        {
+            return parseInt(sender, string);
+        }
+    }
+
+    /**
+     * Parse double with support for relative values.
+     *
+     * @param sender
+     * @param string
+     * @param relativeStart
+     * @return
+     */
+    public static double parseDouble(ICommandSender sender, String string, double relativeStart)
+    {
+        if (string.startsWith("~"))
+        {
+            string = string.substring(1);
+            return relativeStart + parseInt(sender, string);
+        }
+        else
+        {
+            return parseInt(sender, string);
         }
     }
 

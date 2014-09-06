@@ -1912,10 +1912,10 @@ public class SqlHelper {
 
             return list;
         }
-        catch (Exception e)
+        catch (SQLException e) 
         {
-            e.printStackTrace();
-        }
+			e.printStackTrace();
+		}
         return null;
     }
 
@@ -1950,7 +1950,7 @@ public class SqlHelper {
 
             return list;
         }
-        catch (Exception e)
+        catch (SQLException e)
         {
             e.printStackTrace();
         }
@@ -2451,7 +2451,7 @@ public class SqlHelper {
                     .append(COLUMN_LADDER_ZONEID).append("=").append(TABLE_ZONE).append(".").append(COLUMN_ZONE_ZONEID);
             statementDumpLadders = getInstance().db.prepareStatement(query.toString());
         }
-        catch (Exception e)
+        catch (SQLException e)
         {
             OutputHandler.felog.severe("[PermSQL] error preparing common statements");
             Throwables.propagate(e);
@@ -2475,6 +2475,7 @@ public class SqlHelper {
         try
         {
             // nothign special atm
+        	// TODO: Remove?
         }
         catch (Exception e)
         {

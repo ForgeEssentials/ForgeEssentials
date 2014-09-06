@@ -25,9 +25,9 @@ public class CommandRemove extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
         int radius = 10;
-        int centerX = (int) sender.posX;
-        int centerY = (int) sender.posY;
-        int centerZ = (int) sender.posZ;
+        double centerX = sender.posX;
+        double centerY = sender.posY;
+        double centerZ = sender.posZ;
 
         if (args.length == 1)
         {
@@ -36,9 +36,9 @@ public class CommandRemove extends FEcmdModuleCommands {
         else if (args.length == 4)
         {
             radius = parseIntWithMin(sender, args[0], 0);
-            centerX = parseInt(sender, args[1], sender.posX);
-            centerY = parseInt(sender, args[2], sender.posY);
-            centerZ = parseInt(sender, args[3], sender.posZ);
+            centerX = parseDouble(sender, args[1], sender.posX);
+            centerY = parseDouble(sender, args[2], sender.posY);
+            centerZ = parseDouble(sender, args[3], sender.posZ);
         }
         else
         {

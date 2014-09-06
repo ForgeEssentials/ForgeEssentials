@@ -29,9 +29,9 @@ public class FEModuleServerInitEvent extends FEModuleEvent {
 
     public void registerServerCommand(ForgeEssentialsCommandBase command)
     {
-        if (command.getCommandPerm() != null && command.getReggroup() != null)
+        if (command.getPermissionNode() != null && command.getReggroup() != null)
         {
-            CommandHandlerForge.doPermissionReg(command.getCommandName(), command.getCommandPerm(), command.getReggroup().getEquivalent());
+            CommandHandlerForge.doPermissionReg(command.getCommandName(), command.getPermissionNode(), command.getReggroup().getEquivalent());
         }
         event.registerServerCommand(command);
     }

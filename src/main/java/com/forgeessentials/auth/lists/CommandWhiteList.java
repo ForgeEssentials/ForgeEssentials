@@ -62,7 +62,7 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.auth.whitelist.admin";
     }

@@ -78,9 +78,9 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
             if (args.length >= 6)
             {
                 dim = sender.worldObj.provider.dimensionId;
-                x = parseInt(sender, args[3], sender.posX);
-                y = parseInt(sender, args[4], sender.posY);
-                z = parseInt(sender, args[5], sender.posZ);
+                x = parseInt(sender, args[3], (int) sender.posX);
+                y = parseInt(sender, args[4], (int) sender.posY);
+                z = parseInt(sender, args[5], (int) sender.posZ);
             }
             else if (args.length >= 4)
             {
@@ -416,7 +416,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport." + getCommandName();
     }

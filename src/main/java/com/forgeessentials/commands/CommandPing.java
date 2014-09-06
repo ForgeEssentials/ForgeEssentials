@@ -14,7 +14,7 @@ public class CommandPing extends FEcmdModuleCommands {
     String response = "Pong! %time";
 
     @Override
-    public void doConfig(Configuration config, String category)
+    public void loadConfig(Configuration config, String category)
     {
         response = config.get(category, "response", "Pong! %time").getString();
     }

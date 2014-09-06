@@ -54,7 +54,7 @@ public class ProtectCommand extends ForgeEssentialsCommandBase{
         return true;
     }
 
-    @Override public String getCommandPerm()
+    @Override public String getPermissionNode()
     {
         return "fe.protection.protect";
     }

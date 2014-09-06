@@ -19,7 +19,7 @@ public class CommandFindblock extends FEcmdModuleCommands {
     public static int defaultSpeed = 16 * 16;
 
     @Override
-    public void doConfig(Configuration config, String category)
+    public void loadConfig(Configuration config, String category)
     {
         defaultRange = config.get(category, "defaultRange", defaultRange, "Default max distance used.").getInt();
         defaultSpeed = config.get(category, "defaultSpeed", defaultSpeed, "Default speed used.").getInt();

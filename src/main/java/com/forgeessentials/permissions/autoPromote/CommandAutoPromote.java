@@ -241,7 +241,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.perm.autoPromote";
     }

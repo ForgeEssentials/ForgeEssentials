@@ -17,12 +17,6 @@ public class CommandBind extends FEcmdModuleCommands {
     public static final String color = EnumChatFormatting.RESET + "" + EnumChatFormatting.AQUA;
 
     @Override
-    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par1)
-    {
-        return false;
-    }
-
-    @Override
     public String getCommandName()
     {
         return "bind";

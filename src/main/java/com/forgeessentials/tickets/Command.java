@@ -151,7 +151,7 @@ public class Command extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return ModuleTickets.PERMBASE + ".command";
     }

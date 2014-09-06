@@ -45,7 +45,7 @@ public class CommandNegative extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.questioner.no";
     }

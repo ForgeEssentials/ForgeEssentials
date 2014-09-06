@@ -2,6 +2,7 @@ package com.forgeessentials.commands.util;
 
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -11,99 +12,146 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase {
-    public boolean enableCmdBlock = true;
-    public boolean enableConsole = true;
-    public boolean enablePlayer = true;
-
-    public ArrayList<String> aliasList = new ArrayList<String>();
+	
+    private boolean enabledForCmdBlock = true;
+    private boolean enabledForConsole = true;
+    private boolean enabledForPlayer = true;
+    private List<String> aliases = new ArrayList<String>();
 
     // ---------------------------
     // config interaction
     // ---------------------------
 
     /**
-     * Override if you want config interaction.
-     *
-     * @param config
-     * @param category
+     * Loads configuration for the command.
+     * Remember to call super.loadConfig if you overwrite this method.
      */
-    public void doConfig(Configuration config, String category)
+    public void loadConfig(Configuration config, String category)
     {
+        config.addCustomCategoryComment(category, getPermissionNode());
+        for (String alias : config.get(category, "aliases", getDefaultAliases()).getStringList())
+        {
+            aliases.add(alias);
+        }
     }
 
     @Override
     public List<String> getCommandAliases()
     {
-        return aliasList;
+        return aliases;
     }
 
+    /**
+     * Returns a list of default aliases, that will be added to the configuration on firstrun
+     */
     public String[] getDefaultAliases()
     {
         return new String[] { };
     }
 
-    public boolean usefullCmdBlock()
-    {
-        return canConsoleUseCommand();
-    }
-
-    public boolean usefullPlayer()
-    {
-        return true;
-    }
-
-    public abstract RegGroup getReggroup();
-
     /**
      * You don't need to register the commandpermission.
-     *
      */
-    public void registerExtraPermissions()
-    {
+    public void registerExtraPermissions() {
     }
 
-    public String getCommandPerm()
+    /* 
+     * Returns the permission node based on the command name
+     */
+    public String getPermissionNode()
     {
         return "fe.commands." + getCommandName();
     }
 
-    @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
+	/* 
+	 * Check, if the command-sender can use the command.
+	 * This checks, if the command has been invoked by a player, a command-block or by console.
+	 * @see com.forgeessentials.core.commands.ForgeEssentialsCommandBase#canCommandSenderUseCommand(net.minecraft.command.ICommandSender)
+	 */
+	@Override
+	public boolean canCommandSenderUseCommand(ICommandSender sender)
+	{
+		if (sender instanceof EntityPlayer) {
+			if (!enabledForPlayer)
+				return false;
+			return canPlayerUseCommand((EntityPlayer) sender);
+		} else if (sender instanceof TileEntityCommandBlock) {
+			if (!enabledForCmdBlock)
+				return false;
+			return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
+		} else {
+			if (!enabledForConsole)
+				return false;
+			return canConsoleUseCommand();
+		}
+	}
+
+    // ---------------------------
+    // command usage
+    // ---------------------------
+
+    /**
+     * Can the command be used by a command-block?
+     */
+    public boolean usableByCmdBlock()
     {
-        if (sender instanceof EntityPlayer)
-        {
-            if (!enablePlayer)
-            {
-                return false;
-            }
-            else
-            {
-                return canPlayerUseCommand((EntityPlayer) sender);
-            }
-        }
-        else if (sender instanceof TileEntityCommandBlock)
-        {
-            if (!enableCmdBlock)
-            {
-                return false;
-            }
-            else
-            {
-                return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
-            }
-        }
-        else
-        {
-            if (!enableConsole)
-            {
-                return false;
-            }
-            else
-            {
-                return canConsoleUseCommand();
-            }
-        }
+        return canConsoleUseCommand();
     }
 
-    public abstract String getCommandName();
+    /**
+     * Can the command be used by a player?
+     */
+    public boolean usableByPlayer()
+    {
+        return true;
+    }
+
+	/**
+	 * Is the command allowed to be used by command-blocks?
+	 */
+	public boolean isEnabledForCmdBlock()
+	{
+		return enabledForCmdBlock;
+	}
+
+	/**
+	 * Is the command allowed to be used by console?
+	 */
+	public boolean isEnabledForConsole()
+	{
+		return enabledForConsole;
+	}
+
+	/**
+	 * Is the command allowed to be used by a player?
+	 */
+	public boolean isEnabledForPlayer()
+	{
+		return enabledForPlayer;
+	}
+
+	/**
+	 * Is the command allowed to be used by command-blocks?
+	 */
+	public void setEnabledForCmdBlock(boolean enabledForCmdBlock)
+	{
+		this.enabledForCmdBlock = enabledForCmdBlock;
+	}
+
+	/**
+	 * Is the command allowed to be used by console?
+	 */
+	public void setEnabledForConsole(boolean enabledForConsole)
+	{
+		this.enabledForConsole = enabledForConsole;
+	}
+
+	/**
+	 * Is the command allowed to be used by a player?
+	 */
+	public void setEnabledForPlayer(boolean enabledForPlayer)
+	{
+		this.enabledForPlayer = enabledForPlayer;
+	}
+
 }

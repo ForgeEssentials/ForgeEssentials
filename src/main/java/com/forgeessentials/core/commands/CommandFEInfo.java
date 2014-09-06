@@ -31,7 +31,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.core.info";
     }

@@ -100,7 +100,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.core.pos.wand";
     }

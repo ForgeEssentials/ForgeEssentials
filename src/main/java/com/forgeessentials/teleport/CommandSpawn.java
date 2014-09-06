@@ -29,7 +29,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
         Zone zone = APIRegistry.zones.getWorldZone(sender.worldObj);
         if (args.length >= 1)
         {
-            if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+            if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
             {
                 OutputHandler.chatError(sender,
                         "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -116,7 +116,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport.spawn";
     }

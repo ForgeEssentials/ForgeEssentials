@@ -281,7 +281,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.perm";
     }
@@ -289,7 +289,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-        PermResult result = APIRegistry.perms.checkPermResult(new PermQueryPlayer(player, getCommandPerm(), true));
+        PermResult result = APIRegistry.perms.checkPermResult(new PermQueryPlayer(player, getPermissionNode(), true));
         return result.equals(PermResult.DENY) ? false : true;
     }
 

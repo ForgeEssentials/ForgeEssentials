@@ -8,6 +8,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -29,7 +30,7 @@ public class CommandRules extends FEcmdModuleCommands {
     public static File rulesFile = new File(ForgeEssentials.FEDIR, "rules.txt");
 
     @Override
-    public void doConfig(Configuration config, String category)
+    public void loadConfig(Configuration config, String category)
     {
         rulesFile = new File(ForgeEssentials.FEDIR, config.get(category, "filename", "rules.txt").getString());
         rules = loadRules();
@@ -70,10 +71,10 @@ public class CommandRules extends FEcmdModuleCommands {
 
                 OutputHandler.felog.info("Completed generating rules file.");
             }
-            catch (Exception e)
+            catch (IOException e)
             {
                 OutputHandler.felog.severe("Error writing the Rules file: " + rulesFile.getName());
-            }
+			}
         }
         else
         {
@@ -113,7 +114,7 @@ public class CommandRules extends FEcmdModuleCommands {
 
                 OutputHandler.felog.info("Completed reading rules file. " + counter + " rules read.");
             }
-            catch (Exception e)
+            catch (IOException e)
             {
                 OutputHandler.felog.severe("Error writing the Rules file: " + rulesFile.getName());
             }
@@ -153,7 +154,7 @@ public class CommandRules extends FEcmdModuleCommands {
 
             OutputHandler.felog.info("Completed saving rules file.");
         }
-        catch (Exception e)
+        catch (IOException e)
         {
             OutputHandler.felog.severe("Error writing the Rules file: " + rulesFile.getName());
         }
@@ -208,7 +209,7 @@ public class CommandRules extends FEcmdModuleCommands {
             if (args[0].equalsIgnoreCase("help"))
             {
                 OutputHandler.chatConfirmation(sender, " - /rules [#]");
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
+                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".edit")))
                 {
                     OutputHandler.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
                     OutputHandler.chatConfirmation(sender, " - /rules add &lt;newRule>");
@@ -222,7 +223,7 @@ public class CommandRules extends FEcmdModuleCommands {
             return;
         }
 
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
+        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".edit")))
         {
             OutputHandler.chatError(sender,
                     "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -383,7 +384,7 @@ public class CommandRules extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".edit", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".edit", RegGroup.OWNERS);
     }
 
     @Override

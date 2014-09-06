@@ -51,7 +51,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 2)
         {
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
             {
                 EntityPlayerMP player = getPlayer(sender, args[0]);
                 if (args[1].equalsIgnoreCase("del"))
@@ -115,7 +115,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.chat." + getCommandName();
     }

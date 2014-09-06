@@ -117,7 +117,7 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
             // Display permissions node (If applicable)
             if (cmd instanceof ForgeEssentialsCommandBase)// Was: FEcmdModuleCommands
             {
-                text += EnumChatFormatting.DARK_RED + ((ForgeEssentialsCommandBase) cmd).getCommandPerm() + "\n\n";
+                text += EnumChatFormatting.DARK_RED + ((ForgeEssentialsCommandBase) cmd).getPermissionNode() + "\n\n";
             }
 
             // Display usage

@@ -32,7 +32,9 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     {
         if (args.length == 3)
         {
-            int x = parseInt(sender, args[0], sender.posX), y = parseInt(sender, args[1], sender.posY), z = parseInt(sender, args[2], sender.posZ);
+            double x = parseDouble(sender, args[0], sender.posX);
+            double y = parseDouble(sender, args[1], sender.posY);
+            double z = parseDouble(sender, args[2], sender.posZ);
             EntityPlayerMP player = (EntityPlayerMP) sender;
             PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
             playerInfo.back = new WarpPoint(player);
@@ -52,7 +54,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport.tppos";
     }

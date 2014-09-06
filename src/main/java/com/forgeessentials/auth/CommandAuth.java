@@ -46,7 +46,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             throw new WrongUsageException("command.auth.usage");
         }
 
-        boolean hasAdmin = APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin"));
+        boolean hasAdmin = APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".admin"));
 
         // one arg? must be help.
         if (args.length == 1)
@@ -410,7 +410,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.auth";
     }

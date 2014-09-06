@@ -88,7 +88,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         {
             sender.addPotionEffect(eff);
         }
-        else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+        else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
         {
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 
@@ -161,7 +161,7 @@ public class CommandPotion extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".others", RegGroup.OWNERS);
     }
 
     @Override

@@ -57,42 +57,26 @@ public class CommandRegistrar {
     public static void commandConfigs(Configuration config)
     {
         config.load();
+        
+		// Add categories
+		config.addCustomCategoryComment("commands", "All FE commands will have a config space here.");
+		config.addCustomCategoryComment("CommandBlock", "Toggle server wide command block usage here.");
+		config.addCustomCategoryComment("Player", "Toggle server wide player usage here.");
+		config.addCustomCategoryComment("Console", "Toggle console usage here.");
 
-        try
-        {
-            config.addCustomCategoryComment("commands", "All FE commands will have a config space here.");
-            config.addCustomCategoryComment("CommandBlock", "Toggle server wide command block usage here.");
-            config.addCustomCategoryComment("Player", "Toggle server wide player usage here.");
-            config.addCustomCategoryComment("Console", "Toggle console usage here.");
+		for (FEcmdModuleCommands fecmd : cmdList) {
+			if (fecmd.usableByCmdBlock())
+				fecmd.setEnabledForCmdBlock(config.get("CommandBlock", fecmd.getCommandName(), fecmd.isEnabledForCmdBlock()).getBoolean());
+			if (fecmd.usableByPlayer())
+				fecmd.setEnabledForCmdBlock(config.get("Player", fecmd.getCommandName(), fecmd.isEnabledForPlayer()).getBoolean());
+			if (fecmd.canConsoleUseCommand())
+				fecmd.setEnabledForCmdBlock(config.get("Console", fecmd.getCommandName(), fecmd.isEnabledForConsole()).getBoolean());
 
-            for (FEcmdModuleCommands fecmd : cmdList)
-            {
-                if (fecmd.usefullCmdBlock())
-                {
-                    config.get("CommandBlock", fecmd.getCommandName(), fecmd.enableCmdBlock);
-                }
-                if (fecmd.usefullPlayer())
-                {
-                    config.get("Player", fecmd.getCommandName(), fecmd.enablePlayer);
-                }
-                if (fecmd.canConsoleUseCommand())
-                {
-                    config.get("Console", fecmd.getCommandName(), fecmd.enableConsole);
-                }
+			String category = "commands." + fecmd.getCommandName();
+			config.addCustomCategoryComment(category, fecmd.getPermissionNode());
 
-                String category = "commands." + fecmd.getCommandName();
-                config.addCustomCategoryComment(category, fecmd.getCommandPerm());
-                for (String alias : config.get(category, "aliases", fecmd.getDefaultAliases()).getStringList())
-                {
-                    fecmd.aliasList.add(alias);
-                }
-                fecmd.doConfig(config, category);
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+			fecmd.loadConfig(config, category);
+		}
 
         config.save();
     }
@@ -109,9 +93,9 @@ public class CommandRegistrar {
     {
         for (FEcmdModuleCommands cmd : cmdList)
         {
-            if (cmd.getCommandPerm() != null && cmd.getReggroup() != null)
+            if (cmd.getPermissionNode() != null && cmd.getReggroup() != null)
             {
-                APIRegistry.permReg.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
+                APIRegistry.permReg.registerPermissionLevel(cmd.getPermissionNode(), cmd.getReggroup());
                 cmd.registerExtraPermissions();
             }
         }

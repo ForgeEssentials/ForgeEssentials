@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
-    public final String PERMSETLIMIT = getCommandPerm() + ".setLimit";
-    public final String PERMPROP = getCommandPerm() + ".max";
+    public final String PERMSETLIMIT = getPermissionNode() + ".setLimit";
+    public final String PERMPROP = getPermissionNode() + ".max";
 
     @Override
     public String getCommandName()
@@ -200,7 +200,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport." + getCommandName();
     }

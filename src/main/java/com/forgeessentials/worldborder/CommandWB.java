@@ -226,7 +226,7 @@ public class CommandWB extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.worldborder.admin";
     }
