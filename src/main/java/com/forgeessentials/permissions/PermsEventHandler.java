@@ -1,24 +1,18 @@
 package com.forgeessentials.permissions;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.query.PropQueryPlayerZone;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-
-import java.util.Arrays;
-import java.util.List;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.server.CommandHandlerForge;
 
 public class PermsEventHandler {
 
-    protected PermsEventHandler()
-    {
-
-    }
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onZoneChange(PlayerChangedZone event)
     {
@@ -39,36 +33,13 @@ public class PermsEventHandler {
 
     }
 
-    private static String[] defgroups;
-
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void assignUserDefaults(PlayerEvent.PlayerLoggedInEvent e)
+    public void checkCommandPerm(CommandEvent e)
     {
-        if (SqlHelper.doesPlayerExist(e.player.getPersistentID().toString())){ return;}
-
-        for (String group : defgroups)
-        {
-            Group g = APIRegistry.getAsFEGroup(group);
-            APIRegistry.perms.addPlayerToGroup(group, e.player.getPersistentID(), g.zoneName);
+        if (!(e.sender instanceof EntityPlayer)) {
+            return;
+        } else if (!CommandHandlerForge.canUse(e.command, e.sender)) {
+            e.setCanceled(true);
         }
-
-    }
-
-    public static void addDefaultGroup(String groupName)
-    {
-        final int n = defgroups.length;
-        String[] defgroups1 = Arrays.copyOf(defgroups, n + 1);
-        defgroups1[n] = groupName;
-        defgroups = defgroups1;
-    }
-
-    public static void setDefaultGroup(String groupName)
-    {
-        defgroups = new String[1];
-        defgroups[0] = groupName;
-    }
-    public static List<String> getDefaultGroups()
-    {
-        return Arrays.asList(defgroups);
     }
 }
