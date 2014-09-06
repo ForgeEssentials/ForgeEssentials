@@ -1,8 +1,6 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.*;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.config.Configuration;
 
 import java.util.ArrayList;
@@ -95,25 +93,5 @@ public class CommandRegistrar {
         }
 
         config.save();
-    }
-
-    public static void load(FMLServerStartingEvent e)
-    {
-        for (FEcmdModuleCommands cmd : cmdList)
-        {
-            e.registerServerCommand(cmd);
-        }
-    }
-
-    public static void registerPermissions()
-    {
-        for (FEcmdModuleCommands cmd : cmdList)
-        {
-            if (cmd.getCommandPerm() != null && cmd.getReggroup() != null)
-            {
-                APIRegistry.permReg.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
-                cmd.registerExtraPermissions();
-            }
-        }
     }
 }
