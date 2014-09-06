@@ -28,6 +28,10 @@ public class PermissionsHelper implements IPermissionsHelper{
 
     public static PermissionsHelper INSTANCE;
 
+    private final UUID ENTRY_PLAYER_NAME = UUID.fromString("2ecbdcc0-0e4b-4a0d-92a1-221dda46b784");
+    private String entryPlayerPrefix = "";
+    private String entryPlayerSuffix = "";
+
     public PermissionsHelper()
     {
         INSTANCE = this;
@@ -512,5 +516,30 @@ public class PermissionsHelper implements IPermissionsHelper{
     public Group getDEFAULT()
     {
         return DEFAULT;
+    }
+
+    @Override public String getEPPrefix()
+    {
+        return entryPlayerPrefix;
+    }
+
+    @Override public void setEPPrefix(String ePPrefix)
+    {
+        entryPlayerPrefix = ePPrefix;
+    }
+
+    @Override public String getEPSuffix()
+    {
+        return entryPlayerSuffix;
+    }
+
+    @Override public void setEPSuffix(String ePSuffix)
+    {
+        entryPlayerSuffix = ePSuffix;
+    }
+
+    @Override public UUID getEntryPlayer()
+    {
+        return ENTRY_PLAYER_NAME;
     }
 }

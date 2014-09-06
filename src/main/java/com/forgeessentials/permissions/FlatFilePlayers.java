@@ -1,5 +1,6 @@
 package com.forgeessentials.permissions;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.PlayerInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.server.MinecraftServer;
@@ -30,7 +31,12 @@ public class FlatFilePlayers {
             {
                 continue;
             }
-
+            else if (cat.equalsIgnoreCase(APIRegistry.perms.getEntryPlayer().toString()))
+            {
+                APIRegistry.perms.setEPPrefix(config.get(cat, "prefix", " ").getString());
+                APIRegistry.perms.setEPSuffix(config.get(cat, "suffix", " ").getString());
+                continue;
+            }
             info = PlayerInfo.getPlayerInfo(UUID.fromString(cat));
 
             if (info != null)
@@ -66,6 +72,11 @@ public class FlatFilePlayers {
         PlayerInfo info;
         for (String name : players)
         {
+            if (name.equalsIgnoreCase(APIRegistry.perms.getEntryPlayer().toString()))
+            {
+                config.get(name, "prefix", APIRegistry.perms.getEPPrefix());
+                config.get(name, "suffix", APIRegistry.perms.getEPSuffix());
+            }
 
             info = PlayerInfo.getPlayerInfo(UUID.fromString(name));
             config.get(name, "prefix", info.prefix == null ? "" : info.prefix);

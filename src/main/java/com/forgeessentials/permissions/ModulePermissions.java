@@ -135,14 +135,4 @@ public class ModulePermissions {
 
         autoPromoteManager.stop();
     }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void checkCommandPerm(CommandEvent e)
-    {
-		if (!(e.sender instanceof EntityPlayer)) {
-			return;
-		} else if (!CommandHandlerForge.canUse(e.command, e.sender)) {
-			e.setCanceled(true);
-		}
-    }
 }

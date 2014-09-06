@@ -10,7 +10,6 @@ import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -44,10 +43,13 @@ public class ModuleCommands {
     @FEModule.ServerInit
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        CommandRegistrar.load((FMLServerStartingEvent) e.getFMLEvent());
+        for (FEcmdModuleCommands cmd : CommandRegistrar.cmdList)
+        {
+            e.registerServerCommand(cmd);
+            cmd.registerExtraPermissions();
+        }
         ShortcutCommands.load();
         CommandDataManager.load();
-        CommandRegistrar.registerPermissions();
         APIRegistry.permReg.registerPermissionLevel("fe.commands._ALL_", RegGroup.OWNERS);
     }
 
