@@ -2567,7 +2567,7 @@ public class SqlHelper {
 
             playerTable = new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_PLAYER).append("(")
                     .append(COLUMN_PLAYER_PLAYERID).append(" INTEGER AUTO_INCREMENT, ")
-                    .append(COLUMN_PLAYER_USERNAME).append(" VARCHAR(20) NOT NULL UNIQUE, ")
+                    .append(COLUMN_PLAYER_USERNAME).append(" VARCHAR(42) NOT NULL UNIQUE, ")
                     .append("PRIMARY KEY (").append(COLUMN_PLAYER_PLAYERID).append(") ")
                     .append(")").toString();
 
