@@ -46,6 +46,8 @@ FE Team Members:
 
 <a href="https://github.com/helinus">Helinus</a>
 
+<a href="https://github.com/Malkierian">Malkierian</a>
+
 Retired:
 
 <a href="https://github.com/AbrarSyed">AbrarSyed</a>  (inactive)
@@ -59,8 +61,6 @@ Retired:
 <a href="https://github.com/dries007">Dries007</a> (inactive)
 
 <a href="https://github.com/Weneg">Weneg</a> (inactive)
-
-<a href="https://github.com/Malkierian">Malkierian</a>  (inactive)
 
 <a href="https://github.com/Jgdovin">Jgdovin</a>  (inactive)
 
