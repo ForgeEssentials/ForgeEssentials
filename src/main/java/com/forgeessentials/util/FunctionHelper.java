@@ -679,7 +679,9 @@ public final class FunctionHelper {
             name = getGroupRankString(player.getDisplayName()) + ":" + name;
             sb.append(name + ", ");
         }
-        return sb.toString().substring(0, sb.toString().lastIndexOf(","));
+        if (sb.length() == 0)
+        	return "";
+        return sb.toString().substring(0, sb.length() - 2);
     }
 
     public static void saveBookToFile(ItemStack book, File savefolder)

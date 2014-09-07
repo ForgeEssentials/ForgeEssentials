@@ -47,21 +47,14 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
         }
         else if (args[0].equalsIgnoreCase("debug"))
         {
-            try
+            if (FEeventAdder.addedPlace)
             {
-                if (FEeventAdder.addedPlace)
-                {
-                    ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was added.");
-                }
-                else
-                {
-                    ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was NOT added. Some functions might not work!");
-                    ChatUtils.sendMessage(sender, "The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemStack.class.getName() + "'.");
-                }
+                ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was added.");
             }
-            catch (Exception ex)
+            else
             {
-                ChatUtils.sendMessage(sender, "Error finding custom event 'PlayerBlockPlace'");
+                ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was NOT added. Some functions might not work!");
+                ChatUtils.sendMessage(sender, "The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemStack.class.getName() + "'.");
             }
             ChatUtils.sendMessage(sender, "This output is also in your FML logs.");
         }
@@ -83,7 +76,6 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     @Override
     public RegGroup getReggroup()
     {
-
         return RegGroup.MEMBERS;
     }
 

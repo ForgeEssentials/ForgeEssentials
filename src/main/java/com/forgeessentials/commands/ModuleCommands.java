@@ -10,6 +10,8 @@ import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -30,6 +32,7 @@ public class ModuleCommands {
     {
         MobTypeLoader.preLoad(e);
         MinecraftForge.EVENT_BUS.register(eventHandler);
+        FMLCommonHandler.instance().bus().register(eventHandler);
     }
 
     @FEModule.Init
