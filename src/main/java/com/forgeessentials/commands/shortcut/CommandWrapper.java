@@ -3,6 +3,8 @@ package com.forgeessentials.commands.shortcut;
 import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
+
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,13 +12,13 @@ import net.minecraft.server.MinecraftServer;
 
 import java.util.List;
 
-public class CommandWrapper extends ForgeEssentialsCommandBase{
-
-    public ForgeEssentialsCommandBase cmd;
-    public String cmdName;
-    public String[] args;
-    public String name;
-    public String syntax = "";
+public class CommandWrapper extends ForgeEssentialsCommandBase {
+	
+    private ForgeEssentialsCommandBase command;
+	private String cmdName;
+    private String[] args;
+    private String name;
+    private String syntax = "";
 
     public CommandWrapper(String commandName, String name, String[] args, String syntax)
     {
@@ -25,6 +27,23 @@ public class CommandWrapper extends ForgeEssentialsCommandBase{
         this.args = args;
         this.syntax = (syntax.startsWith("\"") && syntax.endsWith("\"") ? syntax.substring(1, syntax.length() - 1) : syntax);
     }
+    
+    public ForgeEssentialsCommandBase getCommand()
+	{
+        if (command == null)
+        {
+            Object cmd = ((CommandHandler) MinecraftServer.getServer().getCommandManager()).getCommands().get(cmdName);
+            if (cmd instanceof ForgeEssentialsCommandBase)
+            {
+                command = (ForgeEssentialsCommandBase) cmd;
+            }
+            else
+            {
+            	throw new CommandException("Error in this shortcut (" + this.name + "). The command sepcified in the config is no FE command.");
+            }
+        }
+		return command;
+	}
 
     @Override
     public String getCommandName()
@@ -32,34 +51,36 @@ public class CommandWrapper extends ForgeEssentialsCommandBase{
         return this.name;
     }
 
-    /*
-     * We override this so we can parse our own commands
-     */
-    @Override
-    public void processCommand(ICommandSender var1, String[] var2)
-    {
-        check();
+	public String getSyntax()
+	{
+		return syntax;
+	}
 
-        try
-        {
-            super.processCommand(var1, ShortcutCommands.parseArgs(var1, this.args, var2));
-        }
-        catch (Exception e)
-        {
-            OutputHandler.chatError(var1, this.getCommandUsage(var1));
-        }
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/" + this.getCommandName() + " " + this.getSyntax();
     }
+
+	/*
+	 * We override this so we can parse our own commands
+	 */
+	@Override
+	public void processCommand(ICommandSender sender, String[] args)
+	{
+		super.processCommand(sender, ShortcutCommands.parseArgs(sender, this.args, args));
+	}
 
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        cmd.processCommandPlayer(sender, args);
+    	getCommand().processCommandPlayer(sender, args);
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        cmd.processCommandConsole(sender, args);
+    	getCommand().processCommandConsole(sender, args);
     }
 
     @Override
@@ -71,42 +92,18 @@ public class CommandWrapper extends ForgeEssentialsCommandBase{
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        return cmd.addTabCompletionOptions(sender, args);
+        return getCommand().addTabCompletionOptions(sender, args);
     }
 
     @Override
     public String getPermissionNode()
     {
-        check();
-        return cmd.getPermissionNode();
-    }
-
-    private void check()
-    {
-        if (cmd == null)
-        {
-            Object fakeCmd = ((CommandHandler) MinecraftServer.getServer().getCommandManager()).getCommands().get(cmdName);
-            if (fakeCmd instanceof ForgeEssentialsCommandBase)
-            {
-                cmd = (ForgeEssentialsCommandBase) fakeCmd;
-            }
-            else
-            {
-                OutputHandler.felog.severe("Error in this shortcut (" + this.name + "). The command specified in the config is no FE command.");
-                return;
-            }
-        }
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/" + this.getCommandName() + " " + this.syntax;
+        return getCommand().getPermissionNode();
     }
 
     @Override
     public RegGroup getReggroup()
     {
-        return cmd.getReggroup();
+        return getCommand().getReggroup();
     }
 }
