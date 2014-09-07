@@ -3,11 +3,20 @@ package com.forgeessentials.core.preloader.classloading;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FEClassLoader {
+
+    private static final FilenameFilter jarFilter = new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.endsWith(".jar");
+        }
+    };
+
     public void runClassLoad(LaunchClassLoader classloader, File root)
     {
         File lib = new File(root, "lib/");
@@ -15,7 +24,7 @@ public class FEClassLoader {
         {
             lib.mkdirs();
         }
-        for (File f : lib.listFiles())
+        for (File f : lib.listFiles(jarFilter))
         {
             if (f != null)
             {
@@ -36,7 +45,7 @@ public class FEClassLoader {
         {
             module.mkdirs();
         }
-        for (File f : module.listFiles())
+        for (File f : module.listFiles(jarFilter))
         {
             if (f != null)
             {
