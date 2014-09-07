@@ -4,6 +4,7 @@ import com.forgeessentials.api.json.JSONException;
 import com.forgeessentials.api.json.JSONObject;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.core.preloader.FEModContainer;
 import net.minecraft.server.MinecraftServer;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
@@ -38,7 +39,7 @@ public class CompatMCStats implements IServerStats {
     {
         try
         {
-            metrics = new Metrics("ForgeEssentials", ForgeEssentials.version);
+            metrics = new Metrics("ForgeEssentials", FEModContainer.version);
 
             for (IServerStats obj : handlers)
             {

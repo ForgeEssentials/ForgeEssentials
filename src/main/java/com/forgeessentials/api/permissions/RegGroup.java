@@ -1,8 +1,8 @@
 package com.forgeessentials.api.permissions;
 
 import com.forgeessentials.api.APIRegistry;
+import minecraftforge.permissions.PermissionsManager;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permissions.api.RegisteredPermValue;
 
 /**
  * RegistrationGroups
@@ -15,7 +15,7 @@ public enum RegGroup {
      * zone. All players are part of this group. This group is guaranteed
      * existence
      */
-    ZONE("_ZONE_", " ", " ", null, 0, RegisteredPermValue.TRUE)
+    ZONE("_ZONE_", " ", " ", null, 0, PermissionsManager.RegisteredPermValue.TRUE)
             {
                 @Override
                 public Group getGroup()
@@ -29,30 +29,30 @@ public enum RegGroup {
      * first log in. The players in this group are usually denied commands and
      * breaking blocks before they are promoted to members.
      */
-    GUESTS("Guests", EnumChatFormatting.GRAY + "[GUEST]", " ", null, 0, RegisteredPermValue.TRUE),
+    GUESTS("Guests", EnumChatFormatting.GRAY + "[GUEST]", " ", null, 0, PermissionsManager.RegisteredPermValue.TRUE),
 
     /**
      * This is usually for players that are actually members of the server. They
      * will most likely be able to use basic commands as well as break blocks
      * and stuff in the world.
      */
-    MEMBERS("Members", " ", " ", null, 0, RegisteredPermValue.NONOP),
+    MEMBERS("Members", " ", " ", null, 0, PermissionsManager.RegisteredPermValue.TRUE),
 
     /**
      * This is usually for players that are admins or owners of a given zone
      * They will most likely have WorldEdit access, as well as the power to edit
      * permissions in the zone.
      */
-    ZONE_ADMINS("ZoneAdmins", EnumChatFormatting.RED + "[ZoneAdmin]", " ", null, 0, RegisteredPermValue.OP),
+    ZONE_ADMINS("ZoneAdmins", EnumChatFormatting.RED + "[ZoneAdmin]", " ", null, 0, PermissionsManager.RegisteredPermValue.OP),
 
     /**
      * This is automatically assigned to the server owner when they make a world
      * available to the LAN. This is also best kept for players that have direct
      * access to the server's console and filesystem.
      */
-    OWNERS("Owners", EnumChatFormatting.RED + "[OWNER]", " ", null, 999, RegisteredPermValue.OP);
+    OWNERS("Owners", EnumChatFormatting.RED + "[OWNER]", " ", null, 999, PermissionsManager.RegisteredPermValue.OP);
 
-    private RegGroup(String name, String parent, String prefix, String suffix, int priority, RegisteredPermValue equivalent)
+    private RegGroup(String name, String parent, String prefix, String suffix, int priority, PermissionsManager.RegisteredPermValue equivalent)
     {
         this.name = name;
         this.equivalent = equivalent;
@@ -70,14 +70,14 @@ public enum RegGroup {
         return group;
     }
 
-    public RegisteredPermValue getEquivalent()
+    public PermissionsManager.RegisteredPermValue getEquivalent()
     {
         return equivalent;
     }
 
     private Group group;
     private String name;
-    private RegisteredPermValue equivalent;
+    private PermissionsManager.RegisteredPermValue equivalent;
 
     public static final String LADDER = "mainLadder";
 

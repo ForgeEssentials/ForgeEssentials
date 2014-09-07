@@ -27,12 +27,8 @@ import com.forgeessentials.util.*;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.tasks.TaskRegistry;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
-import cpw.mods.fml.common.network.NetworkMod.VersionCheckHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -50,11 +46,11 @@ import java.util.List;
  */
 
 @NetworkMod(clientSideRequired = false, serverSideRequired = false,
-        serverPacketHandlerSpec = @SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = FEServerPacketHandler.class))
+        serverPacketHandlerSpec = @NetworkMod.SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = FEServerPacketHandler.class))
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version)
 public class ForgeEssentials {
 
-    @Instance(value = "ForgeEssentials")
+    @Mod.Instance(value = "ForgeEssentials")
     public static ForgeEssentials instance;
 
     public static CoreConfig config;
@@ -63,8 +59,6 @@ public class ForgeEssentials {
     public static String modlistLocation;
     public static File FEDIR;
     public static boolean mcstats;
-    public static String version;
-    public static boolean sanitycheck;
     public ModuleLauncher mdlaunch;
     public BannedItems bannedItems;
     private CompatMCStats mcstatscompat;
@@ -75,7 +69,7 @@ public class ForgeEssentials {
         tasks = new TaskRegistry();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
@@ -88,8 +82,6 @@ public class ForgeEssentials {
 
         // FE MUST BE FIRST!!
         GameRegistry.registerPlayerTracker(new PlayerTracker());
-
-        version = e.getModMetadata().version;
 
         // setup fedir stuff
         config = new CoreConfig();
@@ -132,7 +124,7 @@ public class ForgeEssentials {
         FEServerPacketHandler.init();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void load(FMLInitializationEvent e)
     {
         // load up DataAPI
@@ -151,7 +143,7 @@ public class ForgeEssentials {
         mcstatscompat.load();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void postLoad(FMLPostInitializationEvent e)
     {
         UnfriendlyItemList.modStep();
@@ -163,7 +155,7 @@ public class ForgeEssentials {
         new FriendlyItemList();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent e)
     {
         // load up DataAPI
@@ -208,7 +200,7 @@ public class ForgeEssentials {
                 new FEChunkLoader());
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void serverStarted(FMLServerStartedEvent e)
     {
         CommandSetChecker.remove();
@@ -217,17 +209,11 @@ public class ForgeEssentials {
         mdlaunch.serverStarted(e);
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void serverStopping(FMLServerStoppingEvent e)
     {
         mdlaunch.serverStopping(e);
         tasks.onServerStop();
-    }
-
-    @VersionCheckHandler
-    public boolean versionCheck(String version)
-    {
-        return true;
     }
 
 }
