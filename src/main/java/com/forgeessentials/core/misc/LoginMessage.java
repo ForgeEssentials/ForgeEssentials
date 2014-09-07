@@ -6,6 +6,7 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,14 +15,17 @@ import net.minecraft.server.MinecraftServer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
 
 public class LoginMessage {
-    private static ArrayList<String> messageList = new ArrayList<String>();
+    private static List<String> messageList = new ArrayList<String>();
     private static MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
     public static void loadFile()
@@ -47,10 +51,9 @@ public class LoginMessage {
                 br.close();
                 fr.close();
             }
-            catch (Exception e)
+            catch (IOException e)
             {
                 OutputHandler.felog.info("Error reading the MOTD file.");
-                e.printStackTrace();
             }
         }
         else
@@ -88,6 +91,8 @@ public class LoginMessage {
                 pw.println("Server time: %time%. Uptime: %uptime%");
 
                 pw.close();
+                
+                loadFile();
             }
             catch (Exception e)
             {
@@ -98,6 +103,11 @@ public class LoginMessage {
         }
     }
 
+    public static void setMOTD(Collection<String> messages) {
+    	messageList.clear();
+    	messageList.addAll(messages);
+    }
+    
     public static void sendLoginMessage(ICommandSender sender)
     {
         for (int id = 0; id < messageList.size(); id++)
@@ -127,14 +137,12 @@ public class LoginMessage {
      */
     private static String Format(String line, String playerName)
     {
-        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(playerName);
         Calendar cal = Calendar.getInstance();
 
         // int WalletHandler = WalletHandler.getWalletHandler(player); //needed to return WalletHandler info
         line = FunctionHelper.formatColors(line); // colors...
         line = FunctionHelper.format(line);
 
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.getDisplayName()); // username
         line = FunctionHelper.replaceAllIgnoreCase(line, "%players%", online()); // players online
         line = FunctionHelper.replaceAllIgnoreCase(line, "%uptime%", getUptime()); // uptime
         line = FunctionHelper.replaceAllIgnoreCase(line, "%uniqueplayers%", uniqueplayers()); // unique players
@@ -154,9 +162,14 @@ public class LoginMessage {
         line = FunctionHelper.replaceAllIgnoreCase(line, "%groupPrefix%", FunctionHelper.formatColors(FunctionHelper.getGroupPrefixString(playerName)).trim());
         line = FunctionHelper.replaceAllIgnoreCase(line, "%groupSuffix%", FunctionHelper.formatColors(FunctionHelper.getGroupSuffixString(playerName)).trim());
 
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%playerPrefix%", info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim());
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%playerSuffix%", info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim());
+        // Player stuff
+        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(playerName);
+        if (player != null) {
+            line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.getDisplayName()); // username
+            PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
+            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerPrefix%", info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim());
+            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerSuffix%", info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim());
+        }
 
         return line;
     }
@@ -193,4 +206,5 @@ public class LoginMessage {
         int secsIn = (int) (rb.getUptime() / 1000);
         return FunctionHelper.parseTime(secsIn);
     }
+    
 }
