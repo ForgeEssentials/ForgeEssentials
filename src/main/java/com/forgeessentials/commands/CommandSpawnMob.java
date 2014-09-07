@@ -94,9 +94,9 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
 
                 if (args.length >= 5)
                 {
-                    x = 0.5 + parseInt(sender, args[2], sender.posX);
-                    y = 0.5 + parseInt(sender, args[3], sender.posY);
-                    z = 0.5 + parseInt(sender, args[4], sender.posZ);
+                    x = 0.5 + parseDouble(sender, args[2], sender.posX);
+                    y = 0.5 + parseDouble(sender, args[3], sender.posY);
+                    z = 0.5 + parseDouble(sender, args[4], sender.posZ);
                 }
             }
             for (int i = 0; i < amount; i++)

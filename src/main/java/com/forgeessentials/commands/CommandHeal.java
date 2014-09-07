@@ -28,7 +28,7 @@ public class CommandHeal extends FEcmdModuleCommands {
         {
             heal(sender);
         }
-        else if (args.length == 1 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+        else if (args.length == 1 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
         {
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
             if (player != null)
@@ -84,7 +84,7 @@ public class CommandHeal extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".others", RegGroup.OWNERS);
     }
 
     @Override

@@ -120,7 +120,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return null;
     }

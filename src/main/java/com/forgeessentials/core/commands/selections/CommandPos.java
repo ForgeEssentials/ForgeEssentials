@@ -107,7 +107,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         z = mop.blockZ;
 
         Point point = new Point(x, y, z);
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, getCommandPerm(), point)))
+        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, getPermissionNode(), point)))
         {
             OutputHandler.chatError(player, "Insufficient permissions.");
             return;
@@ -127,7 +127,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.core.pos.pos";
     }

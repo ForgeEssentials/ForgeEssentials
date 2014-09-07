@@ -42,7 +42,7 @@ public class CommandKit extends FEcmdModuleCommands {
             String msg = "";
             for (Kit kit : CommandDataManager.kits.values())
             {
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + kit.getName())))
+                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + "." + kit.getName())))
                 {
                     msg = kit.getName() + ", " + msg;
                 }
@@ -57,7 +57,7 @@ public class CommandKit extends FEcmdModuleCommands {
         {
             if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
             {
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + "." + args[0].toLowerCase())))
                 {
                     CommandDataManager.kits.get(args[0].toLowerCase()).giveKit(sender);
                 }
@@ -76,7 +76,7 @@ public class CommandKit extends FEcmdModuleCommands {
 		/*
 		 * Make kit
 		 */
-        if (args[1].equalsIgnoreCase("set") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+        if (args[1].equalsIgnoreCase("set") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".admin")))
         {
             if (args.length == 3)
             {
@@ -97,7 +97,7 @@ public class CommandKit extends FEcmdModuleCommands {
 		/*
 		 * Delete kit
 		 */
-        if (args[1].equalsIgnoreCase("del") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+        if (args[1].equalsIgnoreCase("del") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".admin")))
         {
             if (args.length == 2)
             {
@@ -129,7 +129,7 @@ public class CommandKit extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".admin", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".admin", RegGroup.OWNERS);
         APIRegistry.permReg.registerPermissionLevel(CommandsEventHandler.BYPASS_KIT_COOLDOWN, RegGroup.OWNERS);
     }
 

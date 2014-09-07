@@ -41,7 +41,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
                 TeleportCenter.addToTpQue(home, player);
             }
         }
-        else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".set")))
+        else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".set")))
         {
             if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
             {
@@ -53,7 +53,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport." + getCommandName();
     }

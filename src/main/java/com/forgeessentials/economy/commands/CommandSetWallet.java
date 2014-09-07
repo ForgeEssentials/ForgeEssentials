@@ -50,7 +50,7 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.economy." + getCommandName();
     }

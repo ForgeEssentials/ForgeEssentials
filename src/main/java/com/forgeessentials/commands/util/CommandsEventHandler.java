@@ -9,12 +9,14 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -116,15 +118,15 @@ public class CommandsEventHandler {
                 {
                     if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, "fe.commands.jump")))
                     {
-                        try
-                        {
-                            MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, false);
-
-                            ((EntityPlayerMP) e.entityPlayer).playerNetServerHandler
-                                    .setPlayerLocation(mo.blockX, mo.blockY, mo.blockZ, e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw);
-                        }
-                        catch (Exception ex)
-                        {
+                        MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, false);
+                        if (mop != null) {
+                        	int x = mop.blockX;
+                        	int y = mop.blockY;
+                        	int z = mop.blockZ;
+                			while (y < e.entityPlayer.worldObj.getHeight() + 2 && 
+                					(!e.entityPlayer.worldObj.isAirBlock(x, y, z) || !e.entityPlayer.worldObj.isAirBlock(x, y + 1, z)))
+                				y++;
+                        	((EntityPlayerMP) e.entityPlayer).setPositionAndUpdate(x + 0.5, y, z + 0.5);
                         }
                     }
                 }

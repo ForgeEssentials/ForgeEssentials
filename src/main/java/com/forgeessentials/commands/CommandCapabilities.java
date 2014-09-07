@@ -75,7 +75,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         {
             if (sender instanceof EntityPlayer)
             {
-                if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
+                if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getPermissionNode() + ".others")))
                 {
                     OutputHandler.chatError(sender, "You don't have permissions for that.");
                     return;
@@ -115,7 +115,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         {
             if (sender instanceof EntityPlayer)
             {
-                if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
+                if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getPermissionNode() + ".others")))
                 {
                     OutputHandler.chatError(sender, "You don't have permissions for that.");
                     return;
@@ -167,7 +167,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".others", RegGroup.OWNERS);
     }
 
     @Override

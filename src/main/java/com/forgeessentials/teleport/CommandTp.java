@@ -52,7 +52,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
                 OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
-        else if (args.length == 2 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+        else if (args.length == 2 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
         {
 
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
@@ -175,7 +175,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport.tp";
     }

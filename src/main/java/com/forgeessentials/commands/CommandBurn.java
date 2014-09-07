@@ -31,7 +31,7 @@ public class CommandBurn extends FEcmdModuleCommands {
                 sender.setFire(15);
                 OutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+            else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
             {
                 EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
                 if (player != null)
@@ -49,17 +49,10 @@ public class CommandBurn extends FEcmdModuleCommands {
         {
             if (args[0].toLowerCase().equals("me"))
             {
-                try
-                {
-                    sender.setFire(Integer.parseInt(args[1]));
-                    OutputHandler.chatError(sender, "Ouch! Hot!");
-                }
-                catch (NumberFormatException e)
-                {
-                    OutputHandler.chatError(sender, String.format("%s param was not recognized as number. Please try again.", args[1]));
-                }
+                sender.setFire(parseInt(sender, args[1]));
+                OutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+            else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
             {
                 EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
                 if (player != null)
@@ -102,7 +95,7 @@ public class CommandBurn extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
+        APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".others", RegGroup.OWNERS);
     }
 
     @Override

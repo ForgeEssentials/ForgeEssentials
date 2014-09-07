@@ -101,7 +101,7 @@ public class TeleportModule {
 
         for (ForgeEssentialsCommandBase cmd : commands)
         {
-            APIRegistry.permReg.registerPermissionLevel(cmd.getCommandPerm(), cmd.getReggroup());
+            APIRegistry.permReg.registerPermissionLevel(cmd.getPermissionNode(), cmd.getReggroup());
         }
 
     }

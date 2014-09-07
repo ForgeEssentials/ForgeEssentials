@@ -20,7 +20,7 @@ public class CommandVirtualchest extends FEcmdModuleCommands {
     public static String name = "Vault 13";
 
     @Override
-    public void doConfig(Configuration config, String category)
+    public void loadConfig(Configuration config, String category)
     {
         size = config.get(category, "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").getInt(6) * 9;
         name = config.get(category, "VirtualChestName", "Vault 13", "Don't use special stuff....").getString();

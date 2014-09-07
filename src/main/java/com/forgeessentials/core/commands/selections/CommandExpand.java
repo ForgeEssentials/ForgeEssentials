@@ -212,7 +212,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.core.pos.expand";
     }

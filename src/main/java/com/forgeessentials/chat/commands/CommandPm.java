@@ -244,11 +244,11 @@ public class CommandPm extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-        return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+        return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, getPermissionNode()));
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.chat." + getCommandName();
     }

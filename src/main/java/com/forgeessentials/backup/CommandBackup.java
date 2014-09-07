@@ -75,11 +75,11 @@ public class CommandBackup extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer sender)
     {
-        return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm()));
+        return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode()));
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.backup";
     }

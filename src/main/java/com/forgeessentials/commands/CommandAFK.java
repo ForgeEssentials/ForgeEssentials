@@ -24,7 +24,7 @@ public class CommandAFK extends FEcmdModuleCommands {
     // Config
     public static int warmup = 5;
     public static String outMessage, inMessage, selfOutMessage, selfInMessage;
-    public final String NOTICEPERM = getCommandPerm() + ".notice";
+    public final String NOTICEPERM = getPermissionNode() + ".notice";
 
     public CommandAFK()
     {
@@ -32,7 +32,7 @@ public class CommandAFK extends FEcmdModuleCommands {
     }
 
     @Override
-    public void doConfig(Configuration config, String category)
+    public void loadConfig(Configuration config, String category)
     {
         warmup = config.get(category, "warmup", 5, "Time in sec. you have to stand still to activate AFK.").getInt();
         String messages = category + ".messages";

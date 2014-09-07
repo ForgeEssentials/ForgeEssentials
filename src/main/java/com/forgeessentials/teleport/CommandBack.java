@@ -77,7 +77,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport.back";
     }
