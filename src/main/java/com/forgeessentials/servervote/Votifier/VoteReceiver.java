@@ -21,6 +21,7 @@ package com.forgeessentials.servervote.Votifier;
 import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.OutputHandler;
+
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -28,10 +29,17 @@ import net.minecraftforge.common.MinecraftForge;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.*;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Like 90% copied from Votifier github: https://github.com/vexsoftware/votifier
@@ -151,10 +159,10 @@ public class VoteReceiver extends Thread {
                 // Perform the opcode check.
                 String opcode = readString(block, position);
                 position += opcode.length() + 1;
-                if (!opcode.equals("VOTE"))
                 // Something went wrong in RSA.
+                if (!opcode.equals("VOTE"))
                 {
-                    throw new Exception("Unable to decode RSA");
+                    throw new GeneralSecurityException();
                 }
 
                 // Parse the block.
@@ -184,14 +192,7 @@ public class VoteReceiver extends Thread {
                     }
                     else
                     {
-                        try
-                        {
-                            MinecraftForge.EVENT_BUS.post(vote);
-                        }
-                        catch (Exception e)
-                        {
-
-                        }
+                    	MinecraftForge.EVENT_BUS.post(vote);
                     }
                 }
 
@@ -203,18 +204,19 @@ public class VoteReceiver extends Thread {
             catch (SocketException ex)
             {
                 FMLLog.severe("Protocol error. Ignoring packet");
-                ex.printStackTrace();
             }
             catch (BadPaddingException ex)
             {
                 FMLLog.severe("Unable to decrypt vote record. Make sure that that your public key matches the one you gave the server list.");
-                ex.printStackTrace();
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 FMLLog.severe("Exception caught while receiving a vote notification");
-                ex.printStackTrace();
             }
+			catch (GeneralSecurityException e)
+			{
+                FMLLog.severe("Unable to decode vote");
+			}
         }
 
         System.gc();
