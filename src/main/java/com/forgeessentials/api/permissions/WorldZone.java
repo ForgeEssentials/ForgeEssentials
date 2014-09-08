@@ -11,21 +11,24 @@ import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class WorldZone extends Zone {
+	
+	private GlobalZone globalZone;
 
 	private int dimensionID;
 
 	private List<AreaZone> areaZones = new ArrayList<AreaZone>();
 
-	public WorldZone(int id, int dimensionID)
+	public WorldZone(GlobalZone globalZone, int dimensionID, int id)
 	{
 		super(id);
+		this.globalZone = globalZone;
 		this.dimensionID = dimensionID;
 	}
 
-	public WorldZone(int dimensionID)
-	{
-		this(APIRegistry.perms.getNextZoneID(), dimensionID);
-	}
+//	public WorldZone(GlobalZone globalZone, int dimensionID)
+//	{
+//		this(globalZone, dimensionID, APIRegistry.perms.getNextZoneID());
+//	}
 
 	@Override
 	public boolean isPlayerInZone(EntityPlayer player)
@@ -34,19 +37,19 @@ public class WorldZone extends Zone {
 	}
 	
 	@Override
-	public boolean isPointInZone(WorldPoint point)
+	public boolean isInZone(WorldPoint point)
 	{
 		return point.getDimension() == dimensionID;
 	}
 
 	@Override
-	public boolean isAreaInZone(WorldArea area)
+	public boolean isInZone(WorldArea area)
 	{
 		return area.getDimension() == dimensionID;
 	}
 
 	@Override
-	public boolean isPartOfAreaInZone(WorldArea area)
+	public boolean isPartOfZone(WorldArea area)
 	{
 		return area.getDimension() == dimensionID;
 	}
@@ -80,11 +83,6 @@ public class WorldZone extends Zone {
 		return null;
 	}
 
-	public void addAreaZone(AreaZone areaZone)
-	{
-		areaZones.add(areaZone);
-	}
-
 	public void removeAreaZone(String areaName)
 	{
 		areaZones.remove(areaName);
@@ -98,6 +96,11 @@ public class WorldZone extends Zone {
 	public void sortAreaZones()
 	{
 		throw new RuntimeException("Not yet implemented");
+	}
+
+	void addAreaZone(AreaZone areaZone)
+	{
+		areaZones.add(areaZone);
 	}
 
 }

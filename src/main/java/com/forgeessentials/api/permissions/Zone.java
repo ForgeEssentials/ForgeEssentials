@@ -39,7 +39,7 @@ public abstract class Zone {
 	 * @return
 	 */
 	public boolean isPlayerInZone(EntityPlayer player) {
-		return isPointInZone(new WorldPoint(player));
+		return isInZone(new WorldPoint(player));
 	}
 
 	/**
@@ -48,7 +48,7 @@ public abstract class Zone {
 	 * @param player
 	 * @return
 	 */
-	public abstract boolean isPointInZone(WorldPoint point);
+	public abstract boolean isInZone(WorldPoint point);
 
 	/**
 	 * Checks, whether the area is entirely contained within the zone.
@@ -56,7 +56,7 @@ public abstract class Zone {
 	 * @param player
 	 * @return
 	 */
-	public abstract boolean isAreaInZone(WorldArea point);
+	public abstract boolean isInZone(WorldArea point);
 
 	/**
 	 * Checks, whether a part of the area is in the zone.
@@ -64,7 +64,7 @@ public abstract class Zone {
 	 * @param player
 	 * @return
 	 */
-	public abstract boolean isPartOfAreaInZone(WorldArea point);
+	public abstract boolean isPartOfZone(WorldArea point);
 
 	/**
 	 * Returns the name of the zone

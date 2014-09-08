@@ -17,41 +17,42 @@ public class AreaZone extends Zone {
 
 	private int priority;
 
-	public AreaZone(int id, WorldZone worldZone, String name, AreaBase area)
+	public AreaZone(WorldZone worldZone, String name, AreaBase area, int id)
 	{
 		super(id);
 		this.worldZone = worldZone;
 		this.name = name;
 		this.area = area;
+		this.worldZone.addAreaZone(this);
 	}
 
 	public AreaZone(WorldZone worldZone, String name, AreaBase area)
 	{
-		this(APIRegistry.perms.getNextZoneID(), worldZone, name, area);
+		this(worldZone, name, area, APIRegistry.perms.getNextZoneID());
 	}
 
 	@Override
-	public boolean isPointInZone(WorldPoint point)
+	public boolean isInZone(WorldPoint point)
 	{
-		if (!worldZone.isPointInZone(point))
+		if (!worldZone.isInZone(point))
 			return false;
 		// TODO: new permissions
 		return true;
 	}
 
 	@Override
-	public boolean isAreaInZone(WorldArea area)
+	public boolean isInZone(WorldArea area)
 	{
-		if (!worldZone.isAreaInZone(area))
+		if (!worldZone.isInZone(area))
 			return false;
 		// TODO: new permissions
 		return true;
 	}
 
 	@Override
-	public boolean isPartOfAreaInZone(WorldArea area)
+	public boolean isPartOfZone(WorldArea area)
 	{
-		if (!worldZone.isPartOfAreaInZone(area))
+		if (!worldZone.isPartOfZone(area))
 			return false;
 		// TODO: new permissions
 		return true;

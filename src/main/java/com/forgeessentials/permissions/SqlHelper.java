@@ -40,7 +40,10 @@ public class SqlHelper {
 	private static final String TABLE_PERMPROP = TABLE_PREFIX + "permProps";
 
 	// TABLE_META
-	private static final String COLUMN_META_VERSION = "meta_version";
+	private static final String COLUMN_META_KEY = "meta_key";
+	private static final String COLUMN_META_VALUE = "meta_value";
+
+	private static final String META_KEY_VERSION = "VERSION";
 
 	// TABLE_PLAYER
 	private static final String COLUMN_PLAYER_ID = "player_id";
@@ -110,329 +113,344 @@ public class SqlHelper {
 		db = ModulePermissions.config.connector.getChosenConnection();
 		dbType = ModulePermissions.config.connector.getActiveType();
 
-		checkVersion();
-		prepareStatements(dbType);
-	}
-
-	private void checkVersion()
-	{
 		try
 		{
-			StringBuilder query = new StringBuilder("SELECT ").append(COLUMN_META_VERSION).append(" FROM ").append(TABLE_META);
-			Statement stmt = db.createStatement();
-			ResultSet result = stmt.executeQuery(query.toString());
-			version = result.getString(1);
-			if (version == null || !version.equals(VERSION))
+			checkVersion();
+			prepareStatements(dbType);
+		}
+		catch (SQLException e)
+		{
+			try
 			{
-				LogManager.getLogger().warn("Version of permission database incorrect. May not load permissions correctly!");
 				createTables();
+				checkVersion();
+				prepareStatements(dbType);
+			}
+			catch (Exception e2)
+			{
+				Throwables.propagate(e2);
 			}
 		}
-		catch (SQLException e)
+	}
+
+	private void checkVersion() throws SQLException
+	{
+		StringBuilder query = new StringBuilder("SELECT ").append(COLUMN_META_VALUE).append(" FROM ").append(TABLE_META).append(" WHERE ")
+				.append(COLUMN_META_KEY).append(" = '").append(META_KEY_VERSION).append("'");
+		Statement stmt = db.createStatement();
+		ResultSet result = stmt.executeQuery(query.toString());
+		if (result.next())
 		{
-			createTables();
+			version = result.getString(1);
+		}
+		else
+		{
+			version = null;
+		}
+		if (version == null || !version.equals(VERSION))
+		{
+			LogManager.getLogger().warn("Version of permission database incorrect. May not load permissions correctly!");
+			// createTables();
 		}
 	}
 
-	private void createTable(String query)
+	private void createTable(String query) throws SQLException
 	{
-		try
-		{
-			db.createStatement().executeUpdate(query);
-		}
-		catch (SQLException e)
-		{
-			Throwables.propagate(e);
-		}
+		db.createStatement().executeUpdate(query);
 	}
 
-	private void createTables()
+	private void createTables() throws SQLException
 	{
-		createTable(new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_META).append(" (").append(COLUMN_META_VERSION).append(" VARCHAR(6) )")
+		createTable(new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_META).append(" (").append(COLUMN_META_KEY).append(" VARCHAR(16), ")
+				.append(COLUMN_META_VALUE).append(" VARCHAR(32), PRIMARY KEY (").append(COLUMN_META_KEY).append(") )").toString());
+
+		// Write version
+		db.createStatement().executeUpdate(
+				new StringBuilder("REPLACE INTO ").append(TABLE_META).append(" VALUES ( '").append(META_KEY_VERSION).append("', '").append(VERSION)
+						.append("')").toString());
+
+		createTable(new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_AREA).append("(").append(COLUMN_AREA_ID).append(" INTEGER AUTO_INCREMENT, ")
+				.append(COLUMN_AREA_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ").append("PRIMARY KEY (").append(COLUMN_AREA_ID).append(") ").append(")")
 				.toString());
 
-		// try
-		// {
-		// // DEFAULT group
-		// StringBuilder query = new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (").append(COLUMN_GROUP_ID).append(", ")
-		// .append(COLUMN_GROUP_NAME).append(", ").append(COLUMN_GROUP_PRIORITY).append(", ").append(COLUMN_GROUP_AREA).append(") ")
-		// .append(" VALUES ").append(" (").append(DEFAULT_ID).append(", ") // groupID
-		// .append("'").append(APIRegistry.perms.getDEFAULT().name).append("', ").append("0, ").append(GLOBAL_ID).append(")"); // priority, zone
-		// db.createStatement().executeUpdate(query.toString());
-		//
-		// // GLOBAL zone
-		// query = new StringBuilder("INSERT INTO ").append(TABLE_AREA).append(" (").append(COLUMN_AREA_NAME).append(", ").append(COLUMN_AREA_ID)
-		// .append(") ").append(" VALUES ").append(" ('").append(APIRegistry.perms.getGlobalZone().getName()).append("', ").append(GLOBAL_ID)
-		// .append(")");
-		// db.createStatement().executeUpdate(query.toString());
-		//
-		// // SUPER zone
-		// query = new StringBuilder("INSERT INTO ").append(TABLE_AREA).append(" (").append(COLUMN_AREA_NAME).append(", ").append(COLUMN_AREA_ID)
-		// .append(") ").append(" VALUES ").append(" ('").append(APIRegistry.perms.getSUPER().getName()).append("', ").append(SUPER_ID)
-		// .append(")");
-		// db.createStatement().executeUpdate(query.toString());
-		//
-		// // Entry player...
-		// query = new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_UUID).append(", ")
-		// .append(COLUMN_PLAYER_PLAYERID).append(") ").append(" VALUES ").append(" ('").append(APIRegistry.perms.getEntryPlayer()).append("', ")
-		// .append(ENTRY_PLAYER_ID).append(")");
-		// db.createStatement().executeUpdate(query.toString());
-		//
-		// }
-		// catch (SQLException e)
-		// {
-		// Throwables.propagate(e);
-		// }
+		createTable(new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_GROUP).append("(").append(COLUMN_GROUP_ID)
+				.append(" INTEGER AUTO_INCREMENT, ").append(COLUMN_GROUP_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ").append(COLUMN_GROUP_PARENT)
+				.append(" INTEGER, ").append(COLUMN_GROUP_PRIORITY).append(" SMALLINT NOT NULL, ").append(COLUMN_GROUP_PREFIX)
+				.append(" VARCHAR(20) DEFAULT '', ").append(COLUMN_GROUP_SUFFIX).append(" VARCHAR(20) DEFAULT '', ").append("PRIMARY KEY (")
+				.append(COLUMN_GROUP_ID).append(") ").append(") ").toString());
+
+		createTable(new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_LADDER).append("(").append(COLUMN_LADDER_LADDERID)
+				.append(" INTEGER NOT NULL, ").append(COLUMN_LADDER_GROUPID).append(" INTEGER NOT NULL, ").append(COLUMN_LADDER_AREA)
+				.append(" INTEGER NOT NULL, ").append(COLUMN_LADDER_RANK).append(" SMALLINT NOT NULL").append(") ").toString());
+
+		createTable(new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_LADDER_NAME).append("(").append(COLUMN_LADDER_NAME_ID)
+				.append(" INTEGER AUTO_INCREMENT, ").append(COLUMN_LADDER_NAME_NAME).append(" VARCHAR(40) NOT NULL UNIQUE, ").append("PRIMARY KEY (")
+				.append(COLUMN_LADDER_NAME_ID).append(") ").append(")").toString());
+
+		createTable(new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_PLAYER).append("(").append(COLUMN_PLAYER_ID)
+				.append(" INTEGER AUTO_INCREMENT, ").append(COLUMN_PLAYER_UUID).append(" VARCHAR(42) NOT NULL UNIQUE, ").append("PRIMARY KEY (")
+				.append(COLUMN_PLAYER_ID).append(") ").append(")").toString());
+
+		createTable(new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_GROUP_CONNECTOR).append("(").append(COLUMN_GROUP_CONNECTOR_GROUP)
+				.append(" INTEGER NOT NULL, ").append(COLUMN_GROUP_CONNECTOR_PLAYER).append(" INTEGER NOT NULL, ").append(COLUMN_GROUP_CONNECTOR_AREA)
+				.append(" INTEGER NOT NULL").append(")").toString());
+
+		createTable(new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(TABLE_PERMPROP).append("(").append(COLUMN_PERMPROP_TARGET)
+				.append(" INTEGER NOT NULL, ").append(COLUMN_PERMPROP_ISGROUP).append(" BOOLEAN NOT NULL, ").append(COLUMN_PERMPROP_PERM)
+				.append(" VARCHAR(255) NOT NULL, ").append(COLUMN_PERMPROP_PROP).append(" VARCHAR(255) NOT NULL, ").append(COLUMN_PERMPROP_ZONEID)
+				.append(" INTEGER NOT NULL").append(")").toString());
 	}
 
-	private PreparedStatement prepareStatement(String query)
+	private PreparedStatement prepareStatement(String query) throws SQLException
 	{
-		try
-		{
-			return db.prepareStatement(query);
-		}
-		catch (SQLException e)
-		{
-			Throwables.propagate(e);
-		}
-		return null;
+		return db.prepareStatement(query);
 	}
 
 	/**
 	 * Initialize all prepared statements
 	 */
-	private void prepareStatements(EnumDBType type)
+	private boolean prepareStatements(EnumDBType type)
 	{
-		stmtGetGroups = prepareStatement(new StringBuilder("SELECT * FROM ").append(TABLE_GROUP_CONNECTOR).toString());
+		try
+		{
+			stmtGetGroups = prepareStatement(new StringBuilder("SELECT * FROM ").append(TABLE_GROUP_CONNECTOR).toString());
 
-		stmtGetGroupByName = prepareStatement(new StringBuilder("SELECT * FROM ").append(TABLE_GROUP).append(" WHERE ").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_NAME).append("=?").toString());
+			stmtGetGroupByName = prepareStatement(new StringBuilder("SELECT * FROM ").append(TABLE_GROUP).append(" WHERE ").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_NAME).append("=?").toString());
 
-		stmtGetGroupByID = prepareStatement(new StringBuilder("SELECT * FROM ").append(TABLE_GROUP).append(" WHERE ").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_ID).append("=?").toString());
+			stmtGetGroupByID = prepareStatement(new StringBuilder("SELECT * FROM ").append(TABLE_GROUP).append(" WHERE ").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_ID).append("=?").toString());
 
-		semtGetGroupNameByID = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_GROUP_NAME).append(" FROM ").append(TABLE_GROUP).append(" WHERE ")
-				.append(COLUMN_GROUP_ID).append("=?").toString());
+			semtGetGroupNameByID = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_GROUP_NAME).append(" FROM ").append(TABLE_GROUP)
+					.append(" WHERE ").append(COLUMN_GROUP_ID).append("=?").toString());
 
-		// ---------------------------------------------------------------------------------------------------
+			// ---------------------------------------------------------------------------------------------------
 
-		stmtGetPlayersByGroup = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_PLAYER_UUID).append(" FROM ").append(TABLE_GROUP_CONNECTOR)
-				.append(" INNER JOIN ").append(TABLE_PLAYER).append(" ON ").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_UUID).append("=")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".")
-				.append(COLUMN_GROUP_CONNECTOR_GROUP).append("=?").toString());
+			stmtGetPlayersByGroup = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_PLAYER_UUID).append(" FROM ").append(TABLE_GROUP_CONNECTOR)
+					.append(" INNER JOIN ").append(TABLE_PLAYER).append(" ON ").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_UUID).append("=")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append(" WHERE ").append(TABLE_GROUP_CONNECTOR)
+					.append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=?").toString());
 
-		// ---------------------------------------------------------------------------------------------------
+			// ---------------------------------------------------------------------------------------------------
 
-		// statementGetLadderList
-		statementGetLadderList = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
-				.append(TABLE_LADDER).append(".").append(COLUMN_LADDER_RANK).append(" FROM ").append(TABLE_LADDER).append(" INNER JOIN ").append(TABLE_GROUP)
-				.append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append("=").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_ID).append(" WHERE ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=?").append(" AND ")
-				.append(TABLE_LADDER).append(".").append(COLUMN_LADDER_AREA).append("=?").append(" ORDER BY ").append(TABLE_LADDER).append(".")
-				.append(COLUMN_LADDER_RANK).toString());
+			// statementGetLadderList
+			statementGetLadderList = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_LADDER).append(".").append(COLUMN_LADDER_RANK).append(" FROM ").append(TABLE_LADDER).append(" INNER JOIN ")
+					.append(TABLE_GROUP).append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append("=").append(TABLE_GROUP)
+					.append(".").append(COLUMN_GROUP_ID).append(" WHERE ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=?")
+					.append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_AREA).append("=?").append(" ORDER BY ").append(TABLE_LADDER)
+					.append(".").append(COLUMN_LADDER_RANK).toString());
 
-		// statementGetGroupsFromLadder
-		statementGetGroupsFromLadder = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
-				.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX)
-				.append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME).append(", ").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_PRIORITY).append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_ID).append(" INNER JOIN ").append(TABLE_LADDER).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
-				.append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append(" INNER JOIN ")
-				.append(TABLE_AREA).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=").append(TABLE_AREA)
-				.append(".").append(COLUMN_AREA_ID).append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER)
-				.append("=?").append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=?").toString());
+			// statementGetGroupsFromLadder
+			statementGetGroupsFromLadder = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX)
+					.append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME).append(", ").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_PRIORITY).append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_ID).append(" INNER JOIN ").append(TABLE_LADDER).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
+					.append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append(" INNER JOIN ")
+					.append(TABLE_AREA).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=")
+					.append(TABLE_AREA).append(".").append(COLUMN_AREA_ID).append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".")
+					.append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID)
+					.append("=?").toString());
 
-		// statementGetGroupsFromLadderAndZone
-		statementGetGroupsFromLadderAndZone = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME)
-				.append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME).append(", ").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_PRIORITY).append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_ID).append(" INNER JOIN ").append(TABLE_LADDER).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
-				.append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append(" INNER JOIN ")
-				.append(TABLE_AREA).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=").append(TABLE_AREA)
-				.append(".").append(COLUMN_AREA_ID).append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER)
-				.append("=?").append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=?").append(" AND ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").toString());
+			// statementGetGroupsFromLadderAndZone
+			statementGetGroupsFromLadderAndZone = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME)
+					.append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME).append(", ").append(TABLE_GROUP)
+					.append(".").append(COLUMN_GROUP_PRIORITY).append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP)
+					.append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_ID).append(" INNER JOIN ").append(TABLE_LADDER).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
+					.append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_GROUPID).append(" INNER JOIN ")
+					.append(TABLE_AREA).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=")
+					.append(TABLE_AREA).append(".").append(COLUMN_AREA_ID).append(" WHERE ").append(TABLE_GROUP_CONNECTOR).append(".")
+					.append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").append(" AND ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID)
+					.append("=?").append(" AND ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").toString());
 
-		// statementGetGroupsFromZone
-		statementGetGroupsFromZone = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
-				.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX)
-				.append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME).append(", ").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_PRIORITY).append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_ID).append(" INNER JOIN ").append(TABLE_AREA).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
-				.append(COLUMN_GROUP_CONNECTOR_AREA).append("=").append(TABLE_AREA).append(".").append(COLUMN_AREA_ID).append(" WHERE ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").append(" AND ").append(TABLE_GROUP_CONNECTOR)
-				.append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").toString());
+			// statementGetGroupsFromZone
+			statementGetGroupsFromZone = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX)
+					.append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME).append(", ").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_PRIORITY).append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_ID).append(" INNER JOIN ").append(TABLE_AREA).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
+					.append(COLUMN_GROUP_CONNECTOR_AREA).append("=").append(TABLE_AREA).append(".").append(COLUMN_AREA_ID).append(" WHERE ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").append(" AND ").append(TABLE_GROUP_CONNECTOR)
+					.append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").toString());
 
-		// statementGetGroupsFromZone
-		statementGetGroupsFromPlayer = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
-				.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX)
-				.append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME).append(", ").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_PRIORITY).append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_ID).append(" INNER JOIN ").append(TABLE_AREA).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
-				.append(COLUMN_GROUP_CONNECTOR_AREA).append("=").append(TABLE_AREA).append(".").append(COLUMN_AREA_ID).append(" WHERE ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").toString());
+			// statementGetGroupsFromZone
+			statementGetGroupsFromPlayer = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX)
+					.append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME).append(", ").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_PRIORITY).append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_ID).append(" INNER JOIN ").append(TABLE_AREA).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
+					.append(COLUMN_GROUP_CONNECTOR_AREA).append("=").append(TABLE_AREA).append(".").append(COLUMN_AREA_ID).append(" WHERE ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").toString());
 
-		// statementGetGroupsForPlayerInZone
-		statementGetGroupsForPlayerInZone = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ID).append(", ")
-				.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY)
-				.append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PARENT).append(" FROM ")
-				.append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
-				.append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ID).append(" WHERE ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").append(" AND ").append(TABLE_GROUP_CONNECTOR)
-				.append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").toString());
+			// statementGetGroupsForPlayerInZone
+			statementGetGroupsForPlayerInZone = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ID)
+					.append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_PRIORITY).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX).append(", ").append(TABLE_GROUP)
+					.append(".").append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PARENT).append(" FROM ")
+					.append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
+					.append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ID).append(" WHERE ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").append(" AND ").append(TABLE_GROUP_CONNECTOR)
+					.append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").toString());
 
-		// statementGetGroupsForPlayer
-		statementGetAllGroupsForPlayer = prepareStatement(new StringBuilder("SELECT * ").append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").toString());
+			// statementGetGroupsForPlayer
+			statementGetAllGroupsForPlayer = prepareStatement(new StringBuilder("SELECT * ").append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").toString());
 
-		// statementUpdateGroup
-		statementUpdateGroup = prepareStatement(new StringBuilder("UPDATE ").append(TABLE_GROUP).append(" SET ").append(COLUMN_GROUP_NAME).append("=")
-				.append("?, ").append(COLUMN_GROUP_PREFIX).append("=").append("?, ").append(COLUMN_GROUP_SUFFIX).append("=").append("?, ")
-				.append(COLUMN_GROUP_PARENT).append("=").append("?, ").append(COLUMN_GROUP_PRIORITY).append("=? ").append(" WHERE ").append(COLUMN_GROUP_NAME)
-				.append("=?").toString());
+			// statementUpdateGroup
+			statementUpdateGroup = prepareStatement(new StringBuilder("UPDATE ").append(TABLE_GROUP).append(" SET ").append(COLUMN_GROUP_NAME).append("=")
+					.append("?, ").append(COLUMN_GROUP_PREFIX).append("=").append("?, ").append(COLUMN_GROUP_SUFFIX).append("=").append("?, ")
+					.append(COLUMN_GROUP_PARENT).append("=").append("?, ").append(COLUMN_GROUP_PRIORITY).append("=? ").append(" WHERE ")
+					.append(COLUMN_GROUP_NAME).append("=?").toString());
 
-		// >>>>>>>>>>>>>>>>>>>>>>>>>>>
-		// Helper Get Statements
-		// <<<<<<<<<<<<<<<<<<<<<<<<<<
+			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
+			// Helper Get Statements
+			// <<<<<<<<<<<<<<<<<<<<<<<<<<
 
-		// statementGetLadderFromID
-		statementGetLadderNameFromID = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_LADDER_NAME_NAME).append(" FROM ").append(TABLE_LADDER_NAME)
-				.append(" WHERE ").append(COLUMN_LADDER_NAME_ID).append("=?").toString());
+			// statementGetLadderFromID
+			statementGetLadderNameFromID = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_LADDER_NAME_NAME).append(" FROM ")
+					.append(TABLE_LADDER_NAME).append(" WHERE ").append(COLUMN_LADDER_NAME_ID).append("=?").toString());
 
-		// statementGetLadderFromName
-		statementGetLadderIDFromName = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_LADDER_NAME_ID).append(" FROM ").append(TABLE_LADDER_NAME)
-				.append(" WHERE ").append(COLUMN_LADDER_NAME_NAME).append("=?").toString());
+			// statementGetLadderFromName
+			statementGetLadderIDFromName = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_LADDER_NAME_ID).append(" FROM ")
+					.append(TABLE_LADDER_NAME).append(" WHERE ").append(COLUMN_LADDER_NAME_NAME).append("=?").toString());
 
-		// statementGetLadderFromGroup
-		statementGetLadderIDFromGroup = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_LADDER_LADDERID).append(" FROM ").append(TABLE_LADDER)
-				.append(" WHERE ").append(COLUMN_LADDER_GROUPID).append("=?").append(" AND ").append(COLUMN_LADDER_AREA).append("=").append("?").toString());
+			// statementGetLadderFromGroup
+			statementGetLadderIDFromGroup = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_LADDER_LADDERID).append(" FROM ").append(TABLE_LADDER)
+					.append(" WHERE ").append(COLUMN_LADDER_GROUPID).append("=?").append(" AND ").append(COLUMN_LADDER_AREA).append("=").append("?").toString());
 
-		// statementGetZoneFromID
-		statementGetZoneNameFromID = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_AREA_NAME).append(" FROM ").append(TABLE_AREA)
-				.append(" WHERE ").append(COLUMN_AREA_ID).append("=?").toString());
+			// statementGetZoneFromID
+			statementGetZoneNameFromID = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_AREA_NAME).append(" FROM ").append(TABLE_AREA)
+					.append(" WHERE ").append(COLUMN_AREA_ID).append("=?").toString());
 
-		// statementGetZoneFromName
-		statementGetZoneIDFromName = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_AREA_ID).append(" FROM ").append(TABLE_AREA).append(" WHERE ")
-				.append(COLUMN_AREA_NAME).append("=?").toString());
+			// statementGetZoneFromName
+			statementGetZoneIDFromName = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_AREA_ID).append(" FROM ").append(TABLE_AREA)
+					.append(" WHERE ").append(COLUMN_AREA_NAME).append("=?").toString());
 
-		// statementGetGroupFromName
-		statementGetGroupIDFromName = prepareStatement(new StringBuilder("SELECT *") // .append(COLUMN_GROUP_ID)
-				.append(" FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_NAME).append("=?").toString());
+			// statementGetGroupFromName
+			statementGetGroupIDFromName = prepareStatement(new StringBuilder("SELECT *") // .append(COLUMN_GROUP_ID)
+					.append(" FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_NAME).append("=?").toString());
 
-		// statementGetPlayerFromID
-		statementGetPlayerNameFromID = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_PLAYER_ID).append(" FROM ").append(TABLE_PLAYER)
-				.append(" WHERE ").append(COLUMN_PLAYER_UUID).append("=?").toString());
+			// statementGetPlayerFromID
+			statementGetPlayerNameFromID = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_PLAYER_ID).append(" FROM ").append(TABLE_PLAYER)
+					.append(" WHERE ").append(COLUMN_PLAYER_UUID).append("=?").toString());
 
-		// statementGetPlayerFromName
-		statementGetPlayerIDFromName = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_PLAYER_ID).append(" FROM ").append(TABLE_PLAYER)
-				.append(" WHERE ").append(COLUMN_PLAYER_NAME).append("=?").toString());
+			// statementGetPlayerFromName
+			statementGetPlayerIDFromName = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_PLAYER_ID).append(" FROM ").append(TABLE_PLAYER)
+					.append(" WHERE ").append(COLUMN_PLAYER_NAME).append("=?").toString());
 
-		// >>>>>>>>>>>>>>>>>>>>>>>>>>>
-		// Helper Put Statements
-		// <<<<<<<<<<<<<<<<<<<<<<<<<<
+			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
+			// Helper Put Statements
+			// <<<<<<<<<<<<<<<<<<<<<<<<<<
 
-		// statementPutZone
-		statementPutZone = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_AREA).append(" (").append(COLUMN_AREA_NAME).append(") ")
-				.append(" VALUES ").append(" (?) ").toString());
+			// statementPutZone
+			statementPutZone = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_AREA).append(" (").append(COLUMN_AREA_NAME).append(") ")
+					.append(" VALUES ").append(" (?) ").toString());
 
-		// statementPutPlayer
-		statementPutPlayer = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_UUID).append(") ")
-				.append(" VALUES ").append(" (?) ").toString());
+			// statementPutPlayer
+			statementPutPlayer = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_PLAYER).append(" (").append(COLUMN_PLAYER_UUID).append(") ")
+					.append(" VALUES ").append(" (?) ").toString());
 
-		// statementPutLadderName
-		statementPutLadderName = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_LADDER_NAME).append(" (").append(COLUMN_LADDER_NAME_NAME)
-				.append(") ").append(" VALUES ").append(" (?) ").toString());
+			// statementPutLadderName
+			statementPutLadderName = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_LADDER_NAME).append(" (").append(COLUMN_LADDER_NAME_NAME)
+					.append(") ").append(" VALUES ").append(" (?) ").toString());
 
-		// statementPutLadder
-		statementPutLadder = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_LADDER).append(" (").append(COLUMN_LADDER_GROUPID).append(", ")
-				.append(COLUMN_LADDER_AREA).append(", ").append(COLUMN_LADDER_RANK).append(", ").append(COLUMN_LADDER_LADDERID).append(") ").append(" VALUES ")
-				.append(" (?, ?, ?, ?) ").toString());
+			// statementPutLadder
+			statementPutLadder = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_LADDER).append(" (").append(COLUMN_LADDER_GROUPID)
+					.append(", ").append(COLUMN_LADDER_AREA).append(", ").append(COLUMN_LADDER_RANK).append(", ").append(COLUMN_LADDER_LADDERID).append(") ")
+					.append(" VALUES ").append(" (?, ?, ?, ?) ").toString());
 
-		// statementPutGroup
-		statementPutGroup = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (").append(COLUMN_GROUP_NAME).append(", ")
-				.append(COLUMN_GROUP_PREFIX).append(", ").append(COLUMN_GROUP_SUFFIX).append(", ").append(COLUMN_GROUP_PARENT).append(", ")
-				.append(COLUMN_GROUP_PRIORITY).append(") ").append(" VALUES ").append(" (?, ?, ?, ?, ?) ").toString());
+			// statementPutGroup
+			statementPutGroup = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_GROUP).append(" (").append(COLUMN_GROUP_NAME).append(", ")
+					.append(COLUMN_GROUP_PREFIX).append(", ").append(COLUMN_GROUP_SUFFIX).append(", ").append(COLUMN_GROUP_PARENT).append(", ")
+					.append(COLUMN_GROUP_PRIORITY).append(") ").append(" VALUES ").append(" (?, ?, ?, ?, ?) ").toString());
 
-		// statementPutPlayerInGroup
-		statementPutPlayerInGroup = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_GROUP_CONNECTOR).append(" (")
-				.append(COLUMN_GROUP_CONNECTOR_GROUP).append(", ").append(COLUMN_GROUP_CONNECTOR_PLAYER).append(", ").append(COLUMN_GROUP_CONNECTOR_AREA)
-				.append(") ").append(" VALUES ").append(" (?, ?, ?)").toString());
+			// statementPutPlayerInGroup
+			statementPutPlayerInGroup = prepareStatement(new StringBuilder("INSERT INTO ").append(TABLE_GROUP_CONNECTOR).append(" (")
+					.append(COLUMN_GROUP_CONNECTOR_GROUP).append(", ").append(COLUMN_GROUP_CONNECTOR_PLAYER).append(", ").append(COLUMN_GROUP_CONNECTOR_AREA)
+					.append(") ").append(" VALUES ").append(" (?, ?, ?)").toString());
 
-		// >>>>>>>>>>>>>>>>>>>>>>>>>>>
-		// Helper Delete Statements
-		// <<<<<<<<<<<<<<<<<<<<<<<<<<
+			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
+			// Helper Delete Statements
+			// <<<<<<<<<<<<<<<<<<<<<<<<<<
 
-		// statementDeleteGroupInZone
-		statementDeleteGroupInZone = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_NAME)
-				.append("=?").toString());
+			// statementDeleteGroupInZone
+			statementDeleteGroupInZone = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_GROUP).append(" WHERE ").append(COLUMN_GROUP_NAME)
+					.append("=?").toString());
 
-		// statementDelZone
-		statementDelZone = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_AREA).append(" WHERE ").append(COLUMN_AREA_NAME).append("=?")
-				.toString());
+			// statementDelZone
+			statementDelZone = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_AREA).append(" WHERE ").append(COLUMN_AREA_NAME).append("=?")
+					.toString());
 
-		// remove player from all groups in specified zone. used in /p user
-		// <player> group set
-		statementRemovePlayerGroups = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").append(" AND ").append(TABLE_GROUP_CONNECTOR)
-				.append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").toString());
+			// remove player from all groups in specified zone. used in /p user
+			// <player> group set
+			statementRemovePlayerGroups = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").append(" AND ").append(TABLE_GROUP_CONNECTOR)
+					.append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").toString());
 
-		// remove player from specified group in specified zone. used in /p
-		// user <player> group add
-		statementRemovePlayerGroup = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ")
-				.append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").append(" AND ").append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").append(" AND ")
-				.append(COLUMN_GROUP_CONNECTOR_GROUP).append("=?").toString());
+			// remove player from specified group in specified zone. used in /p
+			// user <player> group add
+			statementRemovePlayerGroup = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_GROUP_CONNECTOR).append(" WHERE ")
+					.append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=?").append(" AND ").append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").append(" AND ")
+					.append(COLUMN_GROUP_CONNECTOR_GROUP).append("=?").toString());
 
-		// >>>>>>>>>>>>>>>>>>>>>>>>>>>
-		// Helper ZONE Delete Statements
-		// <<<<<<<<<<<<<<<<<<<<<<<<<<
+			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
+			// Helper ZONE Delete Statements
+			// <<<<<<<<<<<<<<<<<<<<<<<<<<
 
-		// delete groups from zone
-		statementDelGroupFromZone = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_GROUP).toString());
+			// delete groups from zone
+			statementDelGroupFromZone = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_GROUP).toString());
 
-		// delete ladder from zone
-		statementDelLadderFromZone = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_LADDER).append(" WHERE ").append(COLUMN_LADDER_AREA)
-				.append("=?").toString());
+			// delete ladder from zone
+			statementDelLadderFromZone = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_LADDER).append(" WHERE ").append(COLUMN_LADDER_AREA)
+					.append("=?").toString());
 
-		// delete group connectorsw from zone
-		statementDelGroupConnectorsFromZone = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_LADDER).append(" WHERE ")
-				.append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").toString());
+			// delete group connectorsw from zone
+			statementDelGroupConnectorsFromZone = prepareStatement(new StringBuilder("DELETE FROM ").append(TABLE_LADDER).append(" WHERE ")
+					.append(COLUMN_GROUP_CONNECTOR_AREA).append("=?").toString());
 
-		// >>>>>>>>>>>>>>>>>>>>>>>>>>>
-		// Dump Statements
-		// <<<<<<<<<<<<<<<<<<<<<<<<<<
+			// >>>>>>>>>>>>>>>>>>>>>>>>>>>
+			// Dump Statements
+			// <<<<<<<<<<<<<<<<<<<<<<<<<<
 
-		// statementGetGroupFromID
-		statementDumpGroups = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
-				.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX)
-				.append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_GROUP).append(".")
-				.append(COLUMN_GROUP_PARENT).append(" FROM ").append(TABLE_GROUP).toString());
+			// statementGetGroupFromID
+			statementDumpGroups = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PRIORITY).append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_PREFIX)
+					.append(", ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_SUFFIX).append(", ").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_PARENT).append(" FROM ").append(TABLE_GROUP).toString());
 
-		statementDumpPlayers = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_PLAYER_UUID).append(" FROM ").append(TABLE_PLAYER).toString());
+			statementDumpPlayers = prepareStatement(new StringBuilder("SELECT ").append(COLUMN_PLAYER_UUID).append(" FROM ").append(TABLE_PLAYER).toString());
 
-		statementDumpGroupConnector = prepareStatement(new StringBuilder("SELECT DISTINCT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME)
-				.append(", ").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_UUID).append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME)
-				.append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ").append(TABLE_GROUP_CONNECTOR)
-				.append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ID).append(" INNER JOIN ")
-				.append(TABLE_PLAYER).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=")
-				.append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_ID).append(" INNER JOIN ").append(TABLE_AREA).append(" ON ")
-				.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=").append(TABLE_AREA).append(".")
-				.append(COLUMN_AREA_ID).toString());
+			statementDumpGroupConnector = prepareStatement(new StringBuilder("SELECT DISTINCT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME)
+					.append(", ").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_UUID).append(", ").append(TABLE_AREA).append(".")
+					.append(COLUMN_AREA_NAME).append(" FROM ").append(TABLE_GROUP_CONNECTOR).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ")
+					.append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_GROUP).append("=").append(TABLE_GROUP).append(".")
+					.append(COLUMN_GROUP_ID).append(" INNER JOIN ").append(TABLE_PLAYER).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".")
+					.append(COLUMN_GROUP_CONNECTOR_PLAYER).append("=").append(TABLE_PLAYER).append(".").append(COLUMN_PLAYER_ID).append(" INNER JOIN ")
+					.append(TABLE_AREA).append(" ON ").append(TABLE_GROUP_CONNECTOR).append(".").append(COLUMN_GROUP_CONNECTOR_AREA).append("=")
+					.append(TABLE_AREA).append(".").append(COLUMN_AREA_ID).toString());
 
-		statementDumpLadders = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
-				.append(TABLE_LADDER_NAME).append(".").append(COLUMN_LADDER_NAME_NAME).append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME)
-				.append(" FROM ").append(TABLE_LADDER).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ").append(TABLE_LADDER).append(".")
-				.append(COLUMN_LADDER_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ID).append(" INNER JOIN ")
-				.append(TABLE_LADDER_NAME).append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=").append(TABLE_LADDER_NAME)
-				.append(".").append(COLUMN_LADDER_NAME_ID).append(" INNER JOIN ").append(TABLE_AREA).append(" ON ").append(TABLE_LADDER).append(".")
-				.append(COLUMN_LADDER_AREA).append("=").append(TABLE_AREA).append(".").append(COLUMN_AREA_ID).toString());
+			statementDumpLadders = prepareStatement(new StringBuilder("SELECT ").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_NAME).append(", ")
+					.append(TABLE_LADDER_NAME).append(".").append(COLUMN_LADDER_NAME_NAME).append(", ").append(TABLE_AREA).append(".").append(COLUMN_AREA_NAME)
+					.append(" FROM ").append(TABLE_LADDER).append(" INNER JOIN ").append(TABLE_GROUP).append(" ON ").append(TABLE_LADDER).append(".")
+					.append(COLUMN_LADDER_GROUPID).append("=").append(TABLE_GROUP).append(".").append(COLUMN_GROUP_ID).append(" INNER JOIN ")
+					.append(TABLE_LADDER_NAME).append(" ON ").append(TABLE_LADDER).append(".").append(COLUMN_LADDER_LADDERID).append("=")
+					.append(TABLE_LADDER_NAME).append(".").append(COLUMN_LADDER_NAME_ID).append(" INNER JOIN ").append(TABLE_AREA).append(" ON ")
+					.append(TABLE_LADDER).append(".").append(COLUMN_LADDER_AREA).append("=").append(TABLE_AREA).append(".").append(COLUMN_AREA_ID).toString());
 
-		OutputHandler.felog.finer("Statement preparation successful");
+			OutputHandler.felog.finer("Statement preparation successful");
+			return true;
+		}
+		catch (SQLException e)
+		{
+			OutputHandler.felog.severe("Error preparing statements");
+			return false;
+		}
 	}
 
 	// ------------------------------------------------------------

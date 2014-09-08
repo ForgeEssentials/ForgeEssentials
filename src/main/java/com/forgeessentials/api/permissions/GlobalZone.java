@@ -17,19 +17,19 @@ public class GlobalZone extends Zone {
 	}
 	
 	@Override
-	public boolean isPointInZone(WorldPoint point)
+	public boolean isInZone(WorldPoint point)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isAreaInZone(WorldArea point)
+	public boolean isInZone(WorldArea point)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isPartOfAreaInZone(WorldArea point)
+	public boolean isPartOfZone(WorldArea point)
 	{
 		return true;
 	}

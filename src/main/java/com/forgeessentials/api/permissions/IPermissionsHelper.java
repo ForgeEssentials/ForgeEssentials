@@ -229,6 +229,14 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	WorldZone getWorldZone(World world);
 
 	/**
+	 * Returns the world-zone for the specified world
+	 * 
+	 * @param world
+	 * @return
+	 */
+	WorldZone getWorldZone(int dimensionId);
+	
+	/**
 	 * Returns a collection of all world zones
 	 * 
 	 * @return

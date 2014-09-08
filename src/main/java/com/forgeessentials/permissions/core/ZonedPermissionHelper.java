@@ -36,9 +36,9 @@ import com.mojang.authlib.GameProfile;
 
 public class ZonedPermissionHelper implements IPermissionsHelper {
 
-	private RootZone rootZone = new RootZone();
+	private RootZone rootZone;
 
-	private GlobalZone globalZone = new GlobalZone(rootZone);
+	private GlobalZone globalZone;
 
 	private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
 
@@ -50,24 +50,35 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	// ------------------------------------------------------------
 
+	protected Zone addZone(Zone zone)
+	{
+		zones.put(zone.getId(), zone);
+		if (zone instanceof RootZone)
+			rootZone = (RootZone) zone;
+		else if (zone instanceof GlobalZone)
+			globalZone = (GlobalZone) zone;
+		else if (zone instanceof WorldZone)
+			worldZones.put(((WorldZone) zone).getDimensionID(), (WorldZone) zone);
+		return zone;
+	}
+
 	public ZonedPermissionHelper()
 	{
-		zones.put(rootZone.getId(), rootZone);
-		zones.put(globalZone.getId(), globalZone);
+		addZone(new RootZone());
+		addZone(new GlobalZone(rootZone));
 
 		// MinecraftForge.EVENT_BUS.register(this);
 
 		// for (World world : DimensionManager.getWorlds())
 		// {
-		// worldZones.put(world.provider.dimensionId, new WorldZone(world.provider.dimensionId));
+		// getWorldZone(world);
 		// }
 
 		// TODO: TESTING
 		globalZone.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", false);
 		globalZone.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", true);
 
-		WorldZone world0 = new WorldZone(0);
-		worldZones.put(world0.getDimensionID(), world0);
+		WorldZone world0 = getWorldZone(0);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", true);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", false);
 	}
@@ -95,7 +106,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		{
 			for (Zone zone : worldZone.getAreaZones())
 			{
-				if (point != null && zone.isPointInZone(point) || area != null && zone.isAreaInZone(area))
+				if (point != null && zone.isInZone(point) || area != null && zone.isInZone(area))
 				{
 					zones.add(zone);
 				}
@@ -299,7 +310,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	{
 		return maxZoneID++;
 	}
-	
+
 	@Override
 	public Collection<Zone> getZones()
 	{
@@ -341,8 +352,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public List<AreaZone> getAreaZonesAt(WorldPoint worldPoint)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		WorldZone w = getWorldZone(worldPoint.getDimension());
+		List<AreaZone> result = new ArrayList<AreaZone>();
+		for (AreaZone zone : w.getAreaZones())
+			if (zone.isInZone(worldPoint))
+				result.add(zone);
+		return result;
 	}
 
 	@Override
@@ -373,9 +388,21 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	}
 
 	@Override
+	public WorldZone getWorldZone(int dimensionId)
+	{
+		WorldZone zone = worldZones.get(dimensionId);
+		if (zone == null)
+		{
+			zone = new WorldZone(globalZone, dimensionId, getNextZoneID());
+			addZone(zone);
+		}
+		return zone;
+	}
+
+	@Override
 	public WorldZone getWorldZone(World world)
 	{
-		return worldZones.get(world.provider.dimensionId);
+		return getWorldZone(world.provider.dimensionId);
 	}
 
 	// ------------------------------------------------------------
@@ -477,7 +504,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		// TODO: Implement
 		return groups;
 	}
-
 
 	// ------------------------------------------------------------
 
