@@ -16,7 +16,7 @@ buildscript {
         }
 
     }
-    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT' }
+    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT' }
 
 }
 
@@ -59,12 +59,12 @@ dependencies {
     compile 'com.h2database:h2:1.3.175'
     compile 'mysql:mysql-connector-java:5.1.22'
 
-    // WE integration - 
+    // just for shits and giggles
+    compile "org.projectlombok:lombok:1.14.6"
+
+    // WE integration -
     compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT'// use BOTH
     //compile files('lib/worldedit-forge-6.0.0-SNAPSHOT-deobf.jar')
-
-    // perms API (TEMPORARY, until it gets pulled into Forge!) use deobf one to compile
-    //compile files('lib/minecraftforge-9.11.1.965-permsAPIonly-deobf.jar')
 
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'

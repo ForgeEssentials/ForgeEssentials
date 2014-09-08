@@ -54,19 +54,6 @@ public class APIRegistry {
         }
     }
 
-    public static Group getAsFEGroup(String name)
-    {
-        IGroup g = PermissionsManager.getGroup(name);
-        if (g instanceof Group)
-            return (Group)g;
-
-        else
-        {
-            FMLLog.warning("[FE API] FEPermissions is not set as permissions handler - bad things could happen!");
-            return null;
-        }
-    }
-
     /**
      * Use this annotation to mark classes where static methods with other FE annotations might be.
      *

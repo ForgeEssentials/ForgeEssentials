@@ -224,7 +224,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         }
         else if (args[1].equalsIgnoreCase("group"))
         {
-            if (APIRegistry.getAsFEGroup(args[2]) == null)
+            if (APIRegistry.perms.getGroupForName(args[2]) == null)
             {
                 OutputHandler.chatError(sender, args[2] + " does not exist as a group!");
                 return;
@@ -385,7 +385,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         }
         else if (args[1].equalsIgnoreCase("group"))
         {
-            if (APIRegistry.getAsFEGroup(args[2]) == null)
+            if (APIRegistry.perms.getGroupForName(args[2]) == null)
             {
                 OutputHandler.chatError(sender, args[2] + " does not exist as a group!");
                 return;
