@@ -1,10 +1,10 @@
 package com.forgeessentials.teleport.util;
 
+import java.util.HashMap;
+
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-
-import java.util.HashMap;
 
 public class TeleportDataManager {
     private static ClassContainer conWarp = new ClassContainer(Warp.class);

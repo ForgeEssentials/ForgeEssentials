@@ -1,22 +1,22 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.commands.util.AFKdata;
-import com.forgeessentials.commands.util.CommandsEventHandler;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.forgeessentials.commands.util.AFKdata;
+import com.forgeessentials.commands.util.CommandsEventHandler;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandAFK extends FEcmdModuleCommands {
     public static CommandAFK instance;
@@ -71,7 +71,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         afkList.remove(afkData.player.getPersistentID());
         CommandsEventHandler.afkListToRemove.add(afkData);
 
-        if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
+        if (PermissionsManager.checkPerm(afkData.player, NOTICEPERM))
         {
             ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
                     String.format(inMessage, afkData.player.getPersistentID()));
@@ -88,7 +88,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         afkData.player.sendPlayerAbilities();
         afkList.add(afkData.player.getPersistentID());
 
-        if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(afkData.player, NOTICEPERM)))
+        if (PermissionsManager.checkPerm(afkData.player, NOTICEPERM))
         {
             ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
                     String.format(outMessage, afkData.player.getPersistentID()));
@@ -102,13 +102,13 @@ public class CommandAFK extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(NOTICEPERM, RegGroup.MEMBERS);
+        PermissionsManager.registerPermission(NOTICEPERM, RegisteredPermValue.TRUE);
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

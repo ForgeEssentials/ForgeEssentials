@@ -1,16 +1,17 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
+import java.io.File;
+
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 
-import java.io.File;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * This module handles Deathchest and respawn debuffs.
@@ -42,14 +43,14 @@ public class ModuleAfterlife {
     {
         deathchest.load();
         FMLCommonHandler.instance().bus().register(respawnDebuff);
-        APIRegistry.permReg.registerPermissionLevel(BASEPERM, RegGroup.OWNERS);
+        PermissionsManager.registerPermission(BASEPERM, RegisteredPermValue.OP);
 
-        APIRegistry.permReg.registerPermissionLevel(RespawnDebuffHandler.BYPASSPOTION, RegGroup.OWNERS);
-        APIRegistry.permReg.registerPermissionLevel(RespawnDebuffHandler.BYPASSSTATS, RegGroup.OWNERS);
+        PermissionsManager.registerPermission(RespawnDebuffHandler.BYPASSPOTION, RegisteredPermValue.OP);
+        PermissionsManager.registerPermission(RespawnDebuffHandler.BYPASSSTATS, RegisteredPermValue.OP);
 
-        APIRegistry.permReg.registerPermissionLevel(Deathchest.PERMISSION_BYPASS, null);
-        APIRegistry.permReg.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.MEMBERS);
-        APIRegistry.permReg.registerPermissionLevel(Deathchest.PERMISSION_MAKE, RegGroup.OWNERS);
+        PermissionsManager.registerPermission(Deathchest.PERMISSION_BYPASS, null);
+        PermissionsManager.registerPermission(Deathchest.PERMISSION_MAKE, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(Deathchest.PERMISSION_MAKE, RegisteredPermValue.OP);
     }
 
     @FEModule.ServerStop

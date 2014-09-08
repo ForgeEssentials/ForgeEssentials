@@ -1,14 +1,15 @@
 package com.forgeessentials.util;
 
-import com.google.common.base.Throwables;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Level;
+
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
+import com.google.common.base.Throwables;
 
 public class DBConnector {
     EnumDBType loadedType;

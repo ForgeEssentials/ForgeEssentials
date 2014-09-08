@@ -1,18 +1,20 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandServerSettings extends FEcmdModuleCommands {
     public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MOTD", "spawnProtection", "gamemode");
@@ -183,9 +185,9 @@ public class CommandServerSettings extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

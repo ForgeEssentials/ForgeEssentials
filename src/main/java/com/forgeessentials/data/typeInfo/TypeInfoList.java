@@ -1,14 +1,18 @@
 package com.forgeessentials.data.typeInfo;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.data.api.TypeMultiValInfo;
 import com.forgeessentials.util.OutputHandler;
-
-import java.lang.reflect.Array;
-import java.util.*;
-import java.util.logging.Level;
 
 public class TypeInfoList extends TypeMultiValInfo {
     public static final String POS = "ElementPos";

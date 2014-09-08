@@ -1,10 +1,11 @@
 package com.forgeessentials.scripting;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.FunctionHelper;
 
 public class CommandScript extends ForgeEssentialsCommandBase {
 
@@ -64,10 +65,10 @@ public class CommandScript extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.ZONE_ADMINS;
+        return RegisteredPermValue.OP;
     }
 
 }

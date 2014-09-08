@@ -1,10 +1,11 @@
 package com.forgeessentials.economy;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import java.io.File;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 
-import java.io.File;
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 public class ConfigEconomy extends ModuleConfigBase {
     private Configuration config;

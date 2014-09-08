@@ -1,10 +1,11 @@
 package com.forgeessentials.auth.lists;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
-import net.minecraft.command.ICommandSender;
 
 public class CommandVIP extends ForgeEssentialsCommandBase {
 
@@ -19,11 +20,11 @@ public class CommandVIP extends ForgeEssentialsCommandBase {
     {
         if (args.length >= 2 && args[0].equalsIgnoreCase("add"))
         {
-            APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.vip", true, "_GLOBAL_");
+            APIRegistry.permissionManager.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.vip", true, "_GLOBAL_");
         }
         else if (args.length >= 2 && args[0].equalsIgnoreCase("remove"))
         {
-            APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.vip", false, "_GLOBAL_");
+            APIRegistry.permissionManager.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.vip", false, "_GLOBAL_");
         }
     }
 
@@ -47,10 +48,9 @@ public class CommandVIP extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
 }

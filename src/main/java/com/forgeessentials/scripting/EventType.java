@@ -1,15 +1,16 @@
 package com.forgeessentials.scripting;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.OutputHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.OutputHandler;
 
 public enum EventType {
     LOGIN("login"),
@@ -74,7 +75,7 @@ public enum EventType {
         // now run group scripts - must be global
         try
         {
-            File gscript = new File(event.group, APIRegistry.perms.getHighestGroup(player).name + ".txt");
+            File gscript = new File(event.group, APIRegistry.permissionManager.getHighestGroup(player).name + ".txt");
             OutputHandler.felog.info("Reading command script file " + gscript.getAbsolutePath());
             FileInputStream stream = new FileInputStream(gscript);
             InputStreamReader streamReader = new InputStreamReader(stream);
@@ -103,7 +104,7 @@ public enum EventType {
         }
         catch (Exception e)
         {
-            OutputHandler.felog.warning("Could not find command script for group " + APIRegistry.perms.getHighestGroup(player).toString() + ", ignoring!");
+            OutputHandler.felog.warning("Could not find command script for group " + APIRegistry.permissionManager.getHighestGroup(player).toString() + ", ignoring!");
         }
         finally
         {

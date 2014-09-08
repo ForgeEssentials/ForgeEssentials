@@ -1,47 +1,134 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.api.permissions.query.PermQuery;
-import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
-import com.forgeessentials.api.permissions.query.PropQuery;
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-@SuppressWarnings("rawtypes")
-public interface IPermissionsHelper {
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraftforge.permissions.api.IPermissionsProvider;
 
-    /**
-     * Check if a permissions is allowed
-     *
-     * @param query A PermQuery object
-     * @return true if allowed, false if not.
-     */
+import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.util.selections.WorldPoint;
 
-    boolean checkPermAllowed(PermQuery query);
+public interface IPermissionsManager extends IPermissionsProvider {
     
-    // moved to forge API 
-    // boolean checkPermAllowed(EntityPlayer player, String node);
+	/**
+	 * Checks a permission for a player
+	 * @param player
+	 * @param permissionNode
+	 * @return
+	 */
+	boolean checkPermission(EntityPlayer player, String permissionNode);
 
-    PermResult checkPermResult(PermQuery query);
+	/**
+	 * Gets a permission-property for a player
+	 * @param player
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	String getPermissionProperty(EntityPlayer player, String permissionNode);
 
-    /**
-     * populates the given PropQuery with a value.
-     */
-    void getPermissionProp(PropQuery query);
+	/**
+	 * Gets a permission-property for a player as integer
+	 * @param player
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	Integer getPermissionPropertyInt(EntityPlayer player, String permissionNode);
 
+	/**
+	 * Checks a permission for a player at a certain position
+	 * @param player null or player
+	 * @param targetPoint
+	 * @param permissionNode
+	 * @return
+	 */
+	boolean checkPermission(EntityPlayer player, WorldPoint targetPoint, String permOverride);
+
+	/**
+	 * Gets a permission-property for a player at a certain position
+	 * @param playernull or player
+	 * @param targetPoint
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	String getPermissionProperty(EntityPlayer player, WorldPoint targetPoint, String permissionNode);
+
+	/**
+	 * Checks a permission for a player in a certain area
+	 * @param player null or player
+	 * @param targetArea
+	 * @param permissionNode
+	 * @return
+	 */
+	boolean checkPermission(EntityPlayer player, AreaBase targetArea, String permOverride);
+
+	/**
+	 * Gets a permission-property for a player in a certain area
+	 * @param playernull or player
+	 * @param targetArea
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	String getPermissionProperty(EntityPlayer player, AreaBase targetArea, String permissionNode);
+	
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Get zones that cover the point. Result is ordered by priority.
+	 * @param worldPoint
+	 * @return
+	 */
+	List<Zone> getZonesAt(WorldPoint worldPoint);
+
+	/**
+	 * Get area-zones that cover the point. Result is ordered by priority.
+	 * @param worldPoint
+	 * @return
+	 */
+	List<AreaZone> getAreaZonesAt(WorldPoint worldPoint);
+	
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Registers a permission property
+	 * @param permissionNode
+	 * @param value
+	 */
+	void registerPermissionProperty(String permissionNode, String defaultValue);
+	
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Returns the global zone
+	 * @return
+	 */
+	GlobalZone getGlobalZone();
+
+	/**
+	 * Returns the world-zone for the specified world
+	 * @param world
+	 * @return
+	 */
+	WorldZone getWorldZone(World world);
+
+	// ---------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------
+	
+	
     /**
      * Create a group within a zone
      *
      * @param groupName Name of the group
-     * @param zoneName  Name of the zone the group is under
      * @param prefix    Chat prefix
      * @param suffix    Chat suffix
      * @param parent    Parent group
      * @param priority  Priority that the group should be checked in
      * @return Group created
      */
-    Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority);
+    Group createGroup(String groupName, String prefix, String suffix, String parent, int priority);
 
     /**
      * Set a permissions for a player
@@ -50,9 +137,9 @@ public interface IPermissionsHelper {
      * @param permission The permissions node name
      * @param allow      Is the permissions allowed or denied
      * @param zoneID     The zone in which the permissions takes effect
-     * @return
+     * @return null on success, error message otherwise
      */
-    String setPlayerPermission(UUID username, String permission, boolean allow, String zoneID);
+    String setPlayerPermission(UUID username, String permission, boolean allow, Zone zone);
 
     /**
      * Set a permissions for a group
@@ -61,7 +148,7 @@ public interface IPermissionsHelper {
      * @param permission The permissions node name
      * @param allow      Is the permissions allowed or denied
      * @param zoneID     The zone in which the permissions takes effect
-     * @return
+     * @return null on success, error message otherwise
      */
     String setGroupPermission(String group, String permission, boolean allow, String zoneID);
 
@@ -72,7 +159,7 @@ public interface IPermissionsHelper {
      * @param permission The permissions node name
      * @param value      Value of the permissions prop
      * @param zoneID     The zone in which the permissions takes effect
-     * @return
+     * @return null on success, error message otherwise
      */
     String setPlayerPermissionProp(UUID username, String permission, String value, String zoneID);
 
@@ -82,7 +169,7 @@ public interface IPermissionsHelper {
      * @param permission The permissions node name
      * @param value      Value of the permissions prop
      * @param zoneID     The zone in which the permissions takes effect
-     * @return
+     * @return null on success, error message otherwise
      */
     String setGroupPermissionProp(String group, String permission, String value, String zoneID);
 
@@ -137,7 +224,7 @@ public interface IPermissionsHelper {
 
     ArrayList getGroupPermissionProps(String target, String zone);
 
-    Group getDEFAULT();
+    Group getDefaultGroup();
 
     String getEPPrefix();
 
@@ -148,4 +235,5 @@ public interface IPermissionsHelper {
     void setEPSuffix(String ePSuffix);
 
     UUID getEntryPlayer();
+
 }

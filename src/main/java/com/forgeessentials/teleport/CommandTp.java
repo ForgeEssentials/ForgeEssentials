@@ -1,20 +1,25 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.*;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.HashMap;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.HashMap;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.TeleportCenter;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WarpPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandTp extends ForgeEssentialsCommandBase {
 
@@ -52,7 +57,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
                 OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
-        else if (args.length == 2 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
+        else if (args.length == 2 && PermissionsManager.checkPerm(sender, getPermissionNode() + ".others"))
         {
 
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
@@ -194,9 +199,9 @@ public class CommandTp extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

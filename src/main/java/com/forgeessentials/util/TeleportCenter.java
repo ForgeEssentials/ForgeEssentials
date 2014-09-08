@@ -1,14 +1,16 @@
 package com.forgeessentials.util;
 
+import java.util.ArrayList;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager;
+
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.util.selections.WarpPoint;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.ArrayList;
 
 /**
  * Use this for all TPs. This system does it all for you: warmup, cooldown,
@@ -27,8 +29,7 @@ public class TeleportCenter {
 
     public static void addToTpQue(WarpPoint point, EntityPlayer player)
     {
-        if (PlayerInfo.getPlayerInfo(player.getPersistentID()).TPcooldown != 0 && !APIRegistry.perms
-                .checkPermAllowed(new PermQueryPlayer(player, BYPASS_COOLDOWN)))
+        if (PlayerInfo.getPlayerInfo(player.getPersistentID()).TPcooldown != 0 && !PermissionsManager.checkPerm(player, BYPASS_COOLDOWN))
         {
             ChatUtils.sendMessage(player,
                     String.format("Cooldown still active. %s seconds to go.",
@@ -38,7 +39,7 @@ public class TeleportCenter {
         {
             PlayerInfo.getPlayerInfo(player.getPersistentID()).TPcooldown = tpCooldown;
             TPdata data = new TPdata(point, player);
-            if (tpWarmup == 0 || APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASS_WARMUP)))
+            if (tpWarmup == 0 || PermissionsManager.checkPerm(player, BYPASS_WARMUP))
             {
                 data.doTP();
             }

@@ -1,7 +1,12 @@
 package com.forgeessentials.permissions;
 
+import java.io.File;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.CommandSetChecker;
@@ -12,127 +17,126 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.permissions.autoPromote.AutoPromote;
 import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
 import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
-import com.forgeessentials.permissions.commands.CommandFEPerm;
+import com.forgeessentials.permissions.commands.CommandPermissions;
+import com.forgeessentials.permissions.commands.CommandTestPermission;
 import com.forgeessentials.permissions.commands.CommandZone;
-import com.forgeessentials.permissions.forge.ForgePermissionsHelper;
+import com.forgeessentials.permissions.core.ZonedPermissionManager;
 import com.forgeessentials.util.TeleportCenter;
-import com.forgeessentials.util.events.modules.*;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.server.CommandHandlerForge;
-
-import java.io.File;
+import com.forgeessentials.util.events.modules.FEModuleInitEvent;
+import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
+import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions {
-    public static SqlHelper sql;
+	public static SqlHelper sql;
 
-    @FEModule.Config
-    public static ConfigPermissions config;
+	@FEModule.Config
+	public static ConfigPermissions config;
 
-    @FEModule.ModuleDir
-    public static File permsFolder;
+	@FEModule.ModuleDir
+	public static File permsFolder;
 
-    protected static AbstractDataDriver data;
-    private AutoPromoteManager autoPromoteManager;
+	protected static AbstractDataDriver data;
+	private AutoPromoteManager autoPromoteManager;
 
-    public static void regPerms()
-    {
-        APIRegistry.permReg.registerPermissionLevel("fe.perm", RegGroup.OWNERS);
-        APIRegistry.permReg.registerPermissionLevel("fe.perm._ALL_", RegGroup.OWNERS, true);
-        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.define", RegGroup.OWNERS);
-        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.redefine._ALL_", RegGroup.OWNERS);
-        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.remove._ALL_", RegGroup.OWNERS);
-        APIRegistry.permReg.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
-        APIRegistry.permReg.registerPermissionLevel(TeleportCenter.BYPASS_COOLDOWN, RegGroup.OWNERS);
+	public static void regPerms()
+	{
+		PermissionsManager.registerPermission("fe.perm", RegisteredPermValue.OP);
+		PermissionsManager.registerPermission("fe.perm.*", RegisteredPermValue.OP);
+		PermissionsManager.registerPermission("fe.perm.zone.define", RegisteredPermValue.OP);
+		PermissionsManager.registerPermission("fe.perm.zone.redefine.*", RegisteredPermValue.OP);
+		PermissionsManager.registerPermission("fe.perm.zone.remove.*", RegisteredPermValue.OP);
+		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
+		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
 
-        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone", RegGroup.ZONE_ADMINS);
-        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.setparent", RegGroup.ZONE_ADMINS);
-        APIRegistry.permReg.registerPermissionLevel("fe.perm.autoPromote", RegGroup.ZONE_ADMINS);
+		PermissionsManager.registerPermission("fe.perm.zone", RegisteredPermValue.OP);
+		PermissionsManager.registerPermission("fe.perm.zone.setparent", RegisteredPermValue.OP);
+		PermissionsManager.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
 
-        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.info._ALL_", RegGroup.MEMBERS);
-        APIRegistry.permReg.registerPermissionLevel("fe.perm.zone.list", RegGroup.MEMBERS);
+		PermissionsManager.registerPermission("fe.perm.zone.info.*", RegisteredPermValue.TRUE);
+		PermissionsManager.registerPermission("fe.perm.zone.list", RegisteredPermValue.TRUE);
 
-        APIRegistry.permReg.registerPermissionLevel("fe.perm.list", RegGroup.GUESTS);
+		PermissionsManager.registerPermission("fe.perm.list", RegisteredPermValue.TRUE);
 
-        CommandSetChecker.regMCOverrides();
-        APIRegistry.permReg.registerPermissionLevel("fe.core.info", RegGroup.OWNERS);
+		CommandSetChecker.regMCOverrides();
+		PermissionsManager.registerPermission("fe.core.info", RegisteredPermValue.OP);
 
-    }
+	}
 
-    @FEModule.PreInit
-    public void preLoad(FEModulePreInitEvent e)
-    {
-        APIRegistry.zones = new ZoneHelper();
-        APIRegistry.perms = new PermissionsHelper();// new one for new API
+	@FEModule.PreInit
+	public void preLoad(FEModulePreInitEvent e)
+	{
+		APIRegistry.permissionManager = new ZoneHelper();
+		APIRegistry.permissionManager = new PermissionsHelper();// new one for new API
 
-        MinecraftForge.EVENT_BUS.register(APIRegistry.zones);
-        MinecraftForge.EVENT_BUS.register(this);
-        APIRegistry.permReg = new PermRegLoader();
+		MinecraftForge.EVENT_BUS.register(APIRegistry.permissionManager);
+		MinecraftForge.EVENT_BUS.register(this);
+		APIRegistry.permissionManager = new PermissionRegistrator();
 
-        DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
+		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 
-        PermissionsManager.setPermProvider(new ForgePermissionsHelper());
-    }
+		// PermissionsManager.setPermProvider(new ForgePermissionsHelper());
+		PermissionsManager.setPermProvider(new ZonedPermissionManager());
+	}
 
-    @FEModule.Init
-    public void load(FEModuleInitEvent e)
-    {
-        // setup SQL
-        sql = new SqlHelper(config);
+	@FEModule.Init
+	public void load(FEModuleInitEvent e)
+	{
+		// setup SQL
+		sql = new SqlHelper(config);
 
-        DataStorageManager.registerSaveableType(Zone.class);
-        DataStorageManager.registerSaveableType(AutoPromote.class);
+		DataStorageManager.registerSaveableType(Zone.class);
+		DataStorageManager.registerSaveableType(AutoPromote.class);
 
-        MinecraftForge.EVENT_BUS.register(new PermsEventHandler());
-    }
+		MinecraftForge.EVENT_BUS.register(new PermsEventHandler());
+	}
 
-    @FEModule.ServerInit
-    public void serverStarting(FEModuleServerInitEvent e)
-    {
-        // load zones...
-        data = DataStorageManager.getReccomendedDriver();
-        ((ZoneHelper) APIRegistry.zones).loadZones();
+	@FEModule.ServerInit
+	public void serverStarting(FEModuleServerInitEvent e)
+	{
+		// load zones...
+		data = DataStorageManager.getReccomendedDriver();
+		((ZoneHelper) APIRegistry.permissionManager).loadZones();
 
-        if (config.importBool)
-        {
-            sql.importPerms(config.importDir);
-        }
+		if (config.importBool)
+		{
+			sql.importPerms(config.importDir);
+		}
 
-        // init perms and vMC command overrides
-        e.registerServerCommand(new CommandZone());
-        e.registerServerCommand(new CommandFEPerm());
-        e.registerServerCommand(new CommandAutoPromote());
+		// init perms and vMC command overrides
+		e.registerServerCommand(new CommandZone());
 
-        autoPromoteManager = new AutoPromoteManager();
+		e.registerServerCommand(new CommandPermissions());
+		e.registerServerCommand(new CommandTestPermission());
+		e.registerServerCommand(new CommandAutoPromote());
 
-        regPerms();
+		autoPromoteManager = new AutoPromoteManager();
 
-    }
+		regPerms();
 
-    @FEModule.ServerPostInit
-    public void serverStarted(FEModuleServerPostInitEvent e)
-    {
-        sql.putRegistrationPerms(APIRegistry.permReg.getRegisteredPerms());
-    }
+	}
 
-    @FEModule.ServerStop
-    public void serverStopping(FEModuleServerStopEvent e)
-    {
-        // save all the zones
-        for (Zone zone : APIRegistry.zones.getZoneList())
-        {
-            if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
-            {
-                continue;
-            }
-            data.saveObject(ZoneHelper.container, zone);
-        }
+	@FEModule.ServerPostInit
+	public void serverStarted(FEModuleServerPostInitEvent e)
+	{
+		sql.putRegistrationPerms(APIRegistry.permissionManager.getRegisteredPerms());
+	}
 
-        autoPromoteManager.stop();
-    }
+	@FEModule.ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
+	{
+		// save all the zones
+		for (Zone zone : APIRegistry.permissionManager.getZoneList())
+		{
+			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
+			{
+				continue;
+			}
+			data.saveObject(ZoneHelper.container, zone);
+		}
+
+		autoPromoteManager.stop();
+	}
 }

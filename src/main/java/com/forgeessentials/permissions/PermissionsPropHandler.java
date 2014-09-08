@@ -27,11 +27,11 @@ public final class PermissionsPropHandler {
         }
         else if (query instanceof PropQueryBlanketSpot)
         {
-            applied = APIRegistry.zones.getWhichZoneIn(((PropQueryBlanketSpot) query).spot);
+            applied = APIRegistry.permissionManager.getWhichZoneIn(((PropQueryBlanketSpot) query).spot);
         }
         else if (query instanceof PropQueryPlayerSpot)
         {
-            applied = APIRegistry.zones.getWhichZoneIn(((PropQueryPlayerSpot) query).spot);
+            applied = APIRegistry.permissionManager.getWhichZoneIn(((PropQueryPlayerSpot) query).spot);
         }
 
         if (query instanceof PropQueryPlayer)
@@ -63,12 +63,12 @@ public final class PermissionsPropHandler {
 
     private static Zone getZone(PropQueryPlayerSpot query)
     {
-        return APIRegistry.zones.getWhichZoneIn(query.spot);
+        return APIRegistry.permissionManager.getWhichZoneIn(query.spot);
     }
 
     private static Zone getZone(PropQueryBlanketSpot query)
     {
-        return APIRegistry.zones.getWhichZoneIn(query.spot);
+        return APIRegistry.permissionManager.getWhichZoneIn(query.spot);
     }
 
     private static Zone getZone(PropQueryBlanketZone query)
@@ -90,13 +90,13 @@ public final class PermissionsPropHandler {
         {
             // get the permissions... Tis automatically checks permision
             // parents...
-            result = SqlHelper.getPermissionProp(event.player.getPersistentID().toString(), false, event.perm, tempZone.getZoneName());
+            result = SqlHelper.getPermissionProp(event.player.getPersistentID().toString(), false, event.perm, tempZone.getName());
 
             // if its unknown still
             if (result == null)
             {
                 // get all the players groups here.
-                groups = APIRegistry.perms.getApplicableGroups(event.player.getPersistentID(), false, tempZone.getZoneName());
+                groups = APIRegistry.perms.getApplicableGroups(event.player.getPersistentID(), false, tempZone.getName());
 
                 // iterates through the groups.
                 for (int i = 0; result == null && i < groups.size(); i++)
@@ -105,7 +105,7 @@ public final class PermissionsPropHandler {
                     while (group != null && result == null)
                     {
                         // checks the permissions for the group.
-                        result = SqlHelper.getPermissionProp(group.name, true, event.perm, tempZone.getZoneName());
+                        result = SqlHelper.getPermissionProp(group.name, true, event.perm, tempZone.getName());
 
                         // sets the group to its parent.
                         group = SqlHelper.getGroupForName(group.parent);
@@ -116,13 +116,13 @@ public final class PermissionsPropHandler {
             // check defaults... unless it has the override..
             if (result == null)
             {
-                result = SqlHelper.getPermissionProp(APIRegistry.perms.getDEFAULT().name, true, event.perm, tempZone.getZoneName());
+                result = SqlHelper.getPermissionProp(APIRegistry.perms.getDEFAULT().name, true, event.perm, tempZone.getName());
             }
 
             // still unknown? check parent zones.
             if (result == null)
             {
-                if (tempZone == APIRegistry.zones.getGLOBAL())
+                if (tempZone == APIRegistry.permissionManager.getGlobalZone())
                 {
                     // default deny.
                     result = "";
@@ -130,7 +130,7 @@ public final class PermissionsPropHandler {
                 else
                 {
                     // get the parent of the zone.
-                    tempZone = APIRegistry.zones.getZone(tempZone.parent);
+                    tempZone = APIRegistry.permissionManager.getZone(tempZone.parent);
                 }
             }
         }
@@ -148,7 +148,7 @@ public final class PermissionsPropHandler {
         Zone tempZone = zone;
         while (result == null)
         {
-            result = SqlHelper.getPermissionProp(APIRegistry.perms.getDEFAULT().name, true, perm, tempZone.getZoneName());
+            result = SqlHelper.getPermissionProp(APIRegistry.perms.getDEFAULT().name, true, perm, tempZone.getName());
 
             // still unknown? check parent zones.
             if (result == null)
@@ -157,7 +157,7 @@ public final class PermissionsPropHandler {
                 {
                     return result;
                 }
-                else if (tempZone == APIRegistry.zones.getGLOBAL())
+                else if (tempZone == APIRegistry.permissionManager.getGlobalZone())
                 {
                     // default deny.
                     result = null;
@@ -165,7 +165,7 @@ public final class PermissionsPropHandler {
                 else
                 {
                     // get the parent of the zone.
-                    tempZone = APIRegistry.zones.getZone(tempZone.parent);
+                    tempZone = APIRegistry.permissionManager.getZone(tempZone.parent);
                 }
             }
         }

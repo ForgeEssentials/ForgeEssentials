@@ -1,13 +1,14 @@
 package com.forgeessentials.worldborder;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.worldborder.Effects.IEffect;
+import java.io.File;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import java.io.File;
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.worldborder.Effects.IEffect;
 
 /**
  * This generates the configuration structure

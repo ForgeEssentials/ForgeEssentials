@@ -1,20 +1,25 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.api.permissions.query.PropQueryPlayerZone;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.*;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.TeleportCenter;
+import com.forgeessentials.util.selections.WarpPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandSpawn extends ForgeEssentialsCommandBase {
     @Override
@@ -26,10 +31,10 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        Zone zone = APIRegistry.zones.getWorldZone(sender.worldObj);
+        Zone zone = APIRegistry.permissionManager.getWorldZone(sender.worldObj);
         if (args.length >= 1)
         {
-            if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
+            if (!PermissionsManager.checkPerm(sender, getPermissionNode() + ".others"))
             {
                 OutputHandler.chatError(sender,
                         "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -40,11 +45,8 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
             {
                 PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(player);
 
-                PropQueryPlayerZone query = new PropQueryPlayerZone(player, CommandSetSpawn.SPAWN_PROP, zone, true);
-                APIRegistry.perms.getPermissionProp(query);
-
-                String val = query.getStringValue();
-                String[] split = val.split("[;_]");
+                String prop = zone.getPlayerPermission(player, CommandSetSpawn.SPAWN_PROP);
+                String[] split = prop.split("[;_]");
 
                 int dim = Integer.parseInt(split[0]);
                 int x = Integer.parseInt(split[1]);
@@ -66,11 +68,8 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 0)
         {
-            PropQueryPlayerZone query = new PropQueryPlayerZone(sender, CommandSetSpawn.SPAWN_PROP, zone, true);
-            APIRegistry.perms.getPermissionProp(query);
-
-            String val = query.getStringValue();
-            String[] split = val.split("[;_]");
+            String prop = zone.getPlayerPermission(sender, CommandSetSpawn.SPAWN_PROP);
+            String[] split = prop.split("[;_]");
 
             int dim = Integer.parseInt(split[0]);
             int x = Integer.parseInt(split[1]);
@@ -135,9 +134,9 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

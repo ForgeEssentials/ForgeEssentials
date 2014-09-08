@@ -1,5 +1,11 @@
 package com.forgeessentials.permissions.autoPromote;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
@@ -9,11 +15,6 @@ import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
-import net.minecraft.entity.player.EntityPlayerMP;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 
 @SaveableObject
 public class AutoPromote {
@@ -75,9 +76,9 @@ public class AutoPromote {
             {
                 String groupName = promoteList.get(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() + "");
                 // Only add player to group if he isn't already.
-                if (!APIRegistry.perms.getApplicableGroups(player.getPersistentID(), false, zone).contains(APIRegistry.getAsFEGroup(groupName)))
+                if (!APIRegistry.permissionManager.getApplicableGroups(player.getPersistentID(), false, zone).contains(APIRegistry.getAsFEGroup(groupName)))
                 {
-                    APIRegistry.perms.addPlayerToGroup(groupName, player.getPersistentID(), zone);
+                    APIRegistry.permissionManager.addPlayerToGroup(groupName, player.getPersistentID(), zone);
                     if (sendMsg)
                     {
                         String msg = this.msg;

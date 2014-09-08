@@ -1,19 +1,19 @@
 package com.forgeessentials.api;
 
-import com.forgeessentials.api.permissions.Group;
-import com.forgeessentials.api.permissions.IPermRegHelper;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.permissions.IZoneManager;
-import com.forgeessentials.api.snooper.Response;
-import cpw.mods.fml.common.FMLLog;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.api.IGroup;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.api.IGroup;
+
+import com.forgeessentials.api.permissions.Group;
+import com.forgeessentials.api.permissions.IPermissionsManager;
+import com.forgeessentials.api.snooper.Response;
+
+import cpw.mods.fml.common.FMLLog;
 
 /**
  * This is the central access point for all FE API functions
@@ -26,15 +26,9 @@ public class APIRegistry {
     public static IEconManager wallet;
 
     // Use to call API functions from the permissions module.
-    public static IPermissionsHelper perms;
+    public static IPermissionsManager permissionManager;
 
-    // Use to access the zone manager.
-    public static IZoneManager zones;
     private static Method ResponseRegistry_regsisterResponce;
-
-    // Use to access permissions registration helper.
-    public static IPermRegHelper permReg;
-
 
     /**
      * Snooper method to register your responses.

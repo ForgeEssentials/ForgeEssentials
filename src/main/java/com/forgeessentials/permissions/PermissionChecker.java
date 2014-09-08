@@ -38,7 +38,7 @@ public class PermissionChecker implements Comparable {
 
     /**
      * @return the qualified full name of the parent of this permissions's
-     * parent. returns "_ALL_" if there is no parent. NULL if this
+     * parent. returns "*" if there is no parent. NULL if this
      * permissions is already _ALL_
      */
     public String getImmediateParent()

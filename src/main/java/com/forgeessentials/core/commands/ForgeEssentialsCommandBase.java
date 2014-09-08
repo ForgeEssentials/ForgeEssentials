@@ -1,18 +1,18 @@
 package com.forgeessentials.core.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
+import java.util.List;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
@@ -132,7 +132,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         }
         else
         {
-            return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, perm));
+            //return APIRegistry.perms.checkPermAllowed(player, perm);
+        	return PermissionsManager.checkPerm(player, perm);
         }
     }
 
@@ -149,7 +150,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
      */
     public abstract String getPermissionNode();
 
-    public abstract RegGroup getReggroup();
+    public abstract RegisteredPermValue getDefaultPermission();
 
     @Override
     public int compareTo(Object o)

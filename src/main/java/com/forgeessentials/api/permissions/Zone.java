@@ -1,199 +1,119 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.Selection;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.FunctionHelper;
-import net.minecraft.world.World;
+import java.util.HashMap;
+import java.util.Map;
 
-@SaveableObject
-public class Zone extends WorldArea implements Comparable<Object> {
-    @SaveableField
-    public int priority;    // lowest priority is 0
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
-    @UniqueLoadingKey
-    @SaveableField
-    private String zoneID;    // unique string name
+public abstract class Zone {
 
-    @SaveableField
-    public String parent;    // the unique name of the parent.
+	public static final String DEFAULT_GROUP = "*";
+	public static final String PERMISSION_ASTERIX = "*";
+	public static final String PERMISSION_FALSE = "false";
+	public static final String PERMISSION_TRUE = "true";
 
-    public Zone(String name, Selection sel, Zone parent)
-    {
-        super(parent.dim, sel);
-        zoneID = name;
-        this.parent = parent.zoneID;
-    }
+	private Map<String, Map<String, String>> playerPermissions = new HashMap<String, Map<String, String>>();
 
-    public Zone(String name, Selection sel, World world)
-    {
-        super(world, sel);
-        zoneID = name;
-        parent = FunctionHelper.getZoneWorldString(world);
-    }
+	private Map<String, Map<String, String>> groupPermissions = new HashMap<String, Map<String, String>>();
 
-    /**
-     * used to construct Global and World zones.
-     *
-     * @param name
-     */
-    public Zone(String name, int dimension)
-    {
-        super(dimension, new Point(0, 0, 0), new Point(0, 0, 0));
-        zoneID = name;
-        parent = APIRegistry.zones.getGLOBAL().zoneID;
-    }
+	public abstract boolean isPlayerInZone(EntityPlayer player);
 
-    /**
-     * special one just for the SUPER and GLOBAL zones
-     *
-     * @param name
-     */
-    public Zone(String name)
-    {
-        super(0, new Point(0, 0, 0), new Point(0, 0, 0));
-        zoneID = name;
-        parent = null;
-    }
+	public abstract String getName();
 
-    /**
-     * used for reconstruct method only.
-     *
-     * @param sel
-     * @param dim
-     */
-    private Zone(Selection sel, int dim)
-    {
-        super(dim, sel.getLowPoint(), sel.getHighPoint());
-    }
+	public String getPlayerPermission(String uuid, String permissionNode)
+	{
+		Map<String, String> map = getPlayerPermissions(uuid);
+		if (map != null)
+		{
+			return map.get(permissionNode);
+		}
+		return null;
+	}
+	
+	public String getPlayerPermission(EntityPlayer player, String permissionNode)
+	{
+		return getPlayerPermission(player.getPersistentID().toString(), permissionNode);
+	}
 
-    public boolean isParentOf(Zone zone)
-    {
-        if (parent == null)
-        {
-            return true;
-        }
-        else if (zone == null)
-        {
-            return false;
-        }
-        else if (zone.parent == null)
-        {
-            return false;
-        }
-        else if (zoneID.equals(zone.parent))
-        {
-            return true;
-        }
-        else if (zone.parent.equals(APIRegistry.zones.getGLOBAL().zoneID))
-        {
-            return false;
-        }
-        else
-        {
-            return isParentOf(APIRegistry.zones.getZone(zone.parent));
-        }
-    }
+	public String getGroupPermission(String group, String permissionNode)
+	{
+		Map<String, String> map = getGroupPermissions(group);
+		if (map != null)
+		{
+			return map.get(permissionNode);
+		}
+		return null;
+	}
 
-    /**
-     * @return if this Permission is a child of the given Permission.
-     */
-    public boolean isChildOf(Zone zone)
-    {
-        if (zone.parent == null)
-        {
-            return false;
-        }
-        else if (zone.parent.equals(APIRegistry.zones.getGLOBAL().zoneID))
-        {
-            return dim == zone.dim;
-        }
-        else if (zone.zoneID.equals(parent))
-        {
-            return true;
-        }
-        else
-        {
-            return APIRegistry.zones.getZone(parent).isChildOf(zone);
-        }
-    }
+	public Boolean checkPlayerPermission(String uuid, String permissionNode)
+	{
+		Map<String, String> map = getPlayerPermissions(uuid);
+		if (map != null)
+		{
+			return !map.get(permissionNode).equals(Zone.PERMISSION_FALSE);
+		}
+		return null;
+	}
 
-    /**
-     * @return The Unique ID of this Zone.
-     */
-    public String getZoneName()
-    {
-        return zoneID;
-    }
+	public Boolean checkGroupPermission(String group, String permissionNode)
+	{
+		Map<String, String> map = getGroupPermissions(group);
+		if (map != null)
+		{
+			return !map.get(permissionNode).equals(Zone.PERMISSION_FALSE);
+		}
+		return null;
+	}
 
-    @Override
-    public int compareTo(Object o)
-    {
-        if (!(o instanceof Zone))
-        {
-            return Integer.MIN_VALUE;
-        }
+	public Map<String, String> getPlayerPermissions(String uuid)
+	{
+		return playerPermissions.get(uuid);
+	}
 
-        if (equals(o))
-        {
-            return 0;
-        }
+	public Map<String, String> getOrCreatePlayerPermissions(String uuid)
+	{
+		Map<String, String> map = playerPermissions.get(uuid);
+		if (map == null)
+		{
+			map = new HashMap<String, String>();
+			playerPermissions.put(uuid, map);
+		}
+		return playerPermissions.get(uuid);
+	}
 
-        Zone zone = (Zone) o;
-        if (zone.isParentOf(this))
-        {
-            return 100;
-        }
-        else if (isParentOf(zone))
-        {
-            return -100;
-        }
-        else
-        {
-            return priority - zone.priority;
-        }
-    }
+	public void setPlayerPermission(String uuid, String permissionNode, String value)
+	{
+		Map<String, String> map = getOrCreatePlayerPermissions(uuid);
+		map.put(permissionNode, value);
+	}
 
-    public boolean isGlobalZone()
-    {
-        return parent == null;
-    }
+	public Map<String, String> getGroupPermissions(String group)
+	{
+		return groupPermissions.get(group);
+	}
 
-    public boolean isWorldZone()
-    {
-        if (parent == null)
-        {
-            return false;
-        }
-        return parent.equals(APIRegistry.zones.getGLOBAL().zoneID);
-    }
+	public Map<String, String> getOrCreateGroupPermissions(String group)
+	{
+		Map<String, String> map = groupPermissions.get(group);
+		if (map == null)
+		{
+			map = new HashMap<String, String>();
+			groupPermissions.put(group, map);
+		}
+		return groupPermissions.get(group);
+	}
 
-    @Reconstructor
-    private static Zone reconstruct(IReconstructData tag)
-    {
-        Point high = (Point) tag.getFieldValue("high");
-        Point low = (Point) tag.getFieldValue("low");
-        Selection sel = new Selection(high, low);
-        int dim = (Integer) tag.getFieldValue("dim");
+	public void setGroupPermission(String group, String permissionNode, String value)
+	{
+		Map<String, String> map = getOrCreateGroupPermissions(group);
+		map.put(permissionNode, value);
+	}
 
-        Zone zone = new Zone(sel, dim);
+	public void setGroupPermission(String group, String permissionNode, boolean allow)
+	{
+		setGroupPermission(group, permissionNode, allow ? Zone.PERMISSION_TRUE : Zone.PERMISSION_FALSE);
+	}
 
-        zone.zoneID = (String) tag.getFieldValue("zoneID");
-        zone.parent = (String) tag.getFieldValue("parent");
-        zone.priority = (Integer) tag.getFieldValue("priority");
 
-        return zone;
-    }
-
-    @Override
-    public String toString()
-    {
-        return zoneID + " " + super.toString();
-    }
 }

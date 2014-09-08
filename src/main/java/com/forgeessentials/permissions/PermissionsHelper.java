@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @SuppressWarnings("rawtypes")
 public class PermissionsHelper implements IPermissionsHelper{
-    private Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, APIRegistry.zones.getGLOBAL().getZoneName(), 0);
+    private Group DEFAULT = new Group(RegGroup.ZONE.toString(), " ", " ", null, APIRegistry.permissionManager.getGlobalZone().getName(), 0);
 
     public static PermissionsHelper INSTANCE;
 
@@ -86,7 +86,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     {
         try
         {
-            Zone zone = APIRegistry.zones.getZone(zoneID);
+            Zone zone = APIRegistry.permissionManager.getZone(zoneID);
             if (zone == null)
             {
                 return String.format("No zone by the name %s exists!", zoneID);
@@ -122,7 +122,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     {
         try
         {
-            Zone zone = APIRegistry.zones.getZone(zoneID);
+            Zone zone = APIRegistry.permissionManager.getZone(zoneID);
             if (zone == null)
             {
                 return String.format("No zone by the name %s exists!", zoneID);
@@ -158,7 +158,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     {
         try
         {
-            Zone zone = APIRegistry.zones.getZone(zoneID);
+            Zone zone = APIRegistry.permissionManager.getZone(zoneID);
 
             if (zone == null)
             {
@@ -200,7 +200,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     {
         try
         {
-            Zone zone = APIRegistry.zones.getZone(zoneID);
+            Zone zone = APIRegistry.permissionManager.getZone(zoneID);
             if (zone == null)
             {
                 return String.format("No zone by the name %s exists!", zoneID);
@@ -239,9 +239,9 @@ public class PermissionsHelper implements IPermissionsHelper{
     @Override
     public ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults)
     {
-        Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(player));
+        Zone zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(player));
 
-        return getApplicableGroups(player.getPersistentID(), includeDefaults, zone.getZoneName());
+        return getApplicableGroups(player.getPersistentID(), includeDefaults, zone.getName());
     }
 
     @Override
@@ -249,19 +249,19 @@ public class PermissionsHelper implements IPermissionsHelper{
     {
         ArrayList<Group> list = new ArrayList<Group>();
 
-        Zone zone = APIRegistry.zones.getZone(zoneID);
+        Zone zone = APIRegistry.permissionManager.getZone(zoneID);
 
         while (zone != null)
         {
-            list.addAll(SqlHelper.getGroupsForPlayer(player.toString(), zone.getZoneName()));
+            list.addAll(SqlHelper.getGroupsForPlayer(player.toString(), zone.getName()));
 
-            if (zone == APIRegistry.zones.getGLOBAL())
+            if (zone == APIRegistry.permissionManager.getGlobalZone())
             {
                 zone = null;
             }
             else
             {
-                zone = APIRegistry.zones.getZone(zone.parent);
+                zone = APIRegistry.permissionManager.getZone(zone.parent);
             }
         }
 
@@ -282,20 +282,20 @@ public class PermissionsHelper implements IPermissionsHelper{
     @Override
     public Group getHighestGroup(EntityPlayer player)
     {
-        Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(player));
+        Zone zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(player));
         TreeSet<Group> list = new TreeSet<Group>();
 
         ArrayList<Group> temp;
         while (zone != null && list.size() <= 0)
         {
-            temp = SqlHelper.getGroupsForPlayer(player.getPersistentID().toString(), zone.getZoneName());
+            temp = SqlHelper.getGroupsForPlayer(player.getPersistentID().toString(), zone.getName());
 
             if (!temp.isEmpty())
             {
                 list.addAll(temp);
             }
 
-            zone = APIRegistry.zones.getZone(zone.parent);
+            zone = APIRegistry.permissionManager.getZone(zone.parent);
         }
 
         if (list.size() == 0)

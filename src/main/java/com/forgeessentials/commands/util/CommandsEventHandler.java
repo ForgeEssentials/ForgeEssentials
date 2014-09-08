@@ -1,7 +1,23 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
+import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.permissions.PermissionsManager;
+
 import com.forgeessentials.commands.CommandVanish;
 import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.util.ChatUtils;
@@ -14,23 +30,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CommandsEventHandler {
     public static final String BYPASS_KIT_COOLDOWN = "fe.TickHandlerCommands.BypassKitCooldown";
@@ -116,7 +115,7 @@ public class CommandsEventHandler {
             {
                 if (e.entityPlayer.getCurrentEquippedItem().getItem() == Items.compass)
                 {
-                    if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, "fe.commands.jump")))
+                    if (PermissionsManager.checkPerm(e.entityPlayer, "fe.commands.jump"))
                     {
                         MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, false);
                         if (mop != null) {

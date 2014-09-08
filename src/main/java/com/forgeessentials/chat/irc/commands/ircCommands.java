@@ -1,8 +1,8 @@
 package com.forgeessentials.chat.irc.commands;
 
-import org.pircbotx.User;
-
 import java.util.ArrayList;
+
+import org.pircbotx.User;
 
 public class ircCommands {
 

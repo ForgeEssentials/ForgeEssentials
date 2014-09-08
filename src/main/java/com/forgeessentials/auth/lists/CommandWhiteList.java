@@ -1,12 +1,13 @@
 package com.forgeessentials.auth.lists;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.auth.AuthEventHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import net.minecraft.command.ICommandSender;
 
 public class CommandWhiteList extends ForgeEssentialsCommandBase {
 
@@ -45,11 +46,11 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("add"))
             {
-                APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.whitelist", true, "_GLOBAL_");
+                APIRegistry.permissionManager.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.whitelist", true, "_GLOBAL_");
             }
             else if (args[0].equalsIgnoreCase("remove"))
             {
-                APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.whitelist", false, "_GLOBAL_");
+                APIRegistry.permissionManager.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.whitelist", false, "_GLOBAL_");
             }
         }
     }
@@ -75,10 +76,10 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.ZONE_ADMINS;
+        return RegisteredPermValue.OP;
     }
 
 }

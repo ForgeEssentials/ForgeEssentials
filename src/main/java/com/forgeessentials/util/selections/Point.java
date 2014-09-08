@@ -1,13 +1,14 @@
 package com.forgeessentials.util.selections;
 
+import java.io.Serializable;
+
+import net.minecraft.entity.Entity;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import net.minecraft.entity.Entity;
-
-import java.io.Serializable;
 
 @SaveableObject(SaveInline = true)
 public class Point implements Serializable, Comparable<Point> {

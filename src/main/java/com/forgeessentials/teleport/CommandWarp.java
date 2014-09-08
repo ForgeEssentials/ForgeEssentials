@@ -1,19 +1,23 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.teleport.util.TeleportDataManager;
-import com.forgeessentials.teleport.util.Warp;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.*;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.teleport.util.TeleportDataManager;
+import com.forgeessentials.teleport.util.Warp;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.TeleportCenter;
+import com.forgeessentials.util.selections.WarpPoint;
 
 /**
  * Now uses TeleportCenter.
@@ -44,7 +48,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         {
             if (TeleportDataManager.warps.containsKey(args[0].toLowerCase()))
             {
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + "." + args[0].toLowerCase())))
+                if (PermissionsManager.checkPerm(sender, getPermissionNode( + "." + args[0].toLowerCase())))
                 {
                     Warp warp = TeleportDataManager.warps.get(args[0].toLowerCase());
                     PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
@@ -65,7 +69,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 2)
         {
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".admin")))
+            if (PermissionsManager.checkPerm(sender, getPermissionNode() + ".admin"))
             {
                 if (args[0].equalsIgnoreCase("set"))
                 {
@@ -171,9 +175,9 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

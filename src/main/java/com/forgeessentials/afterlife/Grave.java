@@ -1,18 +1,18 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import java.util.ArrayList;
+
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.permissions.PermissionsManager;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.selections.WorldPoint;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
 
 @SaveableObject
 public class Grave {
@@ -120,7 +120,7 @@ public class Grave {
         {
             return true;
         }
-        if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, Deathchest.PERMISSION_BYPASS)))
+        if (PermissionsManager.checkPerm(player, Deathchest.PERMISSION_BYPASS))
         {
             return true;
         }

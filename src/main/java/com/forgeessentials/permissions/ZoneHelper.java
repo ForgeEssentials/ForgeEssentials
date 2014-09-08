@@ -64,18 +64,18 @@ public class ZoneHelper implements IZoneManager {
             temp = (Zone) obj;
 
 			/*
-            if (temp == null || temp.getZoneName() == null || temp.getZoneName().isEmpty())
+            if (temp == null || temp.getName() == null || temp.getName().isEmpty())
 			{
 				continue;
 			}
 			*/
 
-            zoneMap.put(temp.getZoneName(), temp);
+            zoneMap.put(temp.getName(), temp);
 
-            exists = SqlHelper.doesZoneExist(temp.getZoneName());
+            exists = SqlHelper.doesZoneExist(temp.getName());
             if (!exists)
             {
-                SqlHelper.createZone(temp.getZoneName());
+                SqlHelper.createZone(temp.getName());
             }
         }
     }
@@ -96,10 +96,10 @@ public class ZoneHelper implements IZoneManager {
             Zone zone = new Zone(worldString, e.world.provider.dimensionId);
             worldZoneMap.put(worldString, zone);
 
-            boolean exists = SqlHelper.doesZoneExist(zone.getZoneName());
+            boolean exists = SqlHelper.doesZoneExist(zone.getName());
             if (!exists)
             {
-                SqlHelper.createZone(zone.getZoneName());
+                SqlHelper.createZone(zone.getName());
             }
         }
     }
@@ -135,7 +135,7 @@ public class ZoneHelper implements IZoneManager {
     @Override
     public boolean doesZoneExist(String zoneID)
     {
-        if (zoneID.equals(GLOBAL.getZoneName()))
+        if (zoneID.equals(GLOBAL.getName()))
         {
             return true;
         }
@@ -156,11 +156,11 @@ public class ZoneHelper implements IZoneManager {
         {
             return null;
         }
-        else if (zoneID.equalsIgnoreCase(GLOBAL.getZoneName()))
+        else if (zoneID.equalsIgnoreCase(GLOBAL.getName()))
         {
             return GLOBAL;
         }
-        else if (zoneID.equalsIgnoreCase(SUPER.getZoneName()))
+        else if (zoneID.equalsIgnoreCase(SUPER.getName()))
         {
             return SUPER;
         }
@@ -250,7 +250,7 @@ public class ZoneHelper implements IZoneManager {
         }
         }
 
-        putCache(new WorldPoint(world, p.x, p.y, p.z), end.getZoneName());
+        putCache(new WorldPoint(world, p.x, p.y, p.z), end.getName());
         return end;
     }
 
@@ -374,7 +374,7 @@ public class ZoneHelper implements IZoneManager {
     {
         for (Entry<WorldPoint, String> entry : pointCache.entrySet())
         {
-            if (deleted.getZoneName().equals(entry.getValue()))
+            if (deleted.getName().equals(entry.getValue()))
             {
                 pointCache.remove(entry.getKey());
             }
@@ -382,7 +382,7 @@ public class ZoneHelper implements IZoneManager {
 
         for (Entry<WorldArea, String> entry : areaCache.entrySet())
         {
-            if (deleted.getZoneName().equals(entry.getValue()))
+            if (deleted.getName().equals(entry.getValue()))
             {
                 areaCache.remove(entry.getKey());
             }

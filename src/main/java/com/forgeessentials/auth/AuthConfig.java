@@ -1,10 +1,11 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import java.io.File;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 
-import java.io.File;
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 public class AuthConfig extends ModuleConfigBase {
     private static final String CATEGORY_MAIN = "main";

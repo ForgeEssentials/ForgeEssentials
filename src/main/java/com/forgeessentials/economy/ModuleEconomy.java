@@ -1,14 +1,22 @@
 package com.forgeessentials.economy;
 
+import java.io.File;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.economy.commands.*;
+import com.forgeessentials.economy.commands.CommandAddToWallet;
+import com.forgeessentials.economy.commands.CommandGetWallet;
+import com.forgeessentials.economy.commands.CommandMoney;
+import com.forgeessentials.economy.commands.CommandPaidCommand;
+import com.forgeessentials.economy.commands.CommandPay;
+import com.forgeessentials.economy.commands.CommandRemoveWallet;
+import com.forgeessentials.economy.commands.CommandSellCommand;
+import com.forgeessentials.economy.commands.CommandSetWallet;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
 
-import java.io.File;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Call the WalletHandler class when working with Economy

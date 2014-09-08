@@ -1,7 +1,12 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.permissions.PermissionsManager;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
@@ -10,11 +15,6 @@ import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SaveableObject
 public class Kit {
@@ -125,7 +125,7 @@ public class Kit {
         }
         else
         {
-            if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, CommandsEventHandler.BYPASS_KIT_COOLDOWN)))
+            if (!PermissionsManager.checkPerm(player, CommandsEventHandler.BYPASS_KIT_COOLDOWN))
             {
                 PlayerInfo.getPlayerInfo(player.getPersistentID()).kitCooldown.put(getName(), getCooldown());
             }

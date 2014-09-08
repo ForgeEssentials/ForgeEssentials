@@ -1,6 +1,7 @@
 package com.forgeessentials.core.compat;
 
 import com.forgeessentials.util.OutputHandler;
+
 import cpw.mods.fml.common.Loader;
 
 public class EnvironmentChecker {

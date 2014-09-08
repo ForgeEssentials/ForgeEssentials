@@ -1,13 +1,18 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,9 +23,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.io.*;
-import java.util.*;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandRules extends FEcmdModuleCommands {
 
@@ -209,7 +219,7 @@ public class CommandRules extends FEcmdModuleCommands {
             if (args[0].equalsIgnoreCase("help"))
             {
                 OutputHandler.chatConfirmation(sender, " - /rules [#]");
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".edit")))
+                if (PermissionsManager.checkPerm(sender, getPermissionNode() + ".edit"))
                 {
                     OutputHandler.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
                     OutputHandler.chatConfirmation(sender, " - /rules add &lt;newRule>");
@@ -223,7 +233,7 @@ public class CommandRules extends FEcmdModuleCommands {
             return;
         }
 
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".edit")))
+        if (!PermissionsManager.checkPerm(sender, getPermissionNode() + ".edit"))
         {
             OutputHandler.chatError(sender,
                     "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -384,7 +394,7 @@ public class CommandRules extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".edit", RegGroup.OWNERS);
+        PermissionsManager.registerPermission(getPermissionNode() + ".edit", RegisteredPermValue.OP);
     }
 
     @Override
@@ -419,9 +429,9 @@ public class CommandRules extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.GUESTS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

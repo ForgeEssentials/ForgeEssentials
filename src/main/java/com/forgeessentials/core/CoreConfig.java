@@ -1,13 +1,14 @@
 package com.forgeessentials.core;
 
+import java.io.File;
+
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.TeleportCenter;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
-import java.io.File;
 
 public class CoreConfig {
     public static final File mainconfig = new File(ForgeEssentials.FEDIR, "main.cfg");

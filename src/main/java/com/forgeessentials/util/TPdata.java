@@ -1,13 +1,14 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.selections.WorldPoint;
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraftforge.permissions.PermissionsManager;
+
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.selections.WorldPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Uses by TeleportCenter.
@@ -56,7 +57,7 @@ public class TPdata {
                 server.transferPlayerToDimension((EntityPlayerMP) player, point.dim);
             }
             ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 1, point.zd, point.yaw, point.pitch);
-            if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, TeleportCenter.BYPASS_COOLDOWN)))
+            if (!PermissionsManager.checkPerm(player, TeleportCenter.BYPASS_COOLDOWN))
             {
                 PlayerInfo.getPlayerInfo(player.getPersistentID()).TPcooldown = TeleportCenter.tpCooldown;
             }

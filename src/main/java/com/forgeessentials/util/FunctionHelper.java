@@ -1,20 +1,23 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.api.permissions.Group;
-import com.forgeessentials.core.CoreConfig;
-import com.forgeessentials.permissions.SqlHelper;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.google.common.base.Joiner;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.mojang.authlib.GameProfile;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
@@ -30,17 +33,27 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.forgeessentials.api.permissions.Group;
+import com.forgeessentials.core.CoreConfig;
+import com.forgeessentials.permissions.SqlHelper;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.google.common.base.Joiner;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.mojang.authlib.GameProfile;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 public final class FunctionHelper {
     public static Pattern groupRegex = Pattern.compile("\\{[a-zA-Z0-9._]*\\<\\:\\>[a-zA-Z0-9._]*\\}");
@@ -636,11 +649,13 @@ public final class FunctionHelper {
                 p[1] = null;
             }
 
-            set = SqlHelper.getGroupsForChat(p[0], p[1], username);
-            if (set != null)
-            {
-                list.add(set);
-            }
+            // TODO: OLEE, fix getGroupsForChat (add groupPrefix to PlayerInfo)
+            
+//            set = SqlHelper.getGroupsForChat(p[0], p[1], username);
+//            if (set != null)
+//            {
+//                list.add(set);
+//            }
         }
 
         list = removeDuplicates(list);

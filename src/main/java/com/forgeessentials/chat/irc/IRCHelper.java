@@ -1,20 +1,26 @@
 package com.forgeessentials.chat.irc;
 
-import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.chat.irc.commands.ircCommands;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
+import java.io.IOException;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
+
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.*;
+import org.pircbotx.hooks.events.KickEvent;
+import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.NickChangeEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.pircbotx.hooks.events.QuitEvent;
 
-import java.io.IOException;
+import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.chat.irc.commands.ircCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 
 public class IRCHelper extends ListenerAdapter implements Listener {
 

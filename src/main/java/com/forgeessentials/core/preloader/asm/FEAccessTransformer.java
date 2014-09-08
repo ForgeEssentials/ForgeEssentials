@@ -1,8 +1,8 @@
 package com.forgeessentials.core.preloader.asm;
 
-import cpw.mods.fml.common.asm.transformers.AccessTransformer;
-
 import java.io.IOException;
+
+import cpw.mods.fml.common.asm.transformers.AccessTransformer;
 
 public class FEAccessTransformer extends AccessTransformer {
 

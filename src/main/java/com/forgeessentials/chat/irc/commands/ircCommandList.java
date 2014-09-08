@@ -1,9 +1,11 @@
 package com.forgeessentials.chat.irc.commands;
 
+import net.minecraft.server.MinecraftServer;
+
+import org.pircbotx.User;
+
 import com.forgeessentials.util.FunctionHelper;
 import com.google.common.collect.HashMultimap;
-import net.minecraft.server.MinecraftServer;
-import org.pircbotx.User;
 
 public class ircCommandList extends ircCommand {
 

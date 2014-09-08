@@ -1,7 +1,8 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.util.tasks.TaskRegistry;
 import net.minecraftforge.common.DimensionManager;
+
+import com.forgeessentials.util.tasks.TaskRegistry;
 
 public class AutoWorldSave implements Runnable {
 

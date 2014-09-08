@@ -1,13 +1,14 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.forgeessentials.util.OutputHandler;
+import java.io.File;
+import java.util.ArrayList;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.config.Configuration;
 
-import java.io.File;
-import java.util.ArrayList;
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.util.OutputHandler;
 
 public class ConfigAfterlife extends ModuleConfigBase {
     public Configuration config;

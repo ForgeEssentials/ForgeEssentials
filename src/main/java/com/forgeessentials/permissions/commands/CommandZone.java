@@ -1,26 +1,24 @@
 package com.forgeessentials.permissions.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
-import com.forgeessentials.api.permissions.query.PropQueryBlanketZone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.permissions.ZoneHelper;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumChatFormatting;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class CommandZone extends ForgeEssentialsCommandBase {
     private static String[] commands = { "list", "info", "define", "redefine", "remove", "setParent", "entry", "exit" };
@@ -43,13 +41,13 @@ public class CommandZone extends ForgeEssentialsCommandBase {
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
         PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-        ArrayList<Zone> zones = APIRegistry.zones.getZoneList();
+        ArrayList<Zone> zones = APIRegistry.permissionManager.getZoneList();
         int zonePages = zones.size() / 15 + 1;
         if (args.length == 1)
         {
             if (args[0].equalsIgnoreCase("list"))
             {
-                if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".list")))
+                if (!PermissionsManager.checkPerm(sender, getPermissionNode() + ".list"))
                 {
                     OutputHandler.chatError(sender,
                             "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -65,7 +63,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                         {
                             break;
                         }
-                        output = " - " + zone.getZoneName();
+                        output = " - " + zone.getName();
                         if (zone.isWorldZone())
                         {
                             output = output + " --> WorldZone";
@@ -85,7 +83,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("list"))
             {
-                if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".list")))
+                if (!PermissionsManager.checkPerm(sender, getPermissionNode() + ".list"))
                 {
                     OutputHandler.chatError(sender,
                             "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -107,7 +105,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                             for (int i = (page - 1) * 15; i < page * 15; i++)
                             {
                                 zone = zones.get(i);
-                                output = " - " + zone.getZoneName();
+                                output = " - " + zone.getName();
                                 if (zone.isWorldZone())
                                 {
                                     output = output + " --> WorldZone";
@@ -128,28 +126,28 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                 if (args[1].equalsIgnoreCase("here"))
                 {
                     WorldPoint point = new WorldPoint(sender);
-                    args[1] = APIRegistry.zones.getWhichZoneIn(point).getZoneName();
+                    args[1] = APIRegistry.permissionManager.getWhichZoneIn(point).getName();
                 }
-                if (!APIRegistry.zones.doesZoneExist(args[1]))
+                if (!APIRegistry.permissionManager.doesZoneExist(args[1]))
                 {
                     OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
                 }
                 else
                 {
-                    if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".info." + args[1])))
+                    if (!PermissionsManager.checkPerm(sender, getPermissionNode( + ".info." + args[1])))
                     {
                         OutputHandler.chatError(sender,
                                 "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                     }
                     else
                     {
-                        Zone zone = APIRegistry.zones.getZone(args[1]);
+                        Zone zone = APIRegistry.permissionManager.getZone(args[1]);
                         PropQueryBlanketZone query1 = new PropQueryBlanketZone("fe.perm.Zone.entry", zone, false);
                         PropQueryBlanketZone query2 = new PropQueryBlanketZone("fe.perm.Zone.exit", zone, false);
-                        APIRegistry.perms.getPermissionProp(query1);
-                        APIRegistry.perms.getPermissionProp(query2);
+                        APIRegistry.permissionManager.getPermissionProp(query1);
+                        APIRegistry.permissionManager.getPermissionProp(query2);
 
-                        OutputHandler.chatConfirmation(sender, "Name: " + zone.getZoneName());
+                        OutputHandler.chatConfirmation(sender, "Name: " + zone.getName());
                         OutputHandler.chatConfirmation(sender, "Parent: " + zone.parent);
                         OutputHandler.chatConfirmation(sender, "Priority: " + zone.priority);
                         OutputHandler.chatConfirmation(sender,
@@ -167,20 +165,20 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             }
             else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete"))
             {
-                if (!APIRegistry.zones.doesZoneExist(args[1]))
+                if (!APIRegistry.permissionManager.doesZoneExist(args[1]))
                 {
                     OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
                 }
                 else
                 {
-                    if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".remove." + args[1])))
+                    if (!PermissionsManager.checkPerm(sender, getPermissionNode( + ".remove." + args[1])))
                     {
                         OutputHandler.chatError(sender,
                                 "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                     }
                     else
                     {
-                        APIRegistry.zones.deleteZone(args[1]);
+                        APIRegistry.permissionManager.deleteZone(args[1]);
                         OutputHandler.chatConfirmation(sender, String.format("%s was removed successfully!", args[1]));
                     }
                 }
@@ -188,7 +186,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             }
             else if (args[0].equalsIgnoreCase("define"))
             {
-                if (APIRegistry.zones.doesZoneExist(args[1]))
+                if (APIRegistry.permissionManager.doesZoneExist(args[1]))
                 {
                     OutputHandler.chatError(sender, String.format("A zone by the name %s already exists!", args[1]));
                 }
@@ -197,21 +195,21 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                     OutputHandler.chatError(sender, "Invalid selection detected. Please check your selection.");
                     return;
                 }
-                else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(sender, getPermissionNode() + ".define", info.getSelection(), true)))
+                else if (!PermissionsManager.checkPerm(new PermQueryPlayerArea(sender, getPermissionNode() + ".define", info.getSelection(), true)))
                 {
                     OutputHandler.chatError(sender,
                             "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                 }
                 else
                 {
-                    APIRegistry.zones.createZone(args[1], info.getSelection(), sender.worldObj);
+                    APIRegistry.permissionManager.createZone(args[1], info.getSelection(), sender.worldObj);
                     OutputHandler.chatConfirmation(sender, String.format("%s was defined successfully", args[1]));
                 }
                 return;
             }
             else if (args[0].equalsIgnoreCase("redefine"))
             {
-                if (!APIRegistry.zones.doesZoneExist(args[1]))
+                if (!APIRegistry.permissionManager.doesZoneExist(args[1]))
                 {
                     OutputHandler.chatError(sender, String.format("A zone by the name %s already exists!", args[1]));
                 }
@@ -220,7 +218,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                     OutputHandler.chatError(sender, "Invalid selection detected. Please check your selection.");
                     return;
                 }
-                else if (!APIRegistry.perms
+                else if (!APIRegistry.permissionManager
                         .checkPermAllowed(new PermQueryPlayerArea(sender, getPermissionNode() + ".redefine." + args[1], info.getSelection(), true)))
                 {
                     OutputHandler.chatError(sender,
@@ -228,7 +226,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                 }
                 else
                 {
-                    Zone z = APIRegistry.zones.getZone(args[1]);
+                    Zone z = APIRegistry.permissionManager.getZone(args[1]);
                     z.redefine(info.getPoint1(), info.getPoint2());
                     saveZone(z);
                     OutputHandler.chatConfirmation(sender, String.format("%s redefined successfully!", args[1]));
@@ -241,22 +239,22 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("setParent"))
             {
-                if (!APIRegistry.zones.doesZoneExist(args[1]))
+                if (!APIRegistry.permissionManager.doesZoneExist(args[1]))
                 {
                     OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
                 }
-                else if (!APIRegistry.zones.doesZoneExist(args[2]))
+                else if (!APIRegistry.permissionManager.doesZoneExist(args[2]))
                 {
                     OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
                 }
-                else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".setparent." + args[1])))
+                else if (!PermissionsManager.checkPerm(sender, getPermissionNode( + ".setparent." + args[1])))
                 {
                     OutputHandler.chatError(sender,
                             "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                 }
                 else
                 {
-                    Zone z = APIRegistry.zones.getZone(args[1]);
+                    Zone z = APIRegistry.permissionManager.getZone(args[1]);
                     z.parent = args[2];
                     saveZone(z);
                     OutputHandler.chatConfirmation(sender, String.format("The parent of %s was successfully set to %s.", args[1], args[2]));
@@ -266,27 +264,27 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
             if (args[0].equalsIgnoreCase("entry"))
             {
-                if (!APIRegistry.zones.doesZoneExist(args[1]))
+                if (!APIRegistry.permissionManager.doesZoneExist(args[1]))
                 {
                     OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
                     return;
                 }
-                else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".entry." + args[1])))
+                else if (!PermissionsManager.checkPerm(sender, getPermissionNode( + ".entry." + args[1])))
                 {
                     OutputHandler.chatError(sender,
                             "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                 }
                 else if (args[2].equalsIgnoreCase("get"))
                 {
-                    PropQueryBlanketZone query = new PropQueryBlanketZone("fe.perm.Zone.entry", APIRegistry.zones.getZone(args[1]), false);
-                    APIRegistry.perms.getPermissionProp(query);
+                    PropQueryBlanketZone query = new PropQueryBlanketZone("fe.perm.Zone.entry", APIRegistry.permissionManager.getZone(args[1]), false);
+                    APIRegistry.permissionManager.getPermissionProp(query);
                     OutputHandler.chatConfirmation(sender, query.getStringValue());
 
                     return;
                 }
                 else if (args[2].equalsIgnoreCase("remove"))
                 {
-                    APIRegistry.perms.clearGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "fe.perm.Zone.entry", args[1]);
+                    APIRegistry.permissionManager.clearGroupPermissionProp(APIRegistry.permissionManager.getDefaultGroup().name, "fe.perm.Zone.entry", args[1]);
                     OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Entry Message removed.");
                 }
                 else
@@ -296,7 +294,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                     {
                         tempEntry += args[i] + " ";
                     }
-                    APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "fe.perm.Zone.entry", tempEntry, args[1]);
+                    APIRegistry.permissionManager.setGroupPermissionProp(APIRegistry.permissionManager.getDefaultGroup().name, "fe.perm.Zone.entry", tempEntry, args[1]);
 
                     OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Entry Message set to: " + tempEntry);
                     return;
@@ -304,27 +302,27 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             }
             else if (args[0].equalsIgnoreCase("exit"))
             {
-                if (!APIRegistry.zones.doesZoneExist(args[1]))
+                if (!APIRegistry.permissionManager.doesZoneExist(args[1]))
                 {
                     OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
                     return;
                 }
-                else if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".exit." + args[1])))
+                else if (!PermissionsManager.checkPerm(sender, getPermissionNode( + ".exit." + args[1])))
                 {
                     OutputHandler.chatError(sender,
                             "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                 }
                 else if (args[2].equalsIgnoreCase("get"))
                 {
-                    PropQueryBlanketZone query = new PropQueryBlanketZone("fe.perm.Zone.exit", APIRegistry.zones.getZone(args[1]), false);
-                    APIRegistry.perms.getPermissionProp(query);
+                    PropQueryBlanketZone query = new PropQueryBlanketZone("fe.perm.Zone.exit", APIRegistry.permissionManager.getZone(args[1]), false);
+                    APIRegistry.permissionManager.getPermissionProp(query);
                     OutputHandler.chatConfirmation(sender, query.getStringValue());
 
                     return;
                 }
                 else if (args[2].equalsIgnoreCase("remove"))
                 {
-                    APIRegistry.perms.clearGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "fe.perm.Zone.exit", args[1]);
+                    APIRegistry.permissionManager.clearGroupPermissionProp(APIRegistry.permissionManager.getDefaultGroup().name, "fe.perm.Zone.exit", args[1]);
                     OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Exit Message removed.");
                 }
                 else
@@ -334,7 +332,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                     {
                         tempEntry += args[i] + " ";
                     }
-                    APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDEFAULT().name, "fe.perm.Zone.exit", tempEntry, args[1]);
+                    APIRegistry.permissionManager.setGroupPermissionProp(APIRegistry.permissionManager.getDefaultGroup().name, "fe.perm.Zone.exit", tempEntry, args[1]);
 
                     OutputHandler.chatConfirmation(sender, "Zone: " + args[1] + " Exit Message set to: " + tempEntry);
                     return;
@@ -389,17 +387,17 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             }
             break;
         case 2:
-            for (Zone z : APIRegistry.zones.getZoneList())
+            for (Zone z : APIRegistry.permissionManager.getZoneList())
             {
-                list.add(z.getZoneName());
+                list.add(z.getName());
             }
             break;
         case 3:
             if (args[0].equalsIgnoreCase("setparent"))
             {
-                for (Zone z : APIRegistry.zones.getZoneList())
+                for (Zone z : APIRegistry.permissionManager.getZoneList())
                 {
-                    list.add(z.getZoneName());
+                    list.add(z.getName());
                 }
             }
         }
@@ -414,9 +412,9 @@ public class CommandZone extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.ZONE_ADMINS;
+        return RegisteredPermValue.OP;
     }
 
 }

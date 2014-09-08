@@ -1,17 +1,19 @@
 package com.forgeessentials.permissions.autoPromote;
 
+import java.util.HashMap;
+import java.util.TimerTask;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 
-import java.util.HashMap;
-import java.util.TimerTask;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class AutoPromoteManager extends TimerTask {
     static ClassContainer con = new ClassContainer(AutoPromote.class);
@@ -30,7 +32,7 @@ public class AutoPromoteManager extends TimerTask {
             for (Object obj : loaded)
             {
                 AutoPromote ap = (AutoPromote) obj;
-                if (APIRegistry.zones.getZone(ap.zone) != null)
+                if (APIRegistry.permissionManager.getZone(ap.zone) != null)
                 {
                     map.put(ap.zone, ap);
                 }
@@ -66,14 +68,14 @@ public class AutoPromoteManager extends TimerTask {
         for (String username : MinecraftServer.getServer().getAllUsernames())
         {
             EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(username);
-            Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(player));
+            Zone zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(player));
             while (zone != null)
             {
-                if (map.containsKey(zone.getZoneName()))
+                if (map.containsKey(zone.getName()))
                 {
-                    map.get(zone.getZoneName()).tick(player);
+                    map.get(zone.getName()).tick(player);
                 }
-                zone = APIRegistry.zones.getZone(zone.parent);
+                zone = APIRegistry.permissionManager.getZone(zone.parent);
             }
         }
     }

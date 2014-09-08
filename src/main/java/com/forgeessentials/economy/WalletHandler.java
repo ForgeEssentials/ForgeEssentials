@@ -1,14 +1,16 @@
 package com.forgeessentials.economy;
 
+import java.util.HashMap;
+import java.util.UUID;
+
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.forgeessentials.api.IEconManager;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * Call these methods to modify a target's Wallet.

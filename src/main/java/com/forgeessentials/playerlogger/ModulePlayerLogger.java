@@ -1,5 +1,18 @@
 package com.forgeessentials.playerlogger;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -14,19 +27,12 @@ import com.forgeessentials.playerlogger.types.blockChangeLog;
 import com.forgeessentials.playerlogger.types.commandLog;
 import com.forgeessentials.playerlogger.types.logEntry;
 import com.forgeessentials.playerlogger.types.playerTrackerLog;
-import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
+import com.forgeessentials.util.selections.WorldPoint;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, configClass = ConfigPlayerLogger.class)
 public class ModulePlayerLogger {

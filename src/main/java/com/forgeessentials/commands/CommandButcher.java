@@ -1,23 +1,21 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.EnumMobType;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.CommandButcherTickTask;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.selections.WorldPoint;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.TaskRegistry;
+import java.util.ArrayList;
+import java.util.List;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.api.EnumMobType;
+import com.forgeessentials.commands.util.CommandButcherTickTask;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.util.tasks.TaskRegistry;
 
 public class CommandButcher extends FEcmdModuleCommands {
     public static List<String> typeList = new ArrayList<String>();
@@ -196,9 +194,9 @@ public class CommandButcher extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

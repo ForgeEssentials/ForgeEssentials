@@ -1,14 +1,11 @@
 package com.forgeessentials.snooper;
 
-import com.forgeessentials.api.snooper.Response;
-import com.forgeessentials.util.OutputHandler;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.forgeessentials.api.snooper.Response;
+import com.forgeessentials.util.OutputHandler;
+import com.google.common.collect.ImmutableMap;
 
 public class ResponseRegistry {
 	

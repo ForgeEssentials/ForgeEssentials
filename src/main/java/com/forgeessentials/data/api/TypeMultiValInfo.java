@@ -1,10 +1,14 @@
 package com.forgeessentials.data.api;
 
-import com.forgeessentials.data.StorageManager;
-
 import java.rmi.server.UID;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import com.forgeessentials.data.StorageManager;
 
 public abstract class TypeMultiValInfo implements ITypeInfo {
     protected ClassContainer container;

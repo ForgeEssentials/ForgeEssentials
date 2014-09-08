@@ -1,16 +1,17 @@
 package com.forgeessentials.data;
 
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.data.api.ITypeInfo;
-import com.forgeessentials.data.api.TypeData;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Map.Entry;
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.data.api.ITypeInfo;
+import com.forgeessentials.data.api.TypeData;
 
 /**
  * Storage driver for filesystem (flat-file) persistence.

@@ -1,68 +1,58 @@
 package com.forgeessentials.permissions;
 
-import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
+import java.io.File;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
-
-import java.io.File;
 
 public class ConfigPermissions extends ModuleConfigBase {
-    protected Configuration config;
-    protected DBConnector connector;
-    protected boolean importBool;
-    protected String importDir;
+	protected Configuration config;
+	protected DBConnector connector;
+	protected boolean importBool;
+	protected String importDir;
 
-    private static boolean permDefault = false;
+	public ConfigPermissions(File file)
+	{
+		super(file);
+		connector = new DBConnector("PermissionsDB", DataStorageManager.getCoreDBConnector(), EnumDBType.H2_FILE, "FEPerms", file.getParent() + "/permissions",
+				false);
+	}
 
-    public ConfigPermissions(File file)
-    {
-        super(file);
-        connector = new DBConnector("PermissionsDB", DataStorageManager.getCoreDBConnector(), EnumDBType.H2_FILE, "FEPerms", file.getParent() + "/permissions",
-                false);
-    }
+	@Override
+	public void init()
+	{
+		config = new Configuration(file);
 
-    @Override
-    public void init()
-    {
-        config = new Configuration(file);
+		importBool = config.get("stuff", "import", false, "if permissions should be imported from the specified dir").getBoolean(false);
+		importDir = config.get("stuff", "importDir", "import", "file from wich permissions should be imported").getString();
 
-        permDefault = config.get("stuff", "permissionDefault", false, "If a permissions is not set anywhere, it will return this. True = allow. False = deny")
-                .getBoolean(false);
+		if (importBool == true)
+		{
+			config.get("stuff", "import", false).set(false);
+		}
 
-        importBool = config.get("stuff", "import", false, "if permissions should be imported from the specified dir").getBoolean(false);
-        importDir = config.get("stuff", "importDir", "import", "file from wich permissions should be imported").getString();
+		connector.loadOrGenerate(config, "database");
 
-        if (importBool == true)
-        {
-            config.get("stuff", "import", false).set(false);
-        }
+		config.save();
+	}
 
-        connector.loadOrGenerate(config, "database");
+	@Override
+	public void forceSave()
+	{
+		connector.write(config, "database");
+		config.save();
+	}
 
-        config.save();
-    }
-
-    @Override
-    public void forceSave()
-    {
-        connector.write(config, "database");
-        config.save();
-    }
-
-    @Override
-    public void forceLoad(ICommandSender sender)
-    {
-        connector.loadOrGenerate(config, "database");
-        config.load();
-    }
-
-    public PermResult getPermDefault()
-    {
-        return permDefault ? PermResult.ALLOW : PermResult.DENY;
-    }
+	@Override
+	public void forceLoad(ICommandSender sender)
+	{
+		connector.loadOrGenerate(config, "database");
+		config.load();
+	}
 
 }

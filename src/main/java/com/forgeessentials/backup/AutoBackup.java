@@ -1,15 +1,16 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.TaskRegistry;
-import net.minecraftforge.common.DimensionManager;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
+
+import net.minecraftforge.common.DimensionManager;
+
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.tasks.TaskRegistry;
 
 public class AutoBackup implements Runnable {
     public static boolean isBackingUp = false;

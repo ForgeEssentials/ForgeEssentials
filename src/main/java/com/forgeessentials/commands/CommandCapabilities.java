@@ -1,19 +1,20 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 
-import java.util.ArrayList;
-import java.util.List;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Allows you to modify a bunch of interesting stuff...
@@ -75,7 +76,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         {
             if (sender instanceof EntityPlayer)
             {
-                if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getPermissionNode() + ".others")))
+                if (!PermissionsManager.checkPerm((EntityPlayer) sender, getPermissionNode() + ".others"))
                 {
                     OutputHandler.chatError(sender, "You don't have permissions for that.");
                     return;
@@ -115,7 +116,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         {
             if (sender instanceof EntityPlayer)
             {
-                if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getPermissionNode() + ".others")))
+                if (!PermissionsManager.checkPerm((EntityPlayer) sender, getPermissionNode() + ".others"))
                 {
                     OutputHandler.chatError(sender, "You don't have permissions for that.");
                     return;
@@ -167,7 +168,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".others", RegGroup.OWNERS);
+        PermissionsManager.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
     }
 
     @Override
@@ -198,9 +199,9 @@ public class CommandCapabilities extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

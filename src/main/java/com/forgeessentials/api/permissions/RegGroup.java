@@ -20,7 +20,7 @@ public enum RegGroup {
                 @Override
                 public Group getGroup()
                 {
-                    return APIRegistry.perms.getDEFAULT();
+                    return APIRegistry.permissionManager.getDEFAULT();
                 }
             },
 
@@ -56,11 +56,11 @@ public enum RegGroup {
     private String name;
     private RegisteredPermValue equivalent;
 
-    private RegGroup(String name, String parent, String prefix, String suffix, int priority, RegisteredPermValue equivalent)
+    private RegGroup(String name, String prefix, String suffix, String parent, int priority, RegisteredPermValue equivalent)
     {
         this.name = name;
         this.equivalent = equivalent;
-        group = new Group(name, parent, prefix, suffix, "_GLOBAL_", priority);
+        group = new Group(name, prefix, suffix, parent, priority);
     }
 
     public static RegGroup fromInt(int level)

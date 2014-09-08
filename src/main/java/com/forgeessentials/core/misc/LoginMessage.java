@@ -1,17 +1,5 @@
 package com.forgeessentials.core.misc;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.CompatReiMinimap;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -23,6 +11,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.compat.CompatReiMinimap;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class LoginMessage {
     private static List<String> messageList = new ArrayList<String>();

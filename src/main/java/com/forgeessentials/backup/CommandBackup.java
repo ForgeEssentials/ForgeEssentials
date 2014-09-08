@@ -1,15 +1,15 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import java.io.File;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.io.File;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandBackup extends ForgeEssentialsCommandBase {
     static String source;
@@ -75,7 +75,7 @@ public class CommandBackup extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer sender)
     {
-        return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode()));
+        return PermissionsManager.checkPerm(sender, getPermissionNode());
     }
 
     @Override
@@ -91,9 +91,9 @@ public class CommandBackup extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.ZONE_ADMINS;
+        return RegisteredPermValue.OP;
     }
 }

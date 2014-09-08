@@ -2,14 +2,15 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 
-import com.forgeessentials.api.permissions.RegGroup;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import com.forgeessentials.util.selections.Point;
 
 public class CommandExpand extends ForgeEssentialsCommandBase {
 
@@ -231,10 +232,10 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
 }

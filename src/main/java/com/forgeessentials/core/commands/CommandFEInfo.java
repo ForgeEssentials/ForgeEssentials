@@ -1,14 +1,15 @@
 package com.forgeessentials.core.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.Data;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.forgeessentials.core.preloader.asm.FEeventAdder;
 import com.forgeessentials.util.ChatUtils;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 
 public class CommandFEInfo extends ForgeEssentialsCommandBase {
 
@@ -74,9 +75,9 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
 }

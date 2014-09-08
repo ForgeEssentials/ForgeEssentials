@@ -2,17 +2,19 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class CommandPos extends ForgeEssentialsCommandBase {
     private int type;
@@ -106,8 +108,8 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         y = mop.blockY;
         z = mop.blockZ;
 
-        Point point = new Point(x, y, z);
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, getPermissionNode(), point)))
+        WorldPoint point = new WorldPoint(player.dimension, x, y, z);
+        if (!APIRegistry.permissionManager.checkPermission(player, point, getPermissionNode()))
         {
             OutputHandler.chatError(player, "Insufficient permissions.");
             return;
@@ -146,10 +148,10 @@ public class CommandPos extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
 }

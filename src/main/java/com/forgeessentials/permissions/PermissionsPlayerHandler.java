@@ -67,7 +67,7 @@ public final class PermissionsPlayerHandler {
     private static void checkPlayerSupers(PermQueryPlayer event)
     {
         PermResult result = SqlHelper
-                .getPermissionResult(event.doer.getPersistentID().toString(), false, event.checker, APIRegistry.zones.getSUPER().getZoneName(), event.checkForward);
+                .getPermissionResult(event.doer.getPersistentID().toString(), false, event.checker, APIRegistry.permissionManager.getSUPER().getName(), event.checkForward);
         if (!result.equals(PermResult.UNKNOWN))
         {
             event.setResult(result);
@@ -76,7 +76,7 @@ public final class PermissionsPlayerHandler {
 
     private static void handlePlayer(PermQueryPlayer event)
     {
-        Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(event.doer));
+        Zone zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(event.doer));
         PermResult result = getResultFromZone(zone, event);
         event.setResult(result);
     }
@@ -91,7 +91,7 @@ public final class PermissionsPlayerHandler {
     {
         if (event.allOrNothing)
         {
-            Zone zone = APIRegistry.zones.getWhichZoneIn(event.doneTo);
+            Zone zone = APIRegistry.permissionManager.getWhichZoneIn(event.doneTo);
             PermResult result = getResultFromZone(zone, event);
             event.setResult(result);
         }
@@ -119,7 +119,7 @@ public final class PermissionsPlayerHandler {
      */
     private static PermResult getResultFromZone(Zone zone, PermQueryPlayer event)
     {
-        ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(event.doer.getPersistentID(), false, zone.getZoneName());
+        ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(event.doer.getPersistentID(), false, zone.getName());
         PermResult result = PermResult.UNKNOWN;
         Zone tempZone = zone;
         Group group;
@@ -127,7 +127,7 @@ public final class PermissionsPlayerHandler {
         {
             // get the permissions... This automatically checks permissions
             // parents...
-            result = SqlHelper.getPermissionResult(event.doer.getPersistentID().toString(), false, event.checker, tempZone.getZoneName(), event.checkForward);
+            result = SqlHelper.getPermissionResult(event.doer.getPersistentID().toString(), false, event.checker, tempZone.getName(), event.checkForward);
 
             // if its unknown still
             if (result.equals(PermResult.UNKNOWN))
@@ -139,7 +139,7 @@ public final class PermissionsPlayerHandler {
                     while (group != null && result == PermResult.UNKNOWN)
                     {
                         // checks the permissions for the group.
-                        result = SqlHelper.getPermissionResult(group.name, true, event.checker, tempZone.getZoneName(), event.checkForward);
+                        result = SqlHelper.getPermissionResult(group.name, true, event.checker, tempZone.getName(), event.checkForward);
 
                         // sets the group to its parent.
                         group = SqlHelper.getGroupForName(group.parent);
@@ -150,13 +150,13 @@ public final class PermissionsPlayerHandler {
             // check defaults... unless it has the override..
             if (result.equals(PermResult.UNKNOWN) && !event.dOverride)
             {
-                result = SqlHelper.getPermissionResult(APIRegistry.perms.getDEFAULT().name, true, event.checker, zone.getZoneName(), event.checkForward);
+                result = SqlHelper.getPermissionResult(APIRegistry.perms.getDEFAULT().name, true, event.checker, zone.getName(), event.checkForward);
             }
 
             // still unknown? check parent zones.
             if (result.equals(PermResult.UNKNOWN))
             {
-                if (tempZone == APIRegistry.zones.getGLOBAL())
+                if (tempZone == APIRegistry.permissionManager.getGlobalZone())
                 {
                     // default deny.
                     result = PermResult.DENY;
@@ -164,7 +164,7 @@ public final class PermissionsPlayerHandler {
                 else
                 {
                     // get the parent of the zone.
-                    tempZone = APIRegistry.zones.getZone(tempZone.parent);
+                    tempZone = APIRegistry.permissionManager.getZone(tempZone.parent);
                 }
             }
         }
@@ -175,11 +175,11 @@ public final class PermissionsPlayerHandler {
     {
         ArrayList<AreaBase> applicable = new ArrayList<AreaBase>();
 
-        Zone worldZone = APIRegistry.zones.getWorldZone(event.doer.worldObj);
+        Zone worldZone = APIRegistry.permissionManager.getWorldZone(event.doer.worldObj);
         ArrayList<Zone> zones = new ArrayList<Zone>();
 
         // add all children
-        for (Zone zone : APIRegistry.zones.getZoneList())
+        for (Zone zone : APIRegistry.permissionManager.getZoneList())
         {
             if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
             {

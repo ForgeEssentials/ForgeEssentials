@@ -1,25 +1,27 @@
 package com.forgeessentials.chat;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.chat.commands.CommandPm;
-import com.forgeessentials.util.selections.WorldPoint;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.PlayerInfo;
-import com.google.common.base.Strings;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.DamageSource;
-import net.minecraftforge.event.ServerChatEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.DamageSource;
+import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.permissions.PermissionsManager;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.chat.commands.CommandPm;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.WorldPoint;
+import com.google.common.base.Strings;
+
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ChatFormatter {
     public static List<String> bannedWords = new ArrayList<String>();
@@ -93,7 +95,7 @@ public class ChatFormatter {
 		 */
         if (event.message.contains("&"))
         {
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.Chat.usecolor")))
+            if (PermissionsManager.checkPerm(event.player, "ForgeEssentials.Chat.usecolor"))
             {
                 message = FunctionHelper.formatColors(event.message);
             }
@@ -110,8 +112,7 @@ public class ChatFormatter {
         String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
         String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
 
-        Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(event.player));
-        zoneID = zone.getZoneName();
+        zoneID = APIRegistry.permissionManager.getZonesAt(new WorldPoint(event.player)).get(0).getName();
 
         // Group stuff!!! DO NOT TOUCH!!!
         {

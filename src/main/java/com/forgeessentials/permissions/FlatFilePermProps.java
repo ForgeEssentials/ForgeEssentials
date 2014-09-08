@@ -88,7 +88,7 @@ public class FlatFilePermProps {
             config.get(holder.zone + ".group." + holder.target, holder.getQualifiedName(), holder.value);
         }
 
-        config.addCustomCategoryComment(APIRegistry.zones.getGLOBAL().getZoneName() + ".group." + APIRegistry.perms.getDEFAULT().name,
+        config.addCustomCategoryComment(APIRegistry.permissionManager.getGlobalZone().getName() + ".group." + APIRegistry.perms.getDEFAULT().name,
                 "The group used to as a placeholder for zone flags and such.");
 
         config.save();

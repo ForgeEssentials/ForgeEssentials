@@ -47,7 +47,7 @@ public final class PermissionsBlanketHandler {
 
     protected static void handleSpot(PermQueryBlanketSpot event)
     {
-        Zone zone = APIRegistry.zones.getWhichZoneIn(event.spot);
+        Zone zone = APIRegistry.permissionManager.getWhichZoneIn(event.spot);
         PermResult result = getResultFromZone(zone, event.checker, event.checkForward);
         event.setResult(result);
     }
@@ -56,7 +56,7 @@ public final class PermissionsBlanketHandler {
     {
         if (event.allOrNothing)
         {
-            Zone zone = APIRegistry.zones.getWhichZoneIn(event.doneTo);
+            Zone zone = APIRegistry.permissionManager.getWhichZoneIn(event.doneTo);
             PermResult result = getResultFromZone(zone, event.checker, event.checkForward);
             event.setResult(result);
         }
@@ -90,12 +90,12 @@ public final class PermissionsBlanketHandler {
         Zone tempZone = zone;
         while (result.equals(PermResult.UNKNOWN))
         {
-            result = SqlHelper.getPermissionResult(APIRegistry.perms.getDEFAULT().name, true, checker, tempZone.getZoneName(), checkForward);
+            result = SqlHelper.getPermissionResult(APIRegistry.perms.getDEFAULT().name, true, checker, tempZone.getName(), checkForward);
 
             // still unknown? check parent zones.
             if (result.equals(PermResult.UNKNOWN))
             {
-                if (tempZone == APIRegistry.zones.getGLOBAL())
+                if (tempZone == APIRegistry.permissionManager.getGlobalZone())
                 {
                     // default deny.
                     result = PermResult.DENY;
@@ -103,7 +103,7 @@ public final class PermissionsBlanketHandler {
                 else
                 {
                     // get the parent of the zone.
-                    tempZone = APIRegistry.zones.getZone(tempZone.parent);
+                    tempZone = APIRegistry.permissionManager.getZone(tempZone.parent);
                 }
             }
         }
@@ -114,11 +114,11 @@ public final class PermissionsBlanketHandler {
     {
         ArrayList<AreaBase> applicable = new ArrayList<AreaBase>();
 
-        Zone worldZone = APIRegistry.zones.getWorldZone(FunctionHelper.getDimension(doneTo.dim));
+        Zone worldZone = APIRegistry.permissionManager.getWorldZone(FunctionHelper.getDimension(doneTo.dim));
         ArrayList<Zone> zones = new ArrayList<Zone>();
 
         // add all children
-        for (Zone zone : APIRegistry.zones.getZoneList())
+        for (Zone zone : APIRegistry.permissionManager.getZoneList())
         {
             if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
             {

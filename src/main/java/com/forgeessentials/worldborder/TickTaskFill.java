@@ -1,5 +1,12 @@
 package com.forgeessentials.worldborder;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.world.MinecraftException;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -14,12 +21,6 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.forgeessentials.util.tasks.TaskRegistry;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
 
 /**
  * Does the actual filling, with limited chuncks per tick.
@@ -79,7 +80,7 @@ public class TickTaskFill implements ITickTask {
 
         source = sender;
         world = worldToFill;
-        border = ModuleWorldBorder.borderMap.get(APIRegistry.zones.getWorldZone(world).getZoneName());
+        border = ModuleWorldBorder.borderMap.get(APIRegistry.permissionManager.getWorldZone(world).getName());
 
         if (border.shapeByte == 0 || border.rad == 0)
         {

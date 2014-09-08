@@ -1,17 +1,26 @@
 package com.forgeessentials.data.typeInfo;
 
-import com.forgeessentials.data.StorageManager;
-import com.forgeessentials.data.api.*;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.OutputHandler;
-
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
+
+import com.forgeessentials.data.StorageManager;
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.data.api.IReconstructData;
+import com.forgeessentials.data.api.ITypeInfo;
+import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.Reconstructor;
+import com.forgeessentials.data.api.SaveableObject.SaveableField;
+import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.data.api.TypeData;
+import com.forgeessentials.util.OutputHandler;
 
 /**
  * This is the standard TypeInfo class for all classes that don't have the override.

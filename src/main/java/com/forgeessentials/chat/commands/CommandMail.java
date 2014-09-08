@@ -1,17 +1,19 @@
 package com.forgeessentials.chat.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.chat.Mail;
 import com.forgeessentials.chat.MailSystem;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
 
-import java.util.Arrays;
-import java.util.List;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandMail extends ForgeEssentialsCommandBase {
     @Override
@@ -94,10 +96,10 @@ public class CommandMail extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.GUESTS;
+        return RegisteredPermValue.TRUE;
     }
 
 }
