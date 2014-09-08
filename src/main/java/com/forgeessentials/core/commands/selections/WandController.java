@@ -6,14 +6,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -52,7 +50,7 @@ public class WandController {
 		}
 
 		WorldPoint point = new WorldPoint(player.dimension, event.x, event.y, event.z);
-		if (!APIRegistry.permissionManager.checkPermission(player, point, "ForgeEssentials.CoreCommands.select.pos"))
+		if (!APIRegistry.perms.checkPermission(player, point, "ForgeEssentials.CoreCommands.select.pos"))
 		{
 			OutputHandler.chatError(player,
 					"You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");

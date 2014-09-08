@@ -1,13 +1,5 @@
 package com.forgeessentials.api.permissions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
-
-import net.minecraftforge.permissions.api.IGroup;
-
-import com.forgeessentials.api.APIRegistry;
-
 /**
  * This class is not a format that is designed to actually be saved in any way. It is simply an output format for the data that is saved in the DataBase. The
  * fields here are not fnal in order to save memory and CPU when editing and sending the instance back in to update.
@@ -16,8 +8,7 @@ import com.forgeessentials.api.APIRegistry;
  */
 
 @SuppressWarnings("rawtypes")
-public class Group implements Comparable, IGroup {
-public class Group implements Comparable{
+public class Group implements Comparable {
 
 	public String name;
 	public String parent;
@@ -105,30 +96,6 @@ public class Group implements Comparable{
 		return name + "[" + parent + ", " + prefix + ", " + suffix + ", " + priority + "]";
 	}
 
-	@Override
-	public Collection<UUID> getAllPlayers()
-	{
-		ArrayList<UUID> returned = new ArrayList<UUID>();
-		throw new RuntimeException("Not yet implemented!");
-//		for (String pname : APIRegistry.perms.getPlayersByGroup(name))
-//		{
-//			returned.add(UUID.fromString(pname));
-//		}
-	}
-
-	@Override
-	public boolean isMember(UUID playerID)
-	{
-		throw new RuntimeException("Not yet implemented!");
-		//return APIRegistry.perms.getPlayersByGroup(name).contains(playerID.toString());
-	}
-
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-
 	public int getId()
 	{
 		return id;
@@ -153,10 +120,5 @@ public class Group implements Comparable{
 	{
 		return priority;
 	}
-    @Override
-    public String toString()
-    {
-        return name + "[" + parent + ", " + prefix + ", " + suffix + ", " + zoneName + ", " + priority + "]";
-    }
 
 }

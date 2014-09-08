@@ -68,7 +68,7 @@ public class CommandWB extends ForgeEssentialsCommandBase {
 		}
 		else if (args[0].equalsIgnoreCase("global"))
 		{
-			zone = APIRegistry.permissionManager.getGlobalZone();
+			zone = APIRegistry.perms.getGlobalZone();
 		}
 		else if (FunctionHelper.isNumeric(args[0]))
 		{
@@ -78,11 +78,11 @@ public class CommandWB extends ForgeEssentialsCommandBase {
 				OutputHandler.chatError(sender, args[0] + " is not an ID of a loaded world.");
 				return;
 			}
-			zone = APIRegistry.permissionManager.getWorldZone(world);
+			zone = APIRegistry.perms.getWorldZone(world);
 		}
 		else if (args[0].equalsIgnoreCase("world") && sender instanceof EntityPlayer)
 		{
-			zone = APIRegistry.permissionManager.getWorldZone(((EntityPlayer) sender).worldObj);
+			zone = APIRegistry.perms.getWorldZone(((EntityPlayer) sender).worldObj);
 		}
 		else
 		{

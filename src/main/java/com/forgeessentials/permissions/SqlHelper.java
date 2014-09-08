@@ -162,13 +162,13 @@ public class SqlHelper {
 		//
 		// // GLOBAL zone
 		// query = new StringBuilder("INSERT INTO ").append(TABLE_AREA).append(" (").append(COLUMN_AREA_NAME).append(", ").append(COLUMN_AREA_ID)
-		// .append(") ").append(" VALUES ").append(" ('").append(APIRegistry.permissionManager.getGlobalZone().getName()).append("', ").append(GLOBAL_ID)
+		// .append(") ").append(" VALUES ").append(" ('").append(APIRegistry.perms.getGlobalZone().getName()).append("', ").append(GLOBAL_ID)
 		// .append(")");
 		// db.createStatement().executeUpdate(query.toString());
 		//
 		// // SUPER zone
 		// query = new StringBuilder("INSERT INTO ").append(TABLE_AREA).append(" (").append(COLUMN_AREA_NAME).append(", ").append(COLUMN_AREA_ID)
-		// .append(") ").append(" VALUES ").append(" ('").append(APIRegistry.permissionManager.getSUPER().getName()).append("', ").append(SUPER_ID)
+		// .append(") ").append(" VALUES ").append(" ('").append(APIRegistry.perms.getSUPER().getName()).append("', ").append(SUPER_ID)
 		// .append(")");
 		// db.createStatement().executeUpdate(query.toString());
 		//
@@ -2143,12 +2143,12 @@ public class SqlHelper {
 	//
 	// // GLOBAL zone
 	// query = new StringBuilder("INSERT INTO ").append(TABLE_AREA).append(" (").append(COLUMN_AREA_NAME).append(", ").append(COLUMN_AREA_ID).append(") ")
-	// .append(" VALUES ").append(" ('").append(APIRegistry.permissionManager.getGlobalZone().getName()).append("', ").append(GLOBAL_ID).append(")");
+	// .append(" VALUES ").append(" ('").append(APIRegistry.perms.getGlobalZone().getName()).append("', ").append(GLOBAL_ID).append(")");
 	// db.createStatement().executeUpdate(query.toString());
 	//
 	// // SUPER zone
 	// query = new StringBuilder("INSERT INTO ").append(TABLE_AREA).append(" (").append(COLUMN_AREA_NAME).append(", ").append(COLUMN_AREA_ID).append(") ")
-	// .append(" VALUES ").append(" ('").append(APIRegistry.permissionManager.getSUPER().getName()).append("', ").append(SUPER_ID).append(")");
+	// .append(" VALUES ").append(" ('").append(APIRegistry.perms.getSUPER().getName()).append("', ").append(SUPER_ID).append(")");
 	// db.createStatement().executeUpdate(query.toString());
 	//
 	// // Entry player...

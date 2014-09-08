@@ -94,7 +94,7 @@ public class ProtectionEventHandler {
 		if (sourcePlayer && targetPlayer)
 		{
 			// PVP checks
-			boolean sourceB = !APIRegistry.permissionManager.checkPermission((EntityPlayer) e.entityLiving, new WorldPoint(e.source.getEntity()),
+			boolean sourceB = !APIRegistry.perms.checkPermission((EntityPlayer) e.entityLiving, new WorldPoint(e.source.getEntity()),
 					ModuleProtection.PERM_PVP);
 			if (sourceB)
 			{
@@ -111,11 +111,11 @@ public class ProtectionEventHandler {
 		else if (sourcePlayer)
 		{
 			// stop players hitting animals.
-			boolean result = APIRegistry.permissionManager.checkPermission((EntityPlayer) source, new WorldPoint(e.entityLiving),
+			boolean result = APIRegistry.perms.checkPermission((EntityPlayer) source, new WorldPoint(e.entityLiving),
 					ModuleProtection.PERM_OVERRIDE);
 			if (!result)
 			{
-				result = APIRegistry.permissionManager.checkPermission((EntityPlayer) source, new WorldPoint(e.entityLiving),
+				result = APIRegistry.perms.checkPermission((EntityPlayer) source, new WorldPoint(e.entityLiving),
 						ModuleProtection.PERM_INTERACT_ENTITY);
 			}
 			e.setCanceled(!result);
@@ -123,11 +123,11 @@ public class ProtectionEventHandler {
 		else if (targetPlayer)
 		{
 			// stop people from hitting entites.
-			boolean result = APIRegistry.permissionManager.checkPermission((EntityPlayer) e.entityLiving, new WorldPoint(e.entityLiving),
+			boolean result = APIRegistry.perms.checkPermission((EntityPlayer) e.entityLiving, new WorldPoint(e.entityLiving),
 					ModuleProtection.PERM_OVERRIDE);
 			if (!result)
 			{
-				result = APIRegistry.permissionManager.checkPermission((EntityPlayer) e.entityLiving, new WorldPoint(e.entityLiving),
+				result = APIRegistry.perms.checkPermission((EntityPlayer) e.entityLiving, new WorldPoint(e.entityLiving),
 						ModuleProtection.PERM_INTERACT_ENTITY);
 			}
 			e.setCanceled(!result);
@@ -143,8 +143,8 @@ public class ProtectionEventHandler {
 		}
 
 		WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
-		boolean overall = APIRegistry.permissionManager.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_OVERRIDE);
-		boolean breaks = APIRegistry.permissionManager.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_EDITS);
+		boolean overall = APIRegistry.perms.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_OVERRIDE);
+		boolean breaks = APIRegistry.perms.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_EDITS);
 		if (!overall)
 		{
 			if (!breaks)
@@ -162,8 +162,8 @@ public class ProtectionEventHandler {
 		}
 
 		WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.getBlockX(), e.getBlockY(), e.getBlockZ());
-		boolean overall = APIRegistry.permissionManager.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_OVERRIDE);
-		boolean breaks = APIRegistry.permissionManager.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_EDITS);
+		boolean overall = APIRegistry.perms.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_OVERRIDE);
+		boolean breaks = APIRegistry.perms.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_EDITS);
 
 		if (!overall)
 		{
@@ -206,14 +206,14 @@ public class ProtectionEventHandler {
 			}
 		}
 
-		boolean result = APIRegistry.permissionManager.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_OVERRIDE);
+		boolean result = APIRegistry.perms.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_OVERRIDE);
 		if (!result)
 		{
 			String name = stack.getUnlocalizedName();
 			name = ModuleProtection.PERM_ITEM_USE + "." + name;
 			name = name + "." + stack.getItemDamage();
 
-			result = APIRegistry.permissionManager.checkPermission(e.entityPlayer, point, name);
+			result = APIRegistry.perms.checkPermission(e.entityPlayer, point, name);
 		}
 
 		if (result)
@@ -238,11 +238,11 @@ public class ProtectionEventHandler {
 		{
 			WorldPoint point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
 
-			boolean result = APIRegistry.permissionManager.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_OVERRIDE);
+			boolean result = APIRegistry.perms.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_OVERRIDE);
 			if (!result)
 			{
 				// check block usage perm
-				result = APIRegistry.permissionManager.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_INTERACT_BLOCK);
+				result = APIRegistry.perms.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_INTERACT_BLOCK);
 			}
 
 			if (result)
@@ -266,10 +266,10 @@ public class ProtectionEventHandler {
 
 		WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
 
-		boolean result = APIRegistry.permissionManager.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_OVERRIDE);
+		boolean result = APIRegistry.perms.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_OVERRIDE);
 		if (!result)
 		{
-			result = APIRegistry.permissionManager.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_INTERACT_ENTITY);
+			result = APIRegistry.perms.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_INTERACT_ENTITY);
 		}
 
 		e.setCanceled(!result);
@@ -287,7 +287,7 @@ public class ProtectionEventHandler {
 		WorldPoint point = new WorldPoint(e.entityLiving);
 		String mobID = EntityList.getEntityString(e.entity);
 
-		if (!APIRegistry.permissionManager.checkPermission(null, point, ModuleProtection.PERM_MOB_SPAWN_NATURAL + "." + mobID))
+		if (!APIRegistry.perms.checkPermission(null, point, ModuleProtection.PERM_MOB_SPAWN_NATURAL + "." + mobID))
 		{
 			e.setResult(Result.DENY);
 			OutputHandler.debug(mobID + " : DENIED");
@@ -310,7 +310,7 @@ public class ProtectionEventHandler {
 		WorldPoint point = new WorldPoint(e.entityLiving);
 		String mobID = EntityList.getEntityString(e.entity);
 
-		if (!APIRegistry.permissionManager.checkPermission(null, point, ModuleProtection.PERM_MOB_SPAWN_FORCED + "." + mobID))
+		if (!APIRegistry.perms.checkPermission(null, point, ModuleProtection.PERM_MOB_SPAWN_FORCED + "." + mobID))
 		{
 			e.setResult(Result.DENY);
 		}

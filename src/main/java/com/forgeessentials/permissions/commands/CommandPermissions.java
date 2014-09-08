@@ -1,20 +1,17 @@
 package com.forgeessentials.permissions.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.Group;
+import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Group;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandPermissions extends ForgeEssentialsCommandBase {
     // Variables for auto-complete
@@ -74,7 +71,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-        PermResult result = APIRegistry.permissionManager.checkPermResult(player, getPermissionNode(, true));
+        PermResult result = APIRegistry.perms.checkPermResult(player, getPermissionNode(), true));
         return result.equals(PermResult.DENY) ? false : true;
     }
 
@@ -96,7 +93,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
         case 2:
             if (args[0].equalsIgnoreCase("group"))
             {
-                List<Group> groups = APIRegistry.permissionManager.getGroupsInZone(APIRegistry.permissionManager.getGlobalZone().getName());
+                List<Group> groups = APIRegistry.perms.getGroupsInZone(APIRegistry.perms.getGlobalZone().getName());
                 ArrayList<String> groupnames = new ArrayList<String>();
                 for (int i = 0; i < groups.size(); i++)
                 {
@@ -125,7 +122,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
         case 5:
             if ((args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player")) && args[2].equalsIgnoreCase("group"))
             {
-                List<Group> groups = APIRegistry.permissionManager.getGroupsInZone(APIRegistry.permissionManager.getGlobalZone().getName());
+                List<Group> groups = APIRegistry.perms.getGroupsInZone(APIRegistry.perms.getGlobalZone().getName());
                 ArrayList<String> groupnames = new ArrayList<String>();
                 for (int i = 0; i < groups.size(); i++)
                 {
@@ -147,7 +144,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegisteredPermValue getReggroup()
+    public PermissionsManager.RegisteredPermValue getReggroup()
     {
         return RegisteredPermValue.OP;
     }

@@ -57,7 +57,7 @@ public class EventLogger {
 				return true;
 			}
 		}
-		for (Group group : APIRegistry.permissionManager.getApplicableGroups(player, false))
+		for (Group group : APIRegistry.perms.getApplicableGroups(player, false))
 		{
 			if (exempt_groups.contains(group.name))
 			{

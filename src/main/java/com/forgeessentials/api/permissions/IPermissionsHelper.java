@@ -11,7 +11,7 @@ import net.minecraftforge.permissions.api.IPermissionsProvider;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldPoint;
 
-public interface IPermissionsManager extends IPermissionsProvider {
+public interface IPermissionsHelper extends IPermissionsProvider {
     
 	/**
 	 * Checks a permission for a player
@@ -200,7 +200,7 @@ public interface IPermissionsManager extends IPermissionsProvider {
 
     ArrayList<Group> getApplicableGroups(UUID player, boolean includeDefaults, String zoneID);
 
-    // moved to forge, use APIRegistry.getAsFEGroup if you need the group
+    // moved to forge, use APIRegistry.perms.getGroupForName if you need the group
     // Group getGroupForName(String name);
 
     Group getHighestGroup(EntityPlayer player);

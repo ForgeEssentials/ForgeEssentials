@@ -18,7 +18,7 @@ public class ProtectCommand extends ForgeEssentialsCommandBase{
         case 3:
         if (var2[0].equalsIgnoreCase("gamemode"))
         {
-            *//*Zone zone = APIRegistry.permissionManager.getZone(var2[1]);
+            *//*Zone zone = APIRegistry.perms.getZone(var2[1]);
             for (Group g : APIRegistry.perms.getGroupsInZone(zone.getName()))
             {
                 APIRegistry.perms.setGroupPermissionProp(g.name, ModuleProtection.PERMPROP_ZONE_GAMEMODE, var2[2], zone.getName());

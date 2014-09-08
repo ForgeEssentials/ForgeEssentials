@@ -1,11 +1,11 @@
 package com.forgeessentials.permissions.persistance;
 
 import com.forgeessentials.permissions.core.ZonePersistanceProvider;
-import com.forgeessentials.permissions.core.ZonedPermissionManager;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 
 public class SQLProvider extends ZonePersistanceProvider {
 	
-	public SQLProvider(ZonedPermissionManager permissionManager)
+	public SQLProvider(ZonedPermissionHelper permissionManager)
 	{
 		super(permissionManager);
 	}

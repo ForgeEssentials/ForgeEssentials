@@ -14,7 +14,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.selections.WorldPoint;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -98,8 +97,8 @@ public class ForgeEssentialsEventFactory {
 	@SubscribeEvent
 	public void playerMove(PlayerMoveEvent e)
 	{
-		Zone before = APIRegistry.permissionManager.getZonesAt(e.before).get(0);
-		Zone after = APIRegistry.permissionManager.getZonesAt(e.after).get(0);
+		Zone before = APIRegistry.perms.getZonesAt(e.before).get(0);
+		Zone after = APIRegistry.perms.getZonesAt(e.after).get(0);
 		if (!before.equals(after))
 		{
 			PlayerChangedZone event = new PlayerChangedZone(e.entityPlayer, before, after, e.before, e.after);

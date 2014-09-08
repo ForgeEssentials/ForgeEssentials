@@ -31,7 +31,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        Zone zone = APIRegistry.permissionManager.getWorldZone(sender.worldObj);
+        Zone zone = APIRegistry.perms.getWorldZone(sender.worldObj);
         if (args.length >= 1)
         {
             if (!PermissionsManager.checkPerm(sender, getPermissionNode() + ".others"))

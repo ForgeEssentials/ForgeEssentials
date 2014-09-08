@@ -80,7 +80,7 @@ public class TickTaskFill implements ITickTask {
 
         source = sender;
         world = worldToFill;
-        border = ModuleWorldBorder.borderMap.get(APIRegistry.permissionManager.getWorldZone(world).getName());
+        border = ModuleWorldBorder.borderMap.get(APIRegistry.perms.getWorldZone(world).getName());
 
         if (border.shapeByte == 0 || border.rad == 0)
         {

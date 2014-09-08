@@ -10,8 +10,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Group;
-import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.PWarp;
 import com.forgeessentials.teleport.util.TeleportDataManager;
@@ -21,9 +19,6 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.selections.WorldPoint;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	public final String PERMSETLIMIT = getPermissionNode() + ".setLimit";
@@ -81,7 +76,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 			{
 				if (!map.containsKey(args[1]))
 				{
-					Integer prop = APIRegistry.permissionManager.getPermissionPropertyInt(sender, PERMPROP);
+					Integer prop = APIRegistry.perms.getPermissionPropertyInt(sender, PERMPROP);
 					if (prop == null || prop == -1)
 					{
 						map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
@@ -124,9 +119,9 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 				else
 				{
 					String target;
-					if (APIRegistry.getAsFEGroup(args[1]) != null)
+					if (APIRegistry.perms.getGroupForName(args[1]) != null)
 					{
-						target = "g:" + APIRegistry.getAsFEGroup(args[1]).name;
+						target = "g:" + APIRegistry.perms.getGroupForName(args[1]).name;
 					}
 					else if (args[1].equalsIgnoreCase("me"))
 					{
@@ -160,7 +155,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 
 	private String getLimit(EntityPlayer sender)
 	{
-		return APIRegistry.permissionManager.getPermissionProperty(sender, PERMPROP);
+		return APIRegistry.perms.getPermissionProperty(sender, PERMPROP);
 	}
 
 	private String getLimit(String target)
@@ -168,13 +163,13 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		throw new RuntimeException("Not yet implemented!");
 //		if (target.startsWith("p:"))
 //		{
-//			return APIRegistry.permissionManager.getPermissionPropForPlayer(FunctionHelper.getPlayerID(target.replaceFirst("p:", "")), APIRegistry.permissionManager
+//			return APIRegistry.perms.getPermissionPropForPlayer(FunctionHelper.getPlayerID(target.replaceFirst("p:", "")), APIRegistry.perms
 //					.getGLOBAL().getName(), PERMPROP);
 //		}
 //		else if (target.startsWith("g:"))
 //		{
-//			return APIRegistry.permissionManager
-//					.getPermissionPropForGroup(target.replaceFirst("g:", ""), APIRegistry.permissionManager.getGlobalZone().getName(), PERMPROP);
+//			return APIRegistry.perms
+//					.getPermissionPropForGroup(target.replaceFirst("g:", ""), APIRegistry.perms.getGlobalZone().getName(), PERMPROP);
 //		}
 //		else
 //		{
@@ -187,12 +182,12 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		throw new RuntimeException("Not yet implemented!");
 //		if (target.startsWith("p:"))
 //		{
-//			APIRegistry.permissionManager.setPlayerPermissionProp(FunctionHelper.getPlayerID(target.replaceFirst("p:", "")), PERMPROP, "" + limit,
-//					APIRegistry.permissionManager.getGlobalZone().getName());
+//			APIRegistry.perms.setPlayerPermissionProp(FunctionHelper.getPlayerID(target.replaceFirst("p:", "")), PERMPROP, "" + limit,
+//					APIRegistry.perms.getGlobalZone().getName());
 //		}
 //		else if (target.startsWith("g:"))
 //		{
-//			APIRegistry.permissionManager.setGroupPermissionProp(target.replaceFirst("g:", ""), PERMPROP, "" + limit, APIRegistry.permissionManager.getGlobalZone()
+//			APIRegistry.perms.setGroupPermissionProp(target.replaceFirst("g:", ""), PERMPROP, "" + limit, APIRegistry.perms.getGlobalZone()
 //					.getName());
 //		}
 //		else
@@ -223,7 +218,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 //		}
 //		if (args.length == 2 && args[0].equalsIgnoreCase("limit"))
 //		{
-//			Zone zone = sender instanceof EntityPlayer ? APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint((EntityPlayer) sender)) : APIRegistry.permissionManager
+//			Zone zone = sender instanceof EntityPlayer ? APIRegistry.perms.getWhichZoneIn(new WorldPoint((EntityPlayer) sender)) : APIRegistry.perms
 //					.getGLOBAL();
 //			ArrayList<String> list = new ArrayList<String>();
 //			for (String s : FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames())
@@ -233,11 +228,11 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 //
 //			while (zone != null)
 //			{
-//				for (Group g : APIRegistry.permissionManager.getGroupsInZone(zone.getName()))
+//				for (Group g : APIRegistry.perms.getGroupsInZone(zone.getName()))
 //				{
 //					list.add(g.name);
 //				}
-//				zone = APIRegistry.permissionManager.getZone(zone.parent);
+//				zone = APIRegistry.perms.getZone(zone.parent);
 //			}
 //
 //			return getListOfStringsFromIterableMatchingLastWord(args, list);
@@ -263,10 +258,10 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	{
 		PermissionsManager.registerPermission(PERMSETLIMIT, RegisteredPermValue.OP);
 
-		APIRegistry.permissionManager.registerPermissionProperty(PERMPROP, "10");
-//		APIRegistry.permissionManager.registerPermissionProperty(PERMPROP, 0, GUEST);
-//		APIRegistry.permissionManager.registerPermissionProperty(PERMPROP, 10, MEMBER);
-//		APIRegistry.permissionManager.registerPermissionProperty(PERMPROP, -1, OP);
+		APIRegistry.perms.registerPermissionProperty(PERMPROP, "10");
+//		APIRegistry.perms.registerPermissionProperty(PERMPROP, 0, GUEST);
+//		APIRegistry.perms.registerPermissionProperty(PERMPROP, 10, MEMBER);
+//		APIRegistry.perms.registerPermissionProperty(PERMPROP, -1, OP);
 	}
 
 	@Override

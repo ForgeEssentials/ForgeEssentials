@@ -5,7 +5,6 @@ package com.forgeessentials.core.commands.selections;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
@@ -109,7 +108,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         z = mop.blockZ;
 
         WorldPoint point = new WorldPoint(player.dimension, x, y, z);
-        if (!APIRegistry.permissionManager.checkPermission(player, point, getPermissionNode()))
+        if (!APIRegistry.perms.checkPermission(player, point, getPermissionNode()))
         {
             OutputHandler.chatError(player, "Insufficient permissions.");
             return;

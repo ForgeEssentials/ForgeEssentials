@@ -32,7 +32,7 @@ public class AutoPromoteManager extends TimerTask {
             for (Object obj : loaded)
             {
                 AutoPromote ap = (AutoPromote) obj;
-                if (APIRegistry.permissionManager.getZone(ap.zone) != null)
+                if (APIRegistry.perms.getZone(ap.zone) != null)
                 {
                     map.put(ap.zone, ap);
                 }
@@ -68,14 +68,14 @@ public class AutoPromoteManager extends TimerTask {
         for (String username : MinecraftServer.getServer().getAllUsernames())
         {
             EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(username);
-            Zone zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(player));
+            Zone zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint(player));
             while (zone != null)
             {
                 if (map.containsKey(zone.getName()))
                 {
                     map.get(zone.getName()).tick(player);
                 }
-                zone = APIRegistry.permissionManager.getZone(zone.parent);
+                zone = APIRegistry.perms.getZone(zone.parent);
             }
         }
     }

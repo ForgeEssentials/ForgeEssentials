@@ -39,20 +39,20 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		/*
 		 * Get the right zone. If nothing valid is given, defaults to the senders position.
 		 */
-		Zone zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(sender));
+		Zone zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint(sender));
 		if (args.length > 0)
 		{
 			if (args[0].equalsIgnoreCase("world"))
 			{
-				zone = APIRegistry.permissionManager.getWorldZone(sender.worldObj);
+				zone = APIRegistry.perms.getWorldZone(sender.worldObj);
 			}
 			if (args[0].equalsIgnoreCase("global"))
 			{
-				zone = APIRegistry.permissionManager.getGlobalZone();
+				zone = APIRegistry.perms.getGlobalZone();
 			}
-			if (APIRegistry.permissionManager.doesZoneExist(args[0]))
+			if (APIRegistry.perms.doesZoneExist(args[0]))
 			{
-				zone = APIRegistry.permissionManager.getZone(args[0]);
+				zone = APIRegistry.perms.getZone(args[0]);
 			}
 		}
 
@@ -239,7 +239,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		list.add("here");
 		list.add("global");
 		list.add("world");
-		for (Zone zone : APIRegistry.permissionManager.getZoneList())
+		for (Zone zone : APIRegistry.perms.getZoneList())
 		{
 			list.add(zone.getName());
 		}
@@ -267,18 +267,18 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		{
 			try
 			{
-				Zone zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint((Entity) sender));
+				Zone zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint((Entity) sender));
 				if (args[0].equalsIgnoreCase("world"))
 				{
-					zone = APIRegistry.permissionManager.getWorldZone(((Entity) sender).worldObj);
+					zone = APIRegistry.perms.getWorldZone(((Entity) sender).worldObj);
 				}
 				if (args[0].equalsIgnoreCase("global"))
 				{
-					zone = APIRegistry.permissionManager.getGlobalZone();
+					zone = APIRegistry.perms.getGlobalZone();
 				}
-				if (APIRegistry.permissionManager.doesZoneExist(args[0]))
+				if (APIRegistry.perms.doesZoneExist(args[0]))
 				{
-					zone = APIRegistry.permissionManager.getZone(args[0]);
+					zone = APIRegistry.perms.getZone(args[0]);
 				}
 				AutoPromote ap = AutoPromoteManager.instance().map.get(zone.getName());
 				if (ap == null)
@@ -297,18 +297,18 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		{
 			try
 			{
-				Zone zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint((Entity) sender));
+				Zone zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint((Entity) sender));
 				if (args[0].equalsIgnoreCase("world"))
 				{
-					zone = APIRegistry.permissionManager.getWorldZone(((Entity) sender).worldObj);
+					zone = APIRegistry.perms.getWorldZone(((Entity) sender).worldObj);
 				}
 				if (args[0].equalsIgnoreCase("global"))
 				{
-					zone = APIRegistry.permissionManager.getGlobalZone();
+					zone = APIRegistry.perms.getGlobalZone();
 				}
-				if (APIRegistry.permissionManager.doesZoneExist(args[0]))
+				if (APIRegistry.perms.doesZoneExist(args[0]))
 				{
-					zone = APIRegistry.permissionManager.getZone(args[0]);
+					zone = APIRegistry.perms.getZone(args[0]);
 				}
 				List<Group> groups = SqlHelper.getInstance().getGroups();
 				List<String> groupNames = new ArrayList<String>();

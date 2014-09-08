@@ -32,7 +32,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
     public static void setSpawnPoint(WorldPoint p, Zone zone)
     {
         String val = p.dim + ";" + p.x + ";" + p.y + ";" + p.z;
-        APIRegistry.permissionManager.setGroupPermissionProp(APIRegistry.permissionManager.getDefaultGroup().name, SPAWN_PROP, val, zone);
+        APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDefaultGroup().name, SPAWN_PROP, val, zone);
     }
 
     @Override
@@ -149,22 +149,22 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         }
 
         // calc zone.
-        Zone zone = APIRegistry.permissionManager.getGlobalZone();
+        Zone zone = APIRegistry.perms.getGlobalZone();
         if (args.length == 5)
         {
-            if (APIRegistry.permissionManager.doesZoneExist(args[4]))
+            if (APIRegistry.perms.doesZoneExist(args[4]))
             {
-                zone = APIRegistry.permissionManager.getZone(args[4]);
+                zone = APIRegistry.perms.getZone(args[4]);
             }
             else if (args[4].equalsIgnoreCase("here"))
             {
-                zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(sender));
+                zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint(sender));
             }
             else if (args[4].equalsIgnoreCase("revert"))
             {
                 World world = FunctionHelper.getDimension(0);
-                // zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ));
-                zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(0, 10, 10, 10));
+                // zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ));
+                zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint(0, 10, 10, 10));
             }
             else
             {
@@ -174,19 +174,19 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 7)
         {
-            if (APIRegistry.permissionManager.doesZoneExist(args[6]))
+            if (APIRegistry.perms.doesZoneExist(args[6]))
             {
-                zone = APIRegistry.permissionManager.getZone(args[6]);
+                zone = APIRegistry.perms.getZone(args[6]);
             }
             else if (args[6].equalsIgnoreCase("here"))
             {
-                zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(sender));
+                zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint(sender));
             }
             else if (args[4].equalsIgnoreCase("revert"))
             {
                 World world = FunctionHelper.getDimension(0);
-                // zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ));
-                zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(0, 10, 10, 10));
+                // zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ));
+                zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint(0, 10, 10, 10));
             }
             else
             {
@@ -219,7 +219,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
                 }
             }
 
-            APIRegistry.permissionManager.setPlayerPermissionProp(id, permProp, prop, zone.getName());
+            APIRegistry.perms.setPlayerPermissionProp(id, permProp, prop, zone.getName());
             OutputHandler.chatConfirmation(sender, output);
         }
         else if (args[1].equalsIgnoreCase("group"))
@@ -230,18 +230,18 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
                 return;
             }
 
-            APIRegistry.permissionManager.setGroupPermissionProp(args[2], permProp, prop, zone.getName());
+            APIRegistry.perms.setGroupPermissionProp(args[2], permProp, prop, zone.getName());
             OutputHandler.chatConfirmation(sender, output);
         }
         else if (args[1].equalsIgnoreCase("zone"))
         {
-            if (APIRegistry.permissionManager.doesZoneExist(args[2]))
+            if (APIRegistry.perms.doesZoneExist(args[2]))
             {
-                zone = APIRegistry.permissionManager.getZone(args[2]);
+                zone = APIRegistry.perms.getZone(args[2]);
             }
             else if (args[5].equalsIgnoreCase("here"))
             {
-                zone = APIRegistry.permissionManager.getWhichZoneIn(new WorldPoint(sender));
+                zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint(sender));
             }
             else
             {
@@ -249,7 +249,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
                 return;
             }
 
-            APIRegistry.permissionManager.setGroupPermissionProp(APIRegistry.permissionManager.getDefaultGroup().name, permProp, prop, zone.getName());
+            APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDefaultGroup().name, permProp, prop, zone.getName());
             OutputHandler.chatConfirmation(sender, output);
         }
         else
@@ -338,12 +338,12 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         }
 
         // calc zone.
-        Zone zone = APIRegistry.permissionManager.getGlobalZone();
+        Zone zone = APIRegistry.perms.getGlobalZone();
         if (args.length == 6)
         {
-            if (APIRegistry.permissionManager.doesZoneExist(args[5]))
+            if (APIRegistry.perms.doesZoneExist(args[5]))
             {
-                zone = APIRegistry.permissionManager.getZone(args[5]);
+                zone = APIRegistry.perms.getZone(args[5]);
             }
             else
             {
@@ -353,9 +353,9 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 8)
         {
-            if (APIRegistry.permissionManager.doesZoneExist(args[7]))
+            if (APIRegistry.perms.doesZoneExist(args[7]))
             {
-                zone = APIRegistry.permissionManager.getZone(args[7]);
+                zone = APIRegistry.perms.getZone(args[7]);
             }
             else
             {
@@ -380,7 +380,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
                 id = player.getPersistentID();
             }
 
-            APIRegistry.permissionManager.setPlayerPermissionProp(id, permProp, prop, zone.getName());
+            APIRegistry.perms.setPlayerPermissionProp(id, permProp, prop, zone.getName());
             OutputHandler.chatConfirmation(sender, output);
         }
         else if (args[1].equalsIgnoreCase("group"))
@@ -391,14 +391,14 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
                 return;
             }
 
-            APIRegistry.permissionManager.setGroupPermissionProp(args[2], permProp, prop, zone.getName());
+            APIRegistry.perms.setGroupPermissionProp(args[2], permProp, prop, zone.getName());
             OutputHandler.chatConfirmation(sender, output);
         }
         else if (args[1].equalsIgnoreCase("zone"))
         {
-            if (APIRegistry.permissionManager.doesZoneExist(args[2]))
+            if (APIRegistry.perms.doesZoneExist(args[2]))
             {
-                zone = APIRegistry.permissionManager.getZone(args[2]);
+                zone = APIRegistry.perms.getZone(args[2]);
             }
             else
             {
@@ -406,7 +406,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
                 return;
             }
 
-            APIRegistry.permissionManager.setGroupPermissionProp(APIRegistry.permissionManager.getDefaultGroup().name, permProp, prop, zone.getName());
+            APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDefaultGroup().name, permProp, prop, zone.getName());
             OutputHandler.chatConfirmation(sender, output);
         }
         else
@@ -460,7 +460,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
             }
             else if (args[1].equalsIgnoreCase("group"))
             {
-                List<Group> groups = APIRegistry.permissionManager.getGroupsInZone(APIRegistry.permissionManager.getGlobalZone().getName());
+                List<Group> groups = APIRegistry.perms.getGroupsInZone(APIRegistry.perms.getGlobalZone().getName());
                 for (Group g : groups)
                 {
                     completes.add(g.name);
@@ -468,7 +468,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
             }
             else if (args[1].equalsIgnoreCase("zone"))
             {
-                for (Zone z : APIRegistry.permissionManager.getZoneList())
+                for (Zone z : APIRegistry.perms.getZoneList())
                 {
                     completes.add(z.getName());
                 }
@@ -493,7 +493,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("type") || (args[0].equalsIgnoreCase("point") && args[4].equalsIgnoreCase("here")))
             {
-                for (Zone z : APIRegistry.permissionManager.getZoneList())
+                for (Zone z : APIRegistry.perms.getZoneList())
                 {
                     completes.add(z.getName());
                 }
@@ -504,7 +504,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("point"))
             {
-                for (Zone z : APIRegistry.permissionManager.getZoneList())
+                for (Zone z : APIRegistry.perms.getZoneList())
                 {
                     completes.add(z.getName());
                 }

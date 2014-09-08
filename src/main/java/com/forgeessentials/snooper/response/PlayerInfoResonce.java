@@ -123,7 +123,7 @@ public class PlayerInfoResonce extends Response
             data.capabilities.disableDamage = player.capabilities.disableDamage;
         }
 
-        data.group = APIRegistry.permissionManager.getHighestGroup(player).name;
+        data.group = APIRegistry.perms.getHighestGroup(player).name;
         data.firstJoin = pi.getFirstJoin();
         data.timePlayed = pi.getTimePlayed();
 

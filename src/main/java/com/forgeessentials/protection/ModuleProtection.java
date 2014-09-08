@@ -93,6 +93,6 @@ public class ModuleProtection {
 			PermissionsManager.registerPermission(PERM_DIMENSION + i, RegisteredPermValue.TRUE);
 		}
 
-		APIRegistry.permissionManager.registerPermissionProperty(PERMPROP_ZONE_GAMEMODE, Integer.toString(0));
+		APIRegistry.perms.registerPermissionProperty(PERMPROP_ZONE_GAMEMODE, Integer.toString(0));
 	}
 }

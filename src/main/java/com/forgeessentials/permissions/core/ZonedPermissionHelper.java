@@ -1,33 +1,20 @@
 package com.forgeessentials.permissions.core;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import com.forgeessentials.api.permissions.*;
+import com.forgeessentials.util.selections.Point;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.dispenser.ILocation;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.api.IGroup;
-import net.minecraftforge.permissions.api.context.IContext;
+import net.minecraftforge.permissions.api.context.*;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.GlobalZone;
-import com.forgeessentials.api.permissions.Group;
-import com.forgeessentials.api.permissions.IPermissionsManager;
-import com.forgeessentials.api.permissions.WorldZone;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.permissions.SqlHelper;
-import com.forgeessentials.util.selections.Point;
-import com.google.common.collect.ImmutableMap;
+import java.util.*;
 
-public class ZonedPermissionManager implements IPermissionsManager {
+public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private GlobalZone globalZone = new GlobalZone();
 
@@ -35,7 +22,7 @@ public class ZonedPermissionManager implements IPermissionsManager {
 
 	private Map<String, Group> groups = new HashMap<String, Group>();
 
-	public ZonedPermissionManager()
+	public ZonedPermissionHelper()
 	{
 		// MinecraftForge.EVENT_BUS.register(this);
 
@@ -158,79 +145,48 @@ public class ZonedPermissionManager implements IPermissionsManager {
 		return null;
 	}
 
-	@Override
-	public IContext getDefaultContext(EntityPlayer player)
-	{
-		return null;
-	}
+    public static final IContext GLOBAL = new IContext() {};
 
-	@Override
-	public IContext getDefaultContext(TileEntity te)
-	{
-		return null;
-	}
+    @Override
+    public IContext getDefaultContext(EntityPlayer player)
+    {
+        IContext context = new PlayerContext(player);
+        return context;
+    }
 
-	@Override
-	public IContext getDefaultContext(ILocation loc)
-	{
-		return null;
-	}
+    @Override
+    public IContext getDefaultContext(TileEntity te)
+    {
+        return new TileEntityContext(te);
+    }
 
-	@Override
-	public IContext getDefaultContext(Entity entity)
-	{
-		return null;
-	}
+    @Override
+    public IContext getDefaultContext(ILocation loc)
+    {
+        return new Point(loc);
+    }
 
-	@Override
-	public IContext getDefaultContext(World world)
-	{
-		return null;
-	}
+    @Override
+    public IContext getDefaultContext(Entity entity)
+    {
+        return new EntityContext(entity);
+    }
 
-	@Override
-	public IContext getGlobalContext()
-	{
-		return null;
-	}
+    @Override
+    public IContext getDefaultContext(World world)
+    {
+        return new WorldContext(world);
+    }
 
-	@Override
-	public IContext getDefaultContext(Object whoKnows)
-	{
-		return null;
-	}
+    @Override
+    public IContext getGlobalContext()
+    {
+        return GLOBAL;
+    }
 
 	@Override
 	public void registerPermission(String node, PermissionsManager.RegisteredPermValue allow)
 	{
 		// PermissionsManager.registerPermission(node, RegGroup.fromForgeLevel(allow));
-	}
-
-	@Override
-	public Collection<IGroup> getGroups(UUID playerID)
-	{
-		List<IGroup> returned = new ArrayList<>();
-		// for (Group g : PermissionsHelper.INSTANCE.getApplicableGroups(FunctionHelper.getPlayerForUUID(playerID), true))
-		// {
-		// returned.add(g);
-		// }
-		return returned;
-	}
-
-	@Override
-	public IGroup getGroup(String name)
-	{
-		return SqlHelper.getInstance().getGroupByName(name);
-	}
-
-	@Override
-	public Collection<IGroup> getAllGroups()
-	{
-		List<IGroup> returned = new ArrayList<>();
-		// for (Group g : PermissionsHelper.INSTANCE.getGroupsInZone(APIRegistry.permissionManager.getGlobalZone().getName()))
-		// {
-		// returned.add(g);
-		// }
-		return returned;
 	}
 }

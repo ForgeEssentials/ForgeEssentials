@@ -10,7 +10,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.ServerChatEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.chat.ConfigChat;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
@@ -91,7 +90,7 @@ public class IRCChatFormatter {
         String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
         String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
 
-        zoneID = APIRegistry.permissionManager.getZonesAt(new WorldPoint(event.player)).get(0).getName();
+        zoneID = APIRegistry.perms.getZonesAt(new WorldPoint(event.player)).get(0).getName();
 
         // Group stuff!!! DO NOT TOUCH!!!
         {

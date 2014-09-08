@@ -138,7 +138,7 @@ public class ModuleWorldBorder {
 	{
 		loadAll();
 
-		Zone zone = APIRegistry.permissionManager.getGlobalZone();
+		Zone zone = APIRegistry.perms.getGlobalZone();
 		if (!borderMap.containsKey(zone.getName()))
 		{
 			borderMap.put(zone.getName(), new WorldBorder(zone));
@@ -158,10 +158,10 @@ public class ModuleWorldBorder {
 	@SubscribeEvent
 	public void playerMove(PlayerMoveEvent e)
 	{
-		Zone zone = APIRegistry.permissionManager.getWorldZone(e.entityPlayer.worldObj);
+		Zone zone = APIRegistry.perms.getWorldZone(e.entityPlayer.worldObj);
 		WorldBorder border = borderMap.get(zone.getName());
 		border.check((EntityPlayerMP) e.entityPlayer);
-		borderMap.get(APIRegistry.permissionManager.getGlobalZone().getName()).check((EntityPlayerMP) e.entityPlayer);
+		borderMap.get(APIRegistry.perms.getGlobalZone().getName()).check((EntityPlayerMP) e.entityPlayer);
 	}
 
 	@SubscribeEvent
@@ -172,7 +172,7 @@ public class ModuleWorldBorder {
 			return;
 		}
 
-		Zone zone = APIRegistry.permissionManager.getWorldZone(e.world);
+		Zone zone = APIRegistry.perms.getWorldZone(e.world);
 		if (!borderMap.containsKey(zone.getName()))
 		{
 			WorldBorder wb = (WorldBorder) DataStorageManager.getReccomendedDriver().loadObject(con, zone.getName());
@@ -195,7 +195,7 @@ public class ModuleWorldBorder {
 			return;
 		}
 
-		Zone zone = APIRegistry.permissionManager.getWorldZone(e.world);
+		Zone zone = APIRegistry.perms.getWorldZone(e.world);
 		borderMap.remove(zone.getName());
 	}
 }

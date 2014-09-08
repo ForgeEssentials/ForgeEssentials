@@ -2,9 +2,9 @@ package com.forgeessentials.permissions.core;
 
 public abstract class ZonePersistanceProvider {
 
-	private ZonedPermissionManager permissionManager;
+	private ZonedPermissionHelper permissionManager;
 	
-	public ZonePersistanceProvider(ZonedPermissionManager permissionManager) {
+	public ZonePersistanceProvider(ZonedPermissionHelper permissionManager) {
 		this.permissionManager = permissionManager;
 	}
 	

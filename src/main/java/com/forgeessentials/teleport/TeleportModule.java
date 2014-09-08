@@ -83,7 +83,7 @@ public class TeleportModule {
 		// ServerStart
 		// event.registerPermissionProp("fe.teleport.spawnPoint",
 		// "0;0;0;0");
-		APIRegistry.permissionManager.registerPermissionProperty(CommandSetSpawn.SPAWN_TYPE_PROP, "bed"); // bed,
+		APIRegistry.perms.registerPermissionProperty(CommandSetSpawn.SPAWN_TYPE_PROP, "bed"); // bed,
 		// point,
 		// none
 		PermissionsManager.registerPermission("fe.teleport.back.ondeath", RegisteredPermValue.TRUE);
@@ -106,15 +106,15 @@ public class TeleportModule {
 	@ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		String prop = APIRegistry.permissionManager.getGlobalZone().getGroupPermission(Zone.DEFAULT_GROUP, CommandSetSpawn.SPAWN_PROP);
+		String prop = APIRegistry.perms.getGlobalZone().getGroupPermission(Zone.DEFAULT_GROUP, CommandSetSpawn.SPAWN_PROP);
 
 		// nothing set for the global??
 		if (prop == null)
 		{
 			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
 			String val = "0;" + point.posX + ";" + point.posY + ";" + point.posZ;
-			APIRegistry.permissionManager.setGroupPermissionProp(APIRegistry.permissionManager.getDefaultGroup().name, CommandSetSpawn.SPAWN_PROP, val,
-					APIRegistry.permissionManager.getGlobalZone().getName());
+			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDefaultGroup().name, CommandSetSpawn.SPAWN_PROP, val,
+					APIRegistry.perms.getGlobalZone().getName());
 		}
 		TeleportDataManager.load();
 
@@ -147,7 +147,7 @@ public class TeleportModule {
 
 				if (spawnDim != 0 && spawnDim == currentDim && !CommandSetSpawn.dimsWithProp.contains(currentDim))
 				{
-					Zone z = APIRegistry.permissionManager.getWorldZone(player.worldObj);
+					Zone z = APIRegistry.perms.getWorldZone(player.worldObj);
 					ChunkCoordinates dimPoint = player.worldObj.getSpawnPoint();
 					WorldPoint point = new WorldPoint(spawnDim, dimPoint.posX, dimPoint.posY, dimPoint.posZ);
 					CommandSetSpawn.setSpawnPoint(point, z);
@@ -159,7 +159,7 @@ public class TeleportModule {
 				}
 			}
 
-			String prop = APIRegistry.permissionManager.getPermissionProperty(player, "fe.teleport.spawnType");
+			String prop = APIRegistry.perms.getPermissionProperty(player, "fe.teleport.spawnType");
 			if (prop != null && prop.equalsIgnoreCase("none"))
 			{
 				return;
@@ -179,7 +179,7 @@ public class TeleportModule {
 				}
 			}
 
-			prop = APIRegistry.permissionManager.getPermissionProperty(player, "fe.teleport.spawnPoint");
+			prop = APIRegistry.perms.getPermissionProperty(player, "fe.teleport.spawnPoint");
 			if (prop == null)
 			{
 				throw new RuntimeException("NO GLOBAL SPAWN SET!!!");

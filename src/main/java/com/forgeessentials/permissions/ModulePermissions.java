@@ -2,6 +2,7 @@ package com.forgeessentials.permissions;
 
 import java.io.File;
 
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -9,10 +10,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.data.AbstractDataDriver;
-import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.permissions.autoPromote.AutoPromote;
 import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
@@ -20,7 +18,6 @@ import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandTestPermission;
 import com.forgeessentials.permissions.commands.CommandZone;
-import com.forgeessentials.permissions.core.ZonedPermissionManager;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
@@ -69,8 +66,8 @@ public class ModulePermissions {
 
 		//DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 		
-		APIRegistry.permissionManager = new ZonedPermissionManager();
-		PermissionsManager.setPermProvider(APIRegistry.permissionManager);
+		APIRegistry.perms = new ZonedPermissionHelper();
+		PermissionsManager.setPermProvider(APIRegistry.perms);
 	}
 
 	@FEModule.Init
@@ -89,7 +86,7 @@ public class ModulePermissions {
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		// load zones...
-		//((ZoneHelper) APIRegistry.permissionManager).loadZones();
+		//((ZoneHelper) APIRegistry.perms).loadZones();
 
 //		if (config.importBool)
 //		{
@@ -113,7 +110,7 @@ public class ModulePermissions {
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		// TODO: PERMS
-		//sql.putRegistrationPerms(APIRegistry.permissionManager.getRegisteredPerms());
+		//sql.putRegistrationPerms(APIRegistry.perms.getRegisteredPerms());
 	}
 
 	@FEModule.ServerStop
@@ -124,7 +121,7 @@ public class ModulePermissions {
 		// TODO: PERMS
 		
 		// save all the zones
-//		for (Zone zone : APIRegistry.permissionManager.getZoneList())
+//		for (Zone zone : APIRegistry.perms.getZoneList())
 //		{
 //			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
 //			{
