@@ -25,9 +25,9 @@ public class BlockSaveable {
      */
     public BlockSaveable(World world, int x, int y, int z)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.getX() = x;
+        this.getY() = y;
+        this.getZ() = z;
         blockID = world.getBlock(x, y, z);
         metadata = (byte) world.getBlockMetadata(x, y, z);
 

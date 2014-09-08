@@ -152,9 +152,9 @@ public class CommandBed extends ForgeEssentialsCommandBase {
         }
         else
         {
-            this.sleepPoint.x = e.x;
-            this.sleepPoint.y = e.y;
-            this.sleepPoint.z = e.z;
+            this.sleepPoint.setX(e.x);
+            this.sleepPoint.setY(e.y);
+            this.sleepPoint.setZ(e.z);
         }
         e.setResult(null);
         e.entityPlayer.playerLocation = new ChunkCoordinates(e.x, e.y, e.z);

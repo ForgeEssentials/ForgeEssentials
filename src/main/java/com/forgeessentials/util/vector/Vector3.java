@@ -24,16 +24,16 @@ public class Vector3 extends Vector2 implements Cloneable {
 
     public Vector3(int x, int y, int z)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.getX() = x;
+        this.getY() = y;
+        this.getZ() = z;
     }
 
     public Vector3(double x, double y, double z)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.getX() = x;
+        this.getY() = y;
+        this.getZ() = z;
     }
 
     public Vector3(Entity par1)
@@ -108,43 +108,43 @@ public class Vector3 extends Vector2 implements Cloneable {
      */
     public static double distance(Vector3 par1, Vector3 par2)
     {
-        double var2 = par1.x - par2.x;
-        double var4 = par1.y - par2.y;
-        double var6 = par1.z - par2.z;
+        double var2 = par1.getX() - par2.getX();
+        double var4 = par1.getY() - par2.getY();
+        double var6 = par1.getZ() - par2.getZ();
         return MathHelper.sqrt_double(var2 * var2 + var4 * var4 + var6 * var6);
     }
 
     public static Vector3 subtract(Vector3 par1, Vector3 par2)
     {
-        return new Vector3(par1.x - par2.x, par1.y - par2.y, par1.z - par2.z);
+        return new Vector3(par1.getX() - par2.getX(), par1.getY() - par2.getY(), par1.getZ() - par2.getZ());
     }
 
     public static Vector3 add(Vector3 par1, Vector3 par2)
     {
-        return new Vector3(par1.x + par2.x, par1.y + par2.y, par1.z + par2.z);
+        return new Vector3(par1.getX() + par2.getX(), par1.getY() + par2.getY(), par1.getZ() + par2.getZ());
     }
 
     public static Vector3 add(Vector3 par1, double par2)
     {
-        return new Vector3(par1.x + par2, par1.y + par2, par1.z + par2);
+        return new Vector3(par1.getX() + par2, par1.getY() + par2, par1.getZ() + par2);
     }
 
     public static Vector3 multiply(Vector3 vec1, Vector3 vec2)
     {
-        return new Vector3(vec1.x * vec2.x, vec1.y * vec2.y, vec1.z * vec2.z);
+        return new Vector3(vec1.getX() * vec2.getX(), vec1.getY() * vec2.getY(), vec1.getZ() * vec2.getZ());
     }
 
     public static Vector3 multiply(Vector3 vec1, double vec2)
     {
-        return new Vector3(vec1.x * vec2, vec1.y * vec2, vec1.z * vec2);
+        return new Vector3(vec1.getX() * vec2, vec1.getY() * vec2, vec1.getZ() * vec2);
     }
 
     public static Vector3 readFromNBT(String prefix, NBTTagCompound par1NBTTagCompound)
     {
         Vector3 tempVector = new Vector3();
-        tempVector.x = par1NBTTagCompound.getDouble(prefix + "X");
-        tempVector.y = par1NBTTagCompound.getDouble(prefix + "Y");
-        tempVector.z = par1NBTTagCompound.getDouble(prefix + "Z");
+        tempVector.getX() = par1NBTTagCompound.getDouble(prefix + "X");
+        tempVector.getY() = par1NBTTagCompound.getDouble(prefix + "Y");
+        tempVector.getZ() = par1NBTTagCompound.getDouble(prefix + "Z");
         return tempVector;
     }
 
@@ -170,7 +170,7 @@ public class Vector3 extends Vector2 implements Cloneable {
 
     public boolean isEquals(Vector3 vector)
     {
-        return x == vector.x && y == vector.y && z == vector.z;
+        return x == vector.getX() && y == vector.getY() && z == vector.getZ();
     }
 
     /**
@@ -233,22 +233,22 @@ public class Vector3 extends Vector2 implements Cloneable {
      */
     public boolean isEqual(Vector3 vector3)
     {
-        return x == vector3.x && y == vector3.y && z == vector3.z;
+        return x == vector3.getX() && y == vector3.getY() && z == vector3.getZ();
     }
 
     public double distanceTo(Vector3 vector3)
     {
-        double var2 = vector3.x - x;
-        double var4 = vector3.y - y;
-        double var6 = vector3.z - z;
+        double var2 = vector3.getX() - x;
+        double var4 = vector3.getY() - y;
+        double var6 = vector3.getZ() - z;
         return MathHelper.sqrt_double(var2 * var2 + var4 * var4 + var6 * var6);
     }
 
     public void add(Vector3 par1)
     {
-        x += par1.x;
-        y += par1.y;
-        z += par1.z;
+        x += par1.getX();
+        y += par1.getY();
+        z += par1.getZ();
     }
 
     @Override
@@ -261,9 +261,9 @@ public class Vector3 extends Vector2 implements Cloneable {
 
     public void subtract(Vector3 amount)
     {
-        x -= amount.x;
-        y -= amount.y;
-        z -= amount.z;
+        x -= amount.getX();
+        y -= amount.getY();
+        z -= amount.getZ();
     }
 
     @Override
@@ -276,9 +276,9 @@ public class Vector3 extends Vector2 implements Cloneable {
 
     public void multiply(Vector3 vec)
     {
-        x *= vec.x;
-        y *= vec.y;
-        z *= vec.z;
+        x *= vec.getX();
+        y *= vec.getY();
+        z *= vec.getZ();
     }
 
     /**

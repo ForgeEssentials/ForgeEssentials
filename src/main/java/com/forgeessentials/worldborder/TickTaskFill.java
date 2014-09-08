@@ -88,12 +88,12 @@ public class TickTaskFill implements ITickTask {
             return;
         }
 
-        X = minX = (border.center.x - border.rad - ModuleWorldBorder.overGenerate) / 16;
-        Z = minZ = (border.center.z - border.rad - ModuleWorldBorder.overGenerate) / 16;
-        maxX = (border.center.x + border.rad + ModuleWorldBorder.overGenerate) / 16;
-        maxZ = (border.center.z + border.rad + ModuleWorldBorder.overGenerate) / 16;
-        centerX = border.center.x / 16;
-        centerZ = border.center.z / 16;
+        X = minX = (border.center.getX() - border.rad - ModuleWorldBorder.overGenerate) / 16;
+        Z = minZ = (border.center.getZ() - border.rad - ModuleWorldBorder.overGenerate) / 16;
+        maxX = (border.center.getX() + border.rad + ModuleWorldBorder.overGenerate) / 16;
+        maxZ = (border.center.getZ() + border.rad + ModuleWorldBorder.overGenerate) / 16;
+        centerX = border.center.getX() / 16;
+        centerZ = border.center.getZ() / 16;
         rad = (border.rad + ModuleWorldBorder.overGenerate) / 16;
 
         todo = border.getETA();

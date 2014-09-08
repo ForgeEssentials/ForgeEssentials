@@ -208,8 +208,9 @@ public class EventLogger {
 				return;
 			}
 
-			new blockChangeLog(blockChangeLogCategory.interact, e.entityPlayer, e.entity.worldObj.getBlock(e.x, e.y, e.z).getUnlocalizedName() + ":"
-					+ e.entity.worldObj.getBlockMetadata(e.x, e.y, e.z), e.x, e.y, e.z, e.entity.worldObj.getTileEntity(e.x, e.y, e.z));
+			new blockChangeLog(blockChangeLogCategory.interact, e.entityPlayer, e.entity.worldObj.getBlock(e.x, e.y, e.z).getUnlocalizedName()
+					+ ":" + e.entity.worldObj.getBlockMetadata(e.x, e.y, e.z), e.x, e.y, e.z, e.entity.worldObj.getTileEntity(
+					e.x, e.y, e.z));
 		}
 	}
 

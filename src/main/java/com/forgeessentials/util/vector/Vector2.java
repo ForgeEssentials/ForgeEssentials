@@ -13,14 +13,14 @@ public class Vector2 implements Cloneable {
 
     public Vector2(int x, int y)
     {
-        this.x = x;
-        this.y = y;
+        this.getX() = x;
+        this.getY() = y;
     }
 
     public Vector2(double x, double y)
     {
-        this.x = x;
-        this.y = y;
+        this.getX() = x;
+        this.getY() = y;
     }
 
     // Returns the values as an int
@@ -45,22 +45,22 @@ public class Vector2 implements Cloneable {
 
     public static double distance(Vector2 par1, Vector2 par2)
     {
-        double var2 = par1.x - par2.x;
-        double var4 = par1.y - par2.y;
+        double var2 = par1.getX() - par2.getX();
+        double var4 = par1.getY() - par2.getY();
         return MathHelper.sqrt_double(var2 * var2 + var4 * var4);
     }
 
     public static double slope(Vector2 par1, Vector2 par2)
     {
-        double var2 = par1.x - par2.x;
-        double var4 = par1.y - par2.y;
+        double var2 = par1.getX() - par2.getX();
+        double var4 = par1.getY() - par2.getY();
         return var4 / var2;
     }
 
     public void add(Vector2 par1)
     {
-        x += par1.x;
-        y += par1.y;
+        x += par1.getX();
+        y += par1.getY();
     }
 
     public void add(double par1)
@@ -71,8 +71,8 @@ public class Vector2 implements Cloneable {
 
     public void substract(Vector2 par1)
     {
-        x -= par1.x;
-        y -= par1.y;
+        x -= par1.getX();
+        y -= par1.getY();
     }
 
     public void substract(double par1)
@@ -83,8 +83,8 @@ public class Vector2 implements Cloneable {
 
     public void multiply(Vector2 par1)
     {
-        x *= par1.x;
-        y *= par1.y;
+        x *= par1.getX();
+        y *= par1.getY();
     }
 
     public void multiply(double par1)
@@ -112,7 +112,7 @@ public class Vector2 implements Cloneable {
 
     public boolean isEquals(Vector2 vector)
     {
-        return x == vector.x && y == vector.y;
+        return x == vector.getX() && y == vector.getY();
     }
 
     @Override

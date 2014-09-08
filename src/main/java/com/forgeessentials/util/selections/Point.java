@@ -18,19 +18,19 @@ public class Point implements Serializable, Comparable<Point> {
     private static final long serialVersionUID = 9058731447466825626L;
 
     @SaveableField
-    public int x;
+    protected int x;
 
     @SaveableField
-    public int y;
+    protected int y;
 
     @SaveableField
-    public int z;
+    protected int z;
 
     public Point(int x, int y, int z)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.getX() = x;
+        this.getY() = y;
+        this.getZ() = z;
     }
 
     public Point(Entity player)
@@ -40,7 +40,37 @@ public class Point implements Serializable, Comparable<Point> {
         z = (int) Math.floor(player.posZ);
     }
 
-    /**
+    public int getX()
+	{
+		return x;
+	}
+
+	public int getY()
+	{
+		return y;
+	}
+
+	public int getZ()
+	{
+		return z;
+	}
+
+	public void setX(int x)
+	{
+		this.getX() = x;
+	}
+
+	public void setY(int y)
+	{
+		this.getY() = y;
+	}
+
+	public void setZ(int z)
+	{
+		this.getZ() = z;
+	}
+
+	/**
      * This is calculated by the whichever has higher coords.
      *
      * @return Posotive number if this Point is larger. 0 if they are equal.
@@ -57,7 +87,7 @@ public class Point implements Serializable, Comparable<Point> {
         int positives = 0;
         int negatives = 0;
 
-        if (x > point.x)
+        if (x > point.getX())
         {
             positives++;
         }
@@ -66,7 +96,7 @@ public class Point implements Serializable, Comparable<Point> {
             negatives++;
         }
 
-        if (y > point.y)
+        if (y > point.getY())
         {
             positives++;
         }
@@ -75,7 +105,7 @@ public class Point implements Serializable, Comparable<Point> {
             negatives++;
         }
 
-        if (z > point.z)
+        if (z > point.getZ())
         {
             positives++;
         }
@@ -94,14 +124,14 @@ public class Point implements Serializable, Comparable<Point> {
         }
         else
         {
-            return x - point.x + y - point.y + z - point.z;
+            return x - point.getX() + y - point.getY() + z - point.getZ();
         }
     }
 
     @Override
     public boolean equals(Object object)
     {
-        if (object instanceof Point && x == ((Point) object).x && y == ((Point) object).y && z == ((Point) object).z)
+        if (object instanceof Point && x == ((Point) object).getX() && y == ((Point) object).getY() && z == ((Point) object).getZ())
         {
             return true;
         }
@@ -115,7 +145,7 @@ public class Point implements Serializable, Comparable<Point> {
      */
     public double getDistanceTo(Point point)
     {
-        return Math.sqrt((x - point.x) * (x - point.x) + (y - point.y) * (y - point.y) + (z - point.z) * (z - point.z));
+        return Math.sqrt((x - point.getX()) * (x - point.getX()) + (y - point.getY()) * (y - point.getY()) + (z - point.getZ()) * (z - point.getZ()));
     }
 
     /**
@@ -124,7 +154,7 @@ public class Point implements Serializable, Comparable<Point> {
      */
     public boolean alignsWith(Point p)
     {
-        return x == p.x || y == p.y || z == p.z;
+        return x == p.getX() || y == p.getY() || z == p.getZ();
     }
 
     public boolean isGreaterThan(Point p)
@@ -134,7 +164,7 @@ public class Point implements Serializable, Comparable<Point> {
             return false;
         }
 
-        return x >= p.x && y >= p.y && z >= p.z;
+        return x >= p.getX() && y >= p.getY() && z >= p.getZ();
     }
 
     public boolean isLessThan(Point p)
@@ -144,7 +174,7 @@ public class Point implements Serializable, Comparable<Point> {
             return false;
         }
 
-        return x <= p.x && y <= p.y && z <= p.z;
+        return x <= p.getX() && y <= p.getY() && z <= p.getZ();
     }
 
     /**
@@ -155,7 +185,7 @@ public class Point implements Serializable, Comparable<Point> {
      */
     public static Point copy(Point point)
     {
-        return new Point(point.x, point.y, point.z);
+        return new Point(point.getX(), point.getY(), point.getZ());
     }
 
     /**

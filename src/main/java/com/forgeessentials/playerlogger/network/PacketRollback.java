@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.forgeessentials.playerlogger.blockChange;
+import com.forgeessentials.playerlogger.BlockChange;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -21,9 +21,9 @@ public class PacketRollback implements IMessageHandler<PacketRollback.Message, I
 
     public static class Message implements IMessage {
         private int dim;
-        private List<blockChange> changes;
+        private List<BlockChange> changes;
 
-        public Message(int dim, ArrayList<blockChange> changes)
+        public Message(int dim, ArrayList<BlockChange> changes)
         {
             this.dim = dim;
             this.changes = changes;
@@ -51,16 +51,16 @@ public class PacketRollback implements IMessageHandler<PacketRollback.Message, I
                 buf.writeByte(1);
                 buf.writeInt(changes.size());
                 System.out.println("Sending " + changes.size());
-                for (blockChange bc : changes)
+                for (BlockChange bc : changes)
                 {
-                    if (bc.dim == dim)
+                    if (bc.getDimension() == dim)
                     {
                         System.out.println(bc.toString());
-                        buf.writeInt(bc.X);
-                        buf.writeInt(bc.Y);
-                        buf.writeInt(bc.Z);
+                        buf.writeInt(bc.getX());
+                        buf.writeInt(bc.getY());
+                        buf.writeInt(bc.getZ());
                         // True if the change was a placement.
-                        buf.writeInt(bc.type);
+                        buf.writeInt(bc.getType());
                     }
                 }
             }

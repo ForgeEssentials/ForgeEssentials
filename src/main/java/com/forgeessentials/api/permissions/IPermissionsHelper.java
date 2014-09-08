@@ -12,7 +12,12 @@ import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldPoint;
 
 public interface IPermissionsHelper extends IPermissionsProvider {
-    
+
+	static final String DEFAULT_GROUP = "*";
+	static final String PERMISSION_ASTERIX = "*";
+	static final String PERMISSION_FALSE = "false";
+	static final String PERMISSION_TRUE = "true";
+	
 	/**
 	 * Checks a permission for a player
 	 * @param player
@@ -46,7 +51,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return
 	 */
-	boolean checkPermission(EntityPlayer player, WorldPoint targetPoint, String permOverride);
+	boolean checkPermission(EntityPlayer player, WorldPoint targetPoint, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player at a certain position
@@ -66,7 +71,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return
 	 */
-	boolean checkPermission(EntityPlayer player, AreaBase targetArea, String permOverride);
+	boolean checkPermission(EntityPlayer player, AreaBase targetArea, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player in a certain area
@@ -86,7 +91,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return
 	 */
-	boolean checkPermission(EntityPlayer player, Zone zone, String permOverride);
+	boolean checkPermission(EntityPlayer player, Zone zone, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player in the specified zone
@@ -152,17 +157,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @return Group created
      */
     Group createGroup(String groupName, String prefix, String suffix, String parent, int priority);
-
-    /**
-     * Set a permissions for a player
-     *
-     * @param username   The player's username
-     * @param permission The permissions node name
-     * @param allow      Is the permissions allowed or denied
-     * @param zoneID     The zone in which the permissions takes effect
-     * @return null on success, error message otherwise
-     */
-    String setPlayerPermission(UUID username, String permission, boolean allow, Zone zone);
 
     /**
      * Set a permissions for a group

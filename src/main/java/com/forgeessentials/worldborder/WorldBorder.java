@@ -94,21 +94,21 @@ public class WorldBorder {
         // 1 = square
         if (shapeByte == 1)
         {
-            if (player.posX < center.x - rad)
+            if (player.posX < center.getX() - rad)
             {
-                ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.x - rad), player);
+                ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.getX() - rad), player);
             }
-            if (player.posX > center.x + rad)
+            if (player.posX > center.getX() + rad)
             {
-                ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.x + rad), player);
+                ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.getX() + rad), player);
             }
-            if (player.posZ < center.z - rad)
+            if (player.posZ < center.getZ() - rad)
             {
-                ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.z - rad), player);
+                ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.getZ() - rad), player);
             }
-            if (player.posZ > center.z + rad)
+            if (player.posZ > center.getZ() + rad)
             {
-                ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.z + rad), player);
+                ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.getZ() + rad), player);
             }
         }
         // 2 = round

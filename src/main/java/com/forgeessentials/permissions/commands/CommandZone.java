@@ -151,14 +151,14 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                         OutputHandler.chatConfirmation(sender, "Parent: " + zone.parent);
                         OutputHandler.chatConfirmation(sender, "Priority: " + zone.priority);
                         OutputHandler.chatConfirmation(sender,
-                                "Dimension: " + zone.dim + "     World: " + FunctionHelper.getDimension(zone.dim).provider.getDimensionName());
+                                "Dimension: " + zone.getDimension() + "     World: " + FunctionHelper.getDimension(zone.getDimension()).provider.getDimensionName());
                         ChatUtils.sendMessage(sender,
                                 FunctionHelper.formatColors(EnumChatFormatting.GREEN + "Entry Message: " + EnumChatFormatting.RESET + query1.getStringValue()));
                         ChatUtils.sendMessage(sender,
                                 FunctionHelper.formatColors(EnumChatFormatting.GREEN + "Exit Message: " + EnumChatFormatting.RESET + query2.getStringValue()));
                         Point high = zone.getHighPoint();
                         Point low = zone.getLowPoint();
-                        OutputHandler.chatConfirmation(sender, high.x + ", " + high.y + ", " + high.z + " -> " + low.x + ", " + low.y + ", " + low.z);
+                        OutputHandler.chatConfirmation(sender, high.getX() + ", " + high.getY() + ", " + high.getZ() + " -> " + low.getX() + ", " + low.getY() + ", " + low.getZ());
                     }
                 }
                 return;

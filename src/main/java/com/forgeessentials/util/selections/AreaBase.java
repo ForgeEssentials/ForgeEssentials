@@ -26,17 +26,17 @@ public class AreaBase {
 
     public int getXLength()
     {
-        return high.x - low.x + 1;
+        return high.getX() - low.getX() + 1;
     }
 
     public int getYLength()
     {
-        return high.y - low.y + 1;
+        return high.getY() - low.getY() + 1;
     }
 
     public int getZLength()
     {
-        return high.z - low.z + 1;
+        return high.getZ() - low.getZ() + 1;
     }
 
     public Point getHighPoint()
@@ -54,7 +54,7 @@ public class AreaBase {
      */
     public static Point getMinPoint(Point p1, Point p2)
     {
-    	return new Point(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y), Math.min(p1.z, p2.z));
+    	return new Point(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ()));
     }
     
     /**
@@ -62,7 +62,7 @@ public class AreaBase {
      */
     public static Point getMaxPoint(Point p1, Point p2)
     {
-    	return new Point(Math.max(p1.x, p2.x), Math.max(p1.y, p2.y), Math.max(p1.z, p2.z));
+    	return new Point(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
     }
 
     /**
@@ -129,9 +129,9 @@ public class AreaBase {
 
     public boolean makesCuboidWith(AreaBase area)
     {
-        boolean alignX = low.x == area.low.x && high.x == area.high.x;
-        boolean alignY = low.y == area.low.y && high.y == area.high.y;
-        boolean alignZ = low.z == area.low.z && high.z == area.high.z;
+        boolean alignX = low.getX() == area.low.getX() && high.getX() == area.high.getX();
+        boolean alignY = low.getY() == area.low.getY() && high.getY() == area.high.getY();
+        boolean alignZ = low.getZ() == area.low.getZ() && high.getZ() == area.high.getZ();
 
         return alignX || alignY || alignZ;
     }

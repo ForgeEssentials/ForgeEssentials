@@ -90,39 +90,39 @@ public class Deathchest {
         }
         if (enableFencePost)
         {
-            while (world.getBlock(point.x, point.y, point.z).getMaterial() == Material.water
-                    || world.getBlock(point.x, point.y, point.z).getMaterial() == Material.lava)
+            while (world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial() == Material.water
+                    || world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial() == Material.lava)
             {
-                point.y++;
+                point.setY(point.getY() + 1);
             }
-            if (world.getBlock(point.x, point.y, point.z).getMaterial().isReplaceable() && world.getBlock(point.x, point.y + 1, point.z).getMaterial()
+            if (world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial().isReplaceable() && world.getBlock(point.getX(), point.getY() + 1, point.getZ()).getMaterial()
                     .isReplaceable())
             {
                 e.setCanceled(true);
-                world.setBlock(point.x, point.y, point.z, Blocks.fence);
-                point.y++;
+                world.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.fence);
+                point.setY(point.getY() + 1);
                 new Grave(point, e.entityPlayer, e.drops, this);
-                world.setBlock(point.x, point.y, point.z, Blocks.skull, 1, 1);
+                world.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.skull, 1, 1);
                 FEskullTe te = new FEskullTe();
                 te.func_152106_a(e.entityPlayer.getGameProfile());
-                world.setTileEntity(point.x, point.y, point.z, te);
+                world.setTileEntity(point.getX(), point.getY(), point.getZ(), te);
                 return;
             }
         }
         else
         {
-            while (world.getBlock(point.x, point.y, point.z).getMaterial() == Material.water
-                    || world.getBlock(point.x, point.y, point.z).getMaterial() == Material.lava)
+            while (world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial() == Material.water
+                    || world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial() == Material.lava)
             {
-                point.y++;
+            	point.setY(point.getY() + 1);
             }
-            if (world.getBlock(point.x, point.y, point.z).getMaterial().isReplaceable())
+            if (world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial().isReplaceable())
             {
                 e.setCanceled(true);
-                world.setBlock(point.x, point.y, point.z, Blocks.skull, 1, 1);
+                world.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.skull, 1, 1);
                 FEskullTe te = new FEskullTe();
                 te.func_152106_a(e.entityPlayer.getGameProfile());
-                world.setTileEntity(point.x, point.y, point.z, te);
+                world.setTileEntity(point.getX(), point.getY(), point.getZ(), te);
                 return;
             }
         }
@@ -237,8 +237,8 @@ public class Deathchest {
             {
                 try
                 {
-                    EntityItem entity = new EntityItem(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, is);
-                    DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
+                    EntityItem entity = new EntityItem(DimensionManager.getWorld(grave.point.getDimension()), grave.point.getX(), grave.point.getY(), grave.point.getZ(), is);
+                    DimensionManager.getWorld(grave.point.getDimension()).spawnEntityInWorld(entity);
                 }
                 catch (Exception e)
                 {
@@ -246,10 +246,10 @@ public class Deathchest {
                 }
             }
         }
-        DimensionManager.getWorld(grave.point.dim).setBlock(grave.point.x, grave.point.y - 1, grave.point.z, Blocks.air);
+        DimensionManager.getWorld(grave.point.getDimension()).setBlock(grave.point.getX(), grave.point.getY() - 1, grave.point.getZ(), Blocks.air);
         if (enableFencePost)
         {
-            DimensionManager.getWorld(grave.point.dim).setBlock(grave.point.x, grave.point.y - 1, grave.point.z, Blocks.air);
+            DimensionManager.getWorld(grave.point.getDimension()).setBlock(grave.point.getX(), grave.point.getY() - 1, grave.point.getZ(), Blocks.air);
         }
     }
 

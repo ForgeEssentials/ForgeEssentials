@@ -45,9 +45,9 @@ public class PacketSelectionUpdate implements IMessageHandler<PacketSelectionUpd
                 {
                     Point p1 = info.getPoint1();
                     byteBuf.writeBoolean(true);
-                    byteBuf.writeDouble(p1.x);
-                    byteBuf.writeDouble(p1.y);
-                    byteBuf.writeDouble(p1.z);
+                    byteBuf.writeDouble(p1.getX());
+                    byteBuf.writeDouble(p1.getY());
+                    byteBuf.writeDouble(p1.getZ());
                 }
                 else
                 {
@@ -58,9 +58,9 @@ public class PacketSelectionUpdate implements IMessageHandler<PacketSelectionUpd
                 {
                     Point p2 = info.getPoint2();
                     byteBuf.writeBoolean(true);
-                    byteBuf.writeDouble(p2.x);
-                    byteBuf.writeDouble(p2.y);
-                    byteBuf.writeDouble(p2.z);
+                    byteBuf.writeDouble(p2.getX());
+                    byteBuf.writeDouble(p2.getY());
+                    byteBuf.writeDouble(p2.getZ());
                 }
                 else
                 {

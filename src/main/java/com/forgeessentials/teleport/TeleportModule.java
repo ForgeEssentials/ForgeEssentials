@@ -12,6 +12,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -106,7 +107,7 @@ public class TeleportModule {
 	@ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		String prop = APIRegistry.perms.getGlobalZone().getGroupPermission(Zone.DEFAULT_GROUP, CommandSetSpawn.SPAWN_PROP);
+		String prop = APIRegistry.perms.getGlobalZone().getGroupPermission(IPermissionsHelper.DEFAULT_GROUP, CommandSetSpawn.SPAWN_PROP);
 
 		// nothing set for the global??
 		if (prop == null)

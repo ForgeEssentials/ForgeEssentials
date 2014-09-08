@@ -77,7 +77,7 @@ public class CommandsEventHandler {
         if (e.entityPlayer.getEntityData().getBoolean("colorize"))
         {
             e.setCanceled(true);
-            TileEntity te = e.entityPlayer.worldObj.getTileEntity(e.x, e.y, e.z);
+            TileEntity te = e.entityPlayer.worldObj.getTileEntity(e.getX(), e.getY(), e.getZ());
             if (te != null)
             {
                 if (te instanceof TileEntitySign)
@@ -90,8 +90,8 @@ public class CommandsEventHandler {
                     signText[3] = FunctionHelper.formatColors(signText[3]);
 
                     ((TileEntitySign) te).signText = signText;
-                    e.entityPlayer.worldObj.setTileEntity(e.x, e.y, e.z, te);
-                    e.entityPlayer.worldObj.markBlockForUpdate(e.x, e.y, e.z);
+                    e.entityPlayer.worldObj.setTileEntity(e.getX(), e.getY(), e.getZ(), te);
+                    e.entityPlayer.worldObj.markBlockForUpdate(e.getX(), e.getY(), e.getZ());
                 }
                 else
                 {

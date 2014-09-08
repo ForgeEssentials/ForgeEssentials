@@ -31,7 +31,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 
     public static void setSpawnPoint(WorldPoint p, Zone zone)
     {
-        String val = p.dim + ";" + p.x + ";" + p.y + ";" + p.z;
+        String val = p.getDimension() + ";" + p.getX() + ";" + p.getY() + ";" + p.getZ();
         APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDefaultGroup().name, SPAWN_PROP, val, zone);
     }
 
@@ -93,19 +93,19 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
                 if (args[3].equalsIgnoreCase("here"))
                 {
                     WorldPoint p = new WorldPoint(sender);
-                    x = p.x;
-                    y = p.y;
-                    z = p.z;
-                    dim = p.dim;
+                    x = p.getX();
+                    y = p.getY();
+                    z = p.getZ();
+                    dim = p.getDimension();
                 }
                 else if (args[3].equalsIgnoreCase("revert"))
                 {
                     World world = FunctionHelper.getDimension(0);
                     WorldPoint p = new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ);
-                    x = p.x;
-                    y = p.y;
-                    z = p.z;
-                    dim = p.dim;
+                    x = p.getX();
+                    y = p.getY();
+                    z = p.getZ();
+                    dim = p.getDimension();
                 }
                 else
                 {

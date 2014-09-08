@@ -46,68 +46,68 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
 
             if (x == -1)
             {
-                if (info.getPoint1().x < info.getPoint2().x)
+                if (info.getPoint1().getX() < info.getPoint2().getX())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x - expandby, info.getPoint1().y, info.getPoint1().z));
+                    info.setPoint1(new Point(info.getPoint1().getX() - expandby, info.getPoint1().getY(), info.getPoint1().getZ()));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x - expandby, info.getPoint2().y, info.getPoint2().z));
+                    info.setPoint2(new Point(info.getPoint2().getX() - expandby, info.getPoint2().getY(), info.getPoint2().getZ()));
                 }
             }
             else if (z == 1)
             {
-                if (info.getPoint1().z < info.getPoint2().z)
+                if (info.getPoint1().getZ() < info.getPoint2().getZ())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y, info.getPoint1().z + expandby));
+                    info.setPoint1(new Point(info.getPoint1().getX(), info.getPoint1().getY(), info.getPoint1().getZ() + expandby));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y, info.getPoint2().z + expandby));
+                    info.setPoint2(new Point(info.getPoint2().getX(), info.getPoint2().getY(), info.getPoint2().getZ() + expandby));
                 }
             }
             else if (x == 1)
             {
-                if (info.getPoint1().x < info.getPoint2().x)
+                if (info.getPoint1().getX() < info.getPoint2().getX())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x + expandby, info.getPoint1().y, info.getPoint1().z));
+                    info.setPoint1(new Point(info.getPoint1().getX() + expandby, info.getPoint1().getY(), info.getPoint1().getZ()));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x + expandby, info.getPoint2().y, info.getPoint2().z));
+                    info.setPoint2(new Point(info.getPoint2().getX() + expandby, info.getPoint2().getY(), info.getPoint2().getZ()));
                 }
             }
             else if (z == -1)
             {
-                if (info.getPoint1().z < info.getPoint2().z)
+                if (info.getPoint1().getZ() < info.getPoint2().getZ())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y, info.getPoint1().z - expandby));
+                    info.setPoint1(new Point(info.getPoint1().getX(), info.getPoint1().getY(), info.getPoint1().getZ() - expandby));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y, info.getPoint2().z - expandby));
+                    info.setPoint2(new Point(info.getPoint2().getX(), info.getPoint2().getY(), info.getPoint2().getZ() - expandby));
                 }
             }
             else if (y == 1)
             {
-                if (info.getPoint1().y > info.getPoint2().y)
+                if (info.getPoint1().getY() > info.getPoint2().getY())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y + expandby, info.getPoint1().z));
+                    info.setPoint1(new Point(info.getPoint1().getX(), info.getPoint1().getY() + expandby, info.getPoint1().getZ()));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y + expandby, info.getPoint2().z));
+                    info.setPoint2(new Point(info.getPoint2().getX(), info.getPoint2().getY() + expandby, info.getPoint2().getZ()));
                 }
             }
             else if (y == -1)
             {
-                if (info.getPoint1().y < info.getPoint2().y)
+                if (info.getPoint1().getY() < info.getPoint2().getY())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y - expandby, info.getPoint1().z));
+                    info.setPoint1(new Point(info.getPoint1().getX(), info.getPoint1().getY() - expandby, info.getPoint1().getZ()));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y - expandby, info.getPoint2().z));
+                    info.setPoint2(new Point(info.getPoint2().getX(), info.getPoint2().getY() - expandby, info.getPoint2().getZ()));
                 }
             }
             ChatUtils.sendMessage(player, "Region expanded by: " + expandby);
@@ -135,68 +135,68 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
             }
             if (args[0].equalsIgnoreCase("north") || args[1].equalsIgnoreCase("north"))
             {
-                if (info.getPoint1().z < info.getPoint2().z)
+                if (info.getPoint1().getZ() < info.getPoint2().getZ())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y, info.getPoint1().z - expandby));
+                    info.setPoint1(new Point(info.getPoint1().getX(), info.getPoint1().getY(), info.getPoint1().getZ() - expandby));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y, info.getPoint2().z - expandby));
+                    info.setPoint2(new Point(info.getPoint2().getX(), info.getPoint2().getY(), info.getPoint2().getZ() - expandby));
                 }
             }
             else if (args[0].equalsIgnoreCase("east") || args[1].equalsIgnoreCase("east"))
             {
-                if (info.getPoint1().x > info.getPoint2().x)
+                if (info.getPoint1().getX() > info.getPoint2().getX())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x + expandby, info.getPoint1().y, info.getPoint1().z));
+                    info.setPoint1(new Point(info.getPoint1().getX() + expandby, info.getPoint1().getY(), info.getPoint1().getZ()));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x + expandby, info.getPoint2().y, info.getPoint2().z));
+                    info.setPoint2(new Point(info.getPoint2().getX() + expandby, info.getPoint2().getY(), info.getPoint2().getZ()));
                 }
             }
             else if (args[0].equalsIgnoreCase("south") || args[1].equalsIgnoreCase("south"))
             {
-                if (info.getPoint1().z > info.getPoint2().z)
+                if (info.getPoint1().getZ() > info.getPoint2().getZ())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y, info.getPoint1().z + expandby));
+                    info.setPoint1(new Point(info.getPoint1().getX(), info.getPoint1().getY(), info.getPoint1().getZ() + expandby));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y, info.getPoint2().z + expandby));
+                    info.setPoint2(new Point(info.getPoint2().getX(), info.getPoint2().getY(), info.getPoint2().getZ() + expandby));
                 }
             }
             else if (args[0].equalsIgnoreCase("west") || args[1].equalsIgnoreCase("west"))
             {
-                if (info.getPoint1().x < info.getPoint2().x)
+                if (info.getPoint1().getX() < info.getPoint2().getX())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x - expandby, info.getPoint1().y, info.getPoint1().z));
+                    info.setPoint1(new Point(info.getPoint1().getX() - expandby, info.getPoint1().getY(), info.getPoint1().getZ()));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x - expandby, info.getPoint2().y, info.getPoint2().z));
+                    info.setPoint2(new Point(info.getPoint2().getX() - expandby, info.getPoint2().getY(), info.getPoint2().getZ()));
                 }
             }
             else if (args[0].equalsIgnoreCase("up") || args[1].equalsIgnoreCase("up"))
             {
-                if (info.getPoint1().z > info.getPoint2().z)
+                if (info.getPoint1().getZ() > info.getPoint2().getZ())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y + expandby, info.getPoint1().z));
+                    info.setPoint1(new Point(info.getPoint1().getX(), info.getPoint1().getY() + expandby, info.getPoint1().getZ()));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y + expandby, info.getPoint2().z));
+                    info.setPoint2(new Point(info.getPoint2().getX(), info.getPoint2().getY() + expandby, info.getPoint2().getZ()));
                 }
             }
             else if (args[0].equalsIgnoreCase("down") || args[1].equalsIgnoreCase("down"))
             {
-                if (info.getPoint1().y < info.getPoint2().y)
+                if (info.getPoint1().getY() < info.getPoint2().getY())
                 {
-                    info.setPoint1(new Point(info.getPoint1().x, info.getPoint1().y - expandby, info.getPoint1().z));
+                    info.setPoint1(new Point(info.getPoint1().getX(), info.getPoint1().getY() - expandby, info.getPoint1().getZ()));
                 }
                 else
                 {
-                    info.setPoint2(new Point(info.getPoint2().x, info.getPoint2().y - expandby, info.getPoint2().z));
+                    info.setPoint2(new Point(info.getPoint2().getX(), info.getPoint2().getY() - expandby, info.getPoint2().getZ()));
                 }
             }
             else

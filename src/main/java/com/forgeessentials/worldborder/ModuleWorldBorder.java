@@ -91,7 +91,7 @@ public class ModuleWorldBorder {
 
 	public static Vector2 getDirectionVector(Point center, EntityPlayerMP player)
 	{
-		Vector2 vecp = new Vector2(center.x - player.posX, center.z - player.posZ);
+		Vector2 vecp = new Vector2(center.getX() - player.posX, center.getZ() - player.posZ);
 		vecp.normalize();
 		vecp.multiply(-1);
 		return vecp;
@@ -99,8 +99,8 @@ public class ModuleWorldBorder {
 
 	public static int getDistanceRound(Point center, EntityPlayer player)
 	{
-		double difX = center.x - player.posX;
-		double difZ = center.z - player.posZ;
+		double difX = center.getX() - player.posX;
+		double difZ = center.getZ() - player.posZ;
 
 		return (int) Math.sqrt((difX * difX) + (difZ * difZ));
 	}

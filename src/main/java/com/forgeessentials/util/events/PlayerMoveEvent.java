@@ -31,7 +31,7 @@ public class PlayerMoveEvent extends PlayerEvent {
 
     public boolean isBlockMove()
     {
-        return before.x != after.x && before.y != after.y && before.z != after.z;
+        return before.getX() != after.getX() && before.getY() != after.getY() && before.getZ() != after.getZ();
     }
 
 }

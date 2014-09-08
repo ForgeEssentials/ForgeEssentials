@@ -74,12 +74,12 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     public void top(EntityPlayer player)
     {
         WarpPoint point = new WarpPoint(player);
-        point.y = player.worldObj.getActualHeight();
-        while (player.worldObj.getBlock(point.x, point.y, point.z) == Blocks.air)
+        point.setY(player.worldObj.getActualHeight());
+        while (player.worldObj.getBlock(point.getX(), point.getY(), point.getZ()) == Blocks.air)
         {
-            point.y--;
+            point.setY(point.getY() - 1);
         }
-        ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y + 1, point.z, point.yaw, point.pitch);
+        ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 1, point.getZ(), point.yaw, point.pitch);
         ChatUtils.sendMessage(player, "Teleported.");
     }
 

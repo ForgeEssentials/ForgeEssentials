@@ -80,7 +80,7 @@ public class TickTaskBlockFinder implements ITickTask {
                 {
                     Point p = new Point(centerX + i, y, centerZ + j);
                     results.add(p);
-                    msg("Found " + stack.getDisplayName() + " at " + p.x + ";" + p.y + ";" + p.z);
+                    msg("Found " + stack.getDisplayName() + " at " + p.getX() + ";" + p.getY() + ";" + p.getZ());
 
                 }
                 y--;

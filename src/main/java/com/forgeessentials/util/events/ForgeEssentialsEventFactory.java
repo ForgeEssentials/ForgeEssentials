@@ -61,7 +61,7 @@ public class ForgeEssentialsEventFactory {
 		}
 
 		// no respawn stuff or respawn stuff
-		if (player.isDead || player.worldObj == null || before.dim != current.dim)
+		if (player.isDead || player.worldObj == null || before.getDimension() != current.getDimension())
 		{
 			befores.remove(player.getPersistentID());
 			return;

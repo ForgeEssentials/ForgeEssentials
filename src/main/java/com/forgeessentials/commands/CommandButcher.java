@@ -182,8 +182,8 @@ public class CommandButcher extends FEcmdModuleCommands {
 			worldID = parseInt(sender, args[3]);
 		}
         WorldPoint center = new WorldPoint(worldID, x, y, z);
-        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1,
-                center.z + radius + 1);
+        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY() + radius + 1,
+                center.getZ() + radius + 1);
         TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, pool, radius, worldID));
     }
 

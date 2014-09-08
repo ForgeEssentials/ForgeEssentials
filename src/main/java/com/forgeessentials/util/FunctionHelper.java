@@ -487,9 +487,9 @@ public final class FunctionHelper {
      */
     public static void setPlayer(EntityPlayerMP player, WarpPoint p)
     {
-        if (player.dimension != p.dim)
+        if (player.dimension != p.getDimension())
         {
-            MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, p.dim);
+            MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, p.getDimension());
         }
         player.playerNetServerHandler.setPlayerLocation(p.xd, p.yd, p.zd, p.yaw, p.pitch);
         player.prevPosX = player.posX = p.xd;
@@ -509,7 +509,7 @@ public final class FunctionHelper {
         {
             MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, world.provider.dimensionId);
         }
-        double x = point.x, y = point.y, z = point.z;
+        double x = point.getX(), y = point.getY(), z = point.getZ();
         x = x < 0 ? x - 0.5 : x + 0.5;
         z = z < 0 ? z - 0.5 : z + 0.5;
         player.playerNetServerHandler.setPlayerLocation(x, y, z, player.rotationYaw, player.rotationPitch);

@@ -90,9 +90,9 @@ public class ModulePlayerLogger {
         }
     }
 
-    public static ArrayList<blockChange> getBlockChangesWithinParameters(String username, boolean undo, int timeBack, WorldPoint p, int rad)
+    public static ArrayList<BlockChange> getBlockChangesWithinParameters(String username, boolean undo, int timeBack, WorldPoint p, int rad)
     {
-        ArrayList<blockChange> data = new ArrayList<blockChange>();
+        ArrayList<BlockChange> data = new ArrayList<BlockChange>();
         try
         {
             Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
@@ -111,9 +111,9 @@ public class ModulePlayerLogger {
 
             if (p != null && rad != 0)
             {
-                sql = sql + " AND `Dim` = " + p.dim;
-                sql = sql + " AND `X` BETWEEN " + (p.x - rad) + " AND " + (p.x + rad);
-                sql = sql + " AND `Z` BETWEEN " + (p.z - rad) + " AND " + (p.z + rad);
+                sql = sql + " AND `Dim` = " + p.getDimension();
+                sql = sql + " AND `X` BETWEEN " + (p.getX() - rad) + " AND " + (p.getX() + rad);
+                sql = sql + " AND `Z` BETWEEN " + (p.getZ() - rad) + " AND " + (p.getZ() + rad);
             }
 
             if (undo)
@@ -130,7 +130,7 @@ public class ModulePlayerLogger {
 
             while (rs.next())
             {
-                data.add(new blockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"),
+                data.add(new BlockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"),
                         blockChangeLog.blockChangeLogCategory.valueOf(rs.getString("category")).ordinal(), rs.getString("block"), rs.getBlob("te")));
             }
 

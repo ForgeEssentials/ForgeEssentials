@@ -46,7 +46,7 @@ public class WarpPoint extends WorldPoint {
 
     public WarpPoint(Point p, int dimension, float playerPitch, float playerYaw)
     {
-        this(dimension, p.x, p.y, p.z, playerPitch, playerYaw);
+        this(dimension, p.getX(), p.getY(), p.getZ(), playerPitch, playerYaw);
         xd = x;
         yd = y;
         zd = z;
@@ -54,7 +54,7 @@ public class WarpPoint extends WorldPoint {
 
     public WarpPoint(WorldPoint p, float playerPitch, float playerYaw)
     {
-        this(p.dim, p.x, p.y, p.z, playerPitch, playerYaw);
+        this(p.dim, p.getX(), p.getY(), p.getZ(), playerPitch, playerYaw);
         xd = x;
         yd = y;
         zd = z;

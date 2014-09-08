@@ -52,9 +52,9 @@ public class TPdata {
         {
             PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(player);
             ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
-            if (player.dimension != point.dim)
+            if (player.dimension != point.getDimension())
             {
-                server.transferPlayerToDimension((EntityPlayerMP) player, point.dim);
+                server.transferPlayerToDimension((EntityPlayerMP) player, point.getDimension());
             }
             ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 1, point.zd, point.yaw, point.pitch);
             if (!PermissionsManager.checkPerm(player, TeleportCenter.BYPASS_COOLDOWN))

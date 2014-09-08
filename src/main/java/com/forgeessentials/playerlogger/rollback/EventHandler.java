@@ -40,11 +40,11 @@ public class EventHandler {
                 Statement st = connection.createStatement();
                 Point p = getPoint(e.entityPlayer);
                 st.execute(
-                        "SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + p.x + " AND  `Y` = " + p.y + " AND  `Z` = "
-                                + p.z + " ORDER BY id DESC LIMIT " + limit);
+                        "SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + p.getX() + " AND  `Y` = " + p.getY() + " AND  `Z` = "
+                                + p.getZ() + " ORDER BY id DESC LIMIT " + limit);
                 ResultSet res = st.getResultSet();
 
-                ChatUtils.sendMessage(e.entityPlayer, "Results: " + p.x + ", " + p.y + ", " + p.z);
+                ChatUtils.sendMessage(e.entityPlayer, "Results: " + p.getX() + ", " + p.getY() + ", " + p.getZ());
 
                 while (res.next())
                 {
@@ -98,22 +98,22 @@ public class EventHandler {
         switch (mo.sideHit)
         {
         case 0:
-            p.y--;
+        	p.setY(p.getY() - 1);
             break;
         case 1:
-            p.y++;
+        	p.setY(p.getY() + 1);
             break;
         case 2:
-            p.z--;
+        	p.setZ(p.getZ() - 1);
             break;
         case 3:
-            p.z++;
+        	p.setZ(p.getZ() + 1);
             break;
         case 4:
-            p.x--;
+        	p.setX(p.getX() - 1);
             break;
         case 5:
-            p.x++;
+        	p.setX(p.getX() + 1);
             break;
         }
 

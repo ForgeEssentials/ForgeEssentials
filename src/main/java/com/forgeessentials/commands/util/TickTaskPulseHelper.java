@@ -30,9 +30,9 @@ public class TickTaskPulseHelper implements ITickTask {
         if (ticks == 0)
         {
             //place block
-            back.before.add(new BlockSaveable(WorldObj, BlockCord.x, BlockCord.y, BlockCord.z));
-            WorldObj.setBlock(BlockCord.x, BlockCord.y, BlockCord.z, Blocks.redstone_block);
-            back.after.add(new BlockSaveable(WorldObj, BlockCord.x, BlockCord.y, BlockCord.z));
+            back.before.add(new BlockSaveable(WorldObj, BlockCord.getX(), BlockCord.getY(), BlockCord.getZ()));
+            WorldObj.setBlock(BlockCord.getX(), BlockCord.getY(), BlockCord.getZ(), Blocks.redstone_block);
+            back.after.add(new BlockSaveable(WorldObj, BlockCord.getX(), BlockCord.getY(), BlockCord.getZ()));
 
         }
         else if (ticks == timeToLive)

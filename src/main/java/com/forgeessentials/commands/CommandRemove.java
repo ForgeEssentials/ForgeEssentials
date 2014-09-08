@@ -71,12 +71,12 @@ public class CommandRemove extends FEcmdModuleCommands {
         if (args.length >= 4)
         {
             radius = parseIntWithMin(sender, args[0], 0);
-            center.x = parseInt(sender, args[1]);
-            center.y = parseInt(sender, args[2]);
-            center.z = parseInt(sender, args[3]);
+            center.setX(parseInt(sender, args[1]));
+            center.setY(parseInt(sender, args[2]));
+            center.setZ(parseInt(sender, args[3]));
             if (args.length >= 5)
             {
-                center.dim = parseInt(sender, args[3]);
+                center.setDimension(parseInt(sender, args[3]));
             }
         }
         else
@@ -85,9 +85,9 @@ public class CommandRemove extends FEcmdModuleCommands {
             return;
         }
 
-        List<EntityItem> entityList = FunctionHelper.getDimension(center.dim).getEntitiesWithinAABB(EntityItem.class,
-                AxisAlignedBB.getBoundingBox(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1,
-                        center.z + radius + 1));
+        List<EntityItem> entityList = FunctionHelper.getDimension(center.getDimension()).getEntitiesWithinAABB(EntityItem.class,
+                AxisAlignedBB.getBoundingBox(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY() + radius + 1,
+                        center.getZ() + radius + 1));
 
         int counter = 0;
         for (int i = 0; i < entityList.size(); i++)
