@@ -3,8 +3,12 @@ package com.forgeessentials.permissions.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import net.minecraft.dispenser.ILocation;
@@ -53,9 +57,17 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	public ZonedPermissionHelper()
 	{
-		clear();
-
 		// MinecraftForge.EVENT_BUS.register(this);
+		clear();
+	}
+
+	public void clear() {
+		rootZone = null;
+		globalZone = null;
+		maxZoneID = 2;
+
+		addZone(new RootZone());
+		addZone(new GlobalZone(rootZone));
 
 		// for (World world : DimensionManager.getWorlds())
 		// {
@@ -71,13 +83,26 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", false);
 	}
 
-	public void clear() {
-		rootZone = null;
-		globalZone = null;
-		maxZoneID = 2;
-
-		addZone(new RootZone());
-		addZone(new GlobalZone(rootZone));
+	public Set<String> enumAllPermissions() {
+		Set<String> perms = new TreeSet<String>();
+		for (Zone zone : zones.values())
+		{
+			for (Map<String,String> groupPerms : zone.getGroups())
+			{
+				for (String perm : groupPerms.keySet())
+				{
+					perms.add(perm);
+				}
+			}
+			for (Map<String,String> groupPerms : zone.getPlayers())
+			{
+				for (String perm : groupPerms.keySet())
+				{
+					perms.add(perm);
+				}
+			}
+		}
+		return perms;
 	}
 
 	// ------------------------------------------------------------
@@ -127,11 +152,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 		// Build node list
 		List<String> nodes = new ArrayList<String>();
-		if (isProperty)
-		{
-			nodes.add(permissionNode);
-		}
-		else
+		nodes.add(permissionNode);
+		if (!isProperty)
 		{
 			String[] nodeParts = permissionNode.split("\\.");
 			for (int i = nodeParts.length; i >= 0; i--)

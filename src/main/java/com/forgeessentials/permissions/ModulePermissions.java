@@ -114,6 +114,8 @@ public class ModulePermissions {
 	{
 		// TODO: PERMS
 		//sql.putRegistrationPerms(APIRegistry.perms.getRegisteredPerms());
+		
+		new PermissionsList().output(perms.enumAllPermissions());
 	}
 
 	@FEModule.ServerStop

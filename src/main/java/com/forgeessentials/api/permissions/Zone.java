@@ -1,5 +1,6 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,6 +84,16 @@ public abstract class Zone {
 	// ------------------------------------------------------------
 	// -- Player permissions
 	// ------------------------------------------------------------
+
+	/**
+	 * Get all groups that have permissions in this zone
+	 * 
+	 * @return
+	 */
+	public Collection<Map<String, String>> getPlayers()
+	{
+		return playerPermissions.values();
+	}
 
 	/**
 	 * Gets the player permissions for the specified player, or null if not present.
@@ -190,6 +201,16 @@ public abstract class Zone {
 	// ------------------------------------------------------------
 
 	/**
+	 * Get all groups that have permissions in this zone
+	 * 
+	 * @return
+	 */
+	public Collection<Map<String, String>> getGroups()
+	{
+		return groupPermissions.values();
+	}
+
+	/**
 	 * Gets the group permissions for the specified group, or null if not present.
 	 * 
 	 * @param group
@@ -277,6 +298,7 @@ public abstract class Zone {
 	{
 		setGroupPermissionProperty(group, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
 	}
+
 
 
 }
