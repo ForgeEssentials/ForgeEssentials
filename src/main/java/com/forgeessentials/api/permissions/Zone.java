@@ -21,7 +21,9 @@ public abstract class Zone {
 	 * @param player
 	 * @return
 	 */
-	public abstract boolean isPlayerInZone(EntityPlayer player);
+	public boolean isPlayerInZone(EntityPlayer player) {
+		return isPointInZone(new WorldPoint(player));
+	}
 
 	/**
 	 * Checks, whether the player is in the zone.

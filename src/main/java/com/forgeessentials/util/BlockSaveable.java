@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class BlockSaveable {
+	
     private int x;
     private int y;
     private int z;
@@ -25,9 +26,9 @@ public class BlockSaveable {
      */
     public BlockSaveable(World world, int x, int y, int z)
     {
-        this.getX() = x;
-        this.getY() = y;
-        this.getZ() = z;
+        this.x = x;
+        this.y = y;
+        this.z = z;
         blockID = world.getBlock(x, y, z);
         metadata = (byte) world.getBlockMetadata(x, y, z);
 

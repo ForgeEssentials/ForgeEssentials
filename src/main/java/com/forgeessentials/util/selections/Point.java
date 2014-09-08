@@ -28,9 +28,9 @@ public class Point implements Serializable, Comparable<Point> {
 
     public Point(int x, int y, int z)
     {
-        this.getX() = x;
-        this.getY() = y;
-        this.getZ() = z;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public Point(Entity player)
@@ -57,17 +57,17 @@ public class Point implements Serializable, Comparable<Point> {
 
 	public void setX(int x)
 	{
-		this.getX() = x;
+		this.x = x;
 	}
 
 	public void setY(int y)
 	{
-		this.getY() = y;
+		this.y = y;
 	}
 
 	public void setZ(int z)
 	{
-		this.getZ() = z;
+		this.z = z;
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class Point implements Serializable, Comparable<Point> {
         int positives = 0;
         int negatives = 0;
 
-        if (x > point.getX())
+        if (x > point.x)
         {
             positives++;
         }
@@ -96,7 +96,7 @@ public class Point implements Serializable, Comparable<Point> {
             negatives++;
         }
 
-        if (y > point.getY())
+        if (y > point.y)
         {
             positives++;
         }
@@ -105,7 +105,7 @@ public class Point implements Serializable, Comparable<Point> {
             negatives++;
         }
 
-        if (z > point.getZ())
+        if (z > point.z)
         {
             positives++;
         }
@@ -124,14 +124,14 @@ public class Point implements Serializable, Comparable<Point> {
         }
         else
         {
-            return x - point.getX() + y - point.getY() + z - point.getZ();
+            return x - point.x + y - point.y + z - point.z;
         }
     }
 
     @Override
     public boolean equals(Object object)
     {
-        if (object instanceof Point && x == ((Point) object).getX() && y == ((Point) object).getY() && z == ((Point) object).getZ())
+        if (object instanceof Point && x == ((Point) object).x && y == ((Point) object).y && z == ((Point) object).z)
         {
             return true;
         }
@@ -145,7 +145,7 @@ public class Point implements Serializable, Comparable<Point> {
      */
     public double getDistanceTo(Point point)
     {
-        return Math.sqrt((x - point.getX()) * (x - point.getX()) + (y - point.getY()) * (y - point.getY()) + (z - point.getZ()) * (z - point.getZ()));
+        return Math.sqrt((x - point.x) * (x - point.x) + (y - point.y) * (y - point.y) + (z - point.z) * (z - point.z));
     }
 
     /**
@@ -154,7 +154,7 @@ public class Point implements Serializable, Comparable<Point> {
      */
     public boolean alignsWith(Point p)
     {
-        return x == p.getX() || y == p.getY() || z == p.getZ();
+        return x == p.x || y == p.y || z == p.z;
     }
 
     public boolean isGreaterThan(Point p)
@@ -164,7 +164,7 @@ public class Point implements Serializable, Comparable<Point> {
             return false;
         }
 
-        return x >= p.getX() && y >= p.getY() && z >= p.getZ();
+        return x >= p.x && y >= p.y && z >= p.z;
     }
 
     public boolean isLessThan(Point p)
@@ -174,7 +174,7 @@ public class Point implements Serializable, Comparable<Point> {
             return false;
         }
 
-        return x <= p.getX() && y <= p.getY() && z <= p.getZ();
+        return x <= p.x && y <= p.y && z <= p.z;
     }
 
     /**
@@ -185,7 +185,7 @@ public class Point implements Serializable, Comparable<Point> {
      */
     public static Point copy(Point point)
     {
-        return new Point(point.getX(), point.getY(), point.getZ());
+        return new Point(point.x, point.y, point.z);
     }
 
     /**

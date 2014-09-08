@@ -6,8 +6,9 @@ import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 
 public class WorldArea extends AreaBase {
+	
     @SaveableField
-    public int dim;
+    protected int dim;
 
     public WorldArea(World world, Point start, Point end)
     {
@@ -33,7 +34,12 @@ public class WorldArea extends AreaBase {
         dim = world.provider.dimensionId;
     }
 
-    public boolean contains(WorldPoint p)
+    public int getDimension()
+	{
+		return dim;
+	}
+
+	public boolean contains(WorldPoint p)
     {
         if (p.dim == dim)
         {

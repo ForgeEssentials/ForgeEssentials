@@ -3,6 +3,8 @@ package com.forgeessentials.api.permissions;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.util.selections.WorldArea;
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class AreaZone extends Zone {
 
@@ -22,11 +24,29 @@ public class AreaZone extends Zone {
 	}
 
 	@Override
-	public boolean isPlayerInZone(EntityPlayer player)
+	public boolean isPointInZone(WorldPoint point)
 	{
-		if (!worldZone.isPlayerInZone(player))
+		if (!worldZone.isPointInZone(point))
 			return false;
+		// TODO: new permissions
+		return true;
+	}
 
+	@Override
+	public boolean isAreaInZone(WorldArea area)
+	{
+		if (!worldZone.isAreaInZone(area))
+			return false;
+		// TODO: new permissions
+		return true;
+	}
+
+	@Override
+	public boolean isPartOfAreaInZone(WorldArea area)
+	{
+		if (!worldZone.isPartOfAreaInZone(area))
+			return false;
+		// TODO: new permissions
 		return true;
 	}
 

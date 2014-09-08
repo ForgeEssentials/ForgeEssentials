@@ -3,8 +3,9 @@ package com.forgeessentials.util.vector;
 import net.minecraft.util.MathHelper;
 
 public class Vector2 implements Cloneable {
-    public double x;
-    public double y;
+	
+    protected double x;
+    protected double y;
 
     public Vector2()
     {
@@ -13,17 +14,27 @@ public class Vector2 implements Cloneable {
 
     public Vector2(int x, int y)
     {
-        this.getX() = x;
-        this.getY() = y;
+        this.x = x;
+        this.y = y;
     }
 
     public Vector2(double x, double y)
     {
-        this.getX() = x;
-        this.getY() = y;
+        this.x = x;
+        this.y = y;
     }
 
-    // Returns the values as an int
+    public double getX()
+	{
+		return x;
+	}
+
+	public double getY()
+	{
+		return y;
+	}
+
+	// Returns the values as an int
     public int intX()
     {
         return (int) Math.floor(x);
@@ -45,22 +56,22 @@ public class Vector2 implements Cloneable {
 
     public static double distance(Vector2 par1, Vector2 par2)
     {
-        double var2 = par1.getX() - par2.getX();
-        double var4 = par1.getY() - par2.getY();
+        double var2 = par1.x - par2.x;
+        double var4 = par1.y - par2.y;
         return MathHelper.sqrt_double(var2 * var2 + var4 * var4);
     }
 
     public static double slope(Vector2 par1, Vector2 par2)
     {
-        double var2 = par1.getX() - par2.getX();
-        double var4 = par1.getY() - par2.getY();
+        double var2 = par1.x - par2.x;
+        double var4 = par1.y - par2.y;
         return var4 / var2;
     }
 
     public void add(Vector2 par1)
     {
-        x += par1.getX();
-        y += par1.getY();
+        x += par1.x;
+        y += par1.y;
     }
 
     public void add(double par1)
@@ -71,8 +82,8 @@ public class Vector2 implements Cloneable {
 
     public void substract(Vector2 par1)
     {
-        x -= par1.getX();
-        y -= par1.getY();
+        x -= par1.x;
+        y -= par1.y;
     }
 
     public void substract(double par1)
@@ -83,8 +94,8 @@ public class Vector2 implements Cloneable {
 
     public void multiply(Vector2 par1)
     {
-        x *= par1.getX();
-        y *= par1.getY();
+        x *= par1.x;
+        y *= par1.y;
     }
 
     public void multiply(double par1)
@@ -112,7 +123,7 @@ public class Vector2 implements Cloneable {
 
     public boolean isEquals(Vector2 vector)
     {
-        return x == vector.getX() && y == vector.getY();
+        return x == vector.x && y == vector.y;
     }
 
     @Override

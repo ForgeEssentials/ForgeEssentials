@@ -75,7 +75,7 @@ public enum EventType {
         // now run group scripts - must be global
         try
         {
-            File gscript = new File(event.group, APIRegistry.perms.getHighestGroup(player).name + ".txt");
+            File gscript = new File(event.group, APIRegistry.perms.getPrimaryGroup(player).name + ".txt");
             OutputHandler.felog.info("Reading command script file " + gscript.getAbsolutePath());
             FileInputStream stream = new FileInputStream(gscript);
             InputStreamReader streamReader = new InputStreamReader(stream);
@@ -104,7 +104,7 @@ public enum EventType {
         }
         catch (Exception e)
         {
-            OutputHandler.felog.warning("Could not find command script for group " + APIRegistry.perms.getHighestGroup(player).toString() + ", ignoring!");
+            OutputHandler.felog.warning("Could not find command script for group " + APIRegistry.perms.getPrimaryGroup(player).toString() + ", ignoring!");
         }
         finally
         {

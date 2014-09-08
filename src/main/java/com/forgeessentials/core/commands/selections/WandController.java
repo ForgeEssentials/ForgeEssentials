@@ -49,7 +49,7 @@ public class WandController {
 				return;
 		}
 
-		WorldPoint point = new WorldPoint(player.dimension, event.getX(), event.getY(), event.getZ());
+		WorldPoint point = new WorldPoint(player.dimension, event.x, event.y, event.z);
 		if (!APIRegistry.perms.checkPermission(player, point, "ForgeEssentials.CoreCommands.select.pos"))
 		{
 			OutputHandler.chatError(player,
@@ -61,7 +61,7 @@ public class WandController {
 		if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
 		{
 			info.setPoint1(point);
-			IChatComponent format = ChatUtils.createFromText("Pos1 set to " + event.getX() + ", " + event.getY() + ", " + event.getZ());
+			IChatComponent format = ChatUtils.createFromText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
 			player.addChatMessage(ChatUtils.colourize(format, EnumChatFormatting.DARK_PURPLE));
 			event.setCanceled(true);
 		}
@@ -69,7 +69,7 @@ public class WandController {
 		else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
 		{
 			info.setPoint2(point);
-			IChatComponent format = ChatUtils.createFromText("Pos2 set to " + event.getX() + ", " + event.getY() + ", " + event.getZ());
+			IChatComponent format = ChatUtils.createFromText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
 			player.addChatMessage(ChatUtils.colourize(format, EnumChatFormatting.DARK_PURPLE));
 			event.setCanceled(true);
 		}
