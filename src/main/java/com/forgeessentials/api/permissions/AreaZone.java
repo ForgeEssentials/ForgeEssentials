@@ -60,16 +60,16 @@ public class AreaZone extends Zone {
 	}
 
 	@Override
+	public String getName()
+	{
+		return worldZone.toString() + "_" + name;
+	}
+
+	@Override
 	public Zone getParent()
 	{
 		// TODO: Get zones covering this one!
 		return worldZone;
-	}
-
-	@Override
-	public String getName()
-	{
-		return worldZone.toString() + "_" + name;
 	}
 
 	public String getShotName()

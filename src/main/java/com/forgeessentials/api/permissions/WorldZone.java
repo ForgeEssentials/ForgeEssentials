@@ -26,8 +26,9 @@ public class WorldZone extends Zone {
 	public WorldZone(ServerZone serverZone, int dimensionID, int id)
 	{
 		super(id);
-		this.serverZone = serverZone;
 		this.dimensionID = dimensionID;
+		this.serverZone = serverZone;
+		this.serverZone.addWorldZone(this);
 	}
 
 	@Override
@@ -55,15 +56,15 @@ public class WorldZone extends Zone {
 	}
 
 	@Override
-	public Zone getParent()
-	{
-		return APIRegistry.perms.getServerZone();
-	}
-
-	@Override
 	public String getName()
 	{
 		return "WORLD_" + dimensionID;
+	}
+
+	@Override
+	public Zone getParent()
+	{
+		return APIRegistry.perms.getServerZone();
 	}
 
 	public int getDimensionID()
@@ -95,6 +96,7 @@ public class WorldZone extends Zone {
 
 	public void sortAreaZones()
 	{
+		// TODO: Sort for priorities
 		throw new RuntimeException("Not yet implemented");
 	}
 

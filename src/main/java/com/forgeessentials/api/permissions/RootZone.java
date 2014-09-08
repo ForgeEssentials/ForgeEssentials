@@ -13,6 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RootZone extends Zone {
 
+	private ServerZone serverZone;
+
 	public RootZone()
 	{
 		super(0);
@@ -37,15 +39,25 @@ public class RootZone extends Zone {
 	}
 
 	@Override
+	public String getName()
+	{
+		return "_ROOT_";
+	}
+
+	@Override
 	public Zone getParent()
 	{
 		return null;
 	}
 
-	@Override
-	public String getName()
+	public ServerZone getServerZone()
 	{
-		return "_ROOT_";
+		return serverZone;
+	}
+
+	void setServerZone(ServerZone serverZone)
+	{
+		this.serverZone = serverZone;
 	}
 
 }

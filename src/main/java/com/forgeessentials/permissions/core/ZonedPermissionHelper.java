@@ -47,8 +47,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private RootZone rootZone;
 
-	private ServerZone serverZone;
-
 	private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
 
 	private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
@@ -67,11 +65,9 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	public void clear() {
 		rootZone = null;
-		serverZone = null;
-		maxZoneID = 2;
-
 		addZone(new RootZone());
 		addZone(new ServerZone(rootZone));
+		maxZoneID = 2;
 
 		// for (World world : DimensionManager.getWorlds())
 		// {
@@ -79,8 +75,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		// }
 
 		// TODO: TESTING
-		serverZone.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", false);
-		serverZone.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", true);
+		getServerZone().setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", false);
+		getServerZone().setGroupPermission(DEFAULT_GROUP, "fe.commands.time", true);
 
 		WorldZone world0 = getWorldZone(0);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", true);
@@ -139,7 +135,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 			}
 			zones.add(worldZone);
 		}
-		zones.add(serverZone);
+		zones.add(rootZone.getServerZone());
 		zones.add(rootZone);
 
 		return getPermission(zones, playerId, groups, permissionNode, isProperty);
@@ -233,25 +229,25 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public void setPlayerPermission(String uuid, String permissionNode, boolean value)
 	{
-		serverZone.setPlayerPermission(uuid, permissionNode, value);
+		getServerZone().setPlayerPermission(uuid, permissionNode, value);
 	}
 
 	@Override
 	public void setPlayerPermissionProperty(String uuid, String permissionNode, String value)
 	{
-		serverZone.setPlayerPermissionProperty(uuid, permissionNode, value);
+		getServerZone().setPlayerPermissionProperty(uuid, permissionNode, value);
 	}
 
 	@Override
 	public void setGroupPermission(String group, String permissionNode, boolean value)
 	{
-		serverZone.setGroupPermission(group, permissionNode, value);
+		getServerZone().setGroupPermission(group, permissionNode, value);
 	}
 
 	@Override
 	public void setGroupPermissionProperty(String group, String permissionNode, String value)
 	{
-		serverZone.setGroupPermissionProperty(group, permissionNode, value);
+		getServerZone().setGroupPermissionProperty(group, permissionNode, value);
 	}
 
 	// ------------------------------------------------------------
@@ -407,7 +403,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public ServerZone getServerZone()
 	{
-		return serverZone;
+		return getRootZone().getServerZone();
 	}
 
 	@Override
@@ -416,7 +412,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		WorldZone zone = worldZones.get(dimensionId);
 		if (zone == null)
 		{
-			zone = new WorldZone(serverZone, dimensionId, getNextZoneID());
+			zone = new WorldZone(getServerZone(), dimensionId, getNextZoneID());
 			addZone(zone);
 		}
 		return zone;
@@ -433,8 +429,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		zones.put(zone.getId(), zone);
 		if (zone instanceof RootZone)
 			rootZone = (RootZone) zone;
-		else if (zone instanceof ServerZone)
-			serverZone = (ServerZone) zone;
 		else if (zone instanceof WorldZone)
 			worldZones.put(((WorldZone) zone).getDimensionID(), (WorldZone) zone);
 		return zone;
@@ -567,7 +561,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	{
 		List<Zone> zones = new ArrayList<Zone>();
 		zones.add(zone);
-		zones.add(serverZone);
+		zones.add(rootZone.getServerZone());
 		zones.add(rootZone);
 		return checkPermission(getPermission(zones, getPlayerUUID(player), getPlayerGroupNames(player), permissionNode, false));
 	}
@@ -577,7 +571,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	{
 		List<Zone> zones = new ArrayList<Zone>();
 		zones.add(zone);
-		zones.add(serverZone);
+		zones.add(rootZone.getServerZone());
 		zones.add(rootZone);
 		return getPermission(zones, getPlayerUUID(player), getPlayerGroupNames(player), permissionNode, true);
 	}

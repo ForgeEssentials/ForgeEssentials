@@ -1,5 +1,8 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -14,11 +17,14 @@ import net.minecraft.entity.player.EntityPlayer;
 public class ServerZone extends Zone {
 
 	private RootZone rootZone;
+	
+	private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
 
 	public ServerZone(RootZone rootZone)
 	{
 		super(1);
 		this.rootZone = rootZone;
+		this.rootZone.setServerZone(this);
 	}
 
 	@Override
@@ -40,15 +46,31 @@ public class ServerZone extends Zone {
 	}
 
 	@Override
+	public String getName()
+	{
+		return "_SERVER_";
+	}
+
+	@Override
 	public Zone getParent()
 	{
 		return rootZone;
 	}
 
-	@Override
-	public String getName()
+
+	public Map<Integer, WorldZone> getWorldZones()
 	{
-		return "_SERVER_";
+		return worldZones;
+	}
+
+	public void clear()
+	{
+		worldZones.clear();
+	}
+
+	void addWorldZone(WorldZone zone)
+	{
+		worldZones.put(zone.getDimensionID(), zone);
 	}
 
 }
