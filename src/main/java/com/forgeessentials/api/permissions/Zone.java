@@ -11,10 +11,21 @@ import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+/**
+ * Zones are used to store permissions in a tree-like hierarchy. Each zone has it's own set of group- and player-permissions. Zones are stored in a tree
+ * structure with fixed levels. Priorities for permissions are based on the level of each zone in the tree. The following list shows the structure of the tree:
+ * 
+ * <pre>
+ * {@link RootZone} &gt; {@link GlobalZone} &gt; {@link WorldZone} &gt; {@link AreaZone}
+ * </pre>
+ * 
+ * 
+ * @author Bjoern Zeutzheim
+ */
 public abstract class Zone {
 
 	private int id;
-	
+
 	private Map<String, Map<String, String>> playerPermissions = new HashMap<String, Map<String, String>>();
 
 	private Map<String, Map<String, String>> groupPermissions = new HashMap<String, Map<String, String>>();
@@ -28,8 +39,9 @@ public abstract class Zone {
 	{
 		return id;
 	}
-	
-	public Zone(int id) {
+
+	public Zone(int id)
+	{
 		this.id = id;
 	}
 
@@ -39,7 +51,8 @@ public abstract class Zone {
 	 * @param player
 	 * @return
 	 */
-	public boolean isPlayerInZone(EntityPlayer player) {
+	public boolean isPlayerInZone(EntityPlayer player)
+	{
 		return isInZone(new WorldPoint(player));
 	}
 
@@ -178,7 +191,8 @@ public abstract class Zone {
 	 */
 	public void setPlayerPermissionProperty(String uuid, String permissionNode, String value)
 	{
-		if (uuid != null) {
+		if (uuid != null)
+		{
 			Map<String, String> map = getOrCreatePlayerPermissions(uuid);
 			map.put(permissionNode, value);
 		}
@@ -281,7 +295,8 @@ public abstract class Zone {
 	 */
 	public void setGroupPermissionProperty(String group, String permissionNode, String value)
 	{
-		if (group != null) {
+		if (group != null)
+		{
 			Map<String, String> map = getOrCreateGroupPermissions(group);
 			map.put(permissionNode, value);
 		}
@@ -298,7 +313,5 @@ public abstract class Zone {
 	{
 		setGroupPermissionProperty(group, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
 	}
-
-
 
 }

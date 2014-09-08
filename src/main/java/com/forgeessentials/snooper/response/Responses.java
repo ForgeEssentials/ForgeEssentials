@@ -9,9 +9,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-public class Responces extends Response {
+public class Responses extends Response {
     @Override
-    public JsonElement getResponce(JsonObject input)
+    public JsonElement getResponse(JsonObject input)
     {
         JsonArray data = new JsonArray();
         for (Response responce : ResponseRegistry.getAllResponses().values())

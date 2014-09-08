@@ -5,6 +5,12 @@ import com.forgeessentials.util.selections.WorldPoint;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+/**
+ * {@link RootZone} is the root of the permission tree and has the lowest priority of all zones. It's purpose is to hold default permissions, which have been
+ * set by {@link IPermissionsHelper#registerPermission()}
+ * 
+ * @author Bjoern Zeutzheim
+ */
 public class RootZone extends Zone {
 
 	public RootZone()

@@ -39,6 +39,10 @@ import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.mojang.authlib.GameProfile;
 
+/**
+ * 
+ * @author Bjoern Zeutzheim
+ */
 public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private RootZone rootZone;

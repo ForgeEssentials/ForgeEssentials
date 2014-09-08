@@ -68,7 +68,7 @@ public class ServerInfo extends Response {
     }
 
     @Override
-    public JsonObject getResponce(JsonObject input) throws JsonParseException
+    public JsonObject getResponse(JsonObject input) throws JsonParseException
     {
         if (sendMods)
         {

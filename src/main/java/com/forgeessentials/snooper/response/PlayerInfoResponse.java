@@ -18,7 +18,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-public class PlayerInfoResonce extends Response
+public class PlayerInfoResponse extends Response
 {
     private boolean sendHome;
     private boolean sendPotions;
@@ -30,7 +30,7 @@ public class PlayerInfoResonce extends Response
     private boolean sendPosition;
     
     @Override
-    public JsonElement getResponce(JsonObject input) throws JsonParseException
+    public JsonElement getResponse(JsonObject input) throws JsonParseException
     {
 
         if (!input.has("username"))
@@ -163,7 +163,6 @@ public class PlayerInfoResonce extends Response
         config.get(category, "sendMoney", true).set(sendMoney);
     }
 
-    @SuppressWarnings("unused")
     private static final class Data
     {
         Capabilities capabilities;
@@ -177,20 +176,17 @@ public class PlayerInfoResonce extends Response
         List<String> potions;
     }
 
-    @SuppressWarnings("unused")
     private static final class Capabilities
     {
         boolean allowEdit, allowFlying, isFlying, disableDamage;
     }
 
-    @SuppressWarnings("unused")
     private static final class FoodStats
     {
         int food;
         float saturation;
     }
 
-    @SuppressWarnings("unused")
     private static final class XP
     {
         int lvl;

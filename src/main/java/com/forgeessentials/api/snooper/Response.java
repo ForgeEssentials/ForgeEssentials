@@ -38,7 +38,7 @@ public abstract class Response
     public int id;
     public boolean allowed = true;
 
-    public abstract JsonElement getResponce(JsonObject jsonElement) throws JsonParseException;
+    public abstract JsonElement getResponse(JsonObject jsonElement) throws JsonParseException;
 
     public abstract String getName();
 

@@ -32,7 +32,7 @@ public class PlayerInv extends Response {
     }
 
     @Override
-    public JsonElement getResponce(JsonObject input) throws JsonParseException
+    public JsonElement getResponse(JsonObject input) throws JsonParseException
     {
         if (!input.has("username"))
         {

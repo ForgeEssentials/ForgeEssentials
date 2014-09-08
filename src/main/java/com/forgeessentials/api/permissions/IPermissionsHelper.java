@@ -14,6 +14,11 @@ import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
+/**
+ * {@link IPermissionsHelper} is the primary access-point to the permissions-system.
+ * 
+ * @author Bjoern Zeutzheim
+ */
 public interface IPermissionsHelper extends IPermissionsProvider {
 
 	static final String DEFAULT_GROUP = "*";

@@ -12,9 +12,9 @@ import net.minecraftforge.common.MinecraftForge;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.snooper.response.PlayerInfoResonce;
+import com.forgeessentials.snooper.response.PlayerInfoResponse;
 import com.forgeessentials.snooper.response.PlayerInv;
-import com.forgeessentials.snooper.response.Responces;
+import com.forgeessentials.snooper.response.Responses;
 import com.forgeessentials.snooper.response.ServerInfo;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
@@ -37,11 +37,11 @@ public class ModuleSnooper {
     {
         MinecraftForge.EVENT_BUS.register(this);
 
-        APIRegistry.registerResponse(0, new Responces());
+        APIRegistry.registerResponse(0, new Responses());
 
         APIRegistry.registerResponse(1, new ServerInfo());
 
-        APIRegistry.registerResponse(5, new PlayerInfoResonce());
+        APIRegistry.registerResponse(5, new PlayerInfoResponse());
         APIRegistry.registerResponse(6, new PlayerInv());
     }
 

@@ -7,6 +7,12 @@ import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
+/**
+ * {@link AreaZone} covers just a specific area in one world. It has higher priority than all other {@link Zone} types. Area zones can overlap. Priority is then
+ * decided by assigning highest priority to the innermost, smallest area.
+ * 
+ * @author Bjoern Zeutzheim
+ */
 public class AreaZone extends Zone {
 
 	private WorldZone worldZone;
@@ -24,11 +30,6 @@ public class AreaZone extends Zone {
 		this.name = name;
 		this.area = area;
 		this.worldZone.addAreaZone(this);
-	}
-
-	public AreaZone(WorldZone worldZone, String name, AreaBase area)
-	{
-		this(worldZone, name, area, APIRegistry.perms.getNextZoneID());
 	}
 
 	@Override

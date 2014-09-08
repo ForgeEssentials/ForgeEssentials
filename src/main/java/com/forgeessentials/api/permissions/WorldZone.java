@@ -10,6 +10,11 @@ import com.forgeessentials.util.selections.WorldPoint;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+/**
+ * {@link WorldZone} covers the entirety of a world. Third lowest in priority with next being {@link GlobalZone}.
+ * 
+ * @author Bjoern Zeutzheim
+ */
 public class WorldZone extends Zone {
 	
 	private GlobalZone globalZone;
@@ -24,11 +29,6 @@ public class WorldZone extends Zone {
 		this.globalZone = globalZone;
 		this.dimensionID = dimensionID;
 	}
-
-//	public WorldZone(GlobalZone globalZone, int dimensionID)
-//	{
-//		this(globalZone, dimensionID, APIRegistry.perms.getNextZoneID());
-//	}
 
 	@Override
 	public boolean isPlayerInZone(EntityPlayer player)
