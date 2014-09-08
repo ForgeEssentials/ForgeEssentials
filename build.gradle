@@ -59,7 +59,10 @@ dependencies {
     compile 'com.h2database:h2:1.3.175'
     compile 'mysql:mysql-connector-java:5.1.22'
 
-    // WE integration - 
+    // just for shits and giggles
+    compile "org.projectlombok:lombok:1.14.6"
+
+    // WE integration -
     compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT'// use BOTH
     //compile files('lib/worldedit-forge-6.0.0-SNAPSHOT-deobf.jar')
 
