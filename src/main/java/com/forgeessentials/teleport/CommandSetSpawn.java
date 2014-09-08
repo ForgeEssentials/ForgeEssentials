@@ -150,7 +150,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 		}
 
 		// calc zone.
-		Zone zone = APIRegistry.perms.getGlobalZone();
+		Zone zone = APIRegistry.perms.getServerZone();
 		if (args.length == 5)
 		{
 			if (APIRegistry.perms.getZoneById(args[4]) != null)
@@ -339,7 +339,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 		}
 
 		// calc zone.
-		Zone zone = APIRegistry.perms.getGlobalZone();
+		Zone zone = APIRegistry.perms.getServerZone();
 		if (args.length == 6)
 		{
 			if (APIRegistry.perms.getZoneById(args[5]) != null)

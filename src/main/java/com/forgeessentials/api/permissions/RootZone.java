@@ -45,7 +45,7 @@ public class RootZone extends Zone {
 	@Override
 	public String getName()
 	{
-		return "ROOT";
+		return "_ROOT_";
 	}
 
 }

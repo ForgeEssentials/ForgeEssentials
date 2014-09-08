@@ -27,7 +27,7 @@ import net.minecraftforge.permissions.api.context.TileEntityContext;
 import net.minecraftforge.permissions.api.context.WorldContext;
 
 import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.GlobalZone;
+import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.RootZone;
@@ -47,7 +47,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private RootZone rootZone;
 
-	private GlobalZone globalZone;
+	private ServerZone serverZone;
 
 	private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
 
@@ -67,11 +67,11 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	public void clear() {
 		rootZone = null;
-		globalZone = null;
+		serverZone = null;
 		maxZoneID = 2;
 
 		addZone(new RootZone());
-		addZone(new GlobalZone(rootZone));
+		addZone(new ServerZone(rootZone));
 
 		// for (World world : DimensionManager.getWorlds())
 		// {
@@ -79,8 +79,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		// }
 
 		// TODO: TESTING
-		globalZone.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", false);
-		globalZone.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", true);
+		serverZone.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", false);
+		serverZone.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", true);
 
 		WorldZone world0 = getWorldZone(0);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", true);
@@ -139,7 +139,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 			}
 			zones.add(worldZone);
 		}
-		zones.add(globalZone);
+		zones.add(serverZone);
 		zones.add(rootZone);
 
 		return getPermission(zones, playerId, groups, permissionNode, isProperty);
@@ -233,25 +233,25 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public void setPlayerPermission(String uuid, String permissionNode, boolean value)
 	{
-		globalZone.setPlayerPermission(uuid, permissionNode, value);
+		serverZone.setPlayerPermission(uuid, permissionNode, value);
 	}
 
 	@Override
 	public void setPlayerPermissionProperty(String uuid, String permissionNode, String value)
 	{
-		globalZone.setPlayerPermissionProperty(uuid, permissionNode, value);
+		serverZone.setPlayerPermissionProperty(uuid, permissionNode, value);
 	}
 
 	@Override
 	public void setGroupPermission(String group, String permissionNode, boolean value)
 	{
-		globalZone.setGroupPermission(group, permissionNode, value);
+		serverZone.setGroupPermission(group, permissionNode, value);
 	}
 
 	@Override
 	public void setGroupPermissionProperty(String group, String permissionNode, String value)
 	{
-		globalZone.setGroupPermissionProperty(group, permissionNode, value);
+		serverZone.setGroupPermissionProperty(group, permissionNode, value);
 	}
 
 	// ------------------------------------------------------------
@@ -405,9 +405,9 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	}
 
 	@Override
-	public GlobalZone getGlobalZone()
+	public ServerZone getServerZone()
 	{
-		return globalZone;
+		return serverZone;
 	}
 
 	@Override
@@ -416,7 +416,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		WorldZone zone = worldZones.get(dimensionId);
 		if (zone == null)
 		{
-			zone = new WorldZone(globalZone, dimensionId, getNextZoneID());
+			zone = new WorldZone(serverZone, dimensionId, getNextZoneID());
 			addZone(zone);
 		}
 		return zone;
@@ -433,8 +433,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		zones.put(zone.getId(), zone);
 		if (zone instanceof RootZone)
 			rootZone = (RootZone) zone;
-		else if (zone instanceof GlobalZone)
-			globalZone = (GlobalZone) zone;
+		else if (zone instanceof ServerZone)
+			serverZone = (ServerZone) zone;
 		else if (zone instanceof WorldZone)
 			worldZones.put(((WorldZone) zone).getDimensionID(), (WorldZone) zone);
 		return zone;
@@ -567,7 +567,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	{
 		List<Zone> zones = new ArrayList<Zone>();
 		zones.add(zone);
-		zones.add(globalZone);
+		zones.add(serverZone);
 		zones.add(rootZone);
 		return checkPermission(getPermission(zones, getPlayerUUID(player), getPlayerGroupNames(player), permissionNode, false));
 	}
@@ -577,7 +577,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	{
 		List<Zone> zones = new ArrayList<Zone>();
 		zones.add(zone);
-		zones.add(globalZone);
+		zones.add(serverZone);
 		zones.add(rootZone);
 		return getPermission(zones, getPlayerUUID(player), getPlayerGroupNames(player), permissionNode, true);
 	}

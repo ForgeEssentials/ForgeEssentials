@@ -16,7 +16,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
  * structure with fixed levels. Priorities for permissions are based on the level of each zone in the tree. The following list shows the structure of the tree:
  * 
  * <pre>
- * {@link RootZone} &gt; {@link GlobalZone} &gt; {@link WorldZone} &gt; {@link AreaZone}
+ * {@link RootZone} &gt; {@link ServerZone} &gt; {@link WorldZone} &gt; {@link AreaZone}
  * </pre>
  * 
  * 

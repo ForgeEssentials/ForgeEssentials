@@ -2,7 +2,7 @@ package com.forgeessentials.worldborder;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.api.permissions.GlobalZone;
+import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -38,7 +38,7 @@ public class WorldBorder {
      */
     public WorldBorder(Zone zone, Point center, int rad, byte shape)
     {
-        if (zone instanceof GlobalZone || zone instanceof WorldZone)
+        if (zone instanceof ServerZone || zone instanceof WorldZone)
         {
             this.zone = zone.getName();
             this.center = center;
@@ -54,7 +54,7 @@ public class WorldBorder {
 
     public WorldBorder(Zone zone)
     {
-        if (zone instanceof GlobalZone || zone instanceof WorldZone)
+        if (zone instanceof ServerZone || zone instanceof WorldZone)
         {
             this.zone = zone.getName();
             center = new Point(0, 0, 0);

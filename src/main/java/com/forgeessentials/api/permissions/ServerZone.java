@@ -6,18 +6,16 @@ import com.forgeessentials.util.selections.WorldPoint;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-// TODO: Rename GlobalZone to ServerZone
-
 /**
- * {@link GlobalZone} contains every player on the whole server. Has second lowest priority with next being {@link RootZone}.
+ * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being {@link RootZone}.
  * 
  * @author Bjoern Zeutzheim
  */
-public class GlobalZone extends Zone {
+public class ServerZone extends Zone {
 
 	private RootZone rootZone;
 
-	public GlobalZone(RootZone rootZone)
+	public ServerZone(RootZone rootZone)
 	{
 		super(1);
 		this.rootZone = rootZone;
@@ -50,7 +48,7 @@ public class GlobalZone extends Zone {
 	@Override
 	public String getName()
 	{
-		return "GLOBAL";
+		return "_SERVER_";
 	}
 
 }

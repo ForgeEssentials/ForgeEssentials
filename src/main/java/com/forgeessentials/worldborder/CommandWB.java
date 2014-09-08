@@ -68,7 +68,7 @@ public class CommandWB extends ForgeEssentialsCommandBase {
 		}
 		else if (args[0].equalsIgnoreCase("global"))
 		{
-			zone = APIRegistry.perms.getGlobalZone();
+			zone = APIRegistry.perms.getServerZone();
 		}
 		else if (FunctionHelper.isNumeric(args[0]))
 		{

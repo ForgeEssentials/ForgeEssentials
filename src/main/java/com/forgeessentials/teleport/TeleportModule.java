@@ -107,7 +107,7 @@ public class TeleportModule {
 	@ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		String prop = APIRegistry.perms.getGlobalZone().getGroupPermission(IPermissionsHelper.DEFAULT_GROUP, CommandSetSpawn.SPAWN_PROP);
+		String prop = APIRegistry.perms.getServerZone().getGroupPermission(IPermissionsHelper.DEFAULT_GROUP, CommandSetSpawn.SPAWN_PROP);
 
 		// nothing set for the global??
 		if (prop == null)

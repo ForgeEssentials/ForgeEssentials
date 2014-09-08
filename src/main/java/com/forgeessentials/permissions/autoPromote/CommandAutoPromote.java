@@ -49,7 +49,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 			}
 			if (args[0].equalsIgnoreCase("global"))
 			{
-				zone = APIRegistry.perms.getGlobalZone();
+				zone = APIRegistry.perms.getServerZone();
 			}
 			// TODO: Identify zones by unique names
 //			if (APIRegistry.perms.doesZoneExist(args[0]))
@@ -279,7 +279,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				}
 				if (args[0].equalsIgnoreCase("global"))
 				{
-					zone = APIRegistry.perms.getGlobalZone();
+					zone = APIRegistry.perms.getServerZone();
 				}
 				// TODO: Identify zones by unique names
 //				if (APIRegistry.perms.doesZoneExist(args[0]))
@@ -310,7 +310,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				}
 				if (args[0].equalsIgnoreCase("global"))
 				{
-					zone = APIRegistry.perms.getGlobalZone();
+					zone = APIRegistry.perms.getServerZone();
 				}
 				// TODO: Identify zones by unique names
 //				if (APIRegistry.perms.doesZoneExist(args[0]))

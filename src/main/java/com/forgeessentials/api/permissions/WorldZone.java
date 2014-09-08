@@ -11,22 +11,22 @@ import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
- * {@link WorldZone} covers the entirety of a world. Third lowest in priority with next being {@link GlobalZone}.
+ * {@link WorldZone} covers the entirety of a world. Third lowest in priority with next being {@link ServerZone}.
  * 
  * @author Bjoern Zeutzheim
  */
 public class WorldZone extends Zone {
 	
-	private GlobalZone globalZone;
+	private ServerZone serverZone;
 
 	private int dimensionID;
 
 	private List<AreaZone> areaZones = new ArrayList<AreaZone>();
 
-	public WorldZone(GlobalZone globalZone, int dimensionID, int id)
+	public WorldZone(ServerZone serverZone, int dimensionID, int id)
 	{
 		super(id);
-		this.globalZone = globalZone;
+		this.serverZone = serverZone;
 		this.dimensionID = dimensionID;
 	}
 
@@ -57,7 +57,7 @@ public class WorldZone extends Zone {
 	@Override
 	public Zone getParent()
 	{
-		return APIRegistry.perms.getGlobalZone();
+		return APIRegistry.perms.getServerZone();
 	}
 
 	@Override

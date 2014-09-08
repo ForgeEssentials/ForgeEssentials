@@ -220,14 +220,14 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	//RootZone getRootZone();
 
 	/**
-	 * Returns the global zone
+	 * Returns the {@link ServerZone}
 	 * 
 	 * @return
 	 */
-	GlobalZone getGlobalZone();
+	ServerZone getServerZone();
 
 	/**
-	 * Returns the world-zone for the specified world
+	 * Returns the {@link WorldZone} for the specified world
 	 * 
 	 * @param world
 	 * @return
@@ -235,7 +235,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	WorldZone getWorldZone(World world);
 
 	/**
-	 * Returns the world-zone for the specified world
+	 * Returns the {@link WorldZone} for the specified world
 	 * 
 	 * @param world
 	 * @return
@@ -243,7 +243,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	WorldZone getWorldZone(int dimensionId);
 	
 	/**
-	 * Returns a collection of all world zones
+	 * Returns a collection of all {@link WorldZone}
 	 * 
 	 * @return
 	 */

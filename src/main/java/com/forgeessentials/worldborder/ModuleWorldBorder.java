@@ -138,7 +138,7 @@ public class ModuleWorldBorder {
 	{
 		loadAll();
 
-		Zone zone = APIRegistry.perms.getGlobalZone();
+		Zone zone = APIRegistry.perms.getServerZone();
 		if (!borderMap.containsKey(zone.getName()))
 		{
 			borderMap.put(zone.getName(), new WorldBorder(zone));
@@ -161,7 +161,7 @@ public class ModuleWorldBorder {
 		Zone zone = APIRegistry.perms.getWorldZone(e.entityPlayer.worldObj);
 		WorldBorder border = borderMap.get(zone.getName());
 		border.check((EntityPlayerMP) e.entityPlayer);
-		borderMap.get(APIRegistry.perms.getGlobalZone().getName()).check((EntityPlayerMP) e.entityPlayer);
+		borderMap.get(APIRegistry.perms.getServerZone().getName()).check((EntityPlayerMP) e.entityPlayer);
 	}
 
 	@SubscribeEvent
