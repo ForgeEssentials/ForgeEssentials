@@ -37,6 +37,8 @@ public interface IPermissionsManager extends IPermissionsProvider {
 	 */
 	Integer getPermissionPropertyInt(EntityPlayer player, String permissionNode);
 
+	// ---------------------------------------------------------------------------
+
 	/**
 	 * Checks a permission for a player at a certain position
 	 * @param player null or player
@@ -55,6 +57,8 @@ public interface IPermissionsManager extends IPermissionsProvider {
 	 */
 	String getPermissionProperty(EntityPlayer player, WorldPoint targetPoint, String permissionNode);
 
+	// ---------------------------------------------------------------------------
+
 	/**
 	 * Checks a permission for a player in a certain area
 	 * @param player null or player
@@ -72,7 +76,27 @@ public interface IPermissionsManager extends IPermissionsProvider {
 	 * @return property, if it exists, null otherwise
 	 */
 	String getPermissionProperty(EntityPlayer player, AreaBase targetArea, String permissionNode);
-	
+
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Checks a permission for a player in the specified zone
+	 * @param player null or player
+	 * @param zone
+	 * @param permissionNode
+	 * @return
+	 */
+	boolean checkPermission(EntityPlayer player, Zone zone, String permOverride);
+
+	/**
+	 * Gets a permission-property for a player in the specified zone
+	 * @param playernull or player
+	 * @param zone
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	String getPermissionProperty(EntityPlayer player, Zone zone, String permissionNode);
+
 	// ---------------------------------------------------------------------------
 
 	/**

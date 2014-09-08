@@ -30,7 +30,6 @@ import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions {
-	public static SqlHelper sql;
 
 	@FEModule.Config
 	public static ConfigPermissions config;
@@ -38,7 +37,6 @@ public class ModulePermissions {
 	@FEModule.ModuleDir
 	public static File permsFolder;
 
-	protected static AbstractDataDriver data;
 	private AutoPromoteManager autoPromoteManager;
 
 	public static void regPerms()
@@ -60,33 +58,27 @@ public class ModulePermissions {
 
 		PermissionsManager.registerPermission("fe.perm.list", RegisteredPermValue.TRUE);
 
-		CommandSetChecker.regMCOverrides();
+		//CommandSetChecker.regMCOverrides();
 		PermissionsManager.registerPermission("fe.core.info", RegisteredPermValue.OP);
-
 	}
 
 	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		APIRegistry.permissionManager = new ZoneHelper();
-		APIRegistry.permissionManager = new PermissionsHelper();// new one for new API
-
-		MinecraftForge.EVENT_BUS.register(APIRegistry.permissionManager);
 		MinecraftForge.EVENT_BUS.register(this);
-		APIRegistry.permissionManager = new PermissionRegistrator();
 
-		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
-
-		// PermissionsManager.setPermProvider(new ForgePermissionsHelper());
-		PermissionsManager.setPermProvider(new ZonedPermissionManager());
+		//DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
+		
+		APIRegistry.permissionManager = new ZonedPermissionManager();
+		PermissionsManager.setPermProvider(APIRegistry.permissionManager);
 	}
 
 	@FEModule.Init
 	public void load(FEModuleInitEvent e)
 	{
-		// setup SQL
-		sql = new SqlHelper(config);
-
+		// Open database
+		SqlHelper.getInstance();
+		
 		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);
 
@@ -97,13 +89,12 @@ public class ModulePermissions {
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		// load zones...
-		data = DataStorageManager.getReccomendedDriver();
-		((ZoneHelper) APIRegistry.permissionManager).loadZones();
+		//((ZoneHelper) APIRegistry.permissionManager).loadZones();
 
-		if (config.importBool)
-		{
-			sql.importPerms(config.importDir);
-		}
+//		if (config.importBool)
+//		{
+//			sql.importPerms(config.importDir);
+//		}
 
 		// init perms and vMC command overrides
 		e.registerServerCommand(new CommandZone());
@@ -121,22 +112,25 @@ public class ModulePermissions {
 	@FEModule.ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		sql.putRegistrationPerms(APIRegistry.permissionManager.getRegisteredPerms());
+		// TODO: PERMS
+		//sql.putRegistrationPerms(APIRegistry.permissionManager.getRegisteredPerms());
 	}
 
 	@FEModule.ServerStop
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
-		// save all the zones
-		for (Zone zone : APIRegistry.permissionManager.getZoneList())
-		{
-			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
-			{
-				continue;
-			}
-			data.saveObject(ZoneHelper.container, zone);
-		}
-
 		autoPromoteManager.stop();
+		
+		// TODO: PERMS
+		
+		// save all the zones
+//		for (Zone zone : APIRegistry.permissionManager.getZoneList())
+//		{
+//			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
+//			{
+//				continue;
+//			}
+//			DataStorageManager.getReccomendedDriver().saveObject(ZoneHelper.container, zone);
+//		}
 	}
 }

@@ -12,10 +12,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.api.IGroup;
 import net.minecraftforge.permissions.api.context.IContext;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.GlobalZone;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.IPermissionsManager;
@@ -35,6 +37,8 @@ public class ZonedPermissionManager implements IPermissionsManager {
 
 	public ZonedPermissionManager()
 	{
+		// MinecraftForge.EVENT_BUS.register(this);
+
 		// for (World world : DimensionManager.getWorlds())
 		// {
 		// worldZones.put(world.provider.dimensionId, new WorldZone(world.provider.dimensionId));
@@ -65,11 +69,13 @@ public class ZonedPermissionManager implements IPermissionsManager {
 		return checkPermission(player, groups, node);
 	}
 
-	public boolean checkPermission(EntityPlayer player, Collection groups, String permissionNode) {
+	public boolean checkPermission(EntityPlayer player, Collection groups, String permissionNode)
+	{
 		return !getPermission(player, groups, permissionNode, true).equals(Zone.PERMISSION_FALSE);
 	}
 
-	public String getPermissionProperty(EntityPlayer player, Collection groups, String permissionNode) {
+	public String getPermissionProperty(EntityPlayer player, Collection groups, String permissionNode)
+	{
 		return getPermission(player, groups, permissionNode, false);
 	}
 
@@ -100,7 +106,8 @@ public class ZonedPermissionManager implements IPermissionsManager {
 
 		// Build node list
 		List<String> nodes = new ArrayList<String>();
-		if (splitPermission) {
+		if (splitPermission)
+		{
 			String[] nodeParts = permissionNode.split("\\.");
 			for (int i = nodeParts.length; i >= 0; i--)
 			{
@@ -112,7 +119,9 @@ public class ZonedPermissionManager implements IPermissionsManager {
 				nodes.add(node + Zone.PERMISSION_ASTERIX);
 			}
 			nodes.add(Zone.PERMISSION_ASTERIX);
-		} else {
+		}
+		else
+		{
 			nodes.add(permissionNode);
 		}
 
