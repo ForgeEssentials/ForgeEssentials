@@ -152,11 +152,11 @@ public abstract class Zone {
 	 * 
 	 * @param group
 	 * @param permissionNode
-	 * @param allow
+	 * @param value
 	 */
-	public void setPlayerPermission(String uuid, String permissionNode, boolean allow)
+	public void setPlayerPermission(String uuid, String permissionNode, boolean value)
 	{
-		setPlayerPermissionProperty(uuid, permissionNode, allow ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
+		setPlayerPermissionProperty(uuid, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
 	}
 
 	// ------------------------------------------------------------
@@ -243,11 +243,11 @@ public abstract class Zone {
 	 * 
 	 * @param group
 	 * @param permissionNode
-	 * @param allow
+	 * @param value
 	 */
-	public void setGroupPermission(String group, String permissionNode, boolean allow)
+	public void setGroupPermission(String group, String permissionNode, boolean value)
 	{
-		setGroupPermissionProperty(group, permissionNode, allow ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
+		setGroupPermissionProperty(group, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
 	}
 
 }

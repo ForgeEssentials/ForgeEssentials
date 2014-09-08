@@ -1,17 +1,19 @@
 package com.forgeessentials.permissions.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Group;
-import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.Group;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandPermissions extends ForgeEssentialsCommandBase {
     // Variables for auto-complete
@@ -71,69 +73,72 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-        PermResult result = APIRegistry.perms.checkPermResult(player, getPermissionNode(), true);
-        return result.equals(PermResult.DENY) ? false : true;
+    	return PermissionsManager.checkPerm(player, getPermissionNode());
+    	// TODO: Check why the old code did something differnt from ForgeEssentialsCommandBase
+//        PermResult result = APIRegistry.perms.checkPermResult(player, getPermissionNode(), true);
+//        return result.equals(PermResult.DENY) ? false : true;
     }
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        if (args.length == 1)
-        {
-            return getListOfStringsMatchingLastWord(args, args2);
-        }
-        else
-        {
-
-        }
-        switch (args.length)
-        {
-        case 1:
-            return getListOfStringsMatchingLastWord(args, args2);
-        case 2:
-            if (args[0].equalsIgnoreCase("group"))
-            {
-                List<Group> groups = APIRegistry.perms.getGroupsInZone(APIRegistry.perms.getGlobalZone().getName());
-                ArrayList<String> groupnames = new ArrayList<String>();
-                for (int i = 0; i < groups.size(); i++)
-                {
-                    groupnames.add(groups.get(i).name);
-                }
-                groupnames.add("create");
-                return getListOfStringsFromIterableMatchingLastWord(args, groupnames);
-            }
-            break;
-        case 3:
-            if (args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player"))
-            {
-                return getListOfStringsMatchingLastWord(args, playerargs);
-            }
-            else if (args[0].equalsIgnoreCase("group") && !args[1].equalsIgnoreCase("create"))
-            {
-                return getListOfStringsMatchingLastWord(args, groupargs);
-            }
-            break;
-        case 4:
-            if ((args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player")) && args[2].equalsIgnoreCase("group"))
-            {
-                return getListOfStringsMatchingLastWord(args, playergargs);
-            }
-            break;
-        case 5:
-            if ((args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player")) && args[2].equalsIgnoreCase("group"))
-            {
-                List<Group> groups = APIRegistry.perms.getGroupsInZone(APIRegistry.perms.getGlobalZone().getName());
-                ArrayList<String> groupnames = new ArrayList<String>();
-                for (int i = 0; i < groups.size(); i++)
-                {
-                    groupnames.add(groups.get(i).name);
-                }
-                groupnames.add("create");
-                return getListOfStringsFromIterableMatchingLastWord(args, groupnames);
-            }
-            break;
-        }
-        return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+    	return null;
+//        if (args.length == 1)
+//        {
+//            return getListOfStringsMatchingLastWord(args, args2);
+//        }
+//        else
+//        {
+//
+//        }
+//        switch (args.length)
+//        {
+//        case 1:
+//            return getListOfStringsMatchingLastWord(args, args2);
+//        case 2:
+//            if (args[0].equalsIgnoreCase("group"))
+//            {
+//                List<Group> groups = APIRegistry.perms.getGroupsInZone(APIRegistry.perms.getGlobalZone().getName());
+//                ArrayList<String> groupnames = new ArrayList<String>();
+//                for (int i = 0; i < groups.size(); i++)
+//                {
+//                    groupnames.add(groups.get(i).name);
+//                }
+//                groupnames.add("create");
+//                return getListOfStringsFromIterableMatchingLastWord(args, groupnames);
+//            }
+//            break;
+//        case 3:
+//            if (args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player"))
+//            {
+//                return getListOfStringsMatchingLastWord(args, playerargs);
+//            }
+//            else if (args[0].equalsIgnoreCase("group") && !args[1].equalsIgnoreCase("create"))
+//            {
+//                return getListOfStringsMatchingLastWord(args, groupargs);
+//            }
+//            break;
+//        case 4:
+//            if ((args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player")) && args[2].equalsIgnoreCase("group"))
+//            {
+//                return getListOfStringsMatchingLastWord(args, playergargs);
+//            }
+//            break;
+//        case 5:
+//            if ((args[0].equalsIgnoreCase("user") || args[0].equalsIgnoreCase("player")) && args[2].equalsIgnoreCase("group"))
+//            {
+//                List<Group> groups = APIRegistry.perms.getGroupsInZone(APIRegistry.perms.getGlobalZone().getName());
+//                ArrayList<String> groupnames = new ArrayList<String>();
+//                for (int i = 0; i < groups.size(); i++)
+//                {
+//                    groupnames.add(groups.get(i).name);
+//                }
+//                groupnames.add("create");
+//                return getListOfStringsFromIterableMatchingLastWord(args, groupnames);
+//            }
+//            break;
+//        }
+//        return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
     }
 
     @Override
@@ -144,7 +149,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public PermissionsManager.RegisteredPermValue getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
         return RegisteredPermValue.OP;
     }
