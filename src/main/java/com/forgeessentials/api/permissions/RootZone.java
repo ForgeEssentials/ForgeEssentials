@@ -1,18 +1,18 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-public class GlobalZone extends Zone {
+public class RootZone extends Zone {
 
-	public GlobalZone()
+	public RootZone()
 	{
-		super(1);
+		super(0);
 	}
 	
+
 	@Override
 	public boolean isPointInZone(WorldPoint point)
 	{
@@ -34,7 +34,7 @@ public class GlobalZone extends Zone {
 	@Override
 	public Zone getParent()
 	{
-		return APIRegistry.perms.getRootZone();
+		return null;
 	}
 
 	@Override

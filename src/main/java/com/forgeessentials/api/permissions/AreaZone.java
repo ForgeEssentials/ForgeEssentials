@@ -2,6 +2,7 @@ package com.forgeessentials.api.permissions;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -16,11 +17,17 @@ public class AreaZone extends Zone {
 
 	private int priority;
 
-	public AreaZone(WorldZone worldZone, String name, AreaBase area)
+	public AreaZone(int id, WorldZone worldZone, String name, AreaBase area)
 	{
+		super(id);
 		this.worldZone = worldZone;
 		this.name = name;
 		this.area = area;
+	}
+
+	public AreaZone(WorldZone worldZone, String name, AreaBase area)
+	{
+		this(APIRegistry.perms.getNextZoneID(), worldZone, name, area);
 	}
 
 	@Override
@@ -87,6 +94,5 @@ public class AreaZone extends Zone {
 	{
 		this.priority = priority;
 	}
-
 
 }

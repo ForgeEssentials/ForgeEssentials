@@ -3,6 +3,7 @@ package com.forgeessentials.api.permissions;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -11,9 +12,25 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 public abstract class Zone {
 
+	private int id;
+	
 	private Map<String, Map<String, String>> playerPermissions = new HashMap<String, Map<String, String>>();
 
 	private Map<String, Map<String, String>> groupPermissions = new HashMap<String, Map<String, String>>();
+
+	/**
+	 * Gets the unique zone-ID
+	 * 
+	 * @return
+	 */
+	public int getId()
+	{
+		return id;
+	}
+	
+	public Zone(int id) {
+		this.id = id;
+	}
 
 	/**
 	 * Checks, whether the player is in the zone.

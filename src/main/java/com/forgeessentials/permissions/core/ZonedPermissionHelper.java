@@ -24,6 +24,7 @@ import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.GlobalZone;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.util.selections.AreaBase;
@@ -33,14 +34,25 @@ import com.forgeessentials.util.selections.WorldPoint;
 
 public class ZonedPermissionHelper implements IPermissionsHelper {
 
+	private RootZone rootZone = new RootZone();
+	
 	private GlobalZone globalZone = new GlobalZone();
+
+	private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
 
 	private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
 
 	private Map<String, Group> groups = new HashMap<String, Group>();
 
+	private int maxZoneID = 2;
+
+	// ------------------------------------------------------------
+
 	public ZonedPermissionHelper()
 	{
+		zones.put(rootZone.getId(), rootZone);
+		zones.put(globalZone.getId(), globalZone);
+		
 		// MinecraftForge.EVENT_BUS.register(this);
 
 		// for (World world : DimensionManager.getWorlds())
@@ -89,6 +101,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 			zones.add(worldZone);
 		}
 		zones.add(globalZone);
+		zones.add(rootZone);
 
 		return getPermission(zones, playerId, groups, permissionNode, isProperty);
 	}
@@ -164,20 +177,20 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public void registerPermissionProperty(String permissionNode, String defaultValue)
 	{
-		globalZone.setGroupPermissionProperty(DEFAULT_GROUP, permissionNode, defaultValue);
+		rootZone.setGroupPermissionProperty(DEFAULT_GROUP, permissionNode, defaultValue);
 	}
 
 	@Override
 	public void registerPermission(String permissionNode, PermissionsManager.RegisteredPermValue permLevel)
 	{
 		if (permLevel == RegisteredPermValue.FALSE)
-			globalZone.setGroupPermission(DEFAULT_GROUP, permissionNode, false);
+			rootZone.setGroupPermission(DEFAULT_GROUP, permissionNode, false);
 		else if (permLevel == RegisteredPermValue.TRUE)
-			globalZone.setGroupPermission(DEFAULT_GROUP, permissionNode, true);
+			rootZone.setGroupPermission(DEFAULT_GROUP, permissionNode, true);
 		else if (permLevel == RegisteredPermValue.OP)
 		{
-			globalZone.setGroupPermission(DEFAULT_GROUP, permissionNode, false);
-			globalZone.setGroupPermission(OP_GROUP, permissionNode, true);
+			rootZone.setGroupPermission(DEFAULT_GROUP, permissionNode, false);
+			rootZone.setGroupPermission(OP_GROUP, permissionNode, true);
 		}
 	}
 
@@ -248,6 +261,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	// ------------------------------------------------------------
 	// -- IPermissionHelper
 	// ------------------------------------------------------------
+
+	@Override
+	public RootZone getRootZone()
+	{
+		return rootZone;
+	}
 
 	@Override
 	public GlobalZone getGlobalZone()
@@ -335,6 +354,19 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	// ------------------------------------------------------------
 
 	@Override
+	public int getNextZoneID()
+	{
+		return maxZoneID++;
+	}
+
+	@Override
+	public Zone getZone(int id)
+	{
+		
+		return null;
+	}
+
+	@Override
 	public Collection<WorldZone> getWorldZones()
 	{
 		return worldZones.values();
@@ -384,6 +416,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		// TODO: Implement
 		return groups;
 	}
+
 
 
 	// ------------------------------------------------------------

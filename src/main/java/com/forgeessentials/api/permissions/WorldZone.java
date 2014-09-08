@@ -16,9 +16,15 @@ public class WorldZone extends Zone {
 
 	private List<AreaZone> areaZones = new ArrayList<AreaZone>();
 
+	public WorldZone(int id, int dimensionID)
+	{
+		super(id);
+		this.dimensionID = dimensionID;
+	}
+
 	public WorldZone(int dimensionID)
 	{
-		this.dimensionID = dimensionID;
+		this(APIRegistry.perms.getNextZoneID(), dimensionID);
 	}
 
 	@Override

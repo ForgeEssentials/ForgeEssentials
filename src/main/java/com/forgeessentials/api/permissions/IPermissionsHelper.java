@@ -20,6 +20,8 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	static final String PERMISSION_FALSE = "false";
 	static final String PERMISSION_TRUE = "true";
 
+	// ---------------------------------------------------------------------------
+
 	/**
 	 * Checks a permission for a player
 	 * 
@@ -122,6 +124,62 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	// ---------------------------------------------------------------------------
 
 	/**
+	 * Registers a permission property
+	 * 
+	 * @param permissionNode
+	 * @param value
+	 */
+	void registerPermissionProperty(String permissionNode, String defaultValue);
+
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Returns the next free zone-id.
+	 * NEVER call this method, unless you are really creating a new Zone!
+	 * 
+	 * @return
+	 */
+	int getNextZoneID();
+	
+	/**
+	 * Returns the root zone, which has lowest priority and holds the default permissions
+	 * 
+	 * @return
+	 */
+	Zone getZone(int id);
+
+	/**
+	 * Returns the root zone, which has lowest priority and holds the default permissions
+	 * 
+	 * @return
+	 */
+	RootZone getRootZone();
+
+	/**
+	 * Returns the global zone
+	 * 
+	 * @return
+	 */
+	GlobalZone getGlobalZone();
+
+	/**
+	 * Returns the world-zone for the specified world
+	 * 
+	 * @param world
+	 * @return
+	 */
+	WorldZone getWorldZone(World world);
+
+	/**
+	 * Returns a collection of all world zones
+	 * 
+	 * @return
+	 */
+	Collection<WorldZone> getWorldZones();
+
+	// ---------------------------------------------------------------------------
+
+	/**
 	 * Get zones that cover the point. Result is ordered by priority.
 	 * 
 	 * @param worldPoint
@@ -152,40 +210,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @return
 	 */
 	Zone getAreaZoneAt(WorldPoint worldPoint);
-
-	// ---------------------------------------------------------------------------
-
-	/**
-	 * Registers a permission property
-	 * 
-	 * @param permissionNode
-	 * @param value
-	 */
-	void registerPermissionProperty(String permissionNode, String defaultValue);
-
-	// ---------------------------------------------------------------------------
-
-	/**
-	 * Returns the global zone
-	 * 
-	 * @return
-	 */
-	GlobalZone getGlobalZone();
-
-	/**
-	 * Returns the world-zone for the specified world
-	 * 
-	 * @param world
-	 * @return
-	 */
-	WorldZone getWorldZone(World world);
-
-	/**
-	 * Returns a collection of all world zones
-	 * 
-	 * @return
-	 */
-	Collection<WorldZone> getWorldZones();
 
 	// ---------------------------------------------------------------------------
 
