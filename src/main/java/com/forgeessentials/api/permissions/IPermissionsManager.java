@@ -117,7 +117,6 @@ public interface IPermissionsManager extends IPermissionsProvider {
 	// ---------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------
 	
-	
     /**
      * Create a group within a zone
      *
