@@ -23,9 +23,9 @@ public class AreaZone extends Zone {
 
 	private int priority;
 
-	public AreaZone(WorldZone worldZone, String name, AreaBase area, int id)
+	public AreaZone(WorldZone worldZone, String name, AreaBase area)
 	{
-		super(id);
+		super(worldZone.getServerZone().getRootZone().getNextZoneID());
 		this.worldZone = worldZone;
 		this.name = name;
 		this.area = area;

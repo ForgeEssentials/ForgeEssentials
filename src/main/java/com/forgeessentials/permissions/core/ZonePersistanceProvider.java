@@ -1,5 +1,8 @@
 package com.forgeessentials.permissions.core;
 
+import com.forgeessentials.api.permissions.RootZone;
+import com.forgeessentials.api.permissions.ServerZone;
+
 public abstract class ZonePersistanceProvider {
 
 	private ZonedPermissionHelper permissionManager;
@@ -8,8 +11,8 @@ public abstract class ZonePersistanceProvider {
 		this.permissionManager = permissionManager;
 	}
 	
-	public abstract void save();
+	public abstract void save(RootZone rootZone);
 	
-	public abstract void load();
+	public abstract RootZone load();
 	
 }

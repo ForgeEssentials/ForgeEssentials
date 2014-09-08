@@ -56,7 +56,11 @@ public class ServerZone extends Zone {
 	{
 		return rootZone;
 	}
-
+	
+	public RootZone getRootZone()
+	{
+		return rootZone;
+	}
 
 	public Map<Integer, WorldZone> getWorldZones()
 	{

@@ -13,11 +13,16 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RootZone extends Zone {
 
+	// TODO: Persist this field and all child nodes
 	private ServerZone serverZone;
+
+	// TODO: Persist this field
+	private int maxZoneID;
 
 	public RootZone()
 	{
 		super(0);
+		maxZoneID = 2;
 	}
 
 	@Override
@@ -59,5 +64,17 @@ public class RootZone extends Zone {
 	{
 		this.serverZone = serverZone;
 	}
+
+
+	public int getCurrentZoneID()
+	{
+		return maxZoneID;
+	}
+
+	public int getNextZoneID()
+	{
+		return maxZoneID++;
+	}
+
 
 }

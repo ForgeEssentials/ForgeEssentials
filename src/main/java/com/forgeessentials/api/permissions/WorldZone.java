@@ -23,9 +23,9 @@ public class WorldZone extends Zone {
 
 	private List<AreaZone> areaZones = new ArrayList<AreaZone>();
 
-	public WorldZone(ServerZone serverZone, int dimensionID, int id)
+	public WorldZone(ServerZone serverZone, int dimensionID)
 	{
-		super(id);
+		super(serverZone.getRootZone().getNextZoneID());
 		this.dimensionID = dimensionID;
 		this.serverZone = serverZone;
 		this.serverZone.addWorldZone(this);
@@ -64,7 +64,12 @@ public class WorldZone extends Zone {
 	@Override
 	public Zone getParent()
 	{
-		return APIRegistry.perms.getServerZone();
+		return serverZone;
+	}
+
+	public ServerZone getServerZone()
+	{
+		return serverZone;
 	}
 
 	public int getDimensionID()

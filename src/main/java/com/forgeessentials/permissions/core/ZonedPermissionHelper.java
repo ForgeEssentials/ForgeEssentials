@@ -45,6 +45,7 @@ import com.mojang.authlib.GameProfile;
  */
 public class ZonedPermissionHelper implements IPermissionsHelper {
 
+	// TODO: Persist this field
 	private RootZone rootZone;
 
 	private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
@@ -52,8 +53,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
 
 	private Map<String, Group> groups = new HashMap<String, Group>();
-
-	private int maxZoneID;
 
 	// ------------------------------------------------------------
 
@@ -67,7 +66,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		rootZone = null;
 		addZone(new RootZone());
 		addZone(new ServerZone(rootZone));
-		maxZoneID = 2;
 
 		// for (World world : DimensionManager.getWorlds())
 		// {
@@ -319,12 +317,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	// ------------------------------------------------------------
 
 	@Override
-	public int getNextZoneID()
-	{
-		return maxZoneID++;
-	}
-
-	@Override
 	public Collection<Zone> getZones()
 	{
 		return zones.values();
@@ -412,7 +404,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		WorldZone zone = worldZones.get(dimensionId);
 		if (zone == null)
 		{
-			zone = new WorldZone(getServerZone(), dimensionId, getNextZoneID());
+			zone = new WorldZone(getServerZone(), dimensionId);
 			addZone(zone);
 		}
 		return zone;

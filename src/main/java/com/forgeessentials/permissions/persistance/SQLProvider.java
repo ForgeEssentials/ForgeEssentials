@@ -1,5 +1,6 @@
 package com.forgeessentials.permissions.persistance;
 
+import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.permissions.core.ZonePersistanceProvider;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 
@@ -10,18 +11,19 @@ public class SQLProvider extends ZonePersistanceProvider {
 		super(permissionManager);
 	}
 
+
 	@Override
-	public void save()
+	public void save(RootZone rootZone)
 	{
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
-	public void load()
+	public RootZone load()
 	{
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 }
