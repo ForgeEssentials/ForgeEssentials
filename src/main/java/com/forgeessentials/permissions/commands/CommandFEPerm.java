@@ -128,24 +128,24 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase {
                 {
                     OutputHandler.chatWarning(sender, "Setting the default group outside of _GLOBAL_ zone is not recommended.");
                 }
-                if (APIRegistry.getAsFEGroup(args[2]) == null)
+                if (APIRegistry.perms.getGroupForName(args[2]) == null)
                 {
                     OutputHandler.chatError(sender, args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
                     return;
                 }
                 APIRegistry.perms.setPlayerGroup(args[2], APIRegistry.perms.getEntryPlayer(), zone.getZoneName());
-                ChatUtils.sendMessage(sender, "Default group set to " + APIRegistry.getAsFEGroup(args[2]).name + " in zone " + zone.getZoneName());
+                ChatUtils.sendMessage(sender, "Default group set to " + APIRegistry.perms.getGroupForName(args[2]).name + " in zone " + zone.getZoneName());
             }
             else if (args.length > 2 && args[1].equalsIgnoreCase("add"))
             {
-                if (APIRegistry.getAsFEGroup(args[2]) == null)
+                if (APIRegistry.perms.getGroupForName(args[2]) == null)
                 {
                     OutputHandler.chatError(sender, args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
                     return;
                 }
                 APIRegistry.perms.addPlayerToGroup(args[2], APIRegistry.perms.getEntryPlayer(), zone.getZoneName());
                 OutputHandler.chatConfirmation(sender,
-                        "Group " + APIRegistry.getAsFEGroup(args[2]).name + " in zone " + zone.getZoneName() + " added to defaults.");
+                        "Group " + APIRegistry.perms.getGroupForName(args[2]).name + " in zone " + zone.getZoneName() + " added to defaults.");
             }
             else if (args.length == 1)
             {
@@ -233,24 +233,24 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase {
                 {
                     ChatUtils.sendMessage(sender, "WARNING: Setting the default group outside of _GLOBAL_ zone is not recommended.");
                 }
-                if (APIRegistry.getAsFEGroup(args[2]) == null)
+                if (APIRegistry.perms.getGroupForName(args[2]) == null)
                 {
                     ChatUtils.sendMessage(sender, "ERROR: " + args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
                     return;
                 }
                 APIRegistry.perms.setPlayerGroup(args[2], APIRegistry.perms.getEntryPlayer(), zone.getZoneName());
-                ChatUtils.sendMessage(sender, "Default group set to " + APIRegistry.getAsFEGroup(args[2]).name + " in zone " + zone.getZoneName());
+                ChatUtils.sendMessage(sender, "Default group set to " + APIRegistry.perms.getGroupForName(args[2]).name + " in zone " + zone.getZoneName());
             }
             else if (args.length > 2 && args[1].equalsIgnoreCase("add"))
             {
-                if (APIRegistry.getAsFEGroup(args[2]) == null)
+                if (APIRegistry.perms.getGroupForName(args[2]) == null)
                 {
                     ChatUtils.sendMessage(sender, "ERROR: " + args[2] + " does not exist as a group in " + zone.getZoneName() + " zone!");
                     return;
                 }
                 APIRegistry.perms.addPlayerToGroup(args[2], APIRegistry.perms.getEntryPlayer(), zone.getZoneName());
                 ChatUtils.sendMessage(sender,
-                        "Group " + APIRegistry.getAsFEGroup(args[2]).name + " in zone " + zone.getZoneName() + " added to defaults.");
+                        "Group " + APIRegistry.perms.getGroupForName(args[2]).name + " in zone " + zone.getZoneName() + " added to defaults.");
             }
             else if (args.length == 1)
             {

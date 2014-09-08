@@ -309,6 +309,12 @@ public class PermissionsHelper implements IPermissionsHelper{
     }
 
     @Override
+    public Group getGroupForName(String name)
+    {
+        return SqlHelper.getGroupForName(name);
+    }
+
+    @Override
     public String setPlayerGroup(String group, UUID player, String zone)
     {
         SetPlayerGroupEvent event = new SetPlayerGroupEvent(group, player, zone);
@@ -325,7 +331,7 @@ public class PermissionsHelper implements IPermissionsHelper{
     public String addPlayerToGroup(String group, UUID player, String zone)
     {
         SqlHelper.generatePlayer(player.toString());
-        if (getApplicableGroups(player, false, zone).contains(APIRegistry.getAsFEGroup(group)))
+        if (getApplicableGroups(player, false, zone).contains(APIRegistry.perms.getGroupForName(group)))
         {
             return "Player already in group.";
         }

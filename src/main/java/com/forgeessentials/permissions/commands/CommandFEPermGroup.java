@@ -3,14 +3,12 @@ package com.forgeessentials.permissions.commands;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.api.IGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,13 +56,6 @@ public class CommandFEPermGroup {
                     OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
                 }
             }
-            for (IGroup g : PermissionsManager.getAllGroups())
-            {
-                if (g.getName().equalsIgnoreCase(args[1])){
-                    OutputHandler.chatError(sender, String.format("A group by the name of %s already exists!", args[1]));
-                    return;
-                }
-            }
             APIRegistry.perms.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
             ChatUtils.sendMessage(sender, "Group " + args[1] + " made in zone " + zone.getZoneName());
             return;
@@ -76,7 +67,7 @@ public class CommandFEPermGroup {
                 OutputHandler.chatConfirmation(sender, "Usage: /p group delete <groupname>");
                 return;
             }
-            if (PermissionsManager.getGroup(args[1]) == null)
+            if (APIRegistry.perms.getGroupForName(args[1]) == null)
             {
                 OutputHandler.chatError(sender, args[1] + " does not exist as a group!");
                 return;
@@ -149,7 +140,7 @@ public class CommandFEPermGroup {
         }
 
         // this is allowed to be our def. of groups
-        Group group = APIRegistry.getAsFEGroup(args[0]);
+        Group group = APIRegistry.perms.getGroupForName(args[0]);
         if (group == null)
         {
             OutputHandler.chatError(sender, args[0] + " does not exist as a group!");
@@ -504,13 +495,6 @@ public class CommandFEPermGroup {
                     ChatUtils.sendMessage(sender, String.format("No zone by the name %s exists!", args[2]));
                 }
             }
-            for (IGroup g : PermissionsManager.getAllGroups())
-            {
-                if (g.getName().equalsIgnoreCase(args[1])){
-                    OutputHandler.chatError(sender, String.format("A group by the name of %s already exists!", args[1]));
-                    return;
-                }
-            }
             APIRegistry.perms.createGroupInZone(args[1], zone.getZoneName(), "", "", null, 0);
             ChatUtils.sendMessage(sender, "Group " + args[1] + " made in zone " + zone.getZoneName());
             return;
@@ -522,7 +506,7 @@ public class CommandFEPermGroup {
                 ChatUtils.sendMessage(sender, "Usage: /p group delete <groupname>");
                 return;
             }
-            if (PermissionsManager.getGroup(args[1]) == null)
+            if (APIRegistry.perms.getGroupForName(args[1]) == null)
             {
                 ChatUtils.sendMessage(sender, args[0] + " does not exist as a group!");
                 return;
@@ -577,7 +561,7 @@ public class CommandFEPermGroup {
         }
 
         // this is allowed to be our def. of groups
-        Group group = APIRegistry.getAsFEGroup(args[0]);
+        Group group = APIRegistry.perms.getGroupForName(args[0]);
         if (group == null)
         {
             ChatUtils.sendMessage(sender, args[0] + " does not exist as a group!");

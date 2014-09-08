@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import net.minecraftforge.permissions.api.context.IContext;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 
 /**
@@ -42,7 +41,7 @@ public interface IPermissionsProvider
      * @param contextInfo see PermissionsManager.checkPerm for more info
      * @return whether the permission is allowed
      */
-    boolean checkPerm(EntityPlayer player, String node, ImmutableMap<String, IContext> contextInfo);
+    boolean checkPerm(EntityPlayer player, String node, Map<String, IContext> contextInfo);
 
     /**
      * @return The default IContext instance of this object for this Implementation.
@@ -86,24 +85,4 @@ public interface IPermissionsProvider
      * @param perms
      */
     void registerPermission(String node, RegisteredPermValue allow);
-    
-    /**
-     * Get the groups a player is in
-     * @param player
-     * @return A list of groups the player is in
-     */
-    Collection<IGroup> getGroups(UUID playerID);
-    
-    /**
-     * Get a group with a given name
-     * @param name
-     * @return A group if it exists, null if not found
-     */
-    IGroup getGroup(String name);
-    
-    /**
-     * Get all groups known to the implementation
-     * @return A list of all groups
-     */
-    Collection<IGroup> getAllGroups();
 }

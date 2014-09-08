@@ -120,9 +120,9 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
                 else
                 {
                     String target;
-                    if (APIRegistry.getAsFEGroup(args[1]) != null)
+                    if (APIRegistry.perms.getGroupForName(args[1]) != null)
                     {
-                        target = "g:" + APIRegistry.getAsFEGroup(args[1]).name;
+                        target = "g:" + APIRegistry.perms.getGroupForName(args[1]).name;
                     }
                     else if (args[1].equalsIgnoreCase("me"))
                     {

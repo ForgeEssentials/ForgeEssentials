@@ -16,7 +16,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.permissions.api.IGroup;
 import net.minecraftforge.permissions.api.IPermissionsProvider;
 import net.minecraftforge.permissions.api.context.IContext;
 import net.minecraftforge.permissions.opbasedimpl.OpPermSystem;
@@ -65,40 +64,11 @@ public final class PermissionsManager
      * sourceEntity, targetEntity, sourceTileEntity, targetTileEntity, sourceWorld, targetWorld
      * 
      * It is not necessary for the blackboard to contain an entry for every one of the above keys. Instead it should contain only one or two entries with the that best describes the value.
-     * @return
+     * @return true if permission allowed, false if not
      */
-    public static boolean checkPerm(EntityPlayer player, String node, ImmutableMap<String, IContext> contextInfo)
+    public static boolean checkPerm(EntityPlayer player, String node, Map<String, IContext> contextInfo)
     {
         return FACTORY.checkPerm(player, node, contextInfo);
-    }
-    
-    /**
-     * Get all groups a player is in.
-     * @param player Player to be queried
-     * @return a Collection of groups that the player is a member of.
-     */
-    public static Collection<IGroup> getGroups(UUID playerID)
-    {
-        return FACTORY.getGroups(playerID);
-    }
-    
-    /**
-     * Get all groups
-     * @return a Collection containing all groups
-     */
-    public static Collection<IGroup> getAllGroups()
-    {
-        return FACTORY.getAllGroups();
-    }
-    
-    /**
-     * Get a particular group
-     * @param name Name of the group
-     * @return the queried group
-     */
-    public static IGroup getGroup(String name)
-    {
-        return FACTORY.getGroup(name);
     }
 
     /**
@@ -132,7 +102,6 @@ public final class PermissionsManager
     {
         if (factory == null)
         {
-            FACTORY = OpPermSystem.INSTANCE;
             wasSet = false;
         }
         else if (wasSet)

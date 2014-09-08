@@ -1,13 +1,10 @@
 package com.forgeessentials.api;
 
-import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.IPermRegHelper;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.IZoneManager;
 import com.forgeessentials.api.snooper.Response;
 import cpw.mods.fml.common.FMLLog;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.api.IGroup;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -57,19 +54,6 @@ public class APIRegistry {
         {
             FMLLog.warning("[FE API] Unable to register " + response.getName() + " with ID: " + ID);
             e.printStackTrace();
-        }
-    }
-
-    public static Group getAsFEGroup(String name)
-    {
-        IGroup g = PermissionsManager.getGroup(name);
-        if (g instanceof Group)
-            return (Group)g;
-
-        else
-        {
-            FMLLog.warning("[FE API] FEPermissions is not set as permissions handler - bad things could happen!");
-            return null;
         }
     }
 

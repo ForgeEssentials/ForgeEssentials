@@ -66,9 +66,6 @@ dependencies {
     compile 'com.sk89q:worldedit:6.0.0-SNAPSHOT'// use BOTH
     //compile files('lib/worldedit-forge-6.0.0-SNAPSHOT-deobf.jar')
 
-    // perms API (TEMPORARY, until it gets pulled into Forge!) use deobf one to compile
-    //compile files('lib/minecraftforge-9.11.1.965-permsAPIonly-deobf.jar')
-
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
     serverLibs 'mysql:mysql-connector-java:5.1.22'

@@ -1,11 +1,6 @@
 package com.forgeessentials.api.permissions;
 
 import com.forgeessentials.api.APIRegistry;
-import net.minecraftforge.permissions.api.IGroup;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
 
 /**
  * This class is not a format that is designed to actually be saved in any way.
@@ -17,7 +12,7 @@ import java.util.UUID;
  */
 
 @SuppressWarnings("rawtypes")
-public class Group implements Comparable, IGroup{
+public class Group implements Comparable{
 
     public String name;
     public String parent;
@@ -121,27 +116,6 @@ public class Group implements Comparable, IGroup{
     public String toString()
     {
         return name + "[" + parent + ", " + prefix + ", " + suffix + ", " + zoneName + ", " + priority + "]";
-    }
-
-    @Override public Collection<UUID> getAllPlayers()
-    {
-        ArrayList<UUID> returned = new ArrayList<UUID>();
-        for (String pname : APIRegistry.perms.getPlayersInGroup(name, zoneName))
-        {
-            returned.add(UUID.fromString(pname));
-        }
-
-        return returned;
-    }
-
-    @Override public boolean isMember(UUID playerID)
-    {
-        return APIRegistry.perms.getPlayersInGroup(name, zoneName).contains(playerID.toString());
-    }
-
-    @Override public String getName()
-    {
-        return name;
     }
 
 }
