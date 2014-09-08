@@ -57,8 +57,6 @@ public class ForgeEssentials {
     public static String modlistLocation;
     public static File FEDIR;
     public static boolean mcstats;
-    public static String version;
-    public static boolean sanitycheck;
     public ModuleLauncher mdlaunch;
     private TaskRegistry tasks;
 
@@ -67,7 +65,7 @@ public class ForgeEssentials {
         tasks = new TaskRegistry();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
@@ -77,8 +75,6 @@ public class ForgeEssentials {
         OutputHandler.felog.info("Forge Essentials version "
                 + FEModContainer.version + " loading, reading config from "
                 + FEDIR.getAbsolutePath());
-
-        version = e.getModMetadata().version;
 
         // setup fedir stuff
         config = new CoreConfig();
