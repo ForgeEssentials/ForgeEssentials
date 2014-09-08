@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -42,6 +43,12 @@ public class WorldZone extends Zone {
 	public boolean isPartOfAreaInZone(WorldArea area)
 	{
 		return area.getDimension() == dimensionID;
+	}
+
+	@Override
+	public Zone getParent()
+	{
+		return APIRegistry.perms.getGlobalZone();
 	}
 
 	@Override

@@ -26,6 +26,12 @@ public class GlobalZone extends Zone {
 	}
 
 	@Override
+	public Zone getParent()
+	{
+		return null;
+	}
+
+	@Override
 	public String getName()
 	{
 		return "GLOBAL";

@@ -12,6 +12,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Group;
+import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.permissions.SqlHelper;
@@ -50,10 +51,11 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 			{
 				zone = APIRegistry.perms.getGlobalZone();
 			}
-			if (APIRegistry.perms.doesZoneExist(args[0]))
-			{
-				zone = APIRegistry.perms.getZone(args[0]);
-			}
+			// TODO: Identify zones by unique names
+//			if (APIRegistry.perms.doesZoneExist(args[0]))
+//			{
+//				zone = APIRegistry.perms.getZone(args[0]);
+//			}
 		}
 
 		/*
@@ -71,13 +73,13 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		 */
 		if (args.length == 0 || args.length == 1 || args[1].equalsIgnoreCase("get"))
 		{
-			String header = "--- AutoPromote for: " + ap.zone + " ---";
+			String header = "--- AutoPromote for: " + ap.getZone() + " ---";
 			ChatUtils.sendMessage(sender, header);
-			ChatUtils.sendMessage(sender, "Enabled: " + (ap.enable ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + ap.enable);
+			ChatUtils.sendMessage(sender, "Enabled: " + (ap.isEnabled() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + ap.isEnabled());
 			ChatUtils.sendMessage(sender, "Promotion times: ");
-			for (String i : ap.promoteList.keySet())
+			for (String i : ap.getPromoteList().keySet())
 			{
-				ChatUtils.sendMessage(sender, " " + i + " > " + ap.promoteList.get(i));
+				ChatUtils.sendMessage(sender, " " + i + " > " + ap.getPromoteList().get(i));
 			}
 			StringBuilder footer = new StringBuilder();
 			for (int i = 3; i < header.length(); i++)
@@ -93,14 +95,14 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		 */
 		if (args[1].equalsIgnoreCase("enable"))
 		{
-			if (ap.enable)
+			if (ap.isEnabled())
 			{
-				OutputHandler.chatWarning(sender, "AutoPromote for " + ap.zone + " was already enabled.");
+				OutputHandler.chatWarning(sender, "AutoPromote for " + ap.getZone() + " was already enabled.");
 			}
 			else
 			{
-				ap.enable = true;
-				OutputHandler.chatConfirmation(sender, "AutoPromote for " + ap.zone + " enabled.");
+				ap.setEnabled(true);
+				OutputHandler.chatConfirmation(sender, "AutoPromote for " + ap.getZone() + " enabled.");
 			}
 		}
 
@@ -109,14 +111,14 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		 */
 		if (args[1].equalsIgnoreCase("disable"))
 		{
-			if (!ap.enable)
+			if (!ap.isEnabled())
 			{
-				OutputHandler.chatWarning(sender, "AutoPromote for " + ap.zone + " was already disabled.");
+				OutputHandler.chatWarning(sender, "AutoPromote for " + ap.getZone() + " was already disabled.");
 			}
 			else
 			{
-				ap.enable = false;
-				OutputHandler.chatConfirmation(sender, "AutoPromote for " + ap.zone + " disabled.");
+				ap.setEnabled(false);
+				OutputHandler.chatConfirmation(sender, "AutoPromote for " + ap.getZone() + " disabled.");
 			}
 		}
 
@@ -134,9 +136,9 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				if (args.length == 4)
 				{
 					int i = parseInt(sender, args[3]);
-					if (ap.promoteList.containsKey(i))
+					if (ap.getPromoteList().containsKey(i))
 					{
-						String group = ap.promoteList.remove(i);
+						String group = ap.getPromoteList().remove(i);
 						OutputHandler.chatConfirmation(sender, "You have removed " + i + ":" + group + " from the list.");
 					}
 					else
@@ -154,12 +156,12 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				if (args.length == 5)
 				{
 					int i = parseInt(sender, args[3]);
-					if (!ap.promoteList.containsKey(i))
+					if (!ap.getPromoteList().containsKey(i))
 					{
 						Group group = SqlHelper.getInstance().getGroupByName(args[4]);
 						if (group != null)
 						{
-							ap.promoteList.put(i + "", group.name);
+							ap.getPromoteList().put(i + "", group.name);
 							OutputHandler.chatConfirmation(sender, "You have added " + i + ":" + group.name + " to the list.");
 						}
 						else
@@ -188,7 +190,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 			if (args.length == 2 || args[2].equalsIgnoreCase("get"))
 			{
 				OutputHandler.chatConfirmation(sender, "Current message:");
-				ChatUtils.sendMessage(sender, FunctionHelper.formatColors(ap.msg));
+				ChatUtils.sendMessage(sender, FunctionHelper.formatColors(ap.getMsg()));
 			}
 			else if (args[2].equalsIgnoreCase("set"))
 			{
@@ -197,18 +199,18 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				{
 					newMsg = newMsg + args[i] + " ";
 				}
-				ap.msg = newMsg.trim();
+				ap.setMsg(newMsg.trim());
 				OutputHandler.chatConfirmation(sender, "New message:");
-				ChatUtils.sendMessage(sender, FunctionHelper.formatColors(ap.msg));
+				ChatUtils.sendMessage(sender, FunctionHelper.formatColors(ap.getMsg()));
 			}
 			else if (args[2].equalsIgnoreCase("enable"))
 			{
-				ap.sendMsg = true;
+				ap.setSendMsg(true);
 				OutputHandler.chatConfirmation(sender, "You enabled the promote message.");
 			}
 			else if (args[2].equalsIgnoreCase("disable"))
 			{
-				ap.sendMsg = false;
+				ap.setSendMsg(false);
 				OutputHandler.chatConfirmation(sender, "You disabled the promote message.");
 			}
 		}
@@ -239,9 +241,12 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		list.add("here");
 		list.add("global");
 		list.add("world");
-		for (Zone zone : APIRegistry.perms.getZoneList())
+		for (WorldZone world : APIRegistry.perms.getWorldZones())
 		{
-			list.add(zone.getName());
+			for (Zone zone : world.getAreaZones())
+			{
+				list.add(zone.getName());
+			}
 		}
 		return list;
 	}
@@ -267,7 +272,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		{
 			try
 			{
-				Zone zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint((Entity) sender));
+				Zone zone = APIRegistry.perms.getZoneAt(new WorldPoint((Entity) sender));
 				if (args[0].equalsIgnoreCase("world"))
 				{
 					zone = APIRegistry.perms.getWorldZone(((Entity) sender).worldObj);
@@ -276,10 +281,11 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				{
 					zone = APIRegistry.perms.getGlobalZone();
 				}
-				if (APIRegistry.perms.doesZoneExist(args[0]))
-				{
-					zone = APIRegistry.perms.getZone(args[0]);
-				}
+				// TODO: Identify zones by unique names
+//				if (APIRegistry.perms.doesZoneExist(args[0]))
+//				{
+//					zone = APIRegistry.perms.getZone(args[0]);
+//				}
 				AutoPromote ap = AutoPromoteManager.instance().map.get(zone.getName());
 				if (ap == null)
 				{
@@ -297,7 +303,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		{
 			try
 			{
-				Zone zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint((Entity) sender));
+				Zone zone = APIRegistry.perms.getZoneAt(new WorldPoint((Entity) sender));
 				if (args[0].equalsIgnoreCase("world"))
 				{
 					zone = APIRegistry.perms.getWorldZone(((Entity) sender).worldObj);
@@ -306,10 +312,11 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				{
 					zone = APIRegistry.perms.getGlobalZone();
 				}
-				if (APIRegistry.perms.doesZoneExist(args[0]))
-				{
-					zone = APIRegistry.perms.getZone(args[0]);
-				}
+				// TODO: Identify zones by unique names
+//				if (APIRegistry.perms.doesZoneExist(args[0]))
+//				{
+//					zone = APIRegistry.perms.getZone(args[0]);
+//				}
 				List<Group> groups = SqlHelper.getInstance().getGroups();
 				List<String> groupNames = new ArrayList<String>();
 				for (Group group : groups)

@@ -335,6 +335,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	// ------------------------------------------------------------
 
 	@Override
+	public Collection<WorldZone> getWorldZones()
+	{
+		return worldZones.values();
+	}
+
+	@Override
 	public List<Zone> getZonesAt(WorldPoint worldPoint)
 	{
 		// TODO Auto-generated method stub
@@ -346,6 +352,20 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Zone getZoneAt(WorldPoint worldPoint)
+	{
+		List<Zone> zones = getZonesAt(worldPoint);
+		return zones.isEmpty() ? null : zones.get(0);
+	}
+
+	@Override
+	public AreaZone getAreaZoneAt(WorldPoint worldPoint)
+	{
+		List<AreaZone> zones = getAreaZonesAt(worldPoint);
+		return zones.isEmpty() ? null : zones.get(0);
 	}
 
 	// ------------------------------------------------------------
@@ -364,6 +384,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		// TODO: Implement
 		return groups;
 	}
+
 
 	// ------------------------------------------------------------
 

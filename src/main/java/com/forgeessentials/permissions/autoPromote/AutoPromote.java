@@ -18,92 +18,132 @@ import com.forgeessentials.util.PlayerInfo;
 
 @SaveableObject
 public class AutoPromote {
-    @UniqueLoadingKey
-    @SaveableField
-    public String zone;
+	@UniqueLoadingKey
+	@SaveableField
+	private String zone;
 
-    @SaveableField
-    public boolean enable;
+	@SaveableField
+	private boolean enabled;
 
-    @SaveableField
-    public HashMap<String, String> promoteList;
+	@SaveableField
+	private HashMap<String, String> promoteList;
 
-    @SaveableField
-    public boolean sendMsg;
+	@SaveableField
+	private boolean sendMsg;
 
-    @SaveableField
-    public String msg;
+	@SaveableField
+	private String msg;
 
-    public AutoPromote(String zone, boolean enable)
-    {
-        this.zone = zone;
-        this.enable = enable;
-        promoteList = new HashMap<String, String>();
-        /*
-         * Available options:
-		 * '%group' = new group.
-		 * '%time' = nicely formatted time.
-		 * All color codes with '&'.
+	public AutoPromote(String zone, boolean enable)
+	{
+		this.zone = zone;
+		this.enabled = enable;
+		promoteList = new HashMap<String, String>();
+		/*
+		 * Available options: '%group' = new group. '%time' = nicely formatted time. All color codes with '&'.
 		 */
-        msg = "&5You have been promoted to %group for playing for %time.";
-        sendMsg = true;
-    }
+		msg = "&5You have been promoted to %group for playing for %time.";
+		sendMsg = true;
+	}
 
-    @SuppressWarnings("unchecked")
-    @Reconstructor
-    private static AutoPromote reconstruct(IReconstructData tag)
-    {
-        AutoPromote data = new AutoPromote((String) tag.getFieldValue("zone"), (Boolean) tag.getFieldValue("enable"));
-        try
-        {
-            data.promoteList = (HashMap<String, String>) tag.getFieldValue("promoteList");
-        }
-        catch (Exception e)
-        {
-        }
-        if (data.promoteList == null)
-        {
-            data.promoteList = new HashMap<String, String>();
-        }
-        return data;
-    }
+	public String getZone()
+	{
+		return zone;
+	}
 
-    public void tick(EntityPlayerMP player)
-    {
-        try
-        {
-            if (promoteList.containsKey(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() + ""))
-            {
-                String groupName = promoteList.get(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() + "");
-                // Only add player to group if he isn't already.
-                if (!APIRegistry.perms.getApplicableGroups(player.getPersistentID(), false, zone).contains(APIRegistry.perms.getGroupForName(groupName)))
-                {
-                    APIRegistry.perms.addPlayerToGroup(groupName, player.getPersistentID(), zone);
-                    if (sendMsg)
-                    {
-                        String msg = this.msg;
-                        msg = FunctionHelper.formatColors(msg);
-                        msg = msg.replaceAll("%group", groupName);
-                        msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() * 60));
-                        ChatUtils.sendMessage(player, msg);
-                    }
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+	public boolean isEnabled()
+	{
+		return enabled;
+	}
 
-    public ArrayList<String> getList()
-    {
-        ArrayList<String> result = new ArrayList<String>();
-        for (String i : promoteList.keySet())
-        {
-            result.add(i);
-        }
-        Collections.sort(result);
-        return result;
-    }
+	public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
+	}
+	
+	public HashMap<String, String> getPromoteList()
+	{
+		return promoteList;
+	}
+
+	public boolean isSendMsg()
+	{
+		return sendMsg;
+	}
+
+	public String getMsg()
+	{
+		return msg;
+	}
+
+	public void setMsg(String msg)
+	{
+		this.msg = msg;
+	}
+
+	public void setSendMsg(boolean sendMsg)
+	{
+		this.sendMsg = sendMsg;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Reconstructor
+	private static AutoPromote reconstruct(IReconstructData tag)
+	{
+		AutoPromote data = new AutoPromote((String) tag.getFieldValue("zone"), (Boolean) tag.getFieldValue("enable"));
+		try
+		{
+			data.promoteList = (HashMap<String, String>) tag.getFieldValue("promoteList");
+		}
+		catch (Exception e)
+		{
+		}
+		if (data.promoteList == null)
+		{
+			data.promoteList = new HashMap<String, String>();
+		}
+		return data;
+	}
+
+	public void tick(EntityPlayerMP player)
+	{
+		try
+		{
+			if (promoteList.containsKey(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() + ""))
+			{
+				String groupName = promoteList.get(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() + "");
+				// Only add player to group if he isn't already.
+				if (!APIRegistry.perms.getApplicableGroups(player.getPersistentID(), false, zone).contains(APIRegistry.perms.getGroupForName(groupName)))
+				{
+					APIRegistry.perms.addPlayerToGroup(groupName, player.getPersistentID(), zone);
+					if (sendMsg)
+					{
+						String msg = this.msg;
+						msg = FunctionHelper.formatColors(msg);
+						msg = msg.replaceAll("%group", groupName);
+						msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() * 60));
+						ChatUtils.sendMessage(player, msg);
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public ArrayList<String> getList()
+	{
+		ArrayList<String> result = new ArrayList<String>();
+		for (String i : promoteList.keySet())
+		{
+			result.add(i);
+		}
+		Collections.sort(result);
+		return result;
+	}
+
+	
+
 }

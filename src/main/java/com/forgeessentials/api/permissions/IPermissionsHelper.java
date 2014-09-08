@@ -1,6 +1,7 @@
 package com.forgeessentials.api.permissions;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -136,6 +137,22 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 */
 	List<AreaZone> getAreaZonesAt(WorldPoint worldPoint);
 
+	/**
+	 * Get zones with the highest priority, that covers the point.
+	 * 
+	 * @param worldPoint
+	 * @return
+	 */
+	Zone getZoneAt(WorldPoint worldPoint);
+
+	/**
+	 * Get area-zone with the highest priority, that covers the point.
+	 * 
+	 * @param worldPoint
+	 * @return
+	 */
+	Zone getAreaZoneAt(WorldPoint worldPoint);
+
 	// ---------------------------------------------------------------------------
 
 	/**
@@ -163,6 +180,13 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 */
 	WorldZone getWorldZone(World world);
 
+	/**
+	 * Returns a collection of all world zones
+	 * 
+	 * @return
+	 */
+	Collection<WorldZone> getWorldZones();
+
 	// ---------------------------------------------------------------------------
 
 	/**
@@ -173,7 +197,13 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 */
 	Group getPrimaryGroup(EntityPlayer player);
 
-	List<Group> getPlayerGroups(EntityPlayer player);
+	/**
+	 * Get all groups the player belongs to, ordered by priority.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	Collection<Group> getPlayerGroups(EntityPlayer player);
 
 	// ---------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------

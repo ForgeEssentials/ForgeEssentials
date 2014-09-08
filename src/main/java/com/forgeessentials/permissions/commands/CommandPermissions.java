@@ -82,6 +82,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
+    	// TODO: addTabCompletionOptions
     	return null;
 //        if (args.length == 1)
 //        {

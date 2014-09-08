@@ -51,6 +51,13 @@ public class AreaZone extends Zone {
 	}
 
 	@Override
+	public Zone getParent()
+	{
+		// TODO: Get zones covering this one!
+		return worldZone;
+	}
+
+	@Override
 	public String getName()
 	{
 		return worldZone.toString() + "_" + name;
@@ -80,5 +87,6 @@ public class AreaZone extends Zone {
 	{
 		this.priority = priority;
 	}
+
 
 }

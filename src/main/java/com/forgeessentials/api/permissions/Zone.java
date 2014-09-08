@@ -56,6 +56,13 @@ public abstract class Zone {
 	 */
 	public abstract String getName();
 
+	/**
+	 * Get the parent zone
+	 * 
+	 * @return
+	 */
+	public abstract Zone getParent();
+
 	// ------------------------------------------------------------
 	// -- Player permissions
 	// ------------------------------------------------------------
@@ -249,5 +256,6 @@ public abstract class Zone {
 	{
 		setGroupPermissionProperty(group, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
 	}
+
 
 }
