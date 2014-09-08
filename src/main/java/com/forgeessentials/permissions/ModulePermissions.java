@@ -35,7 +35,9 @@ public class ModulePermissions {
 	public static File permsFolder;
 
 	private AutoPromoteManager autoPromoteManager;
-
+	
+	private ZonedPermissionHelper perms;
+	
 	public static void regPerms()
 	{
 		PermissionsManager.registerPermission("fe.perm", RegisteredPermValue.OP);
@@ -66,8 +68,9 @@ public class ModulePermissions {
 
 		//DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 		
-		APIRegistry.perms = new ZonedPermissionHelper();
-		PermissionsManager.setPermProvider(APIRegistry.perms);
+		perms = new ZonedPermissionHelper();
+		APIRegistry.perms = perms;
+		PermissionsManager.setPermProvider(perms);
 	}
 
 	@FEModule.Init
@@ -118,7 +121,10 @@ public class ModulePermissions {
 	{
 		autoPromoteManager.stop();
 		
-		// TODO: PERMS
+		// TODO: SAVE PERMS
+		
+		// Clear perms (only needed for singleplayer)
+		perms.clear();
 		
 		// save all the zones
 //		for (Zone zone : APIRegistry.perms.getZoneList())

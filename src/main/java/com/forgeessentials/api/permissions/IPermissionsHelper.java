@@ -11,6 +11,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.api.IPermissionsProvider;
 
 import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
 public interface IPermissionsHelper extends IPermissionsProvider {
@@ -85,7 +86,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return
 	 */
-	boolean checkPermission(EntityPlayer player, AreaBase targetArea, String permissionNode);
+	boolean checkPermission(EntityPlayer player, WorldArea targetArea, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player in a certain area
@@ -96,7 +97,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return property, if it exists, null otherwise
 	 */
-	String getPermissionProperty(EntityPlayer player, AreaBase targetArea, String permissionNode);
+	String getPermissionProperty(EntityPlayer player, WorldArea targetArea, String permissionNode);
 
 	// ---------------------------------------------------------------------------
 

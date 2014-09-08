@@ -161,8 +161,8 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 						Group group = SqlHelper.getInstance().getGroupByName(args[4]);
 						if (group != null)
 						{
-							ap.getPromoteList().put(i + "", group.name);
-							OutputHandler.chatConfirmation(sender, "You have added " + i + ":" + group.name + " to the list.");
+							ap.getPromoteList().put(i + "", group.getName());
+							OutputHandler.chatConfirmation(sender, "You have added " + i + ":" + group.getName() + " to the list.");
 						}
 						else
 						{
@@ -321,8 +321,8 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				List<String> groupNames = new ArrayList<String>();
 				for (Group group : groups)
 				{
-					groupNames.add(group.name);
-					ChatUtils.sendMessage(sender, group.name);
+					groupNames.add(group.getName());
+					ChatUtils.sendMessage(sender, group.getName());
 				}
 				return getListOfStringsFromIterableMatchingLastWord(args, groupNames);
 			}

@@ -462,9 +462,9 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 			else if (args[1].equalsIgnoreCase("group"))
 			{
 				Collection<Group> groups = APIRegistry.perms.getGroups();
-				for (Group g : groups)
+				for (Group group : groups)
 				{
-					completes.add(g.name);
+					completes.add(group.getName());
 				}
 			}
 			else if (args[1].equalsIgnoreCase("zone"))

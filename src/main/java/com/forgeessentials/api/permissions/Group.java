@@ -10,11 +10,11 @@ package com.forgeessentials.api.permissions;
 @SuppressWarnings("rawtypes")
 public class Group implements Comparable {
 
-	public String name;
-	public String parent;
-	public String prefix;
-	public String suffix;
-	public int priority; // lowest priority is 0
+	private String name;
+	private String parent;
+	private String prefix;
+	private String suffix;
+	private int priority; // lowest priority is 0
 
 	private int id;
 
@@ -33,7 +33,7 @@ public class Group implements Comparable {
 		this(name, prefix, suffix, parent, priority);
 		this.id = id;
 	}
-	
+
 
 	@Override
 	public int compareTo(Object obj)
@@ -96,6 +96,11 @@ public class Group implements Comparable {
 		return name + "[" + parent + ", " + prefix + ", " + suffix + ", " + priority + "]";
 	}
 
+	public String getName()
+	{
+		return name;
+	}
+	
 	public int getId()
 	{
 		return id;

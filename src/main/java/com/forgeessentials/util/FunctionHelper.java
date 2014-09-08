@@ -555,7 +555,7 @@ public final class FunctionHelper {
                     temp.append("&r");
                 }
 
-                temp.append(g.name);
+                temp.append(g.getName());
             }
 
             end = match.replaceFirst(temp.toString());
@@ -576,20 +576,20 @@ public final class FunctionHelper {
         StringBuilder temp = new StringBuilder();
         for (TreeSet<Group> set : list)
         {
-            for (Group g : set)
+            for (Group group : set)
             {
-                if (g.prefix.trim().isEmpty())
+                if (group.getPrefix().trim().isEmpty())
                 {
                     continue;
                 }
 
                 if (temp.length() == 0)
                 {
-                    temp.append(g.prefix);
+                    temp.append(group.getPrefix());
                 }
                 else
                 {
-                    temp.insert(0, g.prefix + "&r");
+                    temp.insert(0, group.getPrefix() + "&r");
                 }
             }
 
@@ -611,14 +611,14 @@ public final class FunctionHelper {
         StringBuilder temp = new StringBuilder();
         for (TreeSet<Group> set : list)
         {
-            for (Group g : set)
+            for (Group group : set)
             {
-                if (g.suffix.trim().isEmpty())
+                if (group.getSuffix().trim().isEmpty())
                 {
                     continue;
                 }
 
-                temp.append("&r").append(g.suffix);
+                temp.append("&r").append(group.getSuffix());
             }
 
             end = match.replaceFirst(temp.toString());

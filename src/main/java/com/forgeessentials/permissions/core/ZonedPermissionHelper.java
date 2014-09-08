@@ -10,6 +10,7 @@ import java.util.UUID;
 import net.minecraft.dispenser.ILocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -46,26 +47,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private Map<String, Group> groups = new HashMap<String, Group>();
 
-	private int maxZoneID = 2;
+	private int maxZoneID;
 
 	// ------------------------------------------------------------
 
-	protected Zone addZone(Zone zone)
-	{
-		zones.put(zone.getId(), zone);
-		if (zone instanceof RootZone)
-			rootZone = (RootZone) zone;
-		else if (zone instanceof GlobalZone)
-			globalZone = (GlobalZone) zone;
-		else if (zone instanceof WorldZone)
-			worldZones.put(((WorldZone) zone).getDimensionID(), (WorldZone) zone);
-		return zone;
-	}
-
 	public ZonedPermissionHelper()
 	{
-		addZone(new RootZone());
-		addZone(new GlobalZone(rootZone));
+		clear();
 
 		// MinecraftForge.EVENT_BUS.register(this);
 
@@ -81,6 +69,15 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		WorldZone world0 = getWorldZone(0);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", true);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", false);
+	}
+
+	public void clear() {
+		rootZone = null;
+		globalZone = null;
+		maxZoneID = 2;
+
+		addZone(new RootZone());
+		addZone(new GlobalZone(rootZone));
 	}
 
 	// ------------------------------------------------------------
@@ -208,12 +205,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	}
 
 	@Override
-	public String getPlayerUUID(EntityPlayer player)
-	{
-		return player.getGameProfile().getId().toString();
-	}
-
-	@Override
 	public void setPlayerPermission(String uuid, String permissionNode, boolean value)
 	{
 		globalZone.setPlayerPermission(uuid, permissionNode, value);
@@ -302,7 +293,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	}
 
 	// ------------------------------------------------------------
-	// -- IPermissionHelper
+	// -- Zones
 	// ------------------------------------------------------------
 
 	@Override
@@ -345,8 +336,14 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public List<Zone> getZonesAt(WorldPoint worldPoint)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		WorldZone w = getWorldZone(worldPoint.getDimension());
+		List<Zone> result = new ArrayList<Zone>();
+		for (AreaZone zone : w.getAreaZones())
+			if (zone.isInZone(worldPoint))
+				result.add(zone);
+		result.add(w);
+		result.add(w.getParent());
+		return result;
 	}
 
 	@Override
@@ -405,78 +402,27 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		return getWorldZone(world.provider.dimensionId);
 	}
 
+	protected Zone addZone(Zone zone)
+	{
+		zones.put(zone.getId(), zone);
+		if (zone instanceof RootZone)
+			rootZone = (RootZone) zone;
+		else if (zone instanceof GlobalZone)
+			globalZone = (GlobalZone) zone;
+		else if (zone instanceof WorldZone)
+			worldZones.put(((WorldZone) zone).getDimensionID(), (WorldZone) zone);
+		return zone;
+	}
+	
+	// ------------------------------------------------------------
+	// -- Group / Player
 	// ------------------------------------------------------------
 
 	@Override
-	public boolean checkPermission(EntityPlayer player, String permissionNode)
+	public String getPlayerUUID(EntityPlayer player)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return player.getGameProfile().getId().toString();
 	}
-
-	@Override
-	public String getPermissionProperty(EntityPlayer player, String permissionNode)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer getPermissionPropertyInt(EntityPlayer player, String permissionNode)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	// ------------------------------------------------------------
-
-	@Override
-	public boolean checkPermission(EntityPlayer player, WorldPoint targetPoint, String permissionNode)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getPermissionProperty(EntityPlayer player, WorldPoint targetPoint, String permissionNode)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	// ------------------------------------------------------------
-
-	@Override
-	public boolean checkPermission(EntityPlayer player, AreaBase targetArea, String permissionNode)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getPermissionProperty(EntityPlayer player, AreaBase targetArea, String permissionNode)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	// ------------------------------------------------------------
-
-	@Override
-	public boolean checkPermission(EntityPlayer player, Zone zone, String permissionNode)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getPermissionProperty(EntityPlayer player, Zone zone, String permissionNode)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	// ------------------------------------------------------------
 
 	@Override
 	public Group getGroup(String name)
@@ -501,84 +447,114 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	public List<Group> getPlayerGroups(EntityPlayer player)
 	{
 		List<Group> groups = new ArrayList<Group>();
-		// TODO: Implement
+		// TODO: getPlayerGroups !!!!
+		if (MinecraftServer.getServer().getConfigurationManager().func_152596_g(player.getGameProfile()))
+			groups.add(new Group(OP_GROUP, "", "", "", 0));
 		return groups;
+	}
+
+	public List<String> getPlayerGroupNames(EntityPlayer player)
+	{
+		List<Group> groups = getPlayerGroups(player);
+		List<String> names = new ArrayList<String>();
+		for (Group group : groups)
+		{
+			names.add(group.getName());
+		}
+		return names;
+	}
+
+	// ------------------------------------------------------------
+	// -- Permission checking
+	// ------------------------------------------------------------
+
+	protected boolean checkPermission(String permissionValue)
+	{
+		if (permissionValue == null)
+		{
+			return true;
+		}
+		else
+		{
+			return !permissionValue.equals(PERMISSION_FALSE);
+		}
+	}
+
+	@Override
+	public boolean checkPermission(EntityPlayer player, String permissionNode)
+	{
+		return checkPermission(getPermission(getPlayerUUID(player), new WorldPoint(player), null, getPlayerGroupNames(player), permissionNode, false));
+	}
+
+	@Override
+	public String getPermissionProperty(EntityPlayer player, String permissionNode)
+	{
+		return getPermission(getPlayerUUID(player), new WorldPoint(player), null, getPlayerGroupNames(player), permissionNode, true);
+	}
+
+	@Override
+	public Integer getPermissionPropertyInt(EntityPlayer player, String permissionNode)
+	{
+		String value = getPermissionProperty(player, permissionNode);
+		try
+		{
+			return Integer.parseInt(value);
+		}
+		catch (NumberFormatException e)
+		{
+			return null;
+		}
 	}
 
 	// ------------------------------------------------------------
 
-	// public boolean checkPermission(EntityPlayer player, String permissionNode)
-	// {
-	// return !getPermission(player, permissionNode, false).equals(PERMISSION_FALSE);
-	// }
-	//
-	// public String getPermissionProperty(EntityPlayer player, String permissionNode)
-	// {
-	// return getPermission(player, permissionNode, true);
-	// }
-	//
-	// public String getPermission(String permissionNode, boolean isProperty)
-	// {
-	// return getPermission(null, null, null, null, permissionNode, isProperty);
-	// }
-	//
-	// /**
-	// * Get global permission for point
-	// *
-	// * @param point
-	// * @param permissionNode
-	// * @param isProperty
-	// * @return
-	// */
-	// public String getPermission(WorldPoint point, String permissionNode, boolean isProperty)
-	// {
-	// return getPermission(null, point, null, null, permissionNode, isProperty);
-	// }
-	//
-	// /**
-	// * @param area
-	// * @param permissionNode
-	// * @param isProperty
-	// * @return
-	// */
-	// public String getPermission(WorldArea area, String permissionNode, boolean isProperty)
-	// {
-	// return getPermission(null, null, area, null, permissionNode, isProperty);
-	// }
-	//
-	// /**
-	// * @param player
-	// * @param permissionNode
-	// * @param isProperty
-	// * @return
-	// */
-	// public String getPermission(EntityPlayer player, String permissionNode, boolean isProperty)
-	// {
-	// return getPermission(getPlayerUUID(player), new WorldPoint(player), null, getPlayerGroups(player), permissionNode, isProperty);
-	// }
-	//
-	// /**
-	// * @param player
-	// * @param point
-	// * @param permissionNode
-	// * @param isProperty
-	// * @return
-	// */
-	// public String getPermission(EntityPlayer player, WorldPoint point, String permissionNode, boolean isProperty)
-	// {
-	// return getPermission(getPlayerUUID(player), point, null, getPlayerGroups(player), permissionNode, isProperty);
-	// }
-	//
-	// /**
-	// * @param player
-	// * @param area
-	// * @param permissionNode
-	// * @param isProperty
-	// * @return
-	// */
-	// public String getPermission(EntityPlayer player, WorldArea area, String permissionNode, boolean isProperty)
-	// {
-	// return getPermission(getPlayerUUID(player), null, area, getPlayerGroups(player), permissionNode, isProperty);
-	// }
+	@Override
+	public boolean checkPermission(EntityPlayer player, WorldPoint targetPoint, String permissionNode)
+	{
+		return checkPermission(getPermission(getPlayerUUID(player), targetPoint, null, getPlayerGroupNames(player), permissionNode, false));
+	}
 
+	@Override
+	public String getPermissionProperty(EntityPlayer player, WorldPoint targetPoint, String permissionNode)
+	{
+		return getPermission(getPlayerUUID(player), targetPoint, null, getPlayerGroupNames(player), permissionNode, true);
+	}
+
+	// ------------------------------------------------------------
+
+	@Override
+	public boolean checkPermission(EntityPlayer player, WorldArea targetArea, String permissionNode)
+	{
+		return checkPermission(getPermission(getPlayerUUID(player), null, targetArea, getPlayerGroupNames(player), permissionNode, false));
+	}
+
+	@Override
+	public String getPermissionProperty(EntityPlayer player, WorldArea targetArea, String permissionNode)
+	{
+		return getPermission(getPlayerUUID(player), null, targetArea, getPlayerGroupNames(player), permissionNode, true);
+	}
+
+	// ------------------------------------------------------------
+
+	@Override
+	public boolean checkPermission(EntityPlayer player, Zone zone, String permissionNode)
+	{
+		List<Zone> zones = new ArrayList<Zone>();
+		zones.add(zone);
+		zones.add(globalZone);
+		zones.add(rootZone);
+		return checkPermission(getPermission(zones, getPlayerUUID(player), getPlayerGroupNames(player), permissionNode, false));
+	}
+
+	@Override
+	public String getPermissionProperty(EntityPlayer player, Zone zone, String permissionNode)
+	{
+		List<Zone> zones = new ArrayList<Zone>();
+		zones.add(zone);
+		zones.add(globalZone);
+		zones.add(rootZone);
+		return getPermission(zones, getPlayerUUID(player), getPlayerGroupNames(player), permissionNode, true);
+	}
+
+	// ------------------------------------------------------------
 }
