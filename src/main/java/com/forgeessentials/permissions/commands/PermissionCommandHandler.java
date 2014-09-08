@@ -258,7 +258,7 @@ public class PermissionCommandHandler {
 //			zoneName = args.remove();
 //			if (zoneName.equalsIgnoreCase("here") && senderPlayer != null)
 //			{
-//				zoneName = APIRegistry.perms.getWhichZoneIn(new WorldPoint(senderPlayer)).getName();
+//				zoneName = APIRegistry.perms.getZoneAt(new WorldPoint(senderPlayer)).getName();
 //			}
 //			else if (APIRegistry.perms.getZone(zoneName) == null)
 //			{

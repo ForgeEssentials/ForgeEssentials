@@ -3,6 +3,8 @@ package com.forgeessentials.playerlogger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
@@ -57,14 +59,15 @@ public class EventLogger {
 				return true;
 			}
 		}
-		for (Group group : APIRegistry.perms.getApplicableGroups(player, false))
-		{
-			if (exempt_groups.contains(group.name))
-			{
-				return true;
-			}
-		}
-		return false;
+		throw new RuntimeException("Not yet implemented!");
+//		for (Group group : APIRegistry.perms.getApplicableGroups(player, false))
+//		{
+//			if (exempt_groups.contains(group.name))
+//			{
+//				return true;
+//			}
+//		}
+//		return false;
 	}
 
 	@SubscribeEvent

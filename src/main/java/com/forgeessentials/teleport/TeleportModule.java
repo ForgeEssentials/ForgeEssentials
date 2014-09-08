@@ -114,8 +114,7 @@ public class TeleportModule {
 		{
 			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
 			String val = "0;" + point.posX + ";" + point.posY + ";" + point.posZ;
-			APIRegistry.perms.setGroupPermissionProp(APIRegistry.perms.getDefaultGroup().name, CommandSetSpawn.SPAWN_PROP, val,
-					APIRegistry.perms.getGlobalZone().getName());
+			APIRegistry.perms.setGroupPermissionProperty(APIRegistry.perms.DEFAULT_GROUP, CommandSetSpawn.SPAWN_PROP, val);
 		}
 		TeleportDataManager.load();
 

@@ -113,18 +113,19 @@ public class AutoPromote {
 			{
 				String groupName = promoteList.get(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() + "");
 				// Only add player to group if he isn't already.
-				if (!APIRegistry.perms.getApplicableGroups(player.getPersistentID(), false, zone).contains(APIRegistry.perms.getGroupForName(groupName)))
-				{
-					APIRegistry.perms.addPlayerToGroup(groupName, player.getPersistentID(), zone);
-					if (sendMsg)
-					{
-						String msg = this.msg;
-						msg = FunctionHelper.formatColors(msg);
-						msg = msg.replaceAll("%group", groupName);
-						msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() * 60));
-						ChatUtils.sendMessage(player, msg);
-					}
-				}
+				throw new RuntimeException("Not yet implemented!");
+//				if (!APIRegistry.perms.getApplicableGroups(player.getPersistentID(), false, zone).contains(APIRegistry.perms.getGroup(groupName)))
+//				{
+//					APIRegistry.perms.addPlayerToGroup(groupName, player.getPersistentID(), zone);
+//					if (sendMsg)
+//					{
+//						String msg = this.msg;
+//						msg = FunctionHelper.formatColors(msg);
+//						msg = msg.replaceAll("%group", groupName);
+//						msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() * 60));
+//						ChatUtils.sendMessage(player, msg);
+//					}
+//				}
 			}
 		}
 		catch (Exception e)

@@ -119,9 +119,9 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 				else
 				{
 					String target;
-					if (APIRegistry.perms.getGroupForName(args[1]) != null)
+					if (APIRegistry.perms.getGroup(args[1]) != null)
 					{
-						target = "g:" + APIRegistry.perms.getGroupForName(args[1]).name;
+						target = "g:" + APIRegistry.perms.getGroup(args[1]).name;
 					}
 					else if (args[1].equalsIgnoreCase("me"))
 					{
@@ -182,7 +182,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		throw new RuntimeException("Not yet implemented!");
 //		if (target.startsWith("p:"))
 //		{
-//			APIRegistry.perms.setPlayerPermissionProp(FunctionHelper.getPlayerID(target.replaceFirst("p:", "")), PERMPROP, "" + limit,
+//			APIRegistry.perms.setPlayerPermissionProperty(FunctionHelper.getPlayerID(target.replaceFirst("p:", "")), PERMPROP, "" + limit,
 //					APIRegistry.perms.getGlobalZone().getName());
 //		}
 //		else if (target.startsWith("g:"))
@@ -218,7 +218,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 //		}
 //		if (args.length == 2 && args[0].equalsIgnoreCase("limit"))
 //		{
-//			Zone zone = sender instanceof EntityPlayer ? APIRegistry.perms.getWhichZoneIn(new WorldPoint((EntityPlayer) sender)) : APIRegistry.perms
+//			Zone zone = sender instanceof EntityPlayer ? APIRegistry.perms.getZoneAt(new WorldPoint((EntityPlayer) sender)) : APIRegistry.perms
 //					.getGLOBAL();
 //			ArrayList<String> list = new ArrayList<String>();
 //			for (String s : FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames())

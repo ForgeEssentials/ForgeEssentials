@@ -40,7 +40,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		/*
 		 * Get the right zone. If nothing valid is given, defaults to the senders position.
 		 */
-		Zone zone = APIRegistry.perms.getWhichZoneIn(new WorldPoint(sender));
+		Zone zone = APIRegistry.perms.getZoneAt(new WorldPoint(sender));
 		if (args.length > 0)
 		{
 			if (args[0].equalsIgnoreCase("world"))

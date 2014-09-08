@@ -7,10 +7,13 @@ import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class GlobalZone extends Zone {
+	
+	private RootZone rootZone;
 
-	public GlobalZone()
+	public GlobalZone(RootZone rootZone)
 	{
 		super(1);
+		this.rootZone = rootZone;
 	}
 	
 	@Override
@@ -34,7 +37,7 @@ public class GlobalZone extends Zone {
 	@Override
 	public Zone getParent()
 	{
-		return APIRegistry.perms.getRootZone();
+		return rootZone;
 	}
 
 	@Override

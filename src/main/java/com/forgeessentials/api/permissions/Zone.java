@@ -167,8 +167,10 @@ public abstract class Zone {
 	 */
 	public void setPlayerPermissionProperty(String uuid, String permissionNode, String value)
 	{
-		Map<String, String> map = getOrCreatePlayerPermissions(uuid);
-		map.put(permissionNode, value);
+		if (uuid != null) {
+			Map<String, String> map = getOrCreatePlayerPermissions(uuid);
+			map.put(permissionNode, value);
+		}
 	}
 
 	/**
@@ -258,8 +260,10 @@ public abstract class Zone {
 	 */
 	public void setGroupPermissionProperty(String group, String permissionNode, String value)
 	{
-		Map<String, String> map = getOrCreateGroupPermissions(group);
-		map.put(permissionNode, value);
+		if (group != null) {
+			Map<String, String> map = getOrCreateGroupPermissions(group);
+			map.put(permissionNode, value);
+		}
 	}
 
 	/**

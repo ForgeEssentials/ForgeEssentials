@@ -127,7 +127,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 //                if (args[1].equalsIgnoreCase("here"))
 //                {
 //                    WorldPoint point = new WorldPoint(sender);
-//                    args[1] = APIRegistry.perms.getWhichZoneIn(point).getName();
+//                    args[1] = APIRegistry.perms.getZoneAt(point).getName();
 //                }
 //                if (!APIRegistry.perms.doesZoneExist(args[1]))
 //                {

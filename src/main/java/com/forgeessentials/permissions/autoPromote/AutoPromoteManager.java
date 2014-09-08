@@ -34,7 +34,7 @@ public class AutoPromoteManager extends TimerTask {
 			for (Object obj : loaded)
 			{
 				AutoPromote ap = (AutoPromote) obj;
-				if (APIRegistry.perms.getZone(ap.getZone()) != null)
+				if (APIRegistry.perms.getZoneById(ap.getZone()) != null)
 				{
 					map.put(ap.getZone(), ap);
 				}

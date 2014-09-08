@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.api.IPermissionsProvider;
 
 import com.forgeessentials.util.selections.AreaBase;
@@ -124,13 +125,56 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	// ---------------------------------------------------------------------------
 
 	/**
-	 * Registers a permission property
+	 * Returns the UUID for the player, used for storing permissions
 	 * 
+	 * @return
+	 */
+	String getPlayerUUID(EntityPlayer player);
+	
+	/**
+	 * Sets a player permission
+	 * 
+	 * @param uuid
 	 * @param permissionNode
 	 * @param value
 	 */
-	void registerPermissionProperty(String permissionNode, String defaultValue);
+	void setPlayerPermission(String uuid, String permissionNode, boolean value);
+	
+	/**
+	 * Sets a player permission-property
+	 * 
+	 * @param uuid
+	 * @param permissionNode
+	 * @param value
+	 */
+	void setPlayerPermissionProperty(String uuid, String permissionNode, String value);
+	
+	/**
+	 * Sets a group permission
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 * @param value
+	 */
+	void setGroupPermission(String group, String permissionNode, boolean value);
 
+	/**
+	 * Sets a group permission-property
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 * @param value
+	 */
+	void setGroupPermissionProperty(String group, String permissionNode, String value);
+
+	/**
+	 * Registers a permission property
+	 * 
+	 * @param permissionNode
+	 * @param defaultValue
+	 */
+	void registerPermissionProperty(String permissionNode, String defaultValue);
+	
 	// ---------------------------------------------------------------------------
 
 	/**
@@ -140,20 +184,34 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @return
 	 */
 	int getNextZoneID();
+
+	/**
+	 * Get all registered zones
+	 * 
+	 * @return
+	 */
+	Collection<Zone> getZones();
 	
 	/**
 	 * Returns the root zone, which has lowest priority and holds the default permissions
 	 * 
-	 * @return
+	 * @return Zone or null
 	 */
-	Zone getZone(int id);
+	Zone getZoneById(int id);
+
+	/**
+	 * Returns the root zone, which has lowest priority and holds the default permissions. If id is not a valid integer, null is returned.
+	 * 
+	 * @return Zone or null
+	 */
+	Zone getZoneById(String id);
 
 	/**
 	 * Returns the root zone, which has lowest priority and holds the default permissions
 	 * 
 	 * @return
 	 */
-	RootZone getRootZone();
+	//RootZone getRootZone();
 
 	/**
 	 * Returns the global zone
@@ -214,6 +272,21 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	// ---------------------------------------------------------------------------
 
 	/**
+	 * Get a group by it's name
+	 * 
+	 * @param name
+	 * @return
+	 */
+	Group getGroup(String name);
+
+	/**
+	 * Get all registered groups
+	 * 
+	 * @return
+	 */
+	Collection<Group> getGroups();
+	
+	/**
 	 * Returns the highest-priority group the the player belongs to.
 	 * 
 	 * @param player
@@ -257,17 +330,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	// String setGroupPermission(String group, String permission, boolean allow, String zoneID);
 	//
 	// /**
-	// * Set a permissions prop for a player
-	// *
-	// * @param username The player's username
-	// * @param permission The permissions node name
-	// * @param value Value of the permissions prop
-	// * @param zoneID The zone in which the permissions takes effect
-	// * @return null on success, error message otherwise
-	// */
-	// String setPlayerPermissionProp(UUID username, String permission, String value, String zoneID);
-	//
-	// /**
 	// * Set a permissions for a player
 	// *
 	// * @param permission The permissions node name
@@ -281,8 +343,8 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	//
 	// ArrayList<Group> getApplicableGroups(UUID player, boolean includeDefaults, String zoneID);
 	//
-	// // moved to forge, use APIRegistry.perms.getGroupForName if you need the group
-	// // Group getGroupForName(String name);
+	// // moved to forge, use APIRegistry.perms.getGroup if you need the group
+	// // Group getGroup(String name);
 	//
 	// /**
 	// * These methods are zone aware - if you don't care about the zone, use the methods provided in the ForgePerms API

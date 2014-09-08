@@ -46,11 +46,11 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("add"))
             {
-                APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.whitelist", true, "_GLOBAL_");
+                APIRegistry.perms.getGlobalZone().setPlayerPermission(FunctionHelper.getPlayerID(args[1]).toString(), "fe.auth.whitelist", true);
             }
             else if (args[0].equalsIgnoreCase("remove"))
             {
-                APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]), "fe.auth.whitelist", false, "_GLOBAL_");
+                APIRegistry.perms.getGlobalZone().setPlayerPermission(FunctionHelper.getPlayerID(args[1]).toString(), "fe.auth.whitelist", false);
             }
         }
     }

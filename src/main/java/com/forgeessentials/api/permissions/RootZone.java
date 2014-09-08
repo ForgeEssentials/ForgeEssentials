@@ -11,7 +11,6 @@ public class RootZone extends Zone {
 	{
 		super(0);
 	}
-	
 
 	@Override
 	public boolean isPointInZone(WorldPoint point)
@@ -40,7 +39,7 @@ public class RootZone extends Zone {
 	@Override
 	public String getName()
 	{
-		return "GLOBAL";
+		return "ROOT";
 	}
 
 }
