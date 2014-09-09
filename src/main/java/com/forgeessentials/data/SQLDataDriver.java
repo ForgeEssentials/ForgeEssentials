@@ -25,7 +25,6 @@ import com.forgeessentials.data.api.TypeMultiValInfo;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.Pair;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;

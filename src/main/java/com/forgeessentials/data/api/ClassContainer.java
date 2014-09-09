@@ -1,10 +1,25 @@
 package com.forgeessentials.data.api;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class ClassContainer {
+	
     private final Class<?> heldClass;
+    private boolean unknownParameters;
     Class<?>[] parameters;
+
+    public ClassContainer(boolean unknownParameters, Class<?> type, Class<?>... parameters)
+    {
+        heldClass = type;
+        this.parameters = parameters;
+        this.unknownParameters = unknownParameters;
+
+        if (type.isArray())
+        {
+            return;
+        }
+    }
 
     public ClassContainer(Class<?> type, Class<?>... parameters)
     {
@@ -22,6 +37,12 @@ public class ClassContainer {
         heldClass = type;
         parameters = new Class[] { };
     }
+
+	public ClassContainer hasUnknownParameters()
+	{
+		unknownParameters = true;
+		return this;
+	}
 
     public Class<?> getType()
     {
@@ -79,17 +100,20 @@ public class ClassContainer {
     {
         StringBuilder builder = new StringBuilder();
         builder.append(getType().getCanonicalName());
-        builder.append('<');
-
-        for (int i = 0; i < parameters.length; i++)
-        {
-            builder.append(parameters[i].getCanonicalName());
-            if (i < parameters.length - 1)
-            {
-                builder.append(", ");
-            }
-        }
-
+        
+		builder.append('<');
+		//if (!Map.class.isAssignableFrom(this.heldClass) || Map.class.equals(this.heldClass))
+		if (!unknownParameters)
+		{
+			for (int i = 0; i < parameters.length; i++)
+			{
+				builder.append(parameters[i].getCanonicalName());
+				if (i < parameters.length - 1)
+				{
+					builder.append(", ");
+				}
+			}
+		}
         builder.append(">");
 
         return builder.toString();
