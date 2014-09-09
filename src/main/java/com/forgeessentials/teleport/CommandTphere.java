@@ -12,9 +12,9 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -41,7 +41,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
             {
                 EntityPlayerMP target = (EntityPlayerMP) sender;
                 PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-                playerInfo.back = new WarpPoint(player);
+                playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                 TeleportCenter.addToTpQue(new WarpPoint(target), player);
             }
             else

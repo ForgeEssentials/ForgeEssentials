@@ -5,6 +5,8 @@ import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.teleport.util.Warp;
 import com.forgeessentials.util.*;
 import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -47,7 +49,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                 {
                     Warp warp = TeleportDataManager.warps.get(args[0].toLowerCase());
                     PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-                    playerInfo.back = new WarpPoint(sender);
+                    playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
                     CommandBack.justDied.remove(sender.getPersistentID());
                     TeleportCenter.addToTpQue(warp.getPoint(), sender);
                 }
@@ -119,7 +121,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                 if (player != null)
                 {
                     Warp warp = TeleportDataManager.warps.get(args[1].toLowerCase());
-                    PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(player);
+                    PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
                     TeleportCenter.addToTpQue(warp.getPoint(), player);
                 }
                 else

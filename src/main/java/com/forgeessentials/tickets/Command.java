@@ -14,7 +14,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.TeleportCenter;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class Command extends ForgeEssentialsCommandBase {
     @Override

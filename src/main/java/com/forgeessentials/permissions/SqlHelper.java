@@ -18,7 +18,7 @@ import com.google.common.base.Throwables;
 /**
  * Usernames are only kept for ease of updating - this class should be receiving UUIDs that have been toString'ed.
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
+//@SuppressWarnings({ "rawtypes", "unchecked" })
 public class SqlHelper {
 
 	private static SqlHelper INSTANCE;
@@ -110,8 +110,8 @@ public class SqlHelper {
 
 	private SqlHelper()
 	{
-		db = ModulePermissions.config.connector.getChosenConnection();
-		dbType = ModulePermissions.config.connector.getActiveType();
+		db = ModulePermissions.config.getDBConnector().getChosenConnection();
+		dbType = ModulePermissions.config.getDBConnector().getActiveType();
 
 		try
 		{

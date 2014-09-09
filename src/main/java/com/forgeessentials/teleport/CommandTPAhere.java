@@ -16,8 +16,8 @@ import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandTPAhere extends ForgeEssentialsCommandBase {
     @Override

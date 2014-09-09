@@ -12,9 +12,9 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.permissions.Permission;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
@@ -78,15 +78,15 @@ public class ModuleProtection {
 				PermissionsManager.registerPermission(PERM_MOB_SPAWN_FORCED + "." + e.getKey(), RegisteredPermValue.TRUE);
 			}
 		}
-		PermissionsManager.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + Permission.ALL, RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission(PERM_MOB_SPAWN_FORCED + "." + Permission.ALL, RegisteredPermValue.TRUE);
+		PermissionsManager.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+		PermissionsManager.registerPermission(PERM_MOB_SPAWN_FORCED + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
 
 		for (Item item : GameData.getItemRegistry().typeSafeIterable())
 		{
 			PermissionsManager.registerPermission(PERM_ITEM_USE + "." + item.getUnlocalizedName(), RegisteredPermValue.TRUE);
 		}
 
-		PermissionsManager.registerPermission(PERM_ITEM_USE + "." + Permission.ALL, RegisteredPermValue.TRUE);
+		PermissionsManager.registerPermission(PERM_ITEM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
 
 		for (int i : DimensionManager.getIDs())
 		{

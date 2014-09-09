@@ -1,5 +1,8 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -18,6 +21,10 @@ public class RootZone extends Zone {
 
 	// TODO: Persist this field
 	private int maxZoneID;
+	
+	//private List<PlayerData> players;
+	
+	private List<Group> groups = new ArrayList<Group>();
 
 	public RootZone()
 	{

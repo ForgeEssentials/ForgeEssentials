@@ -1,4 +1,4 @@
-package com.forgeessentials.permissions;
+package com.forgeessentials.permissions.core;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.CommandEvent;
@@ -9,10 +9,16 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.PlayerChangedZone;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class PermsEventHandler {
+public class PermissionEventHandler {
+	
+	public PermissionEventHandler() {
+		FMLCommonHandler.instance().bus().register(this);
+	}
+	
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onZoneChange(PlayerChangedZone event)
 	{
@@ -40,4 +46,5 @@ public class PermsEventHandler {
 			e.setCanceled(true);
 		}
 	}
+
 }

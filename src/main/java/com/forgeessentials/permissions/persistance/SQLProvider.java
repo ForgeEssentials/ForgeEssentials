@@ -11,7 +11,6 @@ public class SQLProvider extends ZonePersistanceProvider {
 		super(permissionManager);
 	}
 
-
 	@Override
 	public void save(RootZone rootZone)
 	{

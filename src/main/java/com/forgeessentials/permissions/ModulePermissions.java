@@ -2,7 +2,11 @@ package com.forgeessentials.permissions;
 
 import java.io.File;
 
+import com.forgeessentials.permissions.core.ConfigPermissions;
+import com.forgeessentials.permissions.core.PermissionEventHandler;
+import com.forgeessentials.permissions.core.PermissionsListWriter;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -18,12 +22,12 @@ import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandTestPermission;
 import com.forgeessentials.permissions.commands.CommandZone;
-import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions {
@@ -35,10 +39,93 @@ public class ModulePermissions {
 	public static File permsFolder;
 
 	private AutoPromoteManager autoPromoteManager;
-	
-	private ZonedPermissionHelper perms;
-	
-	public static void regPerms()
+
+	private ZonedPermissionHelper permissionHelper;
+
+	private PermissionEventHandler permissionEventHandler;
+
+	@FEModule.PreInit
+	public void preLoad(FEModulePreInitEvent e)
+	{
+		MinecraftForge.EVENT_BUS.register(this);
+		// DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
+
+		// Register permission manager
+		permissionHelper = new ZonedPermissionHelper();
+		APIRegistry.perms = permissionHelper;
+		PermissionsManager.setPermProvider(permissionHelper);
+		
+		// Register event handler
+		permissionEventHandler = new PermissionEventHandler();
+	}
+
+	@FEModule.Init
+	public void load(FEModuleInitEvent e)
+	{
+		// Open database
+		SqlHelper.getInstance();
+
+		DataStorageManager.registerSaveableType(Zone.class);
+		DataStorageManager.registerSaveableType(AutoPromote.class);
+
+		MinecraftForge.EVENT_BUS.register(new PermissionEventHandler());
+	}
+
+	@FEModule.ServerInit
+	public void serverStarting(FEModuleServerInitEvent e)
+	{
+		// load zones...
+		// ((ZoneHelper) APIRegistry.perms).loadZones();
+
+		// if (config.importBool)
+		// {
+		// sql.importPerms(config.importDir);
+		// }
+
+		// init perms and vMC command overrides
+		e.registerServerCommand(new CommandZone());
+
+		e.registerServerCommand(new CommandPermissions());
+		e.registerServerCommand(new CommandTestPermission());
+		e.registerServerCommand(new CommandAutoPromote());
+
+		autoPromoteManager = new AutoPromoteManager();
+
+		registerPermissions();
+
+	}
+
+	@FEModule.ServerPostInit
+	public void serverStarted(FEModuleServerPostInitEvent e)
+	{
+		// TODO: PERMS
+		// sql.putRegistrationPerms(APIRegistry.perms.getRegisteredPerms());
+
+		new PermissionsListWriter().write(permissionHelper.enumAllPermissions());
+	}
+
+	@FEModule.ServerStop
+	public void serverStopping(FEModuleServerStopEvent e)
+	{
+		autoPromoteManager.stop();
+
+		// TODO: SAVE PERMS
+
+		// Clear perms (only needed for singleplayer)
+		permissionHelper.clear();
+
+		// save all the zones
+		// for (Zone zone : APIRegistry.perms.getZoneList())
+		// {
+		// if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
+		// {
+		// continue;
+		// }
+		// DataStorageManager.getReccomendedDriver().saveObject(ZoneHelper.container, zone);
+		// }
+	}
+
+	private void registerPermissions()
 	{
 		PermissionsManager.registerPermission("fe.perm", RegisteredPermValue.OP);
 		PermissionsManager.registerPermission("fe.perm.*", RegisteredPermValue.OP);
@@ -57,85 +144,8 @@ public class ModulePermissions {
 
 		PermissionsManager.registerPermission("fe.perm.list", RegisteredPermValue.TRUE);
 
-		//CommandSetChecker.regMCOverrides();
+		// CommandSetChecker.regMCOverrides();
 		PermissionsManager.registerPermission("fe.core.info", RegisteredPermValue.OP);
 	}
 
-	@FEModule.PreInit
-	public void preLoad(FEModulePreInitEvent e)
-	{
-		MinecraftForge.EVENT_BUS.register(this);
-
-		//DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
-		
-		perms = new ZonedPermissionHelper();
-		APIRegistry.perms = perms;
-		PermissionsManager.setPermProvider(perms);
-	}
-
-	@FEModule.Init
-	public void load(FEModuleInitEvent e)
-	{
-		// Open database
-		SqlHelper.getInstance();
-		
-		DataStorageManager.registerSaveableType(Zone.class);
-		DataStorageManager.registerSaveableType(AutoPromote.class);
-
-		MinecraftForge.EVENT_BUS.register(new PermsEventHandler());
-	}
-
-	@FEModule.ServerInit
-	public void serverStarting(FEModuleServerInitEvent e)
-	{
-		// load zones...
-		//((ZoneHelper) APIRegistry.perms).loadZones();
-
-//		if (config.importBool)
-//		{
-//			sql.importPerms(config.importDir);
-//		}
-
-		// init perms and vMC command overrides
-		e.registerServerCommand(new CommandZone());
-
-		e.registerServerCommand(new CommandPermissions());
-		e.registerServerCommand(new CommandTestPermission());
-		e.registerServerCommand(new CommandAutoPromote());
-
-		autoPromoteManager = new AutoPromoteManager();
-
-		regPerms();
-
-	}
-
-	@FEModule.ServerPostInit
-	public void serverStarted(FEModuleServerPostInitEvent e)
-	{
-		// TODO: PERMS
-		//sql.putRegistrationPerms(APIRegistry.perms.getRegisteredPerms());
-		
-		new PermissionsList().output(perms.enumAllPermissions());
-	}
-
-	@FEModule.ServerStop
-	public void serverStopping(FEModuleServerStopEvent e)
-	{
-		autoPromoteManager.stop();
-		
-		// TODO: SAVE PERMS
-		
-		// Clear perms (only needed for singleplayer)
-		perms.clear();
-		
-		// save all the zones
-//		for (Zone zone : APIRegistry.perms.getZoneList())
-//		{
-//			if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
-//			{
-//				continue;
-//			}
-//			DataStorageManager.getReccomendedDriver().saveObject(ZoneHelper.container, zone);
-//		}
-	}
 }

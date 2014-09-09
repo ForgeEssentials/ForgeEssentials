@@ -43,7 +43,7 @@ public class UserIdent {
 	{
 		if (player == null)
 			throw new IllegalArgumentException();
-		this.uuid = player.getGameProfile().getId();
+		this.uuid = player.getPersistentID();
 		this.username = player.getCommandSenderName();
 	}
 

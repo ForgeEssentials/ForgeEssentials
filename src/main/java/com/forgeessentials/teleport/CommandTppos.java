@@ -10,9 +10,9 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -39,7 +39,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
             double z = parseDouble(sender, args[2], sender.posZ);
             EntityPlayerMP player = (EntityPlayerMP) sender;
             PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-            playerInfo.back = new WarpPoint(player);
+            playerInfo.setLastTeleportOrigin(new WarpPoint(player));
             CommandBack.justDied.remove(player.getPersistentID());
             TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.cameraPitch, player.cameraYaw), player);
         }

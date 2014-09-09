@@ -222,9 +222,9 @@ public class PermissionCommandHandler {
 		if (args.isEmpty())
 		{
 			if (isSuffix)
-				info(String.format("%s's suffix is %s", playerName, playerInfo.suffix.isEmpty() ? "empty" : playerInfo.suffix));
+				info(String.format("%s's suffix is %s", playerName, playerInfo.getSuffix().isEmpty() ? "empty" : playerInfo.getSuffix()));
 			else
-				info(String.format("%s's prefix is %s", playerName, playerInfo.prefix.isEmpty() ? "empty" : playerInfo.prefix));
+				info(String.format("%s's prefix is %s", playerName, playerInfo.getPrefix().isEmpty() ? "empty" : playerInfo.getPrefix()));
 		}
 		else
 		{
@@ -240,11 +240,11 @@ public class PermissionCommandHandler {
 			}
 			if (isSuffix)
 			{
-				playerInfo.suffix = fix;
+				playerInfo.setSuffix(fix);
 			}
 			else
 			{
-				playerInfo.prefix = fix;
+				playerInfo.setPrefix(fix);
 			}
 		}
 	}

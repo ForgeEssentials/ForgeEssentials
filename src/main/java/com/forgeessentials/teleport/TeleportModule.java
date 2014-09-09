@@ -137,7 +137,7 @@ public class TeleportModule {
 		if (e.entity instanceof EntityPlayer)
 		{
 			EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
-			PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(player);
+			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
 			CommandBack.justDied.add(player.getPersistentID());
 
 			// generate for un-generated dimension

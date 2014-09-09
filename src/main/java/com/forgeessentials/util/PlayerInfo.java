@@ -28,340 +28,451 @@ import com.forgeessentials.util.selections.WarpPoint;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @SaveableObject
-public class PlayerInfo{
-    private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
-    // -------------------------------------------------------------------------------------------
-    // ---------------------------------- Actual Class Starts Now --------------------------------
-    // -------------------------------------------------------------------------------------------
-    @UniqueLoadingKey()
-    public final String name;
+public class PlayerInfo {
+	
+	private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
 
-    @SaveableField()
-    public final UUID playerID;
-    // wand stuff
-    public String wandID;
-    public int wandDmg;
-    public boolean wandEnabled = false;
-    @SaveableField()
-    public WarpPoint home;
-    @SaveableField()
-    public WarpPoint back;
-    @SaveableField()
-    public String prefix;
-    @SaveableField()
-    public String suffix;
-    // 0: Normal 1: World spawn 2: Bed 3: Home
-    @SaveableField()
-    public int spawnType;
-    public int TPcooldown = 0;
-    public HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
-    // selection stuff
-    @SaveableField()
-    private Point sel1;
-    @SaveableField()
-    private Point sel2;
-    private Selection selection;
-    @SaveableField()
-    private int timePlayed;
-    private long loginTime;
-    @SaveableField()
-    private long firstJoin;
-    // undo and redo stuff
-    private Stack<BackupArea> undos;
-    private Stack<BackupArea> redos;
-    @SaveableField
-    private List<ItemStack> hiddenItems;
+	// -------------------------------------------------------------------------------------------
 
-    private ISelectionProvider selprovider;
+	public class FESelectionProvider implements ISelectionProvider {
+		private UUID user;
 
-    private PlayerInfo(UUID playerID)
-    {
-        sel1 = null;
-        sel2 = null;
-        selection = null;
-        this.playerID = playerID;
-        name = playerID.toString();
+		protected FESelectionProvider(UUID username)
+		{
+			user = username;
+		}
 
-        undos = new Stack<BackupArea>();
-        redos = new Stack<BackupArea>();
+		@Override
+		public Point getPoint1(EntityPlayerMP player)
+		{
+			return sel1;
+		}
 
-        prefix = "";
-        suffix = "";
+		@Override
+		public Point getPoint2(EntityPlayerMP player)
+		{
+			return sel2;
+		}
 
-        firstJoin = System.currentTimeMillis();
-        loginTime = System.currentTimeMillis();
+		@Override
+		public Selection getSelection(EntityPlayerMP player)
+		{
+			return selection;
+		}
+	}
+	
+	// -------------------------------------------------------------------------------------------
+	
+	@UniqueLoadingKey()
+	private final String name;
 
-        timePlayed = 0;
+	@SaveableField()
+	private final UUID playerID;
 
-        hiddenItems = new ArrayList<ItemStack>();
+	// wand stuff
+	private String wandID;
 
-        //if (!EnvironmentChecker.worldEditFEtoolsInstalled)
-        selprovider = new FESelectionProvider(playerID);
-    }
+	private int wandDmg;
 
-    // @Deprecated Why? it doesn't have to be removed?
-    public static PlayerInfo getPlayerInfo(EntityPlayer player)
-    {
-        return getPlayerInfo(player.getPersistentID());
-    }
+	private boolean wandEnabled = false;
 
-    public static PlayerInfo getPlayerInfo(UUID playerID)
-    {
-        PlayerInfo info = playerInfoMap.get(playerID);
+	@SaveableField()
+	private WarpPoint home;
 
-        // load or create one
-        if (info == null)
-        {
-            // Attempt to populate this info with some data from our storage.
-            info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), playerID.toString());
+	@SaveableField()
+	private WarpPoint lastTeleportOrigin;
 
-            if (info == null)
-            {
-                info = new PlayerInfo(playerID);
-            }
+	@SaveableField()
+	private String prefix;
 
-            playerInfoMap.put(playerID, info);
-        }
+	@SaveableField()
+	private String suffix;
 
-        return info;
-    }
+	// 0: Normal 1: World spawn 2: Bed 3: Home
+	@SaveableField()
+	private int spawnType;
 
-    public static void discardInfo(UUID username)
-    {
-        PlayerInfo info = playerInfoMap.remove(username);
-        if (info != null)
-        {
-            info.save();
-        }
-    }
+	public int teleportCooldown = 0;
 
-    @Reconstructor()
-    public static PlayerInfo reconstruct(IReconstructData tag)
-    {
-        UUID username = UUID.fromString((String) tag.getFieldValue("username"));
+	private HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
 
-        PlayerInfo info = new PlayerInfo(username);
+	// selection stuff
+	@SaveableField()
+	private Point sel1;
 
-        info.setPoint1((Point) tag.getFieldValue("sel1"));
-        info.setPoint2((Point) tag.getFieldValue("sel2"));
+	@SaveableField()
+	private Point sel2;
 
-        info.home = (WarpPoint) tag.getFieldValue("home");
-        info.back = (WarpPoint) tag.getFieldValue("back");
+	private Selection selection;
 
-        info.spawnType = (Integer) tag.getFieldValue("spawnType");
+	@SaveableField()
+	private int timePlayed;
 
-        info.prefix = (String) tag.getFieldValue("prefix");
-        info.suffix = (String) tag.getFieldValue("suffix");
+	private long loginTime;
 
-        info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
+	@SaveableField()
+	private long firstJoin;
 
-        info.firstJoin = (Long) tag.getFieldValue("firstJoin");
-        return info;
-    }
+	// undo and redo stuff
+	private Stack<BackupArea> undos;
 
-    @SubscribeEvent
-    public void initForPlayer(PlayerEvent.LoadFromFile event)
-    {
-        getPlayerInfo(event.entityPlayer);
-    }
+	private Stack<BackupArea> redos;
 
-    /**
-     * Notifies the PlayerInfo to save itself to the Data store.
-     */
-    public void save()
-    {
-        recalcTimePlayed();
-        DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
-    }
+	@SaveableField
+	private List<ItemStack> hiddenItems;
 
-    public long getFirstJoin()
-    {
-        return firstJoin;
-    }
+	private ISelectionProvider selprovider;
 
-    public int getTimePlayed()
-    {
-        recalcTimePlayed();
-        return timePlayed;
-    }
+	private PlayerInfo(UUID playerID)
+	{
+		sel1 = null;
+		sel2 = null;
+		selection = null;
+		this.playerID = playerID;
+		name = playerID.toString();
 
-    public void recalcTimePlayed()
-    {
-        long current = System.currentTimeMillis() - loginTime;
-        int min = (int) (current / 60000);
-        timePlayed += min;
-        loginTime = System.currentTimeMillis();
-    }
+		undos = new Stack<BackupArea>();
+		redos = new Stack<BackupArea>();
 
-    // ----------------------------------------------
-    // ---------------- TP stuff --------------------
-    // ----------------------------------------------
+		prefix = "";
+		suffix = "";
 
-    public void TPcooldownTick()
-    {
-        if (TPcooldown != 0)
-        {
-            TPcooldown--;
-        }
-    }
+		firstJoin = System.currentTimeMillis();
+		loginTime = System.currentTimeMillis();
 
-    // ----------------------------------------------
-    // ------------- Command stuff ------------------
-    // ----------------------------------------------
+		timePlayed = 0;
 
-    public void KitCooldownTick()
-    {
-        for (String key : kitCooldown.keySet())
-        {
-            if (kitCooldown.get(key) == 0)
-            {
-                kitCooldown.remove(key);
-            }
-            else
-            {
-                kitCooldown.put(key, kitCooldown.get(key) - 1);
-            }
-        }
-    }
+		hiddenItems = new ArrayList<ItemStack>();
 
-    // ----------------------------------------------
-    // ------------ Selection stuff -----------------
-    // ----------------------------------------------
+		// if (!EnvironmentChecker.worldEditFEtoolsInstalled)
+		selprovider = new FESelectionProvider(playerID);
+	}
 
-    public void setPoint1(Point sel1)
-    {
-        if (EnvironmentChecker.worldEditFEtoolsInstalled)return;
+	@Reconstructor()
+	public static PlayerInfo reconstruct(IReconstructData tag)
+	{
+		UUID username = UUID.fromString((String) tag.getFieldValue("username"));
 
-        this.sel1 = sel1;
+		PlayerInfo info = new PlayerInfo(username);
 
-        if (sel1 != null)
-        {
-            if (selection == null)
-            {
-                if (sel1 != null && sel2 != null)
-                {
-                    selection = new Selection(sel1, sel2);
-                }
-            }
-            else
-            {
-                selection.setStart(sel1);
-            }
-        }
+		info.setPoint1((Point) tag.getFieldValue("sel1"));
+		info.setPoint2((Point) tag.getFieldValue("sel2"));
 
-        FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
-    }
+		info.home = (WarpPoint) tag.getFieldValue("home");
+		info.lastTeleportOrigin = (WarpPoint) tag.getFieldValue("back");
 
-    public void setPoint2(Point sel2)
-    {
-        if (EnvironmentChecker.worldEditFEtoolsInstalled)return;
+		info.spawnType = (Integer) tag.getFieldValue("spawnType");
 
-        this.sel2 = sel2;
+		info.prefix = (String) tag.getFieldValue("prefix");
+		info.suffix = (String) tag.getFieldValue("suffix");
 
-        if (sel2 != null)
-        {
-            if (selection == null)
-            {
-                if (sel1 != null && sel2 != null)
-                {
-                    selection = new Selection(sel1, sel2);
-                }
-            }
-            else
-            {
-                selection.setEnd(sel2);
-            }
-        }
+		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
 
-        FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
-    }
+		info.firstJoin = (Long) tag.getFieldValue("firstJoin");
+		return info;
+	}
 
-    public Point getPoint1()
-    {
-        return selprovider.getPoint1(FunctionHelper.getPlayerForUUID(playerID));
-    }
+	/**
+	 * Notifies the PlayerInfo to save itself to the Data store.
+	 */
+	public void save()
+	{
+		recalcTimePlayed();
+		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
+	}
 
-    public Point getPoint2()
-    {
-        return selprovider.getPoint2(FunctionHelper.getPlayerForUUID(playerID));
-    }
+	@SubscribeEvent
+	public void initForPlayer(PlayerEvent.LoadFromFile event)
+	{
+		getPlayerInfo(event.entityPlayer);
+	}
 
-    public Selection getSelection()
-    {
-        return selprovider.getSelection(FunctionHelper.getPlayerForUUID(playerID));
-    }
+	// @Deprecated Why? it doesn't have to be removed?
+	public static PlayerInfo getPlayerInfo(EntityPlayer player)
+	{
+		return getPlayerInfo(player.getPersistentID());
+	}
 
-    // ----------------------------------------------
-    // ------------ Undo/Redo stuff -----------------
-    // ----------------------------------------------
+	public static PlayerInfo getPlayerInfo(UUID playerID)
+	{
+		PlayerInfo info = playerInfoMap.get(playerID);
+		// load or create one
+		if (info == null)
+		{
+			// Attempt to populate this info with some data from our storage.
+			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), playerID.toString());
+			if (info == null)
+			{
+				info = new PlayerInfo(playerID);
+			}
+			playerInfoMap.put(playerID, info);
+		}
+		return info;
+	}
 
-    public void addUndoAction(BackupArea backup)
-    {
-        undos.push(backup);
-        redos.clear();
-    }
+	public static void discardInfo(UUID username)
+	{
+		PlayerInfo info = playerInfoMap.remove(username);
+		if (info != null)
+		{
+			info.save();
+		}
+	}
 
-    public BackupArea getNextUndo()
-    {
-        if (undos.empty())
-        {
-            return null;
-        }
+	// ----------------------------------------------
 
-        BackupArea back = undos.pop();
-        redos.push(back);
-        return back;
-    }
+	public String getWandID()
+	{
+		return wandID;
+	}
 
-    public BackupArea getNextRedo()
-    {
-        if (redos.empty())
-        {
-            return null;
-        }
+	public void setWandID(String wandID)
+	{
+		this.wandID = wandID;
+	}
 
-        BackupArea back = redos.pop();
-        undos.push(back);
-        return back;
-    }
+	public boolean isWandEnabled()
+	{
+		return wandEnabled;
+	}
 
-    public void clearSelection()
-    {
-        if (EnvironmentChecker.worldEditFEtoolsInstalled) return;
-        selection = null;
-        sel1 = null;
-        sel2 = null;
-        FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
-    }
+	public void setWandEnabled(boolean wandEnabled)
+	{
+		this.wandEnabled = wandEnabled;
+	}
 
-    public List<ItemStack> getHiddenItems()
-    {
-        return hiddenItems;
+	public int getWandDmg()
+	{
+		return wandDmg;
+	}
 
-    }
+	public void setWandDmg(int wandDmg)
+	{
+		this.wandDmg = wandDmg;
+	}
 
-    public class FESelectionProvider implements ISelectionProvider
-    {
-        private UUID user;
+	// ----------------------------------------------
 
-        protected FESelectionProvider(UUID username)
-        {
-            user = username;
-        }
+	public long getFirstJoin()
+	{
+		return firstJoin;
+	}
 
-        @Override public Point getPoint1(EntityPlayerMP player)
-        {
-            return sel1;
-        }
+	public int getTimePlayed()
+	{
+		recalcTimePlayed();
+		return timePlayed;
+	}
 
-        @Override public Point getPoint2(EntityPlayerMP player)
-        {
-            return sel2;
-        }
+	public void recalcTimePlayed()
+	{
+		long current = System.currentTimeMillis() - loginTime;
+		int min = (int) (current / 60000);
+		timePlayed += min;
+		loginTime = System.currentTimeMillis();
+	}
 
-        @Override public Selection getSelection(EntityPlayerMP player)
-        {
-            return selection;
-        }
-    }
+	// ----------------------------------------------
+	// ------------- Command stuff ------------------
+	// ----------------------------------------------
+
+	public void KitCooldownTick()
+	{
+		for (String key : kitCooldown.keySet())
+		{
+			if (kitCooldown.get(key) == 0)
+			{
+				kitCooldown.remove(key);
+			}
+			else
+			{
+				kitCooldown.put(key, kitCooldown.get(key) - 1);
+			}
+		}
+	}
+
+	// ----------------------------------------------
+	// ------------ Selection stuff -----------------
+	// ----------------------------------------------
+
+	public void setPoint1(Point sel1)
+	{
+		if (EnvironmentChecker.worldEditFEtoolsInstalled)
+			return;
+
+		this.sel1 = sel1;
+
+		if (sel1 != null)
+		{
+			if (selection == null)
+			{
+				if (sel1 != null && sel2 != null)
+				{
+					selection = new Selection(sel1, sel2);
+				}
+			}
+			else
+			{
+				selection.setStart(sel1);
+			}
+		}
+
+		FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
+	}
+
+	public void setPoint2(Point sel2)
+	{
+		if (EnvironmentChecker.worldEditFEtoolsInstalled)
+			return;
+
+		this.sel2 = sel2;
+
+		if (sel2 != null)
+		{
+			if (selection == null)
+			{
+				if (sel1 != null && sel2 != null)
+				{
+					selection = new Selection(sel1, sel2);
+				}
+			}
+			else
+			{
+				selection.setEnd(sel2);
+			}
+		}
+
+		FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
+	}
+
+	public Point getPoint1()
+	{
+		return selprovider.getPoint1(FunctionHelper.getPlayerForUUID(playerID));
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public Selection getSelection()
+	{
+		return selprovider.getSelection(FunctionHelper.getPlayerForUUID(playerID));
+	}
+
+	// ----------------------------------------------
+	// ------------ Undo/Redo stuff -----------------
+	// ----------------------------------------------
+
+	public void addUndoAction(BackupArea backup)
+	{
+		undos.push(backup);
+		redos.clear();
+	}
+
+	public BackupArea getNextUndo()
+	{
+		if (undos.empty())
+		{
+			return null;
+		}
+
+		BackupArea back = undos.pop();
+		redos.push(back);
+		return back;
+	}
+
+	public BackupArea getNextRedo()
+	{
+		if (redos.empty())
+		{
+			return null;
+		}
+
+		BackupArea back = redos.pop();
+		undos.push(back);
+		return back;
+	}
+
+	public void clearSelection()
+	{
+		if (EnvironmentChecker.worldEditFEtoolsInstalled)
+			return;
+		selection = null;
+		sel1 = null;
+		sel2 = null;
+		FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
+	}
+
+	public List<ItemStack> getHiddenItems()
+	{
+		return hiddenItems;
+
+	}
+
+	public HashMap<String, Integer> getKitCooldown()
+	{
+		return kitCooldown;
+	}
+
+	// ----------------------------------------------
+
+	public WarpPoint getLastTeleportOrigin()
+	{
+		return lastTeleportOrigin;
+	}
+
+	public void setLastTeleportOrigin(WarpPoint lastTeleportStart)
+	{
+		this.lastTeleportOrigin = lastTeleportStart;
+	}
+
+	public int getTeleportCooldown()
+	{
+		return teleportCooldown;
+	}
+
+	public void setTeleportCooldown(int teleportCooldown)
+	{
+		this.teleportCooldown = teleportCooldown;
+	}
+
+
+	public WarpPoint getHome()
+	{
+		return home;
+	}
+
+	public void setHome(WarpPoint home)
+	{
+		this.home = home;
+	}
+
+	// ----------------------------------------------
+
+	public String getPrefix()
+	{
+		return prefix;
+	}
+
+	public void setPrefix(String prefix)
+	{
+		this.prefix = prefix;
+	}
+
+	public String getSuffix()
+	{
+		return suffix;
+	}
+
+	public void setSuffix(String suffix)
+	{
+		this.suffix = suffix;
+	}
+
+	public Point getPoint2()
+	{
+		return selprovider.getPoint2(FunctionHelper.getPlayerForUUID(playerID));
+	}
+
 }

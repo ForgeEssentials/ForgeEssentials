@@ -108,8 +108,8 @@ public class ChatFormatter {
         String gSuffix = "";
 
         PlayerInfo info = PlayerInfo.getPlayerInfo(event.player.getPersistentID());
-        String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
-        String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
+        String playerPrefix = info.getPrefix() == null ? "" : FunctionHelper.formatColors(info.getPrefix()).trim();
+        String playerSuffix = info.getSuffix() == null ? "" : FunctionHelper.formatColors(info.getSuffix()).trim();
 
         zoneID = APIRegistry.perms.getZonesAt(new WorldPoint(event.player)).get(0).getName();
 

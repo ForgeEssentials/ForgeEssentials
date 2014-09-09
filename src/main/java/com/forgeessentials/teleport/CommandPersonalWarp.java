@@ -17,8 +17,8 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	public final String PERMSETLIMIT = getPermissionNode() + ".setLimit";
@@ -63,7 +63,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 				{
 					PWarp warp = map.get(args[1]);
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-					playerInfo.back = new WarpPoint(sender);
+					playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
 					CommandBack.justDied.remove(sender.getPersistentID());
 					TeleportCenter.addToTpQue(warp.getPoint(), sender);
 				}

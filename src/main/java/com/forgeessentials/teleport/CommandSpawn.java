@@ -16,8 +16,8 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -43,7 +43,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
             if (player != null)
             {
-                PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(player);
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
 
                 String prop = zone.getPlayerPermission(player, CommandSetSpawn.SPAWN_PROP);
                 String[] split = prop.split("[;_]");
@@ -77,7 +77,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
             int z = Integer.parseInt(split[3]);
 
             WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, sender.cameraYaw, sender.cameraPitch);
-            PlayerInfo.getPlayerInfo(sender.getPersistentID()).back = new WarpPoint(sender);
+            PlayerInfo.getPlayerInfo(sender.getPersistentID()).setLastTeleportOrigin(new WarpPoint(sender));
             TeleportCenter.addToTpQue(spawn, sender);
             ChatUtils.sendMessage(sender, "Teleported to spawn.");
         }
@@ -91,7 +91,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
             if (player != null)
             {
-                PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(player);
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
 
                 WarpPoint spawn;
                 ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();

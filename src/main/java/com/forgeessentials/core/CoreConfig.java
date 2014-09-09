@@ -8,7 +8,7 @@ import net.minecraftforge.common.config.Property;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.TeleportCenter;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CoreConfig {
     public static final File mainconfig = new File(ForgeEssentials.FEDIR, "main.cfg");
@@ -51,11 +51,11 @@ public class CoreConfig {
 
         prop = config.get("Core.Misc", "tpWarmup", 5);
         prop.comment = "The amount of time you need to stand still to TP.";
-        TeleportCenter.tpWarmup = prop.getInt(5);
+        TeleportCenter.setTeleportWarmup(prop.getInt(5));
 
         prop = config.get("Core.Misc", "tpCooldown", 5);
         prop.comment = "The amount of time you need to wait to TP again.";
-        TeleportCenter.tpCooldown = prop.getInt(5);
+        TeleportCenter.setTeleportCooldown(prop.getInt(5));
 
         prop = config.get("Core.Misc", "MajoritySleep", true);
         prop.comment = "If +50% of players sleep, make it day.";

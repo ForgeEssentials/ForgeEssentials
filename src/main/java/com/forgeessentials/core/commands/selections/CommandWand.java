@@ -51,9 +51,9 @@ public class CommandWand extends ForgeEssentialsCommandBase {
         boolean rebind = args.length > 0 && args[0].equalsIgnoreCase("rebind");
         
 		// Check for unbind
-		if (!rebind && ((info.wandEnabled && info.wandID.equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind")))) {
+		if (!rebind && ((info.isWandEnabled() && info.getWandID().equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind")))) {
 			ChatUtils.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
-			info.wandEnabled = false;
+			info.setWandEnabled(false);
 			return;
 		}
 
@@ -74,9 +74,9 @@ public class CommandWand extends ForgeEssentialsCommandBase {
 		}
 		
 		// Bind wand
-		info.wandEnabled = true;
-		info.wandID = wandId;
-		info.wandDmg = wandDmg;
+		info.setWandEnabled(true);
+		info.setWandID(wandId);
+		info.setWandDmg(wandDmg);
 		OutputHandler.chatConfirmation(sender, "Wand bound to " + wandName);
     }
 
@@ -84,7 +84,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
-        if (info.wandEnabled)
+        if (info.isWandEnabled())
         {
             return true;
         }

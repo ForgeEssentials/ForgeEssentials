@@ -1,4 +1,4 @@
-package com.forgeessentials.permissions;
+package com.forgeessentials.permissions.core;
 
 import java.io.File;
 
@@ -11,9 +11,13 @@ import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 
 public class ConfigPermissions extends ModuleConfigBase {
+
 	protected Configuration config;
+
 	protected DBConnector connector;
+
 	protected boolean importBool;
+
 	protected String importDir;
 
 	public ConfigPermissions(File file)
@@ -53,6 +57,12 @@ public class ConfigPermissions extends ModuleConfigBase {
 	{
 		connector.loadOrGenerate(config, "database");
 		config.load();
+	}
+
+
+	public DBConnector getDBConnector()
+	{
+		return connector;
 	}
 
 }

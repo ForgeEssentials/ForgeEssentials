@@ -17,8 +17,8 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandTPA extends ForgeEssentialsCommandBase {
 
@@ -48,7 +48,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
                         ChatUtils.sendMessage(data.sender, "Teleport request accepted.");
                         ChatUtils.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
                         PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(data.sender.getPersistentID());
-                        playerInfo.back = new WarpPoint(data.sender);
+                        playerInfo.setLastTeleportOrigin(new WarpPoint(data.sender));
                         CommandBack.justDied.remove(data.sender.getPersistentID());
                         TeleportModule.tpaListToRemove.add(data);
                         TeleportCenter.addToTpQue(new WarpPoint(data.receiver), data.sender);

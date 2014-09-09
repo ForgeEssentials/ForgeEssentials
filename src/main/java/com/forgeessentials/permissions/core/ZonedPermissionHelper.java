@@ -40,6 +40,10 @@ import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.mojang.authlib.GameProfile;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+
 /**
  * 
  * @author Bjoern Zeutzheim
@@ -57,12 +61,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	public ZonedPermissionHelper()
 	{
-		// MinecraftForge.EVENT_BUS.register(this);
+		FMLCommonHandler.instance().bus().register(this);
 		clear();
 	}
 
 	public void clear()
 	{
+		zones.clear();
 		rootZone = new RootZone();
 		addZone(rootZone);
 		addZone(new ServerZone(rootZone));
@@ -102,6 +107,15 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 			}
 		}
 		return perms;
+	}
+
+	@SubscribeEvent
+	public void playerLogin(PlayerLoggedInEvent e)
+	{
+		for (Zone zone : zones.values())
+		{
+			zone.updatePlayerIdents();
+		}
 	}
 
 	// ------------------------------------------------------------

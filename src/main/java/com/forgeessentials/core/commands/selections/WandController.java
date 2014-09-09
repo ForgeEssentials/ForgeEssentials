@@ -32,20 +32,20 @@ public class WandController {
 		EntityPlayer player = event.entityPlayer;
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
 
-		if (!info.wandEnabled)
+		if (!info.isWandEnabled())
 			return;
 
 		// Check if wand should activate
 		if (player.getCurrentEquippedItem() == null)
 		{
-			if (info.wandID != null)
+			if (info.getWandID() != null)
 				return;
 		}
 		else
 		{
-			if (!(player.getCurrentEquippedItem().getItem().getUnlocalizedName().equals(info.wandID)))
+			if (!(player.getCurrentEquippedItem().getItem().getUnlocalizedName().equals(info.getWandID())))
 				return;
-			if (player.getCurrentEquippedItem().getItemDamage() != info.wandDmg)
+			if (player.getCurrentEquippedItem().getItemDamage() != info.getWandDmg())
 				return;
 		}
 

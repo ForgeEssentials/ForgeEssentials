@@ -32,7 +32,6 @@ public class PlayerInfoResponse extends Response
     @Override
     public JsonElement getResponse(JsonObject input) throws JsonParseException
     {
-
         if (!input.has("username"))
         {
             JsonObject out = new JsonObject();
@@ -53,8 +52,8 @@ public class PlayerInfoResponse extends Response
         PlayerInfo pi = PlayerInfo.getPlayerInfo(player.getPersistentID());
         if (pi != null && sendHome)
         {
-            data.home = pi.home;
-            data.back = pi.back;
+            data.home = pi.getHome();
+            data.back = pi.getLastTeleportOrigin();
         }
 
         if (sendArmorAndHealth)

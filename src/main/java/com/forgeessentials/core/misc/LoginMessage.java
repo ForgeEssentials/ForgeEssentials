@@ -168,8 +168,8 @@ public class LoginMessage {
         if (player != null) {
             line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.getDisplayName()); // username
             PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
-            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerPrefix%", info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim());
-            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerSuffix%", info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim());
+            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerPrefix%", info.getPrefix() == null ? "" : FunctionHelper.formatColors(info.getPrefix()).trim());
+            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerSuffix%", info.getSuffix() == null ? "" : FunctionHelper.formatColors(info.getSuffix()).trim());
         }
 
         return line;

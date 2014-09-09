@@ -17,8 +17,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -71,7 +71,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
                 {
                     world = DimensionManager.getWorld(0);
                 }
-                PlayerInfo.getPlayerInfo(player.getPersistentID()).back = new WarpPoint(player);
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
                 // Doesnt work
                 // FunctionHelper.setPlayer(player, new Point(spawn), world);
                 //player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);

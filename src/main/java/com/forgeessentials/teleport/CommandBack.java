@@ -13,8 +13,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandBack extends ForgeEssentialsCommandBase {
     public static List justDied = new ArrayList<UUID>();
@@ -33,10 +33,10 @@ public class CommandBack extends ForgeEssentialsCommandBase {
             if (PermissionsManager.checkPerm(sender, "fe.teleport.back.ondeath"))
             {
                 PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-                if (info.back != null)
+                if (info.getLastTeleportOrigin() != null)
                 {
-                    WarpPoint death = info.back;
-                    info.back = new WarpPoint(sender);
+                    WarpPoint death = info.getLastTeleportOrigin();
+                    info.setLastTeleportOrigin(new WarpPoint(sender));
                     EntityPlayerMP player = (EntityPlayerMP) sender;
                     TeleportCenter.addToTpQue(death, player);
                 }
@@ -55,10 +55,10 @@ public class CommandBack extends ForgeEssentialsCommandBase {
         else if (PermissionsManager.checkPerm(sender, "fe.teleport.back.ontp"))
         {
             PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-            if (info.back != null)
+            if (info.getLastTeleportOrigin() != null)
             {
-                WarpPoint back = info.back;
-                info.back = new WarpPoint(sender);
+                WarpPoint back = info.getLastTeleportOrigin();
+                info.setLastTeleportOrigin(new WarpPoint(sender));
                 EntityPlayerMP player = (EntityPlayerMP) sender;
                 TeleportCenter.addToTpQue(back, player);
             }
