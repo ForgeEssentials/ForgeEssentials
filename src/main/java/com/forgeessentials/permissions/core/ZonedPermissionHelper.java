@@ -33,6 +33,8 @@ import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.Point;
@@ -46,7 +48,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 /**
  * 
- * @author Bjoern Zeutzheim
+ * @author Olee
  */
 public class ZonedPermissionHelper implements IPermissionsHelper {
 
@@ -61,14 +63,22 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	public ZonedPermissionHelper()
 	{
+		DataStorageManager.registerSaveableType(new ClassContainer(true, Zone.PermissionList.class, String.class, String.class));
+		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
+		DataStorageManager.registerSaveableType(new ClassContainer(RootZone.class));
+		DataStorageManager.registerSaveableType(new ClassContainer(ServerZone.class));
+		DataStorageManager.registerSaveableType(new ClassContainer(WorldZone.class));
+		DataStorageManager.registerSaveableType(new ClassContainer(AreaZone.class));
+		
 		FMLCommonHandler.instance().bus().register(this);
+		
+		rootZone = new RootZone();
 		clear();
 	}
 
 	public void clear()
 	{
 		zones.clear();
-		rootZone = new RootZone();
 		addZone(rootZone);
 		addZone(new ServerZone(rootZone));
 
@@ -84,6 +94,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		WorldZone world0 = getWorldZone(0);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", true);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", false);
+		
+		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(RootZone.class), rootZone);
 	}
 
 	public Set<String> enumAllPermissions()

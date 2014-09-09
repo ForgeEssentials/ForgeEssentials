@@ -48,7 +48,6 @@ public class ModulePermissions {
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
-		// DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
 
 		// Register permission manager
 		permissionHelper = new ZonedPermissionHelper();
@@ -65,7 +64,6 @@ public class ModulePermissions {
 		// Open database
 		SqlHelper.getInstance();
 
-		DataStorageManager.registerSaveableType(Zone.class);
 		DataStorageManager.registerSaveableType(AutoPromote.class);
 
 		MinecraftForge.EVENT_BUS.register(new PermissionEventHandler());

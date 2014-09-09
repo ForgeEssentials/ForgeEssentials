@@ -3,6 +3,8 @@ package com.forgeessentials.api.permissions;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -11,16 +13,20 @@ import com.forgeessentials.util.selections.WorldPoint;
  * {@link AreaZone} covers just a specific area in one world. It has higher priority than all other {@link Zone} types. Area zones can overlap. Priority is then
  * decided by assigning highest priority to the innermost, smallest area.
  * 
- * @author Bjoern Zeutzheim
+ * @author Olee
  */
+@SaveableObject
 public class AreaZone extends Zone {
 
 	private WorldZone worldZone;
 
+	@SaveableField
 	private String name;
 
+	@SaveableField
 	private AreaBase area;
 
+	@SaveableField
 	private int priority;
 
 	public AreaZone(WorldZone worldZone, String name, AreaBase area)

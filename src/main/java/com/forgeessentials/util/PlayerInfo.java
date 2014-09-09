@@ -443,6 +443,7 @@ public class PlayerInfo {
 		return home;
 	}
 
+
 	public void setHome(WarpPoint home)
 	{
 		this.home = home;

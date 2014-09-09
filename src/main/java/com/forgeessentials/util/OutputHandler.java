@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public final class OutputHandler {
+	
     public static LogWrapper felog;
 
     public static boolean debugmode;

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -12,12 +14,14 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being {@link RootZone}.
  * 
- * @author Bjoern Zeutzheim
+ * @author Olee
  */
+@SaveableObject
 public class ServerZone extends Zone {
 
 	private RootZone rootZone;
-	
+
+	@SaveableField
 	private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
 
 	public ServerZone(RootZone rootZone)

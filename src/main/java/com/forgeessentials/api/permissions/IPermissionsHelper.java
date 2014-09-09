@@ -18,7 +18,7 @@ import com.forgeessentials.util.selections.WorldPoint;
 /**
  * {@link IPermissionsHelper} is the primary access-point to the permissions-system.
  * 
- * @author Bjoern Zeutzheim
+ * @author Olee
  */
 public interface IPermissionsHelper extends IPermissionsProvider {
 

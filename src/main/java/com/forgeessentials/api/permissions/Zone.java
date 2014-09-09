@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.SaveableField;
+import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -22,15 +25,26 @@ import net.minecraft.entity.player.EntityPlayerMP;
  * </pre>
  * 
  * 
- * @author Bjoern Zeutzheim
+ * @author Olee
  */
+@SaveableObject
 public abstract class Zone {
 
+	/**
+	 * {@link PermissionList} class is used to allow data API retrieving generics attributes.
+	 */
+	public class PermissionList extends HashMap<String, String> {
+	}
+
+	@UniqueLoadingKey
+	@SaveableField
 	private int id;
 
-	private Map<UserIdent, Map<String, String>> playerPermissions = new HashMap<UserIdent, Map<String, String>>();
+	@SaveableField
+	private Map<UserIdent, PermissionList> playerPermissions = new HashMap<UserIdent, PermissionList>();
 
-	private Map<String, Map<String, String>> groupPermissions = new HashMap<String, Map<String, String>>();
+	@SaveableField
+	private Map<String, PermissionList> groupPermissions = new HashMap<String, PermissionList>();
 
 	/**
 	 * Gets the unique zone-ID
@@ -105,7 +119,7 @@ public abstract class Zone {
 	 * 
 	 * @return
 	 */
-	public Collection<Map<String, String>> getPlayers()
+	public Collection<PermissionList> getPlayers()
 	{
 		return playerPermissions.values();
 	}
@@ -116,7 +130,7 @@ public abstract class Zone {
 	 * @param ident
 	 * @return
 	 */
-	public Map<String, String> getPlayerPermissions(UserIdent ident)
+	public PermissionList getPlayerPermissions(UserIdent ident)
 	{
 		return playerPermissions.get(ident);
 	}
@@ -127,12 +141,12 @@ public abstract class Zone {
 	 * @param ident
 	 * @return
 	 */
-	public Map<String, String> getOrCreatePlayerPermissions(UserIdent ident)
+	public PermissionList getOrCreatePlayerPermissions(UserIdent ident)
 	{
-		Map<String, String> map = playerPermissions.get(ident);
+		PermissionList map = playerPermissions.get(ident);
 		if (map == null)
 		{
-			map = new HashMap<String, String>();
+			map = new PermissionList();
 			playerPermissions.put(ident, map);
 		}
 		return playerPermissions.get(ident);
@@ -147,7 +161,7 @@ public abstract class Zone {
 	 */
 	public String getPlayerPermission(UserIdent ident, String permissionNode)
 	{
-		Map<String, String> map = getPlayerPermissions(ident);
+		PermissionList map = getPlayerPermissions(ident);
 		if (map != null)
 		{
 			return map.get(permissionNode);
@@ -176,7 +190,7 @@ public abstract class Zone {
 	 */
 	public Boolean checkPlayerPermission(UserIdent ident, String permissionNode)
 	{
-		Map<String, String> map = getPlayerPermissions(ident);
+		PermissionList map = getPlayerPermissions(ident);
 		if (map != null)
 		{
 			return !map.get(permissionNode).equals(IPermissionsHelper.PERMISSION_FALSE);
@@ -195,7 +209,7 @@ public abstract class Zone {
 	{
 		if (ident != null)
 		{
-			Map<String, String> map = getOrCreatePlayerPermissions(ident);
+			PermissionList map = getOrCreatePlayerPermissions(ident);
 			map.put(permissionNode, value);
 		}
 	}
@@ -224,7 +238,7 @@ public abstract class Zone {
 		// It should update the map entry then
 		for (Iterator iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
 		{
-			Map.Entry<UserIdent, Map<String, String>> entry = (Map.Entry<UserIdent, Map<String, String>>) iterator.next();
+			Map.Entry<UserIdent, PermissionList> entry = (Map.Entry<UserIdent, PermissionList>) iterator.next();
 			if (!entry.getKey().wasValidUUID())
 			{
 				if (entry.getKey().isValidUUID())
@@ -245,7 +259,7 @@ public abstract class Zone {
 	 * 
 	 * @return
 	 */
-	public Collection<Map<String, String>> getGroups()
+	public Collection<PermissionList> getGroups()
 	{
 		return groupPermissions.values();
 	}
@@ -256,7 +270,7 @@ public abstract class Zone {
 	 * @param group
 	 * @return
 	 */
-	public Map<String, String> getGroupPermissions(String group)
+	public PermissionList getGroupPermissions(String group)
 	{
 		return groupPermissions.get(group);
 	}
@@ -267,12 +281,12 @@ public abstract class Zone {
 	 * @param group
 	 * @return
 	 */
-	public Map<String, String> getOrCreateGroupPermissions(String group)
+	public PermissionList getOrCreateGroupPermissions(String group)
 	{
-		Map<String, String> map = groupPermissions.get(group);
+		PermissionList map = groupPermissions.get(group);
 		if (map == null)
 		{
-			map = new HashMap<String, String>();
+			map = new PermissionList();
 			groupPermissions.put(group, map);
 		}
 		return groupPermissions.get(group);
@@ -287,7 +301,7 @@ public abstract class Zone {
 	 */
 	public String getGroupPermission(String group, String permissionNode)
 	{
-		Map<String, String> map = getGroupPermissions(group);
+		PermissionList map = getGroupPermissions(group);
 		if (map != null)
 		{
 			return map.get(permissionNode);
@@ -304,7 +318,7 @@ public abstract class Zone {
 	 */
 	public Boolean checkGroupPermission(String group, String permissionNode)
 	{
-		Map<String, String> map = getGroupPermissions(group);
+		PermissionList map = getGroupPermissions(group);
 		if (map != null)
 		{
 			return !map.get(permissionNode).equals(IPermissionsHelper.PERMISSION_FALSE);
@@ -323,7 +337,7 @@ public abstract class Zone {
 	{
 		if (group != null)
 		{
-			Map<String, String> map = getOrCreateGroupPermissions(group);
+			PermissionList map = getOrCreateGroupPermissions(group);
 			map.put(permissionNode, value);
 		}
 	}

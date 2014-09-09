@@ -2,16 +2,25 @@ package com.forgeessentials.util;
 
 import java.util.UUID;
 
+import com.forgeessentials.commands.util.Kit;
+import com.forgeessentials.data.api.IReconstructData;
+import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.Reconstructor;
+import com.forgeessentials.data.api.SaveableObject.SaveableField;
+
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
+@SaveableObject(SaveInline = true)
 public class UserIdent {
 
+	@SaveableField
 	private UUID uuid;
 
+	@SaveableField
 	private String username;
 
 	public UserIdent(UUID uuid)
@@ -53,6 +62,12 @@ public class UserIdent {
 			throw new IllegalArgumentException();
 		this.uuid = uuid;
 		this.username = username;
+	}
+
+	@Reconstructor
+	private static UserIdent reconstruct(IReconstructData tag)
+	{
+		return new UserIdent((UUID) tag.getFieldValue("uuid"), (String) tag.getFieldValue("username"));
 	}
 
 	public void identifyUser()

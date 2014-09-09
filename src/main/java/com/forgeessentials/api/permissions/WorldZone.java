@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -13,14 +15,17 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * {@link WorldZone} covers the entirety of a world. Third lowest in priority with next being {@link ServerZone}.
  * 
- * @author Bjoern Zeutzheim
+ * @author Olee
  */
+@SaveableObject
 public class WorldZone extends Zone {
 	
 	private ServerZone serverZone;
 
+	@SaveableField
 	private int dimensionID;
 
+	@SaveableField
 	private List<AreaZone> areaZones = new ArrayList<AreaZone>();
 
 	public WorldZone(ServerZone serverZone, int dimensionID)

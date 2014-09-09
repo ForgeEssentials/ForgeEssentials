@@ -3,6 +3,8 @@ package com.forgeessentials.api.permissions;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -12,14 +14,15 @@ import net.minecraft.entity.player.EntityPlayer;
  * {@link RootZone} is the root of the permission tree and has the lowest priority of all zones. It's purpose is to hold default permissions, which have been
  * set by {@link IPermissionsHelper#registerPermission()}
  * 
- * @author Bjoern Zeutzheim
+ * @author Olee
  */
+@SaveableObject
 public class RootZone extends Zone {
 
-	// TODO: Persist this field and all child nodes
+	@SaveableField
 	private ServerZone serverZone;
 
-	// TODO: Persist this field
+	@SaveableField
 	private int maxZoneID;
 	
 	//private List<PlayerData> players;
