@@ -2,9 +2,11 @@ package com.forgeessentials.api.permissions;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -26,7 +28,7 @@ public abstract class Zone {
 
 	private int id;
 
-	private Map<String, Map<String, String>> playerPermissions = new HashMap<String, Map<String, String>>();
+	private Map<UserIdent, Map<String, String>> playerPermissions = new HashMap<UserIdent, Map<String, String>>();
 
 	private Map<String, Map<String, String>> groupPermissions = new HashMap<String, Map<String, String>>();
 
@@ -111,41 +113,41 @@ public abstract class Zone {
 	/**
 	 * Gets the player permissions for the specified player, or null if not present.
 	 * 
-	 * @param uuid
+	 * @param ident
 	 * @return
 	 */
-	public Map<String, String> getPlayerPermissions(String uuid)
+	public Map<String, String> getPlayerPermissions(UserIdent ident)
 	{
-		return playerPermissions.get(uuid);
+		return playerPermissions.get(ident);
 	}
 
 	/**
 	 * Gets the player permissions for the specified player. If no permission-map is present, a new one is created.
 	 * 
-	 * @param uuid
+	 * @param ident
 	 * @return
 	 */
-	public Map<String, String> getOrCreatePlayerPermissions(String uuid)
+	public Map<String, String> getOrCreatePlayerPermissions(UserIdent ident)
 	{
-		Map<String, String> map = playerPermissions.get(uuid);
+		Map<String, String> map = playerPermissions.get(ident);
 		if (map == null)
 		{
 			map = new HashMap<String, String>();
-			playerPermissions.put(uuid, map);
+			playerPermissions.put(ident, map);
 		}
-		return playerPermissions.get(uuid);
+		return playerPermissions.get(ident);
 	}
 
 	/**
 	 * Returns the value of a player permission, or null if empty.
 	 * 
-	 * @param uuid
+	 * @param ident
 	 * @param permissionNode
 	 * @return
 	 */
-	public String getPlayerPermission(String uuid, String permissionNode)
+	public String getPlayerPermission(UserIdent ident, String permissionNode)
 	{
-		Map<String, String> map = getPlayerPermissions(uuid);
+		Map<String, String> map = getPlayerPermissions(ident);
 		if (map != null)
 		{
 			return map.get(permissionNode);
@@ -162,19 +164,19 @@ public abstract class Zone {
 	 */
 	public String getPlayerPermission(EntityPlayer player, String permissionNode)
 	{
-		return getPlayerPermission(player.getPersistentID().toString(), permissionNode);
+		return getPlayerPermission(new UserIdent(player), permissionNode);
 	}
 
 	/**
 	 * Checks, if a player permission is true, false or empty.
 	 * 
-	 * @param uuid
+	 * @param ident
 	 * @param permissionNode
 	 * @return true / false or null, if not set
 	 */
-	public Boolean checkPlayerPermission(String uuid, String permissionNode)
+	public Boolean checkPlayerPermission(UserIdent ident, String permissionNode)
 	{
-		Map<String, String> map = getPlayerPermissions(uuid);
+		Map<String, String> map = getPlayerPermissions(ident);
 		if (map != null)
 		{
 			return !map.get(permissionNode).equals(IPermissionsHelper.PERMISSION_FALSE);
@@ -185,15 +187,15 @@ public abstract class Zone {
 	/**
 	 * Set a player permission-property
 	 * 
-	 * @param uuid
+	 * @param ident
 	 * @param permissionNode
 	 * @param value
 	 */
-	public void setPlayerPermissionProperty(String uuid, String permissionNode, String value)
+	public void setPlayerPermissionProperty(UserIdent ident, String permissionNode, String value)
 	{
-		if (uuid != null)
+		if (ident != null)
 		{
-			Map<String, String> map = getOrCreatePlayerPermissions(uuid);
+			Map<String, String> map = getOrCreatePlayerPermissions(ident);
 			map.put(permissionNode, value);
 		}
 	}
@@ -205,9 +207,33 @@ public abstract class Zone {
 	 * @param permissionNode
 	 * @param value
 	 */
-	public void setPlayerPermission(String uuid, String permissionNode, boolean value)
+	public void setPlayerPermission(UserIdent ident, String permissionNode, boolean value)
 	{
-		setPlayerPermissionProperty(uuid, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
+		setPlayerPermissionProperty(ident, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
+	}
+
+	/**
+	 * Revalidates all UserIdent fields in playerPermissions to replace those which were hashed based on their playername. This function should always be called
+	 * as soon as a player connects to the server.
+	 */
+	public void updatePlayerIdents()
+	{
+		// TODO: TEST updatePlayerIdents !!!
+		// To do so add a permission by playername of user who is not connected
+		// When he joins an event needs to be fired that triggers this function
+		// It should update the map entry then
+		for (Iterator iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
+		{
+			Map.Entry<UserIdent, Map<String, String>> entry = (Map.Entry<UserIdent, Map<String, String>>) iterator.next();
+			if (!entry.getKey().wasValidUUID())
+			{
+				if (entry.getKey().isValidUUID())
+				{
+					iterator.remove();
+					playerPermissions.put(entry.getKey(), entry.getValue());
+				}
+			}
+		}
 	}
 
 	// ------------------------------------------------------------

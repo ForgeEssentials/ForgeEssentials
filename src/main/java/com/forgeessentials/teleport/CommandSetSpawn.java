@@ -19,6 +19,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -201,28 +202,22 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 		if (args[1].equalsIgnoreCase("player"))
 		{
 			String name = args[2];
-			String id = null;
+			UserIdent ident = null;
 			if (args[2].equalsIgnoreCase("_ME_"))
 			{
 				name = sender.getCommandSenderName();
-				id = APIRegistry.perms.getPlayerUUID(sender);
+				ident = new UserIdent(sender);
 			}
 			else
 			{
-				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
-				if (player == null)
+				ident = new UserIdent(name);
+				if (!ident.isValidUUID())
 				{
 					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", name));
 					OutputHandler.chatConfirmation(sender, name + " will be used, but may be inaccurate.");
 				}
-				else
-				{
-					name = player.getCommandSenderName();
-					id = APIRegistry.perms.getPlayerUUID(player);
-				}
 			}
-
-			zone.setPlayerPermissionProperty(id, permProp, prop);
+			zone.setPlayerPermissionProperty(ident, permProp, prop);
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else if (args[1].equalsIgnoreCase("group"))
@@ -368,20 +363,13 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 		if (args[1].equalsIgnoreCase("player"))
 		{
 			String name = args[2];
-			String id = null;
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, name);
-			if (player == null)
+			UserIdent ident = new UserIdent(name);
+			if (!ident.isValidUUID())
 			{
-				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", name));
 				OutputHandler.chatConfirmation(sender, name + " will be used, but may be inaccurate.");
 			}
-			else
-			{
-				name = player.getCommandSenderName();
-				id = APIRegistry.perms.getPlayerUUID(player);
-			}
-
-			zone.setPlayerPermissionProperty(id, permProp, prop);
+			zone.setPlayerPermissionProperty(ident, permProp, prop);
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else if (args[1].equalsIgnoreCase("group"))
@@ -391,8 +379,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 				OutputHandler.chatError(sender, args[2] + " does not exist as a group!");
 				return;
 			}
-
-			zone.setPlayerPermissionProperty(args[2], permProp, prop);
+			zone.setGroupPermissionProperty(args[2], permProp, prop);
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else if (args[1].equalsIgnoreCase("zone"))

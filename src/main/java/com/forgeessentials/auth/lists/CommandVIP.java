@@ -5,7 +5,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandVIP extends ForgeEssentialsCommandBase {
 
@@ -20,11 +20,11 @@ public class CommandVIP extends ForgeEssentialsCommandBase {
     {
         if (args.length >= 2 && args[0].equalsIgnoreCase("add"))
         {
-            APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]).toString(), "fe.auth.vip", true);
+            APIRegistry.perms.setPlayerPermission(new UserIdent(args[1]), "fe.auth.vip", true);
         }
         else if (args.length >= 2 && args[0].equalsIgnoreCase("remove"))
         {
-            APIRegistry.perms.setPlayerPermission(FunctionHelper.getPlayerID(args[1]).toString(), "fe.auth.vip", false);
+            APIRegistry.perms.setPlayerPermission(new UserIdent(args[1]), "fe.auth.vip", false);
         }
     }
 

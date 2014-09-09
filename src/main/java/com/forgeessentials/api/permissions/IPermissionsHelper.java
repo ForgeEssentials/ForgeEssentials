@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.api.IPermissionsProvider;
 
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -129,13 +130,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	String getPermissionProperty(EntityPlayer player, Zone zone, String permissionNode);
 
 	// ---------------------------------------------------------------------------
-
-	/**
-	 * Returns the UUID for the player, used for storing permissions
-	 * 
-	 * @return
-	 */
-	String getPlayerUUID(EntityPlayer player);
 	
 	/**
 	 * Sets a player permission
@@ -144,7 +138,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @param value
 	 */
-	void setPlayerPermission(String uuid, String permissionNode, boolean value);
+	void setPlayerPermission(UserIdent ident, String permissionNode, boolean value);
 	
 	/**
 	 * Sets a player permission-property
@@ -153,7 +147,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @param value
 	 */
-	void setPlayerPermissionProperty(String uuid, String permissionNode, String value);
+	void setPlayerPermissionProperty(UserIdent ident, String permissionNode, String value);
 	
 	/**
 	 * Sets a group permission
@@ -242,13 +236,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 */
 	WorldZone getWorldZone(int dimensionId);
 	
-	/**
-	 * Returns a collection of all {@link WorldZone}
-	 * 
-	 * @return
-	 */
-	Collection<WorldZone> getWorldZones();
-
 	// ---------------------------------------------------------------------------
 
 	/**

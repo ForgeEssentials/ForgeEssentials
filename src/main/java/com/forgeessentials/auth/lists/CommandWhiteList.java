@@ -7,79 +7,79 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.auth.AuthEventHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandWhiteList extends ForgeEssentialsCommandBase {
 
-    @Override
-    public String getCommandName()
-    {
+	@Override
+	public String getCommandName()
+	{
 
-        return "whitelist";
-    }
+		return "whitelist";
+	}
 
-    @Override
-    public void processCommand(ICommandSender sender, String[] args)
-    {
-        if (!AuthEventHandler.whitelist)
-        {
-            ChatUtils.sendMessage(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
-            ChatUtils.sendMessage(sender, "Note that server.properties will take precedent over the auth config.");
+	@Override
+	public void processCommand(ICommandSender sender, String[] args)
+	{
+		if (!AuthEventHandler.whitelist)
+		{
+			ChatUtils.sendMessage(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
+			ChatUtils.sendMessage(sender, "Note that server.properties will take precedent over the auth config.");
 
-        }
+		}
 
-        else if (args.length == 1 && args[0].equalsIgnoreCase("toggle"))
-        {
-            if (AuthEventHandler.whitelist)
-            {
-                AuthEventHandler.whitelist = false;
-                ChatUtils.sendMessage(sender, "FE Whitelist was on, it is now turned off.");
-            }
-            else
-            {
-                AuthEventHandler.whitelist = true;
-                ChatUtils.sendMessage(sender, "FE Whitelist was off, it is now turned on.");
-            }
-        }
+		else if (args.length == 1 && args[0].equalsIgnoreCase("toggle"))
+		{
+			if (AuthEventHandler.whitelist)
+			{
+				AuthEventHandler.whitelist = false;
+				ChatUtils.sendMessage(sender, "FE Whitelist was on, it is now turned off.");
+			}
+			else
+			{
+				AuthEventHandler.whitelist = true;
+				ChatUtils.sendMessage(sender, "FE Whitelist was off, it is now turned on.");
+			}
+		}
 
-        else if (args.length == 2)
-        {
-            if (args[0].equalsIgnoreCase("add"))
-            {
-                APIRegistry.perms.getServerZone().setPlayerPermission(FunctionHelper.getPlayerID(args[1]).toString(), "fe.auth.whitelist", true);
-            }
-            else if (args[0].equalsIgnoreCase("remove"))
-            {
-                APIRegistry.perms.getServerZone().setPlayerPermission(FunctionHelper.getPlayerID(args[1]).toString(), "fe.auth.whitelist", false);
-            }
-        }
-    }
+		else if (args.length == 2)
+		{
+			if (args[0].equalsIgnoreCase("add"))
+			{
+				APIRegistry.perms.getServerZone().setPlayerPermission(new UserIdent(args[1]), "fe.auth.whitelist", true);
+			}
+			else if (args[0].equalsIgnoreCase("remove"))
+			{
+				APIRegistry.perms.getServerZone().setPlayerPermission(new UserIdent(args[1]), "fe.auth.whitelist", false);
+			}
+		}
+	}
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
+	@Override
+	public boolean canConsoleUseCommand()
+	{
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.auth.whitelist.admin";
-    }
+	@Override
+	public String getPermissionNode()
+	{
+		return "fe.auth.whitelist.admin";
+	}
 
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
+	@Override
+	public String getCommandUsage(ICommandSender sender)
+	{
 
-        return "/whitelist ";
-    }
+		return "/whitelist ";
+	}
 
-    @Override
-    public RegisteredPermValue getDefaultPermission()
-    {
+	@Override
+	public RegisteredPermValue getDefaultPermission()
+	{
 
-        return RegisteredPermValue.OP;
-    }
+		return RegisteredPermValue.OP;
+	}
 
 }

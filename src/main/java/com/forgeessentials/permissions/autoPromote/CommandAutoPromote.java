@@ -241,7 +241,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		list.add("here");
 		list.add("global");
 		list.add("world");
-		for (WorldZone world : APIRegistry.perms.getWorldZones())
+		for (WorldZone world : APIRegistry.perms.getServerZone().getWorldZones().values())
 		{
 			for (Zone zone : world.getAreaZones())
 			{
