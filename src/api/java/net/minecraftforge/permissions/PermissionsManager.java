@@ -1,24 +1,7 @@
 package net.minecraftforge.permissions;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import com.google.common.collect.ImmutableMap;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.LoaderState;
-import net.minecraft.dispenser.ILocation;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.permissions.api.IPermissionsProvider;
-import net.minecraftforge.permissions.api.context.IContext;
-import net.minecraftforge.permissions.opbasedimpl.OpPermSystem;
+import cpw.mods.fml.common.FMLLog;
 
 /**
  * The main entry point for the Permissions API.
@@ -27,68 +10,44 @@ import net.minecraftforge.permissions.opbasedimpl.OpPermSystem;
  */
 public final class PermissionsManager
 {
-    private static IPermissionsProvider FACTORY = new OpPermSystem();
+    private static IPermissionsProvider provider = new DefaultPermProvider();
+    
+    private static boolean wasSet = false;
     
     private PermissionsManager(){}
     
-    public static void initialize()
+    public static boolean checkPermission(EntityPlayer player, String permissionNode)
     {
-        setPermProvider(null);
-    }
-
-    private static       boolean            wasSet  = false;
-    
-    /**
-     * Check a permission with no contexts
-     * @param player The EntityPlayer being checked
-     * @param node The permission node to be checked
-     * @return true if permission allowed, false if not
-     */
-    public static boolean checkPerm(EntityPlayer player, String node)
-    {
-        ImmutableMap map = ImmutableMap.of();
-        return FACTORY.checkPerm(player, node, map);
-    }
-    
-    /**
-     * Check a permission with contexts
-     * @param player
-     * @param node
-     * @param contextInfo An ImmutableMap with your contexts. 
-     * 
-     * To build an ImmutableMap of contexts, you will need to call:
-     * ImmutableMap.of("key", val, "key2", val2); etc where keyX is your key and val is the context.
-     * 
-     * The following are the standard keys to which the values should be assigned.
-     * sourcePlayer, targetPlayer, sourceLocation, targetLocation,
-     * sourceEntity, targetEntity, sourceTileEntity, targetTileEntity, sourceWorld, targetWorld
-     * 
-     * It is not necessary for the blackboard to contain an entry for every one of the above keys. Instead it should contain only one or two entries with the that best describes the value.
-     * @return true if permission allowed, false if not
-     */
-    public static boolean checkPerm(EntityPlayer player, String node, Map<String, IContext> contextInfo)
-    {
-        return FACTORY.checkPerm(player, node, contextInfo);
+        return provider.checkPermission(new PermissionContext().setPlayer(player), permissionNode);
     }
 
     /**
-     * Get the factory
-     * FOR ADVANCED OPERATIONS
-     * @return the current permission implementor
+     * Checks a permission
+     * 
+     * @param context
+     *            Context, where the permission is checked in.
+     * @param permissionNode
+     *            The permission node, that should be checked
+     * @return Whether the permission is allowed
      */
-    public static IPermissionsProvider getPermProvider()
+    public static boolean checkPermission(IContext contextInfo, String permissionNode)
     {
-        return FACTORY;
+        return provider.checkPermission(contextInfo, permissionNode);
     }
-    
+
     /**
      * This is where permissions are registered with their default value.
-     * If you want to register permissions for commands, please use the methods in CommandHandlerForge instead.
-     * @param perms
+     * 
+     * @param permissionNode
+     * @param level
+     *            Default level of the permission. This can be used to tell the
+     *            underlying {@link IPermissionsProvider} whether a player
+     *            should be allowed to access this permission by default, or as
+     *            operator only.
      */
-    public static void registerPermission(String node, RegisteredPermValue allow)
+    public static void registerPermission(String permissionNode, RegisteredPermValue level)
     {
-        FACTORY.registerPermission(node, allow);
+        provider.registerPermission(permissionNode, level);
     }
 
     /**
@@ -106,13 +65,13 @@ public final class PermissionsManager
         }
         else if (wasSet)
         {
-            throw new IllegalStateException(String.format("Attempted to register permissions framework %s1 when permissions framework %s2 is already registered!", factory.getName(), FACTORY.getName()));
+            throw new IllegalStateException(String.format("Attempted to register permissions framework %s1 when permissions framework %s2 is already registered!", factory.getClass().getName(), provider.getClass().getName()));
         }
         else
         {
-            FACTORY = factory;
+            provider = factory;
             wasSet = true;
-            FMLLog.fine("Registered permissions framework " + FACTORY.getName());
+            FMLLog.fine("Registered permissions framework " + provider.getClass().getName());
         }
     }
     
@@ -138,16 +97,6 @@ public final class PermissionsManager
                 if (value.name().equalsIgnoreCase(name)) return value;
             }
             return null;
-        }
-    }
-    
-    public static class UnregisteredPermissionException extends RuntimeException
-    {
-        public final String node;
-        public UnregisteredPermissionException(String node)
-        {
-            super("Unregistered Permission encountered! "+node);
-            this.node = node;
         }
     }
 }
