@@ -16,7 +16,7 @@ public class PermissionsListWriter {
 
 	public PermissionsListWriter()
 	{
-		output = new File(ModulePermissions.permsFolder, OUTPUT_FILE);
+		output = new File(ModulePermissions.moduleFolder, OUTPUT_FILE);
 		if (output.exists())
 		{
 			output.delete();

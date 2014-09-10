@@ -3,44 +3,32 @@ package com.forgeessentials.permissions.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.UUID;
 
-import net.minecraft.dispenser.ILocation;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.permissions.IContext;
+import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-import net.minecraftforge.permissions.api.context.EntityContext;
-import net.minecraftforge.permissions.api.context.IContext;
-import net.minecraftforge.permissions.api.context.PlayerContext;
-import net.minecraftforge.permissions.api.context.TileEntityContext;
-import net.minecraftforge.permissions.api.context.WorldContext;
 
 import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.RootZone;
+import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
-import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -59,6 +47,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private Map<String, Group> groups = new HashMap<String, Group>();
 
+	private ZonePersistanceProvider persistanceProvider;
+
 	// ------------------------------------------------------------
 
 	public ZonedPermissionHelper()
@@ -69,36 +59,42 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		DataStorageManager.registerSaveableType(new ClassContainer(ServerZone.class));
 		DataStorageManager.registerSaveableType(new ClassContainer(WorldZone.class));
 		DataStorageManager.registerSaveableType(new ClassContainer(AreaZone.class));
-		
+
 		FMLCommonHandler.instance().bus().register(this);
-		
+
 		rootZone = new RootZone();
 		clear();
 	}
 
 	public void save()
 	{
-		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(ServerZone.class), rootZone.getServerZone());
-		load();
+		if (persistanceProvider != null)
+			persistanceProvider.save(rootZone.getServerZone());
 	}
 
-	public void load()
+	public boolean load()
 	{
-		ServerZone serverZone = (ServerZone) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(ServerZone.class), "1");
-		if (serverZone != null) {
-			zones.clear();
-			rootZone.setServerZone(serverZone);
-			addZone(rootZone);
-			addZone(serverZone);
-			for (WorldZone worldZone : serverZone.getWorldZones().values())
+		if (persistanceProvider != null)
+		{
+			ServerZone serverZone = persistanceProvider.load();
+			if (serverZone != null)
 			{
-				addZone(worldZone);
-				for (AreaZone areaZone : worldZone.getAreaZones())
+				zones.clear();
+				rootZone.setServerZone(serverZone);
+				addZone(rootZone);
+				addZone(serverZone);
+				for (WorldZone worldZone : serverZone.getWorldZones().values())
 				{
-					addZone(areaZone);
+					addZone(worldZone);
+					for (AreaZone areaZone : worldZone.getAreaZones())
+					{
+						addZone(areaZone);
+					}
 				}
+				return true;
 			}
 		}
+		return false;
 	}
 
 	public void clear()
@@ -119,6 +115,11 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		WorldZone world0 = getWorldZone(0);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", true);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", false);
+	}
+
+	public void setPersistanceProvider(ZonePersistanceProvider persistanceProvider)
+	{
+		this.persistanceProvider = persistanceProvider;
 	}
 
 	public Set<String> enumAllPermissions()
@@ -301,65 +302,80 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	// ------------------------------------------------------------
 	// -- IPermissionProvider
 	// ------------------------------------------------------------
-
-	@Override
-	public String getName()
+	/**
+	 * Will return the player if set or the commandSender, if it is an instance of {@link EntityPlayer}
+	 */
+	public static EntityPlayer contextGetPlayerOrCommandPlayer(IContext context)
 	{
-		return "ForgeEssentials";
+		return (context.getPlayer() != null) ? context.getPlayer() : (context.getCommandSender() instanceof EntityPlayer ? (EntityPlayer) context
+				.getCommandSender() : null);
+	}
+
+	private static boolean contextIsConsole(IContext context)
+	{
+		return context.getPlayer() == null && context.getCommandSender() != null && !(context.getCommandSender() instanceof EntityPlayer);
+	}
+
+	public static boolean contextIsPlayer(IContext context)
+	{
+		return (context.getPlayer() instanceof EntityPlayer) || (context.getCommandSender() instanceof EntityPlayer);
+	}
+
+	public static boolean contextHasPlayer(IContext context)
+	{
+		return (context.getPlayer() instanceof EntityPlayer) || (context.getCommandSender() instanceof EntityPlayer);
 	}
 
 	@Override
-	public boolean checkPerm(EntityPlayer player, String node, Map<String, IContext> contextInfo)
+	public boolean checkPermission(IContext context, String permissionNode)
 	{
-		return checkPermission(player, node);
-	}
+		// if (contextIsConsole(context)) return true;
 
-	public static final IContext GLOBAL = new IContext()
-	{
-	};
+		UserIdent ident = null;
+		EntityPlayer player = contextGetPlayerOrCommandPlayer(context);
+		WorldPoint loc = null;
+		WorldArea area = null;
+		int dim = 0;
 
-	@Override
-	public IContext getDefaultContext(EntityPlayer player)
-	{
-		IContext context = new PlayerContext(player);
-		return context;
-	}
+		if (player != null)
+		{
+			ident = new UserIdent(player);
+			// TODO: should be changed to context.getDimension()
+			dim = player.dimension;
+		}
 
-	@Override
-	public IContext getDefaultContext(TileEntity te)
-	{
-		return new TileEntityContext(te);
-	}
+		if (context.getTargetLocationStart() != null)
+		{
+			if (context.getTargetLocationEnd() != null)
+			{
+				area = new WorldArea(dim, new Point(context.getTargetLocationStart()), new Point(context.getTargetLocationEnd()));
+			}
+			else
+			{
+				loc = new WorldPoint(dim, context.getTargetLocationStart());
+			}
+		}
+		else if (context.getSourceLocationStart() != null)
+		{
+			if (context.getSourceLocationEnd() != null)
+			{
+				area = new WorldArea(dim, new Point(context.getSourceLocationStart()), new Point(context.getSourceLocationEnd()));
+			}
+			else
+			{
+				loc = new WorldPoint(dim, context.getSourceLocationStart());
+			}
+		}
+		else
+		{
+			if (player != null)
+			{
+				loc = new WorldPoint(player);
+			}
+		}
 
-	@Override
-	public IContext getDefaultContext(ILocation loc)
-	{
-		return new net.minecraftforge.permissions.api.context.Point(loc);
-	}
-
-	@Override
-	public IContext getDefaultContext(Entity entity)
-	{
-		return new EntityContext(entity);
-	}
-
-	@Override
-	public IContext getDefaultContext(World world)
-	{
-		return new WorldContext(world);
-	}
-
-	@Override
-	public IContext getGlobalContext()
-	{
-		return GLOBAL;
-	}
-
-	@Override
-	public IContext getDefaultContext(Object whoKnows)
-	{
-		// TODO Auto-generated method stub
-		return null;
+		return checkPermission(getPermission(ident, loc, area, getPlayerGroupNames(player), permissionNode, false));
+		// return checkPermission(player, node);
 	}
 
 	// ------------------------------------------------------------

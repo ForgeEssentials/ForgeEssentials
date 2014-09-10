@@ -32,7 +32,7 @@ public class CommandBurn extends FEcmdModuleCommands {
                 sender.setFire(15);
                 OutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (PermissionsManager.checkPerm(sender, getPermissionNode() + ".others"))
+            else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
                 if (player != null)
@@ -53,7 +53,7 @@ public class CommandBurn extends FEcmdModuleCommands {
                 sender.setFire(parseInt(sender, args[1]));
                 OutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (PermissionsManager.checkPerm(sender, getPermissionNode() + ".others"))
+            else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
                 if (player != null)

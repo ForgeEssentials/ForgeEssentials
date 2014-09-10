@@ -1,24 +1,20 @@
 package com.forgeessentials.backup;
 
+import com.forgeessentials.util.OutputHandler;
+import net.minecraftforge.common.DimensionManager;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.TimerTask;
 
-import net.minecraftforge.common.DimensionManager;
-
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.TaskRegistry;
-
-public class AutoBackup implements Runnable {
+public class AutoBackup extends TimerTask{
     public static boolean isBackingUp = false;
 
-    public AutoBackup()
-    {
-        TaskRegistry.registerRecurringTask(this, 0, BackupConfig.autoInterval, 0, 0, 0, BackupConfig.autoInterval, 0, 0);
-    }
+    public AutoBackup(){}
 
     @Override
     public void run()

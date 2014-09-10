@@ -33,8 +33,7 @@ public class FEModuleServerInitEvent extends FEModuleEvent {
     {
         if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
         {
-            CommandHandlerForge.doPermissionReg(command.getCommandName(), command.getPermissionNode(), command.getDefaultPermission());
+            CommandHandlerForge.registerCommand(command, command.getPermissionNode(), command.getDefaultPermission());
         }
-        event.registerServerCommand(command);
     }
 }

@@ -51,7 +51,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 2)
         {
-            if (PermissionsManager.checkPerm(sender, getPermissionNode() + ".others"))
+            if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = getPlayer(sender, args[0]);
                 if (args[1].equalsIgnoreCase("del"))

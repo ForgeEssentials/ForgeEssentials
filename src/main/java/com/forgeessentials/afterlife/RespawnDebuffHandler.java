@@ -23,14 +23,14 @@ public class RespawnDebuffHandler {
             return;
         }
         EntityPlayer player = e.player;
-        if (!PermissionsManager.checkPerm(player, BYPASSPOTION))
+        if (!PermissionsManager.checkPermission(player, BYPASSPOTION))
         {
             for (PotionEffect effect : potionEffects)
             {
                 player.addPotionEffect(effect);
             }
         }
-        if (!PermissionsManager.checkPerm(player, BYPASSSTATS))
+        if (!PermissionsManager.checkPermission(player, BYPASSSTATS))
         {
             player.getFoodStats().addStats(-1 * (20 - food), 0);
             player.setHealth(hp);

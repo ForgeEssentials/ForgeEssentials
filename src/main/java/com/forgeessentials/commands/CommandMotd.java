@@ -28,7 +28,7 @@ public class CommandMotd extends FEcmdModuleCommands {
         {
         	if (args[0].equalsIgnoreCase("reload")) {
         		LoginMessage.loadFile();
-        	} else if (PermissionsManager.checkPerm(sender, getPermissionNode() + ".others")) {
+        	} else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others")) {
         		ArrayList<String> motd = new ArrayList<String>();
         		motd.add(StringUtils.join(args, " "));
         		LoginMessage.setMOTD(motd);

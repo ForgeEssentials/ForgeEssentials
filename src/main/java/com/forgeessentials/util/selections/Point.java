@@ -3,6 +3,7 @@ package com.forgeessentials.util.selections;
 import java.io.Serializable;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
 
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
@@ -40,7 +41,12 @@ public class Point implements Serializable, Comparable<Point> {
         z = (int) Math.floor(player.posZ);
     }
 
-    public int getX()
+	public Point(Vec3 vector)
+	{
+		this((int) vector.xCoord, (int) vector.yCoord, (int) vector.zCoord);
+	}
+
+	public int getX()
 	{
 		return x;
 	}

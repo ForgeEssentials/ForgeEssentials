@@ -23,6 +23,8 @@ import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
+
+import java.util.Timer;
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup {
     @FEModule.Config
@@ -32,6 +34,8 @@ public class ModuleBackup {
     public static File moduleDir;
 
     public static File baseFolder;
+
+    private Timer timer = new Timer();
 
     public static void msg(String msg)
     {
@@ -54,7 +58,7 @@ public class ModuleBackup {
             for (String username : manager.getAllUsernames())
             {
                 EntityPlayerMP player = manager.func_152612_a(username);
-                if (PermissionsManager.checkPerm(player, "ForgeEssentials.backup.msg"))
+                if (PermissionsManager.checkPermission(player, "ForgeEssentials.backup.msg"))
                 {
                     ChatUtils.sendMessage(player, EnumChatFormatting.AQUA + "[ForgeEssentials] " + msg);
                 }
@@ -78,11 +82,11 @@ public class ModuleBackup {
         e.registerServerCommand(new CommandBackup());
         if (BackupConfig.autoInterval != 0)
         {
-            new AutoBackup();
+            timer.schedule(new AutoBackup(), BackupConfig.autoInterval*60*1000, BackupConfig.autoInterval*60*1000);
         }
         if (BackupConfig.worldSaveInterval != 0)
         {
-            new AutoWorldSave();
+            timer.schedule(new AutoWorldSave(), BackupConfig.worldSaveInterval*60*1000, BackupConfig.worldSaveInterval*60*1000);
         }
         makeReadme();
 

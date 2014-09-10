@@ -127,7 +127,7 @@ public class Kit {
 		}
 		else
 		{
-			if (!PermissionsManager.checkPerm(player, CommandsEventHandler.BYPASS_KIT_COOLDOWN))
+			if (!PermissionsManager.checkPermission(player, CommandsEventHandler.BYPASS_KIT_COOLDOWN))
 			{
 				PlayerInfo.getPlayerInfo(player.getPersistentID()).getKitCooldown().put(getName(), getCooldown());
 			}

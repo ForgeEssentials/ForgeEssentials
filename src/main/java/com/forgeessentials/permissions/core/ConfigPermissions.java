@@ -59,7 +59,6 @@ public class ConfigPermissions extends ModuleConfigBase {
 		config.load();
 	}
 
-
 	public DBConnector getDBConnector()
 	{
 		return connector;

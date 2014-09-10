@@ -29,7 +29,7 @@ public class CommandHeal extends FEcmdModuleCommands {
         {
             heal(sender);
         }
-        else if (args.length == 1 && PermissionsManager.checkPerm(sender, getPermissionNode() + ".others"))
+        else if (args.length == 1 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
             if (player != null)

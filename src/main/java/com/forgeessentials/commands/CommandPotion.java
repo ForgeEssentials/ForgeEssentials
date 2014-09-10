@@ -89,7 +89,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         {
             sender.addPotionEffect(eff);
         }
-        else if (PermissionsManager.checkPerm(sender, getPermissionNode() + ".others"))
+        else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
             EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
 

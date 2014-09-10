@@ -20,31 +20,31 @@ public class CompatReiMinimap {
         {
             String MOTD = "\u00a7e\u00a7f";
 
-            if (PermissionsManager.checkPerm(username, cavemap))
+            if (PermissionsManager.checkPermission(username, cavemap))
             {
                 MOTD = "\u00a77" + MOTD;
             }
-            if (PermissionsManager.checkPerm(username, radarSquid))
+            if (PermissionsManager.checkPermission(username, radarSquid))
             {
                 MOTD = "\u00a76" + MOTD;
             }
-            if (PermissionsManager.checkPerm(username, radarSlime))
+            if (PermissionsManager.checkPermission(username, radarSlime))
             {
                 MOTD = "\u00a75" + MOTD;
             }
-            if (PermissionsManager.checkPerm(username, radarMod))
+            if (PermissionsManager.checkPermission(username, radarMod))
             {
                 MOTD = "\u00a74" + MOTD;
             }
-            if (PermissionsManager.checkPerm(username, radarAnimal))
+            if (PermissionsManager.checkPermission(username, radarAnimal))
             {
                 MOTD = "\u00a73" + MOTD;
             }
-            if (PermissionsManager.checkPerm(username, radarPlayer))
+            if (PermissionsManager.checkPermission(username, radarPlayer))
             {
                 MOTD = "\u00a72" + MOTD;
             }
-            if (PermissionsManager.checkPerm(username, cavemap))
+            if (PermissionsManager.checkPermission(username, cavemap))
             {
                 MOTD = "\u00a71" + MOTD;
             }

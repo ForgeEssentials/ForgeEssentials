@@ -5,14 +5,8 @@ import com.forgeessentials.api.permissions.ServerZone;
 
 public abstract class ZonePersistanceProvider {
 
-	private ZonedPermissionHelper permissionManager;
+	public abstract void save(ServerZone serverZone);
 	
-	public ZonePersistanceProvider(ZonedPermissionHelper permissionManager) {
-		this.permissionManager = permissionManager;
-	}
-	
-	public abstract void save(RootZone rootZone);
-	
-	public abstract RootZone load();
+	public abstract ServerZone load();
 	
 }

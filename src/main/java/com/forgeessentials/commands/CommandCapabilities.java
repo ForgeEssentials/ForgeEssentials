@@ -76,7 +76,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         {
             if (sender instanceof EntityPlayer)
             {
-                if (!PermissionsManager.checkPerm((EntityPlayer) sender, getPermissionNode() + ".others"))
+                if (!PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 {
                     OutputHandler.chatError(sender, "You don't have permissions for that.");
                     return;
@@ -116,7 +116,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         {
             if (sender instanceof EntityPlayer)
             {
-                if (!PermissionsManager.checkPerm((EntityPlayer) sender, getPermissionNode() + ".others"))
+                if (!PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 {
                     OutputHandler.chatError(sender, "You don't have permissions for that.");
                     return;

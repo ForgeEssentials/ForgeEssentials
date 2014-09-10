@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.data.api.IReconstructData;
@@ -15,6 +17,7 @@ import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
+import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -142,6 +145,16 @@ public abstract class Zone {
 	public PermissionList getPlayerPermissions(UserIdent ident)
 	{
 		return playerPermissions.get(ident);
+	}
+
+	/**
+	 * Gets all player permissions
+	 * 
+	 * @return
+	 */
+	public Set<Entry<UserIdent, PermissionList>> getPlayerPermissions()
+	{
+		return playerPermissions.entrySet();
 	}
 
 	/**
@@ -282,6 +295,16 @@ public abstract class Zone {
 	public PermissionList getGroupPermissions(String group)
 	{
 		return groupPermissions.get(group);
+	}
+
+	/**
+	 * Gets all group permissions
+	 * 
+	 * @return
+	 */
+	public Set<Entry<String, PermissionList>> getGroupPermissions()
+	{
+		return groupPermissions.entrySet();
 	}
 
 	/**

@@ -94,7 +94,7 @@ public class ChatFormatter {
 		 */
         if (event.message.contains("&"))
         {
-            if (PermissionsManager.checkPerm(event.player, "ForgeEssentials.Chat.usecolor"))
+            if (PermissionsManager.checkPermission(event.player, "ForgeEssentials.Chat.usecolor"))
             {
                 message = FunctionHelper.formatColors(event.message);
             }

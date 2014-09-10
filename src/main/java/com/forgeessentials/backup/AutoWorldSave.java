@@ -1,15 +1,11 @@
 package com.forgeessentials.backup;
 
 import net.minecraftforge.common.DimensionManager;
+import java.util.TimerTask;
 
-import com.forgeessentials.util.tasks.TaskRegistry;
+public class AutoWorldSave extends TimerTask {
 
-public class AutoWorldSave implements Runnable {
-
-    public AutoWorldSave()
-    {
-        TaskRegistry.registerRecurringTask(this, 0, BackupConfig.worldSaveInterval, 0, 0, 0, BackupConfig.worldSaveInterval, 0, 0);
-    }
+    public AutoWorldSave(){}
 
     @Override
     public void run()

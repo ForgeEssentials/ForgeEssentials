@@ -203,7 +203,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-        return PermissionsManager.checkPerm(player, getPermissionNode());
+        return PermissionsManager.checkPermission(player, getPermissionNode());
     }
 
     @Override

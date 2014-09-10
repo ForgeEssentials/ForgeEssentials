@@ -1,6 +1,7 @@
 package com.forgeessentials.util.selections;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import com.forgeessentials.data.api.IReconstructData;
@@ -44,6 +45,12 @@ public class WorldPoint extends Point {
         super(player);
         dim = player.dimension;
     }
+
+	public WorldPoint(int dim, Vec3 vector)
+	{
+		super(vector);
+		this.dim = dim;
+	}
 
 	public int getDimension()
 	{

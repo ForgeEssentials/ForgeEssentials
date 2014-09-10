@@ -22,6 +22,7 @@ import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandTestPermission;
 import com.forgeessentials.permissions.commands.CommandZone;
+import com.forgeessentials.permissions.persistance.FlatfileProvider;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
@@ -34,9 +35,9 @@ public class ModulePermissions {
 
 	@FEModule.Config
 	public static ConfigPermissions config;
-
+	
 	@FEModule.ModuleDir
-	public static File permsFolder;
+	public static File moduleFolder;
 
 	private AutoPromoteManager autoPromoteManager;
 
@@ -49,8 +50,11 @@ public class ModulePermissions {
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 
-		// Register permission manager
+		// Create permission manager
 		permissionHelper = new ZonedPermissionHelper();
+		permissionHelper.setPersistanceProvider(new FlatfileProvider(new File(moduleFolder, "flat")));
+		
+		// Register permission manager
 		APIRegistry.perms = permissionHelper;
 		PermissionsManager.setPermProvider(permissionHelper);
 		
@@ -82,7 +86,6 @@ public class ModulePermissions {
 
 		// init perms and vMC command overrides
 		e.registerServerCommand(new CommandZone());
-
 		e.registerServerCommand(new CommandPermissions());
 		e.registerServerCommand(new CommandTestPermission());
 		e.registerServerCommand(new CommandAutoPromote());
@@ -107,21 +110,8 @@ public class ModulePermissions {
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		autoPromoteManager.stop();
-
-		// TODO: SAVE PERMS
-
-		// Clear perms (only needed for singleplayer)
+		permissionHelper.save();
 		permissionHelper.clear();
-
-		// save all the zones
-		// for (Zone zone : APIRegistry.perms.getZoneList())
-		// {
-		// if (zone == null || zone.isGlobalZone() || zone.isWorldZone())
-		// {
-		// continue;
-		// }
-		// DataStorageManager.getReccomendedDriver().saveObject(ZoneHelper.container, zone);
-		// }
 	}
 
 	private void registerPermissions()
@@ -133,18 +123,14 @@ public class ModulePermissions {
 		PermissionsManager.registerPermission("fe.perm.zone.remove.*", RegisteredPermValue.OP);
 		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
 		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
-
 		PermissionsManager.registerPermission("fe.perm.zone", RegisteredPermValue.OP);
 		PermissionsManager.registerPermission("fe.perm.zone.setparent", RegisteredPermValue.OP);
 		PermissionsManager.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
-
 		PermissionsManager.registerPermission("fe.perm.zone.info.*", RegisteredPermValue.TRUE);
 		PermissionsManager.registerPermission("fe.perm.zone.list", RegisteredPermValue.TRUE);
-
 		PermissionsManager.registerPermission("fe.perm.list", RegisteredPermValue.TRUE);
-
-		// CommandSetChecker.regMCOverrides();
 		PermissionsManager.registerPermission("fe.core.info", RegisteredPermValue.OP);
+		// CommandSetChecker.regMCOverrides();
 	}
 
 }

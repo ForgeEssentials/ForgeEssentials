@@ -8,7 +8,7 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.api.IPermissionsProvider;
+import net.minecraftforge.permissions.IPermissionsProvider;
 
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;

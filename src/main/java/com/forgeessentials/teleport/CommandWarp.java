@@ -45,7 +45,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         {
             if (TeleportDataManager.warps.containsKey(args[0].toLowerCase()))
             {
-                if (PermissionsManager.checkPerm(sender, getPermissionNode() + "." + args[0].toLowerCase()))
+                if (PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
                 {
                     Warp warp = TeleportDataManager.warps.get(args[0].toLowerCase());
                     PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
@@ -66,7 +66,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 2)
         {
-            if (PermissionsManager.checkPerm(sender, getPermissionNode() + ".admin"))
+            if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
             {
                 if (args[0].equalsIgnoreCase("set"))
                 {

@@ -48,7 +48,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 //        {
 //            if (args[0].equalsIgnoreCase("list"))
 //            {
-//                if (!PermissionsManager.checkPerm(sender, getPermissionNode() + ".list"))
+//                if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".list"))
 //                {
 //                    OutputHandler.chatError(sender,
 //                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -84,7 +84,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 //        {
 //            if (args[0].equalsIgnoreCase("list"))
 //            {
-//                if (!PermissionsManager.checkPerm(sender, getPermissionNode() + ".list"))
+//                if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".list"))
 //                {
 //                    OutputHandler.chatError(sender,
 //                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -135,7 +135,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 //                }
 //                else
 //                {
-//                    if (!PermissionsManager.checkPerm(sender, getPermissionNode( + ".info." + args[1])))
+//                    if (!PermissionsManager.checkPermission(sender, getPermissionNode( + ".info." + args[1])))
 //                    {
 //                        OutputHandler.chatError(sender,
 //                                "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -172,7 +172,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 //                }
 //                else
 //                {
-//                    if (!PermissionsManager.checkPerm(sender, getPermissionNode( + ".remove." + args[1])))
+//                    if (!PermissionsManager.checkPermission(sender, getPermissionNode( + ".remove." + args[1])))
 //                    {
 //                        OutputHandler.chatError(sender,
 //                                "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -196,7 +196,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 //                    OutputHandler.chatError(sender, "Invalid selection detected. Please check your selection.");
 //                    return;
 //                }
-//                else if (!PermissionsManager.checkPerm(new PermQueryPlayerArea(sender, getPermissionNode() + ".define", info.getSelection(), true)))
+//                else if (!PermissionsManager.checkPermission(new PermQueryPlayerArea(sender, getPermissionNode() + ".define", info.getSelection(), true)))
 //                {
 //                    OutputHandler.chatError(sender,
 //                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -248,7 +248,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 //                {
 //                    OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 //                }
-//                else if (!PermissionsManager.checkPerm(sender, getPermissionNode( + ".setparent." + args[1])))
+//                else if (!PermissionsManager.checkPermission(sender, getPermissionNode( + ".setparent." + args[1])))
 //                {
 //                    OutputHandler.chatError(sender,
 //                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -270,7 +270,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 //                    OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
 //                    return;
 //                }
-//                else if (!PermissionsManager.checkPerm(sender, getPermissionNode( + ".entry." + args[1])))
+//                else if (!PermissionsManager.checkPermission(sender, getPermissionNode( + ".entry." + args[1])))
 //                {
 //                    OutputHandler.chatError(sender,
 //                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -308,7 +308,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 //                    OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[1]));
 //                    return;
 //                }
-//                else if (!PermissionsManager.checkPerm(sender, getPermissionNode( + ".exit." + args[1])))
+//                else if (!PermissionsManager.checkPermission(sender, getPermissionNode( + ".exit." + args[1])))
 //                {
 //                    OutputHandler.chatError(sender,
 //                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");

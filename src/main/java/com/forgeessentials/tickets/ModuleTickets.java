@@ -102,7 +102,7 @@ public class ModuleTickets {
     @SubscribeEvent
      public void loadData(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (PermissionsManager.checkPerm(e.player, ModuleTickets.PERMBASE + ".admin"))
+        if (PermissionsManager.checkPermission(e.player, ModuleTickets.PERMBASE + ".admin"))
         {
             if (!ModuleTickets.ticketList.isEmpty())
             {

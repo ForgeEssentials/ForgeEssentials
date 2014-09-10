@@ -110,7 +110,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 					OutputHandler.chatError(sender, "That personal warp doesn't exist!");
 				}
 			}
-			else if (args[0].equalsIgnoreCase("limit") && PermissionsManager.checkPerm(sender, PERMSETLIMIT))
+			else if (args[0].equalsIgnoreCase("limit") && PermissionsManager.checkPermission(sender, PERMSETLIMIT))
 			{
 				if (args.length == 1)
 				{

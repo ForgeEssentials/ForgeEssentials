@@ -47,7 +47,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             throw new WrongUsageException("command.auth.usage");
         }
 
-        boolean hasAdmin = PermissionsManager.checkPerm(sender, getPermissionNode() + ".admin");
+        boolean hasAdmin = PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin");
 
         // one arg? must be help.
         if (args.length == 1)

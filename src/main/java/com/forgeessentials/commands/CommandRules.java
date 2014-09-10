@@ -219,7 +219,7 @@ public class CommandRules extends FEcmdModuleCommands {
             if (args[0].equalsIgnoreCase("help"))
             {
                 OutputHandler.chatConfirmation(sender, " - /rules [#]");
-                if (PermissionsManager.checkPerm(sender, getPermissionNode() + ".edit"))
+                if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
                 {
                     OutputHandler.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
                     OutputHandler.chatConfirmation(sender, " - /rules add &lt;newRule>");
@@ -233,7 +233,7 @@ public class CommandRules extends FEcmdModuleCommands {
             return;
         }
 
-        if (!PermissionsManager.checkPerm(sender, getPermissionNode() + ".edit"))
+        if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
         {
             OutputHandler.chatError(sender,
                     "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");

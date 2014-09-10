@@ -35,7 +35,7 @@ public class TeleportCenter {
 
     public static void addToTpQue(WarpPoint point, EntityPlayer player)
     {
-        if (PlayerInfo.getPlayerInfo(player.getPersistentID()).getTeleportCooldown() != 0 && !PermissionsManager.checkPerm(player, BYPASS_COOLDOWN))
+        if (PlayerInfo.getPlayerInfo(player.getPersistentID()).getTeleportCooldown() != 0 && !PermissionsManager.checkPermission(player, BYPASS_COOLDOWN))
         {
             ChatUtils.sendMessage(player,
                     String.format("Cooldown still active. %s seconds to go.",
@@ -45,7 +45,7 @@ public class TeleportCenter {
         {
             PlayerInfo.getPlayerInfo(player.getPersistentID()).setTeleportCooldown(teleportCooldown);
             TeleportData data = new TeleportData(point, player);
-            if (teleportWarmup == 0 || PermissionsManager.checkPerm(player, BYPASS_WARMUP))
+            if (teleportWarmup == 0 || PermissionsManager.checkPermission(player, BYPASS_WARMUP))
             {
                 data.teleport();
             }

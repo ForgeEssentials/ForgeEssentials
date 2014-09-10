@@ -73,7 +73,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-    	return PermissionsManager.checkPerm(player, getPermissionNode());
+    	return PermissionsManager.checkPermission(player, getPermissionNode());
     	// TODO: Check why the old code did something differnt from ForgeEssentialsCommandBase
 //        PermResult result = APIRegistry.perms.checkPermResult(player, getPermissionNode(), true);
 //        return result.equals(PermResult.DENY) ? false : true;

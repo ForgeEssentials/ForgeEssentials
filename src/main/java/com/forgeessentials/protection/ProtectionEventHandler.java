@@ -41,7 +41,7 @@ public class ProtectionEventHandler {
 		{
 			// Stops players from hitting each other.
 
-			boolean sourceB = !PermissionsManager.checkPerm(e.entityPlayer, ModuleProtection.PERM_PVP);
+			boolean sourceB = !PermissionsManager.checkPermission(e.entityPlayer, ModuleProtection.PERM_PVP);
 
 			if (sourceB)
 			{
@@ -49,7 +49,7 @@ public class ProtectionEventHandler {
 				return;
 			}
 
-			boolean receiverB = !PermissionsManager.checkPerm((EntityPlayer) e.target, ModuleProtection.PERM_PVP);
+			boolean receiverB = !PermissionsManager.checkPermission((EntityPlayer) e.target, ModuleProtection.PERM_PVP);
 
 			if (sourceB || receiverB)
 			{
@@ -61,10 +61,10 @@ public class ProtectionEventHandler {
 		{
 			// Stops players from hitting entities.
 
-			boolean result = PermissionsManager.checkPerm(e.entityPlayer, ModuleProtection.PERM_OVERRIDE);
+			boolean result = PermissionsManager.checkPermission(e.entityPlayer, ModuleProtection.PERM_OVERRIDE);
 			if (!result)
 			{
-				result = PermissionsManager.checkPerm(e.entityPlayer, ModuleProtection.PERM_INTERACT_ENTITY);
+				result = PermissionsManager.checkPermission(e.entityPlayer, ModuleProtection.PERM_INTERACT_ENTITY);
 			}
 
 			e.setCanceled(!result);
@@ -102,7 +102,7 @@ public class ProtectionEventHandler {
 				return;
 			}
 
-			boolean receiverB = !PermissionsManager.checkPerm((EntityPlayer) e.source.getEntity(), ModuleProtection.PERM_PVP);
+			boolean receiverB = !PermissionsManager.checkPermission((EntityPlayer) e.source.getEntity(), ModuleProtection.PERM_PVP);
 			if (sourceB || receiverB)
 			{
 				e.setCanceled(true);

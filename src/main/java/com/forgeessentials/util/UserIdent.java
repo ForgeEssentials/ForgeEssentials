@@ -2,6 +2,8 @@ package com.forgeessentials.util;
 
 import java.util.UUID;
 
+import org.apache.commons.compress.archivers.dump.InvalidFormatException;
+
 import com.forgeessentials.commands.util.Kit;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
@@ -134,7 +136,12 @@ public class UserIdent {
 
 	public static UserIdent fromString(String string)
 	{
-		return new UserIdent(string);
+		if (string.charAt(0) != '(' || string.charAt(string.length() - 1) != ')' || string.indexOf('|') < 0)
+		{
+			throw new IllegalArgumentException("UserIdent string needs to be in the format \"(<uuid>|<username>)\"");
+		}
+		String[] parts = string.substring(1, string.length() - 2).split("\\|", 1);
+		return new UserIdent(UUID.fromString(parts[0]), parts[1]);
 	}
 
 	public static String getUsernameByUuid(String uuid)

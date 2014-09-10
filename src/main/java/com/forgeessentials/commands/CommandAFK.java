@@ -71,7 +71,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         afkList.remove(afkData.player.getPersistentID());
         CommandsEventHandler.afkListToRemove.add(afkData);
 
-        if (PermissionsManager.checkPerm(afkData.player, NOTICEPERM))
+        if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
             ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
                     String.format(inMessage, afkData.player.getPersistentID()));
@@ -88,7 +88,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         afkData.player.sendPlayerAbilities();
         afkList.add(afkData.player.getPersistentID());
 
-        if (PermissionsManager.checkPerm(afkData.player, NOTICEPERM))
+        if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
             ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
                     String.format(outMessage, afkData.player.getPersistentID()));

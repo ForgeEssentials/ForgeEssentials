@@ -133,7 +133,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         else
         {
             //return APIRegistry.perms.checkPermAllowed(player, perm);
-        	return PermissionsManager.checkPerm(player, perm);
+        	return PermissionsManager.checkPermission(player, perm);
         }
     }
 

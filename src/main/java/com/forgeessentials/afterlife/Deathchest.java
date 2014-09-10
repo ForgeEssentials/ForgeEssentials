@@ -77,8 +77,7 @@ public class Deathchest {
         {
             return;
         }
-        if (!PermissionsManager.checkPerm(e.entityPlayer, PERMISSION_MAKE))
-            if (!PermissionsManager.checkPerm(e.entityPlayer, PERMISSION_MAKE))
+        if (!PermissionsManager.checkPermission(e.entityPlayer, PERMISSION_MAKE))
         {
             return;
         }

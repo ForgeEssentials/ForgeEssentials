@@ -57,7 +57,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
-		else if (args.length == 2 && PermissionsManager.checkPerm(sender, getPermissionNode() + ".others"))
+		else if (args.length == 2 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
 		{
 
 			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);

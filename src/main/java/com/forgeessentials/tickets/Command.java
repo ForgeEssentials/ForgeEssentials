@@ -185,7 +185,7 @@ public class Command extends ForgeEssentialsCommandBase {
     {
         if (sender instanceof EntityPlayer)
         {
-            return PermissionsManager.checkPerm((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm);
+            return PermissionsManager.checkPermission((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm);
         }
         else
         {

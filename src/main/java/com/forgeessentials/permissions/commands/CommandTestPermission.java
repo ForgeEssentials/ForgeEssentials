@@ -35,7 +35,7 @@ public class CommandTestPermission extends ForgeEssentialsCommandBase {
 	{
 		if (args.length != 1)
 			throw new CommandException("Invalid arguments");
-		if (PermissionsManager.checkPerm(sender, args[0]))
+		if (PermissionsManager.checkPermission(sender, args[0]))
 			OutputHandler.chatConfirmation(sender, args[0] + " = true");
 		else
 			OutputHandler.chatError(sender, args[0] + " = false");

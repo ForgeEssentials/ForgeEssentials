@@ -120,7 +120,7 @@ public class Grave {
         {
             return true;
         }
-        if (PermissionsManager.checkPerm(player, Deathchest.PERMISSION_BYPASS))
+        if (PermissionsManager.checkPermission(player, Deathchest.PERMISSION_BYPASS))
         {
             return true;
         }

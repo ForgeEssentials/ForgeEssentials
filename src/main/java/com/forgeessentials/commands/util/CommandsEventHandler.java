@@ -115,7 +115,7 @@ public class CommandsEventHandler {
             {
                 if (e.entityPlayer.getCurrentEquippedItem().getItem() == Items.compass)
                 {
-                    if (PermissionsManager.checkPerm(e.entityPlayer, "fe.commands.jump"))
+                    if (PermissionsManager.checkPermission(e.entityPlayer, "fe.commands.jump"))
                     {
                         MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, false);
                         if (mop != null) {

@@ -42,7 +42,7 @@ public class CommandKit extends FEcmdModuleCommands {
             String msg = "";
             for (Kit kit : CommandDataManager.kits.values())
             {
-                if (PermissionsManager.checkPerm(sender, getPermissionNode() + "." + kit.getName()))
+                if (PermissionsManager.checkPermission(sender, getPermissionNode() + "." + kit.getName()))
                 {
                     msg = kit.getName() + ", " + msg;
                 }
@@ -57,7 +57,7 @@ public class CommandKit extends FEcmdModuleCommands {
         {
             if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
             {
-                if (PermissionsManager.checkPerm(sender, getPermissionNode() + "." + args[0].toLowerCase()))
+                if (PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
                 {
                     CommandDataManager.kits.get(args[0].toLowerCase()).giveKit(sender);
                 }
@@ -76,7 +76,7 @@ public class CommandKit extends FEcmdModuleCommands {
 		/*
 		 * Make kit
 		 */
-        if (args[1].equalsIgnoreCase("set") && PermissionsManager.checkPerm(sender, getPermissionNode() + ".admin"))
+        if (args[1].equalsIgnoreCase("set") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
             if (args.length == 3)
             {
@@ -97,7 +97,7 @@ public class CommandKit extends FEcmdModuleCommands {
 		/*
 		 * Delete kit
 		 */
-        if (args[1].equalsIgnoreCase("del") && PermissionsManager.checkPerm(sender, getPermissionNode() + ".admin"))
+        if (args[1].equalsIgnoreCase("del") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
             if (args.length == 2)
             {

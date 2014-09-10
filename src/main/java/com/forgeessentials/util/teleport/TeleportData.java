@@ -60,7 +60,7 @@ public class TeleportData {
 				server.transferPlayerToDimension((EntityPlayerMP) player, point.getDimension());
 			}
 			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 1, point.zd, point.yaw, point.pitch);
-			if (!PermissionsManager.checkPerm(player, TeleportCenter.BYPASS_COOLDOWN))
+			if (!PermissionsManager.checkPermission(player, TeleportCenter.BYPASS_COOLDOWN))
 			{
 				PlayerInfo.getPlayerInfo(player.getPersistentID()).setTeleportCooldown(TeleportCenter.getTeleportCooldown());
 			}

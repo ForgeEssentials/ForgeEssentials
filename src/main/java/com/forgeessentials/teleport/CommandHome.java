@@ -41,7 +41,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
                 TeleportCenter.addToTpQue(home, player);
             }
         }
-        else if (PermissionsManager.checkPerm(sender, getPermissionNode() + ".set"))
+        else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".set"))
         {
             if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
             {
