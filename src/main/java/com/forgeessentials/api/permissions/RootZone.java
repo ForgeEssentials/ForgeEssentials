@@ -16,23 +16,13 @@ import net.minecraft.entity.player.EntityPlayer;
  * 
  * @author Olee
  */
-@SaveableObject
 public class RootZone extends Zone {
 
-	@SaveableField
 	private ServerZone serverZone;
-
-	@SaveableField
-	private int maxZoneID;
-	
-	//private List<PlayerData> players;
-	
-	private List<Group> groups = new ArrayList<Group>();
 
 	public RootZone()
 	{
 		super(0);
-		maxZoneID = 2;
 	}
 
 	@Override
@@ -70,21 +60,9 @@ public class RootZone extends Zone {
 		return serverZone;
 	}
 
-	void setServerZone(ServerZone serverZone)
+	public void setServerZone(ServerZone serverZone)
 	{
 		this.serverZone = serverZone;
 	}
-
-
-	public int getCurrentZoneID()
-	{
-		return maxZoneID;
-	}
-
-	public int getNextZoneID()
-	{
-		return maxZoneID++;
-	}
-
 
 }

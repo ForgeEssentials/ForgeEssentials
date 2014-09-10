@@ -6,10 +6,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -59,6 +62,12 @@ public abstract class Zone {
 	public Zone(int id)
 	{
 		this.id = id;
+	}
+
+	protected void doReconstruct(IReconstructData tag)
+	{
+		playerPermissions = (Map<UserIdent, PermissionList>) tag.getFieldValue("playerPermissions");
+		groupPermissions = (Map<String, PermissionList>) tag.getFieldValue("groupPermissions");
 	}
 
 	/**

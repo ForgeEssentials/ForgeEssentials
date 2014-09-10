@@ -1,10 +1,15 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.UUID;
+
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -29,13 +34,29 @@ public class AreaZone extends Zone {
 	@SaveableField
 	private int priority;
 
+	AreaZone(int id)
+	{
+		super(id);
+	}
+
 	public AreaZone(WorldZone worldZone, String name, AreaBase area)
 	{
-		super(worldZone.getServerZone().getRootZone().getNextZoneID());
+		super(worldZone.getServerZone().getNextZoneID());
 		this.worldZone = worldZone;
 		this.name = name;
 		this.area = area;
 		this.worldZone.addAreaZone(this);
+	}
+
+	@Reconstructor
+	private static AreaZone reconstruct(IReconstructData tag)
+	{
+		AreaZone result = new AreaZone((int) tag.getFieldValue("id"));
+		result.doReconstruct(tag);
+		result.name = (String) tag.getFieldValue("name");
+		result.area = (AreaBase) tag.getFieldValue("area");
+		result.priority = (int) tag.getFieldValue("priority");
+		return result;
 	}
 
 	@Override

@@ -5,8 +5,11 @@ import java.util.Collection;
 import java.util.List;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
+import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -28,12 +31,27 @@ public class WorldZone extends Zone {
 	@SaveableField
 	private List<AreaZone> areaZones = new ArrayList<AreaZone>();
 
+	WorldZone(int id)
+	{
+		super(id);
+	}
+
 	public WorldZone(ServerZone serverZone, int dimensionID)
 	{
-		super(serverZone.getRootZone().getNextZoneID());
+		super(serverZone.getNextZoneID());
 		this.dimensionID = dimensionID;
 		this.serverZone = serverZone;
 		this.serverZone.addWorldZone(this);
+	}
+
+	@Reconstructor
+	private static WorldZone reconstruct(IReconstructData tag)
+	{
+		WorldZone result = new WorldZone((int) tag.getFieldValue("id"));
+		result.doReconstruct(tag);
+		result.dimensionID = (int) tag.getFieldValue("dimensionID");
+		result.areaZones = (List<AreaZone>) tag.getFieldValue("areaZones");
+		return result;
 	}
 
 	@Override

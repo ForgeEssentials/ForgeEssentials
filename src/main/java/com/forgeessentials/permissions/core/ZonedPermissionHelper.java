@@ -76,6 +76,31 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		clear();
 	}
 
+	public void save()
+	{
+		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(ServerZone.class), rootZone.getServerZone());
+		load();
+	}
+
+	public void load()
+	{
+		ServerZone serverZone = (ServerZone) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(ServerZone.class), "1");
+		if (serverZone != null) {
+			zones.clear();
+			rootZone.setServerZone(serverZone);
+			addZone(rootZone);
+			addZone(serverZone);
+			for (WorldZone worldZone : serverZone.getWorldZones().values())
+			{
+				addZone(worldZone);
+				for (AreaZone areaZone : worldZone.getAreaZones())
+				{
+					addZone(areaZone);
+				}
+			}
+		}
+	}
+
 	public void clear()
 	{
 		zones.clear();
@@ -94,8 +119,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		WorldZone world0 = getWorldZone(0);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", true);
 		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", false);
-		
-		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(RootZone.class), rootZone);
 	}
 
 	public Set<String> enumAllPermissions()

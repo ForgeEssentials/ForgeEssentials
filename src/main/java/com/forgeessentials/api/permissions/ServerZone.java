@@ -1,11 +1,16 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
+import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -24,11 +29,35 @@ public class ServerZone extends Zone {
 	@SaveableField
 	private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
 
+	@SaveableField
+	private int maxZoneID;
+
+	@SaveableField
+	private List<Group> groups = new ArrayList<Group>();
+	
+	//private List<PlayerData> players;
+
+	ServerZone(int id)
+	{
+		super(id);
+	}
+
 	public ServerZone(RootZone rootZone)
 	{
 		super(1);
+		this.maxZoneID = 2;
 		this.rootZone = rootZone;
 		this.rootZone.setServerZone(this);
+	}
+
+	@Reconstructor
+	private static ServerZone reconstruct(IReconstructData tag)
+	{
+		ServerZone result = new ServerZone((int) tag.getFieldValue("id"));
+		result.doReconstruct(tag);
+		result.maxZoneID = (int) tag.getFieldValue("maxZoneID");
+		result.worldZones = (Map<Integer, WorldZone>) tag.getFieldValue("worldZones");
+		return result;
 	}
 
 	@Override
@@ -79,6 +108,16 @@ public class ServerZone extends Zone {
 	void addWorldZone(WorldZone zone)
 	{
 		worldZones.put(zone.getDimensionID(), zone);
+	}
+
+	public int getCurrentZoneID()
+	{
+		return maxZoneID;
+	}
+
+	public int getNextZoneID()
+	{
+		return maxZoneID++;
 	}
 
 }

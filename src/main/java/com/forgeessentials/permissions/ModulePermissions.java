@@ -97,9 +97,10 @@ public class ModulePermissions {
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		// TODO: PERMS
-		// sql.putRegistrationPerms(APIRegistry.perms.getRegisteredPerms());
-
+		permissionHelper.save();
 		new PermissionsListWriter().write(permissionHelper.enumAllPermissions());
+		
+		// sql.putRegistrationPerms(APIRegistry.perms.getRegisteredPerms());
 	}
 
 	@FEModule.ServerStop
