@@ -14,16 +14,10 @@ import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
 import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandFEPerm;
 import com.forgeessentials.permissions.commands.CommandZone;
-import com.forgeessentials.permissions.forge.ForgePermissionsHelper;
 import com.forgeessentials.util.TeleportCenter;
 import com.forgeessentials.util.events.modules.*;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.server.CommandHandlerForge;
 
 import java.io.File;
 
@@ -75,8 +69,6 @@ public class ModulePermissions {
         APIRegistry.permReg = new PermRegLoader();
 
         DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
-
-        PermissionsManager.setPermProvider(new ForgePermissionsHelper());
     }
 
     @FEModule.Init
@@ -89,6 +81,7 @@ public class ModulePermissions {
         DataStorageManager.registerSaveableType(AutoPromote.class);
 
         MinecraftForge.EVENT_BUS.register(new PermsEventHandler());
+        PermissionsManager.setPermProvider(new ForgePermsHelper());
     }
 
     @FEModule.ServerInit

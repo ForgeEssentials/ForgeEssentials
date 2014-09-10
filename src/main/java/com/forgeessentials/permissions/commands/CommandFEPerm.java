@@ -7,10 +7,9 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
 import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.permissions.PermsEventHandler;
-import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.WorldPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -90,7 +89,7 @@ public class CommandFEPerm extends ForgeEssentialsCommandBase {
         }
         else if (first.equalsIgnoreCase("test"))
         {
-            boolean allow = PermissionsManager.checkPerm(sender, args[1]);
+            boolean allow = PermissionsManager.checkPermission(sender, args[1]);
             String returned =  args[1] + "is " + (allow ? "allowed" : "denied");
             ChatUtils.sendMessage(sender, returned);
         }

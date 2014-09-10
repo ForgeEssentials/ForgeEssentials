@@ -21,6 +21,7 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Timer;
 
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup {
@@ -31,6 +32,8 @@ public class ModuleBackup {
     public static File moduleDir;
 
     public static File baseFolder;
+
+    private Timer timer;
 
     public static void msg(String msg)
     {
@@ -77,11 +80,11 @@ public class ModuleBackup {
         e.registerServerCommand(new CommandBackup());
         if (BackupConfig.autoInterval != 0)
         {
-            new AutoBackup();
+            timer.schedule(new AutoBackup(), BackupConfig.autoInterval*60*1000, BackupConfig.autoInterval*60*1000);
         }
         if (BackupConfig.worldSaveInterval != 0)
         {
-            new AutoWorldSave();
+            timer.schedule(new AutoWorldSave(), BackupConfig.worldSaveInterval*60*1000, BackupConfig.worldSaveInterval*60*1000);
         }
         makeReadme();
 
