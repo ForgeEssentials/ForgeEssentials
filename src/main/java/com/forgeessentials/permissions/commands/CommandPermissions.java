@@ -55,13 +55,13 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-    	new PermissionCommandHandler(sender, args);
+    	new PermissionCommandParser(sender, args);
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-    	new PermissionCommandHandler(sender, args);
+    	new PermissionCommandParser(sender, args);
     }
 
     @Override

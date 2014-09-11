@@ -17,7 +17,7 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.WorldPoint;
 
-public class PermissionCommandHandler {
+public class PermissionCommandParser {
 
 	enum PermissionAction
 	{
@@ -28,7 +28,7 @@ public class PermissionCommandHandler {
 	private EntityPlayerMP senderPlayer;
 	private Queue<String> args;
 
-	public PermissionCommandHandler(ICommandSender sender, String[] args)
+	public PermissionCommandParser(ICommandSender sender, String[] args)
 	{
 		this.sender = sender;
 		this.args = new LinkedList<String>(Arrays.asList(args));
@@ -36,7 +36,7 @@ public class PermissionCommandHandler {
 		parseMain();
 	}
 
-	public PermissionCommandHandler(EntityPlayerMP player, String[] args)
+	public PermissionCommandParser(EntityPlayerMP player, String[] args)
 	{
 		this.sender = player;
 		this.args = new LinkedList<String>(Arrays.asList(args));

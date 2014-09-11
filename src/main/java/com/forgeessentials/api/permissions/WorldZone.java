@@ -22,7 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 @SaveableObject
 public class WorldZone extends Zone {
-	
+
 	private ServerZone serverZone;
 
 	@SaveableField
@@ -31,17 +31,22 @@ public class WorldZone extends Zone {
 	@SaveableField
 	private List<AreaZone> areaZones = new ArrayList<AreaZone>();
 
-	WorldZone(int id)
+	public WorldZone(int id)
 	{
 		super(id);
 	}
 
-	public WorldZone(ServerZone serverZone, int dimensionID)
+	public WorldZone(ServerZone serverZone, int dimensionID, int id)
 	{
-		super(serverZone.getNextZoneID());
+		this(id);
 		this.dimensionID = dimensionID;
 		this.serverZone = serverZone;
 		this.serverZone.addWorldZone(this);
+	}
+
+	public WorldZone(ServerZone serverZone, int dimensionID)
+	{
+		this(serverZone, dimensionID, serverZone.getNextZoneID());
 	}
 
 	@Reconstructor
@@ -59,7 +64,7 @@ public class WorldZone extends Zone {
 	{
 		return player.dimension == dimensionID;
 	}
-	
+
 	@Override
 	public boolean isInZone(WorldPoint point)
 	{

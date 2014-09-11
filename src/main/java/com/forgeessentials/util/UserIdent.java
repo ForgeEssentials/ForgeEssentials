@@ -9,6 +9,7 @@ import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.PlayerSelector;
@@ -64,6 +65,16 @@ public class UserIdent {
 			throw new IllegalArgumentException();
 		this.uuid = uuid;
 		this.username = username;
+	}
+
+	public UserIdent(String uuid, String username)
+	{
+		this.username = username;
+		if (uuid != null)
+		{
+			this.uuid = UUID.fromString(uuid);
+			this.username = username;
+		}
 	}
 
 	@Reconstructor
@@ -146,11 +157,14 @@ public class UserIdent {
 
 	public static String getUsernameByUuid(String uuid)
 	{
-		return MinecraftServer.getServer().func_152358_ax().func_152652_a(UUID.fromString(uuid)).getName();
+		return getUsernameByUuid(UUID.fromString(uuid));
 	}
 
 	public static String getUsernameByUuid(UUID uuid)
 	{
+		GameProfile profile = MinecraftServer.getServer().func_152358_ax().func_152652_a(uuid);
+		if (profile == null)
+			return null;
 		return MinecraftServer.getServer().func_152358_ax().func_152652_a(uuid).getName();
 	}
 
@@ -158,9 +172,7 @@ public class UserIdent {
 	{
 		EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(username);
 		if (player == null)
-		{
 			return null;
-		}
 		return player.getGameProfile().getId();
 	}
 

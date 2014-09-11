@@ -12,7 +12,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.IContext;
-import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -47,7 +46,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private Map<String, Group> groups = new HashMap<String, Group>();
 
-	private ZonePersistanceProvider persistanceProvider;
+	private IZonePersistenceProvider persistenceProvider;
 
 	// ------------------------------------------------------------
 
@@ -66,21 +65,52 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		clear();
 	}
 
+	// ------------------------------------------------------------
+	// -- Persistence
+	// ------------------------------------------------------------
+
+	public void clear()
+	{
+		zones.clear();
+		addZone(rootZone);
+		addZone(new ServerZone(rootZone));
+
+		// for (World world : DimensionManager.getWorlds())
+		// {
+		// getWorldZone(world);
+		// }
+
+		// getServerZone().setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", false);
+		// getServerZone().setGroupPermission(DEFAULT_GROUP, "fe.commands.time", true);
+		//
+		// WorldZone world0 = getWorldZone(0);
+		// world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", true);
+		// world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", false);
+	}
+
+	public void setPersistenceProvider(IZonePersistenceProvider persistenceProvider)
+	{
+		this.persistenceProvider = persistenceProvider;
+	}
+
 	public void save()
 	{
-		if (persistanceProvider != null)
-			persistanceProvider.save(rootZone.getServerZone());
+		if (persistenceProvider != null)
+			persistenceProvider.save(rootZone.getServerZone());
 	}
 
 	public boolean load()
 	{
-		if (persistanceProvider != null)
+		if (persistenceProvider != null)
 		{
-			ServerZone serverZone = persistanceProvider.load();
+			ServerZone serverZone = persistenceProvider.load();
 			if (serverZone != null)
 			{
-				zones.clear();
+				// Set new server zone
 				rootZone.setServerZone(serverZone);
+
+				// Rebuild zones map
+				zones.clear();
 				addZone(rootZone);
 				addZone(serverZone);
 				for (WorldZone worldZone : serverZone.getWorldZones().values())
@@ -97,29 +127,21 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		return false;
 	}
 
-	public void clear()
+	// ------------------------------------------------------------
+	// -- Utilities
+	// ------------------------------------------------------------
+
+	public Set<String> enumRegisteredPermissions()
 	{
-		zones.clear();
-		addZone(rootZone);
-		addZone(new ServerZone(rootZone));
-
-		// for (World world : DimensionManager.getWorlds())
-		// {
-		// getWorldZone(world);
-		// }
-
-		// TODO: TESTING
-		getServerZone().setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", false);
-		getServerZone().setGroupPermission(DEFAULT_GROUP, "fe.commands.time", true);
-
-		WorldZone world0 = getWorldZone(0);
-		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", true);
-		world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", false);
-	}
-
-	public void setPersistanceProvider(ZonePersistanceProvider persistanceProvider)
-	{
-		this.persistanceProvider = persistanceProvider;
+		Set<String> perms = new TreeSet<String>();
+		for (Map<String, String> groupPerms : rootZone.getGroupPermissions())
+		{
+			for (String perm : groupPerms.keySet())
+			{
+				perms.add(perm);
+			}
+		}
+		return perms;
 	}
 
 	public Set<String> enumAllPermissions()
@@ -127,16 +149,16 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		Set<String> perms = new TreeSet<String>();
 		for (Zone zone : zones.values())
 		{
-			for (Map<String, String> groupPerms : zone.getGroups())
+			for (Map<String, String> groupPerms : zone.getGroupPermissions())
 			{
 				for (String perm : groupPerms.keySet())
 				{
 					perms.add(perm);
 				}
 			}
-			for (Map<String, String> groupPerms : zone.getPlayers())
+			for (Map<String, String> playerPerms : zone.getPlayerPermissions())
 			{
-				for (String perm : groupPerms.keySet())
+				for (String perm : playerPerms.keySet())
 				{
 					perms.add(perm);
 				}
@@ -144,6 +166,10 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		}
 		return perms;
 	}
+
+	// ------------------------------------------------------------
+	// -- Events
+	// ------------------------------------------------------------
 
 	@SubscribeEvent
 	public void playerLogin(PlayerLoggedInEvent e)
@@ -154,6 +180,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		}
 	}
 
+	// ------------------------------------------------------------
+	// -- Core permission handling
 	// ------------------------------------------------------------
 
 	/**

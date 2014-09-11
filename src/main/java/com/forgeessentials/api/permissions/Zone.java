@@ -7,20 +7,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.forgeessentials.api.APIRegistry;
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
-import com.google.common.collect.ImmutableMap;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
  * Zones are used to store permissions in a tree-like hierarchy. Each zone has it's own set of group- and player-permissions. Zones are stored in a tree
@@ -127,11 +122,21 @@ public abstract class Zone {
 	// ------------------------------------------------------------
 
 	/**
+	 * Gets all player permissions
+	 * 
+	 * @return
+	 */
+	public Set<Entry<UserIdent, PermissionList>> getPlayers()
+	{
+		return playerPermissions.entrySet();
+	}
+
+	/**
 	 * Get all groups that have permissions in this zone
 	 * 
 	 * @return
 	 */
-	public Collection<PermissionList> getPlayers()
+	public Collection<PermissionList> getPlayerPermissions()
 	{
 		return playerPermissions.values();
 	}
@@ -145,16 +150,6 @@ public abstract class Zone {
 	public PermissionList getPlayerPermissions(UserIdent ident)
 	{
 		return playerPermissions.get(ident);
-	}
-
-	/**
-	 * Gets all player permissions
-	 * 
-	 * @return
-	 */
-	public Set<Entry<UserIdent, PermissionList>> getPlayerPermissions()
-	{
-		return playerPermissions.entrySet();
 	}
 
 	/**
@@ -277,11 +272,21 @@ public abstract class Zone {
 	// ------------------------------------------------------------
 
 	/**
+	 * Gets all group permissions
+	 * 
+	 * @return
+	 */
+	public Set<Entry<String, PermissionList>> getGroups()
+	{
+		return groupPermissions.entrySet();
+	}
+
+	/**
 	 * Get all groups that have permissions in this zone
 	 * 
 	 * @return
 	 */
-	public Collection<PermissionList> getGroups()
+	public Collection<PermissionList> getGroupPermissions()
 	{
 		return groupPermissions.values();
 	}
@@ -295,16 +300,6 @@ public abstract class Zone {
 	public PermissionList getGroupPermissions(String group)
 	{
 		return groupPermissions.get(group);
-	}
-
-	/**
-	 * Gets all group permissions
-	 * 
-	 * @return
-	 */
-	public Set<Entry<String, PermissionList>> getGroupPermissions()
-	{
-		return groupPermissions.entrySet();
 	}
 
 	/**

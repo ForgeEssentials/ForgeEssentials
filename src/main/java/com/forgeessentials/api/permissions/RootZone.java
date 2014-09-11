@@ -63,6 +63,8 @@ public class RootZone extends Zone {
 	public void setServerZone(ServerZone serverZone)
 	{
 		this.serverZone = serverZone;
+		if (serverZone != null)
+			serverZone.setRootZone(this);
 	}
 
 }

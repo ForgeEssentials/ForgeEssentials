@@ -1,9 +1,9 @@
-package com.forgeessentials.permissions.persistance;
+package com.forgeessentials.permissions.persistence;
 
 import com.forgeessentials.api.permissions.ServerZone;
-import com.forgeessentials.permissions.core.ZonePersistanceProvider;
+import com.forgeessentials.permissions.core.IZonePersistenceProvider;
 
-public class SQLProvider extends ZonePersistanceProvider {
+public class SQLProvider implements IZonePersistenceProvider {
 	
 	@Override
 	public void save(ServerZone serverZone)

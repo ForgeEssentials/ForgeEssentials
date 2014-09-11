@@ -2,17 +2,11 @@ package com.forgeessentials.permissions;
 
 import java.io.File;
 
-import com.forgeessentials.permissions.core.ConfigPermissions;
-import com.forgeessentials.permissions.core.PermissionEventHandler;
-import com.forgeessentials.permissions.core.PermissionsListWriter;
-import com.forgeessentials.permissions.core.ZonedPermissionHelper;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -22,7 +16,11 @@ import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandTestPermission;
 import com.forgeessentials.permissions.commands.CommandZone;
-import com.forgeessentials.permissions.persistance.FlatfileProvider;
+import com.forgeessentials.permissions.core.ConfigPermissions;
+import com.forgeessentials.permissions.core.PermissionEventHandler;
+import com.forgeessentials.permissions.core.PermissionsListWriter;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
+import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
@@ -52,7 +50,7 @@ public class ModulePermissions {
 
 		// Create permission manager
 		permissionHelper = new ZonedPermissionHelper();
-		permissionHelper.setPersistanceProvider(new FlatfileProvider(new File(moduleFolder, "flat")));
+		permissionHelper.setPersistenceProvider(new FlatfileProvider(new File(moduleFolder, "flat")));
 		
 		// Register permission manager
 		APIRegistry.perms = permissionHelper;
@@ -76,34 +74,28 @@ public class ModulePermissions {
 	@FEModule.ServerInit
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
-		// load zones...
-		// ((ZoneHelper) APIRegistry.perms).loadZones();
+		// Load permissions
+		permissionHelper.load();
 
-		// if (config.importBool)
-		// {
-		// sql.importPerms(config.importDir);
-		// }
+		// Register permissions
+		registerPermissions();
 
-		// init perms and vMC command overrides
+		// Register commands
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandPermissions());
 		e.registerServerCommand(new CommandTestPermission());
 		e.registerServerCommand(new CommandAutoPromote());
 
+		// Load auto-promote manager
 		autoPromoteManager = new AutoPromoteManager();
-
-		registerPermissions();
-
 	}
 
 	@FEModule.ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		// TODO: PERMS
+		//new PermissionsListWriter().write(permissionHelper.enumAllPermissions());
+		new PermissionsListWriter().write(permissionHelper.enumRegisteredPermissions());
 		permissionHelper.save();
-		new PermissionsListWriter().write(permissionHelper.enumAllPermissions());
-		
-		// sql.putRegistrationPerms(APIRegistry.perms.getRegisteredPerms());
 	}
 
 	@FEModule.ServerStop

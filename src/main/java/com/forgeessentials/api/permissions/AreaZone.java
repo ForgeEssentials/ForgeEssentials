@@ -39,13 +39,18 @@ public class AreaZone extends Zone {
 		super(id);
 	}
 
-	public AreaZone(WorldZone worldZone, String name, AreaBase area)
+	public AreaZone(WorldZone worldZone, String name, AreaBase area, int id)
 	{
-		super(worldZone.getServerZone().getNextZoneID());
+		this(id);
 		this.worldZone = worldZone;
 		this.name = name;
 		this.area = area;
 		this.worldZone.addAreaZone(this);
+	}
+
+	public AreaZone(WorldZone worldZone, String name, AreaBase area)
+	{
+		this(worldZone, name, area, worldZone.getServerZone().getNextZoneID());
 	}
 
 	@Reconstructor

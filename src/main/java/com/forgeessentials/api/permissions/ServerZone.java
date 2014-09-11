@@ -34,17 +34,17 @@ public class ServerZone extends Zone {
 
 	@SaveableField
 	private List<Group> groups = new ArrayList<Group>();
-	
-	//private List<PlayerData> players;
 
-	ServerZone(int id)
+	// private List<PlayerData> players;
+
+	public ServerZone()
 	{
-		super(id);
+		super(1);
 	}
 
 	public ServerZone(RootZone rootZone)
 	{
-		super(1);
+		this();
 		this.maxZoneID = 2;
 		this.rootZone = rootZone;
 		this.rootZone.setServerZone(this);
@@ -53,7 +53,7 @@ public class ServerZone extends Zone {
 	@Reconstructor
 	private static ServerZone reconstruct(IReconstructData tag)
 	{
-		ServerZone result = new ServerZone((int) tag.getFieldValue("id"));
+		ServerZone result = new ServerZone();
 		result.doReconstruct(tag);
 		result.maxZoneID = (int) tag.getFieldValue("maxZoneID");
 		result.worldZones = (Map<Integer, WorldZone>) tag.getFieldValue("worldZones");
@@ -89,7 +89,7 @@ public class ServerZone extends Zone {
 	{
 		return rootZone;
 	}
-	
+
 	public RootZone getRootZone()
 	{
 		return rootZone;
@@ -105,7 +105,7 @@ public class ServerZone extends Zone {
 		worldZones.clear();
 	}
 
-	void addWorldZone(WorldZone zone)
+	public void addWorldZone(WorldZone zone)
 	{
 		worldZones.put(zone.getDimensionID(), zone);
 	}
@@ -118,6 +118,11 @@ public class ServerZone extends Zone {
 	public int getNextZoneID()
 	{
 		return maxZoneID++;
+	}
+
+	void setRootZone(RootZone rootZone)
+	{
+		this.rootZone = rootZone;
 	}
 
 }
