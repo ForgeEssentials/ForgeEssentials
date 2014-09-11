@@ -74,7 +74,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 			Properties p = new Properties();
 
 			p.setProperty("id", Integer.toString(serverZone.getId()));
-			p.setProperty("maxZoneId", Integer.toString(serverZone.getCurrentZoneID()));
+			p.setProperty("maxZoneId", Integer.toString(serverZone.getNextZoneID()));
 
 			p.storeToXML(new BufferedOutputStream(new FileOutputStream(new File(path, "server.xml"))), "Data of server");
 		}
@@ -189,13 +189,14 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 	@Override
 	public ServerZone load()
 	{
+		File path = basePath;
 		try
 		{
-			File path = basePath;
-
 			// Create ServerZone and load permissions
 			ServerZone serverZone = new ServerZone();
 			loadZonePermissions(path, serverZone);
+
+			int maxId = 2;
 
 			for (File worldPath : path.listFiles(directoryFilter))
 			{
@@ -209,6 +210,8 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 
 					// Read world data
 					int worldId = Integer.parseInt(worldProperties.getProperty("id"));
+					maxId = Math.max(maxId, worldId);
+
 					int dimensionID = Integer.parseInt(worldProperties.getProperty("dimId"));
 
 					// Create WorldZone and load permissions
@@ -227,6 +230,8 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 
 							// Read area data
 							int areaId = Integer.parseInt(areaProperties.getProperty("id"));
+							maxId = Math.max(maxId, areaId);
+
 							String name = areaProperties.getProperty("name");
 							int x1 = Integer.parseInt(areaProperties.getProperty("x1"));
 							int y1 = Integer.parseInt(areaProperties.getProperty("y1"));
@@ -251,6 +256,26 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 				{
 					OutputHandler.felog.severe("Error reading world " + worldPath.getName());
 				}
+			}
+
+			File serverFile = new File(path, "server.xml");
+			if (serverFile.exists())
+			{
+				try
+				{
+					Properties serverProperties = new Properties();
+					serverProperties.loadFromXML(new BufferedInputStream(new FileInputStream(serverFile)));
+					serverZone.setMaxZoneId(Integer.parseInt(serverProperties.getProperty("maxZoneId")));
+				}
+				catch (IllegalArgumentException | IOException e)
+				{
+					OutputHandler.felog.severe("Error reading server data " + serverFile.getName());
+					serverZone.setMaxZoneId(maxId);
+				}
+			}
+			else
+			{
+				serverZone.setMaxZoneId(maxId);
 			}
 
 			return serverZone;

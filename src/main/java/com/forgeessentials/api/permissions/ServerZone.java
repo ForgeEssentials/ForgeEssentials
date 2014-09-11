@@ -45,7 +45,7 @@ public class ServerZone extends Zone {
 	public ServerZone(RootZone rootZone)
 	{
 		this();
-		this.maxZoneID = 2;
+		this.maxZoneID = 1;
 		this.rootZone = rootZone;
 		this.rootZone.setServerZone(this);
 	}
@@ -110,19 +110,25 @@ public class ServerZone extends Zone {
 		worldZones.put(zone.getDimensionID(), zone);
 	}
 
-	public int getCurrentZoneID()
+	public int getNextZoneID()
 	{
 		return maxZoneID;
 	}
 
-	public int getNextZoneID()
+	public int nextZoneID()
 	{
-		return maxZoneID++;
+		return ++maxZoneID;
+	}
+
+	public void setMaxZoneId(int maxId)
+	{
+		this.maxZoneID = maxId;
 	}
 
 	void setRootZone(RootZone rootZone)
 	{
 		this.rootZone = rootZone;
 	}
+
 
 }

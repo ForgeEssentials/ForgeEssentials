@@ -50,7 +50,7 @@ public class AreaZone extends Zone {
 
 	public AreaZone(WorldZone worldZone, String name, AreaBase area)
 	{
-		this(worldZone, name, area, worldZone.getServerZone().getNextZoneID());
+		this(worldZone, name, area, worldZone.getServerZone().nextZoneID());
 	}
 
 	@Reconstructor

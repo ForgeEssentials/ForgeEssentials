@@ -46,7 +46,7 @@ public class WorldZone extends Zone {
 
 	public WorldZone(ServerZone serverZone, int dimensionID)
 	{
-		this(serverZone, dimensionID, serverZone.getNextZoneID());
+		this(serverZone, dimensionID, serverZone.nextZoneID());
 	}
 
 	@Reconstructor

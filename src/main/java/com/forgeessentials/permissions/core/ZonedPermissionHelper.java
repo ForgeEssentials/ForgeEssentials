@@ -178,6 +178,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		{
 			zone.updatePlayerIdents();
 		}
+		getServerZone().setPlayerPermission(new UserIdent(e.player), "fe.commands.heal", true);
 	}
 
 	// ------------------------------------------------------------
