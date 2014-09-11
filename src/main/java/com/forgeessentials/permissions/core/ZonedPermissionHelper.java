@@ -178,7 +178,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		{
 			zone.updatePlayerIdents();
 		}
-		getServerZone().setPlayerPermission(new UserIdent(e.player), "fe.commands.heal", true);
 	}
 
 	// ------------------------------------------------------------
@@ -234,7 +233,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		if (!isProperty)
 		{
 			String[] nodeParts = permissionNode.split("\\.");
-			for (int i = nodeParts.length; i >= 0; i--)
+			for (int i = nodeParts.length; i > 0; i--)
 			{
 				String node = "";
 				for (int j = 0; j < i; j++)

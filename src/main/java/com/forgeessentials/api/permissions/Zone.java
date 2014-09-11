@@ -264,6 +264,10 @@ public abstract class Zone {
 					playerPermissions.put(entry.getKey(), entry.getValue());
 				}
 			}
+			else
+			{
+				entry.getKey().updateUsername();
+			}
 		}
 	}
 

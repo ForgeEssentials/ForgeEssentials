@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
+
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.ServerZone;
@@ -48,6 +50,13 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 	public void save(ServerZone serverZone)
 	{
 		File path = basePath;
+		try
+		{
+			FileUtils.cleanDirectory(path);
+		}
+		catch (IOException e)
+		{
+		}
 
 		saveServerZone(path, serverZone);
 		saveZonePermissions(path, serverZone);
@@ -140,9 +149,11 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 			String userIdentification = username == null ? uuid.toString() : username;
 			String comment = "Permissions for user " + (username != null ? username : "<unknown-username>") + " with UUID "
 					+ (uuid != null ? uuid.toString() : "<unknown-uuid>");
+			userIdentification = userIdentification.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
 
 			// Save permissions
 			Properties p = permissionListToProperties(entry.getValue());
+			p.setProperty("fe.internal.player.username", entry.getKey().getUsername() == null ? null : entry.getKey().getUsername());
 			p.setProperty("fe.internal.player.uuid", entry.getKey().getUuid() == null ? null : entry.getKey().getUuid().toString());
 			saveProperties(p, playersPath, userIdentification + PERMISSION_FILE_EXT, comment);
 		}
@@ -303,9 +314,15 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 					p.load(new BufferedInputStream(new FileInputStream(file)));
 
 					// Get player
-					String username = file.getName().substring(0, file.getName().length() - PERMISSION_FILE_EXT.length());
+					String username = p.getProperty("fe.internal.player.username");
 					String uuid = p.getProperty("fe.internal.player.uuid");
+					p.remove("fe.internal.player.username");
 					p.remove("fe.internal.player.uuid");
+					if (username == null && uuid == null)
+					{
+						OutputHandler.felog.severe("User identification missing in " + path.getAbsolutePath());
+						continue;
+					}
 					UserIdent ident = new UserIdent(uuid, username);
 
 					// Load permissions

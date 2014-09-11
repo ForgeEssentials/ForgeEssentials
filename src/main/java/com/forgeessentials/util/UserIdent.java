@@ -61,7 +61,7 @@ public class UserIdent {
 
 	public UserIdent(UUID uuid, String username)
 	{
-		if (uuid == null && username == null)
+		if (uuid == null && (username == null || username.isEmpty()))
 			throw new IllegalArgumentException();
 		this.uuid = uuid;
 		this.username = username;
@@ -69,8 +69,10 @@ public class UserIdent {
 
 	public UserIdent(String uuid, String username)
 	{
+		if (uuid == null && (username == null || username.isEmpty()))
+			throw new IllegalArgumentException();
 		this.username = username;
-		if (uuid != null)
+		if (uuid != null && !uuid.isEmpty())
 		{
 			this.uuid = UUID.fromString(uuid);
 			this.username = username;
@@ -142,6 +144,48 @@ public class UserIdent {
 		else
 		{
 			return uuid.hashCode();
+		}
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof String)
+		{
+			identifyUser();
+			if (this.uuid != null)
+			{
+				try
+				{
+					UUID otherUUID = UUID.fromString((String) other);
+					return this.uuid.equals(otherUUID);
+				}
+				catch (IllegalArgumentException e)
+				{
+					// Do nothing
+				}
+			}
+			return this.username.equals(other);
+		}
+		else if (other instanceof UserIdent)
+		{
+			UserIdent ident = (UserIdent) other;
+			identifyUser();
+			ident.identifyUser();
+			if (uuid != null && ident.uuid != null)
+				return uuid.equals(ident.uuid);
+			if (username != null && ident.username != null)
+				return uuid.equals(ident.uuid);
+			return false;
+		}
+		else if (other instanceof UUID)
+		{
+			identifyUser();
+			return other.equals(uuid);
+		}
+		else
+		{
+			return false;
 		}
 	}
 
