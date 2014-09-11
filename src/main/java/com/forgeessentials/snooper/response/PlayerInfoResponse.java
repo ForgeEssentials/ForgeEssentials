@@ -13,6 +13,7 @@ import net.minecraftforge.common.config.Configuration;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -122,7 +123,7 @@ public class PlayerInfoResponse extends Response
             data.capabilities.disableDamage = player.capabilities.disableDamage;
         }
 
-        data.group = APIRegistry.perms.getPrimaryGroup(player).getName();
+        data.group = APIRegistry.perms.getPrimaryGroup(new UserIdent(player)).getName();
         data.firstJoin = pi.getFirstJoin();
         data.timePlayed = pi.getTimePlayed();
 

@@ -13,6 +13,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -57,7 +58,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         }
         else if (args.length == 1)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 OutputHandler.chatConfirmation(sender, String.format("Capabilities for %s:", player.getCommandSenderName()));
@@ -82,7 +83,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
                     return;
                 }
             }
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
@@ -122,7 +123,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
                     return;
                 }
             }
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))

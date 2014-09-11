@@ -13,8 +13,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandR extends ForgeEssentialsCommandBase {
     public CommandR()
@@ -133,7 +133,7 @@ public class CommandR extends ForgeEssentialsCommandBase {
                 ChatUtils.sendMessage(sender, "You have no previous recorded message recipient.");
                 return;
             }
-            EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayer receiver = UserIdent.getPlayerByMatch(sender, args[0]);
             if (receiver == null)
             {
                 ChatUtils.sendMessage(sender, target + " is not a valid username");

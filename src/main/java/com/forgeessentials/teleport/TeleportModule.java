@@ -107,14 +107,14 @@ public class TeleportModule {
 	@ServerPostInit
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		String prop = APIRegistry.perms.getServerZone().getGroupPermission(IPermissionsHelper.DEFAULT_GROUP, CommandSetSpawn.SPAWN_PROP);
+		String prop = APIRegistry.perms.getServerZone().getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, CommandSetSpawn.SPAWN_PROP);
 
 		// nothing set for the global??
 		if (prop == null)
 		{
 			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
 			String val = "0;" + point.posX + ";" + point.posY + ";" + point.posZ;
-			APIRegistry.perms.setGroupPermissionProperty(APIRegistry.perms.DEFAULT_GROUP, CommandSetSpawn.SPAWN_PROP, val);
+			APIRegistry.perms.setGroupPermissionProperty(APIRegistry.perms.GROUP_DEFAULT, CommandSetSpawn.SPAWN_PROP, val);
 		}
 		TeleportDataManager.load();
 

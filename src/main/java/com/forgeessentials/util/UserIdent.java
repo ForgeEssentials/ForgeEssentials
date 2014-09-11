@@ -1,5 +1,8 @@
 package com.forgeessentials.util;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.compress.archivers.dump.InvalidFormatException;
@@ -11,6 +14,8 @@ import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.mojang.authlib.GameProfile;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +30,8 @@ public class UserIdent {
 
 	@SaveableField
 	private String username;
+
+	private EntityPlayer player;
 
 	public UserIdent(UUID uuid)
 	{
@@ -55,6 +62,7 @@ public class UserIdent {
 	{
 		if (player == null)
 			throw new IllegalArgumentException();
+		this.player = player;
 		this.uuid = player.getPersistentID();
 		this.username = player.getCommandSenderName();
 	}
@@ -79,11 +87,7 @@ public class UserIdent {
 		}
 	}
 
-	@Reconstructor
-	private static UserIdent reconstruct(IReconstructData tag)
-	{
-		return new UserIdent((UUID) tag.getFieldValue("uuid"), (String) tag.getFieldValue("username"));
-	}
+	// ------------------------------------------------------------
 
 	public void identifyUser()
 	{
@@ -95,12 +99,41 @@ public class UserIdent {
 		{
 			username = getUsernameByUuid(uuid);
 		}
+		else if (player == null && uuid != null)
+		{
+			player = getPlayerByUuid(uuid);
+		}
 	}
 
 	public void updateUsername()
 	{
 		username = getUsernameByUuid(uuid);
 	}
+
+	public boolean wasValidUUID()
+	{
+		return uuid != null;
+	}
+
+	public boolean hasUsername()
+	{
+		identifyUser();
+		return username != null;
+	}
+
+	public boolean hasUUID()
+	{
+		identifyUser();
+		return uuid != null;
+	}
+
+	public boolean hasPlayer()
+	{
+		identifyUser();
+		return player != null;
+	}
+
+	// ------------------------------------------------------------
 
 	public UUID getUuid()
 	{
@@ -114,16 +147,19 @@ public class UserIdent {
 		return username;
 	}
 
-	public boolean wasValidUUID()
-	{
-		return uuid != null;
-	}
-
-	public boolean isValidUUID()
+	public EntityPlayer getPlayer()
 	{
 		identifyUser();
-		return uuid != null;
+		return player;
 	}
+
+	public String getIdentificationString()
+	{
+		identifyUser();
+		return username == null ? uuid.toString() : username;
+	}
+
+	// ------------------------------------------------------------
 
 	@Override
 	public String toString()
@@ -189,6 +225,14 @@ public class UserIdent {
 		}
 	}
 
+	// ------------------------------------------------------------
+
+	@Reconstructor
+	private static UserIdent reconstruct(IReconstructData tag)
+	{
+		return new UserIdent((UUID) tag.getFieldValue("uuid"), (String) tag.getFieldValue("username"));
+	}
+
 	public static UserIdent fromString(String string)
 	{
 		if (string.charAt(0) != '(' || string.charAt(string.length() - 1) != ')' || string.indexOf('|') < 0)
@@ -209,7 +253,41 @@ public class UserIdent {
 		GameProfile profile = MinecraftServer.getServer().func_152358_ax().func_152652_a(uuid);
 		if (profile == null)
 			return null;
-		return MinecraftServer.getServer().func_152358_ax().func_152652_a(uuid).getName();
+		return profile.getName();
+	}
+
+	public static EntityPlayerMP getPlayerByUuid(UUID uuid)
+	{
+		for (EntityPlayerMP player : (List<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
+		{
+			if (player.getGameProfile().getId().equals(uuid))
+			{
+				return player;
+			}
+		}
+		return null;
+	}
+
+	public static EntityPlayerMP getPlayerByUsername(String name)
+	{
+		// EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, name);
+		for (EntityPlayerMP player : (List<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
+		{
+			if (player.getGameProfile().getName().equals(name))
+			{
+				return player;
+			}
+		}
+		return null;
+	}
+
+	public static EntityPlayerMP getPlayerByMatch(ICommandSender sender, String match)
+	{
+		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, match);
+		if (player != null)
+			return player;
+		else
+			return getPlayerByUsername(match);
 	}
 
 	public static UUID getUuidByUsername(String username)
@@ -219,5 +297,6 @@ public class UserIdent {
 			return null;
 		return player.getGameProfile().getId();
 	}
+
 
 }

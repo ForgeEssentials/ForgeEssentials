@@ -2,6 +2,7 @@ package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -12,9 +13,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldPoint;
 
 public class PermissionCommandParser {
@@ -93,74 +96,60 @@ public class PermissionCommandParser {
 		else
 		{
 			String playerName = args.remove();
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, playerName);
-			if (player == null)
+			UserIdent ident = null;
+			if (playerName.equalsIgnoreCase("_ME_"))
 			{
-				if (playerName.equalsIgnoreCase("_ME_"))
+				if (senderPlayer == null)
 				{
-					if (senderPlayer == null)
-					{
-						error("_ME_ cannot be used in console.");
-						return;
-					}
-					player = senderPlayer;
-					playerName = player.getCommandSenderName();
+					error("_ME_ cannot be used in console.");
+					return;
+				}
+				ident = new UserIdent(senderPlayer);
+			}
+			else
+			{
+				ident = new UserIdent(playerName);
+				if (!ident.hasUUID())
+				{
+					error(String.format("Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername()));
 				}
 			}
-			if (player == null)
-			{
-				error(String.format("Player %s does not exist, or is not online.", playerName));
-				error(String.format("Playername %s will be used, but may be inaccurate.", playerName));
-			}
-			UUID playerID = FunctionHelper.getPlayerID(playerName);
 
 			if (args.isEmpty())
 			{
-				if (playerID == null)
+				Collection<Group> groups = APIRegistry.perms.getPlayerGroups(ident);
+				info(String.format("Groups for player %s:", ident.getIdentificationString()));
+				for (Group g : groups)
 				{
-					error("Player does not exist.");
-				}
-				else
-				{
-					throw new RuntimeException("Not yet implemented!");
-//					ArrayList<Group> groups = APIRegistry.perms.getApplicableGroups(playerID, false, APIRegistry.perms.getGlobalZone().getName());
-//					info(String.format("Group info for %s:", playerName));
-//					for (Group g : groups)
-//					{
-//						info(" - " + g.name + "  in zone  " + g.zoneName);
-//					}
+					info(" - " + g.getName());
 				}
 			}
 			else
 			{
 				switch (args.remove().toLowerCase()) {
-				case "supers":
-					// TODO: Talk to malk what super permissions are for
-					error("Not yet implemented.");
-					break;
 				case "group":
-					parseUserGroup(playerID, playerName);
+					parseUserGroup(ident, playerName);
 					break;
 				case "perms":
-					parseUserPerms(playerID, playerName);
+					parseUserPerms(ident, playerName);
 					break;
 				case "prefix":
-					parseUserPrefixSuffix(playerID, playerName, false);
+					parseUserPrefixSuffix(ident, playerName, false);
 					break;
 				case "suffix":
-					parseUserPrefixSuffix(playerID, playerName, true);
+					parseUserPrefixSuffix(ident, playerName, true);
 					break;
 				case "true":
 				case "allow":
-					parseUserPermissions(playerID, playerName, PermissionAction.ALLOW);
+					parseUserPermissions(ident, playerName, PermissionAction.ALLOW);
 					break;
 				case "false":
 				case "deny":
-					parseUserPermissions(playerID, playerName, PermissionAction.DENY);
+					parseUserPermissions(ident, playerName, PermissionAction.DENY);
 					break;
 				case "clear":
 				case "remove":
-					parseUserPermissions(playerID, playerName, PermissionAction.CLEAR);
+					parseUserPermissions(ident, playerName, PermissionAction.CLEAR);
 					break;
 				default:
 					break;
@@ -169,56 +158,56 @@ public class PermissionCommandParser {
 		}
 	}
 
-	private void parseUserPermissions(UUID playerID, String playerName, PermissionAction type)
+	private void parseUserPermissions(UserIdent ident, String playerName, PermissionAction type)
 	{
 		throw new RuntimeException("Not yet implemented!");
-//		if (args.isEmpty())
-//		{
-//			error("Missing permission argument!");
-//			return;
-//		}
-//		String zoneName = APIRegistry.perms.getGlobalZone().getName();
-//		if (args.size() > 1) // zone is set
-//		{
-//			zoneName = args.remove();
-//			if (APIRegistry.perms.getZone(zoneName) == null)
-//			{
-//				error(String.format("No zone by the name %s exists!", zoneName));
-//				return;
-//			}
-//		}
-//		while (!args.isEmpty())
-//		{
-//			String permissionNode = args.remove();
-//			String result = null, msg = null;
-//			switch (type) {
-//			case ALLOW:
-//				result = APIRegistry.perms.setPlayerPermission(playerID, permissionNode, true, zoneName);
-//				msg = "%s allowed access to %s";
-//				break;
-//			case DENY:
-//				result = APIRegistry.perms.setPlayerPermission(playerID, permissionNode, false, zoneName);
-//				msg = "%s denied access to %s";
-//				break;
-//			case CLEAR:
-//				result = APIRegistry.perms.clearPlayerPermission(playerID, permissionNode, zoneName);
-//				msg = "%s cleared acces to %s";
-//				break;
-//			}
-//			if (result != null)
-//			{
-//				error(result);
-//			}
-//			else
-//			{
-//				info(String.format(msg, playerName, permissionNode));
-//			}
-//		}
+		// if (args.isEmpty())
+		// {
+		// error("Missing permission argument!");
+		// return;
+		// }
+		// String zoneName = APIRegistry.perms.getGlobalZone().getName();
+		// if (args.size() > 1) // zone is set
+		// {
+		// zoneName = args.remove();
+		// if (APIRegistry.perms.getZone(zoneName) == null)
+		// {
+		// error(String.format("No zone by the name %s exists!", zoneName));
+		// return;
+		// }
+		// }
+		// while (!args.isEmpty())
+		// {
+		// String permissionNode = args.remove();
+		// String result = null, msg = null;
+		// switch (type) {
+		// case ALLOW:
+		// result = APIRegistry.perms.setPlayerPermission(ident, permissionNode, true, zoneName);
+		// msg = "%s allowed access to %s";
+		// break;
+		// case DENY:
+		// result = APIRegistry.perms.setPlayerPermission(ident, permissionNode, false, zoneName);
+		// msg = "%s denied access to %s";
+		// break;
+		// case CLEAR:
+		// result = APIRegistry.perms.clearPlayerPermission(ident, permissionNode, zoneName);
+		// msg = "%s cleared acces to %s";
+		// break;
+		// }
+		// if (result != null)
+		// {
+		// error(result);
+		// }
+		// else
+		// {
+		// info(String.format(msg, playerName, permissionNode));
+		// }
+		// }
 	}
 
-	private void parseUserPrefixSuffix(UUID playerID, String playerName, boolean isSuffix)
+	private void parseUserPrefixSuffix(UserIdent ident, String playerName, boolean isSuffix)
 	{
-		PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(playerID);
+		PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(ident.getUuid());
 		if (args.isEmpty())
 		{
 			if (isSuffix)
@@ -249,58 +238,58 @@ public class PermissionCommandParser {
 		}
 	}
 
-	private void parseUserPerms(UUID playerID, String playerName)
+	private void parseUserPerms(UserIdent ident, String playerName)
 	{
 		throw new RuntimeException("Not yet implemented!");
-//		String zoneName = APIRegistry.perms.getGlobalZone().getName();
-//		if (!args.isEmpty())
-//		{
-//			zoneName = args.remove();
-//			if (zoneName.equalsIgnoreCase("here") && senderPlayer != null)
-//			{
-//				zoneName = APIRegistry.perms.getZoneAt(new WorldPoint(senderPlayer)).getName();
-//			}
-//			else if (APIRegistry.perms.getZone(zoneName) == null)
-//			{
-//				error(String.format("No zone by the name %s exists!", zoneName));
-//				return;
-//			}
-//		}
-//
-//		// TODO: Clean up everything below this point
-//		ArrayList<String> list = APIRegistry.perms.getPlayerPermissions(playerID, zoneName);
-//		Collections.sort(list);
-//		ArrayList<String> messageAllowed = new ArrayList<String>();
-//		ArrayList<String> messageDenied = new ArrayList<String>();
-//		for (String permission : list)
-//		{
-//			if (permission.contains("has no individual permissions."))
-//			{
-//				info(permission);
-//				return;
-//			}
-//			if (permission.contains("true"))
-//			{
-//				messageAllowed.add(" " + EnumChatFormatting.DARK_GREEN + permission.substring(0, permission.indexOf(":")));
-//			}
-//			else
-//			{
-//				messageDenied.add(" " + EnumChatFormatting.DARK_RED + permission.substring(0, permission.indexOf(":")));
-//			}
-//		}
-//		info(playerName + ": Current permissions in zone " + zoneName + ":");
-//		info(" (" + EnumChatFormatting.DARK_GREEN + "ALLOWED" + EnumChatFormatting.DARK_RED + " DENIED" + EnumChatFormatting.GREEN + ")");
-//		for (String permission : messageAllowed)
-//		{
-//			info(permission);
-//		}
-//		for (String permission : messageDenied)
-//		{
-//			info(permission);
-//		}
+		// String zoneName = APIRegistry.perms.getGlobalZone().getName();
+		// if (!args.isEmpty())
+		// {
+		// zoneName = args.remove();
+		// if (zoneName.equalsIgnoreCase("here") && senderPlayer != null)
+		// {
+		// zoneName = APIRegistry.perms.getZoneAt(new WorldPoint(senderPlayer)).getName();
+		// }
+		// else if (APIRegistry.perms.getZone(zoneName) == null)
+		// {
+		// error(String.format("No zone by the name %s exists!", zoneName));
+		// return;
+		// }
+		// }
+		//
+		// // TODO: Clean up everything below this point
+		// ArrayList<String> list = APIRegistry.perms.getPlayerPermissions(ident, zoneName);
+		// Collections.sort(list);
+		// ArrayList<String> messageAllowed = new ArrayList<String>();
+		// ArrayList<String> messageDenied = new ArrayList<String>();
+		// for (String permission : list)
+		// {
+		// if (permission.contains("has no individual permissions."))
+		// {
+		// info(permission);
+		// return;
+		// }
+		// if (permission.contains("true"))
+		// {
+		// messageAllowed.add(" " + EnumChatFormatting.DARK_GREEN + permission.substring(0, permission.indexOf(":")));
+		// }
+		// else
+		// {
+		// messageDenied.add(" " + EnumChatFormatting.DARK_RED + permission.substring(0, permission.indexOf(":")));
+		// }
+		// }
+		// info(playerName + ": Current permissions in zone " + zoneName + ":");
+		// info(" (" + EnumChatFormatting.DARK_GREEN + "ALLOWED" + EnumChatFormatting.DARK_RED + " DENIED" + EnumChatFormatting.GREEN + ")");
+		// for (String permission : messageAllowed)
+		// {
+		// info(permission);
+		// }
+		// for (String permission : messageDenied)
+		// {
+		// info(permission);
+		// }
 	}
 
-	private void parseUserGroup(UUID playerID, String playerName)
+	private void parseUserGroup(UserIdent ident, String playerName)
 	{
 
 	}

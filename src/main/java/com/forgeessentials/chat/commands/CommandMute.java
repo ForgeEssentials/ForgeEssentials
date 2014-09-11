@@ -9,8 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -39,7 +39,7 @@ public class CommandMute extends ForgeEssentialsCommandBase {
     {
         if (args.length == 1)
         {
-            EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
             if (receiver == null)
             {
                 OutputHandler.chatError(receiver, String.format("Player %s does not exist, or is not online.", args[0]));

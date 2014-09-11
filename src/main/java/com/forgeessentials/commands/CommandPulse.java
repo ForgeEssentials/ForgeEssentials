@@ -13,7 +13,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskPulseHelper;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.tasks.TaskRegistry;
 
@@ -125,7 +125,7 @@ public class CommandPulse extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.getCommandSenderName());
+        EntityPlayerMP playermp = UserIdent.getPlayerByMatch(sender, sender.getCommandSenderName());
         processCommand(playermp, args);
     }
 

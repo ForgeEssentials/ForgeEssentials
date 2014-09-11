@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandScript extends ForgeEssentialsCommandBase {
 
@@ -23,7 +23,7 @@ public class CommandScript extends ForgeEssentialsCommandBase {
             EventType e = EventType.valueOf(args[1].toUpperCase());
             if (args[2] != null)
             {
-                EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[2]);
+                EntityPlayer player = UserIdent.getPlayerByMatch(sender, args[2]);
                 EventType.run(player, e);
             }
             else
@@ -39,7 +39,7 @@ public class CommandScript extends ForgeEssentialsCommandBase {
         if (args[0].equalsIgnoreCase("run"))
         {
             EventType e = EventType.valueOf(args[1].toUpperCase());
-            EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[2]);
+            EntityPlayer player = UserIdent.getPlayerByMatch(sender, args[2]);
             EventType.run(player, e);
 
         }

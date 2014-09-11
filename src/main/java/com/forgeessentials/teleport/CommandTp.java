@@ -15,6 +15,7 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
@@ -39,10 +40,10 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 	{
 		if (args.length == 1)
 		{
-			EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[0]);
+			EntityPlayer target = UserIdent.getPlayerByMatch(sender, args[0]);
 			if (PlayerSelector.hasArguments(args[0]))
 			{
-				target = FunctionHelper.getPlayerForName(sender, args[0]);
+				target = UserIdent.getPlayerByMatch(sender, args[0]);
 			}
 			if (target != null)
 			{
@@ -60,10 +61,10 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 		else if (args.length == 2 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
 		{
 
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
 			if (player != null)
 			{
-				EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[1]);
+				EntityPlayer target = UserIdent.getPlayerByMatch(sender, args[1]);
 
 				if (target != null)
 				{
@@ -96,7 +97,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 			}
 			else if (args.length == 4)
 			{
-				EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+				EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
 				if (player != null)
 				{
 					double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);
@@ -125,13 +126,13 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 	{
 		if (args.length == 2)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
 			if (player != null)
 			{
-				EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[0]);
+				EntityPlayer target = UserIdent.getPlayerByMatch(sender, args[0]);
 				if (PlayerSelector.hasArguments(args[1]))
 				{
-					target = FunctionHelper.getPlayerForName(sender, args[1]);
+					target = UserIdent.getPlayerByMatch(sender, args[1]);
 				}
 				if (target != null)
 				{
@@ -153,7 +154,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 		}
 		else if (args.length == 4)
 		{
-			EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+			EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
 			if (player != null)
 			{
 				double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);

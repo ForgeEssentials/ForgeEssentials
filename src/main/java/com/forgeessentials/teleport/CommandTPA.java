@@ -14,9 +14,9 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
 
@@ -84,7 +84,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
             return;
         }
 
-        EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+        EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
         if (receiver == null)
         {
             ChatUtils.sendMessage(sender, args[0] + " not found.");

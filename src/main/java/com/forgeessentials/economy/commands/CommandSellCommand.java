@@ -13,8 +13,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -41,7 +41,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
         if (args.length >= 3)
         {
 
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
 

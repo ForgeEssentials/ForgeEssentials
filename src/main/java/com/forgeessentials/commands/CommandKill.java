@@ -11,7 +11,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -28,7 +28,7 @@ public class CommandKill extends FEcmdModuleCommands {
     {
         if (args.length >= 1 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 player.attackEntityFrom(DamageSource.outOfWorld, 1000);
@@ -51,7 +51,7 @@ public class CommandKill extends FEcmdModuleCommands {
     {
         if (args.length >= 1)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 player.attackEntityFrom(DamageSource.outOfWorld, 1000);

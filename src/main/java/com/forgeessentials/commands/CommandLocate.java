@@ -7,8 +7,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -35,7 +35,7 @@ public class CommandLocate extends FEcmdModuleCommands {
         }
         else
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player == null)
             {
                 OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));

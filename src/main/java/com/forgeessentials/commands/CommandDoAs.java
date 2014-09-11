@@ -7,8 +7,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -28,7 +28,7 @@ public class CommandDoAs extends FEcmdModuleCommands {
             cmd.append(args[i]);
             cmd.append(" ");
         }
-        EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+        EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
         if (player != null)
         {
             OutputHandler.chatWarning(player, String.format("Player %s is attempting to issue a command as you.", sender.getCommandSenderName()));

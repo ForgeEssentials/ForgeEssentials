@@ -22,8 +22,10 @@ import com.forgeessentials.util.selections.WorldPoint;
  */
 public interface IPermissionsHelper extends IPermissionsProvider {
 
-	static final String DEFAULT_GROUP = "*";
-	static final String OP_GROUP = "_OP_";
+	static final String GROUP_DEFAULT = "*";
+	static final String GROUP_GUESTS = "_GUESTS_";
+	static final String GROUP_OPERATORS = "_OPS_";
+	
 	static final String PERMISSION_ASTERIX = "*";
 	static final String PERMISSION_FALSE = "false";
 	static final String PERMISSION_TRUE = "true";
@@ -49,6 +51,26 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 */
 	String getPermissionProperty(EntityPlayer player, String permissionNode);
 
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Checks a permission for a player
+	 * 
+	 * @param player
+	 * @param permissionNode
+	 * @return
+	 */
+	boolean checkPermission(UserIdent ident, String permissionNode);
+
+	/**
+	 * Gets a permission-property for a player
+	 * 
+	 * @param player
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	String getPermissionProperty(UserIdent ident, String permissionNode);
+
 	/**
 	 * Gets a permission-property for a player as integer
 	 * 
@@ -56,7 +78,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return property, if it exists, null otherwise
 	 */
-	Integer getPermissionPropertyInt(EntityPlayer player, String permissionNode);
+	Integer getPermissionPropertyInt(UserIdent ident, String permissionNode);
 
 	// ---------------------------------------------------------------------------
 
@@ -69,7 +91,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return
 	 */
-	boolean checkPermission(EntityPlayer player, WorldPoint targetPoint, String permissionNode);
+	boolean checkPermission(UserIdent ident, WorldPoint targetPoint, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player at a certain position
@@ -80,7 +102,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return property, if it exists, null otherwise
 	 */
-	String getPermissionProperty(EntityPlayer player, WorldPoint targetPoint, String permissionNode);
+	String getPermissionProperty(UserIdent ident, WorldPoint targetPoint, String permissionNode);
 
 	// ---------------------------------------------------------------------------
 
@@ -93,7 +115,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return
 	 */
-	boolean checkPermission(EntityPlayer player, WorldArea targetArea, String permissionNode);
+	boolean checkPermission(UserIdent ident, WorldArea targetArea, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player in a certain area
@@ -104,7 +126,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return property, if it exists, null otherwise
 	 */
-	String getPermissionProperty(EntityPlayer player, WorldArea targetArea, String permissionNode);
+	String getPermissionProperty(UserIdent ident, WorldArea targetArea, String permissionNode);
 
 	// ---------------------------------------------------------------------------
 
@@ -117,7 +139,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return
 	 */
-	boolean checkPermission(EntityPlayer player, Zone zone, String permissionNode);
+	boolean checkPermission(UserIdent ident, Zone zone, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player in the specified zone
@@ -128,7 +150,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param permissionNode
 	 * @return property, if it exists, null otherwise
 	 */
-	String getPermissionProperty(EntityPlayer player, Zone zone, String permissionNode);
+	String getPermissionProperty(UserIdent ident, Zone zone, String permissionNode);
 
 	// ---------------------------------------------------------------------------
 	
@@ -294,7 +316,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param player
 	 * @return
 	 */
-	Group getPrimaryGroup(EntityPlayer player);
+	Group getPrimaryGroup(UserIdent ident);
 
 	/**
 	 * Get all groups the player belongs to, ordered by priority.
@@ -302,7 +324,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param player
 	 * @return
 	 */
-	Collection<Group> getPlayerGroups(EntityPlayer player);
+	Collection<Group> getPlayerGroups(UserIdent ident);
 
 	// ---------------------------------------------------------------------------
 

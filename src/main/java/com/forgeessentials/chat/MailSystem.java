@@ -8,7 +8,7 @@ import net.minecraft.util.EnumChatFormatting;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -22,7 +22,7 @@ public class MailSystem {
         map.put(mail.getReceiver(), mail);
         DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(Mail.class), mail);
 
-        EntityPlayer player = FunctionHelper.getPlayerForUUID(mail.getReceiver());
+        EntityPlayer player = UserIdent.getPlayerByUuid(mail.getReceiver());
 
         if (player != null)
         {

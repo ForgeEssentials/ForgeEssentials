@@ -12,8 +12,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -91,7 +91,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         }
         else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
 
             if (player != null)
             {
@@ -124,7 +124,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         dur = parseIntWithMin(sender, args[2], 0) * 20;
         PotionEffect eff = new PotionEffect(ID, dur, ampl);
 
-        EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+        EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
 
         if (player != null)
         {

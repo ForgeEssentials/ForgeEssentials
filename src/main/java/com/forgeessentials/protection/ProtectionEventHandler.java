@@ -20,6 +20,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.PlayerBlockPlace;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -94,7 +95,7 @@ public class ProtectionEventHandler {
 		if (sourcePlayer && targetPlayer)
 		{
 			// PVP checks
-			boolean sourceB = !APIRegistry.perms.checkPermission((EntityPlayer) e.entityLiving, new WorldPoint(e.source.getEntity()),
+			boolean sourceB = !APIRegistry.perms.checkPermission(new UserIdent((EntityPlayer) e.entityLiving), new WorldPoint(e.source.getEntity()),
 					ModuleProtection.PERM_PVP);
 			if (sourceB)
 			{
@@ -111,11 +112,11 @@ public class ProtectionEventHandler {
 		else if (sourcePlayer)
 		{
 			// stop players hitting animals.
-			boolean result = APIRegistry.perms.checkPermission((EntityPlayer) source, new WorldPoint(e.entityLiving),
+			boolean result = APIRegistry.perms.checkPermission(new UserIdent((EntityPlayer) source), new WorldPoint(e.entityLiving),
 					ModuleProtection.PERM_OVERRIDE);
 			if (!result)
 			{
-				result = APIRegistry.perms.checkPermission((EntityPlayer) source, new WorldPoint(e.entityLiving),
+				result = APIRegistry.perms.checkPermission(new UserIdent((EntityPlayer) source), new WorldPoint(e.entityLiving),
 						ModuleProtection.PERM_INTERACT_ENTITY);
 			}
 			e.setCanceled(!result);
@@ -123,11 +124,11 @@ public class ProtectionEventHandler {
 		else if (targetPlayer)
 		{
 			// stop people from hitting entites.
-			boolean result = APIRegistry.perms.checkPermission((EntityPlayer) e.entityLiving, new WorldPoint(e.entityLiving),
+			boolean result = APIRegistry.perms.checkPermission(new UserIdent((EntityPlayer) e.entityLiving), new WorldPoint(e.entityLiving),
 					ModuleProtection.PERM_OVERRIDE);
 			if (!result)
 			{
-				result = APIRegistry.perms.checkPermission((EntityPlayer) e.entityLiving, new WorldPoint(e.entityLiving),
+				result = APIRegistry.perms.checkPermission(new UserIdent((EntityPlayer) e.entityLiving), new WorldPoint(e.entityLiving),
 						ModuleProtection.PERM_INTERACT_ENTITY);
 			}
 			e.setCanceled(!result);
@@ -143,8 +144,8 @@ public class ProtectionEventHandler {
 		}
 
 		WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
-		boolean overall = APIRegistry.perms.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_OVERRIDE);
-		boolean breaks = APIRegistry.perms.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_EDITS);
+		boolean overall = APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_OVERRIDE);
+		boolean breaks = APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_EDITS);
 		if (!overall)
 		{
 			if (!breaks)
@@ -162,8 +163,8 @@ public class ProtectionEventHandler {
 		}
 
 		WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.getBlockX(), e.getBlockY(), e.getBlockZ());
-		boolean overall = APIRegistry.perms.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_OVERRIDE);
-		boolean breaks = APIRegistry.perms.checkPermission(e.getPlayer(), point, ModuleProtection.PERM_EDITS);
+		boolean overall = APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_OVERRIDE);
+		boolean breaks = APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_EDITS);
 
 		if (!overall)
 		{
@@ -206,14 +207,14 @@ public class ProtectionEventHandler {
 			}
 		}
 
-		boolean result = APIRegistry.perms.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_OVERRIDE);
+		boolean result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE);
 		if (!result)
 		{
 			String name = stack.getUnlocalizedName();
 			name = ModuleProtection.PERM_ITEM_USE + "." + name;
 			name = name + "." + stack.getItemDamage();
 
-			result = APIRegistry.perms.checkPermission(e.entityPlayer, point, name);
+			result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, name);
 		}
 
 		if (result)
@@ -238,11 +239,11 @@ public class ProtectionEventHandler {
 		{
 			WorldPoint point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
 
-			boolean result = APIRegistry.perms.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_OVERRIDE);
+			boolean result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE);
 			if (!result)
 			{
 				// check block usage perm
-				result = APIRegistry.perms.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_INTERACT_BLOCK);
+				result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_INTERACT_BLOCK);
 			}
 
 			if (result)
@@ -266,10 +267,10 @@ public class ProtectionEventHandler {
 
 		WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
 
-		boolean result = APIRegistry.perms.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_OVERRIDE);
+		boolean result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE);
 		if (!result)
 		{
-			result = APIRegistry.perms.checkPermission(e.entityPlayer, point, ModuleProtection.PERM_INTERACT_ENTITY);
+			result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_INTERACT_ENTITY);
 		}
 
 		e.setCanceled(!result);

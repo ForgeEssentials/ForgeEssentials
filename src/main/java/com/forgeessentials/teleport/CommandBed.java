@@ -14,9 +14,9 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
 
@@ -42,7 +42,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
     {
         if (args.length >= 1 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 tp(player);
@@ -100,7 +100,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
     {
         if (args.length >= 1)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 tp(player);

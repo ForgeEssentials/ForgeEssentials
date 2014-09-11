@@ -34,7 +34,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 	public static void setSpawnPoint(WorldPoint p, Zone zone)
 	{
 		String val = p.getDimension() + ";" + p.getX() + ";" + p.getY() + ";" + p.getZ();
-		zone.setGroupPermissionProperty(APIRegistry.perms.DEFAULT_GROUP, SPAWN_PROP, val);
+		zone.setGroupPermissionProperty(APIRegistry.perms.GROUP_DEFAULT, SPAWN_PROP, val);
 	}
 
 	@Override
@@ -211,7 +211,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 			else
 			{
 				ident = new UserIdent(name);
-				if (!ident.isValidUUID())
+				if (!ident.hasUUID())
 				{
 					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", name));
 					OutputHandler.chatConfirmation(sender, name + " will be used, but may be inaccurate.");
@@ -245,7 +245,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 				OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", args[2]));
 				return;
 			}
-			zone.setGroupPermissionProperty(APIRegistry.perms.DEFAULT_GROUP, permProp, prop);
+			zone.setGroupPermissionProperty(APIRegistry.perms.GROUP_DEFAULT, permProp, prop);
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else
@@ -364,7 +364,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 		{
 			String name = args[2];
 			UserIdent ident = new UserIdent(name);
-			if (!ident.isValidUUID())
+			if (!ident.hasUUID())
 			{
 				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", name));
 				OutputHandler.chatConfirmation(sender, name + " will be used, but may be inaccurate.");
@@ -394,7 +394,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 				return;
 			}
 
-			zone.setGroupPermissionProperty(APIRegistry.perms.DEFAULT_GROUP, permProp, prop);
+			zone.setGroupPermissionProperty(APIRegistry.perms.GROUP_DEFAULT, permProp, prop);
 			OutputHandler.chatConfirmation(sender, output);
 		}
 		else

@@ -19,7 +19,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -243,7 +243,7 @@ public class CommandDrop extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.getCommandSenderName());
+        EntityPlayerMP playermp = UserIdent.getPlayerByMatch(sender, sender.getCommandSenderName());
         processCommand(playermp, args);
     }
 

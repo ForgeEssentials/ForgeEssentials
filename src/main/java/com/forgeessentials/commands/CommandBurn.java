@@ -10,8 +10,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -34,7 +34,7 @@ public class CommandBurn extends FEcmdModuleCommands {
             }
             else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
-                EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (player != null)
                 {
                     OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
@@ -55,7 +55,7 @@ public class CommandBurn extends FEcmdModuleCommands {
             }
             else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
-                EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (player != null)
                 {
                     player.setFire(parseIntWithMin(sender, args[1], 0));
@@ -81,7 +81,7 @@ public class CommandBurn extends FEcmdModuleCommands {
         {
             time = parseIntWithMin(sender, args[1], 0);
         }
-        EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+        EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
         if (player != null)
         {
             player.setFire(time);

@@ -258,7 +258,7 @@ public abstract class Zone {
 			Map.Entry<UserIdent, PermissionList> entry = (Map.Entry<UserIdent, PermissionList>) iterator.next();
 			if (!entry.getKey().wasValidUUID())
 			{
-				if (entry.getKey().isValidUUID())
+				if (entry.getKey().hasUUID())
 				{
 					iterator.remove();
 					playerPermissions.put(entry.getKey(), entry.getValue());

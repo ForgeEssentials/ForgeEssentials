@@ -17,6 +17,7 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
 
@@ -76,7 +77,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 			{
 				if (!map.containsKey(args[1]))
 				{
-					Integer prop = APIRegistry.perms.getPermissionPropertyInt(sender, PERMPROP);
+					Integer prop = APIRegistry.perms.getPermissionPropertyInt(new UserIdent(sender), PERMPROP);
 					if (prop == null || prop == -1)
 					{
 						map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
@@ -129,7 +130,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 					}
 					else
 					{
-						target = "p:" + FunctionHelper.getPlayerForName(sender, args[1]).getCommandSenderName();
+						target = "p:" + UserIdent.getPlayerByMatch(sender, args[1]).getCommandSenderName();
 					}
 
 					if (args.length == 2)
@@ -163,7 +164,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		throw new RuntimeException("Not yet implemented!");
 //		if (target.startsWith("p:"))
 //		{
-//			return APIRegistry.perms.getPermissionPropForPlayer(FunctionHelper.getPlayerID(target.replaceFirst("p:", "")), APIRegistry.perms
+//			return APIRegistry.perms.getPermissionPropForPlayer(UserIdent.getUuidByUsername(target.replaceFirst("p:", "")), APIRegistry.perms
 //					.getGLOBAL().getName(), PERMPROP);
 //		}
 //		else if (target.startsWith("g:"))
@@ -182,7 +183,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		throw new RuntimeException("Not yet implemented!");
 //		if (target.startsWith("p:"))
 //		{
-//			APIRegistry.perms.setPlayerPermissionProperty(FunctionHelper.getPlayerID(target.replaceFirst("p:", "")), PERMPROP, "" + limit,
+//			APIRegistry.perms.setPlayerPermissionProperty(UserIdent.getUuidByUsername(target.replaceFirst("p:", "")), PERMPROP, "" + limit,
 //					APIRegistry.perms.getGlobalZone().getName());
 //		}
 //		else if (target.startsWith("g:"))

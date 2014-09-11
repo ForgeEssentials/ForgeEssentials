@@ -16,7 +16,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandPush extends FEcmdModuleCommands {
     public String getCommandName()
@@ -81,7 +81,7 @@ public class CommandPush extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.getCommandSenderName());
+        EntityPlayerMP playermp = UserIdent.getPlayerByMatch(sender, sender.getCommandSenderName());
         if (args.length != 3)
         {
             throw new WrongUsageException("/push <X> <Y> <Z>", new Object[0]);

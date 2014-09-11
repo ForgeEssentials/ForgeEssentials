@@ -117,7 +117,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         {
             if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
             {
-                EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (player != null)
                 {
                     Warp warp = TeleportDataManager.warps.get(args[1].toLowerCase());

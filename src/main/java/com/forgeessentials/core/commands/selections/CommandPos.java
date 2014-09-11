@@ -12,6 +12,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -108,7 +109,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         z = mop.blockZ;
 
         WorldPoint point = new WorldPoint(player.dimension, x, y, z);
-        if (!APIRegistry.perms.checkPermission(player, point, getPermissionNode()))
+        if (!APIRegistry.perms.checkPermission(new UserIdent(player), point, getPermissionNode()))
         {
             OutputHandler.chatError(player, "Insufficient permissions.");
             return;

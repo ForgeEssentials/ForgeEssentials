@@ -17,8 +17,8 @@ import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandMsg extends ForgeEssentialsCommandBase {
     private static Map<String, String> playerReply;
@@ -126,7 +126,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
 
             else
             {
-                EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (receiver == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -163,7 +163,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
     {
         if (args.length > 1)
         {
-            EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
             if (receiver == null)
             {
                 OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));

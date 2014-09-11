@@ -15,8 +15,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -67,7 +67,7 @@ public class CommandPm extends ForgeEssentialsCommandBase {
             }
             else
             {
-                EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (receiver == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -133,7 +133,7 @@ public class CommandPm extends ForgeEssentialsCommandBase {
             }
             else
             {
-                EntityPlayerMP target = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP target = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (target == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -184,7 +184,7 @@ public class CommandPm extends ForgeEssentialsCommandBase {
             }
             else
             {
-                EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayer target = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (target == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -201,7 +201,7 @@ public class CommandPm extends ForgeEssentialsCommandBase {
         }
         if (args.length > 1)
         {
-            EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayer receiver = UserIdent.getPlayerByMatch(sender, args[0]);
             if (receiver == null)
             {
                 OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));

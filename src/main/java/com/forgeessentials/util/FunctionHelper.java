@@ -144,57 +144,6 @@ public final class FunctionHelper {
     }
 
     /**
-     * DO NOT use this for commands
-     *
-     * @param id
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public static EntityPlayerMP getPlayerForUUID(UUID id)
-    {
-        List<EntityPlayerMP> possibles = new LinkedList<EntityPlayerMP>();
-        ArrayList<EntityPlayerMP> temp = (ArrayList<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer()
-                .getConfigurationManager().playerEntityList;
-        for (EntityPlayerMP player : temp)
-        {
-            if (player.getGameProfile().getId().equals(id))
-            {
-                return player;
-            }
-        }
-        if (possibles.size() == 1)
-        {
-            return possibles.get(0);
-        }
-        return null;
-    }
-
-    public static EntityPlayerMP getPlayerForName(ICommandSender sender, String name)
-    {
-        EntityPlayerMP var2 = PlayerSelector.matchOnePlayer(sender, name);
-
-        if (var2 != null)
-        {
-            return var2;
-        }
-        else
-        {
-            return getPlayerForUUID(getPlayerID(name));
-        }
-    }
-
-    public static UUID getPlayerID(String username)
-    {
-    	GameProfile profile = MinecraftServer.getServer().func_152358_ax().func_152655_a(username);
-        return profile == null ? null : profile.getId();
-    }
-
-    public static String getPlayerName(UUID playerID)
-    {
-        return MinecraftServer.getServer().func_152358_ax().func_152652_a(playerID).getName();
-    }
-
-    /**
      * Make new Array with everything except the 1st string.
      *
      * @param par0ArrayOfStr Old array

@@ -317,7 +317,7 @@ public class PlayerInfo {
 			}
 		}
 
-		FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
+		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(playerID));
 	}
 
 	public void setPoint2(Point sel2)
@@ -342,12 +342,12 @@ public class PlayerInfo {
 			}
 		}
 
-		FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
+		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(playerID));
 	}
 
 	public Point getPoint1()
 	{
-		return selprovider.getPoint1(FunctionHelper.getPlayerForUUID(playerID));
+		return selprovider.getPoint1(UserIdent.getPlayerByUuid(playerID));
 	}
 
 	public String getName()
@@ -357,7 +357,7 @@ public class PlayerInfo {
 
 	public Selection getSelection()
 	{
-		return selprovider.getSelection(FunctionHelper.getPlayerForUUID(playerID));
+		return selprovider.getSelection(UserIdent.getPlayerByUuid(playerID));
 	}
 
 	// ----------------------------------------------
@@ -401,7 +401,7 @@ public class PlayerInfo {
 		selection = null;
 		sel1 = null;
 		sel2 = null;
-		FunctionHelper.netHandler.sendTo(new Message(this), FunctionHelper.getPlayerForUUID(playerID));
+		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(playerID));
 	}
 
 	public List<ItemStack> getHiddenItems()
@@ -473,7 +473,7 @@ public class PlayerInfo {
 
 	public Point getPoint2()
 	{
-		return selprovider.getPoint2(FunctionHelper.getPlayerForUUID(playerID));
+		return selprovider.getPoint2(UserIdent.getPlayerByUuid(playerID));
 	}
 
 }

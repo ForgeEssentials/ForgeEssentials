@@ -18,6 +18,7 @@ import com.forgeessentials.core.commands.PermissionDeniedException;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -138,11 +139,11 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             }
 
             // check for players.. all the rest of these should be greated than 1.
-            UUID name = FunctionHelper.getPlayerID(args[1]);
+            UUID name = UserIdent.getUuidByUsername(args[1]);
             boolean isLogged = true;
 
             // check if the player is logged.
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[1]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[1]);
             if (player == null)
             {
                 OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -245,9 +246,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             }
 
             // check for players.. all the rest of these should be greated than 1.
-            UUID name = FunctionHelper.getPlayerID(args[1]);
+            UUID name = UserIdent.getUuidByUsername(args[1]);
             // check if the player is logged.
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[1]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[1]);
             if (player == null)
             {
                 OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -303,11 +304,11 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         }
 
         // check for players.. all the rest of these should be greated than 1.
-        UUID name = FunctionHelper.getPlayerID(args[1]);
+        UUID name = UserIdent.getUuidByUsername(args[1]);
         boolean isLogged = true;
 
         // check if the player is logged.
-        EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[1]);
+        EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[1]);
         if (player == null)
         {
             ChatUtils.sendMessage(sender, "A player of that name is not on the server. Doing the action anyways.");

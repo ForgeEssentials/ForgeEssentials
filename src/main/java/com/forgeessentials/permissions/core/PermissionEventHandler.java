@@ -7,6 +7,7 @@ import net.minecraftforge.server.CommandHandlerForge;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.PlayerChangedZone;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -22,12 +23,12 @@ public class PermissionEventHandler {
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onZoneChange(PlayerChangedZone event)
 	{
-		String query1 = APIRegistry.perms.getPermissionProperty(event.entityPlayer, event.beforeZone, "fe.perm.zone.exit");
+		String query1 = APIRegistry.perms.getPermissionProperty(new UserIdent(event.entityPlayer), event.beforeZone, "fe.perm.zone.exit");
 		if (query1 != null)
 		{
 			ChatUtils.sendMessage(event.entityPlayer, FunctionHelper.formatColors(query1));
 		}
-		String query2 = APIRegistry.perms.getPermissionProperty(event.entityPlayer, event.afterZone, "fe.perm.zone.entry");
+		String query2 = APIRegistry.perms.getPermissionProperty(new UserIdent(event.entityPlayer), event.afterZone, "fe.perm.zone.entry");
 		if (query2 != null)
 		{
 			ChatUtils.sendMessage(event.entityPlayer, FunctionHelper.formatColors(query2));

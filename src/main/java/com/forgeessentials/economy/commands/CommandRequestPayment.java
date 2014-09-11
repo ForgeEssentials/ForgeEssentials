@@ -10,8 +10,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -28,7 +28,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player == null)
             {
                 ChatUtils.sendMessage(sender, args[0] + " not found!");
@@ -53,7 +53,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player == null)
             {
                 ChatUtils.sendMessage(sender, args[0] + " not found!");
