@@ -23,8 +23,6 @@ import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WorldArea;
@@ -42,15 +40,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private RootZone rootZone;
 
-	private Group defaultGroup = new Group(GROUP_DEFAULT, null, null, null, 0, 0);
-
-	private Group guestGroup = new Group(GROUP_GUESTS, "[GUEST] ", null, null, 0, 0);
-
-	private Group operatorGroup = new Group(GROUP_OPERATORS, "[OPERATOR] ", null, null, 0, 1);
-
 	private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
-
-	private Map<String, Group> groups = new HashMap<String, Group>();
 
 	private IZonePersistenceProvider persistenceProvider;
 
@@ -58,13 +48,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	public ZonedPermissionHelper()
 	{
-		DataStorageManager.registerSaveableType(new ClassContainer(true, Zone.PermissionList.class, String.class, String.class));
-		DataStorageManager.registerSaveableType(new ClassContainer(Zone.class));
-		DataStorageManager.registerSaveableType(new ClassContainer(RootZone.class));
-		DataStorageManager.registerSaveableType(new ClassContainer(ServerZone.class));
-		DataStorageManager.registerSaveableType(new ClassContainer(WorldZone.class));
-		DataStorageManager.registerSaveableType(new ClassContainer(AreaZone.class));
-
 		FMLCommonHandler.instance().bus().register(this);
 
 		rootZone = new RootZone();
@@ -80,11 +63,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		zones.clear();
 		addZone(rootZone);
 		addZone(new ServerZone(rootZone));
-
-		groups.clear();
-		groups.put(operatorGroup.getName(), operatorGroup);
-		groups.put(defaultGroup.getName(), defaultGroup);
-		groups.put(guestGroup.getName(), guestGroup);
 
 		// for (World world : DimensionManager.getWorlds())
 		// {
@@ -266,7 +244,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		{
 			groups = new ArrayList<String>();
 		}
-		groups.add(defaultGroup.getName());
+		groups.add(getServerZone().getDefaultGroup().getName());
 
 		// Build node list
 		List<String> nodes = new ArrayList<String>();
@@ -327,19 +305,19 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public void registerPermissionProperty(String permissionNode, String defaultValue)
 	{
-		rootZone.setGroupPermissionProperty(defaultGroup.getName(), permissionNode, defaultValue);
+		rootZone.setGroupPermissionProperty(GROUP_DEFAULT, permissionNode, defaultValue);
 	}
 
 	@Override
 	public void registerPermission(String permissionNode, PermissionsManager.RegisteredPermValue permLevel)
 	{
 		if (permLevel == RegisteredPermValue.FALSE)
-			rootZone.setGroupPermission(defaultGroup.getName(), permissionNode, false);
+			rootZone.setGroupPermission(GROUP_DEFAULT, permissionNode, false);
 		else if (permLevel == RegisteredPermValue.TRUE)
-			rootZone.setGroupPermission(defaultGroup.getName(), permissionNode, true);
+			rootZone.setGroupPermission(GROUP_DEFAULT, permissionNode, true);
 		else if (permLevel == RegisteredPermValue.OP)
 		{
-			rootZone.setGroupPermission(defaultGroup.getName(), permissionNode, false);
+			rootZone.setGroupPermission(GROUP_DEFAULT, permissionNode, false);
 			rootZone.setGroupPermission(GROUP_OPERATORS, permissionNode, true);
 		}
 	}
@@ -556,23 +534,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public Group getGroup(String name)
 	{
-		return groups.get(name);
-	}
-
-	@Override
-	public Collection<Group> getGroups()
-	{
-		return groups.values();
+		return getServerZone().getGroup(name);
 	}
 
 	@Override
 	public Group createGroup(String name)
 	{
-		if (groups.containsKey(name))
-			return null;
-		Group group = new Group(name);
-		groups.put(group.getName(), group);
-		return group;
+		return getServerZone().createGroup(name);
 	}
 
 	@Override
@@ -591,11 +559,11 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 		if (ident.hasPlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
 		{
-			groups.add(operatorGroup);
+			groups.add(getServerZone().getOperatorGroup());
 		}
 		if (groups.isEmpty())
 		{
-			groups.add(guestGroup);
+			groups.add(getServerZone().getGuestGroup());
 		}
 		return groups;
 	}

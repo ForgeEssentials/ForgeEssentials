@@ -1,45 +1,40 @@
 package com.forgeessentials.api.permissions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
-
-import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being {@link RootZone}.
  * 
  * @author Olee
  */
-@SaveableObject
 public class ServerZone extends Zone {
 
 	private RootZone rootZone;
 
-	@SaveableField
 	private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
 
-	@SaveableField
 	private int maxZoneID;
 
-	@SaveableField
-	private List<Group> groups = new ArrayList<Group>();
+	private Group defaultGroup = new Group(IPermissionsHelper.GROUP_DEFAULT, null, null, null, 0, 0);
+
+	private Group guestGroup = new Group(IPermissionsHelper.GROUP_GUESTS, "[GUEST] ", null, null, 0, 1);
+
+	private Group operatorGroup = new Group(IPermissionsHelper.GROUP_OPERATORS, "[OPERATOR] ", null, null, 0, 2);
+
+	private Map<String, Group> groups = new HashMap<String, Group>();
 
 	// private List<PlayerData> players;
 
 	public ServerZone()
 	{
 		super(1);
+		groups.put(operatorGroup.getName(), operatorGroup);
+		groups.put(defaultGroup.getName(), defaultGroup);
+		groups.put(guestGroup.getName(), guestGroup);
 	}
 
 	public ServerZone(RootZone rootZone)
@@ -48,16 +43,6 @@ public class ServerZone extends Zone {
 		this.maxZoneID = 1;
 		this.rootZone = rootZone;
 		this.rootZone.setServerZone(this);
-	}
-
-	@Reconstructor
-	private static ServerZone reconstruct(IReconstructData tag)
-	{
-		ServerZone result = new ServerZone();
-		result.doReconstruct(tag);
-		result.maxZoneID = (int) tag.getFieldValue("maxZoneID");
-		result.worldZones = (Map<Integer, WorldZone>) tag.getFieldValue("worldZones");
-		return result;
 	}
 
 	@Override
@@ -130,9 +115,38 @@ public class ServerZone extends Zone {
 		this.rootZone = rootZone;
 	}
 
-	public List<Group> getGroups()
+	public Map<String, Group> getGroups()
 	{
 		return this.groups;
+	}
+
+	public Group getDefaultGroup()
+	{
+		return defaultGroup;
+	}
+
+	public Group getGuestGroup()
+	{
+		return guestGroup;
+	}
+
+	public Group getOperatorGroup()
+	{
+		return operatorGroup;
+	}
+
+	public Group getGroup(String name)
+	{
+		return groups.get(name);
+	}
+	
+	public Group createGroup(String name)
+	{
+		if (groups.containsKey(name))
+			return null;
+		Group group = new Group(name);
+		groups.put(group.getName(), group);
+		return group;
 	}
 
 }

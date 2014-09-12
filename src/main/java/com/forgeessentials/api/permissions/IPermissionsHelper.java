@@ -302,13 +302,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	Group getGroup(String name);
 
 	/**
-	 * Get all registered groups
-	 * 
-	 * @return
-	 */
-	Collection<Group> getGroups();
-
-	/**
 	 * Creates a new group
 	 * 
 	 * @return

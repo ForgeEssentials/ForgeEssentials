@@ -5,10 +5,6 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.Point;
@@ -21,18 +17,14 @@ import com.forgeessentials.util.selections.WorldPoint;
  * 
  * @author Olee
  */
-@SaveableObject
 public class AreaZone extends Zone {
 
 	private WorldZone worldZone;
 
-	@SaveableField
 	private String name;
 
-	@SaveableField
 	private AreaBase area;
 
-	@SaveableField
 	private int priority;
 
 	AreaZone(int id)
@@ -52,17 +44,6 @@ public class AreaZone extends Zone {
 	public AreaZone(WorldZone worldZone, String name, AreaBase area)
 	{
 		this(worldZone, name, area, worldZone.getServerZone().nextZoneID());
-	}
-
-	@Reconstructor
-	private static AreaZone reconstruct(IReconstructData tag)
-	{
-		AreaZone result = new AreaZone((int) tag.getFieldValue("id"));
-		result.doReconstruct(tag);
-		result.name = (String) tag.getFieldValue("name");
-		result.area = (AreaBase) tag.getFieldValue("area");
-		result.priority = (int) tag.getFieldValue("priority");
-		return result;
 	}
 
 	protected boolean isInZone(Point point)

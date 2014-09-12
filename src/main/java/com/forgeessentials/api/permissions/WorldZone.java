@@ -5,10 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -20,15 +16,12 @@ import net.minecraft.entity.player.EntityPlayer;
  * 
  * @author Olee
  */
-@SaveableObject
 public class WorldZone extends Zone {
 
 	private ServerZone serverZone;
 
-	@SaveableField
 	private int dimensionID;
 
-	@SaveableField
 	private List<AreaZone> areaZones = new ArrayList<AreaZone>();
 
 	public WorldZone(int id)
@@ -47,16 +40,6 @@ public class WorldZone extends Zone {
 	public WorldZone(ServerZone serverZone, int dimensionID)
 	{
 		this(serverZone, dimensionID, serverZone.nextZoneID());
-	}
-
-	@Reconstructor
-	private static WorldZone reconstruct(IReconstructData tag)
-	{
-		WorldZone result = new WorldZone((int) tag.getFieldValue("id"));
-		result.doReconstruct(tag);
-		result.dimensionID = (int) tag.getFieldValue("dimensionID");
-		result.areaZones = (List<AreaZone>) tag.getFieldValue("areaZones");
-		return result;
 	}
 
 	@Override

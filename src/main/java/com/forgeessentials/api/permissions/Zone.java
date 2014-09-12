@@ -1,18 +1,11 @@
 package com.forgeessentials.api.permissions;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -28,7 +21,6 @@ import com.forgeessentials.util.selections.WorldPoint;
  * 
  * @author Olee
  */
-@SaveableObject
 public abstract class Zone {
 
 	/**
@@ -37,14 +29,10 @@ public abstract class Zone {
 	public class PermissionList extends HashMap<String, String> {
 	}
 
-	@UniqueLoadingKey
-	@SaveableField
 	private int id;
 
-	@SaveableField
 	private Map<UserIdent, PermissionList> playerPermissions = new HashMap<UserIdent, PermissionList>();
 
-	@SaveableField
 	private Map<String, PermissionList> groupPermissions = new HashMap<String, PermissionList>();
 
 	/**
@@ -60,12 +48,6 @@ public abstract class Zone {
 	public Zone(int id)
 	{
 		this.id = id;
-	}
-
-	protected void doReconstruct(IReconstructData tag)
-	{
-		playerPermissions = (Map<UserIdent, PermissionList>) tag.getFieldValue("playerPermissions");
-		groupPermissions = (Map<String, PermissionList>) tag.getFieldValue("groupPermissions");
 	}
 
 	/**
