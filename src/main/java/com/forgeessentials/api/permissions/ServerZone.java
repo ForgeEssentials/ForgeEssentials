@@ -129,6 +129,9 @@ public class ServerZone extends Zone {
 	{
 		this.rootZone = rootZone;
 	}
-
+	public List<Group> getGroups()
+	{
+		return this.groups;
+	}
 
 }

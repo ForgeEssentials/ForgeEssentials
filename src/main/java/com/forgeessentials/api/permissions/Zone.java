@@ -280,7 +280,7 @@ public abstract class Zone {
 	 * 
 	 * @return
 	 */
-	public Set<Entry<String, PermissionList>> getGroups()
+	public Set<Entry<String, PermissionList>> getAllGroupPermissions()
 	{
 		return groupPermissions.entrySet();
 	}

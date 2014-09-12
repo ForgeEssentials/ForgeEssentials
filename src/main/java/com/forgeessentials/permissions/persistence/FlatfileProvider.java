@@ -160,7 +160,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 			p.setProperty("fe.internal.player.uuid", entry.getKey().getUuid() == null ? null : entry.getKey().getUuid().toString());
 			saveProperties(p, playersPath, userIdentification + PERMISSION_FILE_EXT, comment);
 		}
-		for (Entry<String, PermissionList> entry : zone.getGroups())
+		for (Entry<String, PermissionList> entry : zone.getAllGroupPermissions())
 		{
 			// Get filename and info
 			String groupName = entry.getKey();
