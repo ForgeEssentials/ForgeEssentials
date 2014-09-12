@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.server.CommandHandlerForge;
 
 import com.forgeessentials.commands.CommandAFK;
 import com.forgeessentials.commands.CommandBind;
@@ -45,14 +46,18 @@ import com.forgeessentials.commands.CommandTime;
 import com.forgeessentials.commands.CommandVanish;
 import com.forgeessentials.commands.CommandVirtualchest;
 import com.forgeessentials.commands.CommandWeather;
+import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class CommandRegistrar {
-    public static ArrayList<FEcmdModuleCommands> cmdList = new ArrayList<FEcmdModuleCommands>();
+	
+    public static ArrayList<FEcmdModuleCommands> cmdList;
 
     static
     {
+    	cmdList = new ArrayList<FEcmdModuleCommands>();
+        cmdList.add(new CommandTime());
         cmdList.add(new CommandMotd());
         cmdList.add(new CommandEnchant());
         cmdList.add(new CommandLocate());
@@ -83,7 +88,6 @@ public class CommandRegistrar {
         cmdList.add(new CommandServerSettings());
         cmdList.add(new CommandGetCommandBook());
         cmdList.add(new CommandChunkLoaderList());
-        cmdList.add(new CommandTime());
         cmdList.add(new CommandWeather());
         cmdList.add(new CommandBind());
         cmdList.add(new CommandRename());
@@ -130,15 +134,14 @@ public class CommandRegistrar {
         }
     }
 
-    public static void registerPermissions()
-    {
+	public static void registerCommands(FEModuleServerInitEvent e)
+	{
         for (FEcmdModuleCommands cmd : cmdList)
         {
-            if (cmd.getPermissionNode() != null && cmd.getDefaultPermission() != null)
-            {
-                PermissionsManager.registerPermission(cmd.getPermissionNode(), cmd.getDefaultPermission());
-                cmd.registerExtraPermissions();
-            }
+            cmd.registerExtraPermissions();
+            e.registerServerCommand(cmd);
+        	// TODO: Exchange commands above and below, when perms API gets updated!!!!
+        	CommandHandlerForge.registerCommand(cmd, cmd.getPermissionNode(), cmd.getDefaultPermission());
         }
-    }
+	}
 }

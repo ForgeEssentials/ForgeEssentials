@@ -5,13 +5,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.UUID;
 
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
@@ -19,6 +22,7 @@ import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.permissions.ModulePermissions;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -35,35 +39,62 @@ public class PermissionCommandParser {
 	private ICommandSender sender;
 	private EntityPlayerMP senderPlayer;
 	private Queue<String> args;
+	private boolean tabCompleteMode = false;
+	private List<String> tabComplete;
 
-	public PermissionCommandParser(ICommandSender sender, String[] args)
+	public PermissionCommandParser(ICommandSender sender, String[] args, boolean tabCompleteMode)
 	{
 		this.sender = sender;
 		this.args = new LinkedList<String>(Arrays.asList(args));
 		this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
-		parseMain();
+		this.tabCompleteMode = tabCompleteMode;
+		if (tabCompleteMode)
+		{
+			try
+			{
+				parseMain();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+		else
+		{
+			parseMain();
+		}
 	}
 
-	public PermissionCommandParser(EntityPlayerMP player, String[] args)
+	public List<String> getTabCompleteList()
 	{
-		this.sender = player;
-		this.args = new LinkedList<String>(Arrays.asList(args));
-		this.senderPlayer = player;
-		parseMain();
+		return tabComplete;
 	}
 
 	private void info(String message)
 	{
-		OutputHandler.chatConfirmation(sender, message);
+		if (!tabCompleteMode)
+			OutputHandler.chatConfirmation(sender, message);
 	}
 
 	private void error(String message)
 	{
-		OutputHandler.chatError(sender, message);
+		if (!tabCompleteMode)
+			OutputHandler.chatError(sender, message);
 	}
+
+	// Variables for auto-complete
+	private static final String[] parseMainArgs = { "user", "group", "default" }; // "export", "promote", "test" };
+	private static final String[] parseUserArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "perms", "group" };
+	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "priority", "parent" };
+	private static final String[] parseUserGroupArgs = { "add", "remove" };
+	
+	//private static final String[] playergargs = { "set", "add", "remove" };
 
 	private void parseMain()
 	{
+		if (tabCompleteMode && args.size() == 1) {
+			tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseMainArgs);
+			return;
+		}
 		if (args.isEmpty())
 		{
 			info("Base usage is /p user|group|default.");
@@ -89,6 +120,20 @@ public class PermissionCommandParser {
 
 	private void parseUser()
 	{
+		if (tabCompleteMode && args.size() == 1) {
+			tabComplete = new ArrayList<String>();
+			for (UserIdent knownPlayerIdent : APIRegistry.perms.getServerZone().getKnownPlayers())
+			{
+				if (CommandBase.doesStringStartWith(args.peek(), knownPlayerIdent.getUsernameOrUUID()))
+					tabComplete.add(knownPlayerIdent.getUsernameOrUUID());
+			}
+			for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
+			{
+				if (CommandBase.doesStringStartWith(args.peek(), player.getGameProfile().getName()))
+					tabComplete.add(player.getGameProfile().getName());
+			}
+			return;
+		}
 		if (args.isEmpty())
 		{
 			info("Possible usage:");
@@ -120,6 +165,10 @@ public class PermissionCommandParser {
 				}
 			}
 
+			if (tabCompleteMode && args.size() == 1) {
+				tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserArgs);
+				return;
+			}
 			if (args.isEmpty())
 			{
 				Collection<Group> groups = APIRegistry.perms.getPlayerGroups(ident);
@@ -136,7 +185,7 @@ public class PermissionCommandParser {
 					parseUserGroup(ident);
 					break;
 				case "perms":
-					parseUserListPermissions(ident);
+					listUserPermissions(ident);
 					break;
 				case "prefix":
 					parseUserPrefixSuffix(ident, false);
@@ -165,6 +214,20 @@ public class PermissionCommandParser {
 
 	private void parseUserPermissions(UserIdent ident, PermissionAction type)
 	{
+		if (tabCompleteMode) {
+			tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserArgs);
+			for (Zone zone : APIRegistry.perms.getZones())
+			{
+				if (CommandBase.doesStringStartWith(args.peek(), zone.getName()))
+					tabComplete.add(zone.getName());
+			}
+			for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
+			{
+				if (CommandBase.doesStringStartWith(args.peek(), perm))
+					tabComplete.add(perm);
+			}
+			return;
+		}
 		if (args.isEmpty())
 		{
 			error("Missing permission argument!");
@@ -226,6 +289,8 @@ public class PermissionCommandParser {
 
 	private void parseUserPrefixSuffix(UserIdent ident, boolean isSuffix)
 	{
+		if (tabCompleteMode)
+			return;
 		PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(ident.getUuid());
 		if (args.isEmpty())
 		{
@@ -257,8 +322,11 @@ public class PermissionCommandParser {
 		}
 	}
 
-	private void parseUserListPermissions(UserIdent ident)
+	private void listUserPermissions(UserIdent ident)
 	{
+		if (tabCompleteMode)
+			return;
+		
 		Map<Zone, Map<String, String>> userPerms = ModulePermissions.permissionHelper.enumUserPermissions(ident);
 		if (userPerms.isEmpty())
 		{
@@ -296,11 +364,61 @@ public class PermissionCommandParser {
 
 	private void parseUserGroup(UserIdent ident)
 	{
-		throw new RuntimeException("Not yet implemented!");
+		if (tabCompleteMode && args.size() == 1) {
+			tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserGroupArgs);
+			return;
+		}
+		if (args.isEmpty())
+		{
+			info("Possible usage:");
+			info("/p user <player> group add : Add user to group");
+			info("/p user <player> group remove : Add user to group");
+		}
+		else
+		{
+			String mode = args.remove().toLowerCase();
+			if (!mode.equals("add") || !mode.equals("remove")) {
+				error("Syntax error. Please try this instead:");
+				error("/p user <player> group add : Add user to group");
+				error("/p user <player> group remove : Add user to group");
+				return;
+			}
+			
+			if (tabCompleteMode && args.size() == 1) {
+				tabComplete = new ArrayList<String>();
+				for (String group : APIRegistry.perms.getServerZone().getGroups().keySet())
+				{
+					if (CommandBase.doesStringStartWith(args.peek(), group))
+						tabComplete.add(group);
+				}
+				return;
+			}
+			if (args.isEmpty()) {
+				info("Usage: /p user <player> group " + mode);
+			} else {
+				switch (mode) {
+				case "add":
+					throw new RuntimeException("Not yet implemented!");
+					//break;
+				case "remove":
+					throw new RuntimeException("Not yet implemented!");
+					//break;
+				}
+			}
+		}
 	}
 
 	private void parseGroup()
 	{
+		if (tabCompleteMode && args.size() == 1) {
+			tabComplete = new ArrayList<String>();
+			for (String group : APIRegistry.perms.getServerZone().getGroups().keySet())
+			{
+				if (CommandBase.doesStringStartWith(args.peek(), group))
+					tabComplete.add(group);
+			}
+			return;
+		}
 		if (args.isEmpty())
 		{
 			info("Possible usage:");
@@ -316,6 +434,10 @@ public class PermissionCommandParser {
 			Group group = APIRegistry.perms.getGroup(groupName);
 			if (group == null)
 			{
+				if (tabCompleteMode && args.size() == 1) {
+					tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), "create");
+					return;
+				}
 				if (args.isEmpty())
 				{
 					info(String.format("Group %s does not exist", groupName));
@@ -342,31 +464,36 @@ public class PermissionCommandParser {
 				}
 				return;
 			}
+
+			if (tabCompleteMode && args.size() == 1) {
+				tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseGroupArgs);
+				return;
+			}
 			if (args.isEmpty())
 			{
 				throw new RuntimeException("Not yet implemented!");
-//				Collection<Group> groups = APIRegistry.perms.getPlayerGroups(group);
-//				info(String.format("Groups for player %s:", group.getUsernameOrUUID()));
-//				for (Group g : groups)
-//				{
-//					info(" - " + g.getName());
-//				}
+				// Collection<Group> groups = APIRegistry.perms.getPlayerGroups(group);
+				// info(String.format("Groups for player %s:", group.getUsernameOrUUID()));
+				// for (Group g : groups)
+				// {
+				// info(" - " + g.getName());
+				// }
 			}
 			else
 			{
 				switch (args.remove().toLowerCase()) {
-//				case "users":
-//					listGroupUsers(group);
-//					break;
-//				case "perms":
-//					listGroupPermissions(group);
-//					break;
-//				case "prefix":
-//					parseGroupPrefixSuffix(group, false);
-//					break;
-//				case "suffix":
-//					parseGroupPrefixSuffix(group, true);
-//					break;
+				// case "users":
+				// listGroupUsers(group);
+				// break;
+				// case "perms":
+				// listGroupPermissions(group);
+				// break;
+				// case "prefix":
+				// parseGroupPrefixSuffix(group, false);
+				// break;
+				// case "suffix":
+				// parseGroupPrefixSuffix(group, true);
+				// break;
 				case "true":
 				case "allow":
 					parseGroupPermissions(group, PermissionAction.ALLOW);
@@ -383,12 +510,27 @@ public class PermissionCommandParser {
 					break;
 				}
 			}
-			
+
 		}
 	}
 
 	private void parseGroupPermissions(Group group, PermissionAction type)
 	{
+		if (tabCompleteMode) {
+			tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserArgs);
+			for (Zone zone : APIRegistry.perms.getZones())
+			{
+				if (CommandBase.doesStringStartWith(args.peek(), zone.getName()))
+					tabComplete.add(zone.getName());
+			}
+			for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
+			{
+				if (CommandBase.doesStringStartWith(args.peek(), perm))
+					tabComplete.add(perm);
+			}
+			return;
+		}
+		
 		if (args.isEmpty())
 		{
 			error("Missing permission argument!");

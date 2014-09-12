@@ -89,6 +89,12 @@ public class AreaZone extends Zone {
 		return worldZone;
 	}
 
+	@Override
+	public ServerZone getServerZone()
+	{
+		return worldZone.getServerZone();
+	}
+	
 	public String getShotName()
 	{
 		return name;

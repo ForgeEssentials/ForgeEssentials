@@ -6,6 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.server.CommandHandlerForge;
 
 import com.forgeessentials.commands.shortcut.ShortcutCommands;
 import com.forgeessentials.commands.util.CommandDataManager;
@@ -52,11 +53,7 @@ public class ModuleCommands {
     @FEModule.ServerInit
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        for (FEcmdModuleCommands cmd : CommandRegistrar.cmdList)
-        {
-            e.registerServerCommand(cmd);
-            cmd.registerExtraPermissions();
-        }
+    	CommandRegistrar.registerCommands(e);
         ShortcutCommands.load();
         CommandDataManager.load();
         PermissionsManager.registerPermission("fe.commands.*", RegisteredPermValue.OP);

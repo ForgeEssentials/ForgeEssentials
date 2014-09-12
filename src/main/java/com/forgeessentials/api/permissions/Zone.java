@@ -99,6 +99,8 @@ public abstract class Zone {
 	 */
 	public abstract Zone getParent();
 
+	public abstract ServerZone getServerZone();
+	
 	// ------------------------------------------------------------
 	// -- Player permissions
 	// ------------------------------------------------------------
@@ -198,6 +200,7 @@ public abstract class Zone {
 	{
 		if (ident != null)
 		{
+			getServerZone().registerPlayer(ident);
 			PermissionList map = getOrCreatePlayerPermissions(ident);
 			map.put(permissionNode, value);
 		}

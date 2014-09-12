@@ -55,13 +55,13 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-    	new PermissionCommandParser(sender, args);
+    	new PermissionCommandParser(sender, args, false);
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-    	new PermissionCommandParser(sender, args);
+    	new PermissionCommandParser(sender, args, false);
     }
 
     @Override
@@ -82,8 +82,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-    	// TODO: addTabCompletionOptions
-    	return null;
+    	return new PermissionCommandParser(sender, args, true).getTabCompleteList();
 //        if (args.length == 1)
 //        {
 //            return getListOfStringsMatchingLastWord(args, args2);

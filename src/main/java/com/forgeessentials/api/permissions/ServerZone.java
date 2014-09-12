@@ -1,8 +1,11 @@
 package com.forgeessentials.api.permissions;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -27,7 +30,9 @@ public class ServerZone extends Zone {
 
 	private Map<String, Group> groups = new HashMap<String, Group>();
 
-	// private List<PlayerData> players;
+	private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
+
+	// ------------------------------------------------------------
 
 	public ServerZone()
 	{
@@ -44,6 +49,8 @@ public class ServerZone extends Zone {
 		this.rootZone = rootZone;
 		this.rootZone.setServerZone(this);
 	}
+
+	// ------------------------------------------------------------
 
 	@Override
 	public boolean isInZone(WorldPoint point)
@@ -75,6 +82,14 @@ public class ServerZone extends Zone {
 		return rootZone;
 	}
 
+	@Override
+	public ServerZone getServerZone()
+	{
+		return this;
+	}
+	
+	// ------------------------------------------------------------
+
 	public RootZone getRootZone()
 	{
 		return rootZone;
@@ -83,11 +98,6 @@ public class ServerZone extends Zone {
 	public Map<Integer, WorldZone> getWorldZones()
 	{
 		return worldZones;
-	}
-
-	public void clear()
-	{
-		worldZones.clear();
 	}
 
 	public void addWorldZone(WorldZone zone)
@@ -115,6 +125,8 @@ public class ServerZone extends Zone {
 		this.rootZone = rootZone;
 	}
 
+	// ------------------------------------------------------------
+
 	public Map<String, Group> getGroups()
 	{
 		return this.groups;
@@ -139,7 +151,7 @@ public class ServerZone extends Zone {
 	{
 		return groups.get(name);
 	}
-	
+
 	public Group createGroup(String name)
 	{
 		if (groups.containsKey(name))
@@ -147,6 +159,18 @@ public class ServerZone extends Zone {
 		Group group = new Group(name);
 		groups.put(group.getName(), group);
 		return group;
+	}
+
+	// ------------------------------------------------------------
+
+	public void registerPlayer(UserIdent ident)
+	{
+		knownPlayers.add(ident);
+	}
+	
+	public Set<UserIdent> getKnownPlayers()
+	{
+		return knownPlayers;
 	}
 
 }
