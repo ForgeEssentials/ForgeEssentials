@@ -20,7 +20,7 @@ import com.forgeessentials.util.PlayerInfo;
 public class AutoPromote {
 	@UniqueLoadingKey
 	@SaveableField
-	private String zone;
+	private int zone;
 
 	@SaveableField
 	private boolean enabled;
@@ -34,7 +34,7 @@ public class AutoPromote {
 	@SaveableField
 	private String msg;
 
-	public AutoPromote(String zone, boolean enable)
+	public AutoPromote(int zone, boolean enable)
 	{
 		this.zone = zone;
 		this.enabled = enable;
@@ -46,7 +46,7 @@ public class AutoPromote {
 		sendMsg = true;
 	}
 
-	public String getZone()
+	public int getZone()
 	{
 		return zone;
 	}
@@ -90,7 +90,7 @@ public class AutoPromote {
 	@Reconstructor
 	private static AutoPromote reconstruct(IReconstructData tag)
 	{
-		AutoPromote data = new AutoPromote((String) tag.getFieldValue("zone"), (Boolean) tag.getFieldValue("enable"));
+		AutoPromote data = new AutoPromote((int) tag.getFieldValue("zone"), (Boolean) tag.getFieldValue("enable"));
 		try
 		{
 			data.promoteList = (HashMap<String, String>) tag.getFieldValue("promoteList");

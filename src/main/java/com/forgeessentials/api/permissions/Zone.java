@@ -122,23 +122,13 @@ public abstract class Zone {
 	// ------------------------------------------------------------
 
 	/**
-	 * Gets all player permissions
-	 * 
-	 * @return
-	 */
-	public Set<Entry<UserIdent, PermissionList>> getPlayers()
-	{
-		return playerPermissions.entrySet();
-	}
-
-	/**
 	 * Get all groups that have permissions in this zone
 	 * 
 	 * @return
 	 */
-	public Collection<PermissionList> getPlayerPermissions()
+	public Map<UserIdent, PermissionList> getPlayerPermissions()
 	{
-		return playerPermissions.values();
+		return playerPermissions;
 	}
 
 	/**
@@ -244,6 +234,24 @@ public abstract class Zone {
 	}
 
 	/**
+	 * Clears a player permission
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 */
+	public void clearPlayerPermission(UserIdent ident, String permissionNode)
+	{
+		if (ident != null)
+		{
+			PermissionList map = getPlayerPermissions(ident);
+			if (map != null)
+			{
+				map.remove(permissionNode);
+			}
+		}
+	}
+
+	/**
 	 * Revalidates all UserIdent fields in playerPermissions to replace those which were hashed based on their playername. This function should always be called
 	 * as soon as a player connects to the server.
 	 */
@@ -276,23 +284,13 @@ public abstract class Zone {
 	// ------------------------------------------------------------
 
 	/**
-	 * Gets all group permissions
-	 * 
-	 * @return
-	 */
-	public Set<Entry<String, PermissionList>> getAllGroupPermissions()
-	{
-		return groupPermissions.entrySet();
-	}
-
-	/**
 	 * Get all groups that have permissions in this zone
 	 * 
 	 * @return
 	 */
-	public Collection<PermissionList> getGroupPermissions()
+	public Map<String, PermissionList> getGroupPermissions()
 	{
-		return groupPermissions.values();
+		return groupPermissions;
 	}
 
 	/**
@@ -383,6 +381,24 @@ public abstract class Zone {
 	public void setGroupPermission(String group, String permissionNode, boolean value)
 	{
 		setGroupPermissionProperty(group, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
+	}
+
+	/**
+	 * Clears a player permission
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 */
+	public void clearGroupPermission(String group, String permissionNode)
+	{
+		if (group != null)
+		{
+			PermissionList map = getGroupPermissions(group);
+			if (map != null)
+			{
+				map.remove(permissionNode);
+			}
+		}
 	}
 
 }

@@ -22,14 +22,13 @@ import com.forgeessentials.util.selections.WorldPoint;
  */
 public interface IPermissionsHelper extends IPermissionsProvider {
 
-	static final String GROUP_DEFAULT = "*";
+	static final String GROUP_DEFAULT = "_ALL_";
 	static final String GROUP_GUESTS = "_GUESTS_";
 	static final String GROUP_OPERATORS = "_OPS_";
-	
+
 	static final String PERMISSION_ASTERIX = "*";
 	static final String PERMISSION_FALSE = "false";
 	static final String PERMISSION_TRUE = "true";
-	static final String PERMISSION_ALL = "_ALL_";
 
 	// ---------------------------------------------------------------------------
 
@@ -153,7 +152,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	String getPermissionProperty(UserIdent ident, Zone zone, String permissionNode);
 
 	// ---------------------------------------------------------------------------
-	
+
 	/**
 	 * Sets a player permission
 	 * 
@@ -162,7 +161,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param value
 	 */
 	void setPlayerPermission(UserIdent ident, String permissionNode, boolean value);
-	
+
 	/**
 	 * Sets a player permission-property
 	 * 
@@ -171,7 +170,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param value
 	 */
 	void setPlayerPermissionProperty(UserIdent ident, String permissionNode, String value);
-	
+
 	/**
 	 * Sets a group permission
 	 * 
@@ -197,16 +196,15 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param defaultValue
 	 */
 	void registerPermissionProperty(String permissionNode, String defaultValue);
-	
+
 	// ---------------------------------------------------------------------------
 
 	/**
-	 * Returns the next free zone-id.
-	 * NEVER call this method, unless you are really creating a new Zone!
+	 * Returns the next free zone-id. NEVER call this method, unless you are really creating a new Zone!
 	 * 
 	 * @return
 	 */
-	//int getNextZoneID();
+	// int getNextZoneID();
 
 	/**
 	 * Get all registered zones
@@ -214,16 +212,16 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @return
 	 */
 	Collection<Zone> getZones();
-	
+
 	/**
-	 * Returns the root zone, which has lowest priority and holds the default permissions
+	 * Returns a zone by it's ID
 	 * 
 	 * @return Zone or null
 	 */
 	Zone getZoneById(int id);
 
 	/**
-	 * Returns the root zone, which has lowest priority and holds the default permissions. If id is not a valid integer, null is returned.
+	 * Returns a zone by it's ID as string. It the string is no valid integer, it returns null.
 	 * 
 	 * @return Zone or null
 	 */
@@ -234,7 +232,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * 
 	 * @return
 	 */
-	//RootZone getRootZone();
+	// RootZone getRootZone();
 
 	/**
 	 * Returns the {@link ServerZone}
@@ -258,7 +256,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @return
 	 */
 	WorldZone getWorldZone(int dimensionId);
-	
+
 	// ---------------------------------------------------------------------------
 
 	/**
@@ -309,7 +307,14 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @return
 	 */
 	Collection<Group> getGroups();
-	
+
+	/**
+	 * Creates a new group
+	 * 
+	 * @return
+	 */
+	Group createGroup(String name);
+
 	/**
 	 * Returns the highest-priority group the the player belongs to.
 	 * 

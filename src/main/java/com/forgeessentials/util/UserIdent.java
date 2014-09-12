@@ -44,7 +44,7 @@ public class UserIdent {
 
 	public UserIdent(String ident)
 	{
-		if (username == null)
+		if (ident == null)
 		{
 			throw new IllegalArgumentException();
 		}
@@ -153,7 +153,7 @@ public class UserIdent {
 		return player;
 	}
 
-	public String getIdentificationString()
+	public String getUsernameOrUUID()
 	{
 		identifyUser();
 		return username == null ? uuid.toString() : username;

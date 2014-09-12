@@ -11,6 +11,7 @@ import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -64,13 +65,18 @@ public class AreaZone extends Zone {
 		return result;
 	}
 
+	protected boolean isInZone(Point point)
+	{
+		return point.getX() >= area.getLowPoint().getX() && point.getZ() >= area.getLowPoint().getZ() && point.getX() <= area.getHighPoint().getX()
+				&& point.getZ() <= area.getHighPoint().getZ() && point.getY() >= area.getLowPoint().getY() && point.getY() <= area.getHighPoint().getY();
+	}
+
 	@Override
 	public boolean isInZone(WorldPoint point)
 	{
 		if (!worldZone.isInZone(point))
 			return false;
-		// TODO: new permissions
-		return true;
+		return isInZone(point);
 	}
 
 	@Override
@@ -78,8 +84,7 @@ public class AreaZone extends Zone {
 	{
 		if (!worldZone.isInZone(area))
 			return false;
-		// TODO: new permissions
-		return true;
+		return isInZone(area.getLowPoint()) && isInZone(area.getHighPoint());
 	}
 
 	@Override
@@ -87,8 +92,7 @@ public class AreaZone extends Zone {
 	{
 		if (!worldZone.isPartOfZone(area))
 			return false;
-		// TODO: new permissions
-		return true;
+		return isInZone(area.getLowPoint()) || isInZone(area.getHighPoint());
 	}
 
 	@Override

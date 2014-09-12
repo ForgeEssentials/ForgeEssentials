@@ -37,11 +37,11 @@ public class ModulePermissions {
 	@FEModule.ModuleDir
 	public static File moduleFolder;
 
-	private AutoPromoteManager autoPromoteManager;
+	public static AutoPromoteManager autoPromoteManager;
 
-	private ZonedPermissionHelper permissionHelper;
+	public static ZonedPermissionHelper permissionHelper;
 
-	private PermissionEventHandler permissionEventHandler;
+	public static PermissionEventHandler permissionEventHandler;
 
 	@FEModule.PreInit
 	public void preLoad(FEModulePreInitEvent e)

@@ -64,7 +64,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		AutoPromote ap = AutoPromoteManager.instance().map.get(zone.getName());
 		if (ap == null)
 		{
-			AutoPromoteManager.instance().map.put(zone.getName(), new AutoPromote(zone.getName(), false));
+			AutoPromoteManager.instance().map.put(zone.getId(), new AutoPromote(zone.getId(), false));
 			ap = AutoPromoteManager.instance().map.get(zone.getName());
 		}
 
@@ -289,7 +289,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				AutoPromote ap = AutoPromoteManager.instance().map.get(zone.getName());
 				if (ap == null)
 				{
-					AutoPromoteManager.instance().map.put(zone.getName(), new AutoPromote(zone.getName(), false));
+					AutoPromoteManager.instance().map.put(zone.getId(), new AutoPromote(zone.getId(), false));
 					ap = AutoPromoteManager.instance().map.get(zone.getName());
 				}
 				return getListOfStringsFromIterableMatchingLastWord(args, ap.getList());

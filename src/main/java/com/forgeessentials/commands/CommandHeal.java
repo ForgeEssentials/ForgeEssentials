@@ -16,6 +16,7 @@ import com.forgeessentials.util.UserIdent;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandHeal extends FEcmdModuleCommands {
+	
     @Override
     public String getCommandName()
     {

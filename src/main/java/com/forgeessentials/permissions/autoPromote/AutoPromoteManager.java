@@ -20,7 +20,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class AutoPromoteManager extends TimerTask {
 	static ClassContainer con = new ClassContainer(AutoPromote.class);
 	private static AutoPromoteManager instance;
-	public HashMap<String, AutoPromote> map = new HashMap<String, AutoPromote>();
+	public HashMap<Integer, AutoPromote> map = new HashMap<Integer, AutoPromote>();
 
 	public AutoPromoteManager()
 	{

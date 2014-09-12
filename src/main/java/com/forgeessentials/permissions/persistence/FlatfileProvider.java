@@ -144,7 +144,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 	{
 		File playersPath = new File(path, "players");
 		File groupsPath = new File(path, "groups");
-		for (Entry<UserIdent, PermissionList> entry : zone.getPlayers())
+		for (Entry<UserIdent, PermissionList> entry : zone.getPlayerPermissions().entrySet())
 		{
 			// Get filename and info
 			String username = entry.getKey().getUsername() == null ? entry.getKey().getUuid().toString() : entry.getKey().getUsername();
@@ -160,18 +160,16 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 			p.setProperty("fe.internal.player.uuid", entry.getKey().getUuid() == null ? null : entry.getKey().getUuid().toString());
 			saveProperties(p, playersPath, userIdentification + PERMISSION_FILE_EXT, comment);
 		}
-		for (Entry<String, PermissionList> entry : zone.getAllGroupPermissions())
+		for (Entry<String, PermissionList> entry : zone.getGroupPermissions().entrySet())
 		{
 			// Get filename and info
 			String groupName = entry.getKey();
-			if (groupName.equals(IPermissionsHelper.PERMISSION_ASTERIX))
-				groupName = IPermissionsHelper.PERMISSION_ALL;
 			String comment = "Permissions for group " + entry.getKey();
 
 			// Save permissions
 			Properties p = permissionListToProperties(entry.getValue());
 			// p.setProperty("fe.internal.group.id", 0);
-			saveProperties(p, groupsPath, groupName + PERMISSION_FILE_EXT, comment);
+			saveProperties(p, groupsPath, entry.getKey() + PERMISSION_FILE_EXT, comment);
 		}
 	}
 
@@ -354,8 +352,6 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 
 					// Get group
 					String groupName = file.getName().substring(0, file.getName().length() - PERMISSION_FILE_EXT.length());
-					if (groupName.equals(IPermissionsHelper.PERMISSION_ALL))
-						groupName = IPermissionsHelper.PERMISSION_ASTERIX;
 
 					// Load permissions
 					PermissionList permissions = zone.getOrCreateGroupPermissions(groupName);

@@ -18,9 +18,13 @@ public class Group implements Comparable {
 
 	private int id;
 
+	public Group(String name)
+	{
+		this.name = name;
+	}
+
 	public Group(String name, String prefix, String suffix, String parent, int priority)
 	{
-		super();
 		this.parent = parent;
 		this.prefix = prefix;
 		this.suffix = suffix;

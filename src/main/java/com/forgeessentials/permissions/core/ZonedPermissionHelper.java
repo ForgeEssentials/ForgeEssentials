@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,6 +41,8 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private RootZone rootZone;
+
+	private Group defaultGroup = new Group(GROUP_DEFAULT, null, null, null, 0, 0);
 
 	private Group guestGroup = new Group(GROUP_GUESTS, "[GUEST] ", null, null, 0, 0);
 
@@ -77,6 +80,11 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		zones.clear();
 		addZone(rootZone);
 		addZone(new ServerZone(rootZone));
+
+		groups.clear();
+		groups.put(operatorGroup.getName(), operatorGroup);
+		groups.put(defaultGroup.getName(), defaultGroup);
+		groups.put(guestGroup.getName(), guestGroup);
 
 		// for (World world : DimensionManager.getWorlds())
 		// {
@@ -137,7 +145,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	public Set<String> enumRegisteredPermissions()
 	{
 		Set<String> perms = new TreeSet<String>();
-		for (Map<String, String> groupPerms : rootZone.getGroupPermissions())
+		for (Map<String, String> groupPerms : rootZone.getGroupPermissions().values())
 		{
 			for (String perm : groupPerms.keySet())
 			{
@@ -152,14 +160,14 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		Set<String> perms = new TreeSet<String>();
 		for (Zone zone : zones.values())
 		{
-			for (Map<String, String> groupPerms : zone.getGroupPermissions())
+			for (Map<String, String> groupPerms : zone.getGroupPermissions().values())
 			{
 				for (String perm : groupPerms.keySet())
 				{
 					perms.add(perm);
 				}
 			}
-			for (Map<String, String> playerPerms : zone.getPlayerPermissions())
+			for (Map<String, String> playerPerms : zone.getPlayerPermissions().values())
 			{
 				for (String perm : playerPerms.keySet())
 				{
@@ -168,6 +176,36 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 			}
 		}
 		return perms;
+	}
+
+	public Map<Zone, Map<String, String>> enumUserPermissions(UserIdent ident)
+	{
+		Map<Zone, Map<String, String>> result = new HashMap<Zone, Map<String, String>>();
+		for (Zone zone : zones.values())
+		{
+			if (zone.getPlayerPermissions(ident) != null)
+			{
+				Map<String, String> zonePerms = new TreeMap<String, String>();
+				zonePerms.putAll(zone.getPlayerPermissions(ident));
+				result.put(zone, zonePerms);
+			}
+		}
+		return result;
+	}
+
+	public Map<Zone, Map<String, String>> enumGroupPermissions(String group)
+	{
+		Map<Zone, Map<String, String>> result = new HashMap<Zone, Map<String, String>>();
+		for (Zone zone : zones.values())
+		{
+			if (zone.getGroupPermissions(group) != null)
+			{
+				Map<String, String> zonePerms = new TreeMap<String, String>();
+				zonePerms.putAll(zone.getGroupPermissions(group));
+				result.put(zone, zonePerms);
+			}
+		}
+		return result;
 	}
 
 	// ------------------------------------------------------------
@@ -228,7 +266,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		{
 			groups = new ArrayList<String>();
 		}
-		groups.add(PERMISSION_ASTERIX);
+		groups.add(defaultGroup.getName());
 
 		// Build node list
 		List<String> nodes = new ArrayList<String>();
@@ -289,19 +327,19 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public void registerPermissionProperty(String permissionNode, String defaultValue)
 	{
-		rootZone.setGroupPermissionProperty(GROUP_DEFAULT, permissionNode, defaultValue);
+		rootZone.setGroupPermissionProperty(defaultGroup.getName(), permissionNode, defaultValue);
 	}
 
 	@Override
 	public void registerPermission(String permissionNode, PermissionsManager.RegisteredPermValue permLevel)
 	{
 		if (permLevel == RegisteredPermValue.FALSE)
-			rootZone.setGroupPermission(GROUP_DEFAULT, permissionNode, false);
+			rootZone.setGroupPermission(defaultGroup.getName(), permissionNode, false);
 		else if (permLevel == RegisteredPermValue.TRUE)
-			rootZone.setGroupPermission(GROUP_DEFAULT, permissionNode, true);
+			rootZone.setGroupPermission(defaultGroup.getName(), permissionNode, true);
 		else if (permLevel == RegisteredPermValue.OP)
 		{
-			rootZone.setGroupPermission(GROUP_DEFAULT, permissionNode, false);
+			rootZone.setGroupPermission(defaultGroup.getName(), permissionNode, false);
 			rootZone.setGroupPermission(GROUP_OPERATORS, permissionNode, true);
 		}
 	}
@@ -430,7 +468,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	{
 		try
 		{
-			return getZoneById(Integer.parseInt(id));
+			return zones.get(Integer.parseInt(id));
 		}
 		catch (NumberFormatException e)
 		{
@@ -525,6 +563,16 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	public Collection<Group> getGroups()
 	{
 		return groups.values();
+	}
+
+	@Override
+	public Group createGroup(String name)
+	{
+		if (groups.containsKey(name))
+			return null;
+		Group group = new Group(name);
+		groups.put(group.getName(), group);
+		return group;
 	}
 
 	@Override
