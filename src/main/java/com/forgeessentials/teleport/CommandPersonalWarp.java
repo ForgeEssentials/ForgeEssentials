@@ -161,40 +161,34 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 
 	private String getLimit(String target)
 	{
-		throw new RuntimeException("Not yet implemented!");
-//		if (target.startsWith("p:"))
-//		{
-//			return APIRegistry.perms.getPermissionPropForPlayer(UserIdent.getUuidByUsername(target.replaceFirst("p:", "")), APIRegistry.perms
-//					.getGLOBAL().getName(), PERMPROP);
-//		}
-//		else if (target.startsWith("g:"))
-//		{
-//			return APIRegistry.perms
-//					.getPermissionPropForGroup(target.replaceFirst("g:", ""), APIRegistry.perms.getGlobalZone().getName(), PERMPROP);
-//		}
-//		else
-//		{
-//			return "";
-//		}
+		if (target.startsWith("p:"))
+		{
+			return APIRegistry.perms.getPermissionProperty(new UserIdent(target.replaceFirst("p:", "")), PERMPROP);
+		}
+		else if (target.startsWith("g:"))
+		{
+			return APIRegistry.perms.getPermissionProperty(new UserIdent(target.replaceFirst("g:", "")), PERMPROP);
+		}
+		else
+		{
+			return "";
+		}
 	}
 
 	private void setLimit(String target, int limit)
 	{
-		throw new RuntimeException("Not yet implemented!");
-//		if (target.startsWith("p:"))
-//		{
-//			APIRegistry.perms.setPlayerPermissionProperty(UserIdent.getUuidByUsername(target.replaceFirst("p:", "")), PERMPROP, "" + limit,
-//					APIRegistry.perms.getGlobalZone().getName());
-//		}
-//		else if (target.startsWith("g:"))
-//		{
-//			APIRegistry.perms.setGroupPermissionProp(target.replaceFirst("g:", ""), PERMPROP, "" + limit, APIRegistry.perms.getGlobalZone()
-//					.getName());
-//		}
-//		else
-//		{
-//			return;
-//		}
+		if (target.startsWith("p:"))
+		{
+			APIRegistry.perms.setPlayerPermissionProperty(new UserIdent(target.replaceFirst("p:", "")), PERMPROP, Integer.toString(limit));
+		}
+		else if (target.startsWith("g:"))
+		{
+			APIRegistry.perms.setGroupPermissionProperty(target.replaceFirst("g:", ""), PERMPROP, Integer.toString(limit));
+		}
+		else
+		{
+			return;
+		}
 	}
 
 	@Override
@@ -212,15 +206,14 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	@Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		throw new RuntimeException("Not yet implemented!");
-//		if (args.length == 1)
-//		{
-//			return getListOfStringsMatchingLastWord(args, "goto", "add", "remove", "limit");
-//		}
+		if (args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, "goto", "add", "remove", "limit");
+		}
+		// TODO: Not yet implemented!
 //		if (args.length == 2 && args[0].equalsIgnoreCase("limit"))
 //		{
-//			Zone zone = sender instanceof EntityPlayer ? APIRegistry.perms.getZoneAt(new WorldPoint((EntityPlayer) sender)) : APIRegistry.perms
-//					.getGLOBAL();
+//			Zone zone = sender instanceof EntityPlayer ? APIRegistry.perms.getZoneAt(new WorldPoint((EntityPlayer) sender)) : APIRegistry.perms.getGLOBAL();
 //			ArrayList<String> list = new ArrayList<String>();
 //			for (String s : FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames())
 //			{
@@ -238,15 +231,15 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 //
 //			return getListOfStringsFromIterableMatchingLastWord(args, list);
 //		}
-//		if (args.length == 2)
-//		{
-//			if (TeleportDataManager.pwMap.get(sender.getCommandSenderName()) == null)
-//			{
-//				TeleportDataManager.pwMap.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
-//			}
-//			return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.pwMap.get(sender.getCommandSenderName()).keySet());
-//		}
-//		return null;
+		if (args.length == 2)
+		{
+			if (TeleportDataManager.pwMap.get(sender.getCommandSenderName()) == null)
+			{
+				TeleportDataManager.pwMap.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
+			}
+			return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.pwMap.get(sender.getCommandSenderName()).keySet());
+		}
+		return null;
 	}
 
 	@Override
@@ -260,9 +253,9 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		PermissionsManager.registerPermission(PERMSETLIMIT, RegisteredPermValue.OP);
 
 		APIRegistry.perms.registerPermissionProperty(PERMPROP, "10");
-//		APIRegistry.perms.registerPermissionProperty(PERMPROP, 0, GUEST);
-//		APIRegistry.perms.registerPermissionProperty(PERMPROP, 10, MEMBER);
-//		APIRegistry.perms.registerPermissionProperty(PERMPROP, -1, OP);
+		// APIRegistry.perms.registerPermissionProperty(PERMPROP, 0, GUEST);
+		// APIRegistry.perms.registerPermissionProperty(PERMPROP, 10, MEMBER);
+		// APIRegistry.perms.registerPermissionProperty(PERMPROP, -1, OP);
 	}
 
 	@Override

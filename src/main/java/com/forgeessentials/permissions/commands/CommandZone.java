@@ -40,7 +40,9 @@ public class CommandZone extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-    	throw new RuntimeException("Not yet implemented!");
+    	ChatUtils.sendMessage(sender, "Not yet implemented!");
+    	//throw new RuntimeException("Not yet implemented!");
+    	
 //        PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
 //        ArrayList<Zone> zones = APIRegistry.perms.getZoneList();
 //        int zonePages = zones.size() / 15 + 1;

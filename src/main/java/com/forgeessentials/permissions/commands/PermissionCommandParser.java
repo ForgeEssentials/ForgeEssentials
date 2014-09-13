@@ -81,7 +81,7 @@ public class PermissionCommandParser {
 	}
 
 	// Variables for auto-complete
-	private static final String[] parseMainArgs = { "user", "group", "default" }; // "export", "promote", "test" };
+	private static final String[] parseMainArgs = { "user", "group" }; // "export", "promote", "test" };
 	private static final String[] parseUserArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "perms", "group" };
 	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "priority", "parent" };
 	private static final String[] parseUserGroupArgs = { "add", "remove" };
@@ -95,27 +95,21 @@ public class PermissionCommandParser {
 			tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseMainArgs);
 			return;
 		}
-		if (args.isEmpty())
-		{
-			info("Base usage is /p user|group|default.");
-			info("Type one of these for more information.");
-		}
-		else
+		if (!args.isEmpty())
 		{
 			switch (args.remove().toLowerCase()) {
 			case "user":
 				parseUser();
-				break;
+				return;
 			case "group":
 				parseGroup();
-				break;
-			case "default":
-				parseDefault();
-				break;
+				return;
 			default:
 				break;
 			}
 		}
+		info("Base usage is /p user|group|default.");
+		info("Type one of these for more information.");
 	}
 
 	private void parseUser()
@@ -626,11 +620,6 @@ public class PermissionCommandParser {
 			}
 			info(String.format(msg, group, permissionNode));
 		}
-	}
-
-	private void parseDefault()
-	{
-		throw new RuntimeException("Not yet implemented!");
 	}
 
 }
