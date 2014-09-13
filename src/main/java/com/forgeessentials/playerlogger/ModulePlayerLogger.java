@@ -1,5 +1,18 @@
 package com.forgeessentials.playerlogger;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -14,19 +27,12 @@ import com.forgeessentials.playerlogger.types.blockChangeLog;
 import com.forgeessentials.playerlogger.types.commandLog;
 import com.forgeessentials.playerlogger.types.logEntry;
 import com.forgeessentials.playerlogger.types.playerTrackerLog;
-import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
+import com.forgeessentials.util.selections.WorldPoint;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, configClass = ConfigPlayerLogger.class)
 public class ModulePlayerLogger {
@@ -84,9 +90,9 @@ public class ModulePlayerLogger {
         }
     }
 
-    public static ArrayList<blockChange> getBlockChangesWithinParameters(String username, boolean undo, int timeBack, WorldPoint p, int rad)
+    public static ArrayList<BlockChange> getBlockChangesWithinParameters(String username, boolean undo, int timeBack, WorldPoint p, int rad)
     {
-        ArrayList<blockChange> data = new ArrayList<blockChange>();
+        ArrayList<BlockChange> data = new ArrayList<BlockChange>();
         try
         {
             Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
@@ -105,9 +111,9 @@ public class ModulePlayerLogger {
 
             if (p != null && rad != 0)
             {
-                sql = sql + " AND `Dim` = " + p.dim;
-                sql = sql + " AND `X` BETWEEN " + (p.x - rad) + " AND " + (p.x + rad);
-                sql = sql + " AND `Z` BETWEEN " + (p.z - rad) + " AND " + (p.z + rad);
+                sql = sql + " AND `Dim` = " + p.getDimension();
+                sql = sql + " AND `X` BETWEEN " + (p.getX() - rad) + " AND " + (p.getX() + rad);
+                sql = sql + " AND `Z` BETWEEN " + (p.getZ() - rad) + " AND " + (p.getZ() + rad);
             }
 
             if (undo)
@@ -124,7 +130,7 @@ public class ModulePlayerLogger {
 
             while (rs.next())
             {
-                data.add(new blockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"),
+                data.add(new BlockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"),
                         blockChangeLog.blockChangeLogCategory.valueOf(rs.getString("category")).ordinal(), rs.getString("block"), rs.getBlob("te")));
             }
 
@@ -154,7 +160,7 @@ public class ModulePlayerLogger {
     {
         for (String name : EventLogger.exempt_groups)
         {
-            if (APIRegistry.perms.getGroupForName(name) == null)
+            if (!APIRegistry.perms.groupExists(name))
             {
                 throw new RuntimeException("Group '" + name + "' doesn't exist. Used in " + config.getFile().getName());
             }

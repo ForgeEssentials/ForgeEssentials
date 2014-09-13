@@ -1,9 +1,10 @@
 package com.forgeessentials.chat.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import net.minecraft.command.ICommandSender;
 
 public class CommandIRC extends ForgeEssentialsCommandBase {
 
@@ -46,10 +47,10 @@ public class CommandIRC extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.ZONE_ADMINS;
+        return RegisteredPermValue.OP;
     }
 
 }

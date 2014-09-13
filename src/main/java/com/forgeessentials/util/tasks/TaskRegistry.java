@@ -1,11 +1,11 @@
 package com.forgeessentials.util.tasks;
 
+import java.util.TimerTask;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-
-import java.util.TimerTask;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TaskRegistry {
     public static final int MAX_BLOCK_UPDATES = 10;

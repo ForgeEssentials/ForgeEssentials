@@ -1,17 +1,19 @@
 package com.forgeessentials.chat.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.chat.AutoMessage;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
 
-import java.util.Arrays;
-import java.util.List;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandAutoMessage extends ForgeEssentialsCommandBase {
     @Override
@@ -138,9 +140,9 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 }

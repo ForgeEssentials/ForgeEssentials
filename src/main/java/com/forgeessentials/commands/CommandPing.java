@@ -1,14 +1,15 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
 
 public class CommandPing extends FEcmdModuleCommands {
     String response = "Pong! %time";
@@ -50,9 +51,9 @@ public class CommandPing extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.GUESTS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

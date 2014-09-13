@@ -1,20 +1,24 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.teleport.util.TPAdata;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandTPA extends ForgeEssentialsCommandBase {
 
@@ -44,7 +48,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
                         ChatUtils.sendMessage(data.sender, "Teleport request accepted.");
                         ChatUtils.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
                         PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(data.sender.getPersistentID());
-                        playerInfo.back = new WarpPoint(data.sender);
+                        playerInfo.setLastTeleportOrigin(new WarpPoint(data.sender));
                         CommandBack.justDied.remove(data.sender.getPersistentID());
                         TeleportModule.tpaListToRemove.add(data);
                         TeleportCenter.addToTpQue(new WarpPoint(data.receiver), data.sender);
@@ -73,14 +77,14 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
             return;
         }
 
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".sendrequest")))
+        if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".sendrequest"))
         {
             OutputHandler.chatError(sender,
                     "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
             return;
         }
 
-        EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+        EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
         if (receiver == null)
         {
             ChatUtils.sendMessage(sender, args[0] + " not found.");
@@ -125,9 +129,9 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

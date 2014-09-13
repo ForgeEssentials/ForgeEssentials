@@ -1,5 +1,8 @@
 package com.forgeessentials.auth;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.api.IReconstructData;
@@ -7,9 +10,6 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 @SaveableObject
 public class PlayerPassData {

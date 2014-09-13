@@ -1,16 +1,18 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.tasks.ITickTask;
-import com.forgeessentials.util.tasks.TaskRegistry;
-import cpw.mods.fml.common.registry.GameData;
+import java.util.ArrayList;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.tasks.ITickTask;
+import com.forgeessentials.util.tasks.TaskRegistry;
+
+import cpw.mods.fml.common.registry.GameData;
 
 public class TickTaskBlockFinder implements ITickTask {
     World world;
@@ -78,7 +80,7 @@ public class TickTaskBlockFinder implements ITickTask {
                 {
                     Point p = new Point(centerX + i, y, centerZ + j);
                     results.add(p);
-                    msg("Found " + stack.getDisplayName() + " at " + p.x + ";" + p.y + ";" + p.z);
+                    msg("Found " + stack.getDisplayName() + " at " + p.getX() + ";" + p.getY() + ";" + p.getZ());
 
                 }
                 y--;

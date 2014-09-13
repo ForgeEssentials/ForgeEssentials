@@ -1,21 +1,29 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemCarrotOnAStick;
+import net.minecraft.item.ItemFishingRod;
+import net.minecraft.item.ItemFlintAndSteel;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemShears;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandEnchant extends FEcmdModuleCommands {
 	@Override
@@ -159,9 +167,9 @@ public class CommandEnchant extends FEcmdModuleCommands {
 	}
 
 	@Override
-	public RegGroup getReggroup()
+	public RegisteredPermValue getDefaultPermission()
 	{
-		return RegGroup.OWNERS;
+		return RegisteredPermValue.OP;
 	}
 
 	@Override

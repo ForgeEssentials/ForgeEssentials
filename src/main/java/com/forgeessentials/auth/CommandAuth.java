@@ -1,24 +1,26 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.commands.PermissionDeniedException;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.PermissionDeniedException;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandAuth extends ForgeEssentialsCommandBase {
     private static String[] playerCommands = new String[] { "help", "login", "register", "changepass", "kick", "setpass", "unregister" };
@@ -46,7 +48,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             throw new WrongUsageException("command.auth.usage");
         }
 
-        boolean hasAdmin = APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".admin"));
+        boolean hasAdmin = PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin");
 
         // one arg? must be help.
         if (args.length == 1)
@@ -137,11 +139,11 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             }
 
             // check for players.. all the rest of these should be greated than 1.
-            UUID name = FunctionHelper.getPlayerID(args[1]);
+            UUID name = UserIdent.getUuidByUsername(args[1]);
             boolean isLogged = true;
 
             // check if the player is logged.
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[1]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[1]);
             if (player == null)
             {
                 OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -244,9 +246,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             }
 
             // check for players.. all the rest of these should be greated than 1.
-            UUID name = FunctionHelper.getPlayerID(args[1]);
+            UUID name = UserIdent.getUuidByUsername(args[1]);
             // check if the player is logged.
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[1]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[1]);
             if (player == null)
             {
                 OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -302,11 +304,11 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         }
 
         // check for players.. all the rest of these should be greated than 1.
-        UUID name = FunctionHelper.getPlayerID(args[1]);
+        UUID name = UserIdent.getUuidByUsername(args[1]);
         boolean isLogged = true;
 
         // check if the player is logged.
-        EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[1]);
+        EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[1]);
         if (player == null)
         {
             ChatUtils.sendMessage(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -431,8 +433,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.GUESTS;
+        return RegisteredPermValue.TRUE;
     }
 }

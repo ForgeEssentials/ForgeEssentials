@@ -3,8 +3,9 @@ package com.forgeessentials.util.vector;
 import net.minecraft.util.MathHelper;
 
 public class Vector2 implements Cloneable {
-    public double x;
-    public double y;
+	
+    protected double x;
+    protected double y;
 
     public Vector2()
     {
@@ -23,7 +24,17 @@ public class Vector2 implements Cloneable {
         this.y = y;
     }
 
-    // Returns the values as an int
+    public double getX()
+	{
+		return x;
+	}
+
+	public double getY()
+	{
+		return y;
+	}
+
+	// Returns the values as an int
     public int intX()
     {
         return (int) Math.floor(x);

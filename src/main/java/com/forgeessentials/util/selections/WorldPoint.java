@@ -1,12 +1,14 @@
 package com.forgeessentials.util.selections;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
 
 /**
  * Almost exactly like a Point, except with an additional dimension member so we
@@ -16,14 +18,17 @@ import net.minecraft.world.World;
  */
 @SaveableObject(SaveInline = true)
 public class WorldPoint extends Point {
-    /**
-     *
-     */
     private static final long serialVersionUID = 5462406378573144189L;
+    
     @SaveableField
-    public int dim;
+    protected int dim;
 
-    public WorldPoint(int dimension, int x, int y, int z)
+    public static long getSerialversionuid()
+	{
+		return serialVersionUID;
+	}
+
+	public WorldPoint(int dimension, int x, int y, int z)
     {
         super(x, y, z);
         dim = dimension;
@@ -41,7 +46,23 @@ public class WorldPoint extends Point {
         dim = player.dimension;
     }
 
-    public int compareTo(WorldPoint p)
+	public WorldPoint(int dim, Vec3 vector)
+	{
+		super(vector);
+		this.dim = dim;
+	}
+
+	public int getDimension()
+	{
+		return dim;
+	}
+
+    public void setDimension(int dim)
+	{
+		this.dim = dim;
+	}
+
+	public int compareTo(WorldPoint p)
     {
         int diff = dim - p.dim;
 
@@ -59,7 +80,7 @@ public class WorldPoint extends Point {
 
     public WorldPoint copy(WorldPoint p)
     {
-        return new WorldPoint(p.dim, p.x, p.y, p.z);
+        return new WorldPoint(p.dim, p.getX(), p.getY(), p.getZ());
     }
 
     @Reconstructor()

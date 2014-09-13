@@ -1,18 +1,19 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandBurn extends FEcmdModuleCommands {
     @Override
@@ -31,9 +32,9 @@ public class CommandBurn extends FEcmdModuleCommands {
                 sender.setFire(15);
                 OutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
+            else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
-                EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (player != null)
                 {
                     OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
@@ -52,9 +53,9 @@ public class CommandBurn extends FEcmdModuleCommands {
                 sender.setFire(parseInt(sender, args[1]));
                 OutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
+            else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
-                EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (player != null)
                 {
                     player.setFire(parseIntWithMin(sender, args[1], 0));
@@ -80,7 +81,7 @@ public class CommandBurn extends FEcmdModuleCommands {
         {
             time = parseIntWithMin(sender, args[1], 0);
         }
-        EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+        EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
         if (player != null)
         {
             player.setFire(time);
@@ -95,7 +96,7 @@ public class CommandBurn extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".others", RegGroup.OWNERS);
+        PermissionsManager.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
     }
 
     @Override
@@ -118,9 +119,9 @@ public class CommandBurn extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

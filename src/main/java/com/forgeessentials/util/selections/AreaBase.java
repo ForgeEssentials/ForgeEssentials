@@ -4,39 +4,39 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 
 @SaveableObject
-public abstract class AreaBase {
-    // used for pretty much everything else.
+public class AreaBase {
+	
     @SaveableField
     private Point high;
+    
     @SaveableField
     private Point low;
 
     /**
      * Points are inclusive.
      *
-     * @param start
-     * @param end
+     * @param p1
+     * @param p2
      */
-    public AreaBase(Point start, Point end)
+    public AreaBase(Point p1, Point p2)
     {
-        Point[] points = getAlignedPoints(start, end);
-        low = points[0];
-        high = points[1];
+        low = getMinPoint(p1, p2);
+        high = getMaxPoint(p1, p2);
     }
 
     public int getXLength()
     {
-        return high.x - low.x + 1;
+        return high.getX() - low.getX() + 1;
     }
 
     public int getYLength()
     {
-        return high.y - low.y + 1;
+        return high.getY() - low.getY() + 1;
     }
 
     public int getZLength()
     {
-        return high.z - low.z + 1;
+        return high.getZ() - low.getZ() + 1;
     }
 
     public Point getHighPoint()
@@ -50,40 +50,19 @@ public abstract class AreaBase {
     }
 
     /**
-     * Orders the points so the start is smaller than the end.
+     * Get the lowest XYZ coordinate in OOBB [p1,p2]
      */
-    public static Point[] getAlignedPoints(Point p1, Point p2)
+    public static Point getMinPoint(Point p1, Point p2)
     {
-        int diffx = p1.x - p2.x;
-        int diffy = p1.y - p2.y;
-        int diffz = p1.z - p2.z;
-
-        int newX1 = p2.x;
-        int newX2 = p1.x;
-        int newY1 = p2.y;
-        int newY2 = p1.y;
-        int newZ1 = p2.z;
-        int newZ2 = p1.z;
-
-        if (diffx < 0)
-        {
-            newX1 = p1.x;
-            newX2 = p2.x;
-        }
-
-        if (diffy < 0)
-        {
-            newY1 = p1.y;
-            newY2 = p2.y;
-        }
-
-        if (diffz < 0)
-        {
-            newZ1 = p1.z;
-            newZ2 = p2.z;
-        }
-        return new Point[]
-                { new Point(newX1, newY1, newZ1), new Point(newX2, newY2, newZ2) };
+    	return new Point(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ()));
+    }
+    
+    /**
+     * Get the highest XYZ coordinate in OOBB [p1,p2]
+     */
+    public static Point getMaxPoint(Point p1, Point p2)
+    {
+    	return new Point(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
     }
 
     /**
@@ -144,19 +123,15 @@ public abstract class AreaBase {
         }
         else
         {
-            // highest low-point.
-            Point iLow = getAlignedPoints(low, area.low)[1];
-            // lowest high-point
-            Point iHigh = getAlignedPoints(high, area.high)[0];
-            return new Selection(iLow, iHigh);
+            return new Selection(getMaxPoint(low, area.low), getMinPoint(high, area.high));
         }
     }
 
     public boolean makesCuboidWith(AreaBase area)
     {
-        boolean alignX = low.x == area.low.x && high.x == area.high.x;
-        boolean alignY = low.y == area.low.y && high.y == area.high.y;
-        boolean alignZ = low.z == area.low.z && high.z == area.high.z;
+        boolean alignX = low.getX() == area.low.getX() && high.getX() == area.high.getX();
+        boolean alignY = low.getY() == area.low.getY() && high.getY() == area.high.getY();
+        boolean alignZ = low.getZ() == area.low.getZ() && high.getZ() == area.high.getZ();
 
         return alignX || alignY || alignZ;
     }
@@ -173,19 +148,14 @@ public abstract class AreaBase {
         }
         else
         {
-            // lowest low-point.
-            Point iLow = getAlignedPoints(low, area.low)[0];
-            // highest high-point.
-            Point iHigh = getAlignedPoints(high, area.high)[1];
-            return new Selection(iLow, iHigh);
+            return new Selection(getMinPoint(low, area.low), getMaxPoint(high, area.high));
         }
     }
 
     public void redefine(Point p1, Point p2)
     {
-        Point[] points = getAlignedPoints(p1, p2);
-        low = points[0];
-        high = points[1];
+        low = getMinPoint(p1, p2);
+        high = getMaxPoint(p1, p2);
     }
 
     public AreaBase copy()

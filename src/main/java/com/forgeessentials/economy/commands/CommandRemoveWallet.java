@@ -1,17 +1,19 @@
 package com.forgeessentials.economy.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.util.Arrays;
 import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
     @Override
@@ -31,7 +33,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayer player = UserIdent.getPlayerByMatch(sender, args[0]);
             int amountToSubtract = Integer.parseInt(args[1]);
 
             if (player == null)
@@ -60,7 +62,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayer player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayer player = UserIdent.getPlayerByMatch(sender, args[0]);
             int amountToSubtract = Integer.parseInt(args[1]);
 
             if (player == null)
@@ -114,9 +116,9 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 }

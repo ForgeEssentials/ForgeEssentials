@@ -1,17 +1,24 @@
 package com.forgeessentials.playerlogger.rollback;
 
-import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.ChatUtils;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import java.sql.*;
-import java.util.Date;
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.selections.Point;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EventHandler {
     @SubscribeEvent()
@@ -33,11 +40,11 @@ public class EventHandler {
                 Statement st = connection.createStatement();
                 Point p = getPoint(e.entityPlayer);
                 st.execute(
-                        "SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + p.x + " AND  `Y` = " + p.y + " AND  `Z` = "
-                                + p.z + " ORDER BY id DESC LIMIT " + limit);
+                        "SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + p.getX() + " AND  `Y` = " + p.getY() + " AND  `Z` = "
+                                + p.getZ() + " ORDER BY id DESC LIMIT " + limit);
                 ResultSet res = st.getResultSet();
 
-                ChatUtils.sendMessage(e.entityPlayer, "Results: " + p.x + ", " + p.y + ", " + p.z);
+                ChatUtils.sendMessage(e.entityPlayer, "Results: " + p.getX() + ", " + p.getY() + ", " + p.getZ());
 
                 while (res.next())
                 {
@@ -91,22 +98,22 @@ public class EventHandler {
         switch (mo.sideHit)
         {
         case 0:
-            p.y--;
+        	p.setY(p.getY() - 1);
             break;
         case 1:
-            p.y++;
+        	p.setY(p.getY() + 1);
             break;
         case 2:
-            p.z--;
+        	p.setZ(p.getZ() - 1);
             break;
         case 3:
-            p.z++;
+        	p.setZ(p.getZ() + 1);
             break;
         case 4:
-            p.x--;
+        	p.setX(p.getX() - 1);
             break;
         case 5:
-            p.x++;
+        	p.setX(p.getX() + 1);
             break;
         }
 

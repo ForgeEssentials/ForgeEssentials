@@ -1,7 +1,12 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
+import java.util.HashSet;
+import java.util.UUID;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.auth.lists.CommandVIP;
 import com.forgeessentials.auth.lists.CommandWhiteList;
 import com.forgeessentials.core.ForgeEssentials;
@@ -14,11 +19,8 @@ import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.tasks.TaskRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraftforge.common.MinecraftForge;
 
-import java.util.HashSet;
-import java.util.UUID;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, configClass = AuthConfig.class)
 public class ModuleAuth {
@@ -72,10 +74,10 @@ public class ModuleAuth {
 
         onStatusChange();
         
-        APIRegistry.permReg.registerPermissionLevel("fe.auth.admin", RegGroup.OWNERS);
-        APIRegistry.permReg.registerPermissionLevel("fe.auth", RegGroup.GUESTS);
-        APIRegistry.permReg.registerPermissionLevel("fe.auth.vip", null);
-        APIRegistry.permReg.registerPermissionLevel("fe.auth.whitelist", RegGroup.GUESTS);
+        PermissionsManager.registerPermission("fe.auth.admin", RegisteredPermValue.OP);
+        PermissionsManager.registerPermission("fe.auth", RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission("fe.auth.vip", null);
+        PermissionsManager.registerPermission("fe.auth.whitelist", RegisteredPermValue.TRUE);
     }
 
     public static boolean vanillaMode()

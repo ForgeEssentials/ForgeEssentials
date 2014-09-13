@@ -1,16 +1,15 @@
 package com.forgeessentials.commands.shortcut;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
+import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandWrapper extends ForgeEssentialsCommandBase {
 	
@@ -102,8 +101,8 @@ public class CommandWrapper extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return getCommand().getReggroup();
+        return getCommand().getDefaultPermission();
     }
 }

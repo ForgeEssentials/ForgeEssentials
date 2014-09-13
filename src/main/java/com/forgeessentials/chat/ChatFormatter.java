@@ -1,25 +1,29 @@
 package com.forgeessentials.chat;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.chat.commands.CommandPm;
-import com.forgeessentials.util.selections.WorldPoint;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.PlayerInfo;
-import com.google.common.base.Strings;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.permissions.PermissionsManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.chat.commands.CommandPm;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldPoint;
+import com.google.common.base.Strings;
+
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ChatFormatter {
     public static List<String> bannedWords = new ArrayList<String>();
@@ -93,7 +97,7 @@ public class ChatFormatter {
 		 */
         if (event.message.contains("&"))
         {
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(event.player, "ForgeEssentials.Chat.usecolor")))
+            if (PermissionsManager.checkPermission(event.player, "ForgeEssentials.Chat.usecolor"))
             {
                 message = FunctionHelper.formatColors(event.message);
             }
@@ -101,28 +105,43 @@ public class ChatFormatter {
 
         // replacing stuff...
 
-        String rank = "";
-        String zoneID = "";
-        String gPrefix = "";
-        String gSuffix = "";
+		// Player info
+		String playerPrefix = APIRegistry.perms.getServerZone().getPlayerPermission(event.player, "fe.internal.prefix");
+		String playerSuffix = APIRegistry.perms.getServerZone().getPlayerPermission(event.player, "fe.internal.suffix");
+		String zoneID = APIRegistry.perms.getZonesAt(new WorldPoint(event.player)).get(0).getName();
 
-        PlayerInfo info = PlayerInfo.getPlayerInfo(event.player.getPersistentID());
-        String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
-        String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
+		// Group info
+		Set<String> groups = APIRegistry.perms.getPlayerGroups(new UserIdent(event.player));
+		String gPrefix = "";
+		String gSuffix = "";
+		for (String group : groups)
+		{
+			String s = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal.prefix");
+			if (s != null)
+				gPrefix += s;
+			s = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal.suffix");
+			if (s != null)
+				gSuffix += s;
+		}
+		
+		// post-process
+		if (playerPrefix == null) playerPrefix = "";
+		if (playerSuffix == null) playerSuffix = "";
+		gPrefix = FunctionHelper.formatColors(gPrefix).trim();
+		gSuffix = FunctionHelper.formatColors(gSuffix).trim();
+		String rank = "";
 
-        Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(event.player));
-        zoneID = zone.getZoneName();
-
-        // Group stuff!!! DO NOT TOUCH!!!
-        {
-            rank = FunctionHelper.getGroupRankString(event.username);
-
-            gPrefix = FunctionHelper.getGroupPrefixString(event.username);
-            gPrefix = FunctionHelper.formatColors(gPrefix).trim();
-
-            gSuffix = FunctionHelper.getGroupSuffixString(event.username);
-            gSuffix = FunctionHelper.formatColors(gSuffix).trim();
-        }
+//        // Player info
+//        PlayerInfo info = PlayerInfo.getPlayerInfo(event.player.getPersistentID());
+//        String playerPrefix = info.getPrefix() == null ? "" : FunctionHelper.formatColors(info.getPrefix()).trim();
+//        String playerSuffix = info.getSuffix() == null ? "" : FunctionHelper.formatColors(info.getSuffix()).trim();
+//
+//        // Group info
+//        String rank = FunctionHelper.getGroupRankString(event.username);
+//        String gPrefix = FunctionHelper.getGroupPrefixString(event.username);
+//        String gSuffix = FunctionHelper.getGroupSuffixString(event.username);
+//        gPrefix = FunctionHelper.formatColors(gPrefix).trim();
+//        gSuffix = FunctionHelper.formatColors(gSuffix).trim();
 
         // It may be beneficial to make this a public function. -RlonRyan
         String format = ConfigChat.chatFormat;

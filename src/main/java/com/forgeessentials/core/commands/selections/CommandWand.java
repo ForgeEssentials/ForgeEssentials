@@ -2,20 +2,21 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 
-import com.forgeessentials.api.permissions.RegGroup;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import cpw.mods.fml.common.registry.GameData;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.util.EnumChatFormatting;
 
-import java.util.List;
+import cpw.mods.fml.common.registry.GameData;
 
 public class CommandWand extends ForgeEssentialsCommandBase {
 
@@ -50,9 +51,9 @@ public class CommandWand extends ForgeEssentialsCommandBase {
         boolean rebind = args.length > 0 && args[0].equalsIgnoreCase("rebind");
         
 		// Check for unbind
-		if (!rebind && ((info.wandEnabled && info.wandID.equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind")))) {
+		if (!rebind && ((info.isWandEnabled() && info.getWandID().equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind")))) {
 			ChatUtils.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
-			info.wandEnabled = false;
+			info.setWandEnabled(false);
 			return;
 		}
 
@@ -73,9 +74,9 @@ public class CommandWand extends ForgeEssentialsCommandBase {
 		}
 		
 		// Bind wand
-		info.wandEnabled = true;
-		info.wandID = wandId;
-		info.wandDmg = wandDmg;
+		info.setWandEnabled(true);
+		info.setWandID(wandId);
+		info.setWandDmg(wandDmg);
 		OutputHandler.chatConfirmation(sender, "Wand bound to " + wandName);
     }
 
@@ -83,7 +84,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
-        if (info.wandEnabled)
+        if (info.isWandEnabled())
         {
             return true;
         }
@@ -112,9 +113,9 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 }

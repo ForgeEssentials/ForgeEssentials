@@ -1,13 +1,12 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+import java.util.ArrayList;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.PotionEffect;
-
-import java.util.ArrayList;
+import net.minecraftforge.permissions.PermissionsManager;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 public class RespawnDebuffHandler {
     public static final String BYPASSPOTION = ModuleAfterlife.BASEPERM + ".bypassPotions";
@@ -24,14 +23,14 @@ public class RespawnDebuffHandler {
             return;
         }
         EntityPlayer player = e.player;
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASSPOTION)))
+        if (!PermissionsManager.checkPermission(player, BYPASSPOTION))
         {
             for (PotionEffect effect : potionEffects)
             {
                 player.addPotionEffect(effect);
             }
         }
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, BYPASSSTATS)))
+        if (!PermissionsManager.checkPermission(player, BYPASSSTATS))
         {
             player.getFoodStats().addStats(-1 * (20 - food), 0);
             player.setHealth(hp);

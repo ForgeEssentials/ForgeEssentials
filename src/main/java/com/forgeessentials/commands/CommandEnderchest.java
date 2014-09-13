@@ -1,13 +1,14 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.InventoryEnderChest;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
 
 /**
  * Opens your enderchest.
@@ -53,9 +54,9 @@ public class CommandEnderchest extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

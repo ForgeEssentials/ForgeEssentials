@@ -1,11 +1,13 @@
 package com.forgeessentials.chat.irc.commands;
 
-import com.forgeessentials.chat.commands.CommandMsg;
-import com.forgeessentials.util.ChatUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
+
 import org.pircbotx.User;
+
+import com.forgeessentials.chat.commands.CommandMsg;
+import com.forgeessentials.util.ChatUtils;
 
 public class ircCommandReply extends ircCommand {
     @Override

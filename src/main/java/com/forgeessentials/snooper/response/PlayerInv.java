@@ -1,14 +1,15 @@
 package com.forgeessentials.snooper.response;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.util.FunctionHelper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
 
 public class PlayerInv extends Response {
 
@@ -31,7 +32,7 @@ public class PlayerInv extends Response {
     }
 
     @Override
-    public JsonElement getResponce(JsonObject input) throws JsonParseException
+    public JsonElement getResponse(JsonObject input) throws JsonParseException
     {
         if (!input.has("username"))
         {

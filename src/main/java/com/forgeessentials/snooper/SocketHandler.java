@@ -71,7 +71,7 @@ public class SocketHandler extends Thread
             Response responce = ResponseRegistry.getResponse(i);
             if (responce.allowed)
             {
-                return responce.getResponce(jsonElement.getAsJsonObject()).toString();
+                return responce.getResponse(jsonElement.getAsJsonObject()).toString();
             }
         }
         catch (JsonParseException e)

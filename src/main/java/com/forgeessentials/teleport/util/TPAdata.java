@@ -1,8 +1,9 @@
 package com.forgeessentials.teleport.util;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.OutputHandler;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 public class TPAdata {
     public EntityPlayerMP sender;

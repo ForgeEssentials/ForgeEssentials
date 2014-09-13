@@ -1,9 +1,20 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
+import java.io.File;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.server.CommandHandlerForge;
+
 import com.forgeessentials.commands.shortcut.ShortcutCommands;
-import com.forgeessentials.commands.util.*;
+import com.forgeessentials.commands.util.CommandDataManager;
+import com.forgeessentials.commands.util.CommandRegistrar;
+import com.forgeessentials.commands.util.CommandsEventHandler;
+import com.forgeessentials.commands.util.ConfigCmd;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
@@ -12,10 +23,6 @@ import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.MinecraftForge;
-
-import java.io.File;
 
 @FEModule(configClass = ConfigCmd.class, name = "CommandsModule", parentMod = ForgeEssentials.class)
 public class ModuleCommands {
@@ -46,14 +53,10 @@ public class ModuleCommands {
     @FEModule.ServerInit
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        for (FEcmdModuleCommands cmd : CommandRegistrar.cmdList)
-        {
-            e.registerServerCommand(cmd);
-            cmd.registerExtraPermissions();
-        }
+    	CommandRegistrar.registerCommands(e);
         ShortcutCommands.load();
         CommandDataManager.load();
-        APIRegistry.permReg.registerPermissionLevel("fe.commands._ALL_", RegGroup.OWNERS);
+        PermissionsManager.registerPermission("fe.commands.*", RegisteredPermValue.OP);
     }
 
     @FEModule.Reload

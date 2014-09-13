@@ -1,12 +1,13 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.commands.CommandRules;
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import java.io.File;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 
-import java.io.File;
+import com.forgeessentials.commands.CommandRules;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 public class ConfigCmd extends ModuleConfigBase {
     public Configuration config;

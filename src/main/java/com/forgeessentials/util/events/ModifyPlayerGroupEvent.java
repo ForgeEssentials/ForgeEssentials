@@ -1,9 +1,9 @@
 package com.forgeessentials.util.events;
 
+import java.util.UUID;
+
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
-
-import java.util.UUID;
 
 @Cancelable
 public class ModifyPlayerGroupEvent extends Event {

@@ -1,20 +1,20 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TeleportCenter;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandBack extends ForgeEssentialsCommandBase {
     public static List justDied = new ArrayList<UUID>();
@@ -30,13 +30,13 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     {
         if (justDied.contains(sender.getPersistentID()))
         {
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "fe.teleport.back.ondeath")))
+            if (PermissionsManager.checkPermission(sender, "fe.teleport.back.ondeath"))
             {
                 PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-                if (info.back != null)
+                if (info.getLastTeleportOrigin() != null)
                 {
-                    WarpPoint death = info.back;
-                    info.back = new WarpPoint(sender);
+                    WarpPoint death = info.getLastTeleportOrigin();
+                    info.setLastTeleportOrigin(new WarpPoint(sender));
                     EntityPlayerMP player = (EntityPlayerMP) sender;
                     TeleportCenter.addToTpQue(death, player);
                 }
@@ -52,13 +52,13 @@ public class CommandBack extends ForgeEssentialsCommandBase {
                 OutputHandler.chatError(sender, "You have nowhere to get back to");
             }
         }
-        else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, "fe.teleport.back.ontp")))
+        else if (PermissionsManager.checkPermission(sender, "fe.teleport.back.ontp"))
         {
             PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-            if (info.back != null)
+            if (info.getLastTeleportOrigin() != null)
             {
-                WarpPoint back = info.back;
-                info.back = new WarpPoint(sender);
+                WarpPoint back = info.getLastTeleportOrigin();
+                info.setLastTeleportOrigin(new WarpPoint(sender));
                 EntityPlayerMP player = (EntityPlayerMP) sender;
                 TeleportCenter.addToTpQue(back, player);
             }
@@ -83,9 +83,9 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

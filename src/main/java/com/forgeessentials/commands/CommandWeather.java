@@ -1,16 +1,16 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.WeatherTimeData;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 
 public class CommandWeather extends FEcmdModuleCommands {
 
@@ -21,9 +21,9 @@ public class CommandWeather extends FEcmdModuleCommands {
 	}
 
 	@Override
-	public RegGroup getReggroup()
+	public RegisteredPermValue getDefaultPermission()
 	{
-		return RegGroup.OWNERS;
+		return RegisteredPermValue.OP;
 	}
 
 	@Override

@@ -1,10 +1,5 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
@@ -14,8 +9,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.tileentity.*;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityDispenser;
+import net.minecraft.tileentity.TileEntityDropper;
+import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.world.World;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.registry.GameData;
 
 public class CommandDrop extends FEcmdModuleCommands {
     public String getCommandName()
@@ -229,15 +235,15 @@ public class CommandDrop extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.getCommandSenderName());
+        EntityPlayerMP playermp = UserIdent.getPlayerByMatch(sender, sender.getCommandSenderName());
         processCommand(playermp, args);
     }
 

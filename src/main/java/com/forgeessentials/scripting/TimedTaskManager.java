@@ -1,16 +1,17 @@
 package com.forgeessentials.scripting;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.ChatUtils;
-import net.minecraft.command.ICommandSender;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class TimedTaskManager extends ForgeEssentialsCommandBase {
 
@@ -98,9 +99,9 @@ public class TimedTaskManager extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.ZONE_ADMINS;
+        return RegisteredPermValue.OP;
     }
 
 }

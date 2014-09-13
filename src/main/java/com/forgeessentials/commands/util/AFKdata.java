@@ -1,9 +1,10 @@
 package com.forgeessentials.commands.util;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import com.forgeessentials.commands.CommandAFK;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 public class AFKdata {
     public EntityPlayerMP player;

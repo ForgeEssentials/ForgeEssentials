@@ -1,14 +1,25 @@
 package com.forgeessentials.api.snooper;
 
-import com.google.gson.*;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.lang.reflect.Type;
+
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
 
-import java.lang.reflect.Type;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * If you want your own query response, extend this file and override
@@ -27,7 +38,7 @@ public abstract class Response
     public int id;
     public boolean allowed = true;
 
-    public abstract JsonElement getResponce(JsonObject jsonElement) throws JsonParseException;
+    public abstract JsonElement getResponse(JsonObject jsonElement) throws JsonParseException;
 
     public abstract String getName();
 

@@ -1,199 +1,389 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.Selection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import net.minecraft.entity.player.EntityPlayer;
+
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.FunctionHelper;
-import net.minecraft.world.World;
+import com.forgeessentials.util.selections.WorldPoint;
 
-@SaveableObject
-public class Zone extends WorldArea implements Comparable<Object> {
-    @SaveableField
-    public int priority;    // lowest priority is 0
+/**
+ * Zones are used to store permissions in a tree-like hierarchy. Each zone has it's own set of group- and player-permissions. Zones are stored in a tree
+ * structure with fixed levels. Priorities for permissions are based on the level of each zone in the tree. The following list shows the structure of the tree:
+ * 
+ * <pre>
+ * {@link RootZone} &gt; {@link ServerZone} &gt; {@link WorldZone} &gt; {@link AreaZone}
+ * </pre>
+ * 
+ * 
+ * @author Olee
+ */
+public abstract class Zone {
 
-    @UniqueLoadingKey
-    @SaveableField
-    private String zoneID;    // unique string name
+	/**
+	 * {@link PermissionList} class is used to allow data API retrieving generics attributes.
+	 */
+	public class PermissionList extends HashMap<String, String> {
+	}
 
-    @SaveableField
-    public String parent;    // the unique name of the parent.
+	private int id;
 
-    public Zone(String name, Selection sel, Zone parent)
-    {
-        super(parent.dim, sel);
-        zoneID = name;
-        this.parent = parent.zoneID;
-    }
+	private Map<UserIdent, PermissionList> playerPermissions = new HashMap<UserIdent, PermissionList>();
 
-    public Zone(String name, Selection sel, World world)
-    {
-        super(world, sel);
-        zoneID = name;
-        parent = FunctionHelper.getZoneWorldString(world);
-    }
+	private Map<String, PermissionList> groupPermissions = new HashMap<String, PermissionList>();
 
-    /**
-     * used to construct Global and World zones.
-     *
-     * @param name
-     */
-    public Zone(String name, int dimension)
-    {
-        super(dimension, new Point(0, 0, 0), new Point(0, 0, 0));
-        zoneID = name;
-        parent = APIRegistry.zones.getGLOBAL().zoneID;
-    }
+	public Zone(int id)
+	{
+		this.id = id;
+	}
 
-    /**
-     * special one just for the SUPER and GLOBAL zones
-     *
-     * @param name
-     */
-    public Zone(String name)
-    {
-        super(0, new Point(0, 0, 0), new Point(0, 0, 0));
-        zoneID = name;
-        parent = null;
-    }
+	/**
+	 * Gets the unique zone-ID
+	 * 
+	 * @return
+	 */
+	public int getId()
+	{
+		return id;
+	}
 
-    /**
-     * used for reconstruct method only.
-     *
-     * @param sel
-     * @param dim
-     */
-    private Zone(Selection sel, int dim)
-    {
-        super(dim, sel.getLowPoint(), sel.getHighPoint());
-    }
+	/**
+	 * Checks, whether the player is in the zone.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public boolean isPlayerInZone(EntityPlayer player)
+	{
+		return isInZone(new WorldPoint(player));
+	}
 
-    public boolean isParentOf(Zone zone)
-    {
-        if (parent == null)
-        {
-            return true;
-        }
-        else if (zone == null)
-        {
-            return false;
-        }
-        else if (zone.parent == null)
-        {
-            return false;
-        }
-        else if (zoneID.equals(zone.parent))
-        {
-            return true;
-        }
-        else if (zone.parent.equals(APIRegistry.zones.getGLOBAL().zoneID))
-        {
-            return false;
-        }
-        else
-        {
-            return isParentOf(APIRegistry.zones.getZone(zone.parent));
-        }
-    }
+	/**
+	 * Checks, whether the player is in the zone.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public abstract boolean isInZone(WorldPoint point);
 
-    /**
-     * @return if this Permission is a child of the given Permission.
-     */
-    public boolean isChildOf(Zone zone)
-    {
-        if (zone.parent == null)
-        {
-            return false;
-        }
-        else if (zone.parent.equals(APIRegistry.zones.getGLOBAL().zoneID))
-        {
-            return dim == zone.dim;
-        }
-        else if (zone.zoneID.equals(parent))
-        {
-            return true;
-        }
-        else
-        {
-            return APIRegistry.zones.getZone(parent).isChildOf(zone);
-        }
-    }
+	/**
+	 * Checks, whether the area is entirely contained within the zone.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public abstract boolean isInZone(WorldArea point);
 
-    /**
-     * @return The Unique ID of this Zone.
-     */
-    public String getZoneName()
-    {
-        return zoneID;
-    }
+	/**
+	 * Checks, whether a part of the area is in the zone.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public abstract boolean isPartOfZone(WorldArea point);
 
-    @Override
-    public int compareTo(Object o)
-    {
-        if (!(o instanceof Zone))
-        {
-            return Integer.MIN_VALUE;
-        }
+	/**
+	 * Returns the name of the zone
+	 * 
+	 * @return
+	 */
+	public abstract String getName();
 
-        if (equals(o))
-        {
-            return 0;
-        }
+	/**
+	 * Get the parent zone
+	 * 
+	 * @return
+	 */
+	public abstract Zone getParent();
 
-        Zone zone = (Zone) o;
-        if (zone.isParentOf(this))
-        {
-            return 100;
-        }
-        else if (isParentOf(zone))
-        {
-            return -100;
-        }
-        else
-        {
-            return priority - zone.priority;
-        }
-    }
+	public abstract ServerZone getServerZone();
+	
+	// ------------------------------------------------------------
+	// -- Player permissions
+	// ------------------------------------------------------------
 
-    public boolean isGlobalZone()
-    {
-        return parent == null;
-    }
+	/**
+	 * Get all groups that have permissions in this zone
+	 * 
+	 * @return
+	 */
+	public Map<UserIdent, PermissionList> getPlayerPermissions()
+	{
+		return playerPermissions;
+	}
 
-    public boolean isWorldZone()
-    {
-        if (parent == null)
-        {
-            return false;
-        }
-        return parent.equals(APIRegistry.zones.getGLOBAL().zoneID);
-    }
+	/**
+	 * Gets the player permissions for the specified player, or null if not present.
+	 * 
+	 * @param ident
+	 * @return
+	 */
+	public PermissionList getPlayerPermissions(UserIdent ident)
+	{
+		return playerPermissions.get(ident);
+	}
 
-    @Reconstructor
-    private static Zone reconstruct(IReconstructData tag)
-    {
-        Point high = (Point) tag.getFieldValue("high");
-        Point low = (Point) tag.getFieldValue("low");
-        Selection sel = new Selection(high, low);
-        int dim = (Integer) tag.getFieldValue("dim");
+	/**
+	 * Gets the player permissions for the specified player. If no permission-map is present, a new one is created.
+	 * 
+	 * @param ident
+	 * @return
+	 */
+	public PermissionList getOrCreatePlayerPermissions(UserIdent ident)
+	{
+		PermissionList map = playerPermissions.get(ident);
+		if (map == null)
+		{
+			map = new PermissionList();
+			playerPermissions.put(ident, map);
+		}
+		return playerPermissions.get(ident);
+	}
 
-        Zone zone = new Zone(sel, dim);
+	/**
+	 * Returns the value of a player permission, or null if empty.
+	 * 
+	 * @param ident
+	 * @param permissionNode
+	 * @return
+	 */
+	public String getPlayerPermission(UserIdent ident, String permissionNode)
+	{
+		PermissionList map = getPlayerPermissions(ident);
+		if (map != null)
+		{
+			return map.get(permissionNode);
+		}
+		return null;
+	}
 
-        zone.zoneID = (String) tag.getFieldValue("zoneID");
-        zone.parent = (String) tag.getFieldValue("parent");
-        zone.priority = (Integer) tag.getFieldValue("priority");
+	/**
+	 * Returns the value of a player permission, or null if empty.
+	 * 
+	 * @param player
+	 * @param permissionNode
+	 * @return permission value or null, if not set
+	 */
+	public String getPlayerPermission(EntityPlayer player, String permissionNode)
+	{
+		return getPlayerPermission(new UserIdent(player), permissionNode);
+	}
 
-        return zone;
-    }
+	/**
+	 * Checks, if a player permission is true, false or empty.
+	 * 
+	 * @param ident
+	 * @param permissionNode
+	 * @return true / false or null, if not set
+	 */
+	public Boolean checkPlayerPermission(UserIdent ident, String permissionNode)
+	{
+		PermissionList map = getPlayerPermissions(ident);
+		if (map != null)
+		{
+			return !map.get(permissionNode).equals(IPermissionsHelper.PERMISSION_FALSE);
+		}
+		return null;
+	}
 
-    @Override
-    public String toString()
-    {
-        return zoneID + " " + super.toString();
-    }
+	/**
+	 * Set a player permission-property
+	 * 
+	 * @param ident
+	 * @param permissionNode
+	 * @param value
+	 */
+	public void setPlayerPermissionProperty(UserIdent ident, String permissionNode, String value)
+	{
+		if (ident != null)
+		{
+			getServerZone().registerPlayer(ident);
+			PermissionList map = getOrCreatePlayerPermissions(ident);
+			map.put(permissionNode, value);
+		}
+	}
+
+	/**
+	 * Set a player permission
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 * @param value
+	 */
+	public void setPlayerPermission(UserIdent ident, String permissionNode, boolean value)
+	{
+		setPlayerPermissionProperty(ident, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
+	}
+
+	/**
+	 * Clears a player permission
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 */
+	public void clearPlayerPermission(UserIdent ident, String permissionNode)
+	{
+		if (ident != null)
+		{
+			PermissionList map = getPlayerPermissions(ident);
+			if (map != null)
+			{
+				map.remove(permissionNode);
+			}
+		}
+	}
+
+	/**
+	 * Revalidates all UserIdent fields in playerPermissions to replace those which were hashed based on their playername. This function should always be called
+	 * as soon as a player connects to the server.
+	 */
+	public void updatePlayerIdents()
+	{
+		// TODO: TEST updatePlayerIdents !!!
+		// To do so add a permission by playername of user who is not connected
+		// When he joins an event needs to be fired that triggers this function
+		// It should update the map entry then
+		for (Iterator iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
+		{
+			Map.Entry<UserIdent, PermissionList> entry = (Map.Entry<UserIdent, PermissionList>) iterator.next();
+			if (!entry.getKey().wasValidUUID())
+			{
+				if (entry.getKey().hasUUID())
+				{
+					iterator.remove();
+					playerPermissions.put(entry.getKey(), entry.getValue());
+				}
+			}
+			else
+			{
+				entry.getKey().updateUsername();
+			}
+		}
+	}
+
+	// ------------------------------------------------------------
+	// -- Group permissions
+	// ------------------------------------------------------------
+
+	/**
+	 * Get all groups that have permissions in this zone
+	 * 
+	 * @return
+	 */
+	public Map<String, PermissionList> getGroupPermissions()
+	{
+		return groupPermissions;
+	}
+
+	/**
+	 * Gets the group permissions for the specified group, or null if not present.
+	 * 
+	 * @param group
+	 * @return
+	 */
+	public PermissionList getGroupPermissions(String group)
+	{
+		return groupPermissions.get(group);
+	}
+
+	/**
+	 * Gets the group permissions for the specified group. If no permission-map is present, a new one is created.
+	 * 
+	 * @param group
+	 * @return
+	 */
+	public PermissionList getOrCreateGroupPermissions(String group)
+	{
+		PermissionList map = groupPermissions.get(group);
+		if (map == null)
+		{
+			map = new PermissionList();
+			groupPermissions.put(group, map);
+		}
+		return groupPermissions.get(group);
+	}
+
+	/**
+	 * Returns the value of a group permission, or null if empty.
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 * @return permission value or null, if not set
+	 */
+	public String getGroupPermission(String group, String permissionNode)
+	{
+		PermissionList map = getGroupPermissions(group);
+		if (map != null)
+		{
+			return map.get(permissionNode);
+		}
+		return null;
+	}
+
+	/**
+	 * Checks, if a group permission is true, false or empty.
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 * @return true / false or null, if not set
+	 */
+	public Boolean checkGroupPermission(String group, String permissionNode)
+	{
+		PermissionList map = getGroupPermissions(group);
+		if (map != null)
+		{
+			return !map.get(permissionNode).equals(IPermissionsHelper.PERMISSION_FALSE);
+		}
+		return null;
+	}
+
+	/**
+	 * Set a group permission-property
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 * @param value
+	 */
+	public void setGroupPermissionProperty(String group, String permissionNode, String value)
+	{
+		if (group != null)
+		{
+			PermissionList map = getOrCreateGroupPermissions(group);
+			map.put(permissionNode, value);
+		}
+	}
+
+	/**
+	 * Set a group permission
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 * @param value
+	 */
+	public void setGroupPermission(String group, String permissionNode, boolean value)
+	{
+		setGroupPermissionProperty(group, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
+	}
+
+	/**
+	 * Clears a player permission
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 */
+	public void clearGroupPermission(String group, String permissionNode)
+	{
+		if (group != null)
+		{
+			PermissionList map = getGroupPermissions(group);
+			if (map != null)
+			{
+				map.remove(permissionNode);
+			}
+		}
+	}
+
 }

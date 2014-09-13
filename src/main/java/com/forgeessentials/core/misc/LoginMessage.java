@@ -1,17 +1,5 @@
 package com.forgeessentials.core.misc;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.CompatReiMinimap;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -23,6 +11,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.compat.CompatReiMinimap;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class LoginMessage {
     private static List<String> messageList = new ArrayList<String>();
@@ -157,18 +159,18 @@ public class LoginMessage {
         line = FunctionHelper.replaceAllIgnoreCase(line, "%month%", "" + cal.get(Calendar.MONTH));
         line = FunctionHelper.replaceAllIgnoreCase(line, "%year%", "" + cal.get(Calendar.YEAR));
 
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%rank%", FunctionHelper.getGroupRankString(playerName));
+        //line = FunctionHelper.replaceAllIgnoreCase(line, "%rank%", FunctionHelper.getGroupRankString(playerName));
 
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%groupPrefix%", FunctionHelper.formatColors(FunctionHelper.getGroupPrefixString(playerName)).trim());
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%groupSuffix%", FunctionHelper.formatColors(FunctionHelper.getGroupSuffixString(playerName)).trim());
+        line = FunctionHelper.replaceAllIgnoreCase(line, "%groupPrefix%", FunctionHelper.formatColors(FunctionHelper.getGroupFix(new UserIdent(playerName), false)).trim());
+        line = FunctionHelper.replaceAllIgnoreCase(line, "%groupSuffix%", FunctionHelper.formatColors(FunctionHelper.getGroupFix(new UserIdent(playerName), true)).trim());
 
         // Player stuff
         EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(playerName);
         if (player != null) {
             line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.getDisplayName()); // username
             PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
-            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerPrefix%", info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim());
-            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerSuffix%", info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim());
+            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerPrefix%", info.getPrefix() == null ? "" : FunctionHelper.formatColors(info.getPrefix()).trim());
+            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerSuffix%", info.getSuffix() == null ? "" : FunctionHelper.formatColors(info.getSuffix()).trim());
         }
 
         return line;

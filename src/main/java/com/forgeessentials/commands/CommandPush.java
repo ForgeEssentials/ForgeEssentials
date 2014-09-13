@@ -1,9 +1,5 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.block.BlockButton;
 import net.minecraft.block.BlockLever;
 import net.minecraft.command.CommandException;
@@ -16,6 +12,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandPush extends FEcmdModuleCommands {
     public String getCommandName()
@@ -80,7 +81,7 @@ public class CommandPush extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.getCommandSenderName());
+        EntityPlayerMP playermp = UserIdent.getPlayerByMatch(sender, sender.getCommandSenderName());
         if (args.length != 3)
         {
             throw new WrongUsageException("/push <X> <Y> <Z>", new Object[0]);
@@ -160,9 +161,9 @@ public class CommandPush extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
 }

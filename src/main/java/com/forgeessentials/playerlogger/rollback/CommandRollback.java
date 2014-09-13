@@ -1,26 +1,28 @@
 package com.forgeessentials.playerlogger.rollback;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.playerlogger.network.PacketRollback;
-import com.forgeessentials.util.selections.WorldPoint;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.TaskRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
+import com.forgeessentials.playerlogger.network.PacketRollback;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.util.tasks.TaskRegistry;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Rollback command. WIP!
@@ -261,9 +263,9 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 }

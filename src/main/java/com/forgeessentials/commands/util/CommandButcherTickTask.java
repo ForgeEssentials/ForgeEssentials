@@ -1,10 +1,9 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.api.EnumMobType;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.ITickTask;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.EntityLiving;
@@ -15,15 +14,21 @@ import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.passive.*;
+import net.minecraft.entity.passive.EntityAmbientCreature;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.entity.passive.EntityTameable;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import com.forgeessentials.api.EnumMobType;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.tasks.ITickTask;
 
 public class CommandButcherTickTask implements ITickTask {
     double MAX_ENTITY_RADIUS;

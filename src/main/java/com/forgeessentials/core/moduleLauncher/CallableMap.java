@@ -1,18 +1,19 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
-import com.forgeessentials.util.OutputHandler;
-import com.google.common.collect.HashMultimap;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Set;
+
+import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
+import com.forgeessentials.util.OutputHandler;
+import com.google.common.collect.HashMultimap;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class CallableMap {

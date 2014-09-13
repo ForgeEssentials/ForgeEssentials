@@ -1,9 +1,10 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntitySkull;
+
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class FEskullTe extends TileEntitySkull {
     @Override
@@ -19,10 +20,10 @@ public class FEskullTe extends TileEntitySkull {
         }
         if (grave.protEnable)
         {
-            this.worldObj.setBlock(point.x, point.y, point.z, Blocks.skull, 1, 1);
+            this.worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.skull, 1, 1);
             FEskullTe te = new FEskullTe();
             te.func_152106_a(MinecraftServer.getServer().getConfigurationManager().func_152612_a(grave.owner).getGameProfile());
-            this.worldObj.setTileEntity(point.x, point.y, point.z, te);
+            this.worldObj.setTileEntity(point.getX(), point.getY(), point.getZ(), te);
         }
         else
         {

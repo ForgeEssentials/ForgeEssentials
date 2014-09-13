@@ -1,18 +1,20 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TeleportCenter;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.HashMap;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.HashMap;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandTppos extends ForgeEssentialsCommandBase {
 
@@ -37,7 +39,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
             double z = parseDouble(sender, args[2], sender.posZ);
             EntityPlayerMP player = (EntityPlayerMP) sender;
             PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-            playerInfo.back = new WarpPoint(player);
+            playerInfo.setLastTeleportOrigin(new WarpPoint(player));
             CommandBack.justDied.remove(player.getPersistentID());
             TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.cameraPitch, player.cameraYaw), player);
         }
@@ -73,9 +75,9 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

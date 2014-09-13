@@ -1,13 +1,13 @@
 package com.forgeessentials.chat;
 
+import java.rmi.server.UID;
+import java.util.UUID;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-
-import java.rmi.server.UID;
-import java.util.UUID;
 
 @SaveableObject
 public class Mail {

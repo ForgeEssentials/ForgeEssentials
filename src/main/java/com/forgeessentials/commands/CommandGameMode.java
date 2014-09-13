@@ -1,18 +1,20 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.WorldSettings;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandGameMode extends FEcmdModuleCommands {
 	@Override
@@ -199,13 +201,13 @@ public class CommandGameMode extends FEcmdModuleCommands {
 	@Override
 	public void registerExtraPermissions()
 	{
-		APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".others", RegGroup.OWNERS);
+		PermissionsManager.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
 	}
 
 	@Override
-	public RegGroup getReggroup()
+	public RegisteredPermValue getDefaultPermission()
 	{
-		return RegGroup.OWNERS;
+		return RegisteredPermValue.OP;
 	}
 
 	@Override

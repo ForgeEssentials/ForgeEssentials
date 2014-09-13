@@ -1,5 +1,12 @@
 package com.forgeessentials.worldborder;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.world.MinecraftException;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -14,12 +21,6 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.forgeessentials.util.tasks.TaskRegistry;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
 
 /**
  * Does the actual filling, with limited chuncks per tick.
@@ -79,7 +80,7 @@ public class TickTaskFill implements ITickTask {
 
         source = sender;
         world = worldToFill;
-        border = ModuleWorldBorder.borderMap.get(APIRegistry.zones.getWorldZone(world).getZoneName());
+        border = ModuleWorldBorder.borderMap.get(APIRegistry.perms.getWorldZone(world).getName());
 
         if (border.shapeByte == 0 || border.rad == 0)
         {
@@ -87,12 +88,12 @@ public class TickTaskFill implements ITickTask {
             return;
         }
 
-        X = minX = (border.center.x - border.rad - ModuleWorldBorder.overGenerate) / 16;
-        Z = minZ = (border.center.z - border.rad - ModuleWorldBorder.overGenerate) / 16;
-        maxX = (border.center.x + border.rad + ModuleWorldBorder.overGenerate) / 16;
-        maxZ = (border.center.z + border.rad + ModuleWorldBorder.overGenerate) / 16;
-        centerX = border.center.x / 16;
-        centerZ = border.center.z / 16;
+        X = minX = (border.center.getX() - border.rad - ModuleWorldBorder.overGenerate) / 16;
+        Z = minZ = (border.center.getZ() - border.rad - ModuleWorldBorder.overGenerate) / 16;
+        maxX = (border.center.getX() + border.rad + ModuleWorldBorder.overGenerate) / 16;
+        maxZ = (border.center.getZ() + border.rad + ModuleWorldBorder.overGenerate) / 16;
+        centerX = border.center.getX() / 16;
+        centerZ = border.center.getZ() / 16;
         rad = (border.rad + ModuleWorldBorder.overGenerate) / 16;
 
         todo = border.getETA();

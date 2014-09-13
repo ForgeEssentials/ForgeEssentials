@@ -1,14 +1,16 @@
 package com.forgeessentials.chat;
 
-import com.forgeessentials.chat.irc.IRCHelper;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.ArrayList;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.CommandEvent;
 
-import java.util.ArrayList;
+import com.forgeessentials.chat.irc.IRCHelper;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class CommandMuter {
     public static ArrayList<String> mutedCommands = new ArrayList<String>();

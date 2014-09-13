@@ -1,10 +1,23 @@
 package com.forgeessentials.core;
 
-import com.forgeessentials.api.APIRegistry;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.HelpFixer;
-import com.forgeessentials.core.commands.selections.*;
+import com.forgeessentials.core.commands.selections.CommandDeselect;
+import com.forgeessentials.core.commands.selections.CommandExpand;
+import com.forgeessentials.core.commands.selections.CommandPos;
+import com.forgeessentials.core.commands.selections.CommandWand;
+import com.forgeessentials.core.commands.selections.WandController;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.misc.BlockModListFile;
@@ -20,26 +33,28 @@ import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.typeInfo.TypeInfoItemStack;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTCompound;
+import com.forgeessentials.util.FEChunkLoader;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.MiscEventHandler;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
-import com.forgeessentials.util.*;
-import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.tasks.TaskRegistry;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Main mod class
@@ -160,9 +175,9 @@ public class ForgeEssentials {
 
         for (ForgeEssentialsCommandBase command : commands)
         {
-            if (command.getPermissionNode() != null && command.getReggroup() != null)
+            if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
                 {
-                    APIRegistry.permReg.registerPermissionLevel(command.getPermissionNode(), command.getReggroup());
+                    PermissionsManager.registerPermission(command.getPermissionNode(), command.getDefaultPermission());
                 }
                 e.registerServerCommand(command);
         }

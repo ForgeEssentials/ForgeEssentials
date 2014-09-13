@@ -1,15 +1,17 @@
 package com.forgeessentials.chat.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandUnmute extends ForgeEssentialsCommandBase {
 
@@ -37,7 +39,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase {
     {
         if (args.length == 1)
         {
-            EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayer receiver = UserIdent.getPlayerByMatch(sender, args[0]);
             if (receiver == null)
             {
                 OutputHandler.chatError(receiver, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -71,9 +73,9 @@ public class CommandUnmute extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 }

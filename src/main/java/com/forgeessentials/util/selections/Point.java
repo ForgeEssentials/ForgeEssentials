@@ -1,13 +1,15 @@
 package com.forgeessentials.util.selections;
 
+import java.io.Serializable;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import net.minecraft.entity.Entity;
-
-import java.io.Serializable;
 
 @SaveableObject(SaveInline = true)
 public class Point implements Serializable, Comparable<Point> {
@@ -17,13 +19,13 @@ public class Point implements Serializable, Comparable<Point> {
     private static final long serialVersionUID = 9058731447466825626L;
 
     @SaveableField
-    public int x;
+    protected int x;
 
     @SaveableField
-    public int y;
+    protected int y;
 
     @SaveableField
-    public int z;
+    protected int z;
 
     public Point(int x, int y, int z)
     {
@@ -39,7 +41,42 @@ public class Point implements Serializable, Comparable<Point> {
         z = (int) Math.floor(player.posZ);
     }
 
-    /**
+	public Point(Vec3 vector)
+	{
+		this((int) vector.xCoord, (int) vector.yCoord, (int) vector.zCoord);
+	}
+
+	public int getX()
+	{
+		return x;
+	}
+
+	public int getY()
+	{
+		return y;
+	}
+
+	public int getZ()
+	{
+		return z;
+	}
+
+	public void setX(int x)
+	{
+		this.x = x;
+	}
+
+	public void setY(int y)
+	{
+		this.y = y;
+	}
+
+	public void setZ(int z)
+	{
+		this.z = z;
+	}
+
+	/**
      * This is calculated by the whichever has higher coords.
      *
      * @return Posotive number if this Point is larger. 0 if they are equal.

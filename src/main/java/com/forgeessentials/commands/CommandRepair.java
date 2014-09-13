@@ -1,19 +1,20 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandRepair extends FEcmdModuleCommands {
     @Override
@@ -37,9 +38,9 @@ public class CommandRepair extends FEcmdModuleCommands {
             item.setItemDamage(0);
 
         }
-        else if (args.length == 1 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getPermissionNode() + ".others")))
+        else if (args.length == 1 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
 
@@ -68,7 +69,7 @@ public class CommandRepair extends FEcmdModuleCommands {
         if (args.length == 1)
         {
             // PlayerSelector.matchPlayers(sender, args[0])
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
 
@@ -100,7 +101,7 @@ public class CommandRepair extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getPermissionNode() + ".others", RegGroup.OWNERS);
+        PermissionsManager.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
     }
 
     @Override
@@ -117,9 +118,9 @@ public class CommandRepair extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

@@ -1,13 +1,13 @@
 package com.forgeessentials.questioner;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class QuestionCenter {
     private static Map<UUID, QuestionData> queue = new HashMap<UUID, QuestionData>();

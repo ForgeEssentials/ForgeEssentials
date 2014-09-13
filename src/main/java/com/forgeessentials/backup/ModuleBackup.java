@@ -1,16 +1,8 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.io.File;
+import java.io.PrintWriter;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -18,11 +10,21 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.io.File;
-import java.io.PrintWriter;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.modules.FEModuleInitEvent;
+import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+
 import java.util.Timer;
-
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup {
     @FEModule.Config
@@ -33,7 +35,7 @@ public class ModuleBackup {
 
     public static File baseFolder;
 
-    private Timer timer;
+    private Timer timer = new Timer();
 
     public static void msg(String msg)
     {
@@ -56,7 +58,7 @@ public class ModuleBackup {
             for (String username : manager.getAllUsernames())
             {
                 EntityPlayerMP player = manager.func_152612_a(username);
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
+                if (PermissionsManager.checkPermission(player, "ForgeEssentials.backup.msg"))
                 {
                     ChatUtils.sendMessage(player, EnumChatFormatting.AQUA + "[ForgeEssentials] " + msg);
                 }
@@ -88,7 +90,7 @@ public class ModuleBackup {
         }
         makeReadme();
 
-        APIRegistry.permReg.registerPermissionLevel("fe.backup.msg", RegGroup.GUESTS);
+        PermissionsManager.registerPermission("fe.backup.msg", RegisteredPermValue.TRUE);
     }
 
     @SubscribeEvent

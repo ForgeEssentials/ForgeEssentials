@@ -1,8 +1,9 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import java.util.HashMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,10 +14,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.HashMap;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandGetCommandBook extends FEcmdModuleCommands {
     public static String joinAliases(Object[] par0ArrayOfObj)
@@ -152,9 +153,9 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.GUESTS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

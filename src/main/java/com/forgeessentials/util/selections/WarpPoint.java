@@ -1,12 +1,13 @@
 package com.forgeessentials.util.selections;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 
 @SaveableObject(SaveInline = true)
 public class WarpPoint extends WorldPoint {
@@ -45,7 +46,7 @@ public class WarpPoint extends WorldPoint {
 
     public WarpPoint(Point p, int dimension, float playerPitch, float playerYaw)
     {
-        this(dimension, p.x, p.y, p.z, playerPitch, playerYaw);
+        this(dimension, p.getX(), p.getY(), p.getZ(), playerPitch, playerYaw);
         xd = x;
         yd = y;
         zd = z;
@@ -53,7 +54,7 @@ public class WarpPoint extends WorldPoint {
 
     public WarpPoint(WorldPoint p, float playerPitch, float playerYaw)
     {
-        this(p.dim, p.x, p.y, p.z, playerPitch, playerYaw);
+        this(p.dim, p.getX(), p.getY(), p.getZ(), playerPitch, playerYaw);
         xd = x;
         yd = y;
         zd = z;

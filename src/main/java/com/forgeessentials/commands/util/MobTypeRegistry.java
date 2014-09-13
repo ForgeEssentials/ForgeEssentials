@@ -1,14 +1,15 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.api.EnumMobType;
-import com.google.common.collect.HashMultimap;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.passive.EntityTameable;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Set;
+
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.passive.EntityTameable;
+
+import com.forgeessentials.api.EnumMobType;
+import com.google.common.collect.HashMultimap;
 
 public class MobTypeRegistry {
     private static final HashMultimap<EnumMobType, String> MobTypeRegistry = HashMultimap.create();

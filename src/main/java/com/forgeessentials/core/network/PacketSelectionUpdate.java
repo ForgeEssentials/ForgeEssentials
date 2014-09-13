@@ -1,12 +1,14 @@
 package com.forgeessentials.core.network;
 
-import com.forgeessentials.util.selections.Point;
+import io.netty.buffer.ByteBuf;
+
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.Point;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
 
 public class PacketSelectionUpdate implements IMessageHandler<PacketSelectionUpdate.Message, IMessage> {
 
@@ -43,9 +45,9 @@ public class PacketSelectionUpdate implements IMessageHandler<PacketSelectionUpd
                 {
                     Point p1 = info.getPoint1();
                     byteBuf.writeBoolean(true);
-                    byteBuf.writeDouble(p1.x);
-                    byteBuf.writeDouble(p1.y);
-                    byteBuf.writeDouble(p1.z);
+                    byteBuf.writeDouble(p1.getX());
+                    byteBuf.writeDouble(p1.getY());
+                    byteBuf.writeDouble(p1.getZ());
                 }
                 else
                 {
@@ -56,9 +58,9 @@ public class PacketSelectionUpdate implements IMessageHandler<PacketSelectionUpd
                 {
                     Point p2 = info.getPoint2();
                     byteBuf.writeBoolean(true);
-                    byteBuf.writeDouble(p2.x);
-                    byteBuf.writeDouble(p2.y);
-                    byteBuf.writeDouble(p2.z);
+                    byteBuf.writeDouble(p2.getX());
+                    byteBuf.writeDouble(p2.getY());
+                    byteBuf.writeDouble(p2.getZ());
                 }
                 else
                 {

@@ -1,11 +1,13 @@
 package com.forgeessentials.worldborder.Effects;
 
-import com.forgeessentials.worldborder.WorldBorder;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
+
+import com.forgeessentials.worldborder.WorldBorder;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 
 public class executecommand implements IEffect {
     private String command = "/say %p! Go back while you still can!";
