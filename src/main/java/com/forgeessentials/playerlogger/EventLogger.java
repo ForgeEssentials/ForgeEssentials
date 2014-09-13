@@ -14,7 +14,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.playerlogger.types.blockChangeLog;
 import com.forgeessentials.playerlogger.types.blockChangeLog.blockChangeLogCategory;
 import com.forgeessentials.playerlogger.types.commandLog;

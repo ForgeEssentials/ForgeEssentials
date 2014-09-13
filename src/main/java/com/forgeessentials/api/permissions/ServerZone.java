@@ -27,15 +27,7 @@ public class ServerZone extends Zone {
 
 	private int maxZoneID;
 
-	private Group defaultGroup = new Group(IPermissionsHelper.GROUP_DEFAULT, null, null, null, 0, 0);
-
-	private Group guestGroup = new Group(IPermissionsHelper.GROUP_GUESTS, "[GUEST] ", null, null, 1, 1);
-
-	private Group operatorGroup = new Group(IPermissionsHelper.GROUP_OPERATORS, "[OPERATOR] ", null, null, 2, 2);
-
-	private Map<String, Group> groups = new HashMap<String, Group>();
-
-	private Map<UserIdent, Set<Group>> playerGroups = new HashMap<UserIdent, Set<Group>>();
+	private Map<UserIdent, Set<String>> playerGroups = new HashMap<UserIdent, Set<String>>();
 
 	private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
 
@@ -44,9 +36,11 @@ public class ServerZone extends Zone {
 	public ServerZone()
 	{
 		super(1);
-		groups.put(operatorGroup.getName(), operatorGroup);
-		groups.put(defaultGroup.getName(), defaultGroup);
-		groups.put(guestGroup.getName(), guestGroup);
+		setGroupPermission(IPermissionsHelper.GROUP_DEFAULT, "fe.internal.group", true);
+		setGroupPermission(IPermissionsHelper.GROUP_GUESTS, "fe.internal.group", true);
+		setGroupPermission(IPermissionsHelper.GROUP_OPERATORS, "fe.internal.group", true);
+		setGroupPermissionProperty(IPermissionsHelper.GROUP_GUESTS, "fe.internal.prefix", "[GUEST]");
+		setGroupPermissionProperty(IPermissionsHelper.GROUP_OPERATORS, "fe.internal.group", "[OPERATOR]");
 	}
 
 	public ServerZone(RootZone rootZone)
@@ -134,78 +128,59 @@ public class ServerZone extends Zone {
 
 	// ------------------------------------------------------------
 
-	public Map<String, Group> getGroups()
+	public Set<String> getGroups()
 	{
-		return this.groups;
+		return getGroupPermissions().keySet();
 	}
 
-	public Group getDefaultGroup()
+	public boolean groupExists(String name)
 	{
-		return defaultGroup;
-	}
-
-	public Group getGuestGroup()
-	{
-		return guestGroup;
-	}
-
-	public Group getOperatorGroup()
-	{
-		return operatorGroup;
-	}
-
-	public Group getGroup(String name)
-	{
-		return groups.get(name.toLowerCase());
-	}
-
-	public Group createGroup(String name)
-	{
-		if (groups.containsKey(name))
-			return null;
-		Group group = new Group(name);
-		groups.put(group.getName().toLowerCase(), group);
-		return group;
+		return getGroupPermissions().containsKey(name);
 	}
 
 	// ------------------------------------------------------------
 
-	public void addPlayerToGroup(UserIdent ident, Group group)
+	public void addPlayerToGroup(UserIdent ident, String group)
 	{
-		Set<Group> groupSet = playerGroups.get(ident);
+		Set<String> groupSet = playerGroups.get(ident);
 		if (groupSet == null)
 		{
-			groupSet = new TreeSet<Group>();
+			groupSet = new TreeSet<String>();
 			playerGroups.put(ident, groupSet);
 		}
 		groupSet.add(group);
 	}
 
-	public void removePlayerFromGroup(UserIdent ident, Group group)
+	public void removePlayerFromGroup(UserIdent ident, String group)
 	{
-		Set<Group> groupSet = playerGroups.get(ident);
+		Set<String> groupSet = playerGroups.get(ident);
 		if (groupSet != null)
 			groupSet.remove(group);
 	}
 
-	public Set<Group> getPlayerGroups(UserIdent ident)
+	public Set<String> getPlayerGroups(UserIdent ident)
 	{
 		Set pgs = playerGroups.get(ident);
-		HashSet result = pgs == null ? new HashSet<Group>() : new HashSet<Group>(pgs);
+		HashSet result = pgs == null ? new HashSet<String>() : new HashSet<String>(pgs);
 		if (ident.hasPlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
 		{
-			result.add(getServerZone().getOperatorGroup());
+			result.add(IPermissionsHelper.GROUP_OPERATORS);
 		}
-		if (groups.isEmpty())
+		if (result.isEmpty())
 		{
-			result.add(getServerZone().getGuestGroup());
+			result.add(IPermissionsHelper.GROUP_GUESTS);
 		}
 		return result;
 	}
 
-	public Group getPrimaryPlayerGroup(UserIdent ident)
+	public Map<UserIdent, Set<String>> getPlayerGroups()
 	{
-		Iterator<Group> it = getPlayerGroups(ident).iterator();
+		return playerGroups;
+	}
+
+	public String getPrimaryPlayerGroup(UserIdent ident)
+	{
+		Iterator<String> it = getPlayerGroups(ident).iterator();
 		if (it.hasNext())
 			return it.next();
 		else

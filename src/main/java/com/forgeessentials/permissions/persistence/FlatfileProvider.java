@@ -7,14 +7,16 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
@@ -51,7 +53,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 	public void save(ServerZone serverZone)
 	{
 		File path = basePath;
-		
+
 		try
 		{
 			// TODO: Replace this by a system that only deletes invalid files
@@ -62,24 +64,20 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 		{
 		}
 
+		// Clear groups from players (leftovers, if player was removed from all groups)
+		for (UserIdent ident : serverZone.getPlayerPermissions().keySet())
+		{
+			serverZone.clearPlayerPermission(ident, "fe.internal.player.groups");
+		}
+		// Add groups to players
+		for (Entry<UserIdent, Set<String>> entry : serverZone.getPlayerGroups().entrySet())
+		{
+			serverZone.setPlayerPermissionProperty(entry.getKey(), "fe.internal.player.groups", StringUtils.join(entry.getValue(), ","));
+		}
+
 		saveServerZone(path, serverZone);
-		
-		for (Group group : serverZone.getGroups().values())
-		{
-			serverZone.setGroupPermissionProperty(group.getName(), "fe.internal.group.id", Integer.toString(group.getId()));
-			serverZone.setGroupPermissionProperty(group.getName(), "fe.internal.group.priority", Integer.toString(group.getPriority()));
-			serverZone.setGroupPermissionProperty(group.getName(), "fe.internal.group.prefix", group.getPrefix());
-			serverZone.setGroupPermissionProperty(group.getName(), "fe.internal.group.suffix", group.getSuffix());
-		}
 		saveZonePermissions(path, serverZone);
-		for (Group group : serverZone.getGroups().values())
-		{
-			serverZone.clearGroupPermission(group.getName(), "fe.internal.group.id");
-			serverZone.clearGroupPermission(group.getName(), "fe.internal.group.priority");
-			serverZone.clearGroupPermission(group.getName(), "fe.internal.group.prefix");
-			serverZone.clearGroupPermission(group.getName(), "fe.internal.group.suffix");
-		}
-		
+
 		for (WorldZone worldZone : serverZone.getWorldZones().values())
 		{
 			File worldPath = new File(path, worldZone.getName());
@@ -213,6 +211,8 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 	}
 
 	// ------------------------------------------------------------
+
+	// ------------------------------------------------------------
 	// -- Loading
 	// ------------------------------------------------------------
 
@@ -226,14 +226,18 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 			ServerZone serverZone = new ServerZone();
 			loadZonePermissions(path, serverZone);
 
-			for (Entry<String, PermissionList> groupData : serverZone.getGroupPermissions().entrySet())
+			for (UserIdent ident : serverZone.getPlayerPermissions().keySet())
 			{
-				String id = groupData.getValue().get("fe.internal.group.id");
-				String priority = groupData.getValue().get("fe.internal.group.priority");
-				String prefix = groupData.getValue().get("fe.internal.group.prefix");
-				String suffix = groupData.getValue().get("fe.internal.group.suffix");
+				String groupList = serverZone.getPlayerPermission(ident, "fe.internal.player.groups");
+				if (groupList == null)
+					continue;
+				String[] groups = groupList.split(",");
+				for (String group : groups)
+				{
+					serverZone.addPlayerToGroup(ident, group);
+				}
 			}
-			
+
 			int maxId = 2;
 
 			for (File worldPath : path.listFiles(directoryFilter))

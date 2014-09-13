@@ -35,6 +35,11 @@ public abstract class Zone {
 
 	private Map<String, PermissionList> groupPermissions = new HashMap<String, PermissionList>();
 
+	public Zone(int id)
+	{
+		this.id = id;
+	}
+
 	/**
 	 * Gets the unique zone-ID
 	 * 
@@ -43,11 +48,6 @@ public abstract class Zone {
 	public int getId()
 	{
 		return id;
-	}
-
-	public Zone(int id)
-	{
-		this.id = id;
 	}
 
 	/**

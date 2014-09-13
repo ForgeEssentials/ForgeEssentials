@@ -1,6 +1,5 @@
 package com.forgeessentials.permissions.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -9,11 +8,7 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandPermissions extends ForgeEssentialsCommandBase {
     // Variables for auto-complete

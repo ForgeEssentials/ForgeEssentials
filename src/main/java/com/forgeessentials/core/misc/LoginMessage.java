@@ -22,6 +22,7 @@ import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -158,10 +159,10 @@ public class LoginMessage {
         line = FunctionHelper.replaceAllIgnoreCase(line, "%month%", "" + cal.get(Calendar.MONTH));
         line = FunctionHelper.replaceAllIgnoreCase(line, "%year%", "" + cal.get(Calendar.YEAR));
 
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%rank%", FunctionHelper.getGroupRankString(playerName));
+        //line = FunctionHelper.replaceAllIgnoreCase(line, "%rank%", FunctionHelper.getGroupRankString(playerName));
 
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%groupPrefix%", FunctionHelper.formatColors(FunctionHelper.getGroupPrefixString(playerName)).trim());
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%groupSuffix%", FunctionHelper.formatColors(FunctionHelper.getGroupSuffixString(playerName)).trim());
+        line = FunctionHelper.replaceAllIgnoreCase(line, "%groupPrefix%", FunctionHelper.formatColors(FunctionHelper.getGroupFix(new UserIdent(playerName), false)).trim());
+        line = FunctionHelper.replaceAllIgnoreCase(line, "%groupSuffix%", FunctionHelper.formatColors(FunctionHelper.getGroupFix(new UserIdent(playerName), true)).trim());
 
         // Player stuff
         EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(playerName);

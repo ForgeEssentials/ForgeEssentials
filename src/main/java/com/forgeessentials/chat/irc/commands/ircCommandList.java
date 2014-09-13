@@ -1,5 +1,7 @@
 package com.forgeessentials.chat.irc.commands;
 
+import java.util.HashMap;
+
 import net.minecraft.server.MinecraftServer;
 
 import org.pircbotx.User;
@@ -30,15 +32,11 @@ public class ircCommandList extends ircCommand {
     @Override
     public void execute(String[] args, User user)
     {
-        HashMultimap<String, String> map = HashMultimap.create();
+        HashMap<String, String> map = new HashMap<String, String>();
+        user.sendMessage("Players online: ");
         for (String username : MinecraftServer.getServer().getConfigurationManager().getAllUsernames())
         {
-            map.put(FunctionHelper.getGroupRankString(username), username);
-        }
-        user.sendMessage("Players online: ");
-        for (String group : map.keySet())
-        {
-            user.sendMessage(group + ": " + FunctionHelper.niceJoin(map.get(group).toArray()));
+            user.sendMessage(username);
         }
     }
 

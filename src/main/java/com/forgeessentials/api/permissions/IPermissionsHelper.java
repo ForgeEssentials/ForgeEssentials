@@ -295,19 +295,19 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	// ---------------------------------------------------------------------------
 
 	/**
-	 * Get a group by it's name
+	 * Checks, if a group exists
+	 * 
+	 * @param string
+	 * @return
+	 */
+	boolean groupExists(String string);
+	
+	/**
+	 * Create a group
 	 * 
 	 * @param name
-	 * @return
 	 */
-	Group getGroup(String name);
-
-	/**
-	 * Creates a new group
-	 * 
-	 * @return
-	 */
-	Group createGroup(String name);
+	void createGroup(String name);
 
 	/**
 	 * Add a player to a group
@@ -315,7 +315,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param ident
 	 * @param group
 	 */
-	void addPlayerToGroup(UserIdent ident, Group group);
+	void addPlayerToGroup(UserIdent ident, String group);
 
 	/**
 	 * Remove a player from a group
@@ -323,7 +323,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param ident
 	 * @param group
 	 */
-	void removePlayerFromGroup(UserIdent ident, Group group);
+	void removePlayerFromGroup(UserIdent ident, String group);
 
 	/**
 	 * Returns the highest-priority group the the player belongs to.
@@ -331,7 +331,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param player
 	 * @return
 	 */
-	Group getPrimaryGroup(UserIdent ident);
+	String getPrimaryGroup(UserIdent ident);
 
 	/**
 	 * Get all groups the player belongs to, ordered by priority.
@@ -339,7 +339,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param player
 	 * @return
 	 */
-	Set<Group> getPlayerGroups(UserIdent ident);
+	Set<String> getPlayerGroups(UserIdent ident);
 
 	// ---------------------------------------------------------------------------
 

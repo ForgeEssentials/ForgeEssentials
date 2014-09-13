@@ -11,7 +11,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -52,10 +51,10 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				zone = APIRegistry.perms.getServerZone();
 			}
 			// TODO: Identify zones by unique names
-//			if (APIRegistry.perms.doesZoneExist(args[0]))
-//			{
-//				zone = APIRegistry.perms.getZone(args[0]);
-//			}
+			// if (APIRegistry.perms.doesZoneExist(args[0]))
+			// {
+			// zone = APIRegistry.perms.getZone(args[0]);
+			// }
 		}
 
 		/*
@@ -158,11 +157,11 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 					int i = parseInt(sender, args[3]);
 					if (!ap.getPromoteList().containsKey(i))
 					{
-						Group group = SqlHelper.getInstance().getGroupByName(args[4]);
-						if (group != null)
+						String group = args[4];
+						if (!APIRegistry.perms.groupExists(group))
 						{
-							ap.getPromoteList().put(i + "", group.getName());
-							OutputHandler.chatConfirmation(sender, "You have added " + i + ":" + group.getName() + " to the list.");
+							ap.getPromoteList().put(i + "", group);
+							OutputHandler.chatConfirmation(sender, "You have added " + i + ":" + group + " to the list.");
 						}
 						else
 						{
@@ -282,10 +281,10 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 					zone = APIRegistry.perms.getServerZone();
 				}
 				// TODO: Identify zones by unique names
-//				if (APIRegistry.perms.doesZoneExist(args[0]))
-//				{
-//					zone = APIRegistry.perms.getZone(args[0]);
-//				}
+				// if (APIRegistry.perms.doesZoneExist(args[0]))
+				// {
+				// zone = APIRegistry.perms.getZone(args[0]);
+				// }
 				AutoPromote ap = AutoPromoteManager.instance().map.get(zone.getName());
 				if (ap == null)
 				{
@@ -312,19 +311,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				{
 					zone = APIRegistry.perms.getServerZone();
 				}
-				// TODO: Identify zones by unique names
-//				if (APIRegistry.perms.doesZoneExist(args[0]))
-//				{
-//					zone = APIRegistry.perms.getZone(args[0]);
-//				}
-				List<Group> groups = SqlHelper.getInstance().getGroups();
-				List<String> groupNames = new ArrayList<String>();
-				for (Group group : groups)
-				{
-					groupNames.add(group.getName());
-					ChatUtils.sendMessage(sender, group.getName());
-				}
-				return getListOfStringsFromIterableMatchingLastWord(args, groupNames);
+				return getListOfStringsFromIterableMatchingLastWord(args, APIRegistry.perms.getServerZone().getGroups());
 			}
 			catch (Exception e)
 			{

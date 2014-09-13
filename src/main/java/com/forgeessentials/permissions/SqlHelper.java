@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 
-import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
@@ -457,135 +456,137 @@ public class SqlHelper {
 	// -- Groups
 	// ------------------------------------------------------------
 
-	private Group getGroup(ResultSet set, boolean next)
-	{
-		try
-		{
-			if (!next || set.next())
-			{
-				int id = set.getInt(COLUMN_GROUP_ID);
-				String name = set.getString(COLUMN_GROUP_NAME);
-				String parent = getGroupNameByID(set.getInt(COLUMN_GROUP_PARENT));
-				String prefix = set.getString(COLUMN_GROUP_PREFIX);
-				String suffix = set.getString(COLUMN_GROUP_SUFFIX);
-				int priority = set.getInt(COLUMN_GROUP_PRIORITY);
-				return new Group(name, prefix, suffix, parent, priority, id);
-			}
-		}
-		catch (SQLException e)
-		{
-			Throwables.propagate(e);
-		}
-		return null;
-	}
-
-	private Group getGroup(ResultSet set)
-	{
-		return getGroup(set, true);
-	}
-
-	public List<Group> getGroups()
-	{
-		try
-		{
-			List<Group> list = new ArrayList<Group>();
-			ResultSet set = stmtGetGroups.executeQuery();
-			while (set.next())
-			{
-				list.add(getGroup(set, false));
-			}
-			return list;
-		}
-		catch (SQLException e)
-		{
-			Throwables.propagate(e);
-		}
-		return null;
-	}
-
-	/**
-	 * @param name
-	 * @return NULL if no group in existence. or an SQL error happened.
-	 */
-	public Group getGroupByName(String name)
-	{
-		try
-		{
-			stmtGetGroupByName.setString(1, name);
-			return getGroup(stmtGetGroupByName.executeQuery());
-		}
-		catch (SQLException e)
-		{
-			Throwables.propagate(e);
-		}
-		return null;
-	}
-
-	/**
-	 * @param id
-	 * @return Group on success, null otherwise
-	 */
-	protected Group getGroupByID(int id)
-	{
-		try
-		{
-			stmtGetGroupByID.setInt(1, id);
-			return getGroup(stmtGetGroupByID.executeQuery());
-		}
-		catch (SQLException e)
-		{
-			Throwables.propagate(e);
-		}
-		return null;
-	}
-
-	/**
-	 * @param group_id
-	 * @return null if the group does not exist.
-	 * @throws SQLException
-	 */
-	private String getGroupNameByID(int group_id) throws SQLException
-	{
-		semtGetGroupNameByID.setInt(1, group_id);
-		ResultSet set = semtGetGroupNameByID.executeQuery();
-		if (set.next())
-		{
-			return set.getString(1);
-		}
-		return null;
-	}
-
-	// ------------------------------------------------------------
-	// -- Players
-	// ------------------------------------------------------------
-
-	protected ArrayList<String> getPlayersByGroup(int group_id)
-	{
-		try
-		{
-			ArrayList<String> list = new ArrayList<String>();
-			stmtGetPlayersByGroup.setInt(1, group_id);
-			ResultSet set = stmtGetPlayersByGroup.executeQuery();
-			while (set.next())
-			{
-				list.add(set.getString(1));
-			}
-			return list;
-		}
-		catch (SQLException e)
-		{
-			Throwables.propagate(e);
-		}
-		return null;
-	}
-
-	protected ArrayList<String> getPlayersForGroup(String group_name)
-	{
-		Group group = getGroupByName(group_name);
-		if (group == null)
-			return null;
-		return getPlayersByGroup(group.getId());
-	}
+//	private Group getGroup(ResultSet set, boolean next)
+//	{
+//		try
+//		{
+//			if (!next || set.next())
+//			{
+//				int id = set.getInt(COLUMN_GROUP_ID);
+//				String name = set.getString(COLUMN_GROUP_NAME);
+//				//String parent = getGroupNameByID(set.getInt(COLUMN_GROUP_PARENT));
+//				String prefix = set.getString(COLUMN_GROUP_PREFIX);
+//				String suffix = set.getString(COLUMN_GROUP_SUFFIX);
+//				int priority = set.getInt(COLUMN_GROUP_PRIORITY);
+//				return new Group(name, prefix, suffix, priority, id);
+//			}
+//		}
+//		catch (SQLException e)
+//		{
+//			Throwables.propagate(e);
+//		}
+//		return null;
+//	}
+//
+//	private Group getGroup(ResultSet set)
+//	{
+//		return getGroup(set, true);
+//	}
+//
+//	public List<Group> getGroups()
+//	{
+//		try
+//		{
+//			List<Group> list = new ArrayList<Group>();
+//			ResultSet set = stmtGetGroups.executeQuery();
+//			while (set.next())
+//			{
+//				list.add(getGroup(set, false));
+//			}
+//			return list;
+//		}
+//		catch (SQLException e)
+//		{
+//			Throwables.propagate(e);
+//		}
+//		return null;
+//	}
+//
+//	/**
+//	 * @param name
+//	 * @return NULL if no group in existence. or an SQL error happened.
+//	 */
+//	public Group getGroupByName(String name)
+//	{
+//		try
+//		{
+//			stmtGetGroupByName.setString(1, name);
+//			return getGroup(stmtGetGroupByName.executeQuery());
+//		}
+//		catch (SQLException e)
+//		{
+//			Throwables.propagate(e);
+//		}
+//		return null;
+//	}
+//
+//	/**
+//	 * @param id
+//	 * @return Group on success, null otherwise
+//	 */
+//	protected Group getGroupByID(int id)
+//	{
+//		try
+//		{
+//			stmtGetGroupByID.setInt(1, id);
+//			return getGroup(stmtGetGroupByID.executeQuery());
+//		}
+//		catch (SQLException e)
+//		{
+//			Throwables.propagate(e);
+//		}
+//		return null;
+//	}
+//
+//	/**
+//	 * @param group_id
+//	 * @return null if the group does not exist.
+//	 * @throws SQLException
+//	 */
+//	private String getGroupNameByID(int group_id) throws SQLException
+//	{
+//		semtGetGroupNameByID.setInt(1, group_id);
+//		ResultSet set = semtGetGroupNameByID.executeQuery();
+//		if (set.next())
+//		{
+//			return set.getString(1);
+//		}
+//		return null;
+//	}
+//
+//	// ------------------------------------------------------------
+//	// -- Players
+//	// ------------------------------------------------------------
+//
+//	protected ArrayList<String> getPlayersByGroup(int group_id)
+//	{
+//		try
+//		{
+//			ArrayList<String> list = new ArrayList<String>();
+//			stmtGetPlayersByGroup.setInt(1, group_id);
+//			ResultSet set = stmtGetPlayersByGroup.executeQuery();
+//			while (set.next())
+//			{
+//				list.add(set.getString(1));
+//			}
+//			return list;
+//		}
+//		catch (SQLException e)
+//		{
+//			Throwables.propagate(e);
+//		}
+//		return null;
+//	}
+//
+//	protected ArrayList<String> getPlayersForGroup(String group_name)
+//	{
+//		Group group = getGroupByName(group_name);
+//		if (group == null)
+//			return null;
+//		return getPlayersByGroup(group.getId());
+//	}
+	
+	//-------------------------
 
 	// /**
 	// * groups are in order of priority.

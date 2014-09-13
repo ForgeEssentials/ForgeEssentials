@@ -160,7 +160,7 @@ public class ModulePlayerLogger {
     {
         for (String name : EventLogger.exempt_groups)
         {
-            if (APIRegistry.perms.getGroup(name) == null)
+            if (!APIRegistry.perms.groupExists(name))
             {
                 throw new RuntimeException("Group '" + name + "' doesn't exist. Used in " + config.getFile().getName());
             }

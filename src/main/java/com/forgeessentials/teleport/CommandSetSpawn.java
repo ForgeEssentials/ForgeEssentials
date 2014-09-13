@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
@@ -222,7 +221,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 		}
 		else if (args[1].equalsIgnoreCase("group"))
 		{
-			if (APIRegistry.perms.getGroup(args[2]) == null)
+			if (!APIRegistry.perms.groupExists(args[2]))
 			{
 				OutputHandler.chatError(sender, args[2] + " does not exist as a group!");
 				return;
@@ -374,7 +373,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 		}
 		else if (args[1].equalsIgnoreCase("group"))
 		{
-			if (APIRegistry.perms.getGroup(args[2]) == null)
+			if (!APIRegistry.perms.groupExists(args[2]))
 			{
 				OutputHandler.chatError(sender, args[2] + " does not exist as a group!");
 				return;
@@ -448,10 +447,9 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 			}
 			else if (args[1].equalsIgnoreCase("group"))
 			{
-				Collection<Group> groups = APIRegistry.perms.getServerZone().getGroups().values();
-				for (Group group : groups)
+				for (String group : APIRegistry.perms.getServerZone().getGroups())
 				{
-					completes.add(group.getName());
+					completes.add(group);
 				}
 			}
 			else if (args[1].equalsIgnoreCase("zone"))

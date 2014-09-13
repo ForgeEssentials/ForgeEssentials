@@ -18,7 +18,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.permissions.ModulePermissions;
@@ -174,11 +173,10 @@ public class PermissionCommandParser {
 			}
 			if (args.isEmpty())
 			{
-				Collection<Group> groups = APIRegistry.perms.getPlayerGroups(ident);
 				info(String.format("Groups for player %s:", ident.getUsernameOrUUID()));
-				for (Group g : groups)
+				for (String group : APIRegistry.perms.getPlayerGroups(ident))
 				{
-					info(" - " + g.getName());
+					info(" - " + group);
 				}
 			}
 			else
@@ -308,7 +306,7 @@ public class PermissionCommandParser {
 			String fix = args.remove();
 			if (fix.equalsIgnoreCase("clear"))
 			{
-				fix = "";
+				fix = null;
 				info(String.format("%s's %s cleared", ident.getUsernameOrUUID(), isSuffix ? "suffix" : "prefix"));
 			}
 			else
@@ -317,11 +315,11 @@ public class PermissionCommandParser {
 			}
 			if (isSuffix)
 			{
-				playerInfo.setSuffix(fix);
+				APIRegistry.perms.setPlayerPermissionProperty(ident, "fe.internal.suffix", fix);
 			}
 			else
 			{
-				playerInfo.setPrefix(fix);
+				APIRegistry.perms.setPlayerPermissionProperty(ident, "fe.internal.prefix", fix);
 			}
 		}
 	}
@@ -348,12 +346,12 @@ public class PermissionCommandParser {
 			}
 		}
 
-		for (Group group : APIRegistry.perms.getPlayerGroups(ident))
+		for (String group : APIRegistry.perms.getPlayerGroups(ident))
 		{
-			Map<Zone, Map<String, String>> groupPerms = ModulePermissions.permissionHelper.enumGroupPermissions(group.getName());
+			Map<Zone, Map<String, String>> groupPerms = ModulePermissions.permissionHelper.enumGroupPermissions(group);
 			if (!groupPerms.isEmpty())
 			{
-				info("Group #" + group.getId() + " " + group.getName());
+				info("Group " + group);
 				for (Entry<Zone, Map<String, String>> zone : groupPerms.entrySet())
 				{
 					info("Zone #" + zone.getKey().getId() + " " + zone.getKey().getName());
@@ -382,7 +380,7 @@ public class PermissionCommandParser {
 		else
 		{
 			String mode = args.remove().toLowerCase();
-			if (!mode.equals("add") || !mode.equals("remove"))
+			if (!mode.equals("add") && !mode.equals("remove"))
 			{
 				error("Syntax error. Please try this instead:");
 				error("/p user <player> group add : Add user to group");
@@ -393,7 +391,7 @@ public class PermissionCommandParser {
 			if (tabCompleteMode && args.size() == 1)
 			{
 				tabComplete = new ArrayList<String>();
-				for (String group : APIRegistry.perms.getServerZone().getGroups().keySet())
+				for (String group : APIRegistry.perms.getServerZone().getGroups())
 				{
 					if (CommandBase.doesStringStartWith(args.peek(), group))
 						tabComplete.add(group);
@@ -406,19 +404,20 @@ public class PermissionCommandParser {
 			}
 			else
 			{
-				String groupName = args.remove();
-				Group group = APIRegistry.perms.getGroup(groupName);
-				if (group == null)
+				String group = args.remove();
+				if (!APIRegistry.perms.groupExists(group))
 				{
-					error(String.format("Group %s not found.", groupName));
+					error(String.format("Group %s not found.", group));
 					return;
 				}
 				switch (mode) {
 				case "add":
 					APIRegistry.perms.addPlayerToGroup(ident, group);
+					info(String.format("Player %s added to group %s", ident.getUsernameOrUUID(), group));
 					break;
 				case "remove":
 					APIRegistry.perms.removePlayerFromGroup(ident, group);
+					info(String.format("Player %s removed from group %s", ident.getUsernameOrUUID(), group));
 					break;
 				}
 			}
@@ -430,7 +429,7 @@ public class PermissionCommandParser {
 		if (tabCompleteMode && args.size() == 1)
 		{
 			tabComplete = new ArrayList<String>();
-			for (String group : APIRegistry.perms.getServerZone().getGroups().keySet())
+			for (String group : APIRegistry.perms.getServerZone().getGroups())
 			{
 				if (CommandBase.doesStringStartWith(args.peek(), group))
 					tabComplete.add(group);
@@ -443,14 +442,13 @@ public class PermissionCommandParser {
 			info("/p group <group> : Display group info");
 			info("/p group <group> create : Create a new group");
 			info("/p group <group> perms : List group's permissions");
-			info("/p group <group> allow|deny|clear <perm> : Group global permissions");
-			info("/p group <group> allow|deny|clear [zone] <permission-list> : Group permissions");
+			info("/p group <group> allow|deny|clear <perm> : String global permissions");
+			info("/p group <group> allow|deny|clear [zone] <permission-list> : String permissions");
 		}
 		else
 		{
-			String groupName = args.remove();
-			Group group = APIRegistry.perms.getGroup(groupName);
-			if (group == null)
+			String group = args.remove();
+			if (!APIRegistry.perms.groupExists(group))
 			{
 				if (tabCompleteMode && args.size() == 1)
 				{
@@ -459,26 +457,19 @@ public class PermissionCommandParser {
 				}
 				if (args.isEmpty())
 				{
-					info(String.format("Group %s does not exist", groupName));
+					info(String.format("Group %s does not exist", group));
 				}
 				else
 				{
 					String groupArg = args.remove();
 					if (groupArg.equalsIgnoreCase("create"))
 					{
-						group = APIRegistry.perms.createGroup(groupName);
-						if (group == null)
-						{
-							info(String.format("Created group %s", groupName));
-						}
-						else
-						{
-							error(String.format("Group %s already exists", groupName));
-						}
+						APIRegistry.perms.createGroup(group);
+						info(String.format("Created group %s", group));
 					}
 					else
 					{
-						error(String.format("Group %s does not exist", groupName));
+						error(String.format("Group %s does not exist", group));
 					}
 				}
 				return;
@@ -491,13 +482,11 @@ public class PermissionCommandParser {
 			}
 			if (args.isEmpty())
 			{
-				throw new RuntimeException("Not yet implemented!");
-				// Collection<Group> groups = APIRegistry.perms.getPlayerGroups(group);
-				// info(String.format("Groups for player %s:", group.getUsernameOrUUID()));
-				// for (Group g : groups)
-				// {
-				// info(" - " + g.getName());
-				// }
+				info("Group " + group + ":");
+				// info("  ID    : " + group.getId());
+				// info("  prio  : " + group.getPriority());
+				// info("  prefix: " + group.getPrefix());
+				// info("  suffix: " + group.getSuffix());
 			}
 			else
 			{
@@ -508,12 +497,12 @@ public class PermissionCommandParser {
 				// case "perms":
 				// listGroupPermissions(group);
 				// break;
-				// case "prefix":
-				// parseGroupPrefixSuffix(group, false);
-				// break;
-				// case "suffix":
-				// parseGroupPrefixSuffix(group, true);
-				// break;
+				case "prefix":
+					parseGroupPrefixSuffix(group, false);
+					break;
+				case "suffix":
+					parseGroupPrefixSuffix(group, true);
+					break;
 				case "true":
 				case "allow":
 					parseGroupPermissions(group, PermissionAction.ALLOW);
@@ -534,7 +523,35 @@ public class PermissionCommandParser {
 		}
 	}
 
-	private void parseGroupPermissions(Group group, PermissionAction type)
+	private void parseGroupPrefixSuffix(String group, boolean isSuffix)
+	{
+		if (tabCompleteMode)
+			return;
+		String fixName = isSuffix ? "suffix" : "prefix";
+		if (args.isEmpty())
+		{
+			String fix = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal." + fixName);
+			if (fix == null || fix.isEmpty())
+				fix = "empty";
+			info(String.format("%s's %s is %s", group, fixName, fix));
+		}
+		else
+		{
+			String fix = args.remove();
+			if (fix.equalsIgnoreCase("clear"))
+			{
+				info(String.format("%s's %s cleared", group, fixName));
+				APIRegistry.perms.getServerZone().clearGroupPermission(group, "fe.internal." + fixName);
+			}
+			else
+			{
+				info(String.format("%s's %s set to %s", group, fixName, fix));
+				APIRegistry.perms.getServerZone().setGroupPermissionProperty(group, "fe.internal." + fixName, fix);
+			}
+		}
+	}
+
+	private void parseGroupPermissions(String group, PermissionAction type)
 	{
 		if (tabCompleteMode)
 		{
@@ -595,19 +612,19 @@ public class PermissionCommandParser {
 			String result = null, msg = null;
 			switch (type) {
 			case ALLOW:
-				zone.setGroupPermission(group.getName(), permissionNode, true);
+				zone.setGroupPermission(group, permissionNode, true);
 				msg = "Allowed %s access to %s";
 				break;
 			case DENY:
-				zone.setGroupPermission(group.getName(), permissionNode, false);
+				zone.setGroupPermission(group, permissionNode, false);
 				msg = "Denied %s access to %s";
 				break;
 			case CLEAR:
-				zone.clearGroupPermission(group.getName(), permissionNode);
+				zone.clearGroupPermission(group, permissionNode);
 				msg = "Cleared %s's acces to %s";
 				break;
 			}
-			info(String.format(msg, group.getName(), permissionNode));
+			info(String.format(msg, group, permissionNode));
 		}
 	}
 

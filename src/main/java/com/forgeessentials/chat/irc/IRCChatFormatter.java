@@ -2,6 +2,7 @@ package com.forgeessentials.chat.irc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +14,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ConfigChat;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.google.common.base.Strings;
 
@@ -81,27 +83,31 @@ public class IRCChatFormatter {
 
         // replacing stuff...
 
-        String rank = "";
-        String zoneID = "";
-        String gPrefix = "";
-        String gSuffix = "";
+		// Player info
+		String playerPrefix = APIRegistry.perms.getServerZone().getPlayerPermission(event.player, "fe.internal.prefix");
+		String playerSuffix = APIRegistry.perms.getServerZone().getPlayerPermission(event.player, "fe.internal.suffix");
+		String zoneID = APIRegistry.perms.getZonesAt(new WorldPoint(event.player)).get(0).getName();
 
-        PlayerInfo info = PlayerInfo.getPlayerInfo(event.player.getPersistentID());
-        String playerPrefix = info.getPrefix() == null ? "" : FunctionHelper.formatColors(info.getPrefix()).trim();
-        String playerSuffix = info.getSuffix() == null ? "" : FunctionHelper.formatColors(info.getSuffix()).trim();
-
-        zoneID = APIRegistry.perms.getZonesAt(new WorldPoint(event.player)).get(0).getName();
-
-        // Group stuff!!! DO NOT TOUCH!!!
-        {
-            rank = FunctionHelper.getGroupRankString(event.username);
-
-            gPrefix = FunctionHelper.getGroupPrefixString(event.username);
-            gPrefix = FunctionHelper.formatColors(gPrefix).trim();
-
-            gSuffix = FunctionHelper.getGroupSuffixString(event.username);
-            gSuffix = FunctionHelper.formatColors(gSuffix).trim();
-        }
+		// Group info
+		Set<String> groups = APIRegistry.perms.getPlayerGroups(new UserIdent(event.player));
+		String gPrefix = "";
+		String gSuffix = "";
+		for (String group : groups)
+		{
+			String s = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal.prefix");
+			if (s != null)
+				gPrefix += s;
+			s = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal.suffix");
+			if (s != null)
+				gSuffix += s;
+		}
+		
+		// post-process
+		if (playerPrefix == null) playerPrefix = "";
+		if (playerSuffix == null) playerSuffix = "";
+		gPrefix = FunctionHelper.formatColors(gPrefix).trim();
+		gSuffix = FunctionHelper.formatColors(gSuffix).trim();
+		String rank = "";
 
         // It may be beneficial to make this a public function. -RlonRyan
         String format = ConfigChat.chatFormat;
