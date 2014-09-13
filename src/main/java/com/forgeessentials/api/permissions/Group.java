@@ -1,5 +1,10 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.forgeessentials.util.UserIdent;
+
 /**
  * This class is not a format that is designed to actually be saved in any way. It is simply an output format for the data that is saved in the DataBase. The
  * fields here are not fnal in order to save memory and CPU when editing and sending the instance back in to update.
@@ -7,20 +12,32 @@ package com.forgeessentials.api.permissions;
  * @author AbrarSyed
  */
 
-@SuppressWarnings("rawtypes")
-public class Group implements Comparable {
+public class Group implements Comparable<Group> {
 
 	private String name;
+
 	private String parent;
+
 	private String prefix;
+
 	private String suffix;
+
 	private int priority; // lowest priority is 0
 
 	private int id;
 
+	// ------------------------------------------------------------
+
 	public Group(String name)
 	{
 		this.name = name;
+		this.priority = 10;
+	}
+
+	public Group(String name, int priority)
+	{
+		this.name = name;
+		this.priority = priority;
 	}
 
 	public Group(String name, String prefix, String suffix, String parent, int priority)
@@ -38,17 +55,14 @@ public class Group implements Comparable {
 		this.id = id;
 	}
 
+	// ------------------------------------------------------------
 
 	@Override
-	public int compareTo(Object obj)
+	public int compareTo(Group group)
 	{
-		if (!(obj instanceof Group))
-		{
-			return Integer.MIN_VALUE;
-		}
-		int cmp = ((Group) obj).priority - priority;
+		int cmp = group.priority - priority;
 		if (cmp == 0)
-			cmp = name.compareTo(((Group) obj).name);
+			cmp = name.compareTo(group.name);
 		return cmp;
 	}
 
@@ -100,11 +114,13 @@ public class Group implements Comparable {
 		return name + "[" + parent + ", " + prefix + ", " + suffix + ", " + priority + "]";
 	}
 
+	// ------------------------------------------------------------
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	public int getId()
 	{
 		return id;

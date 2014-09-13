@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.Group;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
@@ -62,7 +63,23 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 		}
 
 		saveServerZone(path, serverZone);
+		
+		for (Group group : serverZone.getGroups().values())
+		{
+			serverZone.setGroupPermissionProperty(group.getName(), "fe.internal.group.id", Integer.toString(group.getId()));
+			serverZone.setGroupPermissionProperty(group.getName(), "fe.internal.group.priority", Integer.toString(group.getPriority()));
+			serverZone.setGroupPermissionProperty(group.getName(), "fe.internal.group.prefix", group.getPrefix());
+			serverZone.setGroupPermissionProperty(group.getName(), "fe.internal.group.suffix", group.getSuffix());
+		}
 		saveZonePermissions(path, serverZone);
+		for (Group group : serverZone.getGroups().values())
+		{
+			serverZone.clearGroupPermission(group.getName(), "fe.internal.group.id");
+			serverZone.clearGroupPermission(group.getName(), "fe.internal.group.priority");
+			serverZone.clearGroupPermission(group.getName(), "fe.internal.group.prefix");
+			serverZone.clearGroupPermission(group.getName(), "fe.internal.group.suffix");
+		}
+		
 		for (WorldZone worldZone : serverZone.getWorldZones().values())
 		{
 			File worldPath = new File(path, worldZone.getName());
@@ -79,6 +96,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 
 	public static void saveServerZone(File path, ServerZone serverZone)
 	{
+		// Store zone information
 		try
 		{
 			path.mkdirs();
@@ -177,7 +195,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 	{
 		Properties p = new Properties();
 		for (Entry<String, String> permission : list.entrySet())
-			p.setProperty(permission.getKey(), permission.getValue());
+			p.setProperty(permission.getKey(), permission.getValue() != null ? permission.getValue() : "");
 		return p;
 	}
 
@@ -208,6 +226,14 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 			ServerZone serverZone = new ServerZone();
 			loadZonePermissions(path, serverZone);
 
+			for (Entry<String, PermissionList> groupData : serverZone.getGroupPermissions().entrySet())
+			{
+				String id = groupData.getValue().get("fe.internal.group.id");
+				String priority = groupData.getValue().get("fe.internal.group.priority");
+				String prefix = groupData.getValue().get("fe.internal.group.prefix");
+				String suffix = groupData.getValue().get("fe.internal.group.suffix");
+			}
+			
 			int maxId = 2;
 
 			for (File worldPath : path.listFiles(directoryFilter))

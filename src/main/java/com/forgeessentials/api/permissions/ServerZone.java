@@ -2,8 +2,13 @@ package com.forgeessentials.api.permissions;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
+
+import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldArea;
@@ -24,11 +29,13 @@ public class ServerZone extends Zone {
 
 	private Group defaultGroup = new Group(IPermissionsHelper.GROUP_DEFAULT, null, null, null, 0, 0);
 
-	private Group guestGroup = new Group(IPermissionsHelper.GROUP_GUESTS, "[GUEST] ", null, null, 0, 1);
+	private Group guestGroup = new Group(IPermissionsHelper.GROUP_GUESTS, "[GUEST] ", null, null, 1, 1);
 
-	private Group operatorGroup = new Group(IPermissionsHelper.GROUP_OPERATORS, "[OPERATOR] ", null, null, 0, 2);
+	private Group operatorGroup = new Group(IPermissionsHelper.GROUP_OPERATORS, "[OPERATOR] ", null, null, 2, 2);
 
 	private Map<String, Group> groups = new HashMap<String, Group>();
+
+	private Map<UserIdent, Set<Group>> playerGroups = new HashMap<UserIdent, Set<Group>>();
 
 	private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
 
@@ -87,7 +94,7 @@ public class ServerZone extends Zone {
 	{
 		return this;
 	}
-	
+
 	// ------------------------------------------------------------
 
 	public RootZone getRootZone()
@@ -149,7 +156,7 @@ public class ServerZone extends Zone {
 
 	public Group getGroup(String name)
 	{
-		return groups.get(name);
+		return groups.get(name.toLowerCase());
 	}
 
 	public Group createGroup(String name)
@@ -157,8 +164,52 @@ public class ServerZone extends Zone {
 		if (groups.containsKey(name))
 			return null;
 		Group group = new Group(name);
-		groups.put(group.getName(), group);
+		groups.put(group.getName().toLowerCase(), group);
 		return group;
+	}
+
+	// ------------------------------------------------------------
+
+	public void addPlayerToGroup(UserIdent ident, Group group)
+	{
+		Set<Group> groupSet = playerGroups.get(ident);
+		if (groupSet == null)
+		{
+			groupSet = new TreeSet<Group>();
+			playerGroups.put(ident, groupSet);
+		}
+		groupSet.add(group);
+	}
+
+	public void removePlayerFromGroup(UserIdent ident, Group group)
+	{
+		Set<Group> groupSet = playerGroups.get(ident);
+		if (groupSet != null)
+			groupSet.remove(group);
+	}
+
+	public Set<Group> getPlayerGroups(UserIdent ident)
+	{
+		Set pgs = playerGroups.get(ident);
+		HashSet result = pgs == null ? new HashSet<Group>() : new HashSet<Group>(pgs);
+		if (ident.hasPlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
+		{
+			result.add(getServerZone().getOperatorGroup());
+		}
+		if (groups.isEmpty())
+		{
+			result.add(getServerZone().getGuestGroup());
+		}
+		return result;
+	}
+
+	public Group getPrimaryPlayerGroup(UserIdent ident)
+	{
+		Iterator<Group> it = getPlayerGroups(ident).iterator();
+		if (it.hasNext())
+			return it.next();
+		else
+			return null;
 	}
 
 	// ------------------------------------------------------------
@@ -167,7 +218,7 @@ public class ServerZone extends Zone {
 	{
 		knownPlayers.add(ident);
 	}
-	
+
 	public Set<UserIdent> getKnownPlayers()
 	{
 		return knownPlayers;

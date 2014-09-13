@@ -3,6 +3,7 @@ package com.forgeessentials.permissions.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -544,38 +545,37 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	}
 
 	@Override
-	public Group getPrimaryGroup(UserIdent player)
+	public void addPlayerToGroup(UserIdent ident, Group group)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		getServerZone().addPlayerToGroup(ident, group);
 	}
 
 	@Override
-	public List<Group> getPlayerGroups(UserIdent ident)
+	public void removePlayerFromGroup(UserIdent ident, Group group)
 	{
-		List<Group> groups = new ArrayList<Group>();
-
-		// TODO: getPlayerGroups !!!!
-
-		if (ident.hasPlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
-		{
-			groups.add(getServerZone().getOperatorGroup());
-		}
-		if (groups.isEmpty())
-		{
-			groups.add(getServerZone().getGuestGroup());
-		}
-		return groups;
+		getServerZone().removePlayerFromGroup(ident, group);
 	}
 
-	public List<String> getPlayerGroupNames(UserIdent player)
+	@Override
+	public Group getPrimaryGroup(UserIdent ident)
 	{
-		if (player == null)
+		return getServerZone().getPrimaryPlayerGroup(ident);
+	}
+
+	@Override
+	public Set<Group> getPlayerGroups(UserIdent ident)
+	{
+		return getServerZone().getPlayerGroups(ident);
+	}
+
+	public List<String> getPlayerGroupNames(UserIdent ident)
+	{
+		if (ident == null)
 		{
 			return null;
 		}
 		List<String> names = new ArrayList<String>();
-		for (Group group : getPlayerGroups(player))
+		for (Group group : getPlayerGroups(ident))
 		{
 			names.add(group.getName());
 		}

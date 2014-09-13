@@ -186,7 +186,11 @@ public class UserIdent {
 	@Override
 	public boolean equals(Object other)
 	{
-		if (other instanceof String)
+		if (this == other)
+		{
+			return true;
+		}
+		else if (other instanceof String)
 		{
 			identifyUser();
 			if (this.uuid != null)
@@ -297,6 +301,5 @@ public class UserIdent {
 			return null;
 		return player.getGameProfile().getId();
 	}
-
 
 }

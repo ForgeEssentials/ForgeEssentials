@@ -3,6 +3,7 @@ package com.forgeessentials.api.permissions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -309,6 +310,22 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	Group createGroup(String name);
 
 	/**
+	 * Add a player to a group
+	 * 
+	 * @param ident
+	 * @param group
+	 */
+	void addPlayerToGroup(UserIdent ident, Group group);
+
+	/**
+	 * Remove a player from a group
+	 * 
+	 * @param ident
+	 * @param group
+	 */
+	void removePlayerFromGroup(UserIdent ident, Group group);
+
+	/**
 	 * Returns the highest-priority group the the player belongs to.
 	 * 
 	 * @param player
@@ -322,7 +339,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param player
 	 * @return
 	 */
-	Collection<Group> getPlayerGroups(UserIdent ident);
+	Set<Group> getPlayerGroups(UserIdent ident);
 
 	// ---------------------------------------------------------------------------
 
