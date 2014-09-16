@@ -93,6 +93,17 @@ public abstract class Zone {
 	public abstract String getName();
 
 	/**
+	 * Returns the name of the zone
+	 * 
+	 * @return
+	 */
+	@Override
+	public String toString()
+	{
+		return getName();
+	}
+
+	/**
 	 * Get the parent zone
 	 * 
 	 * @return

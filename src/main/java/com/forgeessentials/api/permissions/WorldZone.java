@@ -100,9 +100,9 @@ public class WorldZone extends Zone {
 		return null;
 	}
 
-	public void removeAreaZone(String areaName)
+	public boolean removeAreaZone(String areaName)
 	{
-		areaZones.remove(areaName);
+		return areaZones.remove(areaName);
 	}
 
 	public Collection<AreaZone> getAreaZones()

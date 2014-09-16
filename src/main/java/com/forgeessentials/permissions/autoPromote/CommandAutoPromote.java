@@ -60,11 +60,11 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		/*
 		 * Need to make a new one?
 		 */
-		AutoPromote ap = AutoPromoteManager.instance().map.get(zone.getName());
+		AutoPromote ap = AutoPromoteManager.instance().map.get(zone.toString());
 		if (ap == null)
 		{
 			AutoPromoteManager.instance().map.put(zone.getId(), new AutoPromote(zone.getId(), false));
-			ap = AutoPromoteManager.instance().map.get(zone.getName());
+			ap = AutoPromoteManager.instance().map.get(zone.toString());
 		}
 
 		/*
@@ -165,7 +165,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 						}
 						else
 						{
-							OutputHandler.chatError(sender, args[4] + " is not a valid group in " + zone.getName() + ".");
+							OutputHandler.chatError(sender, args[4] + " is not a valid group in " + zone.toString() + ".");
 						}
 					}
 					else
@@ -244,7 +244,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		{
 			for (Zone zone : world.getAreaZones())
 			{
-				list.add(zone.getName());
+				list.add(zone.toString());
 			}
 		}
 		return list;
@@ -285,11 +285,11 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				// {
 				// zone = APIRegistry.perms.getZone(args[0]);
 				// }
-				AutoPromote ap = AutoPromoteManager.instance().map.get(zone.getName());
+				AutoPromote ap = AutoPromoteManager.instance().map.get(zone.toString());
 				if (ap == null)
 				{
 					AutoPromoteManager.instance().map.put(zone.getId(), new AutoPromote(zone.getId(), false));
-					ap = AutoPromoteManager.instance().map.get(zone.getName());
+					ap = AutoPromoteManager.instance().map.get(zone.toString());
 				}
 				return getListOfStringsFromIterableMatchingLastWord(args, ap.getList());
 			}

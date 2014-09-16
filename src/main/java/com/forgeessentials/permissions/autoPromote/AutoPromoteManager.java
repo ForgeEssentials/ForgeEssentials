@@ -74,9 +74,9 @@ public class AutoPromoteManager extends TimerTask {
 			Zone zone = zones.isEmpty() ? null : zones.get(0);
 			while (zone != null)
 			{
-				if (map.containsKey(zone.getName()))
+				if (map.containsKey(zone.toString()))
 				{
-					map.get(zone.getName()).tick(player);
+					map.get(zone.toString()).tick(player);
 				}
 				zone = zone.getParent();
 			}

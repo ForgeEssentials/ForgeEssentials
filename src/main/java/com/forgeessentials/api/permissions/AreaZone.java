@@ -46,7 +46,7 @@ public class AreaZone extends Zone {
 		this(worldZone, name, area, worldZone.getServerZone().nextZoneID());
 	}
 
-	protected boolean isInZone(Point point)
+	protected boolean isPointInZone(Point point)
 	{
 		return point.getX() >= area.getLowPoint().getX() && point.getZ() >= area.getLowPoint().getZ() && point.getX() <= area.getHighPoint().getX()
 				&& point.getZ() <= area.getHighPoint().getZ() && point.getY() >= area.getLowPoint().getY() && point.getY() <= area.getHighPoint().getY();
@@ -57,7 +57,7 @@ public class AreaZone extends Zone {
 	{
 		if (!worldZone.isInZone(point))
 			return false;
-		return isInZone(point);
+		return isPointInZone(point);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class AreaZone extends Zone {
 	{
 		if (!worldZone.isInZone(area))
 			return false;
-		return isInZone(area.getLowPoint()) && isInZone(area.getHighPoint());
+		return isPointInZone(area.getLowPoint()) && isPointInZone(area.getHighPoint());
 	}
 
 	@Override
@@ -73,13 +73,19 @@ public class AreaZone extends Zone {
 	{
 		if (!worldZone.isPartOfZone(area))
 			return false;
-		return isInZone(area.getLowPoint()) || isInZone(area.getHighPoint());
+		return isPointInZone(area.getLowPoint()) || isPointInZone(area.getHighPoint());
 	}
 
 	@Override
 	public String getName()
 	{
-		return worldZone.toString() + "_" + name;
+		return name;
+	}
+
+	@Override
+	public String toString()
+	{
+		return worldZone.getName() + "_" + name;
 	}
 
 	@Override
@@ -108,6 +114,11 @@ public class AreaZone extends Zone {
 	public AreaBase getArea()
 	{
 		return area;
+	}
+
+	public void setArea(AreaBase area)
+	{
+		this.area = area;
 	}
 
 	public int getPriority()

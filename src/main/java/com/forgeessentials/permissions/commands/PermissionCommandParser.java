@@ -287,33 +287,26 @@ public class PermissionCommandParser {
 	{
 		if (tabCompleteMode)
 			return;
-		PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(ident.getUuid());
+		String fixName = isSuffix ? "suffix" : "prefix";
 		if (args.isEmpty())
 		{
-			if (isSuffix)
-				info(String.format("%s's suffix is %s", ident.getUsernameOrUUID(), playerInfo.getSuffix().isEmpty() ? "empty" : playerInfo.getSuffix()));
-			else
-				info(String.format("%s's prefix is %s", ident.getUsernameOrUUID(), playerInfo.getPrefix().isEmpty() ? "empty" : playerInfo.getPrefix()));
+			String fix = APIRegistry.perms.getServerZone().getPlayerPermission(ident, "fe.internal." + fixName);
+			if (fix == null || fix.isEmpty())
+				fix = "empty";
+			info(String.format("%s's %s is %s", ident.getUsernameOrUUID(), fixName, fix));
 		}
 		else
 		{
 			String fix = args.remove();
 			if (fix.equalsIgnoreCase("clear"))
 			{
-				fix = null;
-				info(String.format("%s's %s cleared", ident.getUsernameOrUUID(), isSuffix ? "suffix" : "prefix"));
+				info(String.format("%s's %s cleared", ident.getUsernameOrUUID(), fixName));
+				APIRegistry.perms.getServerZone().clearPlayerPermission(ident, "fe.internal." + fixName);
 			}
 			else
 			{
-				info(String.format("%s's %s set to %s", ident.getUsernameOrUUID(), isSuffix ? "suffix" : "prefix", fix));
-			}
-			if (isSuffix)
-			{
-				APIRegistry.perms.setPlayerPermissionProperty(ident, "fe.internal.suffix", fix);
-			}
-			else
-			{
-				APIRegistry.perms.setPlayerPermissionProperty(ident, "fe.internal.prefix", fix);
+				info(String.format("%s's %s set to %s", ident.getUsernameOrUUID(), fixName, fix));
+				APIRegistry.perms.getServerZone().setPlayerPermissionProperty(ident, "fe.internal." + fixName, fix);
 			}
 		}
 	}
@@ -333,7 +326,7 @@ public class PermissionCommandParser {
 		info(ident.getUsernameOrUUID() + " permissions:");
 		for (Entry<Zone, Map<String, String>> zone : userPerms.entrySet())
 		{
-			info("Zone #" + zone.getKey().getId() + " " + zone.getKey().getName());
+			info("Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
 			for (Entry<String, String> perm : zone.getValue().entrySet())
 			{
 				info("  " + perm.getKey() + " = " + perm.getValue());
@@ -348,7 +341,7 @@ public class PermissionCommandParser {
 				info("Group " + group);
 				for (Entry<Zone, Map<String, String>> zone : groupPerms.entrySet())
 				{
-					info("Zone #" + zone.getKey().getId() + " " + zone.getKey().getName());
+					info("Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
 					for (Entry<String, String> perm : zone.getValue().entrySet())
 					{
 						info("  " + perm.getKey() + " = " + perm.getValue());

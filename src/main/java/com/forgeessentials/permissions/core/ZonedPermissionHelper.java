@@ -216,7 +216,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	public String getPermission(UserIdent ident, WorldPoint point, WorldArea area, Collection<String> groups, String permissionNode, boolean isProperty)
 	{
 		// Get world zone
-		WorldZone worldZone = getWorldZone(point.getDimension());
+		WorldZone worldZone = getWorldZone(point != null ? point.getDimension() : area.getDimension());
 
 		// Get zones in correct order
 		List<Zone> zones = new ArrayList<Zone>();
@@ -239,13 +239,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	public String getPermission(List<Zone> zones, UserIdent ident, Collection<String> groups, String permissionNode, boolean isProperty)
 	{
-		// Add default group
-		if (groups == null)
-		{
-			groups = new ArrayList<String>();
-		}
-		groups.add(GROUP_DEFAULT);
-
 		// Build node list
 		List<String> nodes = new ArrayList<String>();
 		nodes.add(permissionNode);
@@ -281,18 +274,37 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		}
 
 		// Check group permissions
-		for (String group : groups)
+		// Add default group
+		if (groups != null)
 		{
-			for (String node : nodes)
+			for (String group : groups)
 			{
-				// Check group permissions
-				for (Zone zone : zones)
+				for (String node : nodes)
 				{
-					String result = zone.getGroupPermission(group, node);
-					if (result != null)
+					// Check group permissions
+					for (Zone zone : zones)
 					{
-						return result;
+						String result = zone.getGroupPermission(group, node);
+						if (result != null)
+						{
+							return result;
+						}
 					}
+				}
+			}
+		}
+
+
+		// Check default permissions
+		for (String node : nodes)
+		{
+			// Check group permissions
+			for (Zone zone : zones)
+			{
+				String result = zone.getGroupPermission(GROUP_DEFAULT, node);
+				if (result != null)
+				{
+					return result;
 				}
 			}
 		}
@@ -483,7 +495,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		return getWorldZone(world.provider.dimensionId);
 	}
 
-	protected Zone addZone(Zone zone)
+	public Zone addZone(Zone zone)
 	{
 		zones.put(zone.getId(), zone);
 		return zone;

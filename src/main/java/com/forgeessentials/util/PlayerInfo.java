@@ -29,7 +29,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @SaveableObject
 public class PlayerInfo {
-	
+
 	private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
 
 	// -------------------------------------------------------------------------------------------
@@ -60,9 +60,9 @@ public class PlayerInfo {
 			return selection;
 		}
 	}
-	
+
 	// -------------------------------------------------------------------------------------------
-	
+
 	@UniqueLoadingKey()
 	private final String name;
 
@@ -191,6 +191,13 @@ public class PlayerInfo {
 	public static PlayerInfo getPlayerInfo(EntityPlayer player)
 	{
 		return getPlayerInfo(player.getPersistentID());
+	}
+
+	public static PlayerInfo getPlayerInfo(UserIdent ident)
+	{
+		if (!ident.hasUUID())
+			return null;
+		return getPlayerInfo(ident.getUuid());
 	}
 
 	public static PlayerInfo getPlayerInfo(UUID playerID)
@@ -437,12 +444,10 @@ public class PlayerInfo {
 		this.teleportCooldown = teleportCooldown;
 	}
 
-
 	public WarpPoint getHome()
 	{
 		return home;
 	}
-
 
 	public void setHome(WarpPoint home)
 	{

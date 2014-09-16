@@ -87,7 +87,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 			{
 				File areaPath = new File(worldPath, areaZone.getName());
 				saveAreaZone(areaPath, areaZone);
-				saveZonePermissions(worldPath, worldZone);
+				saveZonePermissions(areaPath, areaZone);
 			}
 		}
 	}
