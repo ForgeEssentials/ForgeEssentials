@@ -23,12 +23,12 @@ public class PermissionEventHandler {
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onZoneChange(PlayerChangedZone event)
 	{
-		String query1 = APIRegistry.perms.getPermissionProperty(new UserIdent(event.entityPlayer), event.beforeZone, "fe.perm.zone.exit");
+		String query1 = APIRegistry.perms.getPermissionProperty(new UserIdent(event.entityPlayer), event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
 		if (query1 != null)
 		{
 			ChatUtils.sendMessage(event.entityPlayer, FunctionHelper.formatColors(query1));
 		}
-		String query2 = APIRegistry.perms.getPermissionProperty(new UserIdent(event.entityPlayer), event.afterZone, "fe.perm.zone.entry");
+		String query2 = APIRegistry.perms.getPermissionProperty(new UserIdent(event.entityPlayer), event.afterZone, FEPermissions.ZONE_ENTRY_MESSAGE);
 		if (query2 != null)
 		{
 			ChatUtils.sendMessage(event.entityPlayer, FunctionHelper.formatColors(query2));

@@ -42,8 +42,6 @@ public abstract class Zone {
 
 	/**
 	 * Gets the unique zone-ID
-	 * 
-	 * @return
 	 */
 	public int getId()
 	{
@@ -54,7 +52,6 @@ public abstract class Zone {
 	 * Checks, whether the player is in the zone.
 	 * 
 	 * @param player
-	 * @return
 	 */
 	public boolean isPlayerInZone(EntityPlayer player)
 	{
@@ -64,38 +61,31 @@ public abstract class Zone {
 	/**
 	 * Checks, whether the player is in the zone.
 	 * 
-	 * @param player
-	 * @return
+	 * @param point
 	 */
 	public abstract boolean isInZone(WorldPoint point);
 
 	/**
 	 * Checks, whether the area is entirely contained within the zone.
 	 * 
-	 * @param player
-	 * @return
+	 * @param point
 	 */
 	public abstract boolean isInZone(WorldArea point);
 
 	/**
 	 * Checks, whether a part of the area is in the zone.
 	 * 
-	 * @param player
-	 * @return
+	 * @param point
 	 */
 	public abstract boolean isPartOfZone(WorldArea point);
 
 	/**
 	 * Returns the name of the zone
-	 * 
-	 * @return
 	 */
 	public abstract String getName();
 
 	/**
 	 * Returns the name of the zone
-	 * 
-	 * @return
 	 */
 	@Override
 	public String toString()
@@ -105,8 +95,6 @@ public abstract class Zone {
 
 	/**
 	 * Get the parent zone
-	 * 
-	 * @return
 	 */
 	public abstract Zone getParent();
 
@@ -117,9 +105,7 @@ public abstract class Zone {
 	// ------------------------------------------------------------
 
 	/**
-	 * Get all groups that have permissions in this zone
-	 * 
-	 * @return
+	 * Get all player permissions as a map
 	 */
 	public Map<UserIdent, PermissionList> getPlayerPermissions()
 	{
@@ -130,7 +116,6 @@ public abstract class Zone {
 	 * Gets the player permissions for the specified player, or null if not present.
 	 * 
 	 * @param ident
-	 * @return
 	 */
 	public PermissionList getPlayerPermissions(UserIdent ident)
 	{
@@ -141,7 +126,6 @@ public abstract class Zone {
 	 * Gets the player permissions for the specified player. If no permission-map is present, a new one is created.
 	 * 
 	 * @param ident
-	 * @return
 	 */
 	public PermissionList getOrCreatePlayerPermissions(UserIdent ident)
 	{
@@ -159,7 +143,6 @@ public abstract class Zone {
 	 * 
 	 * @param ident
 	 * @param permissionNode
-	 * @return
 	 */
 	public String getPlayerPermission(UserIdent ident, String permissionNode)
 	{
@@ -220,7 +203,7 @@ public abstract class Zone {
 	/**
 	 * Set a player permission
 	 * 
-	 * @param group
+	 * @param ident
 	 * @param permissionNode
 	 * @param value
 	 */
@@ -232,7 +215,7 @@ public abstract class Zone {
 	/**
 	 * Clears a player permission
 	 * 
-	 * @param group
+	 * @param ident
 	 * @param permissionNode
 	 */
 	public void clearPlayerPermission(UserIdent ident, String permissionNode)
@@ -280,9 +263,7 @@ public abstract class Zone {
 	// ------------------------------------------------------------
 
 	/**
-	 * Get all groups that have permissions in this zone
-	 * 
-	 * @return
+	 * Get all group permissions as a map
 	 */
 	public Map<String, PermissionList> getGroupPermissions()
 	{
@@ -293,7 +274,6 @@ public abstract class Zone {
 	 * Gets the group permissions for the specified group, or null if not present.
 	 * 
 	 * @param group
-	 * @return
 	 */
 	public PermissionList getGroupPermissions(String group)
 	{
@@ -304,7 +284,6 @@ public abstract class Zone {
 	 * Gets the group permissions for the specified group. If no permission-map is present, a new one is created.
 	 * 
 	 * @param group
-	 * @return
 	 */
 	public PermissionList getOrCreateGroupPermissions(String group)
 	{

@@ -1,18 +1,14 @@
 package com.forgeessentials.api.permissions;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.IPermissionsProvider;
 
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -38,7 +34,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * 
 	 * @param player
 	 * @param permissionNode
-	 * @return
 	 */
 	boolean checkPermission(EntityPlayer player, String permissionNode);
 
@@ -56,16 +51,15 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	/**
 	 * Checks a permission for a player
 	 * 
-	 * @param player
+	 * @param ident
 	 * @param permissionNode
-	 * @return
 	 */
 	boolean checkPermission(UserIdent ident, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player
 	 * 
-	 * @param player
+	 * @param ident
 	 * @param permissionNode
 	 * @return property, if it exists, null otherwise
 	 */
@@ -74,7 +68,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	/**
 	 * Gets a permission-property for a player as integer
 	 * 
-	 * @param player
+	 * @param ident
 	 * @param permissionNode
 	 * @return property, if it exists, null otherwise
 	 */
@@ -85,19 +79,16 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	/**
 	 * Checks a permission for a player at a certain position
 	 * 
-	 * @param player
-	 *            null or player
+	 * @param ident
 	 * @param targetPoint
 	 * @param permissionNode
-	 * @return
 	 */
 	boolean checkPermission(UserIdent ident, WorldPoint targetPoint, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player at a certain position
 	 * 
-	 * @param playernull
-	 *            or player
+	 * @param ident
 	 * @param targetPoint
 	 * @param permissionNode
 	 * @return property, if it exists, null otherwise
@@ -109,19 +100,16 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	/**
 	 * Checks a permission for a player in a certain area
 	 * 
-	 * @param player
-	 *            null or player
+	 * @param ident
 	 * @param targetArea
 	 * @param permissionNode
-	 * @return
 	 */
 	boolean checkPermission(UserIdent ident, WorldArea targetArea, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player in a certain area
 	 * 
-	 * @param playernull
-	 *            or player
+	 * @param ident
 	 * @param targetArea
 	 * @param permissionNode
 	 * @return property, if it exists, null otherwise
@@ -133,19 +121,16 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	/**
 	 * Checks a permission for a player in the specified zone
 	 * 
-	 * @param player
-	 *            null or player
+	 * @param ident
 	 * @param zone
 	 * @param permissionNode
-	 * @return
 	 */
 	boolean checkPermission(UserIdent ident, Zone zone, String permissionNode);
 
 	/**
 	 * Gets a permission-property for a player in the specified zone
 	 * 
-	 * @param playernull
-	 *            or player
+	 * @param ident
 	 * @param zone
 	 * @param permissionNode
 	 * @return property, if it exists, null otherwise
@@ -157,7 +142,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	/**
 	 * Sets a player permission
 	 * 
-	 * @param uuid
+	 * @param ident
 	 * @param permissionNode
 	 * @param value
 	 */
@@ -166,7 +151,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	/**
 	 * Sets a player permission-property
 	 * 
-	 * @param uuid
+	 * @param ident
 	 * @param permissionNode
 	 * @param value
 	 */
@@ -175,7 +160,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	/**
 	 * Sets a group permission
 	 * 
-	 * @param group
+	 * @param group Group name
 	 * @param permissionNode
 	 * @param value
 	 */
@@ -201,16 +186,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	// ---------------------------------------------------------------------------
 
 	/**
-	 * Returns the next free zone-id. NEVER call this method, unless you are really creating a new Zone!
-	 * 
-	 * @return
-	 */
-	// int getNextZoneID();
-
-	/**
 	 * Get all registered zones
-	 * 
-	 * @return
 	 */
 	Collection<Zone> getZones();
 
@@ -229,16 +205,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	Zone getZoneById(String id);
 
 	/**
-	 * Returns the root zone, which has lowest priority and holds the default permissions
-	 * 
-	 * @return
-	 */
-	// RootZone getRootZone();
-
-	/**
 	 * Returns the {@link ServerZone}
-	 * 
-	 * @return
 	 */
 	ServerZone getServerZone();
 
@@ -246,15 +213,13 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * Returns the {@link WorldZone} for the specified world
 	 * 
 	 * @param world
-	 * @return
 	 */
 	WorldZone getWorldZone(World world);
 
 	/**
 	 * Returns the {@link WorldZone} for the specified world
 	 * 
-	 * @param world
-	 * @return
+	 * @param dimensionId
 	 */
 	WorldZone getWorldZone(int dimensionId);
 
@@ -264,7 +229,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * Get zones that cover the point. Result is ordered by priority.
 	 * 
 	 * @param worldPoint
-	 * @return
 	 */
 	List<Zone> getZonesAt(WorldPoint worldPoint);
 
@@ -272,7 +236,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * Get area-zones that cover the point. Result is ordered by priority.
 	 * 
 	 * @param worldPoint
-	 * @return
 	 */
 	List<AreaZone> getAreaZonesAt(WorldPoint worldPoint);
 
@@ -280,7 +243,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * Get zones with the highest priority, that covers the point.
 	 * 
 	 * @param worldPoint
-	 * @return
 	 */
 	Zone getZoneAt(WorldPoint worldPoint);
 
@@ -288,7 +250,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * Get area-zone with the highest priority, that covers the point.
 	 * 
 	 * @param worldPoint
-	 * @return
 	 */
 	Zone getAreaZoneAt(WorldPoint worldPoint);
 
@@ -297,17 +258,17 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	/**
 	 * Checks, if a group exists
 	 * 
-	 * @param string
-	 * @return
+	 * @param groupName
+	 * @return true, if the group exists
 	 */
-	boolean groupExists(String string);
+	boolean groupExists(String groupName);
 	
 	/**
 	 * Create a group
 	 * 
-	 * @param name
+	 * @param groupName
 	 */
-	void createGroup(String name);
+	void createGroup(String groupName);
 
 	/**
 	 * Add a player to a group
@@ -328,16 +289,14 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	/**
 	 * Returns the highest-priority group the the player belongs to.
 	 * 
-	 * @param player
-	 * @return
+	 * @param ident
 	 */
 	String getPrimaryGroup(UserIdent ident);
 
 	/**
 	 * Get all groups the player belongs to, ordered by priority.
 	 * 
-	 * @param player
-	 * @return
+	 * @param ident
 	 */
 	Set<String> getPlayerGroups(UserIdent ident);
 

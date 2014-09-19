@@ -17,6 +17,7 @@ import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandTestPermission;
 import com.forgeessentials.permissions.commands.CommandZone;
 import com.forgeessentials.permissions.core.ConfigPermissions;
+import com.forgeessentials.permissions.core.FEPermissions;
 import com.forgeessentials.permissions.core.PermissionEventHandler;
 import com.forgeessentials.permissions.core.PermissionsListWriter;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
@@ -108,20 +109,17 @@ public class ModulePermissions {
 
 	private void registerPermissions()
 	{
-		PermissionsManager.registerPermission("fe.perm", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.perm.*", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.perm.zone.define", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.perm.zone.redefine.*", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.perm.zone.remove.*", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
-		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.perm.zone", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.perm.zone.setparent", RegisteredPermValue.OP);
+		PermissionsManager.registerPermission(FEPermissions.ZONE_ALL, RegisteredPermValue.OP);
+		PermissionsManager.registerPermission(FEPermissions.ZONE_LIST, RegisteredPermValue.TRUE);
+		PermissionsManager.registerPermission(FEPermissions.ZONE_INFO, RegisteredPermValue.TRUE);
+
+		PermissionsManager.registerPermission(FEPermissions.PERM_ALL, RegisteredPermValue.OP);
+		PermissionsManager.registerPermission(FEPermissions.PERM_LIST, RegisteredPermValue.TRUE);
+		
 		PermissionsManager.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.perm.zone.info.*", RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission("fe.perm.zone.list", RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission("fe.perm.list", RegisteredPermValue.TRUE);
 		PermissionsManager.registerPermission("fe.core.info", RegisteredPermValue.OP);
+		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
+		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
 		// CommandSetChecker.regMCOverrides();
 	}
 

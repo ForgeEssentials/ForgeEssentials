@@ -9,26 +9,24 @@ import java.util.Queue;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.permissions.core.FEPermissions;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WorldPoint;
 
 public class CommandZone extends ForgeEssentialsCommandBase {
 
@@ -48,13 +46,17 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 	public List<String> getCommandAliases()
 	{
 		ArrayList<String> list = new ArrayList<String>();
-		list.add("zn");
+		list.add("area");
 		return list;
 	}
 
 	public void parse(ICommandSender sender, Queue<String> args)
 	{
-		if (!args.isEmpty())
+		if (args.isEmpty())
+		{
+			help(sender);
+		}
+		else
 		{
 			// Get world
 			WorldZone worldZone = null;
@@ -65,50 +67,115 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
 			String arg = args.remove().toLowerCase();
 			switch (arg) {
+			case "help":
+				help(sender);
+				break;
 			case "li":
 			case "list":
 				parseList(sender, worldZone, args);
-				return;
+				break;
 			case "define":
 			case "redefine":
 				parseDefine(sender, worldZone, args, arg.equals("redefine"));
-				return;
+				break;
 			case "delete":
 				parseDelete(sender, worldZone, args);
-				return;
+				break;
+			case "exit":
+			case "entry":
+				parseEntryExitMessage(sender, worldZone, args, arg.equals("entry"));
+				break;
 			default:
+				OutputHandler.chatError(sender, "Unknown command argument");
 				break;
 			}
 		}
-		OutputHandler.chatError(sender, "Usage: /zone <list|set|del>");
 	}
 
+	private AreaZone getZone(WorldZone worldZone, String arg)
+	{
+		try
+		{
+			Zone z = APIRegistry.perms.getZoneById(arg);
+			if (z != null && z instanceof AreaZone)
+				return (AreaZone) z;
+		}
+		catch (NumberFormatException e)
+		{
+		}
+		return worldZone.getAreaZone(arg);
+	}
+	
 	private void parseList(ICommandSender sender, WorldZone worldZone, Queue<String> args)
 	{
-		// TODO: Paged display of areas
+		if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.ZONE_LIST))
+		{
+			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		
+		final int PAGE_SIZE = 12;
+		int limit = 1;
+		if (!args.isEmpty())
+		{
+			try
+			{
+				limit = Integer.parseInt(args.remove());
+			}
+			catch (NumberFormatException e)
+			{
+			}
+		}
+		OutputHandler.chatConfirmation(sender, "List of areas (page #" + limit + "):");
+		limit *= PAGE_SIZE;
 		if (worldZone == null)
 		{
-			OutputHandler.chatConfirmation(sender, "List of areas:");
 			for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
 			{
 				for (AreaZone areaZone : wz.getAreaZones())
 				{
-					OutputHandler.chatConfirmation(sender, "#" + areaZone.getId() + ": " + areaZone.toString());
+					if (limit >= 0)
+					{
+						if (limit <= PAGE_SIZE)
+							OutputHandler.chatConfirmation(sender, "#" + areaZone.getId() + ": " + areaZone.toString());
+						limit--;
+					}
+					else
+					{
+						break;
+					}
 				}
 			}
 		}
 		else
 		{
-			OutputHandler.chatConfirmation(sender, "List of areas:");
 			for (AreaZone areaZone : worldZone.getAreaZones())
 			{
-				OutputHandler.chatConfirmation(sender, "#" + areaZone.getId() + ": " + areaZone.toString());
+				if (limit >= 0)
+				{
+					if (limit <= PAGE_SIZE)
+						OutputHandler.chatConfirmation(sender, "#" + areaZone.getId() + ": " + areaZone.toString());
+					limit--;
+				}
+				else
+				{
+					break;
+				}
 			}
 		}
 	}
 
 	private void parseDefine(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean redefine)
 	{
+		if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.ZONE_DEFINE))
+		{
+			if (!redefine || !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.ZONE_REDEFINE))
+			{
+				OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+				return;
+			}
+		}
+		
 		if (worldZone == null)
 		{
 			throw new CommandException("No world found");
@@ -118,14 +185,14 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 			throw new CommandException("Missing arguments!");
 		}
 		String zoneName = args.remove();
-		AreaZone zone = worldZone.getAreaZone(zoneName);
+		AreaZone zone = getZone(worldZone, zoneName);
 		if (!redefine && zone != null)
 		{
-			throw new CommandException("Area already exists!");
+			throw new CommandException(String.format("Area \"%s\" already exists!", zoneName));
 		}
 		else if (redefine && zone == null)
 		{
-			throw new CommandException("Area does not exist!");
+			throw new CommandException(String.format("Area \"%s\" does not exist!", zoneName));
 		}
 
 		if (args.isEmpty())
@@ -170,6 +237,12 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
 	private void parseDelete(ICommandSender sender, WorldZone worldZone, Queue<String> args)
 	{
+		if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.ZONE_DELETE))
+		{
+			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		
 		if (worldZone == null)
 		{
 			throw new CommandException("No world found");
@@ -180,7 +253,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 		}
 		String zoneName = args.remove();
 
-		AreaZone zone = worldZone.getAreaZone(zoneName);
+		AreaZone zone = getZone(worldZone, zoneName);
 		if (worldZone.removeAreaZone(zoneName))
 		{
 			OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been deleted.", zoneName));
@@ -191,6 +264,42 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 		}
 	}
 
+	private void parseEntryExitMessage(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean isEntry)
+	{
+		if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.ZONE_SETTINGS))
+		{
+			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		
+		if (worldZone == null)
+		{
+			throw new CommandException("No world found");
+		}
+		if (args.isEmpty())
+		{
+			throw new CommandException("Missing arguments!");
+		}
+		String zoneName = args.remove();
+		AreaZone zone = getZone(worldZone, zoneName);
+		if (zone == null)
+		{
+			throw new CommandException(String.format("Area \"%s\" does not exist!", zoneName));
+		}
+
+		if (args.isEmpty())
+		{
+			zone.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE);
+		}
+		else
+		{
+			String msg = StringUtils.join(args);
+			if (msg.equalsIgnoreCase("clear"))
+				msg = null;
+			zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
+		}
+	}
+	
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
@@ -506,13 +615,17 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
 	private void help(ICommandSender sender)
 	{
-		ChatUtils.sendMessage(sender, "/zone list [#page] Lists all zones");
-		ChatUtils.sendMessage(sender, "/zone info <zone|here> Displays information about the zone such as parent, priority, and location");
-		ChatUtils.sendMessage(sender, "/zone <define|redefine|delete> define, redefine or delete a zone.");
-		ChatUtils.sendMessage(sender, "/zone setparent <parentzone> <childzone> Set a zone as a parent of another zone.");
-		ChatUtils
-				.sendMessage(sender,
-						"/zone entry|exit <name> [... message ...] Set the zone entry or exit message to a particular message. Set the message to 'remove' to delete it.");
+		ChatUtils.sendMessage(sender, "/zone list [page]: Lists all zones");
+		ChatUtils.sendMessage(sender, "/zone info <zone>|here: Zone information");
+		ChatUtils.sendMessage(sender, "/zone define|redefine <zone-name>: define or redefine a zone.");
+		ChatUtils.sendMessage(sender, "/zone delete <zone-id>: Delete a zone.");
+		ChatUtils.sendMessage(sender, "/zone entry|exit <zone-id> <message|clear>: Set the zone entry/exit message.");
+	}
+
+	@Override
+	public String getPermissionNode()
+	{
+		return FEPermissions.ZONE;
 	}
 
 	@Override
@@ -521,11 +634,12 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 		return false;
 	}
 
-	@Override
-	public String getPermissionNode()
-	{
-		return "fe.perm.zone";
-	}
+    @Override
+    public boolean canPlayerUseCommand(EntityPlayer player)
+    {
+    	// Always allow - command checks permissions itself
+    	return true;
+    }
 
 	@Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
@@ -563,7 +677,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 	@Override
 	public String getCommandUsage(ICommandSender sender)
 	{
-		return "/zone help";
+		return "/zone: Displays command help";
 	}
 
 	@Override

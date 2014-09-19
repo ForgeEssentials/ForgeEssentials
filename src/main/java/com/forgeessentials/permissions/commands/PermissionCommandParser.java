@@ -2,31 +2,25 @@ package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
-import java.util.UUID;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionContext;
+import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.permissions.ModulePermissions;
-import com.forgeessentials.permissions.core.ZonedPermissionHelper;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.permissions.core.FEPermissions;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldPoint;
 
 public class PermissionCommandParser {
 
@@ -81,12 +75,10 @@ public class PermissionCommandParser {
 	}
 
 	// Variables for auto-complete
-	private static final String[] parseMainArgs = { "user", "group" }; // "export", "promote", "test" };
+	private static final String[] parseMainArgs = { "user", "group", "list" }; // "export", "promote", "test" };
 	private static final String[] parseUserArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "perms", "group" };
 	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "priority", "parent" };
 	private static final String[] parseUserGroupArgs = { "add", "remove" };
-
-	// private static final String[] playergargs = { "set", "add", "remove" };
 
 	private void parseMain()
 	{
@@ -97,23 +89,50 @@ public class PermissionCommandParser {
 		}
 		if (!args.isEmpty())
 		{
+			help();
+		}
+		else
+		{
 			switch (args.remove().toLowerCase()) {
+			case "list":
+				listPermissions();
+				break;
 			case "user":
 				parseUser();
-				return;
+				break;
 			case "group":
 				parseGroup();
-				return;
+				break;
 			default:
+				error("Unknown command argument");
 				break;
 			}
 		}
-		info("Base usage is /p user|group|default.");
-		info("Type one of these for more information.");
+	}
+
+	private void help()
+	{
+		info("/feperm list|user|group: Displays help for the subcommands");
+	}
+
+	private void listPermissions()
+	{
+		if (senderPlayer == null)
+		{
+			error("This command cannot be invoked from console");
+			return;
+		}
+		listUserPermissions(new UserIdent(senderPlayer));
 	}
 
 	private void parseUser()
 	{
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.PERM_USER))
+		{
+			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		
 		if (tabCompleteMode && args.size() == 1)
 		{
 			tabComplete = new ArrayList<String>();
@@ -290,7 +309,7 @@ public class PermissionCommandParser {
 		String fixName = isSuffix ? "suffix" : "prefix";
 		if (args.isEmpty())
 		{
-			String fix = APIRegistry.perms.getServerZone().getPlayerPermission(ident, "fe.internal." + fixName);
+			String fix = APIRegistry.perms.getServerZone().getPlayerPermission(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
 			if (fix == null || fix.isEmpty())
 				fix = "empty";
 			info(String.format("%s's %s is %s", ident.getUsernameOrUUID(), fixName, fix));
@@ -301,12 +320,12 @@ public class PermissionCommandParser {
 			if (fix.equalsIgnoreCase("clear"))
 			{
 				info(String.format("%s's %s cleared", ident.getUsernameOrUUID(), fixName));
-				APIRegistry.perms.getServerZone().clearPlayerPermission(ident, "fe.internal." + fixName);
+				APIRegistry.perms.getServerZone().clearPlayerPermission(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
 			}
 			else
 			{
 				info(String.format("%s's %s set to %s", ident.getUsernameOrUUID(), fixName, fix));
-				APIRegistry.perms.getServerZone().setPlayerPermissionProperty(ident, "fe.internal." + fixName, fix);
+				APIRegistry.perms.getServerZone().setPlayerPermissionProperty(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
 			}
 		}
 	}
@@ -316,6 +335,12 @@ public class PermissionCommandParser {
 		if (tabCompleteMode)
 			return;
 
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.PERM_LIST))
+		{
+			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		
 		Map<Zone, Map<String, String>> userPerms = ModulePermissions.permissionHelper.enumUserPermissions(ident);
 		if (userPerms.isEmpty())
 		{
@@ -413,6 +438,12 @@ public class PermissionCommandParser {
 
 	private void parseGroup()
 	{
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.PERM_GROUP))
+		{
+			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		
 		if (tabCompleteMode && args.size() == 1)
 		{
 			tabComplete = new ArrayList<String>();
@@ -517,7 +548,7 @@ public class PermissionCommandParser {
 		String fixName = isSuffix ? "suffix" : "prefix";
 		if (args.isEmpty())
 		{
-			String fix = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal." + fixName);
+			String fix = APIRegistry.perms.getServerZone().getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
 			if (fix == null || fix.isEmpty())
 				fix = "empty";
 			info(String.format("%s's %s is %s", group, fixName, fix));
@@ -528,12 +559,12 @@ public class PermissionCommandParser {
 			if (fix.equalsIgnoreCase("clear"))
 			{
 				info(String.format("%s's %s cleared", group, fixName));
-				APIRegistry.perms.getServerZone().clearGroupPermission(group, "fe.internal." + fixName);
+				APIRegistry.perms.getServerZone().clearGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
 			}
 			else
 			{
 				info(String.format("%s's %s set to %s", group, fixName, fix));
-				APIRegistry.perms.getServerZone().setGroupPermissionProperty(group, "fe.internal." + fixName, fix);
+				APIRegistry.perms.getServerZone().setGroupPermissionProperty(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
 			}
 		}
 	}

@@ -7,7 +7,6 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
@@ -17,11 +16,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.permissions.core.FEPermissions;
 import com.forgeessentials.permissions.core.IZonePersistenceProvider;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
@@ -67,12 +66,12 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 		// Clear groups from players (leftovers, if player was removed from all groups)
 		for (UserIdent ident : serverZone.getPlayerPermissions().keySet())
 		{
-			serverZone.clearPlayerPermission(ident, "fe.internal.player.groups");
+			serverZone.clearPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
 		}
 		// Add groups to players
 		for (Entry<UserIdent, Set<String>> entry : serverZone.getPlayerGroups().entrySet())
 		{
-			serverZone.setPlayerPermissionProperty(entry.getKey(), "fe.internal.player.groups", StringUtils.join(entry.getValue(), ","));
+			serverZone.setPlayerPermissionProperty(entry.getKey(), FEPermissions.PLAYER_GROUPS, StringUtils.join(entry.getValue(), ","));
 		}
 
 		saveServerZone(path, serverZone);
@@ -172,8 +171,8 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 
 			// Save permissions
 			Properties p = permissionListToProperties(entry.getValue());
-			p.setProperty("fe.internal.player.username", entry.getKey().getUsername() == null ? null : entry.getKey().getUsername());
-			p.setProperty("fe.internal.player.uuid", entry.getKey().getUuid() == null ? null : entry.getKey().getUuid().toString());
+			p.setProperty(FEPermissions.PLAYER_NAME, entry.getKey().getUsername() == null ? null : entry.getKey().getUsername());
+			p.setProperty(FEPermissions.PLAYER_UUID, entry.getKey().getUuid() == null ? null : entry.getKey().getUuid().toString());
 			saveProperties(p, playersPath, userIdentification + PERMISSION_FILE_EXT, comment);
 		}
 		for (Entry<String, PermissionList> entry : zone.getGroupPermissions().entrySet())
@@ -184,7 +183,6 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 
 			// Save permissions
 			Properties p = permissionListToProperties(entry.getValue());
-			// p.setProperty("fe.internal.group.id", 0);
 			saveProperties(p, groupsPath, entry.getKey() + PERMISSION_FILE_EXT, comment);
 		}
 	}
@@ -228,7 +226,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 
 			for (UserIdent ident : serverZone.getPlayerPermissions().keySet())
 			{
-				String groupList = serverZone.getPlayerPermission(ident, "fe.internal.player.groups");
+				String groupList = serverZone.getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
 				if (groupList == null)
 					continue;
 				String[] groups = groupList.split(",");
@@ -345,10 +343,10 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 					p.load(new BufferedInputStream(new FileInputStream(file)));
 
 					// Get player
-					String username = p.getProperty("fe.internal.player.username");
-					String uuid = p.getProperty("fe.internal.player.uuid");
-					p.remove("fe.internal.player.username");
-					p.remove("fe.internal.player.uuid");
+					String username = p.getProperty(FEPermissions.PLAYER_NAME);
+					String uuid = p.getProperty(FEPermissions.PLAYER_UUID);
+					p.remove(FEPermissions.PLAYER_NAME);
+					p.remove(FEPermissions.PLAYER_UUID);
 					if (username == null && uuid == null)
 					{
 						OutputHandler.felog.severe("User identification missing in " + path.getAbsolutePath());

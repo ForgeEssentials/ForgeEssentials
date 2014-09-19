@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.selections.AreaBase;
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
-
-import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * {@link WorldZone} covers the entirety of a world. Third lowest in priority with next being {@link ServerZone}.

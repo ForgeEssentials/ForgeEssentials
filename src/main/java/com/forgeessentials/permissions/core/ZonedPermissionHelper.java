@@ -3,7 +3,6 @@ package com.forgeessentials.permissions.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +10,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.IContext;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -551,7 +549,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	public void createGroup(String name)
 	{
-		setGroupPermission(name, "fe.internal.group", true);
+		setGroupPermission(name, FEPermissions.GROUP, true);
 	}
 
 	@Override

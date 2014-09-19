@@ -1,11 +1,5 @@
 package com.forgeessentials.api.permissions;
 
-import java.util.UUID;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WorldArea;

@@ -6,10 +6,10 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.permissions.core.FEPermissions;
 
 public class CommandPermissions extends ForgeEssentialsCommandBase {
     // Variables for auto-complete
@@ -62,16 +62,14 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return "fe.perm";
+        return FEPermissions.PERM;
     }
 
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-    	return PermissionsManager.checkPermission(player, getPermissionNode());
-    	// TODO: Check why the old code did something differnt from ForgeEssentialsCommandBase
-//        PermResult result = APIRegistry.perms.checkPermResult(player, getPermissionNode(), true);
-//        return result.equals(PermResult.DENY) ? false : true;
+    	// Always allow - command checks permissions itself
+    	return true;
     }
 
     @Override
