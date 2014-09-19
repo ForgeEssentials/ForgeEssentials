@@ -1,9 +1,9 @@
 package com.forgeessentials.playerlogger;
 
-import com.forgeessentials.playerlogger.types.*;
 import com.forgeessentials.playerlogger.types.BlockChangeType;
 import com.forgeessentials.playerlogger.types.BlockChangeType.blockChangeLogCategory;
-import com.forgeessentials.playerlogger.types.PlayerTrackerType.playerTrackerLogCategory;
+import com.forgeessentials.playerlogger.types.CommandType;
+import com.forgeessentials.playerlogger.types.PlayerTrackerType;
 import com.forgeessentials.util.events.PlayerBlockPlace;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -73,7 +73,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new PlayerTrackerType(playerTrackerLogCategory.Login, e.player, "");
+			new PlayerTrackerType(PlayerTrackerType.Types.Login, e.player, "");
 		}
 	}
 
@@ -86,7 +86,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new PlayerTrackerType(playerTrackerLogCategory.Logout, e.player, "");
+			new PlayerTrackerType(PlayerTrackerType.Types.Logout, e.player, "");
 		}
 	}
 
@@ -99,7 +99,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new PlayerTrackerType(playerTrackerLogCategory.ChangedDim, e.player, "");
+			new PlayerTrackerType(PlayerTrackerType.Types.ChangedDim, e.player, "");
 		}
 	}
 
@@ -112,7 +112,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new PlayerTrackerType(playerTrackerLogCategory.Respawn, e.player, "");
+			new PlayerTrackerType(PlayerTrackerType.Types.Respawn, e.player, "");
 		}
 	}
 

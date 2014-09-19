@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class PlayerTrackerType extends LogType {
-    public PlayerTrackerType(playerTrackerLogCategory cat, EntityPlayer player, String extra)
+    public PlayerTrackerType(Types cat, EntityPlayer player, String extra)
     {
         super();
         String ip = ((EntityPlayerMP) player).playerNetServerHandler.netManager.getSocketAddress().toString().substring(1);
@@ -56,7 +56,7 @@ public class PlayerTrackerType extends LogType {
         return "INSERT INTO " + getName() + " (player, category, disciption, time, ip) VALUES (?,?,?,?,?);";
     }
 
-    public enum playerTrackerLogCategory {
+    public enum Types {
         Login, Logout, ChangedDim, Respawn
     }
 }
