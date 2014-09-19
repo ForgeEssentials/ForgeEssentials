@@ -1,10 +1,9 @@
 package com.forgeessentials.playerlogger;
 
-import com.forgeessentials.playerlogger.types.BlockChangeLog;
-import com.forgeessentials.playerlogger.types.BlockChangeLog.blockChangeLogCategory;
-import com.forgeessentials.playerlogger.types.CommandLog;
-import com.forgeessentials.playerlogger.types.PlayerTrackerLog;
-import com.forgeessentials.playerlogger.types.PlayerTrackerLog.playerTrackerLogCategory;
+import com.forgeessentials.playerlogger.types.*;
+import com.forgeessentials.playerlogger.types.BlockChangeType;
+import com.forgeessentials.playerlogger.types.BlockChangeType.blockChangeLogCategory;
+import com.forgeessentials.playerlogger.types.PlayerTrackerType.playerTrackerLogCategory;
 import com.forgeessentials.util.events.PlayerBlockPlace;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -15,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -73,7 +73,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new PlayerTrackerLog(playerTrackerLogCategory.Login, e.player, "");
+			new PlayerTrackerType(playerTrackerLogCategory.Login, e.player, "");
 		}
 	}
 
@@ -86,7 +86,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new PlayerTrackerLog(playerTrackerLogCategory.Logout, e.player, "");
+			new PlayerTrackerType(playerTrackerLogCategory.Logout, e.player, "");
 		}
 	}
 
@@ -99,7 +99,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new PlayerTrackerLog(playerTrackerLogCategory.ChangedDim, e.player, "");
+			new PlayerTrackerType(playerTrackerLogCategory.ChangedDim, e.player, "");
 		}
 	}
 
@@ -112,7 +112,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new PlayerTrackerLog(playerTrackerLogCategory.Respawn, e.player, "");
+			new PlayerTrackerType(playerTrackerLogCategory.Respawn, e.player, "");
 		}
 	}
 
@@ -125,17 +125,17 @@ public class EventLogger {
 			{
 				return;
 			}
-			new CommandLog(e.sender.getCommandSenderName(), getCommand(e));
+			new CommandType(e.sender.getCommandSenderName(), getCommand(e));
 			return;
 		}
 		if (logCommands_Block && !e.isCanceled() && e.sender instanceof TileEntityCommandBlock && side.isServer())
 		{
-			new CommandLog(e.sender.getCommandSenderName(), getCommand(e));
+			new CommandType(e.sender.getCommandSenderName(), getCommand(e));
 			return;
 		}
 		if (logCommands_rest && !e.isCanceled() && side.isServer())
 		{
-			new CommandLog(e.sender.getCommandSenderName(), getCommand(e));
+			new CommandType(e.sender.getCommandSenderName(), getCommand(e));
 			return;
 		}
 	}
@@ -150,7 +150,7 @@ public class EventLogger {
 				return;
 			}
 
-			new BlockChangeLog(blockChangeLogCategory.broke, e.getPlayer(), e.block.getUnlocalizedName() + ":" + e.blockMetadata, e.x, e.y, e.z,
+			new BlockChangeType(blockChangeLogCategory.broke, e.getPlayer(), e.block.getUnlocalizedName() + ":" + e.blockMetadata, e.x, e.y, e.z,
 					e.world.getTileEntity(e.x, e.y, e.z));
 		}
 	}
@@ -179,7 +179,7 @@ public class EventLogger {
 				block = e.getPlayer().inventory.getCurrentItem().getUnlocalizedName() + ":" + e.getPlayer().inventory.getCurrentItem().getItemDamage();
 			}
 
-			new BlockChangeLog(blockChangeLogCategory.placed, e.getPlayer(), block, e.getBlockX(), e.getBlockY(), e.getBlockZ(), null);
+			new BlockChangeType(blockChangeLogCategory.placed, e.getPlayer(), block, e.getBlockX(), e.getBlockY(), e.getBlockZ(), null);
 		}
 	}
 
@@ -205,7 +205,7 @@ public class EventLogger {
 				return;
 			}
 
-			new BlockChangeLog(blockChangeLogCategory.interact, e.entityPlayer, e.entity.worldObj.getBlock(e.x, e.y, e.z).getUnlocalizedName()
+			new BlockChangeType(blockChangeLogCategory.interact, e.entityPlayer, e.entity.worldObj.getBlock(e.x, e.y, e.z).getUnlocalizedName()
 					+ ":" + e.entity.worldObj.getBlockMetadata(e.x, e.y, e.z), e.x, e.y, e.z, e.entity.worldObj.getTileEntity(
 					e.x, e.y, e.z));
 		}
@@ -220,4 +220,10 @@ public class EventLogger {
 		}
 		return command;
 	}
+
+    @SubscribeEvent
+    public void recordDrops(PlayerDropsEvent e)
+    {
+
+    }
 }

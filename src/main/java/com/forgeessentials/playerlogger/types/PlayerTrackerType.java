@@ -7,8 +7,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class PlayerTrackerLog extends LogEntry {
-    public PlayerTrackerLog(playerTrackerLogCategory cat, EntityPlayer player, String extra)
+public class PlayerTrackerType extends LogType {
+    public PlayerTrackerType(playerTrackerLogCategory cat, EntityPlayer player, String extra)
     {
         super();
         String ip = ((EntityPlayerMP) player).playerNetServerHandler.netManager.getSocketAddress().toString().substring(1);
@@ -32,7 +32,7 @@ public class PlayerTrackerLog extends LogEntry {
         }
     }
 
-    public PlayerTrackerLog()
+    public PlayerTrackerType()
     {
         super();
     }

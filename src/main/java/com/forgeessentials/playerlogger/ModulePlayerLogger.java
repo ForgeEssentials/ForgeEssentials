@@ -1,22 +1,5 @@
 package com.forgeessentials.playerlogger;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-
-import com.forgeessentials.playerlogger.types.BlockChangeLog;
-import com.forgeessentials.playerlogger.types.CommandLog;
-import com.forgeessentials.playerlogger.types.LogEntry;
-import com.forgeessentials.playerlogger.types.PlayerTrackerLog;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -27,12 +10,23 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ServerStop;
 import com.forgeessentials.playerlogger.rollback.CommandPl;
 import com.forgeessentials.playerlogger.rollback.CommandRollback;
 import com.forgeessentials.playerlogger.rollback.EventHandler;
+import com.forgeessentials.playerlogger.types.BlockChangeType;
+import com.forgeessentials.playerlogger.types.CommandType;
+import com.forgeessentials.playerlogger.types.LogType;
+import com.forgeessentials.playerlogger.types.PlayerTrackerType;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
 import com.forgeessentials.util.selections.WorldPoint;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, configClass = ConfigPlayerLogger.class)
 public class ModulePlayerLogger {
@@ -46,13 +40,13 @@ public class ModulePlayerLogger {
     public static boolean ragequitOn;
     public static boolean enable = false;
     public static EventLogger eLogger;
-    public static HashSet<LogEntry> logTypes = new HashSet<LogEntry>();
+    public static HashSet<LogType> logTypes = new HashSet<LogType>();
 
     static
     {
-        logTypes.add(new PlayerTrackerLog());
-        logTypes.add(new CommandLog());
-        logTypes.add(new BlockChangeLog());
+        logTypes.add(new PlayerTrackerType());
+        logTypes.add(new CommandType());
+        logTypes.add(new BlockChangeType());
     }
 
     private static Connection connection;
@@ -90,9 +84,9 @@ public class ModulePlayerLogger {
         }
     }
 
-    public static ArrayList<BlockChange> getBlockChangesWithinParameters(String username, boolean undo, int timeBack, WorldPoint p, int rad)
+    public static ArrayList<com.forgeessentials.playerlogger.BlockChange> getBlockChangesWithinParameters(String username, boolean undo, int timeBack, WorldPoint p, int rad)
     {
-        ArrayList<BlockChange> data = new ArrayList<BlockChange>();
+        ArrayList<com.forgeessentials.playerlogger.BlockChange> data = new ArrayList<com.forgeessentials.playerlogger.BlockChange>();
         try
         {
             Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
@@ -130,8 +124,8 @@ public class ModulePlayerLogger {
 
             while (rs.next())
             {
-                data.add(new BlockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"),
-                        BlockChangeLog.blockChangeLogCategory.valueOf(rs.getString("category")).ordinal(), rs.getString("block"), rs.getBlob("te")));
+                data.add(new com.forgeessentials.playerlogger.BlockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"),
+                        BlockChangeType.blockChangeLogCategory.valueOf(rs.getString("category")).ordinal(), rs.getString("block"), rs.getBlob("te")));
             }
 
             rs.close();
@@ -199,7 +193,7 @@ public class ModulePlayerLogger {
 			 * s.execute("DROP TABLE IF EXISTS " + type.getName()); } }
 			 */
 
-            for (LogEntry type : logTypes)
+            for (LogType type : logTypes)
             {
                 s.execute(type.getTableCreateSQL());
             }
