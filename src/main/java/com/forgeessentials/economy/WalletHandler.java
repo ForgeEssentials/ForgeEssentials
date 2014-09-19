@@ -72,7 +72,7 @@ public class WalletHandler implements IEconManager {
         Wallet wallet = (Wallet) DataStorageManager.getReccomendedDriver().loadObject(con, event.player.getUniqueID().toString());
         if (wallet == null)
         {
-            wallet = new Wallet(event.player, ModuleEconomy.startbuget);
+            wallet = new Wallet(event.player, ModuleEconomy.startbudget);
         }
         wallets.put(event.player.getUniqueID(), wallet);
     }
