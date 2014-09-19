@@ -14,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -31,6 +30,7 @@ public class EventLogger {
 	public static boolean logCommands_Player = true;
 	public static boolean logCommands_Block = true;
 	public static boolean logCommands_rest = true;
+    public static boolean logDeathDrops = true;
 	public static boolean BlockChange_WhiteList_Use = false;
 	public static ArrayList<Integer> BlockChange_WhiteList = new ArrayList<Integer>();
 	public static ArrayList<Integer> BlockChange_BlackList = new ArrayList<Integer>();
@@ -220,10 +220,4 @@ public class EventLogger {
 		}
 		return command;
 	}
-
-    @SubscribeEvent
-    public void recordDrops(PlayerDropsEvent e)
-    {
-
-    }
 }
