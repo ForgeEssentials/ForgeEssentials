@@ -1,44 +1,20 @@
 package com.forgeessentials.core.moduleLauncher;
 
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule.*;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.modules.*;
+import com.google.common.base.Throwables;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
+import cpw.mods.fml.common.event.*;
+import net.minecraft.command.ICommandSender;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
-
-import net.minecraft.command.ICommandSender;
-
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule.Config;
-import com.forgeessentials.core.moduleLauncher.FEModule.Container;
-import com.forgeessentials.core.moduleLauncher.FEModule.DummyConfig;
-import com.forgeessentials.core.moduleLauncher.FEModule.Init;
-import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
-import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
-import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
-import com.forgeessentials.core.moduleLauncher.FEModule.PostInit;
-import com.forgeessentials.core.moduleLauncher.FEModule.PreInit;
-import com.forgeessentials.core.moduleLauncher.FEModule.Reload;
-import com.forgeessentials.core.moduleLauncher.FEModule.ServerInit;
-import com.forgeessentials.core.moduleLauncher.FEModule.ServerPostInit;
-import com.forgeessentials.core.moduleLauncher.FEModule.ServerStop;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModulePostInitEvent;
-import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
-import com.google.common.base.Throwables;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 @SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable {

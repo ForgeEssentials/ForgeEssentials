@@ -1,10 +1,15 @@
 package com.forgeessentials.playerlogger;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.management.RuntimeErrorException;
-
+import com.forgeessentials.playerlogger.types.BlockChangeType;
+import com.forgeessentials.playerlogger.types.BlockChangeType.blockChangeLogCategory;
+import com.forgeessentials.playerlogger.types.CommandType;
+import com.forgeessentials.playerlogger.types.PlayerTrackerType;
+import com.forgeessentials.util.events.PlayerBlockPlace;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
@@ -13,19 +18,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.playerlogger.types.blockChangeLog;
-import com.forgeessentials.playerlogger.types.blockChangeLog.blockChangeLogCategory;
-import com.forgeessentials.playerlogger.types.commandLog;
-import com.forgeessentials.playerlogger.types.playerTrackerLog;
-import com.forgeessentials.playerlogger.types.playerTrackerLog.playerTrackerLogCategory;
-import com.forgeessentials.util.events.PlayerBlockPlace;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.relauncher.Side;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventLogger {
 	public static boolean logPlayerChangedDimension = true;
@@ -36,6 +30,7 @@ public class EventLogger {
 	public static boolean logCommands_Player = true;
 	public static boolean logCommands_Block = true;
 	public static boolean logCommands_rest = true;
+    public static boolean logDeathDrops = true;
 	public static boolean BlockChange_WhiteList_Use = false;
 	public static ArrayList<Integer> BlockChange_WhiteList = new ArrayList<Integer>();
 	public static ArrayList<Integer> BlockChange_BlackList = new ArrayList<Integer>();
@@ -78,7 +73,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new playerTrackerLog(playerTrackerLogCategory.Login, e.player, "");
+			new PlayerTrackerType(PlayerTrackerType.Types.Login, e.player, "");
 		}
 	}
 
@@ -91,7 +86,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new playerTrackerLog(playerTrackerLogCategory.Logout, e.player, "");
+			new PlayerTrackerType(PlayerTrackerType.Types.Logout, e.player, "");
 		}
 	}
 
@@ -104,7 +99,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new playerTrackerLog(playerTrackerLogCategory.ChangedDim, e.player, "");
+			new PlayerTrackerType(PlayerTrackerType.Types.ChangedDim, e.player, "");
 		}
 	}
 
@@ -117,7 +112,7 @@ public class EventLogger {
 			{
 				return;
 			}
-			new playerTrackerLog(playerTrackerLogCategory.Respawn, e.player, "");
+			new PlayerTrackerType(PlayerTrackerType.Types.Respawn, e.player, "");
 		}
 	}
 
@@ -130,17 +125,17 @@ public class EventLogger {
 			{
 				return;
 			}
-			new commandLog(e.sender.getCommandSenderName(), getCommand(e));
+			new CommandType(e.sender.getCommandSenderName(), getCommand(e));
 			return;
 		}
 		if (logCommands_Block && !e.isCanceled() && e.sender instanceof TileEntityCommandBlock && side.isServer())
 		{
-			new commandLog(e.sender.getCommandSenderName(), getCommand(e));
+			new CommandType(e.sender.getCommandSenderName(), getCommand(e));
 			return;
 		}
 		if (logCommands_rest && !e.isCanceled() && side.isServer())
 		{
-			new commandLog(e.sender.getCommandSenderName(), getCommand(e));
+			new CommandType(e.sender.getCommandSenderName(), getCommand(e));
 			return;
 		}
 	}
@@ -155,7 +150,7 @@ public class EventLogger {
 				return;
 			}
 
-			new blockChangeLog(blockChangeLogCategory.broke, e.getPlayer(), e.block.getUnlocalizedName() + ":" + e.blockMetadata, e.x, e.y, e.z,
+			new BlockChangeType(blockChangeLogCategory.broke, e.getPlayer(), e.block.getUnlocalizedName() + ":" + e.blockMetadata, e.x, e.y, e.z,
 					e.world.getTileEntity(e.x, e.y, e.z));
 		}
 	}
@@ -184,7 +179,7 @@ public class EventLogger {
 				block = e.getPlayer().inventory.getCurrentItem().getUnlocalizedName() + ":" + e.getPlayer().inventory.getCurrentItem().getItemDamage();
 			}
 
-			new blockChangeLog(blockChangeLogCategory.placed, e.getPlayer(), block, e.getBlockX(), e.getBlockY(), e.getBlockZ(), null);
+			new BlockChangeType(blockChangeLogCategory.placed, e.getPlayer(), block, e.getBlockX(), e.getBlockY(), e.getBlockZ(), null);
 		}
 	}
 
@@ -210,7 +205,7 @@ public class EventLogger {
 				return;
 			}
 
-			new blockChangeLog(blockChangeLogCategory.interact, e.entityPlayer, e.entity.worldObj.getBlock(e.x, e.y, e.z).getUnlocalizedName()
+			new BlockChangeType(blockChangeLogCategory.interact, e.entityPlayer, e.entity.worldObj.getBlock(e.x, e.y, e.z).getUnlocalizedName()
 					+ ":" + e.entity.worldObj.getBlockMetadata(e.x, e.y, e.z), e.x, e.y, e.z, e.entity.worldObj.getTileEntity(
 					e.x, e.y, e.z));
 		}

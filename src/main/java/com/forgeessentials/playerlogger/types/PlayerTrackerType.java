@@ -1,15 +1,14 @@
 package com.forgeessentials.playerlogger.types;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.playerlogger.ModulePlayerLogger;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public class playerTrackerLog extends logEntry {
-    public playerTrackerLog(playerTrackerLogCategory cat, EntityPlayer player, String extra)
+public class PlayerTrackerType extends LogType {
+    public PlayerTrackerType(Types cat, EntityPlayer player, String extra)
     {
         super();
         String ip = ((EntityPlayerMP) player).playerNetServerHandler.netManager.getSocketAddress().toString().substring(1);
@@ -33,7 +32,7 @@ public class playerTrackerLog extends logEntry {
         }
     }
 
-    public playerTrackerLog()
+    public PlayerTrackerType()
     {
         super();
     }
@@ -57,7 +56,7 @@ public class playerTrackerLog extends logEntry {
         return "INSERT INTO " + getName() + " (player, category, disciption, time, ip) VALUES (?,?,?,?,?);";
     }
 
-    public enum playerTrackerLogCategory {
+    public enum Types {
         Login, Logout, ChangedDim, Respawn
     }
 }

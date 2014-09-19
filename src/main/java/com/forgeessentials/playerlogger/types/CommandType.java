@@ -5,8 +5,8 @@ import java.sql.SQLException;
 
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 
-public class commandLog extends logEntry {
-    public commandLog(String sender, String command)
+public class CommandType extends LogType {
+    public CommandType(String sender, String command)
     {
         super();
 
@@ -27,7 +27,7 @@ public class commandLog extends logEntry {
 
     }
 
-    public commandLog()
+    public CommandType()
     {
         super();
     }
