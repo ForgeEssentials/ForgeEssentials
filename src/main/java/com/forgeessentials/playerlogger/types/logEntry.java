@@ -3,10 +3,10 @@ package com.forgeessentials.playerlogger.types;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public abstract class logEntry {
+public abstract class LogEntry {
     public Timestamp time;
 
-    public logEntry()
+    public LogEntry()
     {
         Date date = new Date();
         time = new Timestamp(date.getTime());

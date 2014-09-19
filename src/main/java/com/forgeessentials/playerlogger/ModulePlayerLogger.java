@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 
+import com.forgeessentials.playerlogger.types.BlockChangeLog;
+import com.forgeessentials.playerlogger.types.CommandLog;
+import com.forgeessentials.playerlogger.types.LogEntry;
+import com.forgeessentials.playerlogger.types.PlayerTrackerLog;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -23,10 +27,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ServerStop;
 import com.forgeessentials.playerlogger.rollback.CommandPl;
 import com.forgeessentials.playerlogger.rollback.CommandRollback;
 import com.forgeessentials.playerlogger.rollback.EventHandler;
-import com.forgeessentials.playerlogger.types.blockChangeLog;
-import com.forgeessentials.playerlogger.types.commandLog;
-import com.forgeessentials.playerlogger.types.logEntry;
-import com.forgeessentials.playerlogger.types.playerTrackerLog;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
@@ -46,13 +46,13 @@ public class ModulePlayerLogger {
     public static boolean ragequitOn;
     public static boolean enable = false;
     public static EventLogger eLogger;
-    public static HashSet<logEntry> logTypes = new HashSet<logEntry>();
+    public static HashSet<LogEntry> logTypes = new HashSet<LogEntry>();
 
     static
     {
-        logTypes.add(new playerTrackerLog());
-        logTypes.add(new commandLog());
-        logTypes.add(new blockChangeLog());
+        logTypes.add(new PlayerTrackerLog());
+        logTypes.add(new CommandLog());
+        logTypes.add(new BlockChangeLog());
     }
 
     private static Connection connection;
@@ -131,7 +131,7 @@ public class ModulePlayerLogger {
             while (rs.next())
             {
                 data.add(new BlockChange(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"), rs.getInt("dim"),
-                        blockChangeLog.blockChangeLogCategory.valueOf(rs.getString("category")).ordinal(), rs.getString("block"), rs.getBlob("te")));
+                        BlockChangeLog.blockChangeLogCategory.valueOf(rs.getString("category")).ordinal(), rs.getString("block"), rs.getBlob("te")));
             }
 
             rs.close();
@@ -199,7 +199,7 @@ public class ModulePlayerLogger {
 			 * s.execute("DROP TABLE IF EXISTS " + type.getName()); } }
 			 */
 
-            for (logEntry type : logTypes)
+            for (LogEntry type : logTypes)
             {
                 s.execute(type.getTableCreateSQL());
             }

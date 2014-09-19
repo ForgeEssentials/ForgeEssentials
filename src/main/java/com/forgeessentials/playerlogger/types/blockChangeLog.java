@@ -13,8 +13,8 @@ import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Charsets;
 
-public class blockChangeLog extends logEntry {
-    public blockChangeLog(blockChangeLogCategory cat, EntityPlayer player, String block, int X, int Y, int Z, TileEntity te)
+public class BlockChangeLog extends LogEntry {
+    public BlockChangeLog(blockChangeLogCategory cat, EntityPlayer player, String block, int X, int Y, int Z, TileEntity te)
     {
         super();
         SerialBlob teBlob = null;
@@ -57,7 +57,7 @@ public class blockChangeLog extends logEntry {
         }
     }
 
-    public blockChangeLog()
+    public BlockChangeLog()
     {
         super();
     }
