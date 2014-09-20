@@ -23,9 +23,6 @@ import com.forgeessentials.util.selections.WorldPoint;
  */
 public abstract class Zone {
 
-	/**
-	 * {@link PermissionList} class is used to allow data API retrieving generics attributes.
-	 */
 	public class PermissionList extends HashMap<String, String> {
 	}
 
@@ -99,6 +96,11 @@ public abstract class Zone {
 	public abstract Zone getParent();
 
 	public abstract ServerZone getServerZone();
+
+	public void setDirty() {
+		if (getServerZone() != null && getServerZone().getRootZone() != null)
+			getServerZone().getRootZone().getPermissionHelper().setDirty();;
+	}
 	
 	// ------------------------------------------------------------
 	// -- Player permissions
@@ -197,6 +199,7 @@ public abstract class Zone {
 			getServerZone().registerPlayer(ident);
 			PermissionList map = getOrCreatePlayerPermissions(ident);
 			map.put(permissionNode, value);
+			setDirty();
 		}
 	}
 
@@ -343,6 +346,7 @@ public abstract class Zone {
 		{
 			PermissionList map = getOrCreateGroupPermissions(group);
 			map.put(permissionNode, value);
+			setDirty();
 		}
 	}
 

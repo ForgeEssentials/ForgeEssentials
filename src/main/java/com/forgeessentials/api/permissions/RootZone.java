@@ -12,10 +12,13 @@ import com.forgeessentials.util.selections.WorldPoint;
 public class RootZone extends Zone {
 
 	private ServerZone serverZone;
+	
+	private IPermissionsHelper permissionHelper;
 
-	public RootZone()
+	public RootZone(IPermissionsHelper permissionHelper)
 	{
 		super(0);
+		this.permissionHelper = permissionHelper;
 	}
 
 	@Override
@@ -59,6 +62,12 @@ public class RootZone extends Zone {
 		this.serverZone = serverZone;
 		if (serverZone != null)
 			serverZone.setRootZone(this);
+	}
+
+
+	public IPermissionsHelper getPermissionHelper()
+	{
+		return permissionHelper;
 	}
 
 }

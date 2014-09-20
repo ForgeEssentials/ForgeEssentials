@@ -117,6 +117,7 @@ public class WorldZone extends Zone {
 	void addAreaZone(AreaZone areaZone)
 	{
 		areaZones.add(areaZone);
+		setDirty();
 	}
 
 }

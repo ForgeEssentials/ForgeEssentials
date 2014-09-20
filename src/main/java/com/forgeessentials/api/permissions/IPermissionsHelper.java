@@ -28,6 +28,17 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	static final String PERMISSION_TRUE = "true";
 
 	// ---------------------------------------------------------------------------
+	// -- Persistence
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Marks the permission storage as dirty, so it will be persisted as soon as possible.
+	 */
+	void setDirty();
+
+	// ---------------------------------------------------------------------------
+	// -- Permissions
+	// ---------------------------------------------------------------------------
 
 	/**
 	 * Checks a permission for a player

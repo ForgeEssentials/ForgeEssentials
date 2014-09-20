@@ -88,12 +88,12 @@ public class ServerZone extends Zone {
 		return this;
 	}
 
-	// ------------------------------------------------------------
-
 	public RootZone getRootZone()
 	{
 		return rootZone;
 	}
+	
+	// ------------------------------------------------------------
 
 	public Map<Integer, WorldZone> getWorldZones()
 	{
@@ -103,6 +103,7 @@ public class ServerZone extends Zone {
 	public void addWorldZone(WorldZone zone)
 	{
 		worldZones.put(zone.getDimensionID(), zone);
+		setDirty();
 	}
 
 	public int getNextZoneID()
@@ -148,6 +149,7 @@ public class ServerZone extends Zone {
 			playerGroups.put(ident, groupSet);
 		}
 		groupSet.add(group);
+		setDirty();
 	}
 
 	public void removePlayerFromGroup(UserIdent ident, String group)
@@ -155,6 +157,7 @@ public class ServerZone extends Zone {
 		Set<String> groupSet = playerGroups.get(ident);
 		if (groupSet != null)
 			groupSet.remove(group);
+		setDirty();
 	}
 
 	public Set<String> getPlayerGroups(UserIdent ident)

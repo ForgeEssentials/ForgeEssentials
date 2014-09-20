@@ -104,7 +104,7 @@ public class ModulePermissions {
 	{
 		autoPromoteManager.stop();
 		permissionHelper.save();
-		permissionHelper.clear();
+		// permissionHelper.clear();
 	}
 
 	private void registerPermissions()

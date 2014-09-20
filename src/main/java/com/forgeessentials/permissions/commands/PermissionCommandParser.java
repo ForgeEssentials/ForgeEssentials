@@ -16,6 +16,7 @@ import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.permissions.core.FEPermissions;
@@ -87,7 +88,7 @@ public class PermissionCommandParser {
 			tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseMainArgs);
 			return;
 		}
-		if (!args.isEmpty())
+		if (args.isEmpty())
 		{
 			help();
 		}
@@ -341,14 +342,9 @@ public class PermissionCommandParser {
 			return;
 		}
 		
-		Map<Zone, Map<String, String>> userPerms = ModulePermissions.permissionHelper.enumUserPermissions(ident);
-		if (userPerms.isEmpty())
-		{
-			info(ident.getUsernameOrUUID() + " has no individual permissions");
-			return;
-		}
-
 		info(ident.getUsernameOrUUID() + " permissions:");
+		
+		Map<Zone, Map<String, String>> userPerms = ModulePermissions.permissionHelper.enumUserPermissions(ident);
 		for (Entry<Zone, Map<String, String>> zone : userPerms.entrySet())
 		{
 			info("Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
@@ -360,16 +356,16 @@ public class PermissionCommandParser {
 
 		for (String group : APIRegistry.perms.getPlayerGroups(ident))
 		{
-			Map<Zone, Map<String, String>> groupPerms = ModulePermissions.permissionHelper.enumGroupPermissions(group);
+			Map<Zone, Map<String, String>> groupPerms = ModulePermissions.permissionHelper.enumGroupPermissions(group, false);
 			if (!groupPerms.isEmpty())
 			{
 				info("Group " + group);
 				for (Entry<Zone, Map<String, String>> zone : groupPerms.entrySet())
 				{
-					info("Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+					info("  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
 					for (Entry<String, String> perm : zone.getValue().entrySet())
 					{
-						info("  " + perm.getKey() + " = " + perm.getValue());
+						info("    " + perm.getKey() + " = " + perm.getValue());
 					}
 				}
 			}

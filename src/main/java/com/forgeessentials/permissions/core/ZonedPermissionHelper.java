@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -15,12 +17,14 @@ import net.minecraftforge.permissions.IContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WorldArea;
@@ -42,38 +46,42 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private IZonePersistenceProvider persistenceProvider;
 
+	private Timer persistenceTimer;
+
+	private boolean dirty;
+
 	// ------------------------------------------------------------
 
 	public ZonedPermissionHelper()
 	{
 		FMLCommonHandler.instance().bus().register(this);
 
-		rootZone = new RootZone();
-		clear();
+		rootZone = new RootZone(this);
+
+		addZone(rootZone);
+		addZone(new ServerZone(rootZone));
 	}
 
 	// ------------------------------------------------------------
 	// -- Persistence
 	// ------------------------------------------------------------
 
-	public void clear()
-	{
-		zones.clear();
-		addZone(rootZone);
-		addZone(new ServerZone(rootZone));
-
-		// for (World world : DimensionManager.getWorlds())
-		// {
-		// getWorldZone(world);
-		// }
-
-		// getServerZone().setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", false);
-		// getServerZone().setGroupPermission(DEFAULT_GROUP, "fe.commands.time", true);
-		//
-		// WorldZone world0 = getWorldZone(0);
-		// world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.gamemode", true);
-		// world0.setGroupPermission(DEFAULT_GROUP, "fe.commands.time", false);
-	}
+	class PersistenceTask extends TimerTask {
+		@Override
+		public void run()
+		{
+			if (persistenceProvider == null)
+				return;
+			if (dirty)
+			{
+				save();
+			}
+			else
+			{
+				// TODO: Detect manual changes to persistence backend
+			}
+		}
+	};
 
 	public void setPersistenceProvider(IZonePersistenceProvider persistenceProvider)
 	{
@@ -82,8 +90,10 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	public void save()
 	{
+		OutputHandler.felog.info("Saving permissions...");
 		if (persistenceProvider != null)
 			persistenceProvider.save(rootZone.getServerZone());
+		dirty = false;
 	}
 
 	public boolean load()
@@ -108,10 +118,25 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 						addZone(areaZone);
 					}
 				}
+				dirty = false;
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public boolean isDirty()
+	{
+		return dirty;
+	}
+
+	public void setDirty()
+	{
+		this.dirty = true;
+		if (persistenceTimer != null)
+			persistenceTimer.cancel();
+		persistenceTimer = new Timer("permission persistence timer", true);
+		persistenceTimer.schedule(new PersistenceTask(), 2000);
 	}
 
 	// ------------------------------------------------------------
@@ -169,11 +194,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		return result;
 	}
 
-	public Map<Zone, Map<String, String>> enumGroupPermissions(String group)
+	public Map<Zone, Map<String, String>> enumGroupPermissions(String group, boolean enumRootPermissions)
 	{
 		Map<Zone, Map<String, String>> result = new HashMap<Zone, Map<String, String>>();
 		for (Zone zone : zones.values())
 		{
+			if (!enumRootPermissions && zone instanceof RootZone)
+				continue;
 			if (zone.getGroupPermissions(group) != null)
 			{
 				Map<String, String> zonePerms = new TreeMap<String, String>();
@@ -291,7 +318,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 				}
 			}
 		}
-
 
 		// Check default permissions
 		for (String node : nodes)
@@ -550,6 +576,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	public void createGroup(String name)
 	{
 		setGroupPermission(name, FEPermissions.GROUP, true);
+		setDirty();
 	}
 
 	@Override
@@ -613,8 +640,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public boolean checkPermission(UserIdent ident, String permissionNode)
 	{
-		return checkPermission(getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null, getPlayerGroups(ident),
-				permissionNode, false));
+		return checkPermission(getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null, getPlayerGroups(ident), permissionNode,
+				false));
 	}
 
 	@Override
