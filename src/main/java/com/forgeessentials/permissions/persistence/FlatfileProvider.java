@@ -238,7 +238,13 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 
 			int maxId = 2;
 
-			for (File worldPath : path.listFiles(directoryFilter))
+			File[] worldDirs = path.listFiles(directoryFilter);
+			if (worldDirs == null)
+			{
+				OutputHandler.felog.severe("Error loading permissions: invalid path");
+				return null;
+			}
+			for (File worldPath : worldDirs)
 			{
 				try
 				{
