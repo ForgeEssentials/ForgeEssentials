@@ -46,7 +46,7 @@ public class Plot extends WorldArea{
     }
 
     @SaveableObject.Reconstructor
-    public Plot reconstruct(IReconstructData tag)
+    public static Plot reconstruct(IReconstructData tag)
     {
         Point high = (Point) tag.getFieldValue("high");
         Point low = (Point) tag.getFieldValue("low");
