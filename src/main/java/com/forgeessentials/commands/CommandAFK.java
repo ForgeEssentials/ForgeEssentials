@@ -74,7 +74,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
             ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    String.format(inMessage, afkData.player.getPersistentID()));
+                    String.format(inMessage, afkData.player.getDisplayName()));
         }
         else
         {
@@ -91,7 +91,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
             ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    String.format(outMessage, afkData.player.getPersistentID()));
+                    String.format(outMessage, afkData.player.getDisplayName()));
         }
         else
         {
