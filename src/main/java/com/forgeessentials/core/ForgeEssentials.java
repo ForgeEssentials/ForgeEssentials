@@ -15,6 +15,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.HelpFixer;
 import com.forgeessentials.core.commands.selections.CommandDeselect;
 import com.forgeessentials.core.commands.selections.CommandExpand;
+import com.forgeessentials.core.commands.selections.CommandExpandY;
 import com.forgeessentials.core.commands.selections.CommandPos;
 import com.forgeessentials.core.commands.selections.CommandWand;
 import com.forgeessentials.core.commands.selections.WandController;
@@ -171,6 +172,7 @@ public class ForgeEssentials {
             commands.add(new CommandWand());
             commands.add(new CommandDeselect());
             commands.add(new CommandExpand());
+            commands.add(new CommandExpandY());
         }
 
         for (ForgeEssentialsCommandBase command : commands)

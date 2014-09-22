@@ -227,7 +227,6 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "//expand [direction] <number of blocks to expand> Expands the currently selected area.";
     }
 
