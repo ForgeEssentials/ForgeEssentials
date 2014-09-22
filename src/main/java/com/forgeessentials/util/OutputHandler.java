@@ -2,7 +2,10 @@ package com.forgeessentials.util;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentStyle;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +23,19 @@ public final class OutputHandler {
     }
 
     /**
+     * outputs a message in bright green to the chat box of the given player.
+     *
+     * @param msg    the message to be chatted
+     * @param player player to chat to.
+     */
+    public static void chatColored(ICommandSender sender, String msg, EnumChatFormatting color)
+    {
+    	ChatComponentText cmsg = new ChatComponentText(FunctionHelper.formatColors(msg));
+    	cmsg.getChatStyle().setColor(color);
+    	sender.addChatMessage(cmsg);
+    }
+
+    /**
      * outputs a message in red text to the chat box of the given player.
      *
      * @param msg    the message to be chatted
@@ -27,14 +43,7 @@ public final class OutputHandler {
      */
     public static void chatError(ICommandSender sender, String msg)
     {
-        if (sender instanceof EntityPlayer)
-        {
-            ChatUtils.sendMessage(sender, EnumChatFormatting.RED + FunctionHelper.formatColors(msg));
-        }
-        else
-        {
-            ChatUtils.sendMessage(sender, FunctionHelper.formatColors(msg));
-        }
+    	chatColored(sender, msg, EnumChatFormatting.RED);
     }
 
     /**
@@ -45,14 +54,7 @@ public final class OutputHandler {
      */
     public static void chatConfirmation(ICommandSender sender, String msg)
     {
-        if (sender instanceof EntityPlayer)
-        {
-            ChatUtils.sendMessage(sender, EnumChatFormatting.GREEN + FunctionHelper.formatColors(msg));
-        }
-        else
-        {
-            ChatUtils.sendMessage(sender, FunctionHelper.formatColors(msg));
-        }
+    	chatColored(sender, msg, EnumChatFormatting.GREEN);
     }
 
     /**
@@ -63,14 +65,7 @@ public final class OutputHandler {
      */
     public static void chatWarning(ICommandSender sender, String msg)
     {
-        if (sender instanceof EntityPlayer)
-        {
-            ChatUtils.sendMessage(sender, EnumChatFormatting.YELLOW + FunctionHelper.formatColors(msg));
-        }
-        else
-        {
-            ChatUtils.sendMessage(sender, FunctionHelper.formatColors(msg));
-        }
+    	chatColored(sender, msg, EnumChatFormatting.YELLOW);
     }
 
     /**

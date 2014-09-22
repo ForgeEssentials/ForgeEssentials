@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,9 +15,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.OutputHandler;
@@ -27,6 +26,13 @@ import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldPoint;
 
 public class PermissionCommandParser {
+
+	public static final String PERM = "fe.perm";
+	public static final String PERM_ALL = PERM + ".*";
+	public static final String PERM_LIST = PERM + ".list";
+	public static final String PERM_TEST = PERM + ".test";
+	public static final String PERM_USER = PERM + ".user";
+	public static final String PERM_GROUP = PERM + ".group";
 
 	enum PermissionAction
 	{
@@ -85,7 +91,7 @@ public class PermissionCommandParser {
 	}
 
 	// Variables for auto-complete
-	private static final String[] parseMainArgs = { "zones", "user", "group", "list", "reload", "save" }; // "export", "promote", "test" };
+	private static final String[] parseMainArgs = { "zones", "test", "user", "group", "list", "reload", "save" }; // "export", "promote", "test" };
 	private static final String[] parseUserArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "perms", "group" };
 	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "priority", "parent" };
 	private static final String[] parseUserGroupArgs = { "add", "remove" };
@@ -116,6 +122,9 @@ public class PermissionCommandParser {
 				break;
 			case "zones":
 				listZones();
+				break;
+			case "test":
+				parseTest();
 				break;
 			case "list":
 				listPermissions();
@@ -163,9 +172,54 @@ public class PermissionCommandParser {
 		}
 	}
 
+	private void parseTest()
+	{
+		if (args.isEmpty())
+		{
+			error("Missing permission argument!");
+			return;
+		}
+		if (senderPlayer == null)
+		{
+			error(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+			return;
+		}
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_TEST))
+		{
+			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		if (tabCompleteMode)
+		{
+			tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserArgs);
+			for (Zone zone : APIRegistry.perms.getZones())
+			{
+				if (CommandBase.doesStringStartWith(args.peek(), zone.getName()))
+					tabComplete.add(zone.getName());
+			}
+			for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
+			{
+				if (CommandBase.doesStringStartWith(args.peek(), perm))
+					tabComplete.add(perm);
+			}
+			return;
+		}
+		
+		String permissionNode = args.remove();
+		String result = APIRegistry.perms.getPermissionProperty(senderPlayer, permissionNode);
+		if (result == null)
+		{
+			error("Permission does not exist");
+		}
+		else
+		{
+			info(permissionNode + " = " + result);
+		}
+	}
+
 	private void parseUser()
 	{
-		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.PERM_USER))
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_USER))
 		{
 			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -373,7 +427,7 @@ public class PermissionCommandParser {
 		if (tabCompleteMode)
 			return;
 
-		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.PERM_LIST))
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST))
 		{
 			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -494,7 +548,7 @@ public class PermissionCommandParser {
 
 	private void parseGroup()
 	{
-		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), FEPermissions.PERM_GROUP))
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_GROUP))
 		{
 			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
 			return;

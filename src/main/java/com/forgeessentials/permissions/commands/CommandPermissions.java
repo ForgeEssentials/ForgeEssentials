@@ -12,11 +12,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandPermissions extends ForgeEssentialsCommandBase {
-    // Variables for auto-complete
-    String[] args2 = { "user", "group", "export", "promote", "test" };
-    String[] groupargs = { "prefix", "suffix", "parent", "priority", "allow", "true", "deny", "false", "clear" };
-    String[] playerargs = { "prefix", "suffix", "group", "set", "add", "remove", "allow", "true", "deny", "false", "clear" };
-    String[] playergargs = { "set", "add", "remove" };
 
     @Override
     public final String getCommandName()
@@ -62,7 +57,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return FEPermissions.PERM;
+        return PermissionCommandParser.PERM;
     }
 
     @Override

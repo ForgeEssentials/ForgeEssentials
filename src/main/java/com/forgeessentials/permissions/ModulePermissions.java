@@ -17,6 +17,7 @@ import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandTestPermission;
 import com.forgeessentials.permissions.commands.CommandZone;
+import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.permissions.core.ConfigPermissions;
 import com.forgeessentials.permissions.core.PermissionEventHandler;
 import com.forgeessentials.permissions.core.PermissionsListWriter;
@@ -109,12 +110,13 @@ public class ModulePermissions {
 
 	private void registerPermissions()
 	{
-		PermissionsManager.registerPermission(FEPermissions.ZONE_ALL, RegisteredPermValue.OP);
-		PermissionsManager.registerPermission(FEPermissions.ZONE_LIST, RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission(FEPermissions.ZONE_INFO, RegisteredPermValue.TRUE);
+		PermissionsManager.registerPermission(CommandZone.PERM_ALL, RegisteredPermValue.OP);
+		PermissionsManager.registerPermission(CommandZone.PERM_LIST, RegisteredPermValue.TRUE);
+		PermissionsManager.registerPermission(CommandZone.PERM_INFO, RegisteredPermValue.TRUE);
 
-		PermissionsManager.registerPermission(FEPermissions.PERM_ALL, RegisteredPermValue.OP);
-		PermissionsManager.registerPermission(FEPermissions.PERM_LIST, RegisteredPermValue.TRUE);
+		PermissionsManager.registerPermission(PermissionCommandParser.PERM_ALL, RegisteredPermValue.OP);
+		PermissionsManager.registerPermission(PermissionCommandParser.PERM_LIST, RegisteredPermValue.TRUE);
+		PermissionsManager.registerPermission(PermissionCommandParser.PERM_TEST, RegisteredPermValue.TRUE);
 		
 		PermissionsManager.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
 		PermissionsManager.registerPermission("fe.core.info", RegisteredPermValue.OP);
