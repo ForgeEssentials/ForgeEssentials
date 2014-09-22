@@ -57,7 +57,8 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 		{
 			// TODO: Replace this by a system that only deletes invalid files
 			FileUtils.moveDirectory(path, new File(path.getParentFile(), path.getName() + "_backup"));
-			FileUtils.cleanDirectory(path);
+			if (path.exists())
+				FileUtils.cleanDirectory(path);
 		}
 		catch (IOException e)
 		{

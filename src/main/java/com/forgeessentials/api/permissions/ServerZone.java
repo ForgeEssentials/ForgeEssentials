@@ -162,9 +162,9 @@ public class ServerZone extends Zone {
 
 	public Set<String> getPlayerGroups(UserIdent ident)
 	{
-		Set pgs = playerGroups.get(ident);
+		Set<String> pgs = playerGroups.get(ident);
 		HashSet result = pgs == null ? new HashSet<String>() : new HashSet<String>(pgs);
-		if (ident.hasPlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
+		if (ident != null && ident.hasPlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
 		{
 			result.add(IPermissionsHelper.GROUP_OPERATORS);
 		}
