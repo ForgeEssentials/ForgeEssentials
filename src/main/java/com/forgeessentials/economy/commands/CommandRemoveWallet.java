@@ -33,7 +33,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayer player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             int amountToSubtract = Integer.parseInt(args[1]);
 
             if (player == null)
@@ -62,7 +62,7 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayer player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             int amountToSubtract = Integer.parseInt(args[1]);
 
             if (player == null)

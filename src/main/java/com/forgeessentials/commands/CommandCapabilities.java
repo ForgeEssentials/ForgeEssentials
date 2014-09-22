@@ -60,7 +60,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         }
         else if (args.length == 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 OutputHandler.chatConfirmation(sender, String.format("Capabilities for %s:", player.getCommandSenderName()));
@@ -85,7 +85,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
                     return;
                 }
             }
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
@@ -125,7 +125,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
                     return;
                 }
             }
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))

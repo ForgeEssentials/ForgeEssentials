@@ -67,7 +67,7 @@ public class CommandPm extends ForgeEssentialsCommandBase {
             }
             else
             {
-                EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
+                EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (receiver == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -133,7 +133,7 @@ public class CommandPm extends ForgeEssentialsCommandBase {
             }
             else
             {
-                EntityPlayerMP target = UserIdent.getPlayerByMatch(sender, args[0]);
+                EntityPlayerMP target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (target == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -184,7 +184,7 @@ public class CommandPm extends ForgeEssentialsCommandBase {
             }
             else
             {
-                EntityPlayer target = UserIdent.getPlayerByMatch(sender, args[0]);
+                EntityPlayer target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (target == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -201,7 +201,7 @@ public class CommandPm extends ForgeEssentialsCommandBase {
         }
         if (args.length > 1)
         {
-            EntityPlayer receiver = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayer receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (receiver == null)
             {
                 OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));

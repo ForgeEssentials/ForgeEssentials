@@ -34,7 +34,7 @@ public class CommandBurn extends FEcmdModuleCommands {
             }
             else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
-                EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
                     OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
@@ -55,7 +55,7 @@ public class CommandBurn extends FEcmdModuleCommands {
             }
             else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
-                EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
                     player.setFire(parseIntWithMin(sender, args[1], 0));
@@ -81,7 +81,7 @@ public class CommandBurn extends FEcmdModuleCommands {
         {
             time = parseIntWithMin(sender, args[1], 0);
         }
-        EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player != null)
         {
             player.setFire(time);

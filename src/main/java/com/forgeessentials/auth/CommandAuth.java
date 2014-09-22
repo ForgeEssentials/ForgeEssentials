@@ -143,7 +143,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             boolean isLogged = true;
 
             // check if the player is logged.
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[1]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
             if (player == null)
             {
                 OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -248,7 +248,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             // check for players.. all the rest of these should be greated than 1.
             UUID name = UserIdent.getUuidByUsername(args[1]);
             // check if the player is logged.
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[1]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
             if (player == null)
             {
                 OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -308,7 +308,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         boolean isLogged = true;
 
         // check if the player is logged.
-        EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[1]);
+        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
         if (player == null)
         {
             ChatUtils.sendMessage(sender, "A player of that name is not on the server. Doing the action anyways.");

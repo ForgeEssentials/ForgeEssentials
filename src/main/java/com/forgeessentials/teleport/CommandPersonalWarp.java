@@ -140,7 +140,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 					}
 					else
 					{
-						target = "p:" + UserIdent.getPlayerByMatch(sender, args[1]).getCommandSenderName();
+						target = "p:" + UserIdent.getPlayerByMatchOrUsername(sender, args[1]).getCommandSenderName();
 					}
 
 					if (args.length == 2)

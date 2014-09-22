@@ -84,7 +84,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
             return;
         }
 
-        EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
+        EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (receiver == null)
         {
             ChatUtils.sendMessage(sender, args[0] + " not found.");

@@ -12,7 +12,9 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -108,46 +110,24 @@ public class CommandGameMode extends FEcmdModuleCommands {
 
 	public void setGameMode(ICommandSender sender, String target)
 	{
-		EntityPlayer player;
-		try
-		{
-			player = getPlayer(sender, target);
-		}
-		catch (PlayerNotFoundException e)
+		EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
+		if (player == null)
 		{
 			OutputHandler.chatError(sender, String.format("Unable to find player: %1$s.", target));
 			return;
 		}
-		if (player != null)
-		{
-			setGameMode(sender, target, player.capabilities.isCreativeMode ? WorldSettings.GameType.SURVIVAL : WorldSettings.GameType.CREATIVE);
-		}
-		else
-		{
-			OutputHandler.chatError(sender, String.format("Unable to find player: %1$s.", target));
-		}
+		setGameMode(sender, target, player.capabilities.isCreativeMode ? WorldSettings.GameType.SURVIVAL : WorldSettings.GameType.CREATIVE);
 	}
 
 	public void setGameMode(ICommandSender sender, String target, WorldSettings.GameType mode)
 	{
-		EntityPlayer player;
-		try
-		{
-			player = getPlayer(sender, target);
-		}
-		catch (PlayerNotFoundException e)
+		EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
+		if (player == null)
 		{
 			OutputHandler.chatError(sender, String.format("Unable to find player: %1$s.", target));
 			return;
 		}
-		if (player != null)
-		{
-			setGameMode(sender, player, mode);
-		}
-		else
-		{
-			OutputHandler.chatError(sender, String.format("Unable to find player: %1$s.", target));
-		}
+		setGameMode(sender, player, mode);
 	}
 
 	public void setGameMode(ICommandSender sender, EntityPlayer target, WorldSettings.GameType mode)

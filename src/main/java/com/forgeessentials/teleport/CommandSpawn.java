@@ -41,7 +41,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
                         "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                 return;
             }
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
@@ -89,7 +89,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
     {
         if (args.length >= 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));

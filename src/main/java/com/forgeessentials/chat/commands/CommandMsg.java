@@ -126,7 +126,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
 
             else
             {
-                EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
+                EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (receiver == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -163,7 +163,7 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
     {
         if (args.length > 1)
         {
-            EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (receiver == null)
             {
                 OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));

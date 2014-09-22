@@ -37,7 +37,7 @@ public class CommandSmite extends FEcmdModuleCommands {
             }
             else
             {
-                EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
                     player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
@@ -69,7 +69,7 @@ public class CommandSmite extends FEcmdModuleCommands {
     {
         if (args.length >= 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));

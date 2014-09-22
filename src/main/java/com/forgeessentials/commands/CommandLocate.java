@@ -35,7 +35,7 @@ public class CommandLocate extends FEcmdModuleCommands {
         }
         else
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
             {
                 OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));

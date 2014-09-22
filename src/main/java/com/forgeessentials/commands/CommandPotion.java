@@ -91,7 +91,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         }
         else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 
             if (player != null)
             {
@@ -124,7 +124,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         dur = parseIntWithMin(sender, args[2], 0) * 20;
         PotionEffect eff = new PotionEffect(ID, dur, ampl);
 
-        EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 
         if (player != null)
         {

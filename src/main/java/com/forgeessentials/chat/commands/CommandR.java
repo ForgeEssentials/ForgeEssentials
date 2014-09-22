@@ -133,7 +133,7 @@ public class CommandR extends ForgeEssentialsCommandBase {
                 ChatUtils.sendMessage(sender, "You have no previous recorded message recipient.");
                 return;
             }
-            EntityPlayer receiver = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayer receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (receiver == null)
             {
                 ChatUtils.sendMessage(sender, target + " is not a valid username");

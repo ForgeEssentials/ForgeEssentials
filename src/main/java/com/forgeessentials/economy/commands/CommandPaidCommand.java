@@ -37,7 +37,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
         System.out.print(sender);
         if (args.length >= 3)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 int amount = parseIntWithMin(sender, args[1], 0);

@@ -39,7 +39,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase {
     {
         if (args.length == 1)
         {
-            EntityPlayer receiver = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayer receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (receiver == null)
             {
                 OutputHandler.chatError(receiver, String.format("Player %s does not exist, or is not online.", args[0]));

@@ -34,7 +34,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 1 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 top(player);
@@ -55,7 +55,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     {
         if (args.length == 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 top(player);

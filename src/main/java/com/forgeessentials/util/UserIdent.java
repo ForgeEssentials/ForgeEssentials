@@ -285,7 +285,7 @@ public class UserIdent {
 		return null;
 	}
 
-	public static EntityPlayerMP getPlayerByMatch(ICommandSender sender, String match)
+	public static EntityPlayerMP getPlayerByMatchOrUsername(ICommandSender sender, String match)
 	{
 		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, match);
 		if (player != null)

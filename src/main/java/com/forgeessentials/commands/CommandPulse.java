@@ -125,7 +125,7 @@ public class CommandPulse extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EntityPlayerMP playermp = UserIdent.getPlayerByMatch(sender, sender.getCommandSenderName());
+        EntityPlayerMP playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getCommandSenderName());
         processCommand(playermp, args);
     }
 

@@ -28,7 +28,7 @@ public class CommandPay extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
             {
                 ChatUtils.sendMessage(sender, args[0] + " not found!");
@@ -66,10 +66,10 @@ public class CommandPay extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (PlayerSelector.hasArguments(args[0]))
             {
-                player = UserIdent.getPlayerByMatch(sender, args[0]);
+                player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             }
             if (player == null)
             {
