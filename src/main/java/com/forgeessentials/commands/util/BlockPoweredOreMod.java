@@ -1,23 +1,26 @@
 package com.forgeessentials.commands.util;
 
-import net.minecraft.block.BlockOreStorage;
+import java.util.Random;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockCompressedPowered;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import java.util.Random;
-
-public class BlockPoweredOreMod extends BlockOreStorage {
+public class BlockPoweredOreMod extends BlockCompressedPowered {
     public boolean isPulsed = false;
-    public int previousBlockID = 0;
+    public Block previousBlock = Blocks.air;
     public int strength = 15;
     public Object previusEntity = null;
     public int previusMetaData = 0;
 
-    public BlockPoweredOreMod(int par1)
+    public BlockPoweredOreMod()
     {
-        super(par1);
+        super(MapColor.tntColor);
         this.setCreativeTab(CreativeTabs.tabRedstone);
     }
 
@@ -46,14 +49,14 @@ public class BlockPoweredOreMod extends BlockOreStorage {
     {
         if (this.isPulsed)
         {
-            var1.setBlock(var2, var3, var4, this.previousBlockID, this.previusMetaData, 3);
+            var1.setBlock(var2, var3, var4, this.previousBlock, this.previusMetaData, 3);
             var1.setBlockMetadataWithNotify(var2, var3, var4, this.previusMetaData, 2);
 
             if (this.previusEntity != null)
             {
                 ((TileEntity) this.previusEntity).validate();
                 ((TileEntity) this.previusEntity).blockMetadata = this.previusMetaData;
-                var1.setBlockTileEntity(var2, var3, var4, (TileEntity) this.previusEntity);
+                var1.setTileEntity(var2, var3, var4, (TileEntity) this.previusEntity);
             }
         }
     }

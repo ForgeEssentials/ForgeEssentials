@@ -1,14 +1,16 @@
 package com.forgeessentials.economy.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandSetWallet extends ForgeEssentialsCommandBase {
     @Override
@@ -22,7 +24,7 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase {
     {
         if (args.length == 1)
         {
-            EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().getPlayerForUsername(args[0]);
+            EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(args[0]);
             int amountToSet = Integer.parseInt(args[1]);
 
             if (player == null)
@@ -33,8 +35,8 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase {
             {
                 APIRegistry.wallet.setWallet(amountToSet, player);
 
-                ChatUtils.sendMessage(sender, "Wallet set to: " + APIRegistry.wallet.getMoneyString(player.username));
-                ChatUtils.sendMessage(player, "Your wallet was set to " + APIRegistry.wallet.getMoneyString(player.username));
+                ChatUtils.sendMessage(sender, "Wallet set to: " + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
+                ChatUtils.sendMessage(player, "Your wallet was set to " + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
             }
         }
         else
@@ -50,7 +52,7 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.economy." + getCommandName();
     }
@@ -76,10 +78,10 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
 }

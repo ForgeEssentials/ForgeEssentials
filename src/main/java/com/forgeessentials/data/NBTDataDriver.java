@@ -1,33 +1,33 @@
 package com.forgeessentials.data;
 
-import com.forgeessentials.data.api.*;
-import com.forgeessentials.util.OutputHandler;
-import net.minecraft.nbt.*;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import java.util.zip.GZIPOutputStream;
+
+import joptsimple.internal.Strings;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagByte;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.nbt.NBTTagString;
+
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.data.api.IReconstructData;
+import com.forgeessentials.data.api.ITypeInfo;
+import com.forgeessentials.data.api.TypeData;
+import com.forgeessentials.util.OutputHandler;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class NBTDataDriver extends BinaryDataDriver {
-    @Override
-    protected boolean saveData(ClassContainer type, TypeData data)
-    {
-        boolean successful = true;
-
-        // Create file object
-        File file = getFilePath(type, data.getUniqueKey());
-
-        NBTTagCompound compound = new NBTTagCompound();
-        writeClassToTag(compound, data);
-        writeNBT(compound, file);
-
-        return successful;
-    }
-
     private static void writeNBT(NBTTagCompound tag, File file)
     {
         try
@@ -46,10 +46,10 @@ public class NBTDataDriver extends BinaryDataDriver {
             }
 
             // write temp file
-            DataOutputStream stream = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(temp)));
+            FileOutputStream stream = new FileOutputStream(temp);
             try
             {
-                NBTBase.writeNamedTag(tag, stream);
+                CompressedStreamTools.writeCompressed(tag, stream);
             }
             finally
             {
@@ -93,6 +93,21 @@ public class NBTDataDriver extends BinaryDataDriver {
     }
 
     @Override
+    protected boolean saveData(ClassContainer type, TypeData data)
+    {
+        boolean successful = true;
+
+        // Create file object
+        File file = getFilePath(type, data.getUniqueKey());
+
+        NBTTagCompound compound = new NBTTagCompound();
+        writeClassToTag(compound, data);
+        writeNBT(compound, file);
+
+        return successful;
+    }
+
+    @Override
     protected TypeData loadData(ClassContainer type, String uniqueKey)
     {
         NBTTagCompound nbt = readNBT(getFilePath(type, uniqueKey));
@@ -120,27 +135,25 @@ public class NBTDataDriver extends BinaryDataDriver {
 
     private void readClassFromTag(NBTTagCompound tag, TypeData data, ITypeInfo info)
     {
-        String name;
         ClassContainer tempType;
         Object val;
-        for (NBTBase child : (Collection<NBTBase>) tag.getTags())
+        for (String childName : (Collection<String>) tag.func_150296_c())
         {
-            name = child.getName();
-            tempType = info.getTypeOfField(name);
+            tempType = info.getTypeOfField(childName);
 
             if (StorageManager.isTypeComplex(tempType))
             {
-                NBTTagCompound compound = tag.getCompoundTag(name);
+                NBTTagCompound compound = tag.getCompoundTag(childName);
                 TypeData tempData = DataStorageManager.getDataForType(tempType);
-                readClassFromTag(compound, tempData, info.getInfoForField(name));
+                readClassFromTag(compound, tempData, info.getInfoForField(childName));
                 val = tempData;
             }
             else
             {
-                val = readPrimitiveFromTag(tag, name, tempType.getType());
+                val = readPrimitiveFromTag(tag, childName, tempType.getType());
             }
 
-            data.putField(name, val);
+            data.putField(childName, val);
         }
     }
 
@@ -180,7 +193,7 @@ public class NBTDataDriver extends BinaryDataDriver {
             float[] array = (float[]) obj;
             for (int i = 0; i < array.length; i++)
             {
-                list.appendTag(new NBTTagFloat(name + "_" + i, array[i]));
+                list.appendTag(new NBTTagFloat(array[i]));
             }
 
             tag.setTag(name, list);
@@ -195,7 +208,7 @@ public class NBTDataDriver extends BinaryDataDriver {
             double[] array = (double[]) obj;
             for (int i = 0; i < array.length; i++)
             {
-                list.appendTag(new NBTTagDouble(name + "_" + i, array[i]));
+                list.appendTag(new NBTTagDouble(array[i]));
             }
 
             tag.setTag(name, list);
@@ -210,7 +223,7 @@ public class NBTDataDriver extends BinaryDataDriver {
             long[] array = (long[]) obj;
             for (int i = 0; i < array.length; i++)
             {
-                list.appendTag(new NBTTagLong(name + "_" + i, array[i]));
+                list.appendTag(new NBTTagLong(array[i]));
             }
 
             tag.setTag(name, list);
@@ -225,7 +238,7 @@ public class NBTDataDriver extends BinaryDataDriver {
             boolean[] array = (boolean[]) obj;
             for (int i = 0; i < array.length; i++)
             {
-                list.appendTag(new NBTTagByte(name + "_" + i, (byte) (array[i] ? 1 : 0)));
+                list.appendTag(new NBTTagByte((byte) (array[i] ? 1 : 0)));
             }
 
             tag.setTag(name, list);
@@ -240,7 +253,7 @@ public class NBTDataDriver extends BinaryDataDriver {
             String[] array = (String[]) obj;
             for (int i = 0; i < array.length; i++)
             {
-                list.appendTag(new NBTTagString(name + "_" + i, array[i]));
+                list.appendTag(new NBTTagString(array[i]));
             }
 
             tag.setTag(name, list);
@@ -249,7 +262,7 @@ public class NBTDataDriver extends BinaryDataDriver {
         {
             NBTTagCompound compound = new NBTTagCompound();
             writeClassToTag(compound, (TypeData) obj);
-            tag.setCompoundTag(name, compound);
+            tag.setTag(name, compound);
         }
         else
         {
@@ -286,11 +299,11 @@ public class NBTDataDriver extends BinaryDataDriver {
         }
         else if (type.equals(float[].class))
         {
-            NBTTagList list = tag.getTagList(name);
+            NBTTagList list = tag.getTagList(name, new NBTTagFloat(0f).getId());
             float[] array = new float[list.tagCount()];
             for (int i = 0; i < array.length; i++)
             {
-                array[i] = ((NBTTagFloat) list.tagAt(i)).data;
+                array[i] = list.func_150308_e(i);
             }
 
             return array;
@@ -301,11 +314,11 @@ public class NBTDataDriver extends BinaryDataDriver {
         }
         else if (type.equals(double[].class))
         {
-            NBTTagList list = tag.getTagList(name);
+            NBTTagList list = tag.getTagList(name, new NBTTagDouble(0.0).getId());
             double[] array = new double[list.tagCount()];
             for (int i = 0; i < array.length; i++)
             {
-                array[i] = ((NBTTagDouble) list.tagAt(i)).data;
+                array[i] = list.func_150309_d(i);
             }
 
             return array;
@@ -316,11 +329,11 @@ public class NBTDataDriver extends BinaryDataDriver {
         }
         else if (type.equals(long[].class))
         {
-            NBTTagList list = tag.getTagList(name);
+            NBTTagList list = tag.getTagList(name, new NBTTagLong(0).getId());
             long[] array = new long[list.tagCount()];
             for (int i = 0; i < array.length; i++)
             {
-                array[i] = ((NBTTagLong) list.tagAt(i)).data;
+                array[i] = ((NBTTagLong) list.removeTag(0)).func_150291_c();
             }
 
             return array;
@@ -331,11 +344,11 @@ public class NBTDataDriver extends BinaryDataDriver {
         }
         else if (type.equals(boolean[].class))
         {
-            NBTTagList list = tag.getTagList(name);
+            NBTTagList list = tag.getTagList(name, new NBTTagByte((byte) 0).getId());
             boolean[] array = new boolean[list.tagCount()];
             for (int i = 0; i < array.length; i++)
             {
-                array[i] = ((NBTTagByte) list.tagAt(i)).data != 0;
+                array[i] = ((NBTTagByte) list.removeTag(0)).func_150290_f() != 0;
             }
 
             return array;
@@ -346,11 +359,11 @@ public class NBTDataDriver extends BinaryDataDriver {
         }
         else if (type.equals(String[].class))
         {
-            NBTTagList list = tag.getTagList(name);
+            NBTTagList list = tag.getTagList(name, new NBTTagString(Strings.EMPTY).getId());
             String[] array = new String[list.tagCount()];
             for (int i = 0; i < array.length; i++)
             {
-                array[i] = ((NBTTagString) list.tagAt(i)).data;
+                array[i] = list.getStringTagAt(i);
             }
 
             return array;

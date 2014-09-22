@@ -1,12 +1,13 @@
 package com.forgeessentials.chat;
 
+import java.rmi.server.UID;
+import java.util.UUID;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-
-import java.rmi.server.UID;
 
 @SaveableObject
 public class Mail {
@@ -23,6 +24,21 @@ public class Mail {
     @SaveableField
     private String message;
 
+    public Mail(String key, UUID sender, UUID receiver, String message)
+    {
+        if (key.equals(""))
+        {
+            this.key = new UID().toString().replaceAll(":", "_");
+        }
+        else
+        {
+            this.key = key;
+        }
+        this.sender = sender.toString();
+        this.receiver = receiver.toString();
+        this.message = message;
+    }
+
     public Mail(String key, String sender, String receiver, String message)
     {
         if (key.equals(""))
@@ -38,30 +54,30 @@ public class Mail {
         this.message = message;
     }
 
-    public String getKey()
-    {
-        return key;
-    }
-
-    public String getSender()
-    {
-        return sender;
-    }
-
-    public String getReceiver()
-    {
-        return receiver;
-    }
-
-    public String getMessage()
-    {
-        return message;
-    }
-
     @Reconstructor
     private static Mail reconstruct(IReconstructData tag)
     {
         return new Mail((String) tag.getFieldValue("key"), (String) tag.getFieldValue("sender"), (String) tag.getFieldValue("receiver"),
                 (String) tag.getFieldValue("message"));
+    }
+
+    public String getKey()
+    {
+        return key;
+    }
+
+    public UUID getSender()
+    {
+        return UUID.fromString(sender);
+    }
+
+    public UUID getReceiver()
+    {
+        return UUID.fromString(receiver);
+    }
+
+    public String getMessage()
+    {
+        return message;
     }
 }

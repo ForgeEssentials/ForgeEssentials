@@ -1,19 +1,21 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WarpPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandTop extends ForgeEssentialsCommandBase {
 
@@ -30,9 +32,9 @@ public class CommandTop extends ForgeEssentialsCommandBase {
         {
             top(sender);
         }
-        else if (args.length == 1 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+        else if (args.length == 1 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 top(player);
@@ -53,7 +55,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     {
         if (args.length == 1)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 top(player);
@@ -72,12 +74,12 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     public void top(EntityPlayer player)
     {
         WarpPoint point = new WarpPoint(player);
-        point.y = player.worldObj.getActualHeight();
-        while (player.worldObj.getBlockId(point.x, point.y, point.z) == 0)
+        point.setY(player.worldObj.getActualHeight());
+        while (player.worldObj.getBlock(point.getX(), point.getY(), point.getZ()) == Blocks.air)
         {
-            point.y--;
+            point.setY(point.getY() - 1);
         }
-        ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.x, point.y + 1, point.z, point.yaw, point.pitch);
+        ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 1, point.getZ(), point.yaw, point.pitch);
         ChatUtils.sendMessage(player, "Teleported.");
     }
 
@@ -88,7 +90,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport.top";
     }
@@ -107,9 +109,9 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

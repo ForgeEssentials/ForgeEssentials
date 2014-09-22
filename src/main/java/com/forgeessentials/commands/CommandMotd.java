@@ -1,12 +1,17 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.misc.LoginMessage;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.LoginMessage;
 
 public class CommandMotd extends FEcmdModuleCommands {
 
@@ -19,9 +24,15 @@ public class CommandMotd extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        if (args.length > 0 && args[0].equalsIgnoreCase("reload"))
+        if (args.length > 0)
         {
-            LoginMessage.loadFile();
+        	if (args[0].equalsIgnoreCase("reload")) {
+        		LoginMessage.loadFile();
+        	} else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others")) {
+        		ArrayList<String> motd = new ArrayList<String>();
+        		motd.add(StringUtils.join(args, " "));
+        		LoginMessage.setMOTD(motd);
+        	}
         }
         LoginMessage.sendLoginMessage(sender);
     }
@@ -29,9 +40,15 @@ public class CommandMotd extends FEcmdModuleCommands {
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        if (args.length > 0 && args[0].equalsIgnoreCase("reload"))
+        if (args.length > 0)
         {
-            LoginMessage.loadFile();
+        	if (args[0].equalsIgnoreCase("reload")) {
+        		LoginMessage.loadFile();
+        	} else {
+        		ArrayList<String> motd = new ArrayList<String>();
+        		motd.add(StringUtils.join(args, " "));
+        		LoginMessage.setMOTD(motd);
+        	}
         }
         LoginMessage.sendLoginMessage(sender);
     }
@@ -56,15 +73,20 @@ public class CommandMotd extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public void registerExtraPermissions()
     {
-        return RegGroup.GUESTS;
+        PermissionsManager.registerPermission(getPermissionNode() + ".edit", RegisteredPermValue.OP);
+    }
+    
+    @Override
+    public RegisteredPermValue getDefaultPermission()
+    {
+        return RegisteredPermValue.TRUE;
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
-        return "/motd Get the server message of the day.";
+        return "/motd [reload|<message>] Get or set the server message of the day.";
     }
 }

@@ -1,14 +1,15 @@
 package com.forgeessentials.commands.shortcut;
 
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.Configuration;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.config.Configuration;
 
 /**
  * This system allows someone to make shortcut commands.
@@ -26,8 +27,8 @@ public class ShortcutCommands {
                     +
                     "$oArg => the next argument, but optional. If there is no argument, doesn't do anything.";
 
-    static ArrayList<cmdWrapper> list = new ArrayList<cmdWrapper>();
-    static HashMap<String, cmdWrapper> cmdMap = new HashMap<String, cmdWrapper>();
+    static ArrayList<CommandWrapper> list = new ArrayList<CommandWrapper>();
+    static HashMap<String, CommandWrapper> cmdMap = new HashMap<String, CommandWrapper>();
     static Configuration config;
 
     /**
@@ -38,7 +39,7 @@ public class ShortcutCommands {
     public static void load()
     {
         CommandHandler ch = (CommandHandler) MinecraftServer.getServer().getCommandManager();
-        for (cmdWrapper cmd : list)
+        for (CommandWrapper cmd : list)
         {
             ch.registerCommand(cmd);
         }
@@ -87,7 +88,7 @@ public class ShortcutCommands {
             String[] args = config.get(category, "args", new String[] { "\"#$sender\"", "\"allowflying\"", "\"$arg\"" }, ARGS_COMMENT).getStringList();
             String syntax = config.get(category, "syntax", "\"<true|false>\"", "The syntax for this shortcuts. Use double quotes.").getString();
 
-            list.add(new cmdWrapper(command, name, args, syntax));
+            list.add(new CommandWrapper(command, name, args, syntax));
         }
 
         for (String cat : cats)
@@ -106,7 +107,7 @@ public class ShortcutCommands {
      * @param sendArgs
      * @return
      */
-    public static String[] parseArgs(ICommandSender sender, String[] wrapperArgs, String[] sendArgs) throws Exception
+    public static String[] parseArgs(ICommandSender sender, String[] wrapperArgs, String[] sendArgs) throws CommandException
     {
         ArrayList<String> output = new ArrayList<String>();
         int i = 0;
@@ -130,7 +131,7 @@ public class ShortcutCommands {
                 }
                 else
                 {
-                    throw new Exception();
+                    throw new CommandException("commands.generic.syntax");
                 }
             }
             else if (arg.equalsIgnoreCase("$oArg"))

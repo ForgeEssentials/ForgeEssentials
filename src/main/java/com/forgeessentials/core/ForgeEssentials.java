@@ -1,16 +1,29 @@
 package com.forgeessentials.core;
 
-import com.forgeessentials.api.APIRegistry;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.HelpFixer;
-import com.forgeessentials.core.commands.selections.*;
+import com.forgeessentials.core.commands.selections.CommandDeselect;
+import com.forgeessentials.core.commands.selections.CommandExpand;
+import com.forgeessentials.core.commands.selections.CommandPos;
+import com.forgeessentials.core.commands.selections.CommandWand;
+import com.forgeessentials.core.commands.selections.WandController;
 import com.forgeessentials.core.compat.CommandSetChecker;
-import com.forgeessentials.core.compat.CompatMCStats;
 import com.forgeessentials.core.compat.EnvironmentChecker;
-import com.forgeessentials.core.misc.*;
+import com.forgeessentials.core.misc.BlockModListFile;
+import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.network.FEServerPacketHandler;
+import com.forgeessentials.core.network.PacketSelectionUpdate;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.forgeessentials.data.ForgeConfigDataDriver;
 import com.forgeessentials.data.NBTDataDriver;
@@ -20,37 +33,37 @@ import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.typeInfo.TypeInfoItemStack;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTCompound;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
-import com.forgeessentials.util.*;
+import com.forgeessentials.util.FEChunkLoader;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.MiscEventHandler;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * Main mod class
  */
 
-@NetworkMod(clientSideRequired = false, serverSideRequired = false,
-        serverPacketHandlerSpec = @NetworkMod.SidedPacketHandler(channels = { "ForgeEssentials" }, packetHandler = FEServerPacketHandler.class))
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version)
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*")
 public class ForgeEssentials {
 
-    @Mod.Instance(value = "ForgeEssentials")
+    @Instance(value = "ForgeEssentials")
     public static ForgeEssentials instance;
 
     public static CoreConfig config;
@@ -60,8 +73,6 @@ public class ForgeEssentials {
     public static File FEDIR;
     public static boolean mcstats;
     public ModuleLauncher mdlaunch;
-    public BannedItems bannedItems;
-    private CompatMCStats mcstatscompat;
     private TaskRegistry tasks;
 
     public ForgeEssentials()
@@ -80,15 +91,10 @@ public class ForgeEssentials {
                 + FEModContainer.version + " loading, reading config from "
                 + FEDIR.getAbsolutePath());
 
-        // FE MUST BE FIRST!!
-        GameRegistry.registerPlayerTracker(new PlayerTracker());
-
         // setup fedir stuff
         config = new CoreConfig();
         EnvironmentChecker.checkBukkit();
         EnvironmentChecker.checkWorldEdit();
-
-        mcstatscompat = new CompatMCStats();
 
         // Data API stuff
         {
@@ -115,16 +121,12 @@ public class ForgeEssentials {
         }
 
         new MiscEventHandler();
-        bannedItems = new BannedItems();
-        MinecraftForge.EVENT_BUS.register(bannedItems);
         LoginMessage.loadFile();
         mdlaunch = new ModuleLauncher();
         mdlaunch.preLoad(e);
-
-        FEServerPacketHandler.init();
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public void load(FMLInitializationEvent e)
     {
         // load up DataAPI
@@ -134,38 +136,27 @@ public class ForgeEssentials {
 
         // other stuff
         ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
-        TickRegistry.registerTickHandler(factory, Side.SERVER);
-        GameRegistry.registerPlayerTracker(factory);
+        FMLCommonHandler.instance().bus().register(factory);
         MinecraftForge.EVENT_BUS.register(factory);
 
         MinecraftForge.EVENT_BUS.register(new WandController());
-
-        mcstatscompat.load();
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public void postLoad(FMLPostInitializationEvent e)
     {
-        UnfriendlyItemList.modStep();
-        UnfriendlyItemList.output(new File(FEDIR, "UnfriendlyItemList.txt"));
-
         mdlaunch.postLoad(e);
-        bannedItems.postLoad(e);
 
-        new FriendlyItemList();
+        FunctionHelper.netHandler.registerMessage(PacketSelectionUpdate.class, PacketSelectionUpdate.Message.class, 0, Side.SERVER);
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public void serverStarting(FMLServerStartingEvent e)
     {
         // load up DataAPI
         ((StorageManager) DataStorageManager.manager).serverStart(e);
 
-        ModListFile.makeModList();
-
-        // Central TP system
-        TickRegistry.registerScheduledTickHandler(new TeleportCenter(),
-                Side.SERVER);
+        BlockModListFile.makeModList();
 
         List<ForgeEssentialsCommandBase> commands = new ArrayList();
 
@@ -184,9 +175,9 @@ public class ForgeEssentials {
 
         for (ForgeEssentialsCommandBase command : commands)
         {
-            if (command.getCommandPerm() != null && command.getReggroup() != null)
+            if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
                 {
-                    APIRegistry.permReg.registerPermissionLevel(command.getCommandPerm(), command.getReggroup());
+                    PermissionsManager.registerPermission(command.getPermissionNode(), command.getDefaultPermission());
                 }
                 e.registerServerCommand(command);
         }
@@ -200,16 +191,15 @@ public class ForgeEssentials {
                 new FEChunkLoader());
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public void serverStarted(FMLServerStartedEvent e)
     {
         CommandSetChecker.remove();
 
-        CompatMCStats.doMCStats();
         mdlaunch.serverStarted(e);
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public void serverStopping(FMLServerStoppingEvent e)
     {
         mdlaunch.serverStopping(e);

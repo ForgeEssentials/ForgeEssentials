@@ -1,17 +1,18 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class CommandRemove extends FEcmdModuleCommands {
     @Override
@@ -25,9 +26,9 @@ public class CommandRemove extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
         int radius = 10;
-        int centerX = (int) sender.posX;
-        int centerY = (int) sender.posY;
-        int centerZ = (int) sender.posZ;
+        double centerX = sender.posX;
+        double centerY = sender.posY;
+        double centerZ = sender.posZ;
 
         if (args.length == 1)
         {
@@ -36,9 +37,9 @@ public class CommandRemove extends FEcmdModuleCommands {
         else if (args.length == 4)
         {
             radius = parseIntWithMin(sender, args[0], 0);
-            centerX = parseInt(sender, args[1], sender.posX);
-            centerY = parseInt(sender, args[2], sender.posY);
-            centerZ = parseInt(sender, args[3], sender.posZ);
+            centerX = parseDouble(sender, args[1], sender.posX);
+            centerY = parseDouble(sender, args[2], sender.posY);
+            centerZ = parseDouble(sender, args[3], sender.posZ);
         }
         else
         {
@@ -47,8 +48,8 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
 
         List<EntityItem> entityList = sender.worldObj.getEntitiesWithinAABB(EntityItem.class,
-                AxisAlignedBB.getAABBPool()
-                        .getAABB(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1));
+                AxisAlignedBB.getBoundingBox(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1,
+                        centerZ + radius + 1));
 
         int counter = 0;
         for (int i = 0; i < entityList.size(); i++)
@@ -70,12 +71,12 @@ public class CommandRemove extends FEcmdModuleCommands {
         if (args.length >= 4)
         {
             radius = parseIntWithMin(sender, args[0], 0);
-            center.x = parseInt(sender, args[1]);
-            center.y = parseInt(sender, args[2]);
-            center.z = parseInt(sender, args[3]);
+            center.setX(parseInt(sender, args[1]));
+            center.setY(parseInt(sender, args[2]));
+            center.setZ(parseInt(sender, args[3]));
             if (args.length >= 5)
             {
-                center.dim = parseInt(sender, args[3]);
+                center.setDimension(parseInt(sender, args[3]));
             }
         }
         else
@@ -84,9 +85,9 @@ public class CommandRemove extends FEcmdModuleCommands {
             return;
         }
 
-        List<EntityItem> entityList = FunctionHelper.getDimension(center.dim).getEntitiesWithinAABB(EntityItem.class,
-                AxisAlignedBB.getAABBPool()
-                        .getAABB(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1, center.z + radius + 1));
+        List<EntityItem> entityList = FunctionHelper.getDimension(center.getDimension()).getEntitiesWithinAABB(EntityItem.class,
+                AxisAlignedBB.getBoundingBox(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY() + radius + 1,
+                        center.getZ() + radius + 1));
 
         int counter = 0;
         for (int i = 0; i < entityList.size(); i++)
@@ -105,9 +106,9 @@ public class CommandRemove extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.ZONE_ADMINS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

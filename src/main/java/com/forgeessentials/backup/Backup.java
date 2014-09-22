@@ -1,10 +1,5 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.util.OutputHandler;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,6 +8,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
+
+import com.forgeessentials.util.OutputHandler;
 
 public class Backup implements Runnable {
     private Thread thread;
@@ -115,8 +116,8 @@ public class Backup implements Runnable {
         boolean canNotSave = true;
         if (isWorld && worldSave)
         {
-            canNotSave = world.canNotSave;
-            world.canNotSave = false;
+            canNotSave = world.levelSaving;
+            world.levelSaving = false;
             try
             {
                 world.saveAllChunks(true, (IProgressUpdate) null);
@@ -140,7 +141,7 @@ public class Backup implements Runnable {
 		 */
         if (isWorld && worldSave)
         {
-            world.canNotSave = canNotSave;
+            world.levelSaving = canNotSave;
         }
 
         ModuleBackup.msg("Backup of " + name + " done.");

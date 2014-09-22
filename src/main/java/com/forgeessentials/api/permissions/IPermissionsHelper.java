@@ -1,153 +1,316 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.api.permissions.query.PermQuery;
-import com.forgeessentials.api.permissions.query.PermQuery.PermResult;
-import com.forgeessentials.api.permissions.query.PropQuery;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraftforge.permissions.IPermissionsProvider;
 
-import java.util.ArrayList;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldArea;
+import com.forgeessentials.util.selections.WorldPoint;
 
-@SuppressWarnings("rawtypes")
-public interface IPermissionsHelper {
-    // Javadocs please
+/**
+ * {@link IPermissionsHelper} is the primary access-point to the permissions-system.
+ * 
+ * @author Olee
+ */
+public interface IPermissionsHelper extends IPermissionsProvider {
 
-    /**
-     * Check if a permission is allowed
-     *
-     * @param query A PermQuery object
-     * @return true if allowed, false if not.
-     */
+	static final String GROUP_DEFAULT = "_ALL_";
+	static final String GROUP_GUESTS = "_GUESTS_";
+	static final String GROUP_OPERATORS = "_OPS_";
 
-    boolean checkPermAllowed(PermQuery query);
+	static final String PERMISSION_ASTERIX = "*";
+	static final String PERMISSION_FALSE = "false";
+	static final String PERMISSION_TRUE = "true";
 
-    /**
-     * Check if a permission is allowed. Use if you do not want to create PermQuery objects.
-     *
-     * @param player
-     * @param node
-     * @return true if allowed, false if not.
-     */
-    boolean checkPermAllowed(EntityPlayer player, String node);
+	// ---------------------------------------------------------------------------
+	// -- Persistence
+	// ---------------------------------------------------------------------------
 
-    PermResult checkPermResult(PermQuery query);
+	/**
+	 * Marks the permission storage as dirty, so it will be persisted as soon as possible.
+	 */
+	void setDirty();
 
-    /**
-     * populates the given PropQuery with a value.
-     */
-    void getPermissionProp(PropQuery query);
+	// ---------------------------------------------------------------------------
+	// -- Permissions
+	// ---------------------------------------------------------------------------
 
-    /**
-     * Create a group within a zone
-     *
-     * @param groupName Name of the group
-     * @param zoneName  Name of the zone the group is under
-     * @param prefix    Chat prefix
-     * @param suffix    Chat suffix
-     * @param parent    Parent group
-     * @param priority  Priority that the group should be checked in
-     * @return Group created
-     */
-    Group createGroupInZone(String groupName, String zoneName, String prefix, String suffix, String parent, int priority);
+	/**
+	 * Checks a permission for a player
+	 * 
+	 * @param player
+	 * @param permissionNode
+	 */
+	boolean checkPermission(EntityPlayer player, String permissionNode);
 
-    /**
-     * Set a permission for a player
-     *
-     * @param username   The player's username
-     * @param permission The permission node name
-     * @param allow      Is the permission allowed or denied
-     * @param zoneID     The zone in which the permission takes effect
-     * @return
-     */
-    String setPlayerPermission(String username, String permission, boolean allow, String zoneID);
+	/**
+	 * Gets a permission-property for a player
+	 * 
+	 * @param player
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	String getPermissionProperty(EntityPlayer player, String permissionNode);
 
-    /**
-     * Set a permission for a group
-     *
-     * @param username   The group name
-     * @param permission The permission node name
-     * @param allow      Is the permission allowed or denied
-     * @param zoneID     The zone in which the permission takes effect
-     * @return
-     */
-    String setGroupPermission(String group, String permission, boolean allow, String zoneID);
+	// ---------------------------------------------------------------------------
 
-    /**
-     * Set a permission prop for a player
-     *
-     * @param username   The player's username
-     * @param permission The permission node name
-     * @param value      Value of the permission prop
-     * @param zoneID     The zone in which the permission takes effect
-     * @return
-     */
-    String setPlayerPermissionProp(String username, String permission, String value, String zoneID);
+	/**
+	 * Checks a permission for a player
+	 * 
+	 * @param ident
+	 * @param permissionNode
+	 */
+	boolean checkPermission(UserIdent ident, String permissionNode);
 
-    /**
-     * Set a permission for a player
-     *
-     * @param username   The player's username
-     * @param permission The permission node name
-     * @param value      Value of the permission prop
-     * @param zoneID     The zone in which the permission takes effect
-     * @return
-     */
-    String setGroupPermissionProp(String group, String permission, String value, String zoneID);
+	/**
+	 * Gets a permission-property for a player
+	 * 
+	 * @param ident
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	String getPermissionProperty(UserIdent ident, String permissionNode);
 
-    ArrayList<Group> getApplicableGroups(EntityPlayer player, boolean includeDefaults);
+	/**
+	 * Gets a permission-property for a player as integer
+	 * 
+	 * @param ident
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	Integer getPermissionPropertyInt(UserIdent ident, String permissionNode);
 
-    ArrayList<Group> getApplicableGroups(String player, boolean includeDefaults, String zoneID);
+	// ---------------------------------------------------------------------------
 
-    Group getGroupForName(String name);
+	/**
+	 * Checks a permission for a player at a certain position
+	 * 
+	 * @param ident
+	 * @param targetPoint
+	 * @param permissionNode
+	 */
+	boolean checkPermission(UserIdent ident, WorldPoint targetPoint, String permissionNode);
 
-    Group getHighestGroup(EntityPlayer player);
+	/**
+	 * Gets a permission-property for a player at a certain position
+	 * 
+	 * @param ident
+	 * @param targetPoint
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	String getPermissionProperty(UserIdent ident, WorldPoint targetPoint, String permissionNode);
 
-    ArrayList<String> getPlayersInGroup(String group, String zone);
+	// ---------------------------------------------------------------------------
 
-    String setPlayerGroup(String group, String player, String zone);
+	/**
+	 * Checks a permission for a player in a certain area
+	 * 
+	 * @param ident
+	 * @param targetArea
+	 * @param permissionNode
+	 */
+	boolean checkPermission(UserIdent ident, WorldArea targetArea, String permissionNode);
 
-    String addPlayerToGroup(String group, String player, String zone);
+	/**
+	 * Gets a permission-property for a player in a certain area
+	 * 
+	 * @param ident
+	 * @param targetArea
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	String getPermissionProperty(UserIdent ident, WorldArea targetArea, String permissionNode);
 
-    String clearPlayerGroup(String group, String player, String zone);
+	// ---------------------------------------------------------------------------
 
-    String clearPlayerPermission(String player, String node, String zone);
+	/**
+	 * Checks a permission for a player in the specified zone
+	 * 
+	 * @param ident
+	 * @param zone
+	 * @param permissionNode
+	 */
+	boolean checkPermission(UserIdent ident, Zone zone, String permissionNode);
 
-    String clearPlayerPermissionProp(String player, String node, String zone);
+	/**
+	 * Gets a permission-property for a player in the specified zone
+	 * 
+	 * @param ident
+	 * @param zone
+	 * @param permissionNode
+	 * @return property, if it exists, null otherwise
+	 */
+	String getPermissionProperty(UserIdent ident, Zone zone, String permissionNode);
 
-    void deleteGroupInZone(String group, String zone);
+	// ---------------------------------------------------------------------------
 
-    boolean updateGroup(Group group);
+	/**
+	 * Sets a player permission
+	 * 
+	 * @param ident
+	 * @param permissionNode
+	 * @param value
+	 */
+	void setPlayerPermission(UserIdent ident, String permissionNode, boolean value);
 
-    String clearGroupPermission(String name, String node, String zone);
+	/**
+	 * Sets a player permission-property
+	 * 
+	 * @param ident
+	 * @param permissionNode
+	 * @param value
+	 */
+	void setPlayerPermissionProperty(UserIdent ident, String permissionNode, String value);
 
-    String clearGroupPermissionProp(String name, String node, String zone);
+	/**
+	 * Sets a group permission
+	 * 
+	 * @param group Group name
+	 * @param permissionNode
+	 * @param value
+	 */
+	void setGroupPermission(String group, String permissionNode, boolean value);
 
-    ArrayList<Group> getGroupsInZone(String zoneName);
+	/**
+	 * Sets a group permission-property
+	 * 
+	 * @param group
+	 * @param permissionNode
+	 * @param value
+	 */
+	void setGroupPermissionProperty(String group, String permissionNode, String value);
 
-    String getPermissionForGroup(String target, String zone, String perm);
+	/**
+	 * Registers a permission property
+	 * 
+	 * @param permissionNode
+	 * @param defaultValue
+	 */
+	void registerPermissionProperty(String permissionNode, String defaultValue);
 
-    String getPermissionPropForGroup(String target, String zone, String perm);
+	// ---------------------------------------------------------------------------
 
-    String getPermissionForPlayer(String target, String zone, String perm);
+	/**
+	 * Get all registered zones
+	 */
+	Collection<Zone> getZones();
 
-    String getPermissionPropForPlayer(String target, String zone, String perm);
+	/**
+	 * Returns a zone by it's ID
+	 * 
+	 * @return Zone or null
+	 */
+	Zone getZoneById(int id);
 
-    ArrayList getPlayerPermissions(String target, String zone);
+	/**
+	 * Returns a zone by it's ID as string. It the string is no valid integer, it returns null.
+	 * 
+	 * @return Zone or null
+	 */
+	Zone getZoneById(String id);
 
-    ArrayList getPlayerPermissionProps(String target, String zone);
+	/**
+	 * Returns the {@link ServerZone}
+	 */
+	ServerZone getServerZone();
 
-    ArrayList getGroupPermissions(String target, String zone);
+	/**
+	 * Returns the {@link WorldZone} for the specified world
+	 * 
+	 * @param world
+	 */
+	WorldZone getWorldZone(World world);
 
-    ArrayList getGroupPermissionProps(String target, String zone);
+	/**
+	 * Returns the {@link WorldZone} for the specified world
+	 * 
+	 * @param dimensionId
+	 */
+	WorldZone getWorldZone(int dimensionId);
 
-    String getEPPrefix();
+	// ---------------------------------------------------------------------------
 
-    void setEPPrefix(String ePPrefix);
+	/**
+	 * Get zones that cover the point. Result is ordered by priority.
+	 * 
+	 * @param worldPoint
+	 */
+	List<Zone> getZonesAt(WorldPoint worldPoint);
 
-    String getEPSuffix();
+	/**
+	 * Get area-zones that cover the point. Result is ordered by priority.
+	 * 
+	 * @param worldPoint
+	 */
+	List<AreaZone> getAreaZonesAt(WorldPoint worldPoint);
 
-    void setEPSuffix(String ePSuffix);
+	/**
+	 * Get zones with the highest priority, that covers the point.
+	 * 
+	 * @param worldPoint
+	 */
+	Zone getZoneAt(WorldPoint worldPoint);
 
-    Group getDEFAULT();
+	/**
+	 * Get area-zone with the highest priority, that covers the point.
+	 * 
+	 * @param worldPoint
+	 */
+	Zone getAreaZoneAt(WorldPoint worldPoint);
 
-    String getEntryPlayer();
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Checks, if a group exists
+	 * 
+	 * @param groupName
+	 * @return true, if the group exists
+	 */
+	boolean groupExists(String groupName);
+	
+	/**
+	 * Create a group
+	 * 
+	 * @param groupName
+	 */
+	void createGroup(String groupName);
+
+	/**
+	 * Add a player to a group
+	 * 
+	 * @param ident
+	 * @param group
+	 */
+	void addPlayerToGroup(UserIdent ident, String group);
+
+	/**
+	 * Remove a player from a group
+	 * 
+	 * @param ident
+	 * @param group
+	 */
+	void removePlayerFromGroup(UserIdent ident, String group);
+
+	/**
+	 * Returns the highest-priority group the the player belongs to.
+	 * 
+	 * @param ident
+	 */
+	String getPrimaryGroup(UserIdent ident);
+
+	/**
+	 * Get all groups the player belongs to, ordered by priority.
+	 * 
+	 * @param ident
+	 */
+	Set<String> getPlayerGroups(UserIdent ident);
+
+	// ---------------------------------------------------------------------------
+
 }

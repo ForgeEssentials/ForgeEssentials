@@ -10,28 +10,28 @@ public class PlayerInvChest extends InventoryBasic {
 
     public PlayerInvChest(EntityPlayerMP owner, EntityPlayerMP vieuwer)
     {
-        super(owner.username + "'s inventory", false, owner.inventory.mainInventory.length);
+        super(owner.getCommandSenderName() + "'s inventory", false, owner.inventory.mainInventory.length);
         this.owner = owner;
         this.vieuwer = vieuwer;
     }
 
     @Override
-    public void openChest()
+    public void openInventory()
     {
-        InvSeeMisk.register(this);
+        CommandsEventHandler.register(this);
         allowUpdate = false;
         for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
         {
             setInventorySlotContents(id, owner.inventory.mainInventory[id]);
         }
         allowUpdate = true;
-        super.openChest();
+        super.openInventory();
     }
 
     @Override
-    public void closeChest()
+    public void closeInventory()
     {
-        InvSeeMisk.remove(this);
+        CommandsEventHandler.remove(this);
         if (allowUpdate)
         {
             for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
@@ -39,14 +39,14 @@ public class PlayerInvChest extends InventoryBasic {
                 owner.inventory.mainInventory[id] = getStackInSlot(id);
             }
         }
-        onInventoryChanged();
-        super.closeChest();
+        markDirty();
+        super.closeInventory();
     }
 
     @Override
-    public void onInventoryChanged()
+    public void markDirty()
     {
-        super.onInventoryChanged();
+        super.markDirty();
         if (allowUpdate)
         {
             for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
@@ -64,6 +64,6 @@ public class PlayerInvChest extends InventoryBasic {
             setInventorySlotContents(id, owner.inventory.mainInventory[id]);
         }
         allowUpdate = true;
-        onInventoryChanged();
+        markDirty();
     }
 }

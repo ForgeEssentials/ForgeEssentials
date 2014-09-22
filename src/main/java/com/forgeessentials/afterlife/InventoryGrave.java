@@ -1,10 +1,10 @@
 package com.forgeessentials.afterlife;
 
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.item.ItemStack;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.item.ItemStack;
 
 public class InventoryGrave extends InventoryBasic {
     private Grave grave;
@@ -16,7 +16,7 @@ public class InventoryGrave extends InventoryBasic {
     }
 
     @Override
-    public void openChest()
+    public void openInventory()
     {
         for (int i = 0; i < getSizeInventory(); i++)
         {
@@ -31,11 +31,11 @@ public class InventoryGrave extends InventoryBasic {
             }
         }
 
-        super.openChest();
+        super.openInventory();
     }
 
     @Override
-    public void closeChest()
+    public void closeInventory()
     {
         List<ItemStack> list = new ArrayList<ItemStack>();
         for (int i = 0; i < getSizeInventory(); i++)
@@ -50,6 +50,6 @@ public class InventoryGrave extends InventoryBasic {
 
         grave.checkGrave();
         grave.setOpen(false);
-        super.closeChest();
+        super.closeInventory();
     }
 }

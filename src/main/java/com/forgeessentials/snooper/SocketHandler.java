@@ -1,16 +1,21 @@
 package com.forgeessentials.snooper;
 
-import com.forgeessentials.api.json.JSONException;
-import com.forgeessentials.api.json.JSONObject;
-import com.forgeessentials.api.snooper.Response;
-import com.forgeessentials.util.OutputHandler;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-public class SocketHandler extends Thread {
+import com.forgeessentials.api.snooper.Response;
+import com.forgeessentials.util.OutputHandler;
+import com.google.common.base.Charsets;
+import com.google.common.io.ByteStreams;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+
+public class SocketHandler extends Thread
+{
     private SocketListner listner;
     public Socket socket;
     private OutputStream os;
@@ -28,6 +33,7 @@ public class SocketHandler extends Thread {
     public void run()
     {
         OutputHandler.debug("Snooper connection: " + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort());
+        JsonParser parser = new JsonParser();
 
         try
         {
@@ -35,22 +41,20 @@ public class SocketHandler extends Thread {
             os = socket.getOutputStream();
 
             int i = is.read();
-            byte[] inBuffer = new byte[is.available()];
-            is.read(inBuffer);
-            String inString = new String(inBuffer);
+            String inString = new String(ByteStreams.toByteArray(is), Charsets.UTF_8);
             String inDecr = Security.decrypt(inString, ModuleSnooper.key);
 
             String out;
             try
             {
-                out = Security.encrypt(getResponce((byte) i, new JSONObject(inDecr)), ModuleSnooper.key);
+                out = Security.encrypt(getResponce(i, parser.parse(inDecr)), ModuleSnooper.key);
             }
             catch (Exception e)
             {
-                out = Security.encrypt(getResponce((byte) i, new JSONObject()), ModuleSnooper.key);
+                out = Security.encrypt(getResponce(i, new JsonObject()), ModuleSnooper.key);
             }
 
-            os.write(out.getBytes());
+            os.write(out.getBytes(Charsets.UTF_8));
             os.flush();
         }
         catch (Exception e)
@@ -60,17 +64,17 @@ public class SocketHandler extends Thread {
         close();
     }
 
-    private String getResponce(byte i, JSONObject input)
+    private String getResponce(int i, JsonElement jsonElement)
     {
         try
         {
             Response responce = ResponseRegistry.getResponse(i);
             if (responce.allowed)
             {
-                return responce.getResponce(input).toString();
+                return responce.getResponse(jsonElement.getAsJsonObject()).toString();
             }
         }
-        catch (JSONException e)
+        catch (JsonParseException e)
         {
             e.printStackTrace();
         }

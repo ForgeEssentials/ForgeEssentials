@@ -1,26 +1,28 @@
 package com.forgeessentials.chat.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.IPlayerTracker;
-import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTracker {
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+
+public class CommandPm extends ForgeEssentialsCommandBase {
     private static Map<String, String> persistentMessage;
     private List<String> aliasList;
 
@@ -30,7 +32,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
         persistentMessage = new HashMap<String, String>();
         aliasList = new LinkedList<String>();
         aliasList.add("persistentmessage");
-        GameRegistry.registerPlayerTracker(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     public static boolean isMessagePersistent(String username)
@@ -65,7 +67,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
             }
             else
             {
-                EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (receiver == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -131,7 +133,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
             }
             else
             {
-                EntityPlayerMP target = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP target = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (target == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -182,7 +184,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
             }
             else
             {
-                EntityPlayer target = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayer target = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (target == null)
                 {
                     OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -199,7 +201,7 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
         }
         if (args.length > 1)
         {
-            EntityPlayer receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayer receiver = UserIdent.getPlayerByMatch(sender, args[0]);
             if (receiver == null)
             {
                 OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -243,11 +245,11 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-        return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, getCommandPerm()));
+        return PermissionsManager.checkPermission(player, getPermissionNode());
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.chat." + getCommandName();
     }
@@ -258,25 +260,10 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
         return null;
     }
 
-    @Override
-    public void onPlayerLogin(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
-    }
-
-    @Override
-    public void onPlayerLogout(EntityPlayer player)
-    {
-        persistentMessage.remove(player.username);
-    }
-
-    @Override
-    public void onPlayerChangedDimension(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void onPlayerRespawn(EntityPlayer player)
-    {
+        persistentMessage.remove(e.player.getPersistentID());
     }
 
     @Override
@@ -287,9 +274,9 @@ public class CommandPm extends ForgeEssentialsCommandBase implements IPlayerTrac
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 }

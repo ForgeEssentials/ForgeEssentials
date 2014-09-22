@@ -1,20 +1,21 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.HashMap;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.HashMap;
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandPotion extends FEcmdModuleCommands {
     public static HashMap<String, Integer> names;
@@ -88,9 +89,9 @@ public class CommandPotion extends FEcmdModuleCommands {
         {
             sender.addPotionEffect(eff);
         }
-        else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+        else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
 
             if (player != null)
             {
@@ -123,7 +124,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         dur = parseIntWithMin(sender, args[2], 0) * 20;
         PotionEffect eff = new PotionEffect(ID, dur, ampl);
 
-        EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+        EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
 
         if (player != null)
         {
@@ -161,13 +162,13 @@ public class CommandPotion extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
+        PermissionsManager.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

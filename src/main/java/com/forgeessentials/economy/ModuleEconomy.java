@@ -3,12 +3,12 @@ package com.forgeessentials.economy;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.network.FEServerPacketHandler;
 import com.forgeessentials.economy.commands.*;
+import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import cpw.mods.fml.common.IPlayerTracker;
-import cpw.mods.fml.common.registry.GameRegistry;
+import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 import java.io.File;
 
@@ -23,14 +23,16 @@ public class ModuleEconomy {
     @FEModule.ModuleDir
     public static File moduleDir;
 
-    public static int startbuget;
+    public static int startbudget;
+
+    public static int psfPrice;
 
     @FEModule.Init
     public void load(FEModuleInitEvent e)
     {
         APIRegistry.wallet = new WalletHandler();
-        GameRegistry.registerPlayerTracker((IPlayerTracker) APIRegistry.wallet);
-        FEServerPacketHandler.registerPacket(4, PacketEconomy.class);
+        FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
+
     }
 
     @FEModule.ServerInit
@@ -44,5 +46,12 @@ public class ModuleEconomy {
         e.registerServerCommand(new CommandPaidCommand());
         e.registerServerCommand(new CommandSellCommand());
         e.registerServerCommand(new CommandMoney());
+        PlotManager.load();
+    }
+
+    @FEModule.ServerStop
+    public void serverStop(FEModuleServerStopEvent e)
+    {
+        PlotManager.save();
     }
 }

@@ -1,14 +1,14 @@
 package com.forgeessentials.core;
 
+import java.io.File;
+
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.TeleportCenter;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
-import java.io.File;
-import java.util.logging.Level;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CoreConfig {
     public static final File mainconfig = new File(ForgeEssentials.FEDIR, "main.cfg");
@@ -41,14 +41,6 @@ public class CoreConfig {
         prop.comment = "Activates developer debug mode. Spams your FML logs.";
         OutputHandler.debugmode = prop.getBoolean(false);
 
-        prop = config.get("Core", "mcstats", true);
-        prop.comment = "If you don't want to send feedback to MCstats, set to false. Optionally, use the opt-out setting located in PluginMetrics.cfg in your minecraft folder.";
-        ForgeEssentials.mcstats = prop.getBoolean(true);
-
-        prop = config.get("Core", "logLevel", "" + Level.FINE);
-        prop.comment = "ForgeEssentials LogLevel. Valid values: OFF, FINE, FINER, FINEST, WARNING, SEVERE, ALL, OFF";
-        OutputHandler.felog.setLevel(getLevel(prop.getString()));
-
         prop = config.get("Core", "modlistLocation", "modlist.txt");
         prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
         ForgeEssentials.modlistLocation = prop.getString();
@@ -59,11 +51,11 @@ public class CoreConfig {
 
         prop = config.get("Core.Misc", "tpWarmup", 5);
         prop.comment = "The amount of time you need to stand still to TP.";
-        TeleportCenter.tpWarmup = prop.getInt(5);
+        TeleportCenter.setTeleportWarmup(prop.getInt(5));
 
         prop = config.get("Core.Misc", "tpCooldown", 5);
         prop.comment = "The amount of time you need to wait to TP again.";
-        TeleportCenter.tpCooldown = prop.getInt(5);
+        TeleportCenter.setTeleportCooldown(prop.getInt(5));
 
         prop = config.get("Core.Misc", "MajoritySleep", true);
         prop.comment = "If +50% of players sleep, make it day.";
@@ -76,46 +68,6 @@ public class CoreConfig {
         groupRankFormat = config.get("Core.groups", "rank", "[{...<:>_GLOBAL_}]").getString();
 
         config.save();
-    }
-
-    private Level getLevel(String val)
-    {
-        if (val.equalsIgnoreCase("INFO"))
-        {
-            return Level.INFO;
-        }
-        else if (val.equalsIgnoreCase("WARNING"))
-        {
-            return Level.WARNING;
-        }
-        else if (val.equalsIgnoreCase("SEVERE"))
-        {
-            return Level.SEVERE;
-        }
-        else if (val.equalsIgnoreCase("FINE"))
-        {
-            return Level.FINE;
-        }
-        else if (val.equalsIgnoreCase("FINER"))
-        {
-            return Level.FINER;
-        }
-        else if (val.equalsIgnoreCase("FINEST"))
-        {
-            return Level.FINEST;
-        }
-        else if (val.equalsIgnoreCase("ALL"))
-        {
-            return Level.ALL;
-        }
-        else if (val.equalsIgnoreCase("OFF"))
-        {
-            return Level.OFF;
-        }
-        else
-        {
-            return Level.INFO;
-        }
     }
 
     /**

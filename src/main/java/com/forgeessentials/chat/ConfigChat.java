@@ -1,15 +1,16 @@
 package com.forgeessentials.chat;
 
+import java.io.File;
+import java.util.Arrays;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
-import java.io.File;
-import java.util.Arrays;
 
 public class ConfigChat extends ModuleConfigBase {
     public static String chatFormat;

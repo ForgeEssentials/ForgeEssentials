@@ -1,14 +1,15 @@
 package com.forgeessentials.core.commands.selections;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.util.Arrays;
 import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 
 public class CommandDeselect extends ForgeEssentialsCommandBase {
 
@@ -27,7 +28,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        PlayerInfo info = PlayerInfo.getPlayerInfo(sender.username);
+        PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
         info.clearSelection();
 
         OutputHandler.chatConfirmation(sender, "Selection cleared.");
@@ -40,7 +41,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.core.pos.deselect";
     }
@@ -53,9 +54,9 @@ public class CommandDeselect extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 }

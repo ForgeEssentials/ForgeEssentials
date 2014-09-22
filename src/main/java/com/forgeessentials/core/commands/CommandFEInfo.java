@@ -1,14 +1,15 @@
 package com.forgeessentials.core.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.Data;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.forgeessentials.core.preloader.asm.FEeventAdder;
 import com.forgeessentials.util.ChatUtils;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 
 public class CommandFEInfo extends ForgeEssentialsCommandBase {
 
@@ -31,7 +32,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.core.info";
     }
@@ -47,21 +48,14 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
         }
         else if (args[0].equalsIgnoreCase("debug"))
         {
-            try
+            if (FEeventAdder.addedPlace)
             {
-                if (FEeventAdder.addedPlace)
-                {
-                    ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was added.");
-                }
-                else
-                {
-                    ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was NOT added. Some functions might not work!");
-                    ChatUtils.sendMessage(sender, "The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemStack.class.getName() + "'.");
-                }
+                ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was added.");
             }
-            catch (Exception ex)
+            else
             {
-                ChatUtils.sendMessage(sender, "Error finding custom event 'PlayerBlockPlace'");
+                ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was NOT added. Some functions might not work!");
+                ChatUtils.sendMessage(sender, "The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemStack.class.getName() + "'.");
             }
             ChatUtils.sendMessage(sender, "This output is also in your FML logs.");
         }
@@ -81,10 +75,9 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
 }

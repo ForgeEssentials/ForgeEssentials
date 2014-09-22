@@ -1,18 +1,18 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import java.util.ArrayList;
+
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.permissions.PermissionsManager;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
+import com.forgeessentials.util.selections.WorldPoint;
 
 @SaveableObject
 public class Grave {
@@ -44,7 +44,7 @@ public class Grave {
     {
         key = point.toString();
         this.point = point;
-        owner = player.username;
+        owner = player.getUniqueID().toString();
         if (Deathchest.enableXP)
         {
             xp = player.experienceLevel;
@@ -63,13 +63,6 @@ public class Grave {
         deathchest.gravemap.put(point.toString(), this);
     }
 
-    @Reconstructor
-    private static Grave reconstruct(IReconstructData tag)
-    {
-        return new Grave(tag.getUniqueKey(), tag.getFieldValue("point"), tag.getFieldValue("owner"), tag.getFieldValue("inv"), tag.getFieldValue("xp"),
-                tag.getFieldValue("protTime"), tag.getFieldValue("protEnable"));
-    }
-
     private Grave(String key, Object point, Object owner, Object inv, Object xp, Object protTime, Object protEnable)
     {
         this.key = key;
@@ -79,6 +72,13 @@ public class Grave {
         this.xp = (Integer) xp;
         this.protTime = (Integer) protTime;
         this.protEnable = (Boolean) protEnable;
+    }
+
+    @Reconstructor
+    private static Grave reconstruct(IReconstructData tag)
+    {
+        return new Grave(tag.getUniqueKey(), tag.getFieldValue("point"), tag.getFieldValue("owner"), tag.getFieldValue("inv"), tag.getFieldValue("xp"),
+                tag.getFieldValue("protTime"), tag.getFieldValue("protEnable"));
     }
 
     public void checkGrave()
@@ -116,11 +116,11 @@ public class Grave {
         {
             return true;
         }
-        if (player.username.equals(owner))
+        if (player.getUniqueID().toString().equals(owner))
         {
             return true;
         }
-        if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, Deathchest.PERMISSION_BYPASS)))
+        if (PermissionsManager.checkPermission(player, Deathchest.PERMISSION_BYPASS))
         {
             return true;
         }

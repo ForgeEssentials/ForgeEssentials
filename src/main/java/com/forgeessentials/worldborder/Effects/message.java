@@ -1,10 +1,11 @@
 package com.forgeessentials.worldborder.Effects;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.worldborder.WorldBorder;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.Configuration;
 
 public class message implements IEffect {
     private String message = "You passed the world border!";

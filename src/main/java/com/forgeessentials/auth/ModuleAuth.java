@@ -1,10 +1,14 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
+import java.util.HashSet;
+import java.util.UUID;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.auth.lists.CommandVIP;
 import com.forgeessentials.auth.lists.CommandWhiteList;
-import com.forgeessentials.auth.lists.PlayerTracker;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Config;
@@ -15,11 +19,8 @@ import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
 import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 import com.forgeessentials.util.tasks.TaskRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraftforge.common.MinecraftForge;
 
-import java.util.HashSet;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, configClass = AuthConfig.class)
 public class ModuleAuth {
@@ -33,18 +34,12 @@ public class ModuleAuth {
     public static boolean canMoveWithoutLogin;
 
     public static VanillaServiceChecker vanillaCheck;
-    private static EncryptionHelper pwdEnc;
-
-    private static LoginHandler loginHandler;
-    private static AuthEventHandler eventHandler;
-
-    public static HashSet<String> unLogged = new HashSet<String>();
-    public static HashSet<String> unRegistered = new HashSet<String>();
-
+    public static HashSet<UUID> unLogged = new HashSet<UUID>();
+    public static HashSet<UUID> unRegistered = new HashSet<UUID>();
     public static String salt = EncryptionHelper.generateSalt();
-
     public static int checkInterval;
-
+    private static EncryptionHelper pwdEnc;
+    private static AuthEventHandler handler;
     private static boolean oldEnabled = false;
 
     @PreInit
@@ -61,12 +56,7 @@ public class ModuleAuth {
     public void load(FEModuleInitEvent e)
     {
         pwdEnc = new EncryptionHelper();
-        eventHandler = new AuthEventHandler();
-
-        loginHandler = new LoginHandler();
-        GameRegistry.registerPlayerTracker(loginHandler);
-        GameRegistry.registerPlayerTracker(new PlayerTracker());
-
+        handler = new AuthEventHandler();
     }
 
     @ServerInit
@@ -83,11 +73,11 @@ public class ModuleAuth {
         }
 
         onStatusChange();
-
-        APIRegistry.permReg.registerPermissionLevel("fe.auth.admin", RegGroup.OWNERS);
-        APIRegistry.permReg.registerPermissionLevel("fe.auth", RegGroup.GUESTS);
-        APIRegistry.permReg.registerPermissionLevel("fe.auth.vip", null);
-        APIRegistry.permReg.registerPermissionLevel("fe.auth.whitelist", RegGroup.GUESTS);
+        
+        PermissionsManager.registerPermission("fe.auth.admin", RegisteredPermValue.OP);
+        PermissionsManager.registerPermission("fe.auth", RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission("fe.auth.vip", null);
+        PermissionsManager.registerPermission("fe.auth.whitelist", RegisteredPermValue.TRUE);
     }
 
     public static boolean vanillaMode()
@@ -121,11 +111,13 @@ public class ModuleAuth {
 
         if (isEnabled())
         {
-            MinecraftForge.EVENT_BUS.register(eventHandler);
+            MinecraftForge.EVENT_BUS.register(handler);
+            FMLCommonHandler.instance().bus().register(handler);
         }
         else
         {
-            MinecraftForge.EVENT_BUS.unregister(eventHandler);
+            MinecraftForge.EVENT_BUS.unregister(handler);
+            FMLCommonHandler.instance().bus().unregister(handler);
         }
     }
 

@@ -11,7 +11,7 @@ public class PermissionDeniedException extends CommandException {
 
     public PermissionDeniedException()
     {
-        super("You don't have permission for that.", new Object[] { });
+        super("You don't have permissions for that.", new Object[] { });
     }
 
     public PermissionDeniedException(String par1Str, Object... par2ArrayOfObj)

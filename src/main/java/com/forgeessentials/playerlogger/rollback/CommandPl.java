@@ -1,17 +1,19 @@
 package com.forgeessentials.playerlogger.rollback;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.playerlogger.network.PacketPlayerLogger;
 import com.forgeessentials.util.ChatUtils;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import com.forgeessentials.util.FunctionHelper;
 
-import java.util.Arrays;
-import java.util.List;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Main playerlogger command. Still WIP
@@ -61,7 +63,7 @@ public class CommandPl extends ForgeEssentialsCommandBase {
             sender.getEntityData().setBoolean("lb", false);
         }
 
-        PacketDispatcher.sendPacketToPlayer(new PacketPlayerLogger(sender).getPayload(), (Player) sender);
+        FunctionHelper.netHandler.sendTo(new PacketPlayerLogger.Message(sender), (EntityPlayerMP)sender);
     }
 
     @Override
@@ -71,7 +73,7 @@ public class CommandPl extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.pl.command";
     }
@@ -100,9 +102,9 @@ public class CommandPl extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 }

@@ -1,29 +1,30 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
+import java.io.File;
+import java.io.PrintWriter;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.io.File;
-import java.io.PrintWriter;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.modules.FEModuleInitEvent;
+import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+
+import java.util.Timer;
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup {
     @FEModule.Config
@@ -34,50 +35,7 @@ public class ModuleBackup {
 
     public static File baseFolder;
 
-    @FEModule.Init
-    public void load(FEModuleInitEvent e)
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-        TickRegistry.registerTickHandler(new WorldSaver(), Side.SERVER);
-    }
-
-    @FEModule.ServerInit
-    public void serverStarting(FEModuleServerInitEvent e)
-    {
-        e.registerServerCommand(new CommandBackup());
-        if (BackupConfig.autoInterval != 0)
-        {
-            new AutoBackup();
-        }
-        if (BackupConfig.worldSaveInterval != 0)
-        {
-            new AutoWorldSave();
-        }
-        makeReadme();
-
-        APIRegistry.permReg.registerPermissionLevel("fe.backup.msg", RegGroup.GUESTS);
-    }
-
-    @ForgeSubscribe
-    public void worldUnload(WorldEvent.Unload e)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer())
-        {
-            if (BackupConfig.backupOnWorldUnload)
-            {
-                new Backup((WorldServer) e.world, false).run();
-            }
-        }
-    }
-
-    @ForgeSubscribe
-    public void worldLoad(WorldEvent.Load e)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer())
-        {
-            ((WorldServer) e.world).canNotSave = !BackupConfig.worldSaving;
-        }
-    }
+    private Timer timer = new Timer();
 
     public static void msg(String msg)
     {
@@ -99,8 +57,8 @@ public class ModuleBackup {
             ServerConfigurationManager manager = server.getConfigurationManager();
             for (String username : manager.getAllUsernames())
             {
-                EntityPlayerMP player = manager.getPlayerForUsername(username);
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(player, "ForgeEssentials.backup.msg")))
+                EntityPlayerMP player = manager.func_152612_a(username);
+                if (PermissionsManager.checkPermission(player, "ForgeEssentials.backup.msg"))
                 {
                     ChatUtils.sendMessage(player, EnumChatFormatting.AQUA + "[ForgeEssentials] " + msg);
                 }
@@ -108,6 +66,51 @@ public class ModuleBackup {
         }
         catch (Exception e)
         {
+        }
+    }
+
+    @FEModule.Init
+    public void load(FEModuleInitEvent e)
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(new WorldSaver());
+    }
+
+    @FEModule.ServerInit
+    public void serverStarting(FEModuleServerInitEvent e)
+    {
+        e.registerServerCommand(new CommandBackup());
+        if (BackupConfig.autoInterval != 0)
+        {
+            timer.schedule(new AutoBackup(), BackupConfig.autoInterval*60*1000, BackupConfig.autoInterval*60*1000);
+        }
+        if (BackupConfig.worldSaveInterval != 0)
+        {
+            timer.schedule(new AutoWorldSave(), BackupConfig.worldSaveInterval*60*1000, BackupConfig.worldSaveInterval*60*1000);
+        }
+        makeReadme();
+
+        PermissionsManager.registerPermission("fe.backup.msg", RegisteredPermValue.TRUE);
+    }
+
+    @SubscribeEvent
+    public void worldUnload(WorldEvent.Unload e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+        {
+            if (BackupConfig.backupOnWorldUnload)
+            {
+                new Backup((WorldServer) e.world, false).run();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void worldLoad(WorldEvent.Load e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+        {
+            ((WorldServer) e.world).levelSaving = !BackupConfig.worldSaving;
         }
     }
 

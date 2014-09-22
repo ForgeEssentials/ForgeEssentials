@@ -1,10 +1,11 @@
 package com.forgeessentials.util.events.modules;
 
+import java.io.File;
+
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleContainer;
-import cpw.mods.fml.common.event.FMLStateEvent;
 
-import java.io.File;
+import cpw.mods.fml.common.event.FMLStateEvent;
 
 public abstract class FEModuleEvent {
     protected ModuleContainer container;

@@ -1,82 +1,79 @@
 package com.forgeessentials.core.network;
 
-import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.util.AreaSelector.Point;
+import io.netty.buffer.ByteBuf;
+
 import com.forgeessentials.util.OutputHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.world.WorldServer;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.Point;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketSelectionUpdate extends ForgeEssentialsPacket {
-    public static final byte packetID = 0;
-
-    private Packet250CustomPayload packet;
-
-    public PacketSelectionUpdate(PlayerInfo info)
-    {
-        packet = new Packet250CustomPayload();
-
-        ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
-        DataOutputStream stream = new DataOutputStream(streambyte);
-
-        try
-        {
-            stream.write(packetID);
-
-            if (info != null && info.getPoint1() != null)
-            {
-                Point p1 = info.getPoint1();
-                stream.writeBoolean(true);
-                stream.writeDouble(p1.x);
-                stream.writeDouble(p1.y);
-                stream.writeDouble(p1.z);
-            }
-            else
-            {
-                stream.writeBoolean(false);
-            }
-
-            if (info != null && info.getPoint2() != null)
-            {
-                Point p2 = info.getPoint2();
-                stream.writeBoolean(true);
-                stream.writeDouble(p2.x);
-                stream.writeDouble(p2.y);
-                stream.writeDouble(p2.z);
-            }
-            else
-            {
-                stream.writeBoolean(false);
-            }
-
-            stream.close();
-            streambyte.close();
-
-            packet.channel = FECHANNEL;
-            packet.data = streambyte.toByteArray();
-            packet.length = packet.data.length;
-        }
-
-        catch (Exception e)
-        {
-            OutputHandler.felog.info("Error creating packet >> " + this.getClass());
-        }
-    }
-
-    public static void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException
-    {
-        // should never be received here.
-    }
+public class PacketSelectionUpdate implements IMessageHandler<PacketSelectionUpdate.Message, IMessage> {
 
     @Override
-    public Packet250CustomPayload getPayload()
+    public IMessage onMessage(PacketSelectionUpdate.Message message, MessageContext context)
     {
-        return packet;
+        return null;
+    }
+
+    public static class Message implements IMessage {
+        private PlayerInfo info;
+
+        public Message()
+        {
+        }
+
+        public Message(PlayerInfo info)
+        {
+            this.info = info;
+        }
+
+        @Override
+        public void fromBytes(ByteBuf byteBuf)
+        {
+            // noop - sending only
+        }
+
+        @Override
+        public void toBytes(ByteBuf byteBuf)
+        {
+            try
+            {
+                if (info != null && info.getPoint1() != null)
+                {
+                    Point p1 = info.getPoint1();
+                    byteBuf.writeBoolean(true);
+                    byteBuf.writeDouble(p1.getX());
+                    byteBuf.writeDouble(p1.getY());
+                    byteBuf.writeDouble(p1.getZ());
+                }
+                else
+                {
+                    byteBuf.writeBoolean(false);
+                }
+
+                if (info != null && info.getPoint2() != null)
+                {
+                    Point p2 = info.getPoint2();
+                    byteBuf.writeBoolean(true);
+                    byteBuf.writeDouble(p2.getX());
+                    byteBuf.writeDouble(p2.getY());
+                    byteBuf.writeDouble(p2.getZ());
+                }
+                else
+                {
+                    byteBuf.writeBoolean(false);
+                }
+            }
+
+            catch (Exception e)
+            {
+                OutputHandler.felog.info("Error creating packet >> " + this.getClass());
+            }
+
+        }
     }
 
 }

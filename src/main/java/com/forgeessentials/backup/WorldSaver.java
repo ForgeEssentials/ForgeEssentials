@@ -1,18 +1,19 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import java.util.EnumSet;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
+import com.forgeessentials.util.OutputHandler;
 
-public class WorldSaver implements ITickHandler {
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+
+public class WorldSaver {
     public static String start;
     public static String done;
     public static String failed;
@@ -20,6 +21,11 @@ public class WorldSaver implements ITickHandler {
     private static boolean isSaving;
 
     private static ConcurrentLinkedQueue<Integer> worlds = new ConcurrentLinkedQueue<Integer>();
+
+    public WorldSaver()
+    {
+        // nthing
+    }
 
     public static void addWorldNeedsSave(World world)
     {
@@ -31,21 +37,15 @@ public class WorldSaver implements ITickHandler {
         worlds.add(id);
     }
 
-    public WorldSaver()
+    public static boolean isSaving()
     {
-        // nthing
+        return isSaving;
     }
 
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData)
+    @SubscribeEvent
+    public void tickEndEvent(TickEvent.WorldTickEvent e)
     {
-        // nothing.
-    }
-
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData)
-    {
-        WorldServer world = (WorldServer) tickData[0];
+        WorldServer world = (WorldServer) e.world;
         // it needs saving. save it.
         String name = world.provider.getDimensionName();
         int id = world.provider.dimensionId;
@@ -53,18 +53,18 @@ public class WorldSaver implements ITickHandler {
         {
             isSaving = true;
             ModuleBackup.msg(String.format(start, name));
-            boolean bl = world.canNotSave;
-            world.canNotSave = false;
+            boolean bl = world.levelSaving;
+            world.levelSaving = false;
             try
             {
                 world.saveAllChunks(true, (IProgressUpdate) null);
             }
-            catch (MinecraftException e)
+            catch (MinecraftException e1)
             {
-                OutputHandler.exception(Level.SEVERE, String.format(failed, name), e);
+                OutputHandler.exception(Level.SEVERE, String.format(failed, name), e1);
                 ModuleBackup.msg(String.format(failed, name));
             }
-            world.canNotSave = bl;
+            world.levelSaving = bl;
 
             while (worlds.remove(id))
             {
@@ -73,22 +73,5 @@ public class WorldSaver implements ITickHandler {
             isSaving = false;
             ModuleBackup.msg(String.format(done, name));
         }
-    }
-
-    @Override
-    public EnumSet<TickType> ticks()
-    {
-        return EnumSet.of(TickType.WORLD);
-    }
-
-    @Override
-    public String getLabel()
-    {
-        return "ForgeEssentials-ModuleBackup-WorldSaver";
-    }
-
-    public static boolean isSaving()
-    {
-        return isSaving;
     }
 }

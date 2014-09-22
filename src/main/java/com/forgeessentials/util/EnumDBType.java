@@ -1,8 +1,8 @@
 package com.forgeessentials.util;
 
-import com.google.common.base.Throwables;
-
 import java.util.IllegalFormatException;
+
+import com.google.common.base.Throwables;
 
 public enum EnumDBType {
     H2_FILE(false, "org.h2.Driver", "jdbc:h2:file:%s;IGNORECASE=TRUE;FILE_LOCK=NO;MODE=MYSQL"), // file

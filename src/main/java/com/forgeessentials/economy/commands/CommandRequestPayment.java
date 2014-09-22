@@ -1,17 +1,19 @@
 package com.forgeessentials.economy.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandRequestPayment extends ForgeEssentialsCommandBase {
 
@@ -26,7 +28,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player == null)
             {
                 ChatUtils.sendMessage(sender, args[0] + " not found!");
@@ -34,9 +36,10 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
             else
             {
                 int amount = parseIntWithMin(sender, args[1], 0);
-                OutputHandler.chatConfirmation(sender, "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.username + ".");
+                OutputHandler.chatConfirmation(sender,
+                        "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.getCommandSenderName() + ".");
                 OutputHandler.chatConfirmation(player,
-                        "You been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.username + ".");
+                        "You have been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.getCommandSenderName() + ".");
             }
         }
         else
@@ -50,7 +53,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player == null)
             {
                 ChatUtils.sendMessage(sender, args[0] + " not found!");
@@ -58,9 +61,10 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
             else
             {
                 int amount = parseIntWithMin(sender, args[1], 0);
-                OutputHandler.chatConfirmation(sender, "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.username + ".");
+                OutputHandler.chatConfirmation(sender,
+                        "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.getCommandSenderName() + ".");
                 OutputHandler.chatConfirmation(player,
-                        "You been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.username + ".");
+                        "You been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.getCommandSenderName() + ".");
             }
         }
         else
@@ -76,7 +80,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.economy." + getCommandName();
     }
@@ -102,9 +106,9 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 }

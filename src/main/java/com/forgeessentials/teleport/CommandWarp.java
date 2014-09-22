@@ -1,21 +1,18 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.PlayerInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.teleport.util.Warp;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.TeleportCenter;
+import com.forgeessentials.util.*;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import java.util.List;
 
@@ -48,18 +45,18 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         {
             if (TeleportDataManager.warps.containsKey(args[0].toLowerCase()))
             {
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+                if (PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
                 {
                     Warp warp = TeleportDataManager.warps.get(args[0].toLowerCase());
-                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.username);
-                    playerInfo.back = new WarpPoint(sender);
-                    CommandBack.justDied.remove(sender.username);
+                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
+                    playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
+                    CommandBack.justDied.remove(sender.getPersistentID());
                     TeleportCenter.addToTpQue(warp.getPoint(), sender);
                 }
                 else
                 {
                     OutputHandler.chatError(sender,
-                            "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
+                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                 }
             }
             else
@@ -69,7 +66,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 2)
         {
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+            if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
             {
                 if (args[0].equalsIgnoreCase("set"))
                 {
@@ -108,7 +105,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
             else
             {
                 OutputHandler.chatError(sender,
-                        "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
+                        "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
             }
         }
     }
@@ -120,11 +117,11 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         {
             if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
             {
-                EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+                EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
                 if (player != null)
                 {
                     Warp warp = TeleportDataManager.warps.get(args[1].toLowerCase());
-                    PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+                    PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
                     TeleportCenter.addToTpQue(warp.getPoint(), player);
                 }
                 else
@@ -152,7 +149,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport.warp";
     }
@@ -175,16 +172,16 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
 
-        return "/warp [name] OR <set|del> <name> Teleports you to a warp point. You can also manipulate warps if you have permission.";
+        return "/warp [name] OR <set|del> <name> Teleports you to a warp point. You can also manipulate warps if you have permissions.";
     }
 
 }

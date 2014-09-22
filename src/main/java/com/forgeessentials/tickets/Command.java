@@ -1,20 +1,20 @@
 package com.forgeessentials.tickets;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.TeleportCenter;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumChatFormatting;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class Command extends ForgeEssentialsCommandBase {
     @Override
@@ -151,7 +151,7 @@ public class Command extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return ModuleTickets.PERMBASE + ".command";
     }
@@ -185,7 +185,7 @@ public class Command extends ForgeEssentialsCommandBase {
     {
         if (sender instanceof EntityPlayer)
         {
-            return APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm));
+            return PermissionsManager.checkPermission((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm);
         }
         else
         {
@@ -209,9 +209,9 @@ public class Command extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.GUESTS;
+        return RegisteredPermValue.TRUE;
     }
 }

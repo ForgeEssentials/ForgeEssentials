@@ -2,73 +2,78 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
-import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.core.compat.EnvironmentChecker;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.compat.EnvironmentChecker;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 public class WandController {
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
-    public void playerInteractEvent(PlayerInteractEvent event)
-    {
-        // if worldedit is installed, don't do anything
-        if (EnvironmentChecker.worldEditFEtoolsInstalled)
-        {
-            return;
-        }
 
-        // only server events please.
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-        {
-            return;
-        }
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void playerInteractEvent(PlayerInteractEvent event)
+	{
+		// if worldedit is installed, don't do anything
+		// and only handle server events
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient() || EnvironmentChecker.worldEditFEtoolsInstalled)
+			return;
 
-        // get info now rather than later
-        EntityPlayer player = event.entityPlayer;
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player.username);
+		// get info now rather than later
+		EntityPlayer player = event.entityPlayer;
+		PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
 
-        int id = player.getCurrentEquippedItem() == null ? 0 : player.getCurrentEquippedItem().itemID;
-        int damage = 0;
-        if (id != 0 && player.getCurrentEquippedItem().getHasSubtypes())
-        {
-            damage = player.getCurrentEquippedItem().getItemDamage();
-        }
+		if (!info.isWandEnabled())
+			return;
 
-        if (id != info.wandID || !info.wandEnabled || damage != info.wandDmg)
-        {
-            return; // wand does not activate
-        }
+		// Check if wand should activate
+		if (player.getCurrentEquippedItem() == null)
+		{
+			if (info.getWandID() != null)
+				return;
+		}
+		else
+		{
+			if (!(player.getCurrentEquippedItem().getItem().getUnlocalizedName().equals(info.getWandID())))
+				return;
+			if (player.getCurrentEquippedItem().getItemDamage() != info.getWandDmg())
+				return;
+		}
 
-        Point point = new Point(event.x, event.y, event.z);
+		WorldPoint point = new WorldPoint(player.dimension, event.x, event.y, event.z);
+		if (!APIRegistry.perms.checkPermission(new UserIdent(player), point, "ForgeEssentials.CoreCommands.select.pos"))
+		{
+			OutputHandler.chatError(player,
+					"You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
+			return;
+		}
 
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, "ForgeEssentials.CoreCommands.select.pos", point)))
-        {
-            OutputHandler.chatError(player,
-                    "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
-            return;
-        }
+		// left Click
+		if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
+		{
+			info.setPoint1(point);
+			IChatComponent format = ChatUtils.createFromText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
+			player.addChatMessage(ChatUtils.colourize(format, EnumChatFormatting.DARK_PURPLE));
+			event.setCanceled(true);
+		}
+		// right Click
+		else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
+		{
+			info.setPoint2(point);
+			IChatComponent format = ChatUtils.createFromText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
+			player.addChatMessage(ChatUtils.colourize(format, EnumChatFormatting.DARK_PURPLE));
+			event.setCanceled(true);
+		}
+	}
 
-        // left Click
-        if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
-        {
-            info.setPoint1(point);
-            player.addChatMessage(EnumChatFormatting.DARK_PURPLE + "Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
-            event.setCanceled(true);
-        }
-        // right Click
-        else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
-        {
-            info.setPoint2(point);
-            player.addChatMessage(EnumChatFormatting.DARK_PURPLE + "Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
-            event.setCanceled(true);
-        }
-    }
 }

@@ -1,8 +1,16 @@
 package com.forgeessentials.data.typeInfo;
 
-import com.forgeessentials.data.api.*;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.data.api.IReconstructData;
+import com.forgeessentials.data.api.ITypeInfo;
+import com.forgeessentials.data.api.TypeData;
+
+import cpw.mods.fml.common.registry.GameData;
 
 public class TypeInfoItemStack implements ITypeInfo<ItemStack> {
     private static final String SIZE = "stackSize";
@@ -25,7 +33,7 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack> {
         TypeData data = DataStorageManager.getDataForType(new ClassContainer(ItemStack.class));
 
         data.putField(SIZE, stack.stackSize);
-        data.putField(ITEM, stack.itemID);
+        data.putField(ITEM, stack.getUnlocalizedName());
         data.putField(DAMAGE, stack.getItemDamage());
         data.putField(COMPOUND, stack.getTagCompound());
 
@@ -68,10 +76,10 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack> {
     public ItemStack reconstruct(IReconstructData data)
     {
         int size = (Integer) data.getFieldValue(SIZE);
-        int item = (Integer) data.getFieldValue(ITEM);
+        String item = (String) data.getFieldValue(ITEM);
         int damage = (Integer) data.getFieldValue(DAMAGE);
 
-        ItemStack stack = new ItemStack(item, size, damage);
+        ItemStack stack = new ItemStack((Item)GameData.getItemRegistry().getObject(item), size, damage);
 
         // TODO: when NBTs are saveable
         NBTTagCompound nbt = (NBTTagCompound) data.getFieldValue(COMPOUND);

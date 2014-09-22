@@ -1,9 +1,5 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
@@ -11,11 +7,21 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.tileentity.*;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityDispenser;
+import net.minecraft.tileentity.TileEntityDropper;
+import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.world.World;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.registry.GameData;
 
 public class CommandDrop extends FEcmdModuleCommands {
     public String getCommandName()
@@ -57,30 +63,30 @@ public class CommandDrop extends FEcmdModuleCommands {
         }
         else if (var1 instanceof TileEntity)
         {
-            var3 = ((TileEntity) var1).worldObj;
+            var3 = ((TileEntity) var1).getWorldObj();
             var4 = (int) this.func_82368_a(var1, ((TileEntity) var1).xCoord, var2[0]);
             var5 = (int) this.func_82367_a(var1, ((TileEntity) var1).yCoord, var2[1], 0, 0);
             var6 = (int) this.func_82368_a(var1, ((TileEntity) var1).zCoord, var2[2]);
         }
-        int var7 = parseIntWithMin(var1, var2[3], 1);
+        String var7 = var2[3];
         int var8 = parseIntWithMin(var1, var2[4], 0);
-        int var9 = parseIntBounded(var1, var2[5], 1, Item.itemsList[var7].getItemStackLimit());
+        int var9 = parseIntBounded(var1, var2[5], 1, GameData.getItemRegistry().getObject(var7).getItemStackLimit());
         int var11;
         ItemStack var10000;
 
-        if (((World) var3).getBlockTileEntity(var4, var5, var6) instanceof TileEntityChest)
+        if (((World) var3).getTileEntity(var4, var5, var6) instanceof TileEntityChest)
         {
-            TileEntityChest var10 = (TileEntityChest) ((World) var3).getBlockTileEntity(var4, var5, var6);
+            TileEntityChest var10 = (TileEntityChest) ((World) var3).getTileEntity(var4, var5, var6);
 
             for (var11 = 0; var11 < var10.getSizeInventory(); ++var11)
             {
                 if (var10.getStackInSlot(var11) == null)
                 {
-                    var10.setInventorySlotContents(var11, new ItemStack(var7, var9, var8));
+                    var10.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
                     break;
                 }
 
-                if (var10.getStackInSlot(var11).itemID == var7 && var10.getStackInSlot(var11).getItemDamage() == var8)
+                if (var10.getStackInSlot(var11).getUnlocalizedName() == var7 && var10.getStackInSlot(var11).getItemDamage() == var8)
                 {
                     if (var10.getStackInSlot(var11).getMaxStackSize() - var10.getStackInSlot(var11).stackSize >= var9)
                     {
@@ -94,19 +100,19 @@ public class CommandDrop extends FEcmdModuleCommands {
                 }
             }
         }
-        else if (((World) var3).getBlockTileEntity(var4, var5, var6) instanceof TileEntityDropper)
+        else if (((World) var3).getTileEntity(var4, var5, var6) instanceof TileEntityDropper)
         {
-            TileEntityDropper var13 = (TileEntityDropper) ((World) var3).getBlockTileEntity(var4, var5, var6);
+            TileEntityDropper var13 = (TileEntityDropper) ((World) var3).getTileEntity(var4, var5, var6);
 
             for (var11 = 0; var11 < var13.getSizeInventory(); ++var11)
             {
                 if (var13.getStackInSlot(var11) == null)
                 {
-                    var13.setInventorySlotContents(var11, new ItemStack(var7, var9, var8));
+                    var13.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
                     break;
                 }
 
-                if (var13.getStackInSlot(var11).itemID == var7 && var13.getStackInSlot(var11).getItemDamage() == var8)
+                if (var13.getStackInSlot(var11).getUnlocalizedName() == var7 && var13.getStackInSlot(var11).getItemDamage() == var8)
                 {
                     if (var13.getStackInSlot(var11).getMaxStackSize() - var13.getStackInSlot(var11).stackSize >= var9)
                     {
@@ -120,19 +126,19 @@ public class CommandDrop extends FEcmdModuleCommands {
                 }
             }
         }
-        else if (((World) var3).getBlockTileEntity(var4, var5, var6) instanceof TileEntityDispenser)
+        else if (((World) var3).getTileEntity(var4, var5, var6) instanceof TileEntityDispenser)
         {
-            TileEntityDispenser var14 = (TileEntityDispenser) ((World) var3).getBlockTileEntity(var4, var5, var6);
+            TileEntityDispenser var14 = (TileEntityDispenser) ((World) var3).getTileEntity(var4, var5, var6);
 
             for (var11 = 0; var11 < var14.getSizeInventory(); ++var11)
             {
                 if (var14.getStackInSlot(var11) == null)
                 {
-                    var14.setInventorySlotContents(var11, new ItemStack(var7, var9, var8));
+                    var14.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
                     break;
                 }
 
-                if (var14.getStackInSlot(var11).itemID == var7 && var14.getStackInSlot(var11).getItemDamage() == var8)
+                if (var14.getStackInSlot(var11).getUnlocalizedName() == var7 && var14.getStackInSlot(var11).getItemDamage() == var8)
                 {
                     if (var14.getStackInSlot(var11).getMaxStackSize() - var14.getStackInSlot(var11).stackSize >= var9)
                     {
@@ -146,20 +152,20 @@ public class CommandDrop extends FEcmdModuleCommands {
                 }
             }
         }
-        else if (((World) var3).getBlockTileEntity(var4, var5, var6) instanceof TileEntityHopper)
+        else if (((World) var3).getTileEntity(var4, var5, var6) instanceof TileEntityHopper)
         {
-            TileEntityHopper var12 = (TileEntityHopper) ((World) var3).getBlockTileEntity(var4, var5, var6);
+            TileEntityHopper var12 = (TileEntityHopper) ((World) var3).getTileEntity(var4, var5, var6);
 
             for (var11 = 0; var11 < var12.getSizeInventory(); ++var11)
             {
                 if (var12.getStackInSlot(var11) == null)
                 {
-                    var12.setInventorySlotContents(var11, new ItemStack(var7, var9, var8));
+                    var12.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
                     var9 = 0;
                     break;
                 }
 
-                if (var12.getStackInSlot(var11).itemID == var7 && var12.getStackInSlot(var11).getItemDamage() == var8)
+                if (var12.getStackInSlot(var11).getUnlocalizedName() == var7 && var12.getStackInSlot(var11).getItemDamage() == var8)
                 {
                     if (var12.getStackInSlot(var11).getMaxStackSize() - var12.getStackInSlot(var11).stackSize >= var9)
                     {
@@ -229,15 +235,15 @@ public class CommandDrop extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.username);
+        EntityPlayerMP playermp = UserIdent.getPlayerByMatch(sender, sender.getCommandSenderName());
         processCommand(playermp, args);
     }
 

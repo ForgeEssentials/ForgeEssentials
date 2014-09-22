@@ -1,12 +1,5 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.TickTaskPulseHelper;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.tasks.TaskRegistry;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
@@ -15,6 +8,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.world.World;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.util.TickTaskPulseHelper;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.tasks.TaskRegistry;
 
 public class CommandPulse extends FEcmdModuleCommands {
     public String getCommandName()
@@ -41,7 +42,7 @@ public class CommandPulse extends FEcmdModuleCommands {
                 var3 = (int) this.func_82368_a(var1, (double) ((TileEntityCommandBlock) var1).xCoord, var2[0]);
                 var4 = (int) this.func_82367_a(var1, (double) ((TileEntityCommandBlock) var1).yCoord, var2[1], 0, 0);
                 var5 = (int) this.func_82368_a(var1, (double) ((TileEntityCommandBlock) var1).zCoord, var2[2]);
-                var11 = ((TileEntityCommandBlock) var1).worldObj;
+                var11 = ((TileEntityCommandBlock) var1).getWorldObj();
             }
             else if (var1 instanceof EntityPlayerMP)
             {
@@ -116,15 +117,15 @@ public class CommandPulse extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        EntityPlayerMP playermp = FunctionHelper.getPlayerForName(sender, sender.username);
+        EntityPlayerMP playermp = UserIdent.getPlayerByMatch(sender, sender.getCommandSenderName());
         processCommand(playermp, args);
     }
 

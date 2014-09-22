@@ -2,15 +2,17 @@ package com.forgeessentials.util;
 
 //Depreciated
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class BlockSaveable {
+	
     private int x;
     private int y;
     private int z;
-    private short blockID;
+    private Block blockID;
     private byte metadata;
     private NBTTagCompound tile;
 
@@ -27,10 +29,10 @@ public class BlockSaveable {
         this.x = x;
         this.y = y;
         this.z = z;
-        blockID = (short) world.getBlockId(x, y, z);
+        blockID = world.getBlock(x, y, z);
         metadata = (byte) world.getBlockMetadata(x, y, z);
 
-        TileEntity entity = world.getBlockTileEntity(x, y, z);
+        TileEntity entity = world.getTileEntity(x, y, z);
         if (entity != null)
         {
             try
@@ -77,17 +79,12 @@ public class BlockSaveable {
         }
 
         world.setBlock(x, y, z, blockID, metadata, 3);
-        TileEntity entity = world.getBlockTileEntity(x, y, z);
+        TileEntity entity = world.getTileEntity(x, y, z);
         if (entity != null && tile != null)
         {
             entity.readFromNBT(tile);
         }
 
         return true;
-    }
-
-    public boolean isAir()
-    {
-        return blockID == 0;
     }
 }

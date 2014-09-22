@@ -1,22 +1,23 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import java.util.HashMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.HashMap;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandGetCommandBook extends FEcmdModuleCommands {
     public static String joinAliases(Object[] par0ArrayOfObj)
@@ -59,7 +60,7 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
 
         HashMap<String, String> map = new HashMap<String, String>();
 
-        if (sender.inventory.hasItemStack(new ItemStack(Item.writtenBook)))
+        if (sender.inventory.hasItemStack(new ItemStack(Items.written_book)))
         {
             int i = 0;
             for (ItemStack e : sender.inventory.mainInventory)
@@ -88,14 +89,14 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
 			 * =========================
 			 * [GOLD] /commandName
 			 * [GOLD] aliases
-			 * [DARKRED] permission
+			 * [DARKRED] permissions
 			 * [Black] usage
 			 */
 
             // Cast to command
             ICommand cmd = (ICommand) cmdObj;
 
-            // Skip commands for which the user has no permission
+            // Skip commands for which the user has no permissions
             if (!cmd.canCommandSenderUseCommand(sender))
             {
                 continue;
@@ -114,10 +115,10 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
                 text += EnumChatFormatting.GOLD + "No aliases.\n\n";
             }
 
-            // Display permission node (If applicable)
+            // Display permissions node (If applicable)
             if (cmd instanceof ForgeEssentialsCommandBase)// Was: FEcmdModuleCommands
             {
-                text += EnumChatFormatting.DARK_RED + ((ForgeEssentialsCommandBase) cmd).getCommandPerm() + "\n\n";
+                text += EnumChatFormatting.DARK_RED + ((ForgeEssentialsCommandBase) cmd).getPermissionNode() + "\n\n";
             }
 
             // Display usage
@@ -133,14 +134,14 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString("", name + map.get(name)));
+            pages.appendTag(new NBTTagString(name + map.get(name)));
         }
 
         tag.setString("author", "ForgeEssentials");
         tag.setString("title", "CommandBook");
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Item.writtenBook);
+        ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         sender.inventory.addItemStackToInventory(is);
     }
@@ -152,9 +153,9 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.GUESTS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

@@ -1,18 +1,20 @@
 package com.forgeessentials.economy.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandPay extends ForgeEssentialsCommandBase {
     @Override
@@ -26,7 +28,7 @@ public class CommandPay extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player == null)
             {
                 ChatUtils.sendMessage(sender, args[0] + " not found!");
@@ -38,11 +40,12 @@ public class CommandPay extends ForgeEssentialsCommandBase {
             else
             {
                 int amount = parseIntWithMin(sender, args[1], 0);
-                if (APIRegistry.wallet.getWallet(sender.username) >= amount)
+                if (APIRegistry.wallet.getWallet(sender.getPersistentID()) >= amount)
                 {
-                    APIRegistry.wallet.removeFromWallet(amount, sender.username);
-                    APIRegistry.wallet.addToWallet(amount, player.username);
-                    OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + APIRegistry.wallet.currency(amount));
+                    APIRegistry.wallet.removeFromWallet(amount, sender.getPersistentID());
+                    APIRegistry.wallet.addToWallet(amount, player.getPersistentID());
+                    OutputHandler.chatConfirmation(sender,
+                            "You have payed " + player.getCommandSenderName() + " " + amount + " " + APIRegistry.wallet.currency(amount));
                     OutputHandler.chatConfirmation(player,
                             "You have been payed " + amount + " " + APIRegistry.wallet.currency(amount) + " by " + sender.getCommandSenderName());
                 }
@@ -63,10 +66,10 @@ public class CommandPay extends ForgeEssentialsCommandBase {
     {
         if (args.length == 2)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (PlayerSelector.hasArguments(args[0]))
             {
-                player = FunctionHelper.getPlayerForName(sender, args[0]);
+                player = UserIdent.getPlayerByMatch(sender, args[0]);
             }
             if (player == null)
             {
@@ -75,8 +78,9 @@ public class CommandPay extends ForgeEssentialsCommandBase {
             else
             {
                 int amount = parseIntWithMin(sender, args[1], 0);
-                APIRegistry.wallet.addToWallet(amount, player.username);
-                OutputHandler.chatConfirmation(sender, "You have payed " + player.username + " " + amount + " " + APIRegistry.wallet.currency(amount));
+                APIRegistry.wallet.addToWallet(amount, player.getPersistentID());
+                OutputHandler
+                        .chatConfirmation(sender, "You have payed " + player.getCommandSenderName() + " " + amount + " " + APIRegistry.wallet.currency(amount));
                 OutputHandler.chatConfirmation(player,
                         "You have been payed " + amount + " " + APIRegistry.wallet.currency(amount) + " by " + sender.getCommandSenderName());
             }
@@ -94,7 +98,7 @@ public class CommandPay extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.economy." + getCommandName();
     }
@@ -120,9 +124,9 @@ public class CommandPay extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 }

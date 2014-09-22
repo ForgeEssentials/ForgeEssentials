@@ -5,13 +5,13 @@ import com.forgeessentials.client.PlayerInfoClient;
 import com.forgeessentials.client.util.ClientPoint;
 import com.forgeessentials.client.util.ClientSelection;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.ForgeSubscribe;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL12;
 @SideOnly(value = Side.CLIENT)
 public class CUIRenderrer {
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void render(RenderWorldLastEvent event)
     {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;

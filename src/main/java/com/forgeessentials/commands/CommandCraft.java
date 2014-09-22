@@ -1,12 +1,13 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.ContainerCheatyWorkbench;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.packet.Packet100OpenWindow;
+import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.ContainerCheatyWorkbench;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
 
 public class CommandCraft extends FEcmdModuleCommands {
     @Override
@@ -19,8 +20,8 @@ public class CommandCraft extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
         EntityPlayerMP player = (EntityPlayerMP) sender;
-        player.incrementWindowID();
-        player.playerNetServerHandler.sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 1, "Crafting", 9, true));
+        player.getNextWindowId();
+        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 1, "Crafting", 9, true));
         player.openContainer = new ContainerCheatyWorkbench(player.inventory, player.worldObj);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addCraftingToCrafters(player);
@@ -38,9 +39,9 @@ public class CommandCraft extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

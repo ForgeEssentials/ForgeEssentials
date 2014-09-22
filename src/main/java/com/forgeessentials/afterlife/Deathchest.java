@@ -1,39 +1,40 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
-import net.minecraft.block.Block;
+import java.util.HashMap;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet100OpenWindow;
+import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.permissions.PermissionsManager;
 
-import java.util.HashMap;
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.WorldPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class Deathchest {
     /**
-     * This permission is needed to get the skull, Default = members.
+     * This permissions is needed to get the skull, Default = members.
      */
     public static final String PERMISSION_MAKE = ModuleAfterlife.BASEPERM + ".deathchest.make";
 
     /**
-     * This is the permission that allows you to bypass the protection timer.
+     * This is the permissions that allows you to bypass the protection timer.
      */
     public static final String PERMISSION_BYPASS = ModuleAfterlife.BASEPERM + ".deathchest.protectionBypass";
 
@@ -49,7 +50,7 @@ public class Deathchest {
     {
         TileEntity.addMapping(FEskullTe.class, "FESkull");
         MinecraftForge.EVENT_BUS.register(this);
-        TickRegistry.registerScheduledTickHandler(new GraveProtectionTicker(this), Side.SERVER);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     public void load()
@@ -69,14 +70,14 @@ public class Deathchest {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void handleDeath(PlayerDropsEvent e)
     {
         if (!enable)
         {
             return;
         }
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(e.entityPlayer, PERMISSION_MAKE)))
+        if (!PermissionsManager.checkPermission(e.entityPlayer, PERMISSION_MAKE))
         {
             return;
         }
@@ -88,42 +89,45 @@ public class Deathchest {
         }
         if (enableFencePost)
         {
-            while (world.getBlockMaterial(point.x, point.y, point.z) == Material.water || world.getBlockMaterial(point.x, point.y, point.z) == Material.lava)
+            while (world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial() == Material.water
+                    || world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial() == Material.lava)
             {
-                point.y++;
+                point.setY(point.getY() + 1);
             }
-            if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable() && world.getBlockMaterial(point.x, point.y + 1, point.z).isReplaceable())
+            if (world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial().isReplaceable() && world.getBlock(point.getX(), point.getY() + 1, point.getZ()).getMaterial()
+                    .isReplaceable())
             {
                 e.setCanceled(true);
-                world.setBlock(point.x, point.y, point.z, Block.fence.blockID);
-                point.y++;
+                world.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.fence);
+                point.setY(point.getY() + 1);
                 new Grave(point, e.entityPlayer, e.drops, this);
-                world.setBlock(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
+                world.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.skull, 1, 1);
                 FEskullTe te = new FEskullTe();
-                te.setSkullType(3, e.entityPlayer.username);
-                world.setBlockTileEntity(point.x, point.y, point.z, te);
+                te.func_152106_a(e.entityPlayer.getGameProfile());
+                world.setTileEntity(point.getX(), point.getY(), point.getZ(), te);
                 return;
             }
         }
         else
         {
-            while (world.getBlockMaterial(point.x, point.y, point.z) == Material.water || world.getBlockMaterial(point.x, point.y, point.z) == Material.lava)
+            while (world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial() == Material.water
+                    || world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial() == Material.lava)
             {
-                point.y++;
+            	point.setY(point.getY() + 1);
             }
-            if (world.getBlockMaterial(point.x, point.y, point.z).isReplaceable())
+            if (world.getBlock(point.getX(), point.getY(), point.getZ()).getMaterial().isReplaceable())
             {
                 e.setCanceled(true);
-                world.setBlock(point.x, point.y, point.z, Block.skull.blockID, 1, 1);
+                world.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.skull, 1, 1);
                 FEskullTe te = new FEskullTe();
-                te.setSkullType(3, e.entityPlayer.username);
-                world.setBlockTileEntity(point.x, point.y, point.z, te);
+                te.func_152106_a(e.entityPlayer.getGameProfile());
+                world.setTileEntity(point.getX(), point.getY(), point.getZ(), te);
                 return;
             }
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void handleClick(PlayerInteractEvent e)
     {
         if (e.entity.worldObj.isRemote)
@@ -137,7 +141,7 @@ public class Deathchest {
             if (gravemap.containsKey(point.toString()))
             {
                 Grave grave = gravemap.get(point.toString());
-                if (e.entity.worldObj.getBlockId(e.x, e.y, e.z) == Block.skull.blockID)
+                if (e.entity.worldObj.getBlock(e.x, e.y, e.z) == Blocks.skull)
                 {
                     if (!grave.canOpen(e.entityPlayer))
                     {
@@ -157,16 +161,15 @@ public class Deathchest {
                         {
                             player.closeScreen();
                         }
-                        player.incrementWindowID();
+                        player.getNextWindowId();
                         grave.setOpen(true);
 
                         InventoryGrave invGrave = new InventoryGrave(grave);
-                        player.playerNetServerHandler.sendPacketToPlayer(
-                                new Packet100OpenWindow(player.currentWindowId, 0, invGrave.getInvName(), invGrave.getSizeInventory(), true));
+                        player.playerNetServerHandler.sendPacket(
+                                new S2DPacketOpenWindow(player.currentWindowId, 0, invGrave.getInventoryName(), invGrave.getSizeInventory(), true));
                         player.openContainer = new ContainerChest(player.inventory, invGrave);
                         player.openContainer.windowId = player.currentWindowId;
                         player.openContainer.addCraftingToCrafters(player);
-
                         e.setCanceled(true);
                     }
                 }
@@ -174,7 +177,7 @@ public class Deathchest {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void mineGrave(BreakEvent e)
     {
         WorldPoint point = new WorldPoint(e.world, e.x, e.y, e.z); // the grave, or fencepost if fence is enabled
@@ -189,7 +192,7 @@ public class Deathchest {
             if (gravemap.containsKey(point2.toString()))
             {
                 e.setCanceled(true);
-                if (e.world.getBlockId(e.x, e.y, e.z) == Block.fence.blockID)
+                if (e.world.getBlock(e.x, e.y, e.z) == Blocks.fence)
                 {
                     OutputHandler.chatError(e.getPlayer(), "You may not defile the grave of a player.");
                 }
@@ -233,8 +236,8 @@ public class Deathchest {
             {
                 try
                 {
-                    EntityItem entity = new EntityItem(DimensionManager.getWorld(grave.point.dim), grave.point.x, grave.point.y, grave.point.z, is);
-                    DimensionManager.getWorld(grave.point.dim).spawnEntityInWorld(entity);
+                    EntityItem entity = new EntityItem(DimensionManager.getWorld(grave.point.getDimension()), grave.point.getX(), grave.point.getY(), grave.point.getZ(), is);
+                    DimensionManager.getWorld(grave.point.getDimension()).spawnEntityInWorld(entity);
                 }
                 catch (Exception e)
                 {
@@ -242,10 +245,19 @@ public class Deathchest {
                 }
             }
         }
-        DimensionManager.getWorld(grave.point.dim).destroyBlock(grave.point.x, grave.point.y, grave.point.z, false);
+        DimensionManager.getWorld(grave.point.getDimension()).setBlock(grave.point.getX(), grave.point.getY() - 1, grave.point.getZ(), Blocks.air);
         if (enableFencePost)
         {
-            DimensionManager.getWorld(grave.point.dim).destroyBlock(grave.point.x, grave.point.y - 1, grave.point.z, false);
+            DimensionManager.getWorld(grave.point.getDimension()).setBlock(grave.point.getX(), grave.point.getY() - 1, grave.point.getZ(), Blocks.air);
+        }
+    }
+
+    @SubscribeEvent
+    public void tickGraves(TickEvent.ServerTickEvent e)
+    {
+        for (Grave grave : gravemap.values())
+        {
+            grave.tick();
         }
     }
 }

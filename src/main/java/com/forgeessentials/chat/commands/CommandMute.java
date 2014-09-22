@@ -1,16 +1,18 @@
 package com.forgeessentials.chat.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandMute extends ForgeEssentialsCommandBase {
     @Override
@@ -37,7 +39,7 @@ public class CommandMute extends ForgeEssentialsCommandBase {
     {
         if (args.length == 1)
         {
-            EntityPlayerMP receiver = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP receiver = UserIdent.getPlayerByMatch(sender, args[0]);
             if (receiver == null)
             {
                 OutputHandler.chatError(receiver, String.format("Player %s does not exist, or is not online.", args[0]));
@@ -45,7 +47,7 @@ public class CommandMute extends ForgeEssentialsCommandBase {
             }
             NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
             tag.setBoolean("mute", true);
-            receiver.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+            receiver.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
             OutputHandler.chatError(sender, String.format("You muted %s.", args[0]));
             OutputHandler.chatError(receiver, String.format("You were muted by %s.", sender.getCommandSenderName()));
         }
@@ -58,7 +60,7 @@ public class CommandMute extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.chat." + getCommandName();
     }
@@ -71,10 +73,10 @@ public class CommandMute extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
 }

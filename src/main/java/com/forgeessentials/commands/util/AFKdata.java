@@ -1,16 +1,17 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.commands.CommandAFK;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
 import net.minecraft.entity.player.EntityPlayerMP;
+
+import com.forgeessentials.commands.CommandAFK;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class AFKdata {
     public EntityPlayerMP player;
+    public boolean needstowait;
+    int waittime;
     private WorldPoint lastPos;
     private WorldPoint currentPos;
-    int waittime;
-    public boolean needstowait;
 
     public AFKdata(EntityPlayerMP player)
     {
@@ -24,7 +25,7 @@ public class AFKdata {
     {
         if (player == null)
         {
-            TickHandlerCommands.afkListToRemove.add(this);
+            CommandsEventHandler.afkListToRemove.add(this);
             return;
         }
 

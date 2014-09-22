@@ -1,69 +1,31 @@
 package com.forgeessentials.client.network;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.gui.GuiEconomy;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+public class C4PacketEconomy implements IMessageHandler<C4PacketEconomy.Message, IMessage> {
 
-public class C4PacketEconomy extends ForgeEssentialsPacketClient {
-
-    public static final byte packetID = 4;
-
-    private Packet250CustomPayload packet;
-
-    public C4PacketEconomy()
+    @Override public IMessage onMessage(C4PacketEconomy.Message message, MessageContext ctx)
     {
-
-        packet = new Packet250CustomPayload();
-
-        ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
-        DataOutputStream stream = new DataOutputStream(streambyte);
-
-        try
-        {
-            stream.write(packetID);
-            {
-                stream.writeBytes("REQUEST");
-
-                stream.close();
-                streambyte.close();
-
-                packet.channel = FECHANNEL;
-                packet.data = streambyte.toByteArray();
-                packet.length = packet.data.length;
-            }
-        }
-
-        catch (Exception e)
-        {
-            ForgeEssentialsClient.feclientlog.info("Error creating packet EconRequest");
-        }
+        return null;
     }
 
-    public static void readClient(DataInputStream stream, WorldClient world,
-            EntityPlayer player)
-    {
-        try
+    public static class Message implements IMessage {
+
+        public Message()
         {
-            GuiEconomy.amount = stream.readInt();
         }
-        catch (IOException e)
+
+        @Override
+        public void fromBytes(ByteBuf buf)
         {
-            ForgeEssentialsClient.feclientlog.severe("Failed to read packet EconRequest");
+            //GuiEconomy.amount = buf.readInt();
+        }
+
+        @Override public void toBytes(ByteBuf buf)
+        {
         }
     }
-
-    @Override
-    public Packet250CustomPayload getPayload()
-    {
-
-        return packet;
-    }
-
 }

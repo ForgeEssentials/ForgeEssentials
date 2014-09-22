@@ -1,8 +1,6 @@
 package com.forgeessentials.api;
 
-import com.forgeessentials.api.permissions.IPermRegHelper;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.permissions.IZoneManager;
 import com.forgeessentials.api.snooper.Response;
 import cpw.mods.fml.common.FMLLog;
 
@@ -25,12 +23,7 @@ public class APIRegistry {
     // Use to call API functions from the permissions module.
     public static IPermissionsHelper perms;
 
-    // Use to access the zone manager.
-    public static IZoneManager zones;
-
-    // Use to access permissions registration helper.
-    public static IPermRegHelper permReg;
-
+    private static Method ResponseRegistry_regsisterResponce;
 
     /**
      * Snooper method to register your responses.
@@ -52,32 +45,6 @@ public class APIRegistry {
         catch (Exception e)
         {
             FMLLog.warning("[FE API] Unable to register " + response.getName() + " with ID: " + ID);
-            e.printStackTrace();
-        }
-    }
-
-    private static Method ResponseRegistry_regsisterResponce;
-    private static Method PacketAnalyzerRegistry_register;
-
-    /**
-     * Register your packet analyzers here. No ID support.
-     *
-     * @param analyzer Your packet analyzer
-     */
-    public static void registerPacketAnalyzer(IPacketAnalyzer analyzer)
-    {
-        try
-        {
-            if (PacketAnalyzerRegistry_register == null)
-            {
-                PacketAnalyzerRegistry_register = Class.forName("com.forgeessentials.core.misc.PacketAnalyzerRegistry")
-                        .getMethod("register", IPacketAnalyzer.class);
-            }
-            PacketAnalyzerRegistry_register.invoke(null, analyzer);
-        }
-        catch (Exception e)
-        {
-            FMLLog.warning("[FE API] Unable to register packet analyzer " + analyzer.getClass().toString());
             e.printStackTrace();
         }
     }

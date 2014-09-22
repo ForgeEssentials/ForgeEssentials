@@ -1,13 +1,14 @@
 package com.forgeessentials.scripting;
 
+import java.util.TimerTask;
+
+import net.minecraft.server.MinecraftServer;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.util.tasks.TaskRegistry;
-import net.minecraft.server.MinecraftServer;
-
-import java.util.TimerTask;
 
 @SaveableObject
 public class TimedTask extends TimerTask {
@@ -34,7 +35,7 @@ public class TimedTask extends TimerTask {
     @Override
     public void run()
     {
-        MinecraftServer.getServer().executeCommand(command);
+        MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), command);
     }
 
     public TimedTask(Object interval, Object command, Object name)

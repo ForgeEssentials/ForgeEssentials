@@ -1,5 +1,9 @@
 package com.forgeessentials.worldborder;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
+import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.api.IReconstructData;
@@ -7,8 +11,7 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.AreaSelector.Point;
-import net.minecraft.entity.player.EntityPlayerMP;
+import com.forgeessentials.util.selections.Point;
 
 @SaveableObject
 public class WorldBorder {
@@ -35,9 +38,9 @@ public class WorldBorder {
      */
     public WorldBorder(Zone zone, Point center, int rad, byte shape)
     {
-        if (zone.isGlobalZone() || zone.isWorldZone())
+        if (zone instanceof ServerZone || zone instanceof WorldZone)
         {
-            this.zone = zone.getZoneName();
+            this.zone = zone.getName();
             this.center = center;
             this.rad = rad;
             shapeByte = shape;
@@ -45,15 +48,15 @@ public class WorldBorder {
         }
         else
         {
-            throw new RuntimeException(zone.getZoneName() + " is not the global zone or a worldzone");
+            throw new RuntimeException(zone.getName() + " is not the global zone or a worldzone");
         }
     }
 
     public WorldBorder(Zone zone)
     {
-        if (zone.isGlobalZone() || zone.isWorldZone())
+        if (zone instanceof ServerZone || zone instanceof WorldZone)
         {
-            this.zone = zone.getZoneName();
+            this.zone = zone.getName();
             center = new Point(0, 0, 0);
             rad = 0;
             shapeByte = 0;
@@ -61,7 +64,7 @@ public class WorldBorder {
         }
         else
         {
-            throw new RuntimeException(zone.getZoneName() + " is not the global zone or a worldzone");
+            throw new RuntimeException(zone.getName() + " is not the global zone or a worldzone");
         }
     }
 
@@ -91,21 +94,21 @@ public class WorldBorder {
         // 1 = square
         if (shapeByte == 1)
         {
-            if (player.posX < center.x - rad)
+            if (player.posX < center.getX() - rad)
             {
-                ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.x - rad), player);
+                ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.getX() - rad), player);
             }
-            if (player.posX > center.x + rad)
+            if (player.posX > center.getX() + rad)
             {
-                ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.x + rad), player);
+                ModuleWorldBorder.executeClosestEffects(this, player.posX - (center.getX() + rad), player);
             }
-            if (player.posZ < center.z - rad)
+            if (player.posZ < center.getZ() - rad)
             {
-                ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.z - rad), player);
+                ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.getZ() - rad), player);
             }
-            if (player.posZ > center.z + rad)
+            if (player.posZ > center.getZ() + rad)
             {
-                ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.z + rad), player);
+                ModuleWorldBorder.executeClosestEffects(this, player.posZ - (center.getZ() + rad), player);
             }
         }
         // 2 = round

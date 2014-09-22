@@ -1,19 +1,19 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.TeleportCenter;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandHome extends ForgeEssentialsCommandBase {
     @Override
@@ -27,7 +27,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
     {
         if (args.length == 0)
         {
-            WarpPoint home = PlayerInfo.getPlayerInfo(sender.username).home;
+            WarpPoint home = PlayerInfo.getPlayerInfo(sender.getPersistentID()).getHome();
             if (home == null)
             {
                 OutputHandler.chatError(sender, "No home set. Try this: [here|x, y, z]");
@@ -35,25 +35,25 @@ public class CommandHome extends ForgeEssentialsCommandBase {
             else
             {
                 EntityPlayerMP player = (EntityPlayerMP) sender;
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
-                playerInfo.back = new WarpPoint(player);
-                CommandBack.justDied.remove(player.username);
+                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
+                playerInfo.setLastTeleportOrigin(new WarpPoint(player));
+                CommandBack.justDied.remove(player.getPersistentID());
                 TeleportCenter.addToTpQue(home, player);
             }
         }
-        else if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".set")))
+        else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".set"))
         {
             if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
             {
                 WarpPoint p = new WarpPoint(sender);
-                PlayerInfo.getPlayerInfo(sender.username).home = p;
-                ChatUtils.sendMessage(sender, String.format("Home set to: %1$d, %2$d, %3$d", p.x, p.y, p.z));
+                PlayerInfo.getPlayerInfo(sender.getPersistentID()).setHome(p);
+                ChatUtils.sendMessage(sender, String.format("Home set to: %1$d, %2$d, %3$d", p.getX(), p.getY(), p.getZ()));
             }
         }
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport." + getCommandName();
     }
@@ -78,9 +78,9 @@ public class CommandHome extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

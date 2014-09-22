@@ -1,13 +1,15 @@
 package com.forgeessentials.snooper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.util.OutputHandler;
-
-import java.util.Collection;
-import java.util.HashMap;
+import com.google.common.collect.ImmutableMap;
 
 public class ResponseRegistry {
-    private static HashMap<Integer, Response> map = new HashMap<Integer, Response>();
+	
+    private static Map<Integer, Response> map = new HashMap<>();
 
     /**
      * Register a response for an ID. Use the API!
@@ -35,11 +37,11 @@ public class ResponseRegistry {
      * @param ID
      * @return
      */
-    public static Response getResponse(byte ID)
+    public static Response getResponse(int ID)
     {
-        if (map.containsKey((int) ID))
+        if (map.containsKey(ID))
         {
-            return map.get((int) ID);
+            return map.get(ID);
         }
         else
         {
@@ -52,8 +54,9 @@ public class ResponseRegistry {
      *
      * @return
      */
-    public static Collection<Response> getAllresponses()
+    @SuppressWarnings("unchecked")
+    public static ImmutableMap<Integer, Response> getAllResponses()
     {
-        return map.values();
+    	return ImmutableMap.copyOf(map);
     }
 }

@@ -1,8 +1,8 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import net.minecraft.command.ICommandSender;
-
 import java.io.File;
+
+import net.minecraft.command.ICommandSender;
 
 /**
  * The constructor of this should only set the file. Any creation of a Forge

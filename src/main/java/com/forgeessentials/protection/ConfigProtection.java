@@ -1,10 +1,11 @@
 package com.forgeessentials.protection;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
-
 import java.io.File;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
+
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 /**
  * This generates the configuration structure + an example file.
@@ -25,7 +26,7 @@ public class ConfigProtection extends ModuleConfigBase {
         config = new Configuration(file, true);
         String cat = "Protection";
 
-        config.addCustomCategoryComment(cat, "You can override the default permission values in the permissions config. (or in the database.)");
+        config.addCustomCategoryComment(cat, "You can override the default permissions values in the permissions config. (or in the database.)");
         ModuleProtection.enable = config.get(cat, "enable", true, "Guess what this does?").getBoolean(true);
         ModuleProtection.enableMobSpawns = config.get(cat, "enableMobCheck", false, "If the mobSpawn checking should be done or not.").getBoolean(true);
 
@@ -44,7 +45,7 @@ public class ConfigProtection extends ModuleConfigBase {
         config.load();
         String cat = "Protection";
 
-        config.addCustomCategoryComment(cat, "You can override the default permission values in the permissions config. (or in the database.)");
+        config.addCustomCategoryComment(cat, "You can override the default permissions values in the permissions config. (or in the database.)");
         ModuleProtection.enable = config.get(cat, "enable", true, "Guess what this does?").getBoolean(true);
         ModuleProtection.enableMobSpawns = config.get(cat, "enableMobCheck", true).getBoolean(true);
     }

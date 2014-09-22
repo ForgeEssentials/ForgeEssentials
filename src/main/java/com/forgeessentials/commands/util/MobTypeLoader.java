@@ -1,18 +1,20 @@
 package com.forgeessentials.commands.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Set;
+
+import net.minecraft.entity.passive.EntityTameable;
+
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.api.EnumMobType.FEMob;
 import com.forgeessentials.api.EnumMobType.FEMob.IsTamed;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
+
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import net.minecraft.entity.passive.EntityTameable;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Set;
 
 public class MobTypeLoader {
     public static void preLoad(FEModulePreInitEvent event)

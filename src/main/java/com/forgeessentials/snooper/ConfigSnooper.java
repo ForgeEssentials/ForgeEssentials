@@ -1,11 +1,12 @@
 package com.forgeessentials.snooper;
 
+import java.io.File;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
-
-import java.io.File;
 
 public class ConfigSnooper extends ModuleConfigBase {
     private Configuration config;
@@ -27,7 +28,7 @@ public class ConfigSnooper extends ModuleConfigBase {
 
         ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
 
-        for (Response response : ResponseRegistry.getAllresponses())
+        for (Response response : ResponseRegistry.getAllResponses().values())
         {
             String subCat = cat + "." + response.getName();
             response.allowed = config.get(subCat, "enable", true, "If false, this response won't be allowed on this server.").getBoolean(true);
@@ -45,7 +46,7 @@ public class ConfigSnooper extends ModuleConfigBase {
         config.get(cat, "hostname", "", "The query hostname/IP").set(ModuleSnooper.hostname);
         config.get(cat, "enable", false, "This one is obvious, don't you think?").set(ModuleSnooper.enable);
 
-        for (Response response : ResponseRegistry.getAllresponses())
+        for (Response response : ResponseRegistry.getAllResponses().values())
         {
             String subCat = cat + "." + response.getName();
             config.get(subCat, "enable", true, "If false, this response won't be allowed on this server.").set(response.allowed);
@@ -66,7 +67,7 @@ public class ConfigSnooper extends ModuleConfigBase {
 
         ModuleSnooper.enable = config.get(cat, "enable", false, "This one is obvious, don't you think?").getBoolean(false);
 
-        for (Response response : ResponseRegistry.getAllresponses())
+        for (Response response : ResponseRegistry.getAllResponses().values())
         {
             String subCat = cat + "." + response.getName();
             response.allowed = config.get(subCat, "enable", true, "If false, this response won't be allowed on this server.").getBoolean(true);

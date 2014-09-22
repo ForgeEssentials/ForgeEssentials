@@ -1,40 +1,30 @@
 package com.forgeessentials.chat.irc;
 
-import cpw.mods.fml.common.IPlayerTracker;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 
-public class PlayerEventHandler implements IPlayerTracker {
+public class PlayerEventHandler {
 
-    @Override
-    public void onPlayerChangedDimension(EntityPlayer arg0)
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
+        IRCHelper.postIRC(e.player.getDisplayName() + " joined the server.");
     }
 
-    @Override
-    public void onPlayerLogin(EntityPlayer arg0)
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
-        IRCHelper.postIRC(arg0.username + " joined the server.");
+        IRCHelper.postIRC(e.player.getDisplayName() + " left the server.");
     }
 
-    @Override
-    public void onPlayerLogout(EntityPlayer arg0)
-    {
-        IRCHelper.postIRC(arg0.username + " left the server.");
-    }
-
-    @Override
-    public void onPlayerRespawn(EntityPlayer arg0)
-    {
-    }
-
-    @ForgeSubscribe
+    @SubscribeEvent
     public void onPlayerDeath(LivingDeathEvent e)
     {
         if (e.entityLiving instanceof EntityPlayer)
         {
-            IRCHelper.postIRC(e.source.getDeathMessage(e.entityLiving).toString());
+            IRCHelper.postIRC(e.source.func_151519_b(e.entityLiving).toString());
         }
     }
 

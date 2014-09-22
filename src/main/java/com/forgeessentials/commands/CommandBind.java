@@ -1,8 +1,7 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -10,17 +9,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandBind extends FEcmdModuleCommands {
     public static final String color = EnumChatFormatting.RESET + "" + EnumChatFormatting.AQUA;
-
-    @Override
-    public boolean isUsernameIndex(String[] par1ArrayOfStr, int par1)
-    {
-        return false;
-    }
 
     @Override
     public String getCommandName()
@@ -29,9 +24,9 @@ public class CommandBind extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override
@@ -70,24 +65,24 @@ public class CommandBind extends FEcmdModuleCommands {
                 nbt.setString(args[0].toLowerCase(), cmd.toString().trim());
 
                 NBTTagCompound display = is.getTagCompound().getCompoundTag("display");
-                NBTTagList list = display.getTagList("Lore");
+                NBTTagList list = display.getTagList("Lore", 9);
                 if (list.tagCount() != 0)
                 {
                     System.out.println("NOT 0");
                     for (int j = 0; j < list.tagCount(); ++j)
                     {
-                        if (((NBTTagString) list.tagAt(j)).data.startsWith(color + args[0].toLowerCase()))
+                        if (list.getCompoundTagAt(j).getString("FEbinding").startsWith(color + args[0].toLowerCase()));
                         {
-                            System.out.println("Macht found");
+                            System.out.println("Match found");
                             list.removeTag(j);
                         }
                     }
                 }
-                list.appendTag(new NBTTagString("list", color + args[0].toLowerCase() + "> " + cmd));
+                list.appendTag(new NBTTagString(color + args[0].toLowerCase() + "> " + cmd));
                 display.setTag("Lore", list);
 
-                is.getTagCompound().setCompoundTag("display", display);
-                is.getTagCompound().setCompoundTag("FEbinding", nbt);
+                is.getTagCompound().setTag("display", display);
+                is.getTagCompound().setTag("FEbinding", nbt);
             }
             OutputHandler.chatConfirmation(sender, "Command bound to object.");
         }

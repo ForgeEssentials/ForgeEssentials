@@ -1,20 +1,22 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.TeleportCenter;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.HashMap;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.HashMap;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandTphere extends ForgeEssentialsCommandBase {
 
@@ -34,12 +36,12 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
     {
         if (args.length == 1)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 EntityPlayerMP target = (EntityPlayerMP) sender;
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
-                playerInfo.back = new WarpPoint(player);
+                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
+                playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                 TeleportCenter.addToTpQue(new WarpPoint(target), player);
             }
             else
@@ -60,7 +62,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport.tphere";
     }
@@ -79,9 +81,9 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

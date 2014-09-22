@@ -1,57 +1,39 @@
 package com.forgeessentials.playerlogger.network;
 
-import com.forgeessentials.core.network.ForgeEssentialsPacket;
-import com.forgeessentials.util.OutputHandler;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.world.WorldServer;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+public class PacketPlayerLogger implements IMessageHandler<PacketPlayerLogger.Message, IMessage> {
 
-public class PacketPlayerLogger extends ForgeEssentialsPacket {
-    public static final byte packetID = 1;
-
-    private Packet250CustomPayload packet;
-
-    public PacketPlayerLogger(EntityPlayer player)
+    @Override public IMessage onMessage(PacketPlayerLogger.Message message, MessageContext ctx)
     {
-        packet = new Packet250CustomPayload();
+        return null;
+    }
 
-        ByteArrayOutputStream streambyte = new ByteArrayOutputStream();
-        DataOutputStream stream = new DataOutputStream(streambyte);
+    public static class Message implements IMessage {
+        private EntityPlayer player;
 
-        try
+        public Message()
         {
-            stream.write(packetID);
-
-            stream.writeBoolean(player.getEntityData().getBoolean("lb"));
-
-            stream.close();
-            streambyte.close();
-
-            packet.channel = FECHANNEL;
-            packet.data = streambyte.toByteArray();
-            packet.length = packet.data.length;
         }
 
-        catch (Exception e)
+        public Message(EntityPlayer player)
         {
-            OutputHandler.felog.info("Error creating packet >> " + this.getClass());
+            this.player = player;
+        }
+
+        @Override public void fromBytes(ByteBuf buf)
+        {
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
+            buf.writeBoolean(player.getEntityData().getBoolean("lb"));
+
         }
     }
-
-    public static void readServer(DataInputStream stream, WorldServer world, EntityPlayer player) throws IOException
-    {
-        // should never be received here.
-    }
-
-    @Override
-    public Packet250CustomPayload getPayload()
-    {
-        return packet;
-    }
-
 }

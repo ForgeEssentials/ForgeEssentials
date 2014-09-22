@@ -1,22 +1,25 @@
 package com.forgeessentials.chat.irc;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.chat.ConfigChat;
-import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
-import com.forgeessentials.util.FunctionHelper;
-import com.google.common.base.Strings;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.DamageSource;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.ServerChatEvent;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.DamageSource;
+import net.minecraftforge.event.ServerChatEvent;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.chat.ConfigChat;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldPoint;
+import com.google.common.base.Strings;
+
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 // Largely copied from ChatFormatter, to deal with special cases for IRC
 public class IRCChatFormatter {
@@ -30,7 +33,7 @@ public class IRCChatFormatter {
     public static String gmA;
     public static int censorSlap;
 
-    @ForgeSubscribe(priority = EventPriority.NORMAL)
+    @SubscribeEvent(priority = EventPriority.NORMAL)
     public void chatEvent(ServerChatEvent event)
     {
         // muting this should probably be done elsewhere
@@ -80,28 +83,31 @@ public class IRCChatFormatter {
 
         // replacing stuff...
 
-        String rank = "";
-        String zoneID = "";
-        String gPrefix = "";
-        String gSuffix = "";
+		// Player info
+		String playerPrefix = APIRegistry.perms.getServerZone().getPlayerPermission(event.player, "fe.internal.prefix");
+		String playerSuffix = APIRegistry.perms.getServerZone().getPlayerPermission(event.player, "fe.internal.suffix");
+		String zoneID = APIRegistry.perms.getZonesAt(new WorldPoint(event.player)).get(0).getName();
 
-        PlayerInfo info = PlayerInfo.getPlayerInfo(event.player.username);
-        String playerPrefix = info.prefix == null ? "" : FunctionHelper.formatColors(info.prefix).trim();
-        String playerSuffix = info.suffix == null ? "" : FunctionHelper.formatColors(info.suffix).trim();
-
-        Zone zone = APIRegistry.zones.getWhichZoneIn(new WorldPoint(event.player));
-        zoneID = zone.getZoneName();
-
-        // Group stuff!!! DO NOT TOUCH!!!
-        {
-            rank = FunctionHelper.getGroupRankString(event.username);
-
-            gPrefix = FunctionHelper.getGroupPrefixString(event.username);
-            gPrefix = FunctionHelper.formatColors(gPrefix).trim();
-
-            gSuffix = FunctionHelper.getGroupSuffixString(event.username);
-            gSuffix = FunctionHelper.formatColors(gSuffix).trim();
-        }
+		// Group info
+		Set<String> groups = APIRegistry.perms.getPlayerGroups(new UserIdent(event.player));
+		String gPrefix = "";
+		String gSuffix = "";
+		for (String group : groups)
+		{
+			String s = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal.prefix");
+			if (s != null)
+				gPrefix += s;
+			s = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal.suffix");
+			if (s != null)
+				gSuffix += s;
+		}
+		
+		// post-process
+		if (playerPrefix == null) playerPrefix = "";
+		if (playerSuffix == null) playerSuffix = "";
+		gPrefix = FunctionHelper.formatColors(gPrefix).trim();
+		gSuffix = FunctionHelper.formatColors(gSuffix).trim();
+		String rank = "";
 
         // It may be beneficial to make this a public function. -RlonRyan
         String format = ConfigChat.chatFormat;

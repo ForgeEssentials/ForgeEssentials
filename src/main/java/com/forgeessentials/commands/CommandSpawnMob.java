@@ -1,27 +1,23 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import java.util.HashMap;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingData;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemMonsterPlacer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class CommandSpawnMob extends FEcmdModuleCommands {
 
@@ -99,9 +95,9 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
 
                 if (args.length >= 5)
                 {
-                    x = 0.5 + parseInt(sender, args[2], sender.posX);
-                    y = 0.5 + parseInt(sender, args[3], sender.posY);
-                    z = 0.5 + parseInt(sender, args[4], sender.posZ);
+                    x = 0.5 + parseDouble(sender, args[2], sender.posX);
+                    y = 0.5 + parseDouble(sender, args[3], sender.posY);
+                    z = 0.5 + parseDouble(sender, args[4], sender.posZ);
                 }
             }
             for (int i = 0; i < amount; i++)
@@ -120,7 +116,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                 	}
                 }
                 if (mob instanceof EntityLiving) {
-                	((EntityLiving)mob).onSpawnWithEgg(new EntityLivingData() {});
+                	((EntityLiving)mob).onSpawnWithEgg((IEntityLivingData)null);
                 }
                 mob.setPosition(x, y, z);
                 sender.worldObj.spawnEntityInWorld(mob);
@@ -175,7 +171,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                 	mob.setCustomNameTag(sb.toString());
                 }
                 if (mob instanceof EntityLiving) {
-                	((EntityLiving)mob).onSpawnWithEgg(new EntityLivingData() {});
+                	((EntityLiving)mob).onSpawnWithEgg((IEntityLivingData)null);
                 }
                 mob.setPosition(x, y, z);
                 world.spawnEntityInWorld(mob);
@@ -208,9 +204,9 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

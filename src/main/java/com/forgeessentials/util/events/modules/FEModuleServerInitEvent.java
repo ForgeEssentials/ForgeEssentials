@@ -1,11 +1,13 @@
 package com.forgeessentials.util.events.modules;
 
-import com.forgeessentials.api.APIRegistry;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.server.CommandHandlerForge;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.moduleLauncher.ModuleContainer;
+
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLStateEvent;
-import net.minecraft.server.MinecraftServer;
 
 public class FEModuleServerInitEvent extends FEModuleEvent {
     private FMLServerStartingEvent event;
@@ -29,10 +31,9 @@ public class FEModuleServerInitEvent extends FEModuleEvent {
 
     public void registerServerCommand(ForgeEssentialsCommandBase command)
     {
-        if (command.getCommandPerm() != null && command.getReggroup() != null)
+        if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
         {
-            APIRegistry.permReg.registerPermissionLevel(command.getCommandPerm(), command.getReggroup());
+            CommandHandlerForge.registerCommand(command, command.getPermissionNode(), command.getDefaultPermission());
         }
-        event.registerServerCommand(command);
     }
 }

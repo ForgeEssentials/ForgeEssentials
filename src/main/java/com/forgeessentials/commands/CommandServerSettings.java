@@ -1,17 +1,20 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.WorldSettings;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.world.EnumGameType;
 
-import java.util.Arrays;
-import java.util.List;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandServerSettings extends FEcmdModuleCommands {
     public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MOTD", "spawnProtection", "gamemode");
@@ -136,7 +139,7 @@ public class CommandServerSettings extends FEcmdModuleCommands {
             else
             {
                 server.setProperty("gamemode", args[1]);
-                server.setGameType(EnumGameType.getByID(Integer.parseInt(args[1])));
+                server.setGameType(WorldSettings.GameType.getByID(Integer.parseInt(args[1])));
                 server.saveProperties();
                 OutputHandler.chatConfirmation(sender, "gamemode: " + server.getGameType().getName());
             }
@@ -148,14 +151,14 @@ public class CommandServerSettings extends FEcmdModuleCommands {
         {
             if (args.length == 1)
             {
-                OutputHandler.chatConfirmation(sender, "difficulty: " + server.getDifficulty());
+                OutputHandler.chatConfirmation(sender, "difficulty: " + server.func_147135_j().name());
             }
             else
             {
                 server.setProperty("difficulty", args[1]);
-                server.setDifficultyForAllWorlds(Integer.parseInt(args[1]));
+                server.func_147139_a(EnumDifficulty.getDifficultyEnum(Integer.parseInt(args[1])));
                 server.saveProperties();
-                OutputHandler.chatConfirmation(sender, "difficulty: " + server.getDifficulty());
+                OutputHandler.chatConfirmation(sender, "difficulty: " + server.func_147135_j().name());
             }
             return;
 
@@ -182,9 +185,9 @@ public class CommandServerSettings extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

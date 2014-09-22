@@ -1,27 +1,36 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandRules extends FEcmdModuleCommands {
 
@@ -31,7 +40,7 @@ public class CommandRules extends FEcmdModuleCommands {
     public static File rulesFile = new File(ForgeEssentials.FEDIR, "rules.txt");
 
     @Override
-    public void doConfig(Configuration config, String category)
+    public void loadConfig(Configuration config, String category)
     {
         rulesFile = new File(ForgeEssentials.FEDIR, config.get(category, "filename", "rules.txt").getString());
         rules = loadRules();
@@ -72,11 +81,10 @@ public class CommandRules extends FEcmdModuleCommands {
 
                 OutputHandler.felog.info("Completed generating rules file.");
             }
-            catch (Exception e)
+            catch (IOException e)
             {
-                Logger lof = OutputHandler.felog;
-                lof.logp(Level.SEVERE, "FEConfig", "Generating Rules", "Error writing the Rules file: " + rulesFile.getName(), e);
-            }
+                OutputHandler.felog.severe("Error writing the Rules file: " + rulesFile.getName());
+			}
         }
         else
         {
@@ -116,10 +124,9 @@ public class CommandRules extends FEcmdModuleCommands {
 
                 OutputHandler.felog.info("Completed reading rules file. " + counter + " rules read.");
             }
-            catch (Exception e)
+            catch (IOException e)
             {
-                Logger lof = OutputHandler.felog;
-                lof.logp(Level.SEVERE, "FEConfig", "Constructor-Rules", "Error reading or writing the Rules file: " + rulesFile.getName(), e);
+                OutputHandler.felog.severe("Error writing the Rules file: " + rulesFile.getName());
             }
         }
 
@@ -157,10 +164,9 @@ public class CommandRules extends FEcmdModuleCommands {
 
             OutputHandler.felog.info("Completed saving rules file.");
         }
-        catch (Exception e)
+        catch (IOException e)
         {
-            Logger lof = OutputHandler.felog;
-            lof.logp(Level.SEVERE, "FEConfig", "Saving Rules", "Error writing the Rules file: " + rulesFile.getName(), e);
+            OutputHandler.felog.severe("Error writing the Rules file: " + rulesFile.getName());
         }
     }
 
@@ -196,14 +202,14 @@ public class CommandRules extends FEcmdModuleCommands {
             SortedSet<String> keys = new TreeSet<String>(map.keySet());
             for (String name : keys)
             {
-                pages.appendTag(new NBTTagString("", name + map.get(name)));
+                pages.appendTag(new NBTTagString(name + map.get(name)));
             }
 
             tag.setString("author", "ForgeEssentials");
             tag.setString("title", "Rule Book");
             tag.setTag("pages", pages);
 
-            ItemStack is = new ItemStack(Item.writtenBook);
+            ItemStack is = new ItemStack(Items.written_book);
             is.setTagCompound(tag);
             sender.inventory.addItemStackToInventory(is);
             return;
@@ -213,7 +219,7 @@ public class CommandRules extends FEcmdModuleCommands {
             if (args[0].equalsIgnoreCase("help"))
             {
                 OutputHandler.chatConfirmation(sender, " - /rules [#]");
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
+                if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
                 {
                     OutputHandler.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
                     OutputHandler.chatConfirmation(sender, " - /rules add &lt;newRule>");
@@ -227,10 +233,10 @@ public class CommandRules extends FEcmdModuleCommands {
             return;
         }
 
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".edit")))
+        if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
         {
             OutputHandler.chatError(sender,
-                    "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
+                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
             return;
         }
 
@@ -388,7 +394,7 @@ public class CommandRules extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".edit", RegGroup.OWNERS);
+        PermissionsManager.registerPermission(getPermissionNode() + ".edit", RegisteredPermValue.OP);
     }
 
     @Override
@@ -423,9 +429,9 @@ public class CommandRules extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.GUESTS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

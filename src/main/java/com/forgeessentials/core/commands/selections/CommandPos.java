@@ -2,17 +2,19 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayerArea;
-import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class CommandPos extends ForgeEssentialsCommandBase {
     private int type;
@@ -25,7 +27,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandName()
     {
-        return "fepos" + type;
+        return "/fepos" + type;
     }
 
     @Override
@@ -43,11 +45,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
                 if (type == 1)
                 {
-                    PlayerInfo.getPlayerInfo(player.username).setPoint1(new Point(x, y, z));
+                    PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint1(new Point(x, y, z));
                 }
                 else
                 {
-                    PlayerInfo.getPlayerInfo(player.username).setPoint2(new Point(x, y, z));
+                    PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint2(new Point(x, y, z));
                 }
 
                 OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -83,11 +85,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
             if (type == 1)
             {
-                PlayerInfo.getPlayerInfo(player.username).setPoint1(new Point(x, y, z));
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint1(new Point(x, y, z));
             }
             else
             {
-                PlayerInfo.getPlayerInfo(player.username).setPoint2(new Point(x, y, z));
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint2(new Point(x, y, z));
             }
 
             OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -106,8 +108,8 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         y = mop.blockY;
         z = mop.blockZ;
 
-        Point point = new Point(x, y, z);
-        if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayerArea(player, getCommandPerm(), point)))
+        WorldPoint point = new WorldPoint(player.dimension, x, y, z);
+        if (!APIRegistry.perms.checkPermission(new UserIdent(player), point, getPermissionNode()))
         {
             OutputHandler.chatError(player, "Insufficient permissions.");
             return;
@@ -115,11 +117,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
         if (type == 1)
         {
-            PlayerInfo.getPlayerInfo(player.username).setPoint1(point);
+            PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint1(point);
         }
         else
         {
-            PlayerInfo.getPlayerInfo(player.username).setPoint2(point);
+            PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint2(point);
         }
 
         OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -127,7 +129,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.core.pos.pos";
     }
@@ -146,10 +148,10 @@ public class CommandPos extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
 }

@@ -1,12 +1,14 @@
 package com.forgeessentials.chat.irc.commands;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumChatFormatting;
+
+import org.pircbotx.User;
+
 import com.forgeessentials.chat.commands.CommandMsg;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumChatFormatting;
-import org.pircbotx.User;
 
 public class ircCommandMessage extends ircCommand {
 
@@ -52,7 +54,7 @@ public class ircCommandMessage extends ircCommand {
                 message += " " + args[i];
             }
 
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(playername);
+            EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(playername);
 
             if (player == null)
             {
@@ -68,7 +70,7 @@ public class ircCommandMessage extends ircCommand {
 
             // Add in /r stuff
             CommandMsg.clearReply(user.getNick());
-            CommandMsg.clearReply(player.getEntityName());
+            CommandMsg.clearReply(player.getCommandSenderName());
             CommandMsg.addReply("irc" + user.getNick().toLowerCase(), player.getCommandSenderName());
             CommandMsg.addReply(player.getCommandSenderName(), "irc" + user.getNick().toLowerCase());
         }

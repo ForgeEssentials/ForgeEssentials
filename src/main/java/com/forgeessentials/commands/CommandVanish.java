@@ -1,22 +1,21 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
+import java.util.HashSet;
+import java.util.UUID;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet20NamedEntitySpawn;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.HashSet;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandVanish extends FEcmdModuleCommands {
     public static final String TAGNAME = "vanish";
 
-    public static HashSet<Integer> vanishedPlayers = new HashSet<Integer>();
+    public static HashSet<UUID> vanishedPlayers = new HashSet<UUID>();
 
     @Override
     public String getCommandName()
@@ -25,9 +24,9 @@ public class CommandVanish extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override
@@ -35,23 +34,25 @@ public class CommandVanish extends FEcmdModuleCommands {
     {
         NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
         tag.setBoolean(TAGNAME, !tag.getBoolean(TAGNAME));
-        sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+        sender.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
 
         if (tag.getBoolean(TAGNAME))
         {
             OutputHandler.chatConfirmation(sender, "You are vanished now.");
-            vanishedPlayers.add(sender.entityId);
+            vanishedPlayers.add(sender.getPersistentID());
         }
         else
         {
             OutputHandler.chatConfirmation(sender, "You are un vanished now.");
-            vanishedPlayers.remove(sender.entityId);
+            vanishedPlayers.remove(sender.getPersistentID());
 
             for (Object fakePlayer : MinecraftServer.getServer().worldServers[sender.dimension].playerEntities)
             {
                 if (fakePlayer != sender)
                 {
-                    PacketDispatcher.sendPacketToPlayer(new Packet20NamedEntitySpawn(sender), (Player) fakePlayer);
+                    EntityPlayer player = (EntityPlayer) fakePlayer;
+                    player.setInvisible(false);
+
                 }
             }
         }

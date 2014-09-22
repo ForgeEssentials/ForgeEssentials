@@ -1,15 +1,7 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.TeleportCenter;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,10 +9,19 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class CommandBed extends ForgeEssentialsCommandBase {
     private WarpPoint sleepPoint;
@@ -39,9 +40,9 @@ public class CommandBed extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        if (args.length >= 1 && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+        if (args.length >= 1 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 tp(player);
@@ -70,7 +71,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
                 {
                     world = DimensionManager.getWorld(0);
                 }
-                PlayerInfo.getPlayerInfo(player.username).back = new WarpPoint(player);
+                PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
                 // Doesnt work
                 // FunctionHelper.setPlayer(player, new Point(spawn), world);
                 //player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
@@ -99,7 +100,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
     {
         if (args.length >= 1)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 tp(player);
@@ -118,7 +119,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport.bed";
     }
@@ -137,12 +138,12 @@ public class CommandBed extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void getCoords(PlayerSleepInBedEvent e)
     {
         if (sleepPoint == null)
@@ -151,9 +152,9 @@ public class CommandBed extends ForgeEssentialsCommandBase {
         }
         else
         {
-            this.sleepPoint.x = e.x;
-            this.sleepPoint.y = e.y;
-            this.sleepPoint.z = e.z;
+            this.sleepPoint.setX(e.x);
+            this.sleepPoint.setY(e.y);
+            this.sleepPoint.setZ(e.z);
         }
         e.setResult(null);
         e.entityPlayer.playerLocation = new ChunkCoordinates(e.x, e.y, e.z);

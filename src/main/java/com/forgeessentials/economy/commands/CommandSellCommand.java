@@ -1,18 +1,22 @@
 package com.forgeessentials.economy.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.registry.GameData;
 
 public class CommandSellCommand extends ForgeEssentialsCommandBase {
     @Override
@@ -37,14 +41,15 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
         if (args.length >= 3)
         {
 
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
 
                 boolean found = false;
                 // Set needed parm
-                int amount = 1, item = 0, meta = -1;
-                ItemStack target = new ItemStack(item, amount, meta);
+                int amount = 1, meta = -1;
+                String item = null;
+                ItemStack target = new ItemStack((Item)GameData.getItemRegistry().getObject(item), amount, meta);
 
                 if (args[1].contains("x"))
                 {
@@ -58,14 +63,14 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                     target.setItemDamage(meta = parseInt(sender, split[1]));
                     args[1] = split[0];
                 }
-                target.itemID = item = parseIntWithMin(sender, args[1], 0);
+                item = args[1];
                 // Loop though inv and find a stack big enough to support the sell cmd
                 for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
                 {
                     ItemStack is = player.inventory.mainInventory[slot];
                     if (is != null)
                     {
-                        if (is.itemID == item)
+                        if (is.getUnlocalizedName() == item)
                         {
                             if (meta == -1 || meta == is.getItemDamage())
                             {
@@ -117,7 +122,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return null;
     }
@@ -136,7 +141,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
         return null;

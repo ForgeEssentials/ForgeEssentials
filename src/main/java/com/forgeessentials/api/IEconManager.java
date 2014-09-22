@@ -1,5 +1,7 @@
 package com.forgeessentials.api;
 
+import java.util.UUID;
+
 import net.minecraft.entity.player.EntityPlayer;
 
 public interface IEconManager {
@@ -10,7 +12,7 @@ public interface IEconManager {
      * @param amountToAdd
      * @param player
      */
-    public void addToWallet(int amountToAdd, String player);
+    public void addToWallet(int amountToAdd, UUID player);
 
     /**
      * get the ammount of money the player has
@@ -18,7 +20,7 @@ public interface IEconManager {
      * @param player
      * @return
      */
-    public int getWallet(String player);
+    public int getWallet(UUID player);
 
     /**
      * Remove a set amount from a target's Wallet
@@ -26,7 +28,7 @@ public interface IEconManager {
      * @param amountToSubtract
      * @param player
      */
-    public void removeFromWallet(int amountToSubtract, String player);
+    public void removeFromWallet(int amountToSubtract, UUID player);
 
     /**
      * Set the target's Wallet to the specified amount
@@ -49,5 +51,5 @@ public interface IEconManager {
      * @param username
      * @return returns 'amount' 'currency'
      */
-    public String getMoneyString(String username);
+    public String getMoneyString(UUID username);
 }

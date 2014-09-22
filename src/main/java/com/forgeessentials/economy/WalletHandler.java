@@ -1,34 +1,38 @@
 package com.forgeessentials.economy;
 
+import java.util.HashMap;
+import java.util.UUID;
+
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.forgeessentials.api.IEconManager;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import cpw.mods.fml.common.IPlayerTracker;
-import net.minecraft.entity.player.EntityPlayer;
 
-import java.util.HashMap;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 /**
  * Call these methods to modify a target's Wallet.
  */
-public class WalletHandler implements IPlayerTracker, IEconManager {
+public class WalletHandler implements IEconManager {
     private static ClassContainer con = new ClassContainer(Wallet.class);
-    private static HashMap<String, Wallet> wallets = new HashMap<String, Wallet>();
+    private static HashMap<UUID, Wallet> wallets = new HashMap<UUID, Wallet>();
 
     @Override
-    public void addToWallet(int amountToAdd, String player)
+    public void addToWallet(int amountToAdd, UUID player)
     {
         wallets.get(player).amount = wallets.get(player).amount + amountToAdd;
     }
 
     @Override
-    public int getWallet(String player)
+    public int getWallet(UUID player)
     {
         return wallets.get(player).amount;
     }
 
     @Override
-    public void removeFromWallet(int amountToSubtract, String player)
+    public void removeFromWallet(int amountToSubtract, UUID player)
     {
         if (wallets.get(player).amount - amountToSubtract >= 0)
         {
@@ -39,7 +43,7 @@ public class WalletHandler implements IPlayerTracker, IEconManager {
     @Override
     public void setWallet(int setAmount, EntityPlayer player)
     {
-        wallets.get(player.username).amount = setAmount;
+        wallets.get(player.getUniqueID()).amount = setAmount;
     }
 
     @Override
@@ -56,43 +60,29 @@ public class WalletHandler implements IPlayerTracker, IEconManager {
     }
 
     @Override
-    public String getMoneyString(String username)
+    public String getMoneyString(UUID username)
     {
         int am = getWallet(username);
         return am + " " + currency(am);
     }
 
-	/*
-     * Player tracker stuff
-	 */
-
-    @Override
-    public void onPlayerLogin(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
-        Wallet wallet = (Wallet) DataStorageManager.getReccomendedDriver().loadObject(con, player.username);
+        Wallet wallet = (Wallet) DataStorageManager.getReccomendedDriver().loadObject(con, event.player.getUniqueID().toString());
         if (wallet == null)
         {
-            wallet = new Wallet(player, ModuleEconomy.startbuget);
+            wallet = new Wallet(event.player, ModuleEconomy.startbudget);
         }
-        wallets.put(player.username, wallet);
+        wallets.put(event.player.getUniqueID(), wallet);
     }
 
-    @Override
-    public void onPlayerLogout(EntityPlayer player)
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if (wallets.containsKey(player.username))
+        if (wallets.containsKey(event.player.getUniqueID()))
         {
-            DataStorageManager.getReccomendedDriver().saveObject(con, wallets.remove(player.username));
+            DataStorageManager.getReccomendedDriver().saveObject(con, wallets.remove(event.player.getUniqueID()));
         }
-    }
-
-    @Override
-    public void onPlayerChangedDimension(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void onPlayerRespawn(EntityPlayer player)
-    {
     }
 }

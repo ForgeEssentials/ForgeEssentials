@@ -1,10 +1,12 @@
 package com.forgeessentials.util.events;
 
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.util.selections.WarpPoint;
+
+import cpw.mods.fml.common.eventhandler.Cancelable;
 
 @Cancelable
 public class PlayerChangedZone extends PlayerEvent {

@@ -1,18 +1,18 @@
 package com.forgeessentials.chat.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandNickname extends ForgeEssentialsCommandBase {
     @Override
@@ -38,20 +38,20 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
             {
                 NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
                 tag.removeTag("nickname");
-                sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+                sender.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
                 ChatUtils.sendMessage(sender, "Nickname removed.");
             }
             else
             {
                 NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
                 tag.setString("nickname", args[0]);
-                sender.getEntityData().setCompoundTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+                sender.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
                 ChatUtils.sendMessage(sender, "Nickname set to " + args[0]);
             }
         }
         else if (args.length == 2)
         {
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".others")))
+            if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = getPlayer(sender, args[0]);
                 if (args[1].equalsIgnoreCase("del"))
@@ -67,7 +67,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
             }
             else
             {
-                OutputHandler.chatError(sender, "You don't have permission for that.");
+                OutputHandler.chatError(sender, "You don't have permissions for that.");
             }
         }
         else
@@ -90,12 +90,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
             if (args.length == 2)
             {
                 player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-                ChatUtils.sendMessage(sender, "Nickname of player " + player.username + " set to " + args[1]);
+                ChatUtils.sendMessage(sender, "Nickname of player " + player.getCommandSenderName() + " set to " + args[1]);
             }
             else if (args.length == 1)
             {
                 player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
-                ChatUtils.sendMessage(sender, "Nickname of player " + player.username + " removed");
+                ChatUtils.sendMessage(sender, "Nickname of player " + player.getCommandSenderName() + " removed");
             }
             else
             {
@@ -115,7 +115,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.chat." + getCommandName();
     }
@@ -127,9 +127,9 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 }

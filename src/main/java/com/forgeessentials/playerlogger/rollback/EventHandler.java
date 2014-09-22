@@ -1,20 +1,27 @@
 package com.forgeessentials.playerlogger.rollback;
 
-import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.ChatUtils;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import java.sql.*;
-import java.util.Date;
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.selections.Point;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EventHandler {
-    @ForgeSubscribe()
+    @SubscribeEvent()
     public void playerInteractEvent(PlayerInteractEvent e)
     {
         /*
@@ -33,11 +40,11 @@ public class EventHandler {
                 Statement st = connection.createStatement();
                 Point p = getPoint(e.entityPlayer);
                 st.execute(
-                        "SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + p.x + " AND  `Y` = " + p.y + " AND  `Z` = "
-                                + p.z + " ORDER BY id DESC LIMIT " + limit);
+                        "SELECT * FROM  `blockChange` WHERE  `Dim` = " + e.entityPlayer.dimension + " AND  `X` = " + p.getX() + " AND  `Y` = " + p.getY() + " AND  `Z` = "
+                                + p.getZ() + " ORDER BY id DESC LIMIT " + limit);
                 ResultSet res = st.getResultSet();
 
-                ChatUtils.sendMessage(e.entityPlayer, "Results: " + p.x + ", " + p.y + ", " + p.z);
+                ChatUtils.sendMessage(e.entityPlayer, "Results: " + p.getX() + ", " + p.getY() + ", " + p.getZ());
 
                 while (res.next())
                 {
@@ -64,7 +71,7 @@ public class EventHandler {
         double var7 = player.prevPosX + (player.posX - player.prevPosX) * var4;
         double var9 = player.prevPosY + (player.posY - player.prevPosY) * var4 + 1.62D - player.yOffset;
         double var11 = player.prevPosZ + (player.posZ - player.prevPosZ) * var4;
-        Vec3 var13 = player.worldObj.getWorldVec3Pool().getVecFromPool(var7, var9, var11);
+        Vec3 var13 = Vec3.createVectorHelper(var7, var9, var11);
         float var14 = MathHelper.cos(-var6 * 0.017453292F - (float) Math.PI);
         float var15 = MathHelper.sin(-var6 * 0.017453292F - (float) Math.PI);
         float var16 = -MathHelper.cos(-var5 * 0.017453292F);
@@ -74,7 +81,7 @@ public class EventHandler {
         double var21 = 500D;
         Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
 
-        MovingObjectPosition mo = player.worldObj.rayTraceBlocks_do_do(var13, var23, false, false);
+        MovingObjectPosition mo = player.worldObj.rayTraceBlocks(var13, var23);
 
         if (mo == null)
         {
@@ -91,22 +98,22 @@ public class EventHandler {
         switch (mo.sideHit)
         {
         case 0:
-            p.y--;
+        	p.setY(p.getY() - 1);
             break;
         case 1:
-            p.y++;
+        	p.setY(p.getY() + 1);
             break;
         case 2:
-            p.z--;
+        	p.setZ(p.getZ() - 1);
             break;
         case 3:
-            p.z++;
+        	p.setZ(p.getZ() + 1);
             break;
         case 4:
-            p.x--;
+        	p.setX(p.getX() - 1);
             break;
         case 5:
-            p.x++;
+        	p.setX(p.getX() + 1);
             break;
         }
 

@@ -2,7 +2,7 @@ package com.forgeessentials.economy;
 
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 
@@ -26,7 +26,7 @@ public class ConfigEconomy extends ModuleConfigBase {
 
         currencySingular = config.get(CAT, "currencySingular", "gold").getString();
         currencyPlural = config.get(CAT, "currencyPlural", "gold").getString();
-        ModuleEconomy.startbuget = config.get(CAT, "startbuget", 100).getInt();
+        ModuleEconomy.startbudget = config.get(CAT, "startbuget", 100).getInt();
 
         config.save();
     }
@@ -36,7 +36,7 @@ public class ConfigEconomy extends ModuleConfigBase {
     {
         config.get(CAT, "currencySingular", "gold").set(currencySingular);
         config.get(CAT, "currencyPlural", "gold").set(currencyPlural);
-        config.get(CAT, "startbuget", 100).set(ModuleEconomy.startbuget);
+        config.get(CAT, "startbudget", 100).set(ModuleEconomy.startbudget);
 
         config.save();
     }
@@ -48,6 +48,6 @@ public class ConfigEconomy extends ModuleConfigBase {
 
         currencySingular = config.get(CAT, "currencySingular", "gold").getString();
         currencyPlural = config.get(CAT, "currencyPlural", "gold").getString();
-        ModuleEconomy.startbuget = config.get(CAT, "startbuget", 100).getInt();
+        ModuleEconomy.startbudget = config.get(CAT, "startbuget", 100).getInt();
     }
 }

@@ -1,22 +1,22 @@
 package com.forgeessentials.util;
 
-import cpw.mods.fml.common.FMLLog;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class OutputHandler {
-    public static Logger felog;
+	
+    public static LogWrapper felog;
 
     public static boolean debugmode;
 
     public OutputHandler()
     {
-        felog = Logger.getLogger("ForgeEssentials");
-        felog.setParent(FMLLog.getLogger());
+        felog = new LogWrapper(LogManager.getLogger("ForgeEssentials"));
     }
 
     /**
@@ -80,9 +80,9 @@ public final class OutputHandler {
      * @param message
      * @param error
      */
-    public static void exception(Level level, String message, Throwable error)
+    public static void exception(java.util.logging.Level level, String message, Throwable error)
     {
-        felog.log(level, message, error);
+        felog.log(Level.toLevel(level.getName()), message, error);
     }
 
     /**
@@ -96,6 +96,32 @@ public final class OutputHandler {
         {
             System.out.println(" {DEBUG} >>>> " + msg);
         }
+    }
+
+    public class LogWrapper
+    {
+        private Logger wrapped;
+
+        protected LogWrapper(Logger logger)
+        {
+            wrapped = logger;
+        }
+
+        public void finest(String message){wrapped.log(Level.ALL, message);}
+
+        public void finer(String message){wrapped.log(Level.DEBUG, message);}
+
+        public void fine(String message){wrapped.log(Level.INFO, message);}
+
+        public void info(String message){wrapped.log(Level.INFO, message);}
+
+        public void warning(String message){wrapped.log(Level.WARN, message);}
+
+        public void severe(String message){wrapped.log(Level.ERROR, message);}
+
+        public void log(Level level, String message, Throwable error){wrapped.log(level, message, error);}
+
+        public Logger getWrapper(){return wrapped;}
     }
 
 }

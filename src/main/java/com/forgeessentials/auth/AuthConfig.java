@@ -1,11 +1,11 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.auth.lists.PlayerTracker;
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
-
 import java.io.File;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
+
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 public class AuthConfig extends ModuleConfigBase {
     private static final String CATEGORY_MAIN = "main";
@@ -36,16 +36,16 @@ public class AuthConfig extends ModuleConfigBase {
 
         config.addCustomCategoryComment("lists",
                 "Alternative ban/whitelist/VIP/max players implementation. Make sure vipslots and offset added together is less than the amount of players specified in server.properties.");
-        PlayerTracker.offset = config.get("lists", "offset", 0,
+        AuthEventHandler.offset = config.get("lists", "offset", 0,
                 "If you need to be able to have less than the amount of players specified in server.properties logged into your server, use this.").getInt();
-        PlayerTracker.vipslots = config.get("lists", "vipslots", 0, "Amount of slots reserved for VIP players.").getInt();
-        PlayerTracker.whitelist = config.get("lists", "whitelistEnabled", false,
+        AuthEventHandler.vipslots = config.get("lists", "vipslots", 0, "Amount of slots reserved for VIP players.").getInt();
+        AuthEventHandler.whitelist = config.get("lists", "whitelistEnabled", false,
                 "Enable or disable the ForgeEssentials whitelist. Note that server.properties will be used if this is set to false.").getBoolean(false);
 
         config.addCustomCategoryComment("lists.kickmsg", "Kick messages for banned/unwhitelisted players or when the server is full (not counting VIP slots");
-        PlayerTracker.banned = config.get("lists.kick", "bannedmsg", "You have been banned from this server.").getString();
-        PlayerTracker.notwhitelisted = config.get("lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").getString();
-        PlayerTracker.notvip = config.get("lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
+        AuthEventHandler.banned = config.get("lists.kick", "bannedmsg", "You have been banned from this server.").getString();
+        AuthEventHandler.notwhitelisted = config.get("lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").getString();
+        AuthEventHandler.notvip = config.get("lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
         config.save();
     }
 
@@ -86,13 +86,13 @@ public class AuthConfig extends ModuleConfigBase {
         ModuleAuth.salt = config.get(CATEGORY_MAIN, "salt", ModuleAuth.salt).getString();
         ModuleAuth.checkInterval = config.get(CATEGORY_MAIN, "checkInterval", 10).getInt();
 
-        PlayerTracker.offset = config.get("lists", "offset", 0).getInt();
-        PlayerTracker.vipslots = config.get("lists", "vipslots", 0).getInt();
-        PlayerTracker.whitelist = config.get("lists", "whitelistEnabled", false).getBoolean(false);
+        AuthEventHandler.offset = config.get("lists", "offset", 0).getInt();
+        AuthEventHandler.vipslots = config.get("lists", "vipslots", 0).getInt();
+        AuthEventHandler.whitelist = config.get("lists", "whitelistEnabled", false).getBoolean(false);
 
-        PlayerTracker.banned = config.get("lists.kick", "bannedmsg", "You have been banned from this server.").getString();
-        PlayerTracker.notwhitelisted = config.get("lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").getString();
-        PlayerTracker.notvip = config.get("lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
+        AuthEventHandler.banned = config.get("lists.kick", "bannedmsg", "You have been banned from this server.").getString();
+        AuthEventHandler.notwhitelisted = config.get("lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").getString();
+        AuthEventHandler.notvip = config.get("lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
     }
 
 }

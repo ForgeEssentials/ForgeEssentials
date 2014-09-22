@@ -1,11 +1,12 @@
 package com.forgeessentials.teleport.util;
 
+import java.io.File;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.teleport.TeleportModule;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
-
-import java.io.File;
 
 public class ConfigTeleport extends ModuleConfigBase {
 

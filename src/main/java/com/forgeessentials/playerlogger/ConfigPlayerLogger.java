@@ -1,11 +1,12 @@
 package com.forgeessentials.playerlogger;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.Configuration;
-
 import java.io.File;
 import java.util.Arrays;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
+
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 public class ConfigPlayerLogger extends ModuleConfigBase {
     public static final String[] exemptDefPlayers = { "\"[Forestry]\"", "\"[Buildcraft]\"" };

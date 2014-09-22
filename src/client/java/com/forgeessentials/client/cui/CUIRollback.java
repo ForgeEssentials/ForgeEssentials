@@ -4,15 +4,15 @@ import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.PlayerInfoClient;
 import com.forgeessentials.client.util.ClientPoint;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.ForgeSubscribe;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 public class CUIRollback {
-    @ForgeSubscribe
+    @SubscribeEvent
     public void render(RenderWorldLastEvent event)
     {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;

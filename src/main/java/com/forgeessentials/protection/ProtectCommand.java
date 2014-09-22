@@ -1,9 +1,10 @@
 package com.forgeessentials.protection;
 
-import com.forgeessentials.api.permissions.RegGroup;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtils;
-import net.minecraft.command.ICommandSender;
 
 public class ProtectCommand extends ForgeEssentialsCommandBase{
     @Override public void processCommand(ICommandSender var1, String[] var2)
@@ -17,16 +18,16 @@ public class ProtectCommand extends ForgeEssentialsCommandBase{
         case 3:
         if (var2[0].equalsIgnoreCase("gamemode"))
         {
-            *//*Zone zone = APIRegistry.zones.getZone(var2[1]);
-            for (Group g : APIRegistry.perms.getGroupsInZone(zone.getZoneName()))
+            *//*Zone zone = APIRegistry.perms.getZone(var2[1]);
+            for (Group g : APIRegistry.perms.getGroupsInZone(zone.getName()))
             {
-                APIRegistry.perms.setGroupPermissionProp(g.name, ModuleProtection.PERMPROP_ZONE_GAMEMODE, var2[2], zone.getZoneName());
+                APIRegistry.perms.setGroupPermissionProp(g.name, ModuleProtection.PERMPROP_ZONE_GAMEMODE, var2[2], zone.getName());
             }
             if (var1 instanceof EntityPlayer)
             {
                 ((EntityPlayer)var1).setGameType(EnumGameType.getByID(Integer.parseInt(var2[2])));
             }
-            ChatUtils.sendMessage(var1, String.format("Successfully set gamemode of zone %s1 to %s2", zone.getZoneName(), EnumGameType.getByID(Integer.parseInt(var2[2])).getName()));*//*
+            ChatUtils.sendMessage(var1, String.format("Successfully set gamemode of zone %s1 to %s2", zone.getName(), EnumGameType.getByID(Integer.parseInt(var2[2])).getName()));*//*
         }
             break;
             */
@@ -52,13 +53,13 @@ public class ProtectCommand extends ForgeEssentialsCommandBase{
         return true;
     }
 
-    @Override public String getCommandPerm()
+    @Override public String getPermissionNode()
     {
         return "fe.protection.protect";
     }
 
-    @Override public RegGroup getReggroup()
+    @Override public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.ZONE_ADMINS;
+        return RegisteredPermValue.OP;
     }
 }

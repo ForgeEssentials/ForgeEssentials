@@ -1,20 +1,20 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.commands.util.CommandDataManager;
+import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
-import com.forgeessentials.commands.util.TickHandlerCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
@@ -42,7 +42,7 @@ public class CommandKit extends FEcmdModuleCommands {
             String msg = "";
             for (Kit kit : CommandDataManager.kits.values())
             {
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + kit.getName())))
+                if (PermissionsManager.checkPermission(sender, getPermissionNode() + "." + kit.getName()))
                 {
                     msg = kit.getName() + ", " + msg;
                 }
@@ -51,20 +51,20 @@ public class CommandKit extends FEcmdModuleCommands {
             return;
         }
         /*
-		 * Give kit
+         * Give kit
 		 */
         if (args.length == 1)
         {
             if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
             {
-                if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + "." + args[0].toLowerCase())))
+                if (PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
                 {
                     CommandDataManager.kits.get(args[0].toLowerCase()).giveKit(sender);
                 }
                 else
                 {
                     OutputHandler.chatError(sender,
-                            "You have insufficient permission to do that. If you believe you received this message in error, please talk to a server admin.");
+                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
                 }
             }
             else
@@ -76,7 +76,7 @@ public class CommandKit extends FEcmdModuleCommands {
 		/*
 		 * Make kit
 		 */
-        if (args[1].equalsIgnoreCase("set") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+        if (args[1].equalsIgnoreCase("set") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
             if (args.length == 3)
             {
@@ -97,7 +97,7 @@ public class CommandKit extends FEcmdModuleCommands {
 		/*
 		 * Delete kit
 		 */
-        if (args[1].equalsIgnoreCase("del") && APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(sender, getCommandPerm() + ".admin")))
+        if (args[1].equalsIgnoreCase("del") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
             if (args.length == 2)
             {
@@ -129,8 +129,8 @@ public class CommandKit extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".admin", RegGroup.OWNERS);
-        APIRegistry.permReg.registerPermissionLevel(TickHandlerCommands.BYPASS_KIT_COOLDOWN, RegGroup.OWNERS);
+        PermissionsManager.registerPermission(getPermissionNode() + ".admin", RegisteredPermValue.OP);
+        PermissionsManager.registerPermission(CommandsEventHandler.BYPASS_KIT_COOLDOWN, RegisteredPermValue.OP);
     }
 
     @Override
@@ -152,9 +152,9 @@ public class CommandKit extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

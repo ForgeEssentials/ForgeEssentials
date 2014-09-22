@@ -1,15 +1,5 @@
 package com.forgeessentials.data;
 
-import com.forgeessentials.data.api.*;
-import com.forgeessentials.data.typeInfo.*;
-import com.forgeessentials.util.DBConnector;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.google.common.base.Throwables;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -20,24 +10,51 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.data.api.EnumDriverType;
+import com.forgeessentials.data.api.IDataDriver;
+import com.forgeessentials.data.api.IStorageManager;
+import com.forgeessentials.data.api.ITypeInfo;
+import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.TypeData;
+import com.forgeessentials.data.typeInfo.TypeInfoArray;
+import com.forgeessentials.data.typeInfo.TypeInfoList;
+import com.forgeessentials.data.typeInfo.TypeInfoMap;
+import com.forgeessentials.data.typeInfo.TypeInfoSerialize;
+import com.forgeessentials.data.typeInfo.TypeInfoSet;
+import com.forgeessentials.data.typeInfo.TypeInfoStandard;
+import com.forgeessentials.util.DBConnector;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.google.common.base.Throwables;
+
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class StorageManager implements IStorageManager {
-    // just keeps an instance of the config for future use.
-    private Configuration config;
+
     public static final EnumDriverType defaultDriver = EnumDriverType.TEXT;
+    
+    private Configuration config;
     private EnumDriverType chosen = defaultDriver;
-    private ConcurrentHashMap<EnumDriverType, String> typeChosens;                                                    // the defaults...
-    private ConcurrentHashMap<String, Class<? extends AbstractDataDriver>> classMap;                                                        // registered ones...
-    private ConcurrentHashMap<String, AbstractDataDriver> instanceMap;                                                    // instantiated ones
-    private static StorageManager instance;
+    
+    // the defaults...
+    private ConcurrentHashMap<EnumDriverType, String> typeChosens = new ConcurrentHashMap<EnumDriverType, String>();
+    
+    // registered ones...
+    private ConcurrentHashMap<String, Class<? extends AbstractDataDriver>> classMap = new ConcurrentHashMap<String, Class<? extends AbstractDataDriver>>();
+
+    // instantiated ones
+    private ConcurrentHashMap<String, AbstractDataDriver> instanceMap = new ConcurrentHashMap<String, AbstractDataDriver>();
+    
     private ConcurrentHashMap<String, ITypeInfo> taggerList = new ConcurrentHashMap<String, ITypeInfo>();
 
     public StorageManager(Configuration config)
     {
-        classMap = new ConcurrentHashMap<String, Class<? extends AbstractDataDriver>>();
-        instanceMap = new ConcurrentHashMap<String, AbstractDataDriver>();
-        typeChosens = new ConcurrentHashMap<EnumDriverType, String>();
-
         this.config = config;
 
         config.addCustomCategoryComment("Data", "Configuration options for how ForgeEssentials will save its data for persistence between sessions.");
@@ -62,8 +79,6 @@ public class StorageManager implements IStorageManager {
             prop = config.get(cat, "chosenDriver", typeChosens.get(type));
             typeChosens.put(type, prop.getString());
         }
-
-        instance = this;
     }
 
     /**
@@ -124,8 +139,8 @@ public class StorageManager implements IStorageManager {
             // If there is a problem constructing the driver, this line will
             // fail and we will enter the catch block.
             AbstractDataDriver driver = c.newInstance();
-            instance.classMap.put(name, c);
-            instance.instanceMap.put(name, driver);
+            classMap.put(name, c);
+            instanceMap.put(name, driver);
         }
         catch (Exception e)
         {
@@ -144,7 +159,7 @@ public class StorageManager implements IStorageManager {
     @Override
     public AbstractDataDriver getDriverOfType(EnumDriverType type)
     {
-        return getDriverOfName(instance.typeChosens.get(type));
+        return getDriverOfName(typeChosens.get(type));
     }
 
     /**
@@ -153,10 +168,10 @@ public class StorageManager implements IStorageManager {
      */
     private AbstractDataDriver getDriverOfName(String name)
     {
-        AbstractDataDriver d = instance.instanceMap.get(name);
+        AbstractDataDriver d = instanceMap.get(name);
         if (d == null)
         {
-            d = instance.instanceMap.get(defaultDriver);
+            d = instanceMap.get(defaultDriver);
         }
         return d;
     }
@@ -370,7 +385,7 @@ public class StorageManager implements IStorageManager {
     @Override
     public DBConnector getCoreDBConnector()
     {
-        return ((SQLDataDriver) instance.getDriverOfType(EnumDriverType.SQL)).connector;
+        return ((SQLDataDriver) getDriverOfType(EnumDriverType.SQL)).connector;
     }
 
     @Override

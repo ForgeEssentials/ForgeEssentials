@@ -1,13 +1,14 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.forgeessentials.util.OutputHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.common.Configuration;
-
 import java.io.File;
 import java.util.ArrayList;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.potion.PotionEffect;
+import net.minecraftforge.common.config.Configuration;
+
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.util.OutputHandler;
 
 public class ConfigAfterlife extends ModuleConfigBase {
     public Configuration config;
@@ -34,22 +35,23 @@ public class ConfigAfterlife extends ModuleConfigBase {
                 .get(subcat, "protectionTime", 300, "Time in seconds a grave is protected. After this time anyone can take all stuff.").getInt();
 
         subcat = cat + ".respawnStats";
-        config.addCustomCategoryComment(subcat, "Bypass permission:\n" + RespawnDebuff.BYPASSSTATS);
+        config.addCustomCategoryComment(subcat, "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSSTATS);
 
-        RespawnDebuff.hp = config.get(subcat, "hp", 20, "On respawn, respawn with X half hearts.").getInt();
-        RespawnDebuff.food = config.get(subcat, "foodlvl", 20, "On respawn, respawn with X half whatevertheyare.").getInt();
+        RespawnDebuffHandler.hp = config.get(subcat, "hp", 20, "On respawn, respawn with X half hearts.").getInt();
+        RespawnDebuffHandler.food = config.get(subcat, "foodlvl", 20, "On respawn, respawn with X half whatevertheyare.").getInt();
 
-        subcat = cat + ".respawnDebuff";
+        subcat = cat + ".RespawnDebuffHandler";
         config.addCustomCategoryComment(subcat,
-                "Bypass permission:\n" + RespawnDebuff.BYPASSPOTION + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
+                "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSPOTION
+                        + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
 
-        RespawnDebuff.potionEffects = new ArrayList<PotionEffect>();
+        RespawnDebuffHandler.potionEffects = new ArrayList<PotionEffect>();
         String[] array = config.get(subcat, "potionEffects", new String[] { "4:150:1" }, "Format like this: 'ID:duration:amplifier'").getStringList();
 
         for (String string : array)
         {
             String[] split = string.split(":");
-            RespawnDebuff.potionEffects.add(new PotionEffect(Integer.parseInt(split[0]), Integer.parseInt(split[1]) * 20, Integer.parseInt(split[2])));
+            RespawnDebuffHandler.potionEffects.add(new PotionEffect(Integer.parseInt(split[0]), Integer.parseInt(split[1]) * 20, Integer.parseInt(split[2])));
         }
 
         config.save();
@@ -66,17 +68,18 @@ public class ConfigAfterlife extends ModuleConfigBase {
         config.get(subcat, "enableFencePost", true, "Put the skull on a spike.").set(Deathchest.enableFencePost);
 
         subcat = cat + ".respawnStats";
-        config.addCustomCategoryComment(subcat, "Bypass permission:\n" + RespawnDebuff.BYPASSSTATS);
+        config.addCustomCategoryComment(subcat, "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSSTATS);
 
-        config.get(subcat, "hp", 20, "On respawn, respawn with X half hearts.").set(RespawnDebuff.hp);
-        config.get(subcat, "foodlvl", 20, "On respawn, respawn with X half whatevertheyare.").set(RespawnDebuff.food);
+        config.get(subcat, "hp", 20, "On respawn, respawn with X half hearts.").set(RespawnDebuffHandler.hp);
+        config.get(subcat, "foodlvl", 20, "On respawn, respawn with X half whatevertheyare.").set(RespawnDebuffHandler.food);
 
-        subcat = cat + ".respawnDebuff";
+        subcat = cat + ".RespawnDebuffHandler";
         config.addCustomCategoryComment(subcat,
-                "Bypass permission:\n" + RespawnDebuff.BYPASSPOTION + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
+                "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSPOTION
+                        + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
 
         ArrayList<String> list = new ArrayList<String>();
-        for (PotionEffect effect : RespawnDebuff.potionEffects)
+        for (PotionEffect effect : RespawnDebuffHandler.potionEffects)
         {
             list.add(effect.getPotionID() + ":" + effect.getDuration() * 20 + ":" + effect.getAmplifier());
         }
@@ -98,22 +101,23 @@ public class ConfigAfterlife extends ModuleConfigBase {
         Deathchest.enableFencePost = config.get(subcat, "enableFencePost", true, "Put the skull on a spike.").getBoolean(true);
 
         subcat = cat + ".respawnStats";
-        config.addCustomCategoryComment(subcat, "Bypass permission:\n" + RespawnDebuff.BYPASSSTATS);
+        config.addCustomCategoryComment(subcat, "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSSTATS);
 
-        RespawnDebuff.hp = config.get(subcat, "hp", 20, "On respawn, respawn with X half hearts.").getInt();
-        RespawnDebuff.food = config.get(subcat, "foodlvl", 20, "On respawn, respawn with X half whatevertheyare.").getInt();
+        RespawnDebuffHandler.hp = config.get(subcat, "hp", 20, "On respawn, respawn with X half hearts.").getInt();
+        RespawnDebuffHandler.food = config.get(subcat, "foodlvl", 20, "On respawn, respawn with X half whatevertheyare.").getInt();
 
-        subcat = cat + ".respawnDebuff";
+        subcat = cat + ".RespawnDebuffHandler";
         config.addCustomCategoryComment(subcat,
-                "Bypass permission:\n" + RespawnDebuff.BYPASSPOTION + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
+                "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSPOTION
+                        + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
 
-        RespawnDebuff.potionEffects = new ArrayList<PotionEffect>();
+        RespawnDebuffHandler.potionEffects = new ArrayList<PotionEffect>();
         String[] array = config.get(subcat, "potionEffects", new String[] { "4:150:1" }, "Format like this: 'ID:duration:amplifier'").getStringList();
 
         for (String string : array)
         {
             String[] split = string.split(":");
-            RespawnDebuff.potionEffects.add(new PotionEffect(Integer.parseInt(split[0]), Integer.parseInt(split[1]) * 20, Integer.parseInt(split[2])));
+            RespawnDebuffHandler.potionEffects.add(new PotionEffect(Integer.parseInt(split[0]), Integer.parseInt(split[1]) * 20, Integer.parseInt(split[2])));
         }
 
         config.save();

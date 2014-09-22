@@ -4,25 +4,21 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Init;
+import com.forgeessentials.util.selections.SelectionHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.modules.FEModuleInitEvent;
 import com.forgeessentials.util.events.modules.FEModulePostInitEvent;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
 
-@FEModule(name = "WEIntegrationTools", parentMod = ForgeEssentials.class, configClass = WEIntegrationToolsConfig.class)
+@FEModule(name = "WEIntegrationTools", parentMod = ForgeEssentials.class)
 public class WEIntegration {
 
     protected static int syncInterval;
     private static boolean disable;
-
-    @FEModule.Config
-    public static WEIntegrationToolsConfig config;
 
     @FEModule.ModuleDir
     public static File moduleDir;
@@ -59,7 +55,7 @@ public class WEIntegration {
             return;
         }
         EnvironmentChecker.worldEditFEtoolsInstalled = true;
-        TickRegistry.registerScheduledTickHandler(new SelectionSyncHandler(syncInterval), Side.SERVER);
+        SelectionHandler.selectionProvider = new WESelectionHandler();
     }
 
     @FEModule.PostInit

@@ -1,19 +1,21 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import com.forgeessentials.util.UserIdent;
 
-import java.util.ArrayList;
-import java.util.List;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Allows you to modify a bunch of interesting stuff...
@@ -56,10 +58,10 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         }
         else if (args.length == 1)
         {
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
-                OutputHandler.chatConfirmation(sender, String.format("Capabilities for %s:", player.username));
+                OutputHandler.chatConfirmation(sender, String.format("Capabilities for %s:", player.getCommandSenderName()));
                 ChatUtils.sendMessage(sender, names.get(0) + " = " + player.capabilities.disableDamage);
                 ChatUtils.sendMessage(sender, names.get(1) + " = " + player.capabilities.isFlying);
                 ChatUtils.sendMessage(sender, names.get(2) + " = " + player.capabilities.allowFlying);
@@ -75,34 +77,34 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         {
             if (sender instanceof EntityPlayer)
             {
-                if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
+                if (!PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 {
-                    OutputHandler.chatError(sender, "You don't have permission for that.");
+                    OutputHandler.chatError(sender, "You don't have permissions for that.");
                     return;
                 }
             }
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
                 {
-                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
+                    ChatUtils.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(1)))
                 {
-                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(1) + " = " + player.capabilities.isFlying);
+                    ChatUtils.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(1) + " = " + player.capabilities.isFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(2)))
                 {
-                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
+                    ChatUtils.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(3)))
                 {
-                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
+                    ChatUtils.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(4)))
                 {
-                    ChatUtils.sendMessage(sender, player.username + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
+                    ChatUtils.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
                 }
                 else
                 {
@@ -115,13 +117,13 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         {
             if (sender instanceof EntityPlayer)
             {
-                if (!APIRegistry.perms.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, getCommandPerm() + ".others")))
+                if (!PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 {
-                    OutputHandler.chatError(sender, "You don't have permission for that.");
+                    OutputHandler.chatError(sender, "You don't have permissions for that.");
                     return;
                 }
             }
-            EntityPlayerMP player = FunctionHelper.getPlayerForName(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatch(sender, args[0]);
             if (player != null)
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
@@ -167,7 +169,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.permReg.registerPermissionLevel(getCommandPerm() + ".others", RegGroup.OWNERS);
+        PermissionsManager.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
     }
 
     @Override
@@ -198,9 +200,9 @@ public class CommandCapabilities extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

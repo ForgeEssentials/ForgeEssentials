@@ -1,18 +1,20 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.core.PlayerInfo;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.AreaSelector.Point;
-import com.forgeessentials.util.AreaSelector.WarpPoint;
-import com.forgeessentials.util.TeleportCenter;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.HashMap;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.HashMap;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandTppos extends ForgeEssentialsCommandBase {
 
@@ -32,11 +34,13 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     {
         if (args.length == 3)
         {
-            int x = parseInt(sender, args[0], sender.posX), y = parseInt(sender, args[1], sender.posY), z = parseInt(sender, args[2], sender.posZ);
+            double x = parseDouble(sender, args[0], sender.posX);
+            double y = parseDouble(sender, args[1], sender.posY);
+            double z = parseDouble(sender, args[2], sender.posZ);
             EntityPlayerMP player = (EntityPlayerMP) sender;
-            PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.username);
-            playerInfo.back = new WarpPoint(player);
-            CommandBack.justDied.remove(player.username);
+            PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
+            playerInfo.setLastTeleportOrigin(new WarpPoint(player));
+            CommandBack.justDied.remove(player.getPersistentID());
             TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.cameraPitch, player.cameraYaw), player);
         }
         else
@@ -52,7 +56,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandPerm()
+    public String getPermissionNode()
     {
         return "fe.teleport.tppos";
     }
@@ -71,9 +75,9 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.MEMBERS;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

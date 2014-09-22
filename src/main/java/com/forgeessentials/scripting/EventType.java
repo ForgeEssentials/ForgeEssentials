@@ -1,15 +1,17 @@
 package com.forgeessentials.scripting;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.OutputHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 public enum EventType {
     LOGIN("login"),
@@ -34,12 +36,12 @@ public enum EventType {
     public static void run(EntityPlayer player, EventType event)
     {
         ArrayList<String> scripts = new ArrayList<String>();
-        OutputHandler.felog.info("Running command scripts for player " + player.username);
+        OutputHandler.felog.info("Running command scripts for player " + player.getCommandSenderName());
 
         //  run player scripts
         try
         {
-            File pscript = new File(event.player, player.username + ".txt");
+            File pscript = new File(event.player, player.getPersistentID() + ".txt");
 
             OutputHandler.felog.info("Reading command script file " + pscript.getAbsolutePath());
             FileInputStream stream = new FileInputStream(pscript);
@@ -69,12 +71,12 @@ public enum EventType {
         }
         catch (Exception e)
         {
-            OutputHandler.felog.warning("Could not find command script for player " + player.username + ", ignoring!");
+            OutputHandler.felog.warning("Could not find command script for player " + player.getCommandSenderName() + ", ignoring!");
         }
         // now run group scripts - must be global
         try
         {
-            File gscript = new File(event.group, APIRegistry.perms.getHighestGroup(player).name + ".txt");
+            File gscript = new File(event.group, APIRegistry.perms.getPrimaryGroup(new UserIdent(player)) + ".txt");
             OutputHandler.felog.info("Reading command script file " + gscript.getAbsolutePath());
             FileInputStream stream = new FileInputStream(gscript);
             InputStreamReader streamReader = new InputStreamReader(stream);
@@ -103,7 +105,7 @@ public enum EventType {
         }
         catch (Exception e)
         {
-            OutputHandler.felog.warning("Could not find command script for group " + APIRegistry.perms.getHighestGroup(player).toString() + ", ignoring!");
+            OutputHandler.felog.warning("Could not find command script for group " + APIRegistry.perms.getPrimaryGroup(new UserIdent(player)).toString() + ", ignoring!");
         }
         finally
         {
@@ -111,7 +113,7 @@ public enum EventType {
             {
                 String s1 = s.toString();
                 MinecraftServer.getServer().getCommandManager().executeCommand(player, s1);
-                OutputHandler.felog.info("Successfully run command scripts for player " + player.username);
+                OutputHandler.felog.info("Successfully run command scripts for player " + player.getCommandSenderName());
             }
         }
     }

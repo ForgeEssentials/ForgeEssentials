@@ -1,13 +1,14 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.InventoryEnderChest;
-import net.minecraft.network.packet.Packet100OpenWindow;
+import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
 
 /**
  * Opens your enderchest.
@@ -36,11 +37,11 @@ public class CommandEnderchest extends FEcmdModuleCommands {
         {
             player.closeScreen();
         }
-        player.incrementWindowID();
+        player.getNextWindowId();
 
         InventoryEnderChest chest = player.getInventoryEnderChest();
         player.playerNetServerHandler
-                .sendPacketToPlayer(new Packet100OpenWindow(player.currentWindowId, 0, chest.getInvName(), chest.getSizeInventory(), true));
+                .sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, chest.getInventoryName(), chest.getSizeInventory(), true));
         player.openContainer = new ContainerChest(player.inventory, chest);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addCraftingToCrafters(player);
@@ -53,9 +54,9 @@ public class CommandEnderchest extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

@@ -1,21 +1,21 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.EnumMobType;
-import com.forgeessentials.api.permissions.RegGroup;
-import com.forgeessentials.commands.util.CommandButcherTickTask;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.AreaSelector.WorldPoint;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.TaskRegistry;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.api.EnumMobType;
+import com.forgeessentials.commands.util.CommandButcherTickTask;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.util.tasks.TaskRegistry;
 
 public class CommandButcher extends FEcmdModuleCommands {
     public static List<String> typeList = new ArrayList<String>();
@@ -55,9 +55,9 @@ public class CommandButcher extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
         int radius = -1;
-        int X = (int) sender.posX;
-        int Y = (int) sender.posY;
-        int Z = (int) sender.posZ;
+        double X = sender.posX;
+        double Y = sender.posY;
+        double Z = sender.posZ;
         String mobType = EnumMobType.HOSTILE.toString();
 
         if (args.length > 0)
@@ -100,12 +100,12 @@ public class CommandButcher extends FEcmdModuleCommands {
             }
             else
             {
-                X = parseInt(sender, split[0], sender.posX);
-                Y = parseInt(sender, split[1], sender.posY);
-                Z = parseInt(sender, split[2], sender.posZ);
+                X = parseDouble(sender, split[0], sender.posX);
+                Y = parseDouble(sender, split[1], sender.posY);
+                Z = parseDouble(sender, split[2], sender.posZ);
             }
         }
-        AxisAlignedBB pool = AxisAlignedBB.getAABBPool().getAABB(X - radius, Y - radius, Z - radius, X + radius + 1, Y + radius + 1, Z + radius + 1);
+        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(X - radius, Y - radius, Z - radius, X + radius + 1, Y + radius + 1, Z + radius + 1);
         TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, pool, radius, sender.dimension));
     }
 
@@ -119,7 +119,7 @@ public class CommandButcher extends FEcmdModuleCommands {
         if (sender instanceof TileEntityCommandBlock)
         {
             TileEntityCommandBlock cb = (TileEntityCommandBlock) sender;
-            worldID = cb.worldObj.provider.dimensionId;
+            worldID = cb.getWorldObj().provider.dimensionId;
             x = cb.xCoord;
             y = cb.yCoord;
             z = cb.zCoord;
@@ -177,21 +177,13 @@ public class CommandButcher extends FEcmdModuleCommands {
                 z = parseInt(sender, split[2]);
             }
         }
-        if (args.length == 4)
-        {
-            try
-            {
-                worldID = Integer.parseInt(args[3]);
-            }
-            catch (NumberFormatException e)
-            {
-                ChatUtils.sendMessage(sender, String.format("'%s' param was not recognized as number. Please try again.", args[0]));
-                return;
-            }
-        }
+		if (args.length == 4) 
+		{
+			worldID = parseInt(sender, args[3]);
+		}
         WorldPoint center = new WorldPoint(worldID, x, y, z);
-        AxisAlignedBB pool = AxisAlignedBB.getAABBPool()
-                .getAABB(center.x - radius, center.y - radius, center.z - radius, center.x + radius + 1, center.y + radius + 1, center.z + radius + 1);
+        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY() + radius + 1,
+                center.getZ() + radius + 1);
         TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, pool, radius, worldID));
     }
 
@@ -202,9 +194,9 @@ public class CommandButcher extends FEcmdModuleCommands {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return RegGroup.OWNERS;
+        return RegisteredPermValue.OP;
     }
 
     @Override

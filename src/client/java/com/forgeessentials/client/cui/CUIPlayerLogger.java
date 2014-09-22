@@ -4,6 +4,7 @@ import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.PlayerInfoClient;
 import com.forgeessentials.client.util.ClientPoint;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
@@ -13,13 +14,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.ForgeSubscribe;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 @SideOnly(value = Side.CLIENT)
 public class CUIPlayerLogger {
-    @ForgeSubscribe
+    @SubscribeEvent
     public void render(RenderWorldLastEvent event)
     {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
@@ -63,7 +63,7 @@ public class CUIPlayerLogger {
         double var7 = player.prevPosX + (player.posX - player.prevPosX) * var4;
         double var9 = player.prevPosY + (player.posY - player.prevPosY) * var4 + 1.62D - player.yOffset;
         double var11 = player.prevPosZ + (player.posZ - player.prevPosZ) * var4;
-        Vec3 var13 = player.worldObj.getWorldVec3Pool().getVecFromPool(var7, var9, var11);
+        Vec3 var13 = Vec3.createVectorHelper(var7, var9, var11);
         float var14 = MathHelper.cos(-var6 * 0.017453292F - (float) Math.PI);
         float var15 = MathHelper.sin(-var6 * 0.017453292F - (float) Math.PI);
         float var16 = -MathHelper.cos(-var5 * 0.017453292F);
@@ -73,7 +73,7 @@ public class CUIPlayerLogger {
         double var21 = 500D;
         Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
 
-        MovingObjectPosition mo = player.worldObj.rayTraceBlocks_do_do(var13, var23, false, false);
+        MovingObjectPosition mo = player.worldObj.rayTraceBlocks(var13, var23);
 
         if (mo == null)
         {

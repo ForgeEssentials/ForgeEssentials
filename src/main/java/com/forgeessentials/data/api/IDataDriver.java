@@ -1,7 +1,7 @@
 package com.forgeessentials.data.api;
 
+import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.common.Configuration;
 
 public interface IDataDriver {
     void onClassRegistered(ITypeInfo<?> tagger);

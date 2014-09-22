@@ -1,8 +1,7 @@
 package com.forgeessentials.core.compat;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.query.PermQueryPlayer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager;
 
 public class CompatReiMinimap {
     private static final String base = "ForgeEssentials.compat";
@@ -21,31 +20,31 @@ public class CompatReiMinimap {
         {
             String MOTD = "\u00a7e\u00a7f";
 
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, cavemap)))
+            if (PermissionsManager.checkPermission(username, cavemap))
             {
                 MOTD = "\u00a77" + MOTD;
             }
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, radarSquid)))
+            if (PermissionsManager.checkPermission(username, radarSquid))
             {
                 MOTD = "\u00a76" + MOTD;
             }
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, radarSlime)))
+            if (PermissionsManager.checkPermission(username, radarSlime))
             {
                 MOTD = "\u00a75" + MOTD;
             }
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, radarMod)))
+            if (PermissionsManager.checkPermission(username, radarMod))
             {
                 MOTD = "\u00a74" + MOTD;
             }
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, radarAnimal)))
+            if (PermissionsManager.checkPermission(username, radarAnimal))
             {
                 MOTD = "\u00a73" + MOTD;
             }
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, radarPlayer)))
+            if (PermissionsManager.checkPermission(username, radarPlayer))
             {
                 MOTD = "\u00a72" + MOTD;
             }
-            if (APIRegistry.perms.checkPermAllowed(new PermQueryPlayer(username, cavemap)))
+            if (PermissionsManager.checkPermission(username, cavemap))
             {
                 MOTD = "\u00a71" + MOTD;
             }
