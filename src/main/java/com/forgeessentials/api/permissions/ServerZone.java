@@ -1,14 +1,17 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.server.MinecraftServer;
 
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -19,6 +22,24 @@ import com.forgeessentials.util.selections.WorldPoint;
  * @author Olee
  */
 public class ServerZone extends Zone {
+
+	/**
+	 * Compares groups by priority
+	 */
+	public class GroupComparator implements Comparator<String> {
+
+		@Override
+		public int compare(String group1, String group2)
+		{
+			String priority1 = getGroupPermission(group1, FEPermissions.GROUP_PRIORITY);
+			String priority2 = getGroupPermission(group2, FEPermissions.GROUP_PRIORITY);
+			return FunctionHelper.parseIntDefault(priority2, FEPermissions.GROUP_PRIORITY_DEFAULT)
+					- FunctionHelper.parseIntDefault(priority1, FEPermissions.GROUP_PRIORITY_DEFAULT);
+		}
+
+	}
+
+	// ------------------------------------------------------------
 
 	private RootZone rootZone;
 
@@ -95,7 +116,7 @@ public class ServerZone extends Zone {
 	{
 		return rootZone;
 	}
-	
+
 	// ------------------------------------------------------------
 
 	public Map<Integer, WorldZone> getWorldZones()
@@ -141,6 +162,13 @@ public class ServerZone extends Zone {
 		return getGroupPermissions().containsKey(name);
 	}
 
+	public void createGroup(String name)
+	{
+		setGroupPermission(name, FEPermissions.GROUP, true);
+		setGroupPermissionProperty(name, FEPermissions.GROUP_PRIORITY, Integer.toString(FEPermissions.GROUP_PRIORITY_DEFAULT));
+		setDirty();
+	}
+
 	// ------------------------------------------------------------
 
 	public void addPlayerToGroup(UserIdent ident, String group)
@@ -163,10 +191,12 @@ public class ServerZone extends Zone {
 		setDirty();
 	}
 
-	public Set<String> getPlayerGroups(UserIdent ident)
+	public SortedSet<String> getPlayerGroups(UserIdent ident)
 	{
 		Set<String> pgs = playerGroups.get(ident);
-		HashSet result = pgs == null ? new HashSet<String>() : new HashSet<String>(pgs);
+		SortedSet<String> result = new TreeSet<String>(new GroupComparator());
+		if (pgs != null)
+			result.addAll(pgs);
 		if (ident != null && ident.hasPlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
 		{
 			result.add(IPermissionsHelper.GROUP_OPERATORS);
@@ -175,7 +205,6 @@ public class ServerZone extends Zone {
 		{
 			result.add(IPermissionsHelper.GROUP_GUESTS);
 		}
-		// TODO: Sort groups by priority
 		return result;
 	}
 

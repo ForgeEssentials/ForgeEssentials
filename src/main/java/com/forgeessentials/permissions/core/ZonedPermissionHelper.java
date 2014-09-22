@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
@@ -576,8 +577,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	public void createGroup(String name)
 	{
-		setGroupPermission(name, FEPermissions.GROUP, true);
-		setDirty();
+		getServerZone().createGroup(name);
 	}
 
 	@Override
@@ -599,7 +599,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	}
 
 	@Override
-	public Set<String> getPlayerGroups(UserIdent ident)
+	public SortedSet<String> getPlayerGroups(UserIdent ident)
 	{
 		return getServerZone().getPlayerGroups(ident);
 	}

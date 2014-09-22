@@ -3,6 +3,7 @@ package com.forgeessentials.api.permissions;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -309,7 +310,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * 
 	 * @param ident
 	 */
-	Set<String> getPlayerGroups(UserIdent ident);
+	SortedSet<String> getPlayerGroups(UserIdent ident);
 
 	// ---------------------------------------------------------------------------
 

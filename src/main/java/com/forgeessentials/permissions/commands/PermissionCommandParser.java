@@ -208,7 +208,7 @@ public class PermissionCommandParser {
 				info(String.format("Groups for player %s:", ident.getUsernameOrUUID()));
 				for (String group : APIRegistry.perms.getPlayerGroups(ident))
 				{
-					info(" - " + group);
+					info("  " + group);
 				}
 			}
 			else

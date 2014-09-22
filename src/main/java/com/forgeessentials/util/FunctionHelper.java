@@ -52,6 +52,48 @@ public final class FunctionHelper {
 	public static SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("ForgeEssentials");
 
 	/**
+	 * Try to parse integer or return defaultValue on failure
+	 * 
+	 * @param value
+	 * @param defaultValue
+	 * @return parsed integer or default value
+	 */
+	public static int parseIntDefault(String value, int defaultValue)
+	{
+		if (value == null)
+			return defaultValue;
+		try
+		{
+			return Integer.parseInt(value);
+		}
+		catch (NumberFormatException e)
+		{
+			return defaultValue;
+		}
+	}
+
+	/**
+	 * Try to parse double or return defaultValue on failure
+	 * 
+	 * @param value
+	 * @param defaultValue
+	 * @return parsed double or default value
+	 */
+	public static double parseDoubleDefault(String value, double defaultValue)
+	{
+		if (value == null)
+			return defaultValue;
+		try
+		{
+			return Double.parseDouble(value);
+		}
+		catch (NumberFormatException e)
+		{
+			return defaultValue;
+		}
+	}
+
+	/**
 	 * Get player's looking spot.
 	 *
 	 * @param player
