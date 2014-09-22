@@ -5,6 +5,7 @@ public final class FEPermissions {
 
 	public static final String MSG_NO_COMMAND_PERM = "You don't have permissions to use this command!";
 	public static final String MSG_NO_PERM = "You don't have permissions for that!";
+	public static final String MSG_NO_CONSOLE_COMMAND = "This command cannot be invoked from console";
 
 	// ------------------------------------------------
 	// -- Internal properties

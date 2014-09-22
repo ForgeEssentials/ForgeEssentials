@@ -24,6 +24,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class PermissionCommandParser {
 
@@ -84,7 +85,7 @@ public class PermissionCommandParser {
 	}
 
 	// Variables for auto-complete
-	private static final String[] parseMainArgs = { "user", "group", "list", "reload", "save" }; // "export", "promote", "test" };
+	private static final String[] parseMainArgs = { "zones", "user", "group", "list", "reload", "save" }; // "export", "promote", "test" };
 	private static final String[] parseUserArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "perms", "group" };
 	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "priority", "parent" };
 	private static final String[] parseUserGroupArgs = { "add", "remove" };
@@ -113,6 +114,9 @@ public class PermissionCommandParser {
 				else
 					error("Error while reloading permissions");
 				break;
+			case "zones":
+				listZones();
+				break;
 			case "list":
 				listPermissions();
 				break;
@@ -138,10 +142,25 @@ public class PermissionCommandParser {
 	{
 		if (senderPlayer == null)
 		{
-			error("This command cannot be invoked from console");
+			error(FEPermissions.MSG_NO_CONSOLE_COMMAND);
 			return;
 		}
 		listUserPermissions(new UserIdent(senderPlayer));
+	}
+	
+	private void listZones()
+	{
+		if (senderPlayer == null)
+		{
+			error(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+			return;
+		}
+		WorldPoint wp = new WorldPoint(senderPlayer);
+		info("Zones at position " + wp.toString());
+		for (Zone zone : APIRegistry.perms.getZonesAt(wp))
+		{
+			info("  #" + zone.getId() + " " + zone.toString());
+		}
 	}
 
 	private void parseUser()

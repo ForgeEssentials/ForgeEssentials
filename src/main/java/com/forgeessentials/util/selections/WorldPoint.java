@@ -102,6 +102,6 @@ public class WorldPoint extends Point {
     @Override
     public String toString()
     {
-        return "WorldPoint[" + dim + ", " + x + ", " + y + ", " + z + "]";
+        return "[" + x + ", " + y + ", " + z + ", dim=" + dim + "]";
     }
 }

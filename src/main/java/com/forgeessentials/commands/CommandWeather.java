@@ -60,7 +60,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 	{
 		if (args.length == 0)
 		{
-			throw new CommandException("Improper syntax. Please try this instead: [DimID, none for all] <rain|storm> [on|off]");
+			throw new CommandException("Improper syntax. Please try this instead: /weather <rain|storm|default> [on|off]");
 		}
 		WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
 		wt.weatherSpecified = true;
@@ -76,6 +76,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 				if (args[1].equalsIgnoreCase("on"))
 				{
 					wt.rain = true;
+					wt.storm = false;
 				}
 				else if (args[1].equalsIgnoreCase("off"))
 				{
@@ -100,6 +101,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 				if (args[1].equalsIgnoreCase("on"))
 				{
 					wt.storm = true;
+					wt.rain = false;
 				}
 				else if (args[1].equalsIgnoreCase("off"))
 				{
@@ -113,9 +115,15 @@ public class CommandWeather extends FEcmdModuleCommands {
 			CommandDataManager.WTmap.put(wt.dimID, wt);
 			return "Storms permanently turned " + (wt.storm ? "on" : "off");
 		}
+		else if (args[0].equalsIgnoreCase("default"))
+		{
+			wt.weatherSpecified = false;
+			CommandDataManager.WTmap.put(wt.dimID, wt);
+			return "Wheather reset to default";
+		}
 		else
 		{
-			throw new CommandException("Improper syntax. Please try this instead: [DimID, none for all] <rain|storm> [on|off]");
+			throw new CommandException("Improper syntax. Please try this instead: /weather <rain|storm|default> [on|off]");
 		}
 	}
 
@@ -129,6 +137,6 @@ public class CommandWeather extends FEcmdModuleCommands {
 	public String getCommandUsage(ICommandSender sender)
 	{
 
-		return "/weather  [DimID, none for all] <rain|storm> [on|off] Allows for permanent manipulation of the weather.";
+		return "/weather <rain|storm|default> [on|off] Allows for permanent manipulation of the weather.";
 	}
 }
