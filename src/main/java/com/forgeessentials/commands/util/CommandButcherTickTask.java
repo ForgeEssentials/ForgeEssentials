@@ -23,10 +23,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.ITickTask;
 
@@ -77,7 +77,7 @@ public class CommandButcherTickTask implements ITickTask {
             var6 = var10temp = MathHelper.floor_double((aabb.minZ - MAX_ENTITY_RADIUS) / 16.0D);
             var7 = MathHelper.floor_double((aabb.maxZ + MAX_ENTITY_RADIUS) / 16.0D);
         }
-        world = FunctionHelper.getDimension(worldID);
+        world = DimensionManager.getWorld(worldID);
         counter = 0;
         playerCommand = false;
         tempCount = 0;

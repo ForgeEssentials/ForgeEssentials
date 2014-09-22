@@ -1,4 +1,4 @@
-package com.forgeessentials.permissions.core;
+package com.forgeessentials.api.permissions;
 
 
 public final class FEPermissions {
@@ -19,11 +19,13 @@ public final class FEPermissions {
 	public static final String SUFFIX = FE_INTERNAL + ".suffix";
 
 	public static final String GROUP = FE_INTERNAL + ".group";
-	public static final String GROUP_ID = FE_INTERNAL + ".group.id";
+	public static final String GROUP_ID = GROUP + ".id";
+	public static final String GROUP_PRIORITY = GROUP + ".priority";
 
-	public static final String PLAYER_UUID = FE_INTERNAL + ".player.uuid";
-	public static final String PLAYER_NAME = FE_INTERNAL + ".player.name";
-	public static final String PLAYER_GROUPS = FE_INTERNAL + ".player.groups";
+	public static final String PLAYER = FE_INTERNAL + ".player";
+	public static final String PLAYER_UUID = PLAYER + ".uuid";
+	public static final String PLAYER_NAME = PLAYER + ".name";
+	public static final String PLAYER_GROUPS = PLAYER + ".groups";
 
 	// ------------------------------------------------
 	// -- Permissions

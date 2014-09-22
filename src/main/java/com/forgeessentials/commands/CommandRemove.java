@@ -6,11 +6,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -85,7 +85,7 @@ public class CommandRemove extends FEcmdModuleCommands {
             return;
         }
 
-        List<EntityItem> entityList = FunctionHelper.getDimension(center.getDimension()).getEntitiesWithinAABB(EntityItem.class,
+        List<EntityItem> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(EntityItem.class,
                 AxisAlignedBB.getBoundingBox(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY() + radius + 1,
                         center.getZ() + radius + 1));
 

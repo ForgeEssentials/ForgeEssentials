@@ -11,7 +11,7 @@ import com.forgeessentials.util.selections.WorldPoint;
  * 
  * @author Olee
  */
-public class AreaZone extends Zone {
+public class AreaZone extends Zone implements Comparable<AreaZone> {
 
 	private WorldZone worldZone;
 
@@ -113,6 +113,7 @@ public class AreaZone extends Zone {
 	public void setArea(AreaBase area)
 	{
 		this.area = area;
+		getWorldZone().sortAreaZones();
 	}
 
 	public int getPriority()
@@ -123,6 +124,21 @@ public class AreaZone extends Zone {
 	public void setPriority(int priority)
 	{
 		this.priority = priority;
+	}
+
+
+	@Override
+	public int compareTo(AreaZone area)
+	{
+		int cmp = area.priority - priority;
+		if (cmp != 0) return cmp;
+		
+		Point areaSize = area.getArea().getSize();
+		Point thisSize = getArea().getSize();
+		cmp = (areaSize.getX() * areaSize.getY()) - (thisSize.getX() * thisSize.getY());
+		if (cmp != 0) return cmp;
+		
+		return cmp;
 	}
 
 }

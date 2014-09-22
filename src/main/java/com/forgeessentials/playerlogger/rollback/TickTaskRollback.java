@@ -8,14 +8,13 @@ import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.playerlogger.BlockChange;
 import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.google.common.base.Charsets;
 
@@ -54,7 +53,7 @@ public class TickTaskRollback implements ITickTask {
 				if (i.hasNext())
 				{
 					BlockChange bc = i.next();
-					world = FunctionHelper.getDimension(bc.getDimension());
+					world = DimensionManager.getWorld(bc.getDimension());
 
 					if (bc.getType() == 0)
 					{

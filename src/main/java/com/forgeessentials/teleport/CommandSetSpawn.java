@@ -1,7 +1,6 @@
 package com.forgeessentials.teleport;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,14 +8,13 @@ import java.util.UUID;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
@@ -101,7 +99,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 				}
 				else if (args[3].equalsIgnoreCase("revert"))
 				{
-					World world = FunctionHelper.getDimension(0);
+					World world = DimensionManager.getWorld(0);
 					WorldPoint p = new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ);
 					x = p.getX();
 					y = p.getY();
@@ -163,7 +161,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 			}
 			else if (args[4].equalsIgnoreCase("revert"))
 			{
-				World world = FunctionHelper.getDimension(0);
+				World world = DimensionManager.getWorld(0);
 				// zone = APIRegistry.perms.getZoneAt(new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY,
 				// world.getSpawnPoint().posZ));
 				zone = APIRegistry.perms.getZoneAt(new WorldPoint(0, 10, 10, 10));
@@ -186,7 +184,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 			}
 			else if (args[4].equalsIgnoreCase("revert"))
 			{
-				World world = FunctionHelper.getDimension(0);
+				World world = DimensionManager.getWorld(0);
 				// zone = APIRegistry.perms.getZoneAt(new WorldPoint(world, world.getSpawnPoint().posX, world.getSpawnPoint().posY,
 				// world.getSpawnPoint().posZ));
 				zone = APIRegistry.perms.getZoneAt(new WorldPoint(0, 10, 10, 10));

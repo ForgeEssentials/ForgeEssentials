@@ -2,6 +2,7 @@ package com.forgeessentials.api.permissions;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -110,13 +111,13 @@ public class WorldZone extends Zone {
 
 	public void sortAreaZones()
 	{
-		// TODO: Sort for priorities
-		throw new RuntimeException("Not yet implemented");
+		Collections.sort(areaZones);
 	}
 
 	void addAreaZone(AreaZone areaZone)
 	{
 		areaZones.add(areaZone);
+		sortAreaZones();
 		setDirty();
 	}
 

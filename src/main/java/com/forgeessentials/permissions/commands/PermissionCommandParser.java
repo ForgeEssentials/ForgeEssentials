@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,10 +18,10 @@ import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.permissions.ModulePermissions;
-import com.forgeessentials.permissions.core.FEPermissions;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -69,6 +71,12 @@ public class PermissionCommandParser {
 			OutputHandler.chatConfirmation(sender, message);
 	}
 
+	private void warn(String message)
+	{
+		if (!tabCompleteMode)
+			OutputHandler.chatWarning(sender, message);
+	}
+
 	private void error(String message)
 	{
 		if (!tabCompleteMode)
@@ -97,6 +105,7 @@ public class PermissionCommandParser {
 			switch (args.remove().toLowerCase()) {
 			case "save":
 				ModulePermissions.permissionHelper.save();
+				info("Permissions saved!");
 				break;
 			case "reload":
 				if (ModulePermissions.permissionHelper.load())
@@ -122,7 +131,7 @@ public class PermissionCommandParser {
 
 	private void help()
 	{
-		info("/feperm list|user|group: Displays help for the subcommands");
+		info("/feperm " + StringUtils.join(parseMainArgs, "|") + ": Displays help for the subcommands");
 	}
 
 	private void listPermissions()
@@ -142,7 +151,7 @@ public class PermissionCommandParser {
 			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
 		}
-		
+
 		if (tabCompleteMode && args.size() == 1)
 		{
 			tabComplete = new ArrayList<String>();
@@ -350,15 +359,24 @@ public class PermissionCommandParser {
 			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
 		}
-		
+
 		info(ident.getUsernameOrUUID() + " permissions:");
-		
+
 		Map<Zone, Map<String, String>> userPerms = ModulePermissions.permissionHelper.enumUserPermissions(ident);
 		for (Entry<Zone, Map<String, String>> zone : userPerms.entrySet())
 		{
-			info("Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+			boolean printedZone = false;
 			for (Entry<String, String> perm : zone.getValue().entrySet())
 			{
+				if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
+						|| perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
+						|| perm.getKey().equals(FEPermissions.SUFFIX))
+					continue;
+				if (!printedZone)
+				{
+					warn("Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+					printedZone = true;
+				}
 				info("  " + perm.getKey() + " = " + perm.getValue());
 			}
 		}
@@ -368,12 +386,26 @@ public class PermissionCommandParser {
 			Map<Zone, Map<String, String>> groupPerms = ModulePermissions.permissionHelper.enumGroupPermissions(group, false);
 			if (!groupPerms.isEmpty())
 			{
-				info("Group " + group);
+				boolean printedGroup = false;
 				for (Entry<Zone, Map<String, String>> zone : groupPerms.entrySet())
 				{
-					info("  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+					boolean printedZone = false;
 					for (Entry<String, String> perm : zone.getValue().entrySet())
 					{
+						if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
+								|| perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
+								|| perm.getKey().equals(FEPermissions.SUFFIX))
+							continue;
+						if (!printedGroup)
+						{
+							warn("Group " + group);
+							printedGroup = true;
+						}
+						if (!printedZone)
+						{
+							warn("  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+							printedZone = true;
+						}
 						info("    " + perm.getKey() + " = " + perm.getValue());
 					}
 				}
@@ -448,7 +480,7 @@ public class PermissionCommandParser {
 			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
 		}
-		
+
 		if (tabCompleteMode && args.size() == 1)
 		{
 			tabComplete = new ArrayList<String>();

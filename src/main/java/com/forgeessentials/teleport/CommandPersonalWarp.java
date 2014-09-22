@@ -7,6 +7,7 @@ import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.*;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -15,6 +16,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	public final String PERMSETLIMIT = getPermissionNode() + ".setLimit";
@@ -49,7 +52,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		if (args.length == 0)
 		{
 			ChatUtils.sendMessage(sender, "Your personal warps:");
-			ChatUtils.sendMessage(sender, FunctionHelper.niceJoin(map.keySet().toArray()));
+			ChatUtils.sendMessage(sender, StringUtils.join(map.keySet().toArray(), ", "));
 		}
 		else
 		{

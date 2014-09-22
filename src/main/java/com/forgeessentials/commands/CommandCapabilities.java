@@ -3,6 +3,8 @@ package com.forgeessentials.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -54,7 +56,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         if (args.length == 0)
         {
             OutputHandler.chatConfirmation(sender, "Possible capabilities:");
-            OutputHandler.chatConfirmation(sender, FunctionHelper.niceJoin(names.toArray()));
+            OutputHandler.chatConfirmation(sender, StringUtils.join(names.toArray(), ", "));
         }
         else if (args.length == 1)
         {

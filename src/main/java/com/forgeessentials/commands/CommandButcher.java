@@ -3,6 +3,8 @@ package com.forgeessentials.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -144,7 +146,7 @@ public class CommandButcher extends FEcmdModuleCommands {
             }
             else
             {
-                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + FunctionHelper.niceJoin(typeList.toArray()));
+                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + StringUtils.join(typeList.toArray(), ", "));
                 return;
             }
         }

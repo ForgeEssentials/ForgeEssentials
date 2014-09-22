@@ -7,6 +7,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -17,7 +18,6 @@ import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandTestPermission;
 import com.forgeessentials.permissions.commands.CommandZone;
 import com.forgeessentials.permissions.core.ConfigPermissions;
-import com.forgeessentials.permissions.core.FEPermissions;
 import com.forgeessentials.permissions.core.PermissionEventHandler;
 import com.forgeessentials.permissions.core.PermissionsListWriter;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;

@@ -17,11 +17,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.permissions.core.FEPermissions;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
@@ -417,7 +417,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 		// OutputHandler.chatConfirmation(sender, "Parent: " + zone.parent);
 		// OutputHandler.chatConfirmation(sender, "Priority: " + zone.priority);
 		// OutputHandler.chatConfirmation(sender,
-		// "Dimension: " + zone.getDimension() + "     World: " + FunctionHelper.getDimension(zone.getDimension()).provider.getDimensionName());
+		// "Dimension: " + zone.getDimension() + "     World: " + DimensionManager.getWorld(zone.getDimension()).provider.getDimensionName());
 		// ChatUtils.sendMessage(sender,
 		// FunctionHelper.formatColors(EnumChatFormatting.GREEN + "Entry Message: " + EnumChatFormatting.RESET + query1.getStringValue()));
 		// ChatUtils.sendMessage(sender,

@@ -49,6 +49,11 @@ public class AreaBase {
         return low;
     }
 
+    public Point getSize()
+    {
+        return new Point(high.x - low.x, high.y - low.y, high.z - low.z);
+    }
+
     /**
      * Get the lowest XYZ coordinate in OOBB [p1,p2]
      */

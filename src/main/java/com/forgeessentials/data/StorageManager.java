@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -61,7 +63,7 @@ public class StorageManager implements IStorageManager {
 
         // generates the configs...
         Property prop = config.get("Data", "storageType", defaultDriver.toString());
-        prop.comment = "Specifies the variety of data storage FE will use. Options: " + FunctionHelper.niceJoin(EnumDriverType.values());
+        prop.comment = "Specifies the variety of data storage FE will use. Options: " + StringUtils.join(EnumDriverType.values(), ", ");
         chosen = EnumDriverType.valueOf(prop.getString());
 
         typeChosens.put(EnumDriverType.TEXT, "ForgeConfig");

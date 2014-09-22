@@ -35,11 +35,14 @@ public class ServerZone extends Zone {
 	public ServerZone()
 	{
 		super(1);
-		setGroupPermission(IPermissionsHelper.GROUP_DEFAULT, "fe.internal.group", true);
-		setGroupPermission(IPermissionsHelper.GROUP_GUESTS, "fe.internal.group", true);
-		setGroupPermission(IPermissionsHelper.GROUP_OPERATORS, "fe.internal.group", true);
-		setGroupPermissionProperty(IPermissionsHelper.GROUP_GUESTS, "fe.internal.prefix", "[GUEST]");
-		setGroupPermissionProperty(IPermissionsHelper.GROUP_OPERATORS, "fe.internal.group", "[OPERATOR]");
+		setGroupPermission(IPermissionsHelper.GROUP_DEFAULT, FEPermissions.GROUP, true);
+		setGroupPermission(IPermissionsHelper.GROUP_GUESTS, FEPermissions.GROUP, true);
+		setGroupPermission(IPermissionsHelper.GROUP_OPERATORS, FEPermissions.GROUP, true);
+		setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, FEPermissions.GROUP_PRIORITY, "0");
+		setGroupPermissionProperty(IPermissionsHelper.GROUP_GUESTS, FEPermissions.GROUP_PRIORITY, "1");
+		setGroupPermissionProperty(IPermissionsHelper.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "2");
+		setGroupPermissionProperty(IPermissionsHelper.GROUP_GUESTS, FEPermissions.PREFIX, "[GUEST]");
+		setGroupPermissionProperty(IPermissionsHelper.GROUP_OPERATORS, FEPermissions.PREFIX, "[OPERATOR]");
 	}
 
 	public ServerZone(RootZone rootZone)
@@ -172,6 +175,7 @@ public class ServerZone extends Zone {
 		{
 			result.add(IPermissionsHelper.GROUP_GUESTS);
 		}
+		// TODO: Sort groups by priority
 		return result;
 	}
 

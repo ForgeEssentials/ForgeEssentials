@@ -4,6 +4,8 @@ package com.forgeessentials.core.commands.selections;
 
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -64,10 +66,10 @@ public class CommandWand extends ForgeEssentialsCommandBase {
 		}
 
 		if (args.length > 0 && !rebind) {
-			List<Object> data = FunctionHelper.parseIdAndMetaFromString(args[0], false);
-			wandItem = ((Item) GameData.getItemRegistry().getObject(data.get(0)));
+			Pair<String, Integer> data = FunctionHelper.parseIdAndMetaFromString(args[0], false);
+			wandItem = ((Item) GameData.getItemRegistry().getObject(data.getLeft()));
 			wandId = wandItem.getUnlocalizedName();
-			wandDmg = (int) data.get(1);
+			wandDmg = data.getRight();
 			if (wandDmg == -1) {
 				wandDmg = 0;
 			}

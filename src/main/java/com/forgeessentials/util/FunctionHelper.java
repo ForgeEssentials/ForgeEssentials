@@ -9,25 +9,20 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -41,30 +36,20 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.CoreConfig;
-import com.forgeessentials.permissions.SqlHelper;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.selections.WorldPoint;
-import com.google.common.base.Joiner;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
-import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 public final class FunctionHelper {
-	public static Pattern groupRegex = Pattern.compile("\\{[a-zA-Z0-9._]*\\<\\:\\>[a-zA-Z0-9._]*\\}");
 
 	public static SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("ForgeEssentials");
-	// used for niceJoin method.
-	private static Joiner joiner = Joiner.on(", ").skipNulls();
-
-	public static Item AIR = Item.getItemFromBlock(Blocks.air);
 
 	/**
 	 * Get player's looking spot.
@@ -165,29 +150,13 @@ public final class FunctionHelper {
 	}
 
 	/**
-	 * Gets the zoneID for a world.
-	 *
-	 * @param world
-	 * @return The zoneID
-	 */
-	public static String getZoneWorldString(World world)
-	{
-		return "WORLD_" + world.provider.getDimensionName().replace(' ', '_') + "_" + world.provider.dimensionId;
-	}
-
-	public static WorldServer getDimension(int dimension)
-	{
-		return DimensionManager.getWorld(dimension);
-	}
-
-	/**
-	 * does NOT check if its a valid BlockID and stuff.. this may be used for items.
+	 * Does NOT check if its a valid BlockID and stuff.. this may be used for items.
 	 *
 	 * @return never NULL. always {0, -1}. Meta by default is -1.
 	 * @throws NumberFormatException
 	 *             the message is a formatted chat string.
 	 */
-	public static List<Object> parseIdAndMetaFromString(String msg, boolean blocksOnly) throws NumberFormatException
+	public static Pair<String, Integer> parseIdAndMetaFromString(String msg, boolean blocksOnly) throws NumberFormatException
 	{
 		String ID = null;
 		int meta = -1;
@@ -208,16 +177,12 @@ public final class FunctionHelper {
 				throw new NumberFormatException(String.format("%s param was not recognized as number. Please try again.", pair[1]));
 			}
 		}
-		List returned = new ArrayList<Object>();
-		returned.add(0, ID);
-		returned.add(1, meta);
-		return returned;
+		return new ImmutablePair<String, Integer>(ID, meta);
 	}
 
 	/**
-	 * please use your module dir!
-	 *
-	 * @return
+	 * Returns working directory or minecraft data-directory on client side. <br>
+	 * <b>Please use module directory instead!</b>
 	 */
 	public static File getBaseDir()
 	{
@@ -237,23 +202,20 @@ public final class FunctionHelper {
 	 * @param dimID
 	 * @return -1 if error
 	 */
-	public static double getTPS(int dimID)
+	private static double getTPS(int dimID)
 	{
 		try
 		{
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
-			long var2 = 0L;
-			long[] var4 = server.worldTickTimes.get(dimID);
-			int var5 = var4.length;
-
-			for (int var6 = 0; var6 < var5; ++var6)
+			long sum = 0L;
+			long[] ticks = server.worldTickTimes.get(dimID);
+			for (int i = 0; i < ticks.length; ++i)
 			{
-				long var7 = var4[var6];
-				var2 += var7;
+				sum += ticks[i];
 			}
 
-			double tps = (double) var2 / (double) var5 * 1.0E-6D;
+			double tps = (double) sum / (double) ticks.length * 1.0E-6D;
 
 			if (tps < 50)
 			{
@@ -281,17 +243,15 @@ public final class FunctionHelper {
 		{
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
-			long var2 = 0L;
-			long[] var4 = server.tickTimeArray;
-			int var5 = var4.length;
-
-			for (int var6 = 0; var6 < var5; ++var6)
+			long tickSum = 0L;
+			long[] ticks = server.tickTimeArray;
+			for (int i = 0; i < ticks.length; ++i)
 			{
-				long var7 = var4[var6];
-				var2 += var7;
+				long var7 = ticks[i];
+				tickSum += var7;
 			}
 
-			double tps = (double) var2 / (double) var5 * 1.0E-6D;
+			double tps = (double) tickSum / (double) ticks.length * 1.0E-6D;
 
 			if (tps < 50)
 			{
@@ -348,20 +308,7 @@ public final class FunctionHelper {
 	 */
 	public static String replaceAllIgnoreCase(String text, String search, String replacement)
 	{
-		if (search.equals(replacement))
-		{
-			return text;
-		}
-		StringBuilder buffer = new StringBuilder(text);
-		String lowerSearch = search.toLowerCase();
-		int i = 0;
-		int prev = 0;
-		while ((i = buffer.toString().toLowerCase().indexOf(lowerSearch, prev)) > -1)
-		{
-			buffer.replace(i, i + search.length(), replacement);
-			prev = i + replacement.length();
-		}
-		return buffer.toString();
+		return text.replaceAll("(?i)" + Pattern.quote(search), replacement);
 	}
 
 	/**
@@ -465,16 +412,6 @@ public final class FunctionHelper {
 		x = x < 0 ? x - 0.5 : x + 0.5;
 		z = z < 0 ? z - 0.5 : z + 0.5;
 		player.playerNetServerHandler.setPlayerLocation(x, y, z, player.rotationYaw, player.rotationPitch);
-	}
-
-	/**
-	 * Join string[] to print to users. "str1, str2, str3, ..., strn"
-	 *
-	 * @return
-	 */
-	public static String niceJoin(Object[] array)
-	{
-		return joiner.join(array);
 	}
 
 	public static boolean isNumeric(String string)

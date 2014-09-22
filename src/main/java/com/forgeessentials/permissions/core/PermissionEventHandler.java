@@ -5,6 +5,7 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.server.CommandHandlerForge;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.UserIdent;

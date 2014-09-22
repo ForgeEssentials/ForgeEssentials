@@ -16,11 +16,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
-import com.forgeessentials.permissions.core.FEPermissions;
 import com.forgeessentials.permissions.core.IZonePersistenceProvider;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
@@ -228,6 +228,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 			for (UserIdent ident : serverZone.getPlayerPermissions().keySet())
 			{
 				String groupList = serverZone.getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
+				serverZone.clearPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
 				if (groupList == null)
 					continue;
 				String[] groups = groupList.split(",");
@@ -360,7 +361,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 						continue;
 					}
 					UserIdent ident = new UserIdent(uuid, username);
-
+					
 					// Load permissions
 					PermissionList permissions = zone.getOrCreatePlayerPermissions(ident);
 					for (Entry permission : p.entrySet())

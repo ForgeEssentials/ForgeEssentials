@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -52,7 +54,7 @@ public class DBConnector {
      */
     public void write(Configuration config, String cat)
     {
-        config.get(cat, "chosenType", dType.toString(), " valid types: " + FunctionHelper.niceJoin(EnumDBType.values())).set(type.toString());
+        config.get(cat, "chosenType", dType.toString(), " valid types: " + StringUtils.join(EnumDBType.values(), ", ")).set(type.toString());
 
         if (fallback != null)
         {
@@ -139,7 +141,7 @@ public class DBConnector {
 
         }
 
-        config.get(cat, "chosenType", type.toString(), " valid types: " + FunctionHelper.niceJoin(EnumDBType.values()));
+        config.get(cat, "chosenType", type.toString(), " valid types: " + StringUtils.join(EnumDBType.values(), ", "));
         config.get(cat, "checkParent", useParent,
                 "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.");
     }

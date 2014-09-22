@@ -12,6 +12,7 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
@@ -155,7 +156,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
             
             for (int i = 0; i < amount; i++)
             {
-                World world = FunctionHelper.getDimension(dimension);
+                World world = DimensionManager.getWorld(dimension);
                 EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), world);
                 if (mob == null)
                 {

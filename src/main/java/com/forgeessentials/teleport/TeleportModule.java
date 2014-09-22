@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -112,7 +113,7 @@ public class TeleportModule {
 		// nothing set for the global??
 		if (prop == null)
 		{
-			ChunkCoordinates point = FunctionHelper.getDimension(0).provider.getSpawnPoint();
+			ChunkCoordinates point = DimensionManager.getWorld(0).provider.getSpawnPoint();
 			String val = "0;" + point.posX + ";" + point.posY + ";" + point.posZ;
 			APIRegistry.perms.setGroupPermissionProperty(APIRegistry.perms.GROUP_DEFAULT, CommandSetSpawn.SPAWN_PROP, val);
 		}

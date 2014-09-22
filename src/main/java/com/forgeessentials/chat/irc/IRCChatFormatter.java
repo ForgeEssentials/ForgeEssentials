@@ -13,7 +13,6 @@ import net.minecraftforge.event.ServerChatEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ConfigChat;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.google.common.base.Strings;

@@ -1,7 +1,6 @@
 package com.forgeessentials.chat;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -17,7 +16,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.commands.CommandPm;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.google.common.base.Strings;
@@ -130,18 +128,6 @@ public class ChatFormatter {
 		gPrefix = FunctionHelper.formatColors(gPrefix).trim();
 		gSuffix = FunctionHelper.formatColors(gSuffix).trim();
 		String rank = "";
-
-//        // Player info
-//        PlayerInfo info = PlayerInfo.getPlayerInfo(event.player.getPersistentID());
-//        String playerPrefix = info.getPrefix() == null ? "" : FunctionHelper.formatColors(info.getPrefix()).trim();
-//        String playerSuffix = info.getSuffix() == null ? "" : FunctionHelper.formatColors(info.getSuffix()).trim();
-//
-//        // Group info
-//        String rank = FunctionHelper.getGroupRankString(event.username);
-//        String gPrefix = FunctionHelper.getGroupPrefixString(event.username);
-//        String gSuffix = FunctionHelper.getGroupSuffixString(event.username);
-//        gPrefix = FunctionHelper.formatColors(gPrefix).trim();
-//        gSuffix = FunctionHelper.formatColors(gSuffix).trim();
 
         // It may be beneficial to make this a public function. -RlonRyan
         String format = ConfigChat.chatFormat;
