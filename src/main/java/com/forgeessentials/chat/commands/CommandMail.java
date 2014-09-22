@@ -1,19 +1,16 @@
 package com.forgeessentials.chat.commands;
 
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.chat.Mail;
 import com.forgeessentials.chat.MailSystem;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
-
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CommandMail extends ForgeEssentialsCommandBase {
     @Override
@@ -29,26 +26,13 @@ public class CommandMail extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args)
     {
-        if (!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
+        if (args.length == 0)
         {
-            OutputHandler.chatError(sender, String.format("No player by the name: %s is registered on this server. Please try again.", args[0]));
-            return;
+            OutputHandler.chatError(sender, "You must specify a player name!");
         }
-        StringBuilder cmd = new StringBuilder(args.toString().length());
-        for (int i = 1; i < args.length; i++)
-        {
-            cmd.append(args[i]);
-            cmd.append(" ");
-        }
-        MailSystem.AddMail(new Mail("", sender.getCommandSenderName(), args[0], cmd.toString()));
-        OutputHandler.chatConfirmation(sender, String.format("Posted message to %s.", args[0]));
-    }
 
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
         if (!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
         {
             OutputHandler.chatError(sender, String.format("No player by the name: %s is registered on this server. Please try again.", args[0]));

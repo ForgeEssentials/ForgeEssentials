@@ -1,19 +1,17 @@
 package com.forgeessentials.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.util.TickTaskBlockFinder;
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.TickTaskBlockFinder;
-import com.forgeessentials.util.OutputHandler;
-
-import cpw.mods.fml.common.registry.GameData;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandFindblock extends FEcmdModuleCommands {
     public static final int defaultCount = 1;
@@ -44,9 +42,9 @@ public class CommandFindblock extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        if (args.length == 0)
+        if (args.length < 2)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <block> [max distance] [amount of blocks] [speed]");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <block> <meta> [max distance] [amount of blocks] [speed]");
             return;
         }
         String id = args[0];

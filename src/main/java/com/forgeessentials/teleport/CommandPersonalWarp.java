@@ -1,25 +1,20 @@
 package com.forgeessentials.teleport;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.teleport.util.PWarp;
+import com.forgeessentials.teleport.util.TeleportDataManager;
+import com.forgeessentials.util.*;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.teleport.util.PWarp;
-import com.forgeessentials.teleport.util.TeleportDataManager;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.teleport.TeleportCenter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	public final String PERMSETLIMIT = getPermissionNode() + ".setLimit";
@@ -75,7 +70,13 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 			}
 			else if (args[0].equalsIgnoreCase("add"))
 			{
-				if (!map.containsKey(args[1]))
+				if (args[1] == null)
+                {
+                    OutputHandler.chatError(sender, "You must specify a warp name!");
+                    return;
+                }
+
+                if (!map.containsKey(args[1]))
 				{
 					Integer prop = APIRegistry.perms.getPermissionPropertyInt(new UserIdent(sender), PERMPROP);
 					if (prop == null || prop == -1)
@@ -100,7 +101,13 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 			}
 			else if (args[0].equalsIgnoreCase("remove"))
 			{
-				if (map.containsKey(args[1]))
+                if (args[1] == null)
+                {
+                    OutputHandler.chatError(sender, "You must specify a warp name!");
+                    return;
+                }
+
+                if (map.containsKey(args[1]))
 				{
 					TeleportDataManager.removePWarp(map.get(args[1]));
 					map.remove(args[1]);
