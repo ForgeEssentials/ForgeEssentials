@@ -76,7 +76,7 @@ public class PermissionCommandParser {
 	}
 
 	// Variables for auto-complete
-	private static final String[] parseMainArgs = { "user", "group", "list" }; // "export", "promote", "test" };
+	private static final String[] parseMainArgs = { "user", "group", "list", "reload", "save" }; // "export", "promote", "test" };
 	private static final String[] parseUserArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "perms", "group" };
 	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "priority", "parent" };
 	private static final String[] parseUserGroupArgs = { "add", "remove" };
@@ -95,6 +95,15 @@ public class PermissionCommandParser {
 		else
 		{
 			switch (args.remove().toLowerCase()) {
+			case "save":
+				ModulePermissions.permissionHelper.save();
+				break;
+			case "reload":
+				if (ModulePermissions.permissionHelper.load())
+					info("Successfully reloaded permissions");
+				else
+					error("Error while reloading permissions");
+				break;
 			case "list":
 				listPermissions();
 				break;
