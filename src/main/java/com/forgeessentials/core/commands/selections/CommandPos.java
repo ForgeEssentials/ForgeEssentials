@@ -27,7 +27,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandName()
     {
-        return "fepos" + type;
+        return "/fepos" + type;
     }
 
     @Override

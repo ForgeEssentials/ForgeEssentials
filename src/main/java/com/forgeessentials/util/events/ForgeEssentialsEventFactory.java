@@ -1,8 +1,12 @@
 package com.forgeessentials.util.events;
 
-import java.util.HashMap;
-import java.util.UUID;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.selections.WarpPoint;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -10,23 +14,20 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.selections.WarpPoint;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class ForgeEssentialsEventFactory {
 	// TICK STUFF
 
 	private HashMap<UUID, WarpPoint> befores;
 
+    private static ForgeEssentialsEventFactory INSTANCE;
+
 	public ForgeEssentialsEventFactory()
 	{
 		befores = new HashMap<UUID, WarpPoint>();
+        INSTANCE = this;
 	}
 
 	public static boolean onBlockPlace(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitx, float hity, float hitz)
@@ -106,4 +107,9 @@ public class ForgeEssentialsEventFactory {
 			e.setCanceled(event.isCanceled());
 		}
 	}
+
+    public static ForgeEssentialsEventFactory getInstance()
+    {
+        return INSTANCE;
+    }
 }

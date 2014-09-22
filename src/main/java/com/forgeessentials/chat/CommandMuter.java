@@ -1,16 +1,14 @@
 package com.forgeessentials.chat;
 
-import java.util.ArrayList;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.event.CommandEvent;
-
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.CommandEvent;
+
+import java.util.ArrayList;
 
 public class CommandMuter {
     public static ArrayList<String> mutedCommands = new ArrayList<String>();
@@ -36,6 +34,11 @@ public class CommandMuter {
                 }
                 else
                 {
+                    if (e.command.getCommandAliases() == null)
+                    {
+                        return;
+                    }
+
                     for (Object obj : e.command.getCommandAliases())
                     {
                         if (mutedCommands.contains(obj.toString()))
