@@ -84,8 +84,10 @@ public class IRCChatFormatter {
         // replacing stuff...
 
 		// Player info
-		String playerPrefix = FunctionHelper.getPlayerPrefixSuffix(new UserIdent(event.player), false);
-		String playerSuffix = FunctionHelper.getPlayerPrefixSuffix(new UserIdent(event.player), true);
+		String playerPrefix = FunctionHelper.formatColors(FunctionHelper.getPlayerPrefixSuffix(new UserIdent(event.player), false));
+		String playerSuffix = FunctionHelper.formatColors(FunctionHelper.getPlayerPrefixSuffix(new UserIdent(event.player), true));
+		String groupPrefix = FunctionHelper.formatColors(FunctionHelper.getPlayerGroupPrefixSuffix(new UserIdent(event.player), false));
+		String groupSuffix = FunctionHelper.formatColors(FunctionHelper.getPlayerGroupPrefixSuffix(new UserIdent(event.player), true));
 		String zoneID = APIRegistry.perms.getZonesAt(new WorldPoint(event.player)).get(0).getName();
 		String rank = "";
 
@@ -131,8 +133,10 @@ public class IRCChatFormatter {
         format = FunctionHelper.format(format);
 
         // essentials
-        format = FunctionHelper.replaceAllIgnoreCase(format, "%prefix", playerPrefix);
-        format = FunctionHelper.replaceAllIgnoreCase(format, "%suffix", playerSuffix);
+        format = FunctionHelper.replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix);
+        format = FunctionHelper.replaceAllIgnoreCase(format, "%playerSuffix", playerSuffix);
+        format = FunctionHelper.replaceAllIgnoreCase(format, "%groupPrefix", groupPrefix);
+        format = FunctionHelper.replaceAllIgnoreCase(format, "%groupSuffix", groupSuffix);
         format = FunctionHelper.replaceAllIgnoreCase(format, "%username", nickname);
         // if(!enable_chat%){ //whereas enable chat is a boolean that can be set
         // in the config or whatever

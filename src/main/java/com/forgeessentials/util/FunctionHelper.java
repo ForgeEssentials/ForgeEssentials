@@ -474,7 +474,13 @@ public final class FunctionHelper {
 	{
 		String fix = APIRegistry.perms.getServerZone().getPlayerPermission(player, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
 		if (fix == null)
-			fix = "";
+			return "";
+		return fix;
+	}
+
+	public static String getPlayerGroupPrefixSuffix(UserIdent player, boolean isSuffix)
+	{
+		String fix = "";
 		Set<String> groups = APIRegistry.perms.getPlayerGroups(player);
 		for (String group : groups)
 		{
