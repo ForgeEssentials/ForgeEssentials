@@ -1,10 +1,13 @@
 package com.forgeessentials.playerlogger;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.playerlogger.types.BlockChangeType;
 import com.forgeessentials.playerlogger.types.BlockChangeType.blockChangeLogCategory;
 import com.forgeessentials.playerlogger.types.CommandType;
 import com.forgeessentials.playerlogger.types.PlayerTrackerType;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.PlayerBlockPlace;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -53,15 +56,14 @@ public class EventLogger {
 				return true;
 			}
 		}
-		throw new RuntimeException("Not yet implemented!");
-//		for (Group group : APIRegistry.perms.getApplicableGroups(player, false))
-//		{
-//			if (exempt_groups.contains(group.name))
-//			{
-//				return true;
-//			}
-//		}
-//		return false;
+		for (String group : APIRegistry.perms.getPlayerGroups(new UserIdent(player)))
+		{
+			if (exempt_groups.contains(group))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@SubscribeEvent

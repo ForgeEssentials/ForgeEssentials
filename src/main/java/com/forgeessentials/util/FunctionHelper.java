@@ -36,6 +36,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.google.gson.JsonArray;
@@ -469,163 +470,20 @@ public final class FunctionHelper {
 		}
 	}
 
-	public static String getGroupFix(UserIdent player, boolean isSuffix)
+	public static String getPlayerPrefixSuffix(UserIdent player, boolean isSuffix)
 	{
-		String fixName = isSuffix ? "suffix" : "prefix";
-		String fix = APIRegistry.perms.getServerZone().getPlayerPermission(player, "fe.internal." + fixName);
+		String fix = APIRegistry.perms.getServerZone().getPlayerPermission(player, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
 		if (fix == null)
 			fix = "";
 		Set<String> groups = APIRegistry.perms.getPlayerGroups(player);
 		for (String group : groups)
 		{
-			String s = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal." + fixName);
+			String s = APIRegistry.perms.getServerZone().getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
 			if (s != null)
 				fix += s;
 		}
 		return fix;
 	}
-
-	// public static String getGroupRankString(String username)
-	// {
-	// Matcher match = groupRegex.matcher(CoreConfig.groupRankFormat);
-	// ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
-	//
-	// String end = "";
-	//
-	// StringBuilder temp = new StringBuilder();
-	// for (TreeSet<Group> set : list)
-	// {
-	// for (Group g : set)
-	// {
-	// if (temp.length() != 0)
-	// {
-	// temp.append("&r");
-	// }
-	//
-	// temp.append(g.getName());
-	// }
-	//
-	// end = match.replaceFirst(temp.toString());
-	// temp = new StringBuilder();
-	// }
-	//
-	// return end;
-	// }
-	//
-	// public static String getGroupPrefixString(String username)
-	// {
-	// Matcher match = groupRegex.matcher(CoreConfig.groupPrefixFormat);
-	//
-	// ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
-	//
-	// String end = "";
-	//
-	// StringBuilder temp = new StringBuilder();
-	// for (TreeSet<Group> set : list)
-	// {
-	// for (Group group : set)
-	// {
-	// if (group.getPrefix().trim().isEmpty())
-	// {
-	// continue;
-	// }
-	//
-	// if (temp.length() == 0)
-	// {
-	// temp.append(group.getPrefix());
-	// }
-	// else
-	// {
-	// temp.insert(0, group.getPrefix() + "&r");
-	// }
-	// }
-	//
-	// end = match.replaceFirst(temp.toString());
-	// temp = new StringBuilder();
-	// }
-	//
-	// return end;
-	// }
-	//
-	// public static String getGroupSuffixString(String username)
-	// {
-	// Matcher match = groupRegex.matcher(CoreConfig.groupSuffixFormat);
-	//
-	// ArrayList<TreeSet<Group>> list = getGroupsList(match, username);
-	//
-	// String end = "";
-	//
-	// StringBuilder temp = new StringBuilder();
-	// for (TreeSet<Group> set : list)
-	// {
-	// for (Group group : set)
-	// {
-	// if (group.getSuffix().trim().isEmpty())
-	// {
-	// continue;
-	// }
-	//
-	// temp.append("&r").append(group.getSuffix());
-	// }
-	//
-	// end = match.replaceFirst(temp.toString());
-	// temp = new StringBuilder();
-	// }
-	//
-	// return end;
-	// }
-	//
-	// private static ArrayList<TreeSet<Group>> getGroupsList(Matcher match, String username)
-	// {
-	// ArrayList<TreeSet<Group>> list = new ArrayList<TreeSet<Group>>();
-	//
-	// String whole;
-	// String[] p;
-	// TreeSet<Group> set;
-	// while (match.find())
-	// {
-	// whole = match.group();
-	// whole = whole.replaceAll("\\{", "").replaceAll("\\}", "");
-	// p = whole.split("\\<\\:\\>", 2);
-	// if (p[0].equalsIgnoreCase("..."))
-	// {
-	// p[0] = null;
-	// }
-	// if (p[1].equalsIgnoreCase("..."))
-	// {
-	// p[1] = null;
-	// }
-	//
-	// // TODO: OLEE, fix getGroupsForChat (add groupPrefix to PlayerInfo)
-	//
-	// // set = SqlHelper.getGroupsForChat(p[0], p[1], username);
-	// // if (set != null)
-	// // {
-	// // list.add(set);
-	// // }
-	// }
-	//
-	// list = removeDuplicates(list);
-	// return list;
-	// }
-	//
-	// private static ArrayList<TreeSet<Group>> removeDuplicates(ArrayList<TreeSet<Group>> list)
-	// {
-	// HashSet<Group> used = new HashSet<Group>();
-	//
-	// for (TreeSet<Group> set : list)
-	// {
-	// for (Group g : used)
-	// {
-	// set.remove(g);
-	// }
-	//
-	// // add all the remaining...
-	// used.addAll(set);
-	// }
-	//
-	// return list;
-	// }
 
 	public static String getFormattedPlayersOnline()
 	{

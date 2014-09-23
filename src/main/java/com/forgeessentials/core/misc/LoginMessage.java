@@ -161,16 +161,13 @@ public class LoginMessage {
 
         //line = FunctionHelper.replaceAllIgnoreCase(line, "%rank%", FunctionHelper.getGroupRankString(playerName));
 
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%groupPrefix%", FunctionHelper.formatColors(FunctionHelper.getGroupFix(new UserIdent(playerName), false)).trim());
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%groupSuffix%", FunctionHelper.formatColors(FunctionHelper.getGroupFix(new UserIdent(playerName), true)).trim());
+        line = FunctionHelper.replaceAllIgnoreCase(line, "%prefix%", FunctionHelper.formatColors(FunctionHelper.getPlayerPrefixSuffix(new UserIdent(playerName), false)).trim());
+        line = FunctionHelper.replaceAllIgnoreCase(line, "suffix%", FunctionHelper.formatColors(FunctionHelper.getPlayerPrefixSuffix(new UserIdent(playerName), true)).trim());
 
         // Player stuff
         EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(playerName);
         if (player != null) {
             line = FunctionHelper.replaceAllIgnoreCase(line, "%playername%", player.getDisplayName()); // username
-            PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
-            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerPrefix%", info.getPrefix() == null ? "" : FunctionHelper.formatColors(info.getPrefix()).trim());
-            line = FunctionHelper.replaceAllIgnoreCase(line, "%playerSuffix%", info.getSuffix() == null ? "" : FunctionHelper.formatColors(info.getSuffix()).trim());
         }
 
         return line;

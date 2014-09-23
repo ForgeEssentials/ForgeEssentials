@@ -13,6 +13,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.commands.CommandPm;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
@@ -104,29 +105,9 @@ public class ChatFormatter {
         // replacing stuff...
 
 		// Player info
-		String playerPrefix = APIRegistry.perms.getServerZone().getPlayerPermission(event.player, "fe.internal.prefix");
-		String playerSuffix = APIRegistry.perms.getServerZone().getPlayerPermission(event.player, "fe.internal.suffix");
+		String playerPrefix = FunctionHelper.getPlayerPrefixSuffix(new UserIdent(event.player), false);
+		String playerSuffix = FunctionHelper.getPlayerPrefixSuffix(new UserIdent(event.player), true);
 		String zoneID = APIRegistry.perms.getZonesAt(new WorldPoint(event.player)).get(0).getName();
-
-		// Group info
-		Set<String> groups = APIRegistry.perms.getPlayerGroups(new UserIdent(event.player));
-		String gPrefix = "";
-		String gSuffix = "";
-		for (String group : groups)
-		{
-			String s = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal.prefix");
-			if (s != null)
-				gPrefix += s;
-			s = APIRegistry.perms.getServerZone().getGroupPermission(group, "fe.internal.suffix");
-			if (s != null)
-				gSuffix += s;
-		}
-		
-		// post-process
-		if (playerPrefix == null) playerPrefix = "";
-		if (playerSuffix == null) playerSuffix = "";
-		gPrefix = FunctionHelper.formatColors(gPrefix).trim();
-		gSuffix = FunctionHelper.formatColors(gSuffix).trim();
 		String rank = "";
 
         // It may be beneficial to make this a public function. -RlonRyan
@@ -180,8 +161,6 @@ public class ChatFormatter {
 
         format = FunctionHelper.replaceAllIgnoreCase(format, "%rank", rank);
         format = FunctionHelper.replaceAllIgnoreCase(format, "%zone", zoneID);
-        format = FunctionHelper.replaceAllIgnoreCase(format, "%groupPrefix", gPrefix);
-        format = FunctionHelper.replaceAllIgnoreCase(format, "%groupSuffix", gSuffix);
 
         // random nice things...
         format = FunctionHelper.replaceAllIgnoreCase(format, "%health", "" + health);
@@ -189,8 +168,8 @@ public class ChatFormatter {
         format = FunctionHelper.format(format);
 
         // essentials
-        format = FunctionHelper.replaceAllIgnoreCase(format, "%playerPrefix", playerPrefix);
-        format = FunctionHelper.replaceAllIgnoreCase(format, "%playerSuffix", playerSuffix);
+        format = FunctionHelper.replaceAllIgnoreCase(format, "%prefix", playerPrefix);
+        format = FunctionHelper.replaceAllIgnoreCase(format, "%suffix", playerSuffix);
         format = FunctionHelper.replaceAllIgnoreCase(format, "%username", nickname);
         // if(!enable_chat%){ //whereas enable chat is a boolean that can be set
         // in the config or whatever

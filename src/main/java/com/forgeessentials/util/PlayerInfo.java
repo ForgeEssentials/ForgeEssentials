@@ -82,12 +82,6 @@ public class PlayerInfo {
 	@SaveableField()
 	private WarpPoint lastTeleportOrigin;
 
-	@SaveableField()
-	private String prefix;
-
-	@SaveableField()
-	private String suffix;
-
 	// 0: Normal 1: World spawn 2: Bed 3: Home
 	@SaveableField()
 	private int spawnType;
@@ -134,9 +128,6 @@ public class PlayerInfo {
 		undos = new Stack<BackupArea>();
 		redos = new Stack<BackupArea>();
 
-		prefix = "";
-		suffix = "";
-
 		firstJoin = System.currentTimeMillis();
 		loginTime = System.currentTimeMillis();
 
@@ -162,9 +153,6 @@ public class PlayerInfo {
 		info.lastTeleportOrigin = (WarpPoint) tag.getFieldValue("back");
 
 		info.spawnType = (Integer) tag.getFieldValue("spawnType");
-
-		info.prefix = (String) tag.getFieldValue("prefix");
-		info.suffix = (String) tag.getFieldValue("suffix");
 
 		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
 
@@ -455,26 +443,6 @@ public class PlayerInfo {
 	}
 
 	// ----------------------------------------------
-
-	public String getPrefix()
-	{
-		return prefix;
-	}
-
-	public void setPrefix(String prefix)
-	{
-		this.prefix = prefix;
-	}
-
-	public String getSuffix()
-	{
-		return suffix;
-	}
-
-	public void setSuffix(String suffix)
-	{
-		this.suffix = suffix;
-	}
 
 	public Point getPoint2()
 	{
