@@ -63,11 +63,10 @@ public class PlayerInfo {
 
 	// -------------------------------------------------------------------------------------------
 
-	@UniqueLoadingKey()
-	private final String name;
-
-	@SaveableField()
-	private final UUID playerID;
+	@UniqueLoadingKey
+	private final String uuid_string;
+	
+	private final UUID uuid;
 
 	// wand stuff
 	private String wandID;
@@ -117,13 +116,14 @@ public class PlayerInfo {
 
 	private ISelectionProvider selprovider;
 
-	private PlayerInfo(UUID playerID)
+	private PlayerInfo(UUID uuid)
 	{
+		this.uuid = uuid;
+		this.uuid_string = uuid.toString();
+		
 		sel1 = null;
 		sel2 = null;
 		selection = null;
-		this.playerID = playerID;
-		name = playerID.toString();
 
 		undos = new Stack<BackupArea>();
 		redos = new Stack<BackupArea>();
@@ -136,15 +136,14 @@ public class PlayerInfo {
 		hiddenItems = new ArrayList<ItemStack>();
 
 		// if (!EnvironmentChecker.worldEditFEtoolsInstalled)
-		selprovider = new FESelectionProvider(playerID);
+		selprovider = new FESelectionProvider(uuid);
 	}
 
 	@Reconstructor()
 	public static PlayerInfo reconstruct(IReconstructData tag)
 	{
-		UUID username = UUID.fromString((String) tag.getFieldValue("username"));
-
-		PlayerInfo info = new PlayerInfo(username);
+		UUID uuid = UUID.fromString((String) tag.getUniqueKey());
+		PlayerInfo info = new PlayerInfo(uuid);
 
 		info.setPoint1((Point) tag.getFieldValue("sel1"));
 		info.setPoint2((Point) tag.getFieldValue("sel2"));
@@ -212,6 +211,25 @@ public class PlayerInfo {
 		{
 			info.save();
 		}
+	}
+
+	/**
+	 * Saves all player-infos
+	 */
+	public static void saveAll()
+	{
+		for (PlayerInfo info : playerInfoMap.values())
+		{
+			info.save();
+		}
+	}
+
+	/**
+	 * Clear player-infos
+	 */
+	public static void clear()
+	{
+		playerInfoMap.clear();
 	}
 
 	// ----------------------------------------------
@@ -312,7 +330,7 @@ public class PlayerInfo {
 			}
 		}
 
-		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(playerID));
+		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(uuid));
 	}
 
 	public void setPoint2(Point sel2)
@@ -337,22 +355,17 @@ public class PlayerInfo {
 			}
 		}
 
-		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(playerID));
+		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(uuid));
 	}
 
 	public Point getPoint1()
 	{
-		return selprovider.getPoint1(UserIdent.getPlayerByUuid(playerID));
-	}
-
-	public String getName()
-	{
-		return name;
+		return selprovider.getPoint1(UserIdent.getPlayerByUuid(uuid));
 	}
 
 	public Selection getSelection()
 	{
-		return selprovider.getSelection(UserIdent.getPlayerByUuid(playerID));
+		return selprovider.getSelection(UserIdent.getPlayerByUuid(uuid));
 	}
 
 	// ----------------------------------------------
@@ -396,7 +409,7 @@ public class PlayerInfo {
 		selection = null;
 		sel1 = null;
 		sel2 = null;
-		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(playerID));
+		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(uuid));
 	}
 
 	public List<ItemStack> getHiddenItems()
@@ -446,7 +459,7 @@ public class PlayerInfo {
 
 	public Point getPoint2()
 	{
-		return selprovider.getPoint2(UserIdent.getPlayerByUuid(playerID));
+		return selprovider.getPoint2(UserIdent.getPlayerByUuid(uuid));
 	}
 
 }

@@ -64,148 +64,144 @@ import cpw.mods.fml.relauncher.Side;
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*")
 public class ForgeEssentials {
 
-    @Instance(value = "ForgeEssentials")
-    public static ForgeEssentials instance;
+	@Instance(value = "ForgeEssentials")
+	public static ForgeEssentials instance;
 
-    public static CoreConfig config;
-    public static boolean verCheck = true;
-    public static boolean preload;
-    public static String modlistLocation;
-    public static File FEDIR;
-    public static boolean mcstats;
-    public ModuleLauncher mdlaunch;
-    private TaskRegistry tasks;
+	public static CoreConfig config;
+	public static boolean verCheck = true;
+	public static boolean preload;
+	public static String modlistLocation;
+	public static File FEDIR;
+	public static boolean mcstats;
+	public ModuleLauncher mdlaunch;
+	private TaskRegistry tasks;
 
-    public ForgeEssentials()
-    {
-        tasks = new TaskRegistry();
-    }
+	public ForgeEssentials()
+	{
+		tasks = new TaskRegistry();
+	}
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent e)
-    {
-        FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
+	@Mod.EventHandler
+	public void preInit(FMLPreInitializationEvent e)
+	{
+		FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
 
-        OutputHandler log = new OutputHandler(); // init the logger
+		OutputHandler log = new OutputHandler(); // init the logger
 
-        OutputHandler.felog.info("Forge Essentials version "
-                + FEModContainer.version + " loading, reading config from "
-                + FEDIR.getAbsolutePath());
+		OutputHandler.felog.info("Forge Essentials version " + FEModContainer.version + " loading, reading config from " + FEDIR.getAbsolutePath());
 
-        // setup fedir stuff
-        config = new CoreConfig();
-        EnvironmentChecker.checkBukkit();
-        EnvironmentChecker.checkWorldEdit();
+		// setup fedir stuff
+		config = new CoreConfig();
+		EnvironmentChecker.checkBukkit();
+		EnvironmentChecker.checkWorldEdit();
 
-        // Data API stuff
-        {
-            // setup
-            DataStorageManager.manager = new StorageManager(config.config);
+		// Data API stuff
+		{
+			// setup
+			DataStorageManager.manager = new StorageManager(config.config);
 
-            // register DataDrivers
-            DataStorageManager.registerDriver("ForgeConfig",
-                    ForgeConfigDataDriver.class);
-            DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
-            DataStorageManager.registerDriver("SQL_DB", SQLDataDriver.class);
+			// register DataDrivers
+			DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
+			DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
+			DataStorageManager.registerDriver("SQL_DB", SQLDataDriver.class);
 
-            // Register saveables..
-            DataStorageManager.registerSaveableType(PlayerInfo.class);
+			// Register saveables..
+			DataStorageManager.registerSaveableType(PlayerInfo.class);
 
-            DataStorageManager.registerSaveableType(Point.class);
-            DataStorageManager.registerSaveableType(WorldPoint.class);
-            DataStorageManager.registerSaveableType(WarpPoint.class);
+			DataStorageManager.registerSaveableType(Point.class);
+			DataStorageManager.registerSaveableType(WorldPoint.class);
+			DataStorageManager.registerSaveableType(WarpPoint.class);
 
-            DataStorageManager.registerSaveableType(TypeInfoItemStack.class,
-                    new ClassContainer(ItemStack.class));
-            DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class,
-                    new ClassContainer(NBTTagCompound.class));
-        }
+			DataStorageManager.registerSaveableType(TypeInfoItemStack.class, new ClassContainer(ItemStack.class));
+			DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
+		}
 
-        new MiscEventHandler();
-        LoginMessage.loadFile();
-        mdlaunch = new ModuleLauncher();
-        mdlaunch.preLoad(e);
-    }
+		new MiscEventHandler();
+		LoginMessage.loadFile();
+		mdlaunch = new ModuleLauncher();
+		mdlaunch.preLoad(e);
+	}
 
-    @EventHandler
-    public void load(FMLInitializationEvent e)
-    {
-        // load up DataAPI
-        ((StorageManager) DataStorageManager.manager).setupManager();
+	@EventHandler
+	public void load(FMLInitializationEvent e)
+	{
+		// load up DataAPI
+		((StorageManager) DataStorageManager.manager).setupManager();
 
-        mdlaunch.load(e);
+		mdlaunch.load(e);
 
-        // other stuff
-        ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
-        FMLCommonHandler.instance().bus().register(factory);
-        MinecraftForge.EVENT_BUS.register(factory);
+		// other stuff
+		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
+		FMLCommonHandler.instance().bus().register(factory);
+		MinecraftForge.EVENT_BUS.register(factory);
 
-        MinecraftForge.EVENT_BUS.register(new WandController());
-    }
+		MinecraftForge.EVENT_BUS.register(new WandController());
+	}
 
-    @EventHandler
-    public void postLoad(FMLPostInitializationEvent e)
-    {
-        mdlaunch.postLoad(e);
+	@EventHandler
+	public void postLoad(FMLPostInitializationEvent e)
+	{
+		mdlaunch.postLoad(e);
 
-        FunctionHelper.netHandler.registerMessage(PacketSelectionUpdate.class, PacketSelectionUpdate.Message.class, 0, Side.SERVER);
-    }
+		FunctionHelper.netHandler.registerMessage(PacketSelectionUpdate.class, PacketSelectionUpdate.Message.class, 0, Side.SERVER);
+	}
 
-    @EventHandler
-    public void serverStarting(FMLServerStartingEvent e)
-    {
-        // load up DataAPI
-        ((StorageManager) DataStorageManager.manager).serverStart(e);
+	@EventHandler
+	public void serverStarting(FMLServerStartingEvent e)
+	{
+		// load up DataAPI
+		((StorageManager) DataStorageManager.manager).serverStart(e);
 
-        BlockModListFile.makeModList();
+		BlockModListFile.makeModList();
 
-        List<ForgeEssentialsCommandBase> commands = new ArrayList();
+		List<ForgeEssentialsCommandBase> commands = new ArrayList();
 
-        // commands
-        commands.add(new CommandFEInfo());
-        e.registerServerCommand(new HelpFixer());
+		// commands
+		commands.add(new CommandFEInfo());
+		e.registerServerCommand(new HelpFixer());
 
-        if (!EnvironmentChecker.worldEditInstalled)
-        {
-            commands.add(new CommandPos(1));
-            commands.add(new CommandPos(2));
-            commands.add(new CommandWand());
-            commands.add(new CommandDeselect());
-            commands.add(new CommandExpand());
-            commands.add(new CommandExpandY());
-        }
+		if (!EnvironmentChecker.worldEditInstalled)
+		{
+			commands.add(new CommandPos(1));
+			commands.add(new CommandPos(2));
+			commands.add(new CommandWand());
+			commands.add(new CommandDeselect());
+			commands.add(new CommandExpand());
+			commands.add(new CommandExpandY());
+		}
 
-        for (ForgeEssentialsCommandBase command : commands)
-        {
-            if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
-                {
-                    PermissionsManager.registerPermission(command.getPermissionNode(), command.getDefaultPermission());
-                }
-                e.registerServerCommand(command);
-        }
+		for (ForgeEssentialsCommandBase command : commands)
+		{
+			if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
+			{
+				PermissionsManager.registerPermission(command.getPermissionNode(), command.getDefaultPermission());
+			}
+			e.registerServerCommand(command);
+		}
 
-        tasks.onServerStart();
+		tasks.onServerStart();
 
-        // do modules last... just in case...
-        mdlaunch.serverStarting(e);
+		// do modules last... just in case...
+		mdlaunch.serverStarting(e);
 
-        ForgeChunkManager.setForcedChunkLoadingCallback(this,
-                new FEChunkLoader());
-    }
+		ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
+	}
 
-    @EventHandler
-    public void serverStarted(FMLServerStartedEvent e)
-    {
-        CommandSetChecker.remove();
+	@EventHandler
+	public void serverStarted(FMLServerStartedEvent e)
+	{
+		CommandSetChecker.remove();
 
-        mdlaunch.serverStarted(e);
-    }
+		mdlaunch.serverStarted(e);
+	}
 
-    @EventHandler
-    public void serverStopping(FMLServerStoppingEvent e)
-    {
-        mdlaunch.serverStopping(e);
-        tasks.onServerStop();
-    }
+	@EventHandler
+	public void serverStopping(FMLServerStoppingEvent e)
+	{
+		mdlaunch.serverStopping(e);
+		tasks.onServerStop();
+		PlayerInfo.saveAll();
+		PlayerInfo.clear();
+	}
 
 }
