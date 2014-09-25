@@ -47,9 +47,13 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack> {
         {
             return null;
         }
-        else if (field.equalsIgnoreCase(SIZE) || field.equalsIgnoreCase(DAMAGE) || field.equalsIgnoreCase(ITEM))
+        else if (field.equalsIgnoreCase(SIZE) || field.equalsIgnoreCase(DAMAGE))
         {
             return new ClassContainer(int.class);
+        }
+        else if (field.equalsIgnoreCase(ITEM))
+        {
+            return new ClassContainer(String.class);
         }
         else if (field.equalsIgnoreCase(COMPOUND))
         {
