@@ -254,7 +254,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-		if (args.length <= 1)
+		if (args.length <= 0)
 		{
 			error(sender);
 			return;

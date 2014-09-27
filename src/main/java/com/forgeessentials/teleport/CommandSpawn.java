@@ -47,18 +47,22 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
                 PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
 
                 String prop = zone.getPlayerPermission(player, CommandSetSpawn.SPAWN_PROP);
-                String[] split = prop.split("[;_]");
+                if (prop != null) {
+                    String[] split = prop.split("[;_]");
 
-                int dim = Integer.parseInt(split[0]);
-                int x = Integer.parseInt(split[1]);
-                int y = Integer.parseInt(split[2]);
-                int z = Integer.parseInt(split[3]);
+                    int dim = Integer.parseInt(split[0]);
+                    int x = Integer.parseInt(split[1]);
+                    int y = Integer.parseInt(split[2]);
+                    int z = Integer.parseInt(split[3]);
 
-                WarpPoint point = new WarpPoint(dim, x + .5, y + 1, z + .5, player.cameraYaw, player.cameraPitch);
+                    WarpPoint point = new WarpPoint(dim, x + .5, y + 1, z + .5, player.cameraYaw, player.cameraPitch);
 
-                // teleport
-                FunctionHelper.setPlayer(player, point);
-                ChatUtils.sendMessage(player, "Teleported to spawn.");
+                    // teleport
+                    FunctionHelper.setPlayer(player, point);
+                    ChatUtils.sendMessage(player, "Teleported to spawn.");
+                } else {
+                    OutputHandler.chatError(sender, "There is no spawnpoint set for that player.");
+                }
                 return;
             }
             else
@@ -70,17 +74,21 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
         else if (args.length == 0)
         {
             String prop = zone.getPlayerPermission(sender, CommandSetSpawn.SPAWN_PROP);
-            String[] split = prop.split("[;_]");
+            if (prop != null) {
+                String[] split = prop.split("[;_]");
 
-            int dim = Integer.parseInt(split[0]);
-            int x = Integer.parseInt(split[1]);
-            int y = Integer.parseInt(split[2]);
-            int z = Integer.parseInt(split[3]);
+                int dim = Integer.parseInt(split[0]);
+                int x = Integer.parseInt(split[1]);
+                int y = Integer.parseInt(split[2]);
+                int z = Integer.parseInt(split[3]);
 
-            WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, sender.cameraYaw, sender.cameraPitch);
-            PlayerInfo.getPlayerInfo(sender.getPersistentID()).setLastTeleportOrigin(new WarpPoint(sender));
-            TeleportCenter.addToTpQue(spawn, sender);
-            ChatUtils.sendMessage(sender, "Teleported to spawn.");
+                WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, sender.cameraYaw, sender.cameraPitch);
+                PlayerInfo.getPlayerInfo(sender.getPersistentID()).setLastTeleportOrigin(new WarpPoint(sender));
+                TeleportCenter.addToTpQue(spawn, sender);
+                ChatUtils.sendMessage(sender, "Teleported to spawn.");
+            } else {
+                OutputHandler.chatError(sender, "You have no spawnpoint set.");
+            }
         }
     }
 
@@ -92,13 +100,23 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
+                Zone zone = APIRegistry.perms.getWorldZone(player.worldObj);
+                String prop = zone.getPlayerPermission(player, CommandSetSpawn.SPAWN_PROP);
+                if (prop != null) {
+                    String[] split = prop.split("[;_]");
 
-                WarpPoint spawn;
-                ChunkCoordinates point = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].provider.getSpawnPoint();
-                spawn = new WarpPoint(0, point.posX, point.posY, point.posZ, player.rotationPitch, player.rotationYaw);
-                TeleportCenter.addToTpQue(spawn, player);
-                ChatUtils.sendMessage(player, "Teleported to spawn.");
+                    int dim = Integer.parseInt(split[0]);
+                    int x = Integer.parseInt(split[1]);
+                    int y = Integer.parseInt(split[2]);
+                    int z = Integer.parseInt(split[3]);
+
+                    WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, player.cameraYaw, player.cameraPitch);
+                    PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
+                    TeleportCenter.addToTpQue(spawn, player);
+                    ChatUtils.sendMessage(sender, "Teleported to spawn.");
+                } else {
+                    OutputHandler.chatError(sender, "You have no spawnpoint set.");
+                }
                 return;
             }
             else
@@ -145,11 +163,11 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
     {
         if (sender instanceof EntityPlayer)
         {
-            return "/spawn [player] [dimension] Teleport you or another player to their spawn point.";
+            return "/spawn [player] Teleport you or another player to their spawn point.";
         }
         else
         {
-            return "/spawn <player> [dimension] Teleport a player to their spawn point.";
+            return "/spawn <player> Teleport a player to their spawn point.";
         }
     }
 }
