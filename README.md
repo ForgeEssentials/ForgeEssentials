@@ -12,7 +12,7 @@ The Forge Essentials project consists of a permissions and protection system to 
 
 *More information can be found at the (wip - rewrite in progress) [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki).*
 
-####This repo is for a port to Minecraft 1.7.10. There are compiled builds [here](http://198.23.242.205:8080/job/ForgeEssentials-17/). Betas are to be considered very unstable. Approach with caution. Please make backups before attempting to use this on a live server.####
+####This repo is for a port to Minecraft 1.7.10. There are compiled builds [here](http://198.23.242.205:8080/job/ForgeEssentials/). Betas are to be considered very unstable. Approach with caution. Please make backups before attempting to use this on a live server.####
 
 <br>
 
@@ -37,7 +37,7 @@ Set up for ForgeEssentials development is simalar to any other ForgeGradle-based
 Downloads
 =========
 
-If you would like test builds, go [here](http://198.23.242.205:8080/job/ForgeEssentials-17/). Untested and probably buggy!
+If you would like test builds, go [here](http://198.23.242.205:8080/job/ForgeEssentials/). Untested and probably buggy!
 
 FE Team Members:
 ================
