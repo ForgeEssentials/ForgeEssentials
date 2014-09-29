@@ -29,10 +29,15 @@ public class PermissionCommandParser {
 
 	public static final String PERM = "fe.perm";
 	public static final String PERM_ALL = PERM + ".*";
-	public static final String PERM_LIST = PERM + ".list";
 	public static final String PERM_TEST = PERM + ".test";
 	public static final String PERM_USER = PERM + ".user";
 	public static final String PERM_GROUP = PERM + ".group";
+
+	private static final String PERM_LIST = PERM + ".list";
+	public static final String PERM_LIST_PERMS = PERM_LIST + ".perms";
+	public static final String PERM_LIST_ZONES = PERM_LIST + ".zones";
+	public static final String PERM_LIST_USERS = PERM_LIST + ".users";
+	public static final String PERM_LIST_GROUPS = PERM_LIST + ".groups";
 
 	enum PermissionAction
 	{
@@ -91,7 +96,8 @@ public class PermissionCommandParser {
 	}
 
 	// Variables for auto-complete
-	private static final String[] parseMainArgs = { "zones", "test", "user", "group", "list", "reload", "save" }; // "export", "promote", "test" };
+	private static final String[] parseMainArgs = { "test", "user", "group", "list", "reload", "save" }; // "export", "promote", "test" };
+	private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
 	private static final String[] parseUserArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "perms", "group" };
 	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "priority", "parent" };
 	private static final String[] parseUserGroupArgs = { "add", "remove" };
@@ -105,7 +111,7 @@ public class PermissionCommandParser {
 		}
 		if (args.isEmpty())
 		{
-			help();
+			info("/feperm " + StringUtils.join(parseMainArgs, "|") + ": Displays help for the subcommands");
 		}
 		else
 		{
@@ -120,14 +126,11 @@ public class PermissionCommandParser {
 				else
 					error("Error while reloading permissions");
 				break;
-			case "zones":
-				listZones();
-				break;
 			case "test":
 				parseTest();
 				break;
 			case "list":
-				listPermissions();
+				parseList();
 				break;
 			case "user":
 				parseUser();
@@ -142,21 +145,44 @@ public class PermissionCommandParser {
 		}
 	}
 
-	private void help()
-	{
-		info("/feperm " + StringUtils.join(parseMainArgs, "|") + ": Displays help for the subcommands");
-	}
+	// ------------------------------------------------------------
+	// -- Utils
+	// ------------------------------------------------------------
 
-	private void listPermissions()
+	private void parseList()
 	{
-		if (senderPlayer == null)
+		if (tabCompleteMode && args.size() == 1)
 		{
-			error(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+			tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseListArgs);
 			return;
 		}
-		listUserPermissions(new UserIdent(senderPlayer));
+		if (args.isEmpty())
+		{
+			info("/feperm list " + StringUtils.join(parseListArgs, "|") + " : List the specified objects");
+		}
+		else
+		{
+			String arg = args.remove().toLowerCase();
+			switch (arg) {
+			case "zones":
+				listZones();
+				break;
+			case "perms":
+				listPermissions();
+				break;
+			case "users":
+				listUsers();
+				break;
+			case "groups":
+				listGroups();
+				break;
+			default:
+				error("Unknown command argument");
+				break;
+			}
+		}
 	}
-	
+
 	private void listZones()
 	{
 		if (senderPlayer == null)
@@ -169,6 +195,114 @@ public class PermissionCommandParser {
 		for (Zone zone : APIRegistry.perms.getZonesAt(wp))
 		{
 			info("  #" + zone.getId() + " " + zone.toString());
+		}
+	}
+
+	private void listPermissions()
+	{
+		if (senderPlayer == null)
+		{
+			error(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+			return;
+		}
+		listUserPermissions(new UserIdent(senderPlayer));
+	}
+
+	private void listUserPermissions(UserIdent ident)
+	{
+		if (tabCompleteMode)
+			return;
+
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST))
+		{
+			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+
+		info(ident.getUsernameOrUUID() + " permissions:");
+
+		Map<Zone, Map<String, String>> userPerms = ModulePermissions.permissionHelper.enumUserPermissions(ident);
+		for (Entry<Zone, Map<String, String>> zone : userPerms.entrySet())
+		{
+			boolean printedZone = false;
+			for (Entry<String, String> perm : zone.getValue().entrySet())
+			{
+				if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
+						|| perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
+						|| perm.getKey().equals(FEPermissions.SUFFIX))
+					continue;
+				if (!printedZone)
+				{
+					warn("Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+					printedZone = true;
+				}
+				info("  " + perm.getKey() + " = " + perm.getValue());
+			}
+		}
+
+		for (String group : APIRegistry.perms.getPlayerGroups(ident))
+		{
+			Map<Zone, Map<String, String>> groupPerms = ModulePermissions.permissionHelper.enumGroupPermissions(group, false);
+			if (!groupPerms.isEmpty())
+			{
+				boolean printedGroup = false;
+				for (Entry<Zone, Map<String, String>> zone : groupPerms.entrySet())
+				{
+					boolean printedZone = false;
+					for (Entry<String, String> perm : zone.getValue().entrySet())
+					{
+						if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
+								|| perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
+								|| perm.getKey().equals(FEPermissions.SUFFIX))
+							continue;
+						if (!printedGroup)
+						{
+							warn("Group " + group);
+							printedGroup = true;
+						}
+						if (!printedZone)
+						{
+							warn("  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+							printedZone = true;
+						}
+						info("    " + perm.getKey() + " = " + perm.getValue());
+					}
+				}
+			}
+		}
+	}
+
+	private void listGroups()
+	{
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST_GROUPS))
+		{
+			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		info("Groups:");
+		for (String group : APIRegistry.perms.getServerZone().getGroups())
+		{
+			info(" - " + group);
+		}
+	}
+
+	private void listUsers()
+	{
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST_USERS))
+		{
+			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		info("Known players:");
+		for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
+		{
+			info(" - " + ident.getUsernameOrUUID());
+		}
+		info("Online players:");
+		for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
+		{
+			if (player instanceof EntityPlayerMP)
+				info(" - " + ((EntityPlayerMP) player).getCommandSenderName());
 		}
 	}
 
@@ -204,7 +338,7 @@ public class PermissionCommandParser {
 			}
 			return;
 		}
-		
+
 		String permissionNode = args.remove();
 		String result = APIRegistry.perms.getPermissionProperty(senderPlayer, permissionNode);
 		if (result == null)
@@ -216,6 +350,10 @@ public class PermissionCommandParser {
 			info(permissionNode + " = " + result);
 		}
 	}
+
+	// ------------------------------------------------------------
+	// -- User
+	// ------------------------------------------------------------
 
 	private void parseUser()
 	{
@@ -245,9 +383,9 @@ public class PermissionCommandParser {
 			info("Possible usage:");
 			info("/p user <player> : Display user info");
 			info("/p user <player> perms : List player's permissions");
-			info("/p user <player> group : Player's group settings");
-			info("/p user <player> allow|deny|clear <perm> : Player global permissions");
-			info("/p user <player> allow|deny|clear [zone] <permission-list> : Player permissions");
+			info("/p user <player> group add|remove <GROUP>: Player's group settings");
+			info("/p user <player> allow|deny|clear <PERM> : Player global permissions");
+			info("/p user <player> allow|deny|clear <ZONE> <PERMS> : Player permissions");
 		}
 		else
 		{
@@ -422,70 +560,6 @@ public class PermissionCommandParser {
 		}
 	}
 
-	private void listUserPermissions(UserIdent ident)
-	{
-		if (tabCompleteMode)
-			return;
-
-		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST))
-		{
-			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
-			return;
-		}
-
-		info(ident.getUsernameOrUUID() + " permissions:");
-
-		Map<Zone, Map<String, String>> userPerms = ModulePermissions.permissionHelper.enumUserPermissions(ident);
-		for (Entry<Zone, Map<String, String>> zone : userPerms.entrySet())
-		{
-			boolean printedZone = false;
-			for (Entry<String, String> perm : zone.getValue().entrySet())
-			{
-				if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
-						|| perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
-						|| perm.getKey().equals(FEPermissions.SUFFIX))
-					continue;
-				if (!printedZone)
-				{
-					warn("Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
-					printedZone = true;
-				}
-				info("  " + perm.getKey() + " = " + perm.getValue());
-			}
-		}
-
-		for (String group : APIRegistry.perms.getPlayerGroups(ident))
-		{
-			Map<Zone, Map<String, String>> groupPerms = ModulePermissions.permissionHelper.enumGroupPermissions(group, false);
-			if (!groupPerms.isEmpty())
-			{
-				boolean printedGroup = false;
-				for (Entry<Zone, Map<String, String>> zone : groupPerms.entrySet())
-				{
-					boolean printedZone = false;
-					for (Entry<String, String> perm : zone.getValue().entrySet())
-					{
-						if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
-								|| perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
-								|| perm.getKey().equals(FEPermissions.SUFFIX))
-							continue;
-						if (!printedGroup)
-						{
-							warn("Group " + group);
-							printedGroup = true;
-						}
-						if (!printedZone)
-						{
-							warn("  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
-							printedZone = true;
-						}
-						info("    " + perm.getKey() + " = " + perm.getValue());
-					}
-				}
-			}
-		}
-	}
-
 	private void parseUserGroup(UserIdent ident)
 	{
 		if (tabCompleteMode && args.size() == 1)
@@ -546,6 +620,10 @@ public class PermissionCommandParser {
 		}
 	}
 
+	// ------------------------------------------------------------
+	// -- Group
+	// ------------------------------------------------------------
+
 	private void parseGroup()
 	{
 		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_GROUP))
@@ -570,8 +648,8 @@ public class PermissionCommandParser {
 			info("/p group <group> : Display group info");
 			info("/p group <group> create : Create a new group");
 			info("/p group <group> perms : List group's permissions");
-			info("/p group <group> allow|deny|clear <perm> : String global permissions");
-			info("/p group <group> allow|deny|clear [zone] <permission-list> : String permissions");
+			info("/p group <group> allow|deny|clear <PERM> : String global permissions");
+			info("/p group <group> allow|deny|clear <ZONE> <PERM> <PERM> ... : String permissions");
 		}
 		else
 		{

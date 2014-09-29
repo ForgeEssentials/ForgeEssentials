@@ -115,7 +115,7 @@ public class ModulePermissions {
 		PermissionsManager.registerPermission(CommandZone.PERM_INFO, RegisteredPermValue.TRUE);
 
 		PermissionsManager.registerPermission(PermissionCommandParser.PERM_ALL, RegisteredPermValue.OP);
-		PermissionsManager.registerPermission(PermissionCommandParser.PERM_LIST, RegisteredPermValue.TRUE);
+		PermissionsManager.registerPermission(PermissionCommandParser.PERM_LIST_PERMS, RegisteredPermValue.TRUE);
 		PermissionsManager.registerPermission(PermissionCommandParser.PERM_TEST, RegisteredPermValue.TRUE);
 		
 		PermissionsManager.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
