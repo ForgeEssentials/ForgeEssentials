@@ -51,7 +51,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 				CommandBack.justDied.remove(player.getPersistentID());
-				TeleportCenter.addToTpQue(new WarpPoint(target), player);
+				TeleportCenter.teleport(new WarpPoint(target), player);
 			}
 			else
 			{
@@ -93,7 +93,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				double x = parseDouble(sender, args[0]), y = parseDouble(sender, args[1]), z = parseDouble(sender, args[2]);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-				TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
+				TeleportCenter.teleport(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
 			}
 			else if (args.length == 4)
 			{
@@ -103,7 +103,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 					double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-					TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
+					TeleportCenter.teleport(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
 				}
 				else
 				{
@@ -138,7 +138,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				{
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-					TeleportCenter.addToTpQue(new WarpPoint(target), player);
+					TeleportCenter.teleport(new WarpPoint(target), player);
 				}
 				else
 				{
@@ -160,7 +160,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-				TeleportCenter.addToTpQue(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
+				TeleportCenter.teleport(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
 			}
 			else
 			{

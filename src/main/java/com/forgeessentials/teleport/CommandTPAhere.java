@@ -46,7 +46,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
                         ChatUtils.sendMessage(data.sender, "Teleport request accepted.");
                         ChatUtils.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
                         TeleportModule.tpaListToRemove.add(data);
-                        TeleportCenter.addToTpQue(new WarpPoint(data.sender), data.receiver);
+                        TeleportCenter.teleport(new WarpPoint(data.sender), data.receiver);
                         return;
                     }
                 }

@@ -18,6 +18,7 @@ import com.forgeessentials.util.PlayerInfo;
 
 @SaveableObject
 public class Kit {
+	
 	@UniqueLoadingKey
 	@SaveableField
 	private String name;
@@ -65,7 +66,7 @@ public class Kit {
 		CommandDataManager.addKit(this);
 	}
 
-	public Kit(Object name, Object cooldown, Object items, Object armor)
+	private Kit(Object name, Object cooldown, Object items, Object armor)
 	{
 		this.name = (String) name;
 		this.cooldown = (Integer) cooldown;

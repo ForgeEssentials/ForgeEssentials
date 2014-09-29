@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -128,7 +129,7 @@ public class Command extends ForgeEssentialsCommandBase {
                 return;
             }
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
-            TeleportCenter.addToTpQue(ModuleTickets.getID(id).point, (EntityPlayer) sender);
+            TeleportCenter.teleport(ModuleTickets.getID(id).point, (EntityPlayerMP) sender);
         }
 
         if (args[0].equalsIgnoreCase("del") && permcheck(sender, "admin"))

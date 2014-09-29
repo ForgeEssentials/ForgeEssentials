@@ -77,7 +77,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
                 //player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
                 if (sleepPoint != null)
                 {
-                    TeleportCenter.addToTpQue(sleepPoint, player); //TeleportCenter responds with "Teleported." if successful
+                    TeleportCenter.teleport(sleepPoint, player); //TeleportCenter responds with "Teleported." if successful
                 }
                 else
                 {

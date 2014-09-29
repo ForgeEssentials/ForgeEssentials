@@ -1,11 +1,13 @@
 package com.forgeessentials.util.teleport;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
@@ -16,74 +18,62 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
 /**
- * Use this for all TPs. This system does it all for you: warmup, cooldown,
- * bypass for both, going between dimensions.
+ * Use this for all TPs. This system does it all for you: warmup, cooldown, bypass for both, going between dimensions.
  *
  * @author Dries007
  */
 
 public class TeleportCenter {
-	
-    public static final String BYPASS_WARMUP = "fe.teleport.bypasswarmup";
-    public static final String BYPASS_COOLDOWN = "fe.teleport.bypasscooldown";
-    
-    private static int teleportWarmup;
-    private static int teleportCooldown;
-    
-    private static ArrayList<TeleportData> queue = new ArrayList<TeleportData>();
-    private static ArrayList<TeleportData> removeQueue = new ArrayList<TeleportData>();
 
-    public static void addToTpQue(WarpPoint point, EntityPlayer player)
-    {
-        if (PlayerInfo.getPlayerInfo(player.getPersistentID()).getTeleportCooldown() != 0 && !PermissionsManager.checkPermission(player, BYPASS_COOLDOWN))
-        {
-            ChatUtils.sendMessage(player,
-                    String.format("Cooldown still active. %s seconds to go.",
-                            FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTeleportCooldown())));
-        }
-        else
-        {
-            PlayerInfo.getPlayerInfo(player.getPersistentID()).setTeleportCooldown(teleportCooldown);
-            TeleportData data = new TeleportData(point, player);
-            if (teleportWarmup == 0 || PermissionsManager.checkPermission(player, BYPASS_WARMUP))
-            {
-                data.teleport();
-            }
-            else
-            {
-                ChatUtils.sendMessage(player, String.format("Teleporting, please stand still for %s seconds.", FunctionHelper.parseTime(teleportWarmup)));
-                queue.add(data);
-            }
-        }
-    }
+	public static final String BYPASS_WARMUP = "fe.teleport.bypasswarmup";
+	public static final String BYPASS_COOLDOWN = "fe.teleport.bypasscooldown";
 
-    public static void abort(TeleportData tpData)
-    {
-        removeQueue.add(tpData);
-        ChatUtils.sendMessage(tpData.getPlayer(), "Teleport cancelled.");
-    }
+	private static int teleportWarmup = 3;
+	private static int teleportCooldown = 5;
 
-    public static void TPdone(TeleportData tpData)
-    {
-        removeQueue.add(tpData);
-        ChatUtils.sendMessage(tpData.getPlayer(), "Teleported.");
-    }
+	private static ArrayList<TeleportData> queue = new ArrayList<TeleportData>();
 
-    @SubscribeEvent
-    public void tickStart(TickEvent.ServerTickEvent e)
-    {
-        for (TeleportData data : queue)
-        {
-            data.count();
-        }
-        queue.removeAll(removeQueue);
-        removeQueue.clear();
-        for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
-        {
-        	PlayerInfo pi = PlayerInfo.getPlayerInfo((EntityPlayer) player);
-        	pi.setTeleportCooldown(pi.getTeleportCooldown() - 1);
-        }
-    }
+	private static final TeleportCenter instance = new TeleportCenter();
+
+	private TeleportCenter()
+	{
+		MinecraftForge.EVENT_BUS.register(this);
+		FMLCommonHandler.instance().bus().register(this);
+	}
+
+	public static void teleport(WarpPoint point, EntityPlayerMP player)
+	{
+		PlayerInfo pi = PlayerInfo.getPlayerInfo(player.getPersistentID());
+		long timeSinceLastTeleport = (System.currentTimeMillis() - pi.getLastTeleportTime()) / 1000L;
+		if (timeSinceLastTeleport < teleportCooldown && timeSinceLastTeleport >= 0 && !PermissionsManager.checkPermission(player, BYPASS_COOLDOWN))
+		{
+			ChatUtils.sendMessage(player, String.format("Cooldown still active. %s seconds to go.", teleportCooldown - timeSinceLastTeleport));
+		}
+		else
+		{
+			TeleportData data = new TeleportData(point, player);
+			if (teleportWarmup == 0 || PermissionsManager.checkPermission(player, BYPASS_WARMUP))
+			{
+				data.teleport();
+			}
+			else
+			{
+				ChatUtils.sendMessage(player, String.format("Teleporting, please stand still for %s seconds.", FunctionHelper.parseTime(teleportWarmup)));
+				queue.add(data);
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public void tickStart(TickEvent.ServerTickEvent e)
+	{
+		for (Iterator<TeleportData> tpData = queue.iterator(); tpData.hasNext();)
+		{
+			TeleportData teleportData = tpData.next();
+			if (teleportData.checkTeleport())
+				tpData.remove();
+		}
+	}
 
 	public static int getTeleportWarmup()
 	{
@@ -94,13 +84,11 @@ public class TeleportCenter {
 	{
 		TeleportCenter.teleportWarmup = teleportWarmup;
 	}
-	
+
 	public static int getTeleportCooldown()
 	{
 		return teleportCooldown;
 	}
-
-
 
 	public static void setTeleportCooldown(int teleportCooldown)
 	{

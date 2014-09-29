@@ -10,6 +10,7 @@ import com.forgeessentials.util.teleport.TeleportCenter;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -64,7 +65,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
 					CommandBack.justDied.remove(sender.getPersistentID());
-					TeleportCenter.addToTpQue(warp.getPoint(), sender);
+					TeleportCenter.teleport(warp.getPoint(), (EntityPlayerMP) sender);
 				}
 				else
 				{

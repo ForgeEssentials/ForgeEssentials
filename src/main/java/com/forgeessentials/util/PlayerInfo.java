@@ -85,7 +85,7 @@ public class PlayerInfo {
 	@SaveableField()
 	private int spawnType;
 
-	public int teleportCooldown = 0;
+	private long lastTeleportTime = 0;
 
 	private HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
 
@@ -435,14 +435,14 @@ public class PlayerInfo {
 		this.lastTeleportOrigin = lastTeleportStart;
 	}
 
-	public int getTeleportCooldown()
+	public long getLastTeleportTime()
 	{
-		return teleportCooldown;
+		return lastTeleportTime;
 	}
 
-	public void setTeleportCooldown(int teleportCooldown)
+	public void setLastTeleportTime(long currentTimeMillis)
 	{
-		this.teleportCooldown = teleportCooldown;
+		this.lastTeleportTime = currentTimeMillis;
 	}
 
 	public WarpPoint getHome()

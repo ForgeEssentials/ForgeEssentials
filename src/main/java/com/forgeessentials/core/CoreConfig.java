@@ -51,7 +51,7 @@ public class CoreConfig {
 
         prop = config.get("Core.Misc", "tpWarmup", 5);
         prop.comment = "The amount of time you need to stand still to TP.";
-        TeleportCenter.setTeleportWarmup(prop.getInt(5));
+        TeleportCenter.setTeleportWarmup(prop.getInt(3));
 
         prop = config.get("Core.Misc", "tpCooldown", 5);
         prop.comment = "The amount of time you need to wait to TP again.";

@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraftforge.permissions.PermissionsManager;
 
+import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.WarpPoint;
@@ -20,61 +21,58 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TeleportData {
 
-	int waittime;
 	private WarpPoint point;
-	private EntityPlayer player;
+	private EntityPlayerMP player;
 	private WorldPoint lastPos;
 	private WorldPoint currentPos;
+	private long startTime;
 
-	public TeleportData(WarpPoint point, EntityPlayer player)
+	public TeleportData(WarpPoint point, EntityPlayerMP player)
 	{
 		this.point = point;
 		this.player = player;
-		waittime = TeleportCenter.getTeleportWarmup();
+		startTime = System.currentTimeMillis();
 		lastPos = new WarpPoint(player);
 	}
 
-	public void count()
+	public boolean checkTeleport()
 	{
 		currentPos = new WarpPoint(player);
 		if (!lastPos.equals(currentPos))
 		{
-			TeleportCenter.abort(this);
+			ChatUtils.sendMessage(player, "Teleport cancelled.");
+			return true;
 		}
 
-		waittime--;
-		if (waittime <= 0)
+		if ((System.currentTimeMillis() - startTime) / 1000L > TeleportCenter.getTeleportWarmup())
 		{
 			teleport();
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 
 	public void teleport()
 	{
-		try
+		PlayerInfo pi = PlayerInfo.getPlayerInfo(player.getPersistentID());
+		pi.setLastTeleportOrigin(new WarpPoint(player));
+		pi.setLastTeleportTime(System.currentTimeMillis());
+
+		if (player.dimension != point.getDimension())
 		{
-			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-			ServerConfigurationManager server = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager();
-			if (player.dimension != point.getDimension())
-			{
-				server.transferPlayerToDimension((EntityPlayerMP) player, point.getDimension());
-			}
-			((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 1, point.zd, point.yaw, point.pitch);
-			if (!PermissionsManager.checkPermission(player, TeleportCenter.BYPASS_COOLDOWN))
-			{
-				PlayerInfo.getPlayerInfo(player.getPersistentID()).setTeleportCooldown(TeleportCenter.getTeleportCooldown());
-			}
-			TeleportCenter.TPdone(this);
+			FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager()
+					.transferPlayerToDimension((EntityPlayerMP) player, point.getDimension());
 		}
-		catch (Exception e)
-		{
-			OutputHandler.felog.warning("Someone tried to crash the server when warping!");
-			e.printStackTrace();
-		}
+		player.playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 0.1, point.zd, point.yaw, point.pitch);
+		ChatUtils.sendMessage(player, "Teleported.");
 	}
 
-	public EntityPlayer getPlayer()
+	public EntityPlayerMP getPlayer()
 	{
 		return player;
 	}
+
 }

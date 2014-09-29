@@ -38,7 +38,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
                 PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                 CommandBack.justDied.remove(player.getPersistentID());
-                TeleportCenter.addToTpQue(home, player);
+                TeleportCenter.teleport(home, player);
             }
         }
         else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".set"))

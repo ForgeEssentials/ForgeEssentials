@@ -51,7 +51,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                     PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
                     CommandBack.justDied.remove(sender.getPersistentID());
-                    TeleportCenter.addToTpQue(warp.getPoint(), sender);
+                    TeleportCenter.teleport(warp.getPoint(), (EntityPlayerMP) sender);
                 }
                 else
                 {
@@ -122,7 +122,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                 {
                     Warp warp = TeleportDataManager.warps.get(args[1].toLowerCase());
                     PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-                    TeleportCenter.addToTpQue(warp.getPoint(), player);
+                    TeleportCenter.teleport(warp.getPoint(), player);
                 }
                 else
                 {

@@ -51,7 +51,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
                         playerInfo.setLastTeleportOrigin(new WarpPoint(data.sender));
                         CommandBack.justDied.remove(data.sender.getPersistentID());
                         TeleportModule.tpaListToRemove.add(data);
-                        TeleportCenter.addToTpQue(new WarpPoint(data.receiver), data.sender);
+                        TeleportCenter.teleport(new WarpPoint(data.receiver), data.sender);
                         return;
                     }
                 }

@@ -120,8 +120,9 @@ public class ModulePermissions {
 		
 		PermissionsManager.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
 		PermissionsManager.registerPermission("fe.core.info", RegisteredPermValue.OP);
+		
 		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
-		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
+		PermissionsManager.registerPermission(TeleportCenter.BYPASS_WARMUP, RegisteredPermValue.OP);
 		// CommandSetChecker.regMCOverrides();
 	}
 

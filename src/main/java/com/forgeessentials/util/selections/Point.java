@@ -136,11 +136,14 @@ public class Point implements Serializable, Comparable<Point> {
 	@Override
 	public boolean equals(Object object)
 	{
-		if (object instanceof Point && x == ((Point) object).x && y == ((Point) object).y && z == ((Point) object).z)
+		if (object instanceof Point)
 		{
-			return true;
+			Point p = (Point) object;
+			if (x == p.x && y == p.y && z == p.z)
+			{
+				return true;
+			}
 		}
-
 		return false;
 	}
 

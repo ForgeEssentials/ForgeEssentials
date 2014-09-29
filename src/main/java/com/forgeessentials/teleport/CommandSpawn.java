@@ -84,7 +84,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 
                 WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, sender.cameraYaw, sender.cameraPitch);
                 PlayerInfo.getPlayerInfo(sender.getPersistentID()).setLastTeleportOrigin(new WarpPoint(sender));
-                TeleportCenter.addToTpQue(spawn, sender);
+                TeleportCenter.teleport(spawn, (EntityPlayerMP) sender);
                 ChatUtils.sendMessage(sender, "Teleported to spawn.");
             } else {
                 OutputHandler.chatError(sender, "You have no spawnpoint set.");
@@ -112,7 +112,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 
                     WarpPoint spawn = new WarpPoint(dim, x + .5, y + 1, z + .5, player.cameraYaw, player.cameraPitch);
                     PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-                    TeleportCenter.addToTpQue(spawn, player);
+                    TeleportCenter.teleport(spawn, player);
                     ChatUtils.sendMessage(sender, "Teleported to spawn.");
                 } else {
                     OutputHandler.chatError(sender, "You have no spawnpoint set.");

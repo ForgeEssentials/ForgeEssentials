@@ -38,7 +38,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
                     WarpPoint death = info.getLastTeleportOrigin();
                     info.setLastTeleportOrigin(new WarpPoint(sender));
                     EntityPlayerMP player = (EntityPlayerMP) sender;
-                    TeleportCenter.addToTpQue(death, player);
+                    TeleportCenter.teleport(death, player);
                 }
                 else
                 {
@@ -60,7 +60,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
                 WarpPoint back = info.getLastTeleportOrigin();
                 info.setLastTeleportOrigin(new WarpPoint(sender));
                 EntityPlayerMP player = (EntityPlayerMP) sender;
-                TeleportCenter.addToTpQue(back, player);
+                TeleportCenter.teleport(back, player);
             }
             else
             {

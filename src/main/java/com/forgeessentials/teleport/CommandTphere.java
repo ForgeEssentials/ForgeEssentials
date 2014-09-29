@@ -42,7 +42,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
                 EntityPlayerMP target = (EntityPlayerMP) sender;
                 PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-                TeleportCenter.addToTpQue(new WarpPoint(target), player);
+                TeleportCenter.teleport(new WarpPoint(target), player);
             }
             else
             {
