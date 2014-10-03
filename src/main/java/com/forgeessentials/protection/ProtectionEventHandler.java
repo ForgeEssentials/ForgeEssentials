@@ -3,7 +3,6 @@ package com.forgeessentials.protection;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.events.PlayerBlockPlace;
 import com.forgeessentials.util.selections.WorldPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
@@ -15,6 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
@@ -22,6 +22,7 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
@@ -154,23 +155,47 @@ public class ProtectionEventHandler {
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
-	public void placeEvent(PlayerBlockPlace e)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			return;
-		}
+    public void placeEvent(BlockEvent.PlaceEvent e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        {
+            return;
+        }
 
-		WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.getBlockX(), e.getBlockY(), e.getBlockZ());
-		boolean overall = APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_OVERRIDE);
-		boolean breaks = APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_EDITS);
+        WorldPoint point = new WorldPoint(e.player.dimension, e.x, e.y, e.z);
+        boolean overall = APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE);
+        boolean breaks = APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_EDITS);
 
-		if (!overall)
-		{
-			if (!breaks)
-				e.setCanceled(true);
-		}
-	}
+        if (!overall)
+        {
+            if (!breaks)
+                e.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void placeEvent(BlockEvent.MultiPlaceEvent e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        {
+            return;
+        }
+
+        for (BlockSnapshot b : e.getReplacedBlockSnapshots())
+        {
+            WorldPoint point = new WorldPoint(e.player.dimension, b.x, b.y, b.z);
+            boolean overall = APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE);
+            boolean breaks = APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_EDITS);
+
+
+        if (!overall)
+        {
+            if (!breaks)
+                e.setCanceled(true);
+        }
+        }
+    }
+
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void playerInteractEventItemUse(PlayerInteractEvent e)

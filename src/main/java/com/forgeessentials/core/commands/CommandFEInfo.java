@@ -1,15 +1,11 @@
 package com.forgeessentials.core.commands;
 
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.core.preloader.FEModContainer;
+import com.forgeessentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.preloader.Data;
-import com.forgeessentials.core.preloader.FEModContainer;
-import com.forgeessentials.core.preloader.asm.FEeventAdder;
-import com.forgeessentials.util.ChatUtils;
 
 public class CommandFEInfo extends ForgeEssentialsCommandBase {
 
@@ -45,19 +41,6 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
             ChatUtils.sendMessage(sender, "/feinfo debug Produces ASM transformer debug output.");
             ChatUtils.sendMessage(sender, "/feinfo reload Reloads all configs.");
             ChatUtils.sendMessage(sender, "/feinfo about About ForgeEssentials");
-        }
-        else if (args[0].equalsIgnoreCase("debug"))
-        {
-            if (FEeventAdder.addedPlace)
-            {
-                ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was added.");
-            }
-            else
-            {
-                ChatUtils.sendMessage(sender, "The custom event 'PlayerBlockPlace' was NOT added. Some functions might not work!");
-                ChatUtils.sendMessage(sender, "The classname should be '" + Data.ISob.get("className") + "' but is '" + ItemStack.class.getName() + "'.");
-            }
-            ChatUtils.sendMessage(sender, "This output is also in your FML logs.");
         }
         else if (args[0].equalsIgnoreCase("reload"))
         {

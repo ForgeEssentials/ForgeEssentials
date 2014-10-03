@@ -1,14 +1,12 @@
 package com.forgeessentials.core.preloader;
 
-import java.io.File;
-import java.util.Map;
-
-import net.minecraft.launchwrapper.LaunchClassLoader;
-
 import com.forgeessentials.core.preloader.classloading.FEClassLoader;
-
 import cpw.mods.fml.relauncher.IFMLCallHook;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraft.launchwrapper.LaunchClassLoader;
+
+import java.io.File;
+import java.util.Map;
 
 //In the event we need to mess with ASM and such, this is the place.
 //Kindly do not reference any FE classes outside the coremod package in this class.
@@ -19,10 +17,14 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
     private LaunchClassLoader classLoader;
     private File FEfolder;
 
+    private String[] transformers = {
+            "com.forgeessentials.core.preloader.asm.FEAccessTransformer"
+    };
+
     @Override
     public String[] getASMTransformerClass()
     {
-        return Data.transformers;
+        return transformers;
     }
 
     @Override
