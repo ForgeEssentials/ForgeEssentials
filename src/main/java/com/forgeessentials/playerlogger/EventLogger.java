@@ -6,8 +6,6 @@ import com.forgeessentials.playerlogger.types.BlockChangeType.blockChangeLogCate
 import com.forgeessentials.playerlogger.types.CommandType;
 import com.forgeessentials.playerlogger.types.PlayerTrackerType;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.events.PlayerBlockPlace;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -16,9 +14,11 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import java.util.ArrayList;
@@ -157,33 +157,67 @@ public class EventLogger {
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public void playerBlockPlace(PlayerBlockPlace e)
-	{
-		if (logBlockChanges && !e.isCanceled() && side.isServer())
-		{
-			if (exempt(e.getPlayer()))
-			{
-				return;
-			}
-			if (BlockChange_WhiteList_Use && !BlockChange_WhiteList.contains(e.getPlayer().dimension))
-			{
-				return;
-			}
-			if (BlockChange_BlackList.contains(e.getPlayer().dimension) && !BlockChange_WhiteList.contains(e.getPlayer().dimension))
-			{
-				return;
-			}
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerBlockPlace(BlockEvent.PlaceEvent e)
+    {
+        if (logBlockChanges && !e.isCanceled() && side.isServer())
+        {
+            if (exempt(e.player))
+            {
+                return;
+            }
+            if (BlockChange_WhiteList_Use && !BlockChange_WhiteList.contains(e.player.dimension))
+            {
+                return;
+            }
+            if (BlockChange_BlackList.contains(e.player.dimension) && !BlockChange_WhiteList.contains(e.player.dimension))
+            {
+                return;
+            }
 
-			String block = "";
-			if (e.getPlayer().inventory.getCurrentItem() != null)
-			{
-				block = e.getPlayer().inventory.getCurrentItem().getUnlocalizedName() + ":" + e.getPlayer().inventory.getCurrentItem().getItemDamage();
-			}
+            String block = "";
+            if (e.player.inventory.getCurrentItem() != null)
+            {
+                block = e.player.inventory.getCurrentItem().getUnlocalizedName() + ":" + e.player.inventory.getCurrentItem().getItemDamage();
+            }
 
-			new BlockChangeType(blockChangeLogCategory.placed, e.getPlayer(), block, e.getBlockX(), e.getBlockY(), e.getBlockZ(), null);
-		}
-	}
+            new BlockChangeType(blockChangeLogCategory.placed, e.player, block, e.x, e.y, e.z, null);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerBlockPlace(BlockEvent.MultiPlaceEvent e)
+    {
+        if (logBlockChanges && !e.isCanceled() && side.isServer())
+        {
+            if (exempt(e.player))
+            {
+                return;
+            }
+            if (BlockChange_WhiteList_Use && !BlockChange_WhiteList.contains(e.player.dimension))
+            {
+                return;
+            }
+            if (BlockChange_BlackList.contains(e.player.dimension) && !BlockChange_WhiteList.contains(e.player.dimension))
+            {
+                return;
+            }
+
+            String block = "";
+            if (e.player.inventory.getCurrentItem() != null)
+            {
+                block = e.player.inventory.getCurrentItem().getUnlocalizedName() + ":" + e.player.inventory.getCurrentItem().getItemDamage();
+            }
+
+            for (BlockSnapshot b : e.getReplacedBlockSnapshots())
+            {
+                new BlockChangeType(blockChangeLogCategory.placed, e.player, block, b.x, b.y, b.z, null);
+            }
+
+        }
+    }
+
+
 
 	/*
 	 * Needed background stuff
