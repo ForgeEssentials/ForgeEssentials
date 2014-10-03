@@ -1,11 +1,14 @@
 package com.forgeessentials.api.permissions;
 
+import com.forgeessentials.teleport.CommandSetSpawn;
+
 
 public final class FEPermissions {
 
 	public static final String MSG_NO_COMMAND_PERM = "You don't have permissions to use this command!";
 	public static final String MSG_NO_PERM = "You don't have permissions for that!";
 	public static final String MSG_NO_CONSOLE_COMMAND = "This command cannot be invoked from console";
+	public static final String MSG_NOT_ENOUGH_ARGUMENTS = "Not enough arguments!";
 
 	// ------------------------------------------------
 	// -- Internal properties
@@ -30,4 +33,10 @@ public final class FEPermissions {
 	public static final String PLAYER_NAME = PLAYER + ".name";
 	public static final String PLAYER_GROUPS = PLAYER + ".groups";
 
+	// ------------------------------------------------
+	// -- Internal properties
+	// ------------------------------------------------
+
+	public static final String SPAWN_PROP = "fe.teleport.spawnPoint";
+	
 }

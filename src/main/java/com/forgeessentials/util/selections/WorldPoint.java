@@ -1,5 +1,9 @@
 package com.forgeessentials.util.selections;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import scala.MatchError;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -104,4 +108,27 @@ public class WorldPoint extends Point {
     {
         return "[" + x + ", " + y + ", " + z + ", dim=" + dim + "]";
     }
+
+	private static final Pattern fromStringPattern = Pattern.compile("\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*dim\\s*=\\s*(-?\\d+)\\s*\\]\\s*");
+
+	public static WorldPoint fromString(String value)
+	{
+		Matcher m = fromStringPattern.matcher(value);
+		if (m.matches())
+		{
+			try
+			{
+				return new WorldPoint(
+					Integer.parseInt(m.group(4)), 
+					Integer.parseInt(m.group(1)), 
+					Integer.parseInt(m.group(2)), 
+					Integer.parseInt(m.group(3)));
+			}
+			catch (NumberFormatException e)
+			{
+			}
+		}
+		return null;
+	}
+
 }

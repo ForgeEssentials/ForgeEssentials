@@ -60,7 +60,7 @@ public class ForgeEssentialsEventFactory {
 
 		if (event.isCanceled())
 		{
-			FunctionHelper.setPlayer(player, before);
+			FunctionHelper.teleportPlayer(player, before);
 		}
 		else
 		{

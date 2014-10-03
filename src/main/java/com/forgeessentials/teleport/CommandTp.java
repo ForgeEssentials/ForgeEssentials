@@ -71,7 +71,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 					WarpPoint point = new WarpPoint(target);
-					FunctionHelper.setPlayer(player, point);
+					FunctionHelper.teleportPlayer(player, point);
 				}
 				else
 				{

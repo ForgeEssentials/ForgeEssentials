@@ -427,7 +427,7 @@ public final class FunctionHelper {
 	 * @param player
 	 * @param p
 	 */
-	public static void setPlayer(EntityPlayerMP player, WarpPoint p)
+	public static void teleportPlayer(EntityPlayerMP player, WarpPoint p)
 	{
 		if (player.dimension != p.getDimension())
 		{

@@ -59,7 +59,7 @@ public class DBConnector {
         if (fallback != null)
         {
             config.get(cat, "checkParent", useParent,
-                    "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.")
+                    "If this is true, settings will be taken from the parent, most probably the Main or Core config. This is only taken into effect with remote databases.")
                     .set(useParent);
         }
 
@@ -143,7 +143,7 @@ public class DBConnector {
 
         config.get(cat, "chosenType", type.toString(), " valid types: " + StringUtils.join(EnumDBType.values(), ", "));
         config.get(cat, "checkParent", useParent,
-                "If this is true, settings will be taken from tha parent, most probably the Main or Core config. This is only taken into effect with remote databases.");
+                "If this is true, settings will be taken from the parent, most probably the Main or Core config. This is only taken into effect with remote databases.");
     }
 
     public Connection getChosenConnection()
