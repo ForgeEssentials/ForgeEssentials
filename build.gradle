@@ -30,7 +30,6 @@ targetCompatibility = 1.7
 
 minecraft {
     version = "1.7.10-10.13.1.1219"
-    assetDir = "rundir/assets"
     ext.forgeVersion = "10.13.1.1219"
 
     replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"

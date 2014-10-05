@@ -18,7 +18,7 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
     private File FEfolder;
 
     private String[] transformers = {
-            "com.forgeessentials.core.preloader.asm.FEAccessTransformer"
+            "com.forgeessentials.core.preloader.asm.EventInjector"
     };
 
     @Override
