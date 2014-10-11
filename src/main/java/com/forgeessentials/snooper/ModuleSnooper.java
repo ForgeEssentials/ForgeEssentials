@@ -1,24 +1,24 @@
 package com.forgeessentials.snooper;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
-import javax.crypto.KeyGenerator;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.MinecraftForge;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.snooper.response.PlayerInfoResponse;
 import com.forgeessentials.snooper.response.PlayerInv;
 import com.forgeessentials.snooper.response.Responses;
 import com.forgeessentials.snooper.response.ServerInfo;
-import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.MinecraftForge;
+
+import javax.crypto.KeyGenerator;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 @FEModule(name = "SnooperModule", parentMod = ForgeEssentials.class, configClass = ConfigSnooper.class)
 public class ModuleSnooper {
@@ -60,16 +60,16 @@ public class ModuleSnooper {
         return id++;
     }
 
-    @FEModule.PreInit
+    @SubscribeEvent
     public void load(FEModulePreInitEvent e)
     {
         if (!enable)
         {
-            e.getModuleContainer().isLoadable = false;
+            ModuleLauncher.instance.unregister("SnooperModule");
         }
     }
 
-    @FEModule.ServerInit()
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         getKey();
@@ -109,7 +109,7 @@ public class ModuleSnooper {
 
     }
 
-    @FEModule.ServerStop()
+    @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
         stop();

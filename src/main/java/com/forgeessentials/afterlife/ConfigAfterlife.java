@@ -1,23 +1,16 @@
 package com.forgeessentials.afterlife;
 
-import java.io.File;
-import java.util.ArrayList;
-
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.forgeessentials.util.OutputHandler;
+import java.util.ArrayList;
 
 public class ConfigAfterlife extends ModuleConfigBase {
     public Configuration config;
     String cat = "Afterlife";
-
-    public ConfigAfterlife(File file)
-    {
-        super(file);
-    }
 
     @Override
     public void init()
@@ -122,4 +115,6 @@ public class ConfigAfterlife extends ModuleConfigBase {
 
         config.save();
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

@@ -1,8 +1,29 @@
 package com.forgeessentials.teleport;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.teleport.util.ConfigTeleport;
+import com.forgeessentials.teleport.util.TPAdata;
+import com.forgeessentials.teleport.util.TeleportDataManager;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.selections.WorldPoint;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
@@ -12,33 +33,8 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.FEModule.Init;
-import com.forgeessentials.core.moduleLauncher.FEModule.ServerPostInit;
-import com.forgeessentials.teleport.util.ConfigTeleport;
-import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.teleport.util.TeleportDataManager;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.selections.WorldPoint;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 @FEModule(name = "TeleportModule", parentMod = ForgeEssentials.class, configClass = ConfigTeleport.class)
 public class TeleportModule {
@@ -67,14 +63,14 @@ public class TeleportModule {
 
 	}
 
-	@Init
+	@SubscribeEvent
 	public void load(FEModuleInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 		FMLCommonHandler.instance().bus().register(this);
 	}
 
-	@FEModule.ServerInit
+	@SubscribeEvent
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		for (ForgeEssentialsCommandBase cmd : commands)
@@ -101,13 +97,13 @@ public class TeleportModule {
 
 	}
 
-	@ServerPostInit
+	@SubscribeEvent
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		TeleportDataManager.load();
 	}
 
-	@FEModule.ServerStop
+	@SubscribeEvent
 	public void serverStop(FEModuleServerStopEvent e)
 	{
 		TeleportDataManager.save();

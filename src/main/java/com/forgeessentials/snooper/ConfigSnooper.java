@@ -1,20 +1,12 @@
 package com.forgeessentials.snooper;
 
-import java.io.File;
-
+import com.forgeessentials.api.snooper.Response;
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.api.snooper.Response;
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-
 public class ConfigSnooper extends ModuleConfigBase {
     private Configuration config;
-
-    public ConfigSnooper(File file)
-    {
-        super(file);
-    }
 
     @Override
     public void init()
@@ -74,4 +66,6 @@ public class ConfigSnooper extends ModuleConfigBase {
             response.readConfig(subCat, config);
         }
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

@@ -1,11 +1,8 @@
 package com.forgeessentials.protection;
 
-import java.io.File;
-
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
-
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 /**
  * This generates the configuration structure + an example file.
@@ -14,11 +11,6 @@ import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
  */
 public class ConfigProtection extends ModuleConfigBase {
     public Configuration config;
-
-    public ConfigProtection(File file)
-    {
-        super(file);
-    }
 
     @Override
     public void init()
@@ -49,4 +41,6 @@ public class ConfigProtection extends ModuleConfigBase {
         ModuleProtection.enable = config.get(cat, "enable", true, "Guess what this does?").getBoolean(true);
         ModuleProtection.enableMobSpawns = config.get(cat, "enableMobCheck", true).getBoolean(true);
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

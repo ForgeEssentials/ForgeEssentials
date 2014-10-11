@@ -1,14 +1,14 @@
 package com.forgeessentials.core.moduleLauncher;
 
+import com.forgeessentials.core.CoreConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule.*;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.*;
 import com.google.common.base.Throwables;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-import cpw.mods.fml.common.event.*;
 import net.minecraft.command.ICommandSender;
 
 import java.io.File;
@@ -25,7 +25,7 @@ public class ModuleContainer implements Comparable {
     private Class<? extends ModuleConfigBase> configClass;
 
     // methods..
-    private String preinit, init, postinit, serverinit, serverpostinit, serverstop, reload;
+    private String reload;
 
     // fields
     private String instance, container, config, parentMod, moduleDir;
@@ -33,7 +33,7 @@ public class ModuleContainer implements Comparable {
     // other vars..
     public final String className;
     public final String name;
-    public final boolean isCore;
+    private final boolean isCore;
     public boolean isLoadable = true;
     protected boolean doesOverride;
 
@@ -82,115 +82,7 @@ public class ModuleContainer implements Comparable {
         Class[] params;
         for (Method m : c.getDeclaredMethods())
         {
-            if (m.isAnnotationPresent(PreInit.class))
-            {
-                if (preinit != null)
-                {
-                    throw new RuntimeException("Only one class may be marked as PreInit");
-                }
-                params = m.getParameterTypes();
-                if (params.length != 1)
-                {
-                    throw new RuntimeException(m + " may only have 1 argument!");
-                }
-                if (!params[0].equals(FEModulePreInitEvent.class))
-                {
-                    throw new RuntimeException(m + " must take " + FEModulePreInitEvent.class.getSimpleName() + " as a param!");
-                }
-                m.setAccessible(true);
-                preinit = m.getName();
-            }
-            else if (m.isAnnotationPresent(Init.class))
-            {
-                if (init != null)
-                {
-                    throw new RuntimeException("Only one class may be marked as Init");
-                }
-                params = m.getParameterTypes();
-                if (params.length != 1)
-                {
-                    throw new RuntimeException(m + " may only have 1 argument!");
-                }
-                if (!params[0].equals(FEModuleInitEvent.class))
-                {
-                    throw new RuntimeException(m + " must take " + FEModuleInitEvent.class.getSimpleName() + " as a param!");
-                }
-                m.setAccessible(true);
-                init = m.getName();
-            }
-            else if (m.isAnnotationPresent(PostInit.class))
-            {
-                if (postinit != null)
-                {
-                    throw new RuntimeException("Only one class may be marked as PostInit");
-                }
-                params = m.getParameterTypes();
-                if (params.length != 1)
-                {
-                    throw new RuntimeException(m + " may only have 1 argument!");
-                }
-                if (!params[0].equals(FEModulePostInitEvent.class))
-                {
-                    throw new RuntimeException(m + " must take " + FEModulePostInitEvent.class.getSimpleName() + " as a param!");
-                }
-                m.setAccessible(true);
-                postinit = m.getName();
-            }
-            else if (m.isAnnotationPresent(ServerInit.class))
-            {
-                if (serverinit != null)
-                {
-                    throw new RuntimeException("Only one class may be marked as ServerInit");
-                }
-                params = m.getParameterTypes();
-                if (params.length != 1)
-                {
-                    throw new RuntimeException(m + " may only have 1 argument!");
-                }
-                if (!params[0].equals(FEModuleServerInitEvent.class))
-                {
-                    throw new RuntimeException(m + " must take " + FEModuleServerInitEvent.class.getSimpleName() + " as a param!");
-                }
-                m.setAccessible(true);
-                serverinit = m.getName();
-            }
-            else if (m.isAnnotationPresent(ServerPostInit.class))
-            {
-                if (serverpostinit != null)
-                {
-                    throw new RuntimeException("Only one class may be marked as ServerPostInit");
-                }
-                params = m.getParameterTypes();
-                if (params.length != 1)
-                {
-                    throw new RuntimeException(m + " may only have 1 argument!");
-                }
-                if (!params[0].equals(FEModuleServerPostInitEvent.class))
-                {
-                    throw new RuntimeException(m + " must take " + FEModuleServerPostInitEvent.class.getSimpleName() + " as a param!");
-                }
-                m.setAccessible(true);
-                serverpostinit = m.getName();
-            }
-            else if (m.isAnnotationPresent(ServerStop.class))
-            {
-                if (serverstop != null)
-                {
-                    throw new RuntimeException("Only one class may be marked as ServerStop");
-                }
-                params = m.getParameterTypes();
-                if (params.length != 1)
-                {
-                    throw new RuntimeException(m + " may only have 1 argument!");
-                }
-                if (!params[0].equals(FEModuleServerStopEvent.class))
-                {
-                    throw new RuntimeException(m + " must take " + FEModuleServerStopEvent.class.getSimpleName() + " as a param!");
-                }
-                m.setAccessible(true);
-                serverstop = m.getName();
-            }
-            else if (m.isAnnotationPresent(Reload.class))
+           if (m.isAnnotationPresent(Reload.class))
             {
                 if (reload != null)
                 {
@@ -291,6 +183,8 @@ public class ModuleContainer implements Comparable {
             return;
         }
 
+        FunctionHelper.FE_INTERNAL_EVENTBUS.register(module);
+
         // now for the fields...
         try
         {
@@ -341,7 +235,12 @@ public class ModuleContainer implements Comparable {
 
         try
         {
-            configObj = configClass.getConstructor(File.class).newInstance(new File(ForgeEssentials.FEDIR, name + "/config.cfg"));
+            configObj = configClass.getConstructor().newInstance();
+
+            if (configObj.universalConfigAllowed() && ModuleLauncher.useCanonicalConfig)
+                configObj.setFile(CoreConfig.mainconfig);
+
+            else configObj.setFile(new File(ForgeEssentials.FEDIR, name + "/config.cfg"));
 
             if (config != null)
             {
@@ -354,144 +253,6 @@ public class ModuleContainer implements Comparable {
         catch (Throwable e)
         {
             OutputHandler.felog.info("Error Instantiating or populating config for " + name);
-            Throwables.propagate(e);
-        }
-    }
-
-    // make the methods to run the events now...
-
-    @SuppressWarnings("unchecked")
-    public void runPreInit(FMLPreInitializationEvent fmlEvent, CallableMap map)
-    {
-        if (!isLoadable || preinit == null)
-        {
-            return;
-        }
-
-        FEModulePreInitEvent event = new FEModulePreInitEvent(this, fmlEvent, map);
-        try
-        {
-            Class c = Class.forName(className);
-            Method m = c.getDeclaredMethod(preinit, new Class[] { FEModulePreInitEvent.class });
-            m.invoke(module, event);
-        }
-        catch (Throwable e)
-        {
-            OutputHandler.felog.severe("Error while invoking preInit event for " + name);
-            Throwables.propagate(e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void runInit(FMLInitializationEvent fmlEvent)
-    {
-        if (!isLoadable || init == null)
-        {
-            return;
-        }
-
-        FEModuleInitEvent event = new FEModuleInitEvent(this, fmlEvent);
-        try
-        {
-            Class c = Class.forName(className);
-            Method m = c.getDeclaredMethod(init, new Class[] { FEModuleInitEvent.class });
-            m.invoke(module, event);
-        }
-        catch (Throwable e)
-        {
-            OutputHandler.felog.info("Error while invoking Init event for " + name);
-            Throwables.propagate(e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void runPostInit(FMLPostInitializationEvent fmlEvent)
-    {
-        if (!isLoadable || postinit == null)
-        {
-            return;
-        }
-
-        FEModulePostInitEvent event = new FEModulePostInitEvent(this, fmlEvent);
-        try
-        {
-            Class c = Class.forName(className);
-            Method m = c.getDeclaredMethod(postinit, new Class[]
-                    { FEModulePostInitEvent.class });
-            m.invoke(module, event);
-        }
-        catch (Throwable e)
-        {
-            OutputHandler.felog.info("Error while invoking PostInit event for " + name);
-            Throwables.propagate(e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void runServerInit(FMLServerStartingEvent fmlEvent)
-    {
-        if (!isLoadable || serverinit == null)
-        {
-            return;
-        }
-
-        FEModuleServerInitEvent event = new FEModuleServerInitEvent(this, fmlEvent);
-        try
-        {
-            Class c = Class.forName(className);
-            Method m = c.getDeclaredMethod(serverinit, new Class[]
-                    { FEModuleServerInitEvent.class });
-            m.invoke(module, event);
-        }
-        catch (Throwable e)
-        {
-            OutputHandler.felog.info("Error while invoking ServerInit event for " + name);
-            Throwables.propagate(e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void runServerPostInit(FMLServerStartedEvent fmlEvent)
-    {
-        if (!isLoadable || serverpostinit == null)
-        {
-            return;
-        }
-
-        FEModuleServerPostInitEvent event = new FEModuleServerPostInitEvent(this, fmlEvent);
-        try
-        {
-            Class c = Class.forName(className);
-            Method m = c.getDeclaredMethod(serverpostinit, new Class[]
-                    { FEModuleServerPostInitEvent.class });
-            m.invoke(module, event);
-        }
-        catch (Throwable e)
-        {
-            OutputHandler.felog.info("Error while invoking ServerPostInit event for " + name);
-            Throwables.propagate(e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void runServerStop(FMLServerStoppingEvent fmlEvent)
-    {
-        if (!isLoadable || serverstop == null)
-        {
-            return;
-        }
-
-        FEModuleServerStopEvent event = new FEModuleServerStopEvent(this, fmlEvent);
-        try
-        {
-            Class c = Class.forName(className);
-            Method m = c.getDeclaredMethod(serverstop, new Class[]
-                    { FEModuleServerStopEvent.class });
-            m.invoke(module, event);
-        }
-        catch (Throwable e)
-        {
-            OutputHandler.felog.info("Error while invoking ServerStop event for " + name);
             Throwables.propagate(e);
         }
     }

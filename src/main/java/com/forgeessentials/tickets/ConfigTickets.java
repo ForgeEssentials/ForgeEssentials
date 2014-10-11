@@ -1,21 +1,14 @@
 package com.forgeessentials.tickets;
 
-import java.io.File;
-import java.util.Arrays;
-
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.forgeessentials.util.OutputHandler;
+import java.util.Arrays;
 
 public class ConfigTickets extends ModuleConfigBase {
     public Configuration config;
-
-    public ConfigTickets(File file)
-    {
-        super(file);
-    }
 
     @Override
     public void init()
@@ -65,4 +58,6 @@ public class ConfigTickets extends ModuleConfigBase {
 
         config.save();
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

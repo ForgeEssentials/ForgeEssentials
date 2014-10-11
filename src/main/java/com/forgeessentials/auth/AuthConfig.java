@@ -1,20 +1,12 @@
 package com.forgeessentials.auth;
 
-import java.io.File;
-
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
-
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 public class AuthConfig extends ModuleConfigBase {
     private static final String CATEGORY_MAIN = "main";
     private Configuration config;
-
-    public AuthConfig(File file)
-    {
-        super(file);
-    }
 
     @Override
     public void init()
@@ -94,5 +86,7 @@ public class AuthConfig extends ModuleConfigBase {
         AuthEventHandler.notwhitelisted = config.get("lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").getString();
         AuthEventHandler.notvip = config.get("lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
     }
+
+    public boolean universalConfigAllowed(){return true;}
 
 }

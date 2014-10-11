@@ -1,14 +1,11 @@
 package com.forgeessentials.permissions.core;
 
-import java.io.File;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
 
 public class ConfigPermissions extends ModuleConfigBase {
 
@@ -20,16 +17,11 @@ public class ConfigPermissions extends ModuleConfigBase {
 
 	protected String importDir;
 
-	public ConfigPermissions(File file)
-	{
-		super(file);
-		connector = new DBConnector("PermissionsDB", DataStorageManager.getCoreDBConnector(), EnumDBType.H2_FILE, "FEPerms", file.getParent() + "/permissions",
-				false);
-	}
-
 	@Override
 	public void init()
 	{
+        connector = new DBConnector("PermissionsDB", DataStorageManager.getCoreDBConnector(), EnumDBType.H2_FILE, "FEPerms", file.getParent() + "/permissions",
+            false);
 		config = new Configuration(file);
 
 		importBool = config.get("stuff", "import", false, "if permissions should be imported from the specified dir").getBoolean(false);
@@ -63,5 +55,7 @@ public class ConfigPermissions extends ModuleConfigBase {
 	{
 		return connector;
 	}
+
+    public boolean universalConfigAllowed(){return true;}
 
 }

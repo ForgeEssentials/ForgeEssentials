@@ -1,13 +1,6 @@
 package com.forgeessentials.permissions;
 
-import java.io.File;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -23,12 +16,14 @@ import com.forgeessentials.permissions.core.PermissionEventHandler;
 import com.forgeessentials.permissions.core.PermissionsListWriter;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.*;
 import com.forgeessentials.util.teleport.TeleportCenter;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.io.File;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions {
@@ -45,7 +40,7 @@ public class ModulePermissions {
 
 	public static PermissionEventHandler permissionEventHandler;
 
-	@FEModule.PreInit
+	@SubscribeEvent
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
@@ -62,7 +57,7 @@ public class ModulePermissions {
 		permissionEventHandler = new PermissionEventHandler();
 	}
 
-	@FEModule.Init
+	@SubscribeEvent
 	public void load(FEModuleInitEvent e)
 	{
 		// Open database
@@ -73,7 +68,7 @@ public class ModulePermissions {
 		MinecraftForge.EVENT_BUS.register(new PermissionEventHandler());
 	}
 
-	@FEModule.ServerInit
+	@SubscribeEvent
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		// Load permissions
@@ -92,7 +87,7 @@ public class ModulePermissions {
 		autoPromoteManager = new AutoPromoteManager();
 	}
 
-	@FEModule.ServerPostInit
+	@SubscribeEvent
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		//new PermissionsListWriter().write(permissionHelper.enumAllPermissions());
@@ -100,7 +95,7 @@ public class ModulePermissions {
 		permissionHelper.save();
 	}
 
-	@FEModule.ServerStop
+	@SubscribeEvent
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		autoPromoteManager.stop();

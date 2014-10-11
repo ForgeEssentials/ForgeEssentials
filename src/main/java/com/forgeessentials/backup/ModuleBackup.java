@@ -1,8 +1,13 @@
 package com.forgeessentials.backup;
 
-import java.io.File;
-import java.io.PrintWriter;
-
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -13,17 +18,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
-
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.Timer;
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup {
@@ -69,14 +65,14 @@ public class ModuleBackup {
         }
     }
 
-    @FEModule.Init
+    @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(new WorldSaver());
     }
 
-    @FEModule.ServerInit
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         e.registerServerCommand(new CommandBackup());

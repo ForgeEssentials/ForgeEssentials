@@ -1,25 +1,20 @@
 package com.forgeessentials.core.moduleLauncher;
 
+import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.command.ICommandSender;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeMap;
-
-import net.minecraft.command.ICommandSender;
-
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.OutputHandler;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 public class ModuleLauncher {
     public ModuleLauncher()
@@ -29,6 +24,9 @@ public class ModuleLauncher {
 
     public static ModuleLauncher instance;
     private static TreeMap<String, ModuleContainer> containerMap = new TreeMap<String, ModuleContainer>();
+
+    public static String[] disabledModules;
+    public static boolean useCanonicalConfig;
 
     public void preLoad(FMLPreInitializationEvent e)
     {
@@ -146,51 +144,7 @@ public class ModuleLauncher {
             }
         }
 
-        // run the preinits.
-        for (ModuleContainer module : modules)
-        {
-            module.runPreInit(e, map);
-        }
-    }
-
-    public void load(FMLInitializationEvent e)
-    {
-        for (ModuleContainer module : containerMap.values())
-        {
-            module.runInit(e);
-        }
-    }
-
-    public void postLoad(FMLPostInitializationEvent e)
-    {
-        for (ModuleContainer module : containerMap.values())
-        {
-            module.runPostInit(e);
-        }
-    }
-
-    public void serverStarting(FMLServerStartingEvent e)
-    {
-        for (ModuleContainer module : containerMap.values())
-        {
-            module.runServerInit(e);
-        }
-    }
-
-    public void serverStarted(FMLServerStartedEvent e)
-    {
-        for (ModuleContainer module : containerMap.values())
-        {
-            module.runServerPostInit(e);
-        }
-    }
-
-    public void serverStopping(FMLServerStoppingEvent e)
-    {
-        for (ModuleContainer module : containerMap.values())
-        {
-            module.runServerStop(e);
-        }
+        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModulePreInitEvent(e));
     }
 
     public void reloadConfigs(ICommandSender sender)
@@ -205,6 +159,13 @@ public class ModuleLauncher {
             }
             module.runReload(sender);
         }
+    }
+
+    public void unregister(String moduleName)
+    {
+        ModuleContainer container = containerMap.get(moduleName);
+        FunctionHelper.FE_INTERNAL_EVENTBUS.unregister(container.module);
+        containerMap.remove(moduleName);
     }
 
     public static String[] getModuleList()

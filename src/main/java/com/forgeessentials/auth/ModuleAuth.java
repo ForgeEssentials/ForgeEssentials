@@ -1,26 +1,23 @@
 package com.forgeessentials.auth;
 
-import java.util.HashSet;
-import java.util.UUID;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.auth.lists.CommandVIP;
 import com.forgeessentials.auth.lists.CommandWhiteList;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Config;
-import com.forgeessentials.core.moduleLauncher.FEModule.Init;
-import com.forgeessentials.core.moduleLauncher.FEModule.PreInit;
-import com.forgeessentials.core.moduleLauncher.FEModule.ServerInit;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.tasks.TaskRegistry;
-
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.HashSet;
+import java.util.UUID;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, configClass = AuthConfig.class)
 public class ModuleAuth {
@@ -42,24 +39,24 @@ public class ModuleAuth {
     private static AuthEventHandler handler;
     private static boolean oldEnabled = false;
 
-    @PreInit
+    @SubscribeEvent
     public void preInit(FEModulePreInitEvent e)
     {
         // No Auth Module on client
         if (e.getFMLEvent().getSide().isClient())
         {
-            e.getModuleContainer().isLoadable = false;
+            ModuleLauncher.instance.unregister("AuthLogin");
         }
     }
 
-    @Init
+    @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         pwdEnc = new EncryptionHelper();
         handler = new AuthEventHandler();
     }
 
-    @ServerInit
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         e.registerServerCommand(new CommandAuth());

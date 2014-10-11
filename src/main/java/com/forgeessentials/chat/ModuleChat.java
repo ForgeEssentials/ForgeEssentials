@@ -1,25 +1,6 @@
 package com.forgeessentials.chat;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Map;
-import java.util.Set;
-
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.chat.commands.CommandAutoMessage;
-import com.forgeessentials.chat.commands.CommandMail;
-import com.forgeessentials.chat.commands.CommandMsg;
-import com.forgeessentials.chat.commands.CommandMute;
-import com.forgeessentials.chat.commands.CommandNickname;
-import com.forgeessentials.chat.commands.CommandPm;
-import com.forgeessentials.chat.commands.CommandR;
-import com.forgeessentials.chat.commands.CommandUnmute;
+import com.forgeessentials.chat.commands.*;
 import com.forgeessentials.chat.irc.IRCChatFormatter;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.chat.irc.PlayerEventHandler;
@@ -28,14 +9,21 @@ import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModulePostInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
-
+import com.forgeessentials.util.events.FEModuleEvent.*;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Set;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class, configClass = ConfigChat.class)
 public class ModuleChat {
@@ -52,10 +40,7 @@ public class ModuleChat {
     private MailSystem mailsystem;
     private PlayerEventHandler ircPlayerHandler;
 
-    public ModuleChat()
-    {
-    }
-    @FEModule.Init
+    @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
 
@@ -71,14 +56,14 @@ public class ModuleChat {
         }
     }
 
-    @FEModule.PostInit
+    @SubscribeEvent
     public void postLoad(FEModulePostInitEvent e)
     {
         mailsystem = new MailSystem();
 
     }
 
-    @FEModule.ServerInit
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         e.registerServerCommand(new CommandMsg());
@@ -131,7 +116,7 @@ public class ModuleChat {
         PermissionsManager.registerPermission("fe.chat.nickname.others", RegisteredPermValue.OP);
     }
 
-    @FEModule.ServerPostInit()
+    @SubscribeEvent
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
         removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
@@ -144,7 +129,7 @@ public class ModuleChat {
         }
     }
 
-    @FEModule.ServerStop()
+    @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
         MailSystem.SaveAll();

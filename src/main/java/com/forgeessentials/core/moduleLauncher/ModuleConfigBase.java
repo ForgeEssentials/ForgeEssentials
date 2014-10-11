@@ -1,8 +1,8 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import java.io.File;
-
 import net.minecraft.command.ICommandSender;
+
+import java.io.File;
 
 /**
  * The constructor of this should only set the file. Any creation of a Forge
@@ -14,7 +14,12 @@ public abstract class ModuleConfigBase {
     protected File file;
     protected boolean genrate;
 
-    public ModuleConfigBase(File file)
+    /**
+     * to get properties
+     */
+    public ModuleConfigBase(){};
+
+    public void setFile(File file)
     {
         this.file = file;
     }
@@ -45,4 +50,6 @@ public abstract class ModuleConfigBase {
     {
         return file;
     }
+
+    public abstract boolean universalConfigAllowed();
 }

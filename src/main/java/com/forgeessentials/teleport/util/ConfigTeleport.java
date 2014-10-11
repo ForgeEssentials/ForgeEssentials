@@ -1,21 +1,13 @@
 package com.forgeessentials.teleport.util;
 
-import java.io.File;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.teleport.TeleportModule;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
 
 public class ConfigTeleport extends ModuleConfigBase {
 
     private Configuration config;
-
-    public ConfigTeleport(File file)
-    {
-        super(file);
-    }
 
     @Override
     public void init()
@@ -41,5 +33,7 @@ public class ConfigTeleport extends ModuleConfigBase {
         TeleportModule.timeout = config.get("main", "timeout", 25, "Amount of sec a user has to accept a TPA request").getInt();
         config.save();
     }
+
+    public boolean universalConfigAllowed(){return true;}
 
 }
