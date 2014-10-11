@@ -24,7 +24,7 @@ public class executecommand implements IEffect {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
             MinecraftServer.getServer().getCommandManager()
-                    .executeCommand(MinecraftServer.getServer(), command.replaceAll("%p", player.getUniqueID().toString()));
+                    .executeCommand(MinecraftServer.getServer(), command.replaceAll("%p", player.getDisplayName()));
         }
     }
 }
