@@ -12,12 +12,9 @@ import net.minecraft.world.WorldServer;
 
 public class network_NetHandlerPlayServer extends NetHandlerPlayServer{
 
-    private final MinecraftServer serverController;
-
     private network_NetHandlerPlayServer(MinecraftServer p_i1530_1_, NetworkManager p_i1530_2_, EntityPlayerMP p_i1530_3_)
     {
         super(p_i1530_1_, p_i1530_2_, p_i1530_3_);
-        this.serverController = p_i1530_1_;
     }
 
     @Override

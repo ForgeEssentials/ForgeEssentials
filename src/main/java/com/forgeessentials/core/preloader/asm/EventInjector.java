@@ -1,6 +1,5 @@
 package com.forgeessentials.core.preloader.asm;
 
-import com.forgeessentials.core.preloader.asm.forge.network_NetHandlerPlayServer;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -27,7 +26,7 @@ public class EventInjector implements IClassTransformer{
     private static final FMLDeobfuscatingRemapper remapper = FMLDeobfuscatingRemapper.INSTANCE;
 
     static{
-        EventInjector.PatchNote nhps = new EventInjector.PatchNote("net.minecraft.network.NetHandlerPlayServer", network_NetHandlerPlayServer.class.getName());
+        EventInjector.PatchNote nhps = new EventInjector.PatchNote("net.minecraft.network.NetHandlerPlayServer", "com.forgeessentials.core.preloader.asm.forge.network_NetHandlerPlayServer");
         nhps.addMethodToPatch(new EventInjector.MethodNote("processUpdateSign", "func_147343_a", "(Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V"));
         addPatch(nhps);
     }
