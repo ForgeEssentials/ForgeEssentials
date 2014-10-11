@@ -1,54 +1,12 @@
 package com.forgeessentials.commands.util;
 
-import java.util.ArrayList;
-
+import com.forgeessentials.commands.*;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.server.CommandHandlerForge;
 
-import com.forgeessentials.commands.CommandAFK;
-import com.forgeessentials.commands.CommandBind;
-import com.forgeessentials.commands.CommandBurn;
-import com.forgeessentials.commands.CommandButcher;
-import com.forgeessentials.commands.CommandCapabilities;
-import com.forgeessentials.commands.CommandChunkLoaderList;
-import com.forgeessentials.commands.CommandColorize;
-import com.forgeessentials.commands.CommandCraft;
-import com.forgeessentials.commands.CommandDoAs;
-import com.forgeessentials.commands.CommandDrop;
-import com.forgeessentials.commands.CommandEnchant;
-import com.forgeessentials.commands.CommandEnderchest;
-import com.forgeessentials.commands.CommandFindblock;
-import com.forgeessentials.commands.CommandGameMode;
-import com.forgeessentials.commands.CommandGetCommandBook;
-import com.forgeessentials.commands.CommandHeal;
-import com.forgeessentials.commands.CommandInventorySee;
-import com.forgeessentials.commands.CommandJump;
-import com.forgeessentials.commands.CommandKill;
-import com.forgeessentials.commands.CommandKit;
-import com.forgeessentials.commands.CommandLocate;
-import com.forgeessentials.commands.CommandMemusage;
-import com.forgeessentials.commands.CommandModlist;
-import com.forgeessentials.commands.CommandMotd;
-import com.forgeessentials.commands.CommandPing;
-import com.forgeessentials.commands.CommandPotion;
-import com.forgeessentials.commands.CommandPulse;
-import com.forgeessentials.commands.CommandPush;
-import com.forgeessentials.commands.CommandRemove;
-import com.forgeessentials.commands.CommandRename;
-import com.forgeessentials.commands.CommandRepair;
-import com.forgeessentials.commands.CommandRules;
-import com.forgeessentials.commands.CommandServerDo;
-import com.forgeessentials.commands.CommandServerSettings;
-import com.forgeessentials.commands.CommandSmite;
-import com.forgeessentials.commands.CommandSpawnMob;
-import com.forgeessentials.commands.CommandTime;
-import com.forgeessentials.commands.CommandVanish;
-import com.forgeessentials.commands.CommandVirtualchest;
-import com.forgeessentials.commands.CommandWeather;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import java.util.ArrayList;
 
 public class CommandRegistrar {
 	
@@ -140,8 +98,6 @@ public class CommandRegistrar {
         {
             cmd.registerExtraPermissions();
             e.registerServerCommand(cmd);
-        	// TODO: Exchange commands above and below, when perms API gets updated!!!!
-        	CommandHandlerForge.registerCommand(cmd, cmd.getPermissionNode(), cmd.getDefaultPermission());
         }
 	}
 }

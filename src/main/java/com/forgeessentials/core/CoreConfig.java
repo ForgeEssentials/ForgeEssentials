@@ -1,14 +1,14 @@
 package com.forgeessentials.core;
 
-import java.io.File;
-
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import com.forgeessentials.core.compat.CommandSetChecker;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.teleport.TeleportCenter;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
+import java.io.File;
 
 public class CoreConfig {
     public static final File mainconfig = new File(ForgeEssentials.FEDIR, "main.cfg");
@@ -48,6 +48,14 @@ public class CoreConfig {
         prop = config.get("Core", "removeDuplicateCommands", true);
         prop.comment = "Remove commands from the list if they already exist outside of FE.";
         CommandSetChecker.removeDuplicateCommands = prop.getBoolean(true);
+
+        prop = config.get("Core", "disabledModules", new String[]{});
+        prop.comment = "Names of modules to be disabled. A full list of module names is available in your ForgeEssentials folder.";
+        ModuleLauncher.disabledModules = prop.getStringList();
+
+        prop = config.get("Core", "canonicalConfigs", false);
+        prop.comment = "For modules that support it, place their configs in this file.";
+        ModuleLauncher.useCanonicalConfig = prop.getBoolean(false);
 
         prop = config.get("Core.Misc", "tpWarmup", 5);
         prop.comment = "The amount of time you need to stand still to TP.";

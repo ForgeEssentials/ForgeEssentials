@@ -1,8 +1,16 @@
 package com.forgeessentials.protection;
 
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.Item;
@@ -11,19 +19,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameData;
+import java.util.Map.Entry;
+import java.util.Set;
 
 @FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true, configClass = ConfigProtection.class)
-public class ModuleProtection {
+public class ModuleProtection
+{
+
 	public final static String PERM_EDITS = "fe.protection.allowEdits";
 	public final static String PERM_ITEM_USE = "fe.protection.itemUse";
 	public final static String PERM_INTERACT_BLOCK = "fe.protection.allowBlockInteractions";
@@ -41,24 +43,24 @@ public class ModuleProtection {
 	public static boolean enable;
 	public static boolean enableMobSpawns;
 
-	@FEModule.PreInit
+
+	@SubscribeEvent
 	public void preLoad(FEModulePreInitEvent e)
 	{
 		if (FMLCommonHandler.instance().getSide().isClient() || !enable)
 		{
-			e.getModuleContainer().isLoadable = false;
-			return;
+            ModuleLauncher.instance.unregister("protection");
 		}
 	}
 
-	@FEModule.Init
+	@SubscribeEvent
 	public void load(FEModuleInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(new ProtectionEventHandler());
 	}
 
 	@SuppressWarnings("unchecked")
-	@FEModule.ServerInit
+	@SubscribeEvent
 	public void registerPermissions(FEModuleServerInitEvent ev)
 	{
 		ev.registerServerCommand(new ProtectCommand());

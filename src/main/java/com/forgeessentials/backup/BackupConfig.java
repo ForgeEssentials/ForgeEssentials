@@ -1,14 +1,13 @@
 package com.forgeessentials.backup;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.google.common.primitives.Ints;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.google.common.primitives.Ints;
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class BackupConfig extends ModuleConfigBase {
     private static final String MAIN = "Backup";
@@ -33,11 +32,6 @@ public class BackupConfig extends ModuleConfigBase {
     public static Integer maxfilesperbackupfolder;
     public static Integer maxBackupLifespan;
     private Configuration config;
-
-    public BackupConfig(File file)
-    {
-        super(file);
-    }
 
     @Override
     public void init()
@@ -189,4 +183,6 @@ public class BackupConfig extends ModuleConfigBase {
 
         config.save();
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

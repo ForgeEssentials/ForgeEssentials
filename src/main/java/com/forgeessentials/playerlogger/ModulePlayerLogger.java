@@ -3,10 +3,6 @@ package com.forgeessentials.playerlogger;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.FEModule.Init;
-import com.forgeessentials.core.moduleLauncher.FEModule.PreInit;
-import com.forgeessentials.core.moduleLauncher.FEModule.ServerInit;
-import com.forgeessentials.core.moduleLauncher.FEModule.ServerStop;
 import com.forgeessentials.playerlogger.rollback.CommandPl;
 import com.forgeessentials.playerlogger.rollback.CommandRollback;
 import com.forgeessentials.playerlogger.rollback.EventHandler;
@@ -15,11 +11,9 @@ import com.forgeessentials.playerlogger.types.CommandType;
 import com.forgeessentials.playerlogger.types.LogType;
 import com.forgeessentials.playerlogger.types.PlayerTrackerType;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.*;
 import com.forgeessentials.util.selections.WorldPoint;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -139,7 +133,7 @@ public class ModulePlayerLogger {
         return data;
     }
 
-    @PreInit
+    @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
         if (!enable)
@@ -149,7 +143,7 @@ public class ModulePlayerLogger {
         OutputHandler.felog.info("PlayerLogger module is enabled. Loading...");
     }
 
-    @Init
+    @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         for (String name : EventLogger.exempt_groups)
@@ -174,7 +168,7 @@ public class ModulePlayerLogger {
         }
     }
 
-    @ServerInit
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         if (!enable)
@@ -209,7 +203,7 @@ public class ModulePlayerLogger {
         }
     }
 
-    @ServerStop
+    @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
         if (!enable)

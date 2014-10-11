@@ -1,21 +1,14 @@
 package com.forgeessentials.playerlogger;
 
-import java.io.File;
-import java.util.Arrays;
-
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import java.util.Arrays;
 
 public class ConfigPlayerLogger extends ModuleConfigBase {
     public static final String[] exemptDefPlayers = { "\"[Forestry]\"", "\"[Buildcraft]\"" };
     public Configuration config;
-
-    public ConfigPlayerLogger(File file)
-    {
-        super(file);
-    }
 
     @Override
     public void init()
@@ -140,4 +133,6 @@ public class ConfigPlayerLogger extends ModuleConfigBase {
         }
         config.save();
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

@@ -5,10 +5,9 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.economy.commands.*;
 import com.forgeessentials.economy.plots.PlotManager;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.*;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 
@@ -27,7 +26,7 @@ public class ModuleEconomy {
 
     public static int psfPrice;
 
-    @FEModule.Init
+    @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         APIRegistry.wallet = new WalletHandler();
@@ -35,7 +34,7 @@ public class ModuleEconomy {
 
     }
 
-    @FEModule.ServerInit
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         e.registerServerCommand(new CommandAddToWallet());
@@ -49,7 +48,7 @@ public class ModuleEconomy {
         PlotManager.load();
     }
 
-    @FEModule.ServerStop
+    @SubscribeEvent
     public void serverStop(FEModuleServerStopEvent e)
     {
         PlotManager.save();

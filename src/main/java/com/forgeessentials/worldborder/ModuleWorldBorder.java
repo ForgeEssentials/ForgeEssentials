@@ -17,10 +17,7 @@ import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerMoveEvent;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.*;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.vector.Vector2;
 import com.forgeessentials.worldborder.Effects.IEffect;
@@ -113,13 +110,13 @@ public class ModuleWorldBorder {
 		return (int) Math.sqrt((difX * difX) + (difZ * difZ));
 	}
 
-	@FEModule.Init
+	@SubscribeEvent
 	public void load(FEModuleInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@FEModule.ServerInit
+	@SubscribeEvent
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
 		e.registerServerCommand(new CommandWB());
@@ -133,7 +130,7 @@ public class ModuleWorldBorder {
 	 * Penalty part
 	 */
 
-	@FEModule.ServerPostInit
+	@SubscribeEvent
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		loadAll();
@@ -145,7 +142,7 @@ public class ModuleWorldBorder {
 		}
 	}
 
-	@FEModule.ServerStop
+	@SubscribeEvent
 	public void serverStopping(FEModuleServerStopEvent e)
 	{
 		saveAll();

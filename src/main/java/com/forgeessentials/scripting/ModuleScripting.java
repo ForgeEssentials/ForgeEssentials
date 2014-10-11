@@ -1,12 +1,13 @@
 package com.forgeessentials.scripting;
 
-import java.io.File;
-
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+import java.io.File;
 
 @FEModule(name = "scripting", parentMod = ForgeEssentials.class, isCore = false)
 public class ModuleScripting {
@@ -36,14 +37,14 @@ public class ModuleScripting {
         }
     }
 
-    @FEModule.PreInit
+    @SubscribeEvent
     public void preInit(FEModulePreInitEvent e)
     {
         OutputHandler.felog.info("Scripts are being read from " + moduleDir.getAbsolutePath());
         startup();
     }
 
-    @FEModule.ServerInit
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         e.registerServerCommand(new CommandScript());
