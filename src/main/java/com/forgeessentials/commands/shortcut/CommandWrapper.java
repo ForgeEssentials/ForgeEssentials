@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -67,20 +66,20 @@ public class CommandWrapper extends ForgeEssentialsCommandBase {
 	@Override
 	public void processCommand(ICommandSender sender, String[] args)
 	{
-		super.processCommand(sender, ShortcutCommands.parseArgs(sender, this.args, args));
+		getCommand().processCommand(sender, ShortcutCommands.parseArgs(sender, this.args, args));
 	}
 
-    @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
-    {
-    	getCommand().processCommandPlayer(sender, args);
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-    	getCommand().processCommandConsole(sender, args);
-    }
+//    @Override
+//    public void processCommandPlayer(EntityPlayer sender, String[] args)
+//    {
+//    	getCommand().processCommandPlayer(sender, args);
+//    }
+//
+//    @Override
+//    public void processCommandConsole(ICommandSender sender, String[] args)
+//    {
+//    	getCommand().processCommandConsole(sender, args);
+//    }
 
     @Override
     public boolean canConsoleUseCommand()

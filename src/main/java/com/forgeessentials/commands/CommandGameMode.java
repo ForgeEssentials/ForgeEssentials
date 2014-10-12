@@ -135,7 +135,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
 		target.setGameType(mode);
 		target.fallDistance = 0.0F;
 		String modeName = StatCollector.translateToLocal("gameMode." + mode.getName());
-		OutputHandler.chatConfirmation(sender, String.format("%1$s's gamemode was changed to %2$s.", target.getCommandSenderName(), modeName));
+		OutputHandler.chatNotification(sender, String.format("%1$s's gamemode was changed to %2$s.", target.getCommandSenderName(), modeName));
 	}
 
 	private WorldSettings.GameType getGameTypeFromString(String string)
