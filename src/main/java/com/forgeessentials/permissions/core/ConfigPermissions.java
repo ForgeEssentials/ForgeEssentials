@@ -5,11 +5,8 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
 
 public class ConfigPermissions extends ModuleConfigBase {
-
-	protected Configuration config;
 
 	protected DBConnector connector;
 
@@ -22,10 +19,9 @@ public class ConfigPermissions extends ModuleConfigBase {
 	{
         connector = new DBConnector("PermissionsDB", DataStorageManager.getCoreDBConnector(), EnumDBType.H2_FILE, "FEPerms", file.getParent() + "/permissions",
             false);
-		config = new Configuration(file);
 
-		importBool = config.get("stuff", "import", false, "if permissions should be imported from the specified dir").getBoolean(false);
-		importDir = config.get("stuff", "importDir", "import", "file from wich permissions should be imported").getString();
+		importBool = config.get("Permissions", "import", false, "if permissions should be imported from the specified dir").getBoolean(false);
+		importDir = config.get("Permissions", "importDir", "import", "file from wich permissions should be imported").getString();
 
 		if (importBool == true)
 		{

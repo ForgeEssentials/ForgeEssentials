@@ -2,7 +2,6 @@ package com.forgeessentials.protection;
 
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
 
 /**
  * This generates the configuration structure + an example file.
@@ -10,12 +9,10 @@ import net.minecraftforge.common.config.Configuration;
  * @author Dries007
  */
 public class ConfigProtection extends ModuleConfigBase {
-    public Configuration config;
 
     @Override
     public void init()
     {
-        config = new Configuration(file, true);
         String cat = "Protection";
 
         config.addCustomCategoryComment(cat, "You can override the default permissions values in the permissions config. (or in the database.)");

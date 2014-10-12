@@ -1,6 +1,7 @@
 package com.forgeessentials.core.moduleLauncher;
 
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
+import com.forgeessentials.core.CoreConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -124,8 +125,18 @@ public class ModuleLauncher {
         {
             ModuleConfigBase cfg = module.getConfig();
 
+
             if (cfg != null)
             {
+                if (cfg.universalConfigAllowed() && useCanonicalConfig)
+                {
+                    cfg.setFile(CoreConfig.mainconfig);
+                }
+                else
+                {
+                    cfg.setFile(new File(ForgeEssentials.FEDIR, module.name + "/config.cfg"));
+                }
+
                 File file = cfg.getFile();
 
                 if (!file.getParentFile().exists())
@@ -138,6 +149,8 @@ public class ModuleLauncher {
                 {
                     generate = true;
                 }
+
+                System.out.println(file.getAbsolutePath());
 
                 cfg.setGenerate(generate);
                 cfg.init();

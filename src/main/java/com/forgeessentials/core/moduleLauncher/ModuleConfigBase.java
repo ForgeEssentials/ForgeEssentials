@@ -1,6 +1,7 @@
 package com.forgeessentials.core.moduleLauncher;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 
@@ -14,6 +15,13 @@ public abstract class ModuleConfigBase {
     protected File file;
     protected boolean genrate;
 
+    public Configuration getConfig()
+    {
+        return config;
+    }
+
+    protected Configuration config;
+
     /**
      * to get properties
      */
@@ -22,9 +30,11 @@ public abstract class ModuleConfigBase {
     public void setFile(File file)
     {
         this.file = file;
+        this.config = new Configuration(file, true
+        );
     }
 
-    public void setGenerate(boolean generate)
+   public void setGenerate(boolean generate)
     {
         genrate = generate;
     }

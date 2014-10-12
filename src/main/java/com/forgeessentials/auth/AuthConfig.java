@@ -2,16 +2,13 @@ package com.forgeessentials.auth;
 
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
 
 public class AuthConfig extends ModuleConfigBase {
-    private static final String CATEGORY_MAIN = "main";
-    private Configuration config;
+    private static final String CATEGORY_MAIN = "Auth";
 
     @Override
     public void init()
     {
-        config = new Configuration(file);
 
         config.addCustomCategoryComment("main", "all the main important stuff");
         ModuleAuth.forceEnabled = config
@@ -26,18 +23,18 @@ public class AuthConfig extends ModuleConfigBase {
         ModuleAuth.salt = config.get(CATEGORY_MAIN, "salt", ModuleAuth.salt, "The salt to be used when hashing passwords").getString();
         ModuleAuth.checkInterval = config.get(CATEGORY_MAIN, "checkInterval", 10, "Interval to check Vanill Auth service. In minutes.").getInt();
 
-        config.addCustomCategoryComment("lists",
+        config.addCustomCategoryComment(CATEGORY_MAIN + "lists",
                 "Alternative ban/whitelist/VIP/max players implementation. Make sure vipslots and offset added together is less than the amount of players specified in server.properties.");
-        AuthEventHandler.offset = config.get("lists", "offset", 0,
+        AuthEventHandler.offset = config.get(CATEGORY_MAIN + "lists", "offset", 0,
                 "If you need to be able to have less than the amount of players specified in server.properties logged into your server, use this.").getInt();
-        AuthEventHandler.vipslots = config.get("lists", "vipslots", 0, "Amount of slots reserved for VIP players.").getInt();
-        AuthEventHandler.whitelist = config.get("lists", "whitelistEnabled", false,
+        AuthEventHandler.vipslots = config.get(CATEGORY_MAIN + "lists", "vipslots", 0, "Amount of slots reserved for VIP players.").getInt();
+        AuthEventHandler.whitelist = config.get(CATEGORY_MAIN + "lists", "whitelistEnabled", false,
                 "Enable or disable the ForgeEssentials whitelist. Note that server.properties will be used if this is set to false.").getBoolean(false);
 
-        config.addCustomCategoryComment("lists.kickmsg", "Kick messages for banned/unwhitelisted players or when the server is full (not counting VIP slots");
-        AuthEventHandler.banned = config.get("lists.kick", "bannedmsg", "You have been banned from this server.").getString();
-        AuthEventHandler.notwhitelisted = config.get("lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").getString();
-        AuthEventHandler.notvip = config.get("lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
+        config.addCustomCategoryComment(CATEGORY_MAIN + "lists.kickmsg", "Kick messages for banned/unwhitelisted players or when the server is full (not counting VIP slots");
+        AuthEventHandler.banned = config.get(CATEGORY_MAIN + "lists.kick", "bannedmsg", "You have been banned from this server.").getString();
+        AuthEventHandler.notwhitelisted = config.get(CATEGORY_MAIN + "lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").getString();
+        AuthEventHandler.notvip = config.get(CATEGORY_MAIN + "lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
         config.save();
     }
 
@@ -54,15 +51,15 @@ public class AuthConfig extends ModuleConfigBase {
         config.get(CATEGORY_MAIN, "salt", "", "The salt to be used when hashing passwords").set(ModuleAuth.salt);
         config.get(CATEGORY_MAIN, "chcekInterval", "", "Interval to check Vanill Auth service. In minutes.").set(ModuleAuth.checkInterval);
 
-        config.get("lists", "offset", 0,
+        config.get(CATEGORY_MAIN + "lists", "offset", 0,
                 "If you need to be able to have less than the amount of players specified in server.properties logged into your server, use this.").set(0);
-        config.get("lists", "vipslots", 0, "Amount of slots reserved for VIP players.").set(0);
-        config.get("lists", "whitelistEnabled", false,
+        config.get(CATEGORY_MAIN + "lists", "vipslots", 0, "Amount of slots reserved for VIP players.").set(0);
+        config.get(CATEGORY_MAIN + "lists", "whitelistEnabled", false,
                 "Enable or disable the ForgeEssentials whitelist. Note that server.properties will be used if this is set to false.").set(false);
 
-        config.get("lists.kick", "bannedmsg", "You have been banned from this server.").set("You have been banned from this server.");
-        config.get("lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").set("You are not whitelisted on this server.");
-        config.get("lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").set("This server is full, and you are not a VIP.");
+        config.get(CATEGORY_MAIN + "lists.kick", "bannedmsg", "You have been banned from this server.").set("You have been banned from this server.");
+        config.get(CATEGORY_MAIN + "lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").set("You are not whitelisted on this server.");
+        config.get(CATEGORY_MAIN + "lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").set("This server is full, and you are not a VIP.");
 
         config.save();
     }
@@ -78,13 +75,13 @@ public class AuthConfig extends ModuleConfigBase {
         ModuleAuth.salt = config.get(CATEGORY_MAIN, "salt", ModuleAuth.salt).getString();
         ModuleAuth.checkInterval = config.get(CATEGORY_MAIN, "checkInterval", 10).getInt();
 
-        AuthEventHandler.offset = config.get("lists", "offset", 0).getInt();
-        AuthEventHandler.vipslots = config.get("lists", "vipslots", 0).getInt();
-        AuthEventHandler.whitelist = config.get("lists", "whitelistEnabled", false).getBoolean(false);
+        AuthEventHandler.offset = config.get(CATEGORY_MAIN + "lists", "offset", 0).getInt();
+        AuthEventHandler.vipslots = config.get(CATEGORY_MAIN + "lists", "vipslots", 0).getInt();
+        AuthEventHandler.whitelist = config.get(CATEGORY_MAIN + "lists", "whitelistEnabled", false).getBoolean(false);
 
-        AuthEventHandler.banned = config.get("lists.kick", "bannedmsg", "You have been banned from this server.").getString();
-        AuthEventHandler.notwhitelisted = config.get("lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").getString();
-        AuthEventHandler.notvip = config.get("lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
+        AuthEventHandler.banned = config.get(CATEGORY_MAIN + "lists.kick", "bannedmsg", "You have been banned from this server.").getString();
+        AuthEventHandler.notwhitelisted = config.get(CATEGORY_MAIN + "lists.kick", "unwhitelistedmsg", "You are not whitelisted on this server.").getString();
+        AuthEventHandler.notvip = config.get(CATEGORY_MAIN + "lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
     }
 
     public boolean universalConfigAllowed(){return true;}

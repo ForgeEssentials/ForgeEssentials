@@ -38,8 +38,7 @@ public class ModuleCommands {
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-
-        CommandRegistrar.commandConfigs(conf.config);
+        CommandRegistrar.commandConfigs(conf.getConfig());
         ShortcutCommands.loadConfig(cmddir);
     }
 

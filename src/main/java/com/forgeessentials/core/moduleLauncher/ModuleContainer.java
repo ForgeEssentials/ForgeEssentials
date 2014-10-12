@@ -1,6 +1,5 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import com.forgeessentials.core.CoreConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule.*;
 import com.forgeessentials.util.FunctionHelper;
@@ -236,11 +235,6 @@ public class ModuleContainer implements Comparable {
         try
         {
             configObj = configClass.getConstructor().newInstance();
-
-            if (configObj.universalConfigAllowed() && ModuleLauncher.useCanonicalConfig)
-                configObj.setFile(CoreConfig.mainconfig);
-
-            else configObj.setFile(new File(ForgeEssentials.FEDIR, name + "/config.cfg"));
 
             if (config != null)
             {

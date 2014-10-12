@@ -3,7 +3,6 @@ package com.forgeessentials.backup;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.google.common.primitives.Ints;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 import java.util.Arrays;
@@ -31,13 +30,10 @@ public class BackupConfig extends ModuleConfigBase {
     public static Integer minimunFreeSpace;
     public static Integer maxfilesperbackupfolder;
     public static Integer maxBackupLifespan;
-    private Configuration config;
 
     @Override
     public void init()
     {
-        config = new Configuration(file);
-
 		/*
          * Main cat
 		 */
@@ -94,8 +90,6 @@ public class BackupConfig extends ModuleConfigBase {
     @Override
     public void forceSave()
     {
-        config = new Configuration(file);
-
 		/*
 		 * Main cat
 		 */
@@ -140,8 +134,6 @@ public class BackupConfig extends ModuleConfigBase {
     @Override
     public void forceLoad(ICommandSender sender)
     {
-        config = new Configuration(file);
-
 		/*
 		 * Main cat
 		 */

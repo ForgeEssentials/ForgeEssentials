@@ -14,7 +14,6 @@ import net.minecraftforge.common.config.Property;
  */
 
 public class ConfigWorldBorder extends ModuleConfigBase {
-    private Configuration config;
 
     /**
      * Does penalty part on config
@@ -99,7 +98,6 @@ public class ConfigWorldBorder extends ModuleConfigBase {
     @Override
     public void init()
     {
-        config = new Configuration(file, true);
         penaltiesConfig(config);
         commonConfig(config);
         config.save();
@@ -108,7 +106,6 @@ public class ConfigWorldBorder extends ModuleConfigBase {
     @Override
     public void forceLoad(ICommandSender sender)
     {
-        config = new Configuration(file, true);
         penaltiesConfig(config);
         commonConfig(config);
         config.save();

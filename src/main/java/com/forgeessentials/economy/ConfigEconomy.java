@@ -2,10 +2,8 @@ package com.forgeessentials.economy;
 
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
 
 public class ConfigEconomy extends ModuleConfigBase {
-    private Configuration config;
 
     public static final String CAT = "Economy";
 
@@ -15,7 +13,6 @@ public class ConfigEconomy extends ModuleConfigBase {
     @Override
     public void init()
     {
-        config = new Configuration(file);
 
         currencySingular = config.get(CAT, "currencySingular", "gold").getString();
         currencyPlural = config.get(CAT, "currencyPlural", "gold").getString();

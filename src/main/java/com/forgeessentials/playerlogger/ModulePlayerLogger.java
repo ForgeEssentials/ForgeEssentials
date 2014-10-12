@@ -3,6 +3,7 @@ package com.forgeessentials.playerlogger;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.playerlogger.rollback.CommandPl;
 import com.forgeessentials.playerlogger.rollback.CommandRollback;
 import com.forgeessentials.playerlogger.rollback.EventHandler;
@@ -138,7 +139,7 @@ public class ModulePlayerLogger {
     {
         if (!enable)
         {
-            return;
+            ModuleLauncher.instance.unregister("PlayerLogger");
         }
         OutputHandler.felog.info("PlayerLogger module is enabled. Loading...");
     }
@@ -153,11 +154,6 @@ public class ModulePlayerLogger {
                 throw new RuntimeException("Group '" + name + "' doesn't exist. Used in " + config.getFile().getName());
             }
         }
-
-        if (!enable)
-        {
-            return;
-        }
         try
         {
             Class.forName("com.mysql.jdbc.Driver");
@@ -171,10 +167,6 @@ public class ModulePlayerLogger {
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        if (!enable)
-        {
-            return;
-        }
         e.registerServerCommand(new CommandPl());
         e.registerServerCommand(new CommandRollback());
         try
@@ -206,10 +198,6 @@ public class ModulePlayerLogger {
     @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
-        if (!enable)
-        {
-            return;
-        }
         try
         {
             new Thread(new Runnable() {

@@ -3,16 +3,12 @@ package com.forgeessentials.snooper;
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
 
 public class ConfigSnooper extends ModuleConfigBase {
-    private Configuration config;
 
     @Override
     public void init()
     {
-        config = new Configuration(file, true);
-
         String cat = "Snooper";
 
         ModuleSnooper.port = config.get(cat, "port", 25565, "The query port").getInt();
