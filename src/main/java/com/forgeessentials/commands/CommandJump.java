@@ -7,8 +7,12 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.teleport.CommandBack;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandJump extends FEcmdModuleCommands {
 
@@ -31,13 +35,16 @@ public class CommandJump extends FEcmdModuleCommands {
         MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(sender, false);
         if (mo == null)
         {
-            OutputHandler.chatError(sender, "command.jump.toofar");
+            OutputHandler.chatError(sender, "Even jumpman couldn't make that jump!");
             return;
         }
         else
         {
-            ((EntityPlayerMP) sender).playerNetServerHandler
-                    .setPlayerLocation(mo.blockX + .5, mo.blockY + 1, mo.blockZ + .5, sender.rotationPitch, sender.rotationYaw);
+        	EntityPlayerMP player = (EntityPlayerMP) sender;
+			PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
+			playerInfo.setLastTeleportOrigin(new WarpPoint(player));
+			CommandBack.justDied.remove(player.getPersistentID());
+        	TeleportCenter.teleport(new WarpPoint(sender.getEntityWorld().provider.dimensionId, mo.blockX, mo.blockY, mo.blockZ, sender.rotationPitch, sender.rotationYaw), player);
         }
     }
 
