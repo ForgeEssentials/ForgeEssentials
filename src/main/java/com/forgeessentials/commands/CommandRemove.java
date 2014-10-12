@@ -42,7 +42,7 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
             return;
         }
 
@@ -80,7 +80,7 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
             return;
         }
 

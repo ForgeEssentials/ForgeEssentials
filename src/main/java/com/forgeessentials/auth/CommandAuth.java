@@ -290,9 +290,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("help"))
             {
-                OutputHandler.sendMessage(sender, " - /auth kick <player>  - forces the player to login again");
-                OutputHandler.sendMessage(sender, " - /auth setpass <player> <password>  - sets the players password to the specified");
-                OutputHandler.sendMessage(sender, " - /auth unregister <player>  - forces the player to register again");
+                OutputHandler.chatNotification(sender, " - /auth kick <player>  - forces the player to login again");
+                OutputHandler.chatNotification(sender, " - /auth setpass <player> <password>  - sets the players password to the specified");
+                OutputHandler.chatNotification(sender, " - /auth unregister <player>  - forces the player to register again");
                 return;
             }
             else
@@ -309,7 +309,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
         if (player == null)
         {
-            OutputHandler.sendMessage(sender, "A player of that name is not on the server. Doing the action anyways.");
+            OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
             isLogged = false;
         }
 
@@ -371,7 +371,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
                     data.password = encrypted;
                     data.save();
                 }
-                OutputHandler.sendMessage(sender, String.format("Password set for %s", name));
+                OutputHandler.chatConfirmation(sender, String.format("Password set for %s", name));
             }
         }
     }

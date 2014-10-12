@@ -68,7 +68,7 @@ public class Command extends ForgeEssentialsCommandBase {
             }
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
             Ticket t = ModuleTickets.getID(id);
-            OutputHandler.sendMessage(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
+            OutputHandler.chatNotification(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
         }
 
         if (args[0].equalsIgnoreCase("list") && permcheck(sender, "view"))
@@ -79,20 +79,20 @@ public class Command extends ForgeEssentialsCommandBase {
             {
                 page = parseIntBounded(sender, args[1], 0, pages);
             }
-            OutputHandler.sendMessage(sender, c + "--- Ticket List ---");
+            OutputHandler.chatNotification(sender, c + "--- Ticket List ---");
             for (int i = page * 7; i < (page + 1) * 7; i++)
             {
                 try
                 {
                     Ticket t = ModuleTickets.ticketList.get(i);
-                    OutputHandler.sendMessage(sender, "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
+                    OutputHandler.chatNotification(sender, "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
                 }
                 catch (Exception e)
                 {
                     break;
                 }
             }
-            OutputHandler.sendMessage(sender, c + String.format("--- Page %1$d of %2$d ---", page, pages));
+            OutputHandler.chatNotification(sender, c + String.format("--- Page %1$d of %2$d ---", page, pages));
             return;
         }
 
@@ -116,7 +116,7 @@ public class Command extends ForgeEssentialsCommandBase {
             msg = msg.substring(1);
             Ticket t = new Ticket(sender, args[1], msg);
             ModuleTickets.ticketList.add(t);
-            OutputHandler.sendMessage(sender, c + String.format("message.confim.ticketPost", t.id));
+            OutputHandler.chatNotification(sender, c + String.format("message.confim.ticketPost", t.id));
             return;
         }
 
@@ -140,7 +140,7 @@ public class Command extends ForgeEssentialsCommandBase {
             }
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
             ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
-            OutputHandler.sendMessage(sender, c + String.format("Your ticket has been posted. ID: %d", id));
+            OutputHandler.chatConfirmation(sender, c + String.format("Your ticket has been posted. ID: %d", id));
         }
     }
 

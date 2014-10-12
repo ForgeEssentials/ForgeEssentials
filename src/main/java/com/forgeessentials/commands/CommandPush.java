@@ -73,7 +73,7 @@ public class CommandPush extends FEcmdModuleCommands {
             else
             {
                 var7.getBlock(var3, var4, var5).onBlockActivated(var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
-                OutputHandler.sendMessage(var1, "Button/Lever Pushed");
+                OutputHandler.chatConfirmation(var1, "Button/Lever Pushed");
             }
         }
     }
@@ -106,7 +106,7 @@ public class CommandPush extends FEcmdModuleCommands {
             else
             {
                 var7.getBlock(var3, var4, var5).onBlockActivated(var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
-                OutputHandler.sendMessage(sender, "Button/Lever Pushed");
+                OutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }
     }

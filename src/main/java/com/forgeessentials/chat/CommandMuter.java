@@ -28,7 +28,7 @@ public class CommandMuter {
             {
                 if (mutedCommands.contains(e.command.getCommandName()))
                 {
-                    OutputHandler.sendMessage(player, "You are currently muted.");
+                    OutputHandler.chatWarning(player, "You are currently muted.");
                     e.setCanceled(true);
                     return;
                 }
@@ -43,7 +43,7 @@ public class CommandMuter {
                     {
                         if (mutedCommands.contains(obj.toString()))
                         {
-                            OutputHandler.sendMessage(player, "You are currently muted.");
+                            OutputHandler.chatWarning(player, "You are currently muted.");
                             e.setCanceled(true);
                             return;
                         }

@@ -27,11 +27,12 @@ public class CommandExpandY extends ForgeEssentialsCommandBase {
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
 		if (info.getPoint1() == null || info.getPoint2() == null)
 		{
-			OutputHandler.sendMessage(player, "Invalid selection.");
+			OutputHandler.chatError(player, "Invalid selection.");
 			return;
 		}
 		info.getPoint1().setY(0);
 		info.getPoint2().setY(255);
+		OutputHandler.chatConfirmation(player, "Selection expanded to world height.");
 	}
 
 	@Override

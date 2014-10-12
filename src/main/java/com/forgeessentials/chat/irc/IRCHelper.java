@@ -124,15 +124,15 @@ public class IRCHelper extends ListenerAdapter implements Listener {
         }
         catch (NickAlreadyInUseException e)
         {
-            OutputHandler.sendMessage(sender, "Could not reconnect to the IRC server - the assigned nick is already in use. Try again in a few minutes.");
+            OutputHandler.chatError(sender, "Could not reconnect to the IRC server - the assigned nick is already in use. Try again in a few minutes.");
         }
         catch (IOException e)
         {
-            OutputHandler.sendMessage(sender, "Could not reconnect to the IRC server - something went wrong.");
+            OutputHandler.chatError(sender, "Could not reconnect to the IRC server - something went wrong.");
         }
         catch (IrcException e)
         {
-            OutputHandler.sendMessage(sender, "Could not reconnect to the IRC server - something went wrong, or you are already connected to the server.");
+            OutputHandler.chatError(sender, "Could not reconnect to the IRC server - something went wrong, or you are already connected to the server.");
         }
     }
 

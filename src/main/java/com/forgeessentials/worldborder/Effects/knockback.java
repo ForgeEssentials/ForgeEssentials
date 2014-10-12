@@ -35,7 +35,7 @@ public class knockback implements IEffect {
                 rideY--;
             }
             y = y + 1;
-            OutputHandler.sendMessage(player, "Teleported.");
+            OutputHandler.chatNotification(player, "Teleported.");
         }
 
         if (player.ridingEntity != null)

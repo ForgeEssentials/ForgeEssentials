@@ -188,7 +188,7 @@ public class CommandDrop extends FEcmdModuleCommands {
         {
             throw new CommandException("Not enough Room for Items");
         }
-        OutputHandler.sendMessage(var1, "Items Droped into container");
+        OutputHandler.chatConfirmation(var1, "Items Droped into container");
     }
 
     private double func_82368_a(ICommandSender par1ICommandSender, double par2, String par4Str)

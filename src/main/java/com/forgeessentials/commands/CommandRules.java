@@ -182,7 +182,7 @@ public class CommandRules extends FEcmdModuleCommands {
         {
             for (String rule : rules)
             {
-                OutputHandler.sendMessage(sender, rule);
+                OutputHandler.chatNotification(sender, rule);
             }
             return;
         }
@@ -217,18 +217,18 @@ public class CommandRules extends FEcmdModuleCommands {
         {
             if (args[0].equalsIgnoreCase("help"))
             {
-                OutputHandler.chatConfirmation(sender, " - /rules [#]");
+                OutputHandler.chatNotification(sender, " - /rules [#]");
                 if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
                 {
-                    OutputHandler.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
-                    OutputHandler.chatConfirmation(sender, " - /rules add &lt;newRule>");
-                    OutputHandler.chatConfirmation(sender, " - /rules remove &lt;#>");
-                    OutputHandler.chatConfirmation(sender, " - /rules move &lt;#> &lt;#>");
+                    OutputHandler.chatNotification(sender, " - /rules &lt;#> [changedRule]");
+                    OutputHandler.chatNotification(sender, " - /rules add &lt;newRule>");
+                    OutputHandler.chatNotification(sender, " - /rules remove &lt;#>");
+                    OutputHandler.chatNotification(sender, " - /rules move &lt;#> &lt;#>");
                 }
                 return;
             }
 
-            OutputHandler.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            OutputHandler.chatNotification(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
             return;
         }
 

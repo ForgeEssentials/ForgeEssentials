@@ -12,7 +12,7 @@ public class ProtectCommand extends ForgeEssentialsCommandBase{
         switch(var2.length)
         {
         case 0:
-            OutputHandler.sendMessage(var1, "List of settings: gamemode");
+            OutputHandler.chatNotification(var1, "List of settings: gamemode");
             break;
         /*
         case 3:
@@ -27,13 +27,13 @@ public class ProtectCommand extends ForgeEssentialsCommandBase{
             {
                 ((EntityPlayer)var1).setGameType(EnumGameType.getByID(Integer.parseInt(var2[2])));
             }
-            OutputHandler.sendMessage(var1, String.format("Successfully set gamemode of zone %s1 to %s2", zone.getName(), EnumGameType.getByID(Integer.parseInt(var2[2])).getName()));*//*
+            OutputHandler.chatConfirmation(var1, String.format("Successfully set gamemode of zone %s1 to %s2", zone.getName(), EnumGameType.getByID(Integer.parseInt(var2[2])).getName()));*//*
         }
             break;
             */
 
         default:
-            OutputHandler.sendMessage(var1, "Command syntax is wrong. Try " + getCommandUsage(var1));
+            OutputHandler.chatError(var1, "Command syntax is wrong. Try " + getCommandUsage(var1));
             break;
         }
     }

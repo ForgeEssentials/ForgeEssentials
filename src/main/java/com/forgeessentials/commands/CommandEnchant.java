@@ -78,7 +78,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 			{
 				msg = "Efficiency, SilkTouch, Unbreaking";
 			}
-			OutputHandler.sendMessage(sender, msg);
+			OutputHandler.chatNotification(sender, msg);
 			return;
 		}
 
@@ -94,12 +94,12 @@ public class CommandEnchant extends FEcmdModuleCommands {
 				if (msg.length() > 100)
 				{
 					msg = msg.substring(0, msg.length() - 2);
-					OutputHandler.sendMessage(sender, msg);
+					OutputHandler.chatNotification(sender, msg);
 					msg = "";
 				}
 			}
 			msg = msg.substring(0, msg.length() - 2);
-			OutputHandler.sendMessage(sender, msg);
+			OutputHandler.chatNotification(sender, msg);
 			return;
 		}
 

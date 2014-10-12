@@ -38,7 +38,7 @@ public class CommandHeal extends FEcmdModuleCommands {
             }
             else
             {
-                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
@@ -59,12 +59,12 @@ public class CommandHeal extends FEcmdModuleCommands {
             }
             else
             {
-                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
         }
     }
 
@@ -73,7 +73,7 @@ public class CommandHeal extends FEcmdModuleCommands {
         target.heal(20);
         target.extinguish();
         target.getFoodStats().addStats(20, 1.0F);
-        OutputHandler.sendMessage(target, "You were healed");
+        OutputHandler.chatConfirmation(target, "You were healed");
     }
 
     @Override

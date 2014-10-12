@@ -30,7 +30,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
             {
-                OutputHandler.sendMessage(sender, args[0] + " not found!");
+                OutputHandler.chatError(sender, args[0] + " not found!");
             }
             else
             {
@@ -55,7 +55,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
             {
-                OutputHandler.sendMessage(sender, args[0] + " not found!");
+                OutputHandler.chatError(sender, args[0] + " not found!");
             }
             else
             {
@@ -68,7 +68,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amountRequested>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amountRequested>");
         }
     }
 

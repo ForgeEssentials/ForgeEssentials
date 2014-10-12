@@ -36,7 +36,7 @@ public class TeleportData {
 		currentPos = new WarpPoint(player);
 		if (!lastPos.equals(currentPos))
 		{
-			OutputHandler.sendMessage(player, "Teleport cancelled.");
+			OutputHandler.chatWarning(player, "Teleport cancelled.");
 			return true;
 		}
 
@@ -63,7 +63,7 @@ public class TeleportData {
 					.transferPlayerToDimension((EntityPlayerMP) player, point.getDimension());
 		}
 		player.playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 0.1, point.zd, point.yaw, point.pitch);
-		OutputHandler.sendMessage(player, "Teleported.");
+		OutputHandler.chatConfirmation(player, "Teleported.");
 	}
 
 	public EntityPlayerMP getPlayer()

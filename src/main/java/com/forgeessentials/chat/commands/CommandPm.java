@@ -128,7 +128,7 @@ public class CommandPm extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("help"))
             {
-                OutputHandler.chatConfirmation(sender, "Use /pm <player> to engage persistent message. /pm to return to normal chat.");
+                OutputHandler.chatNotification(sender, "Use /pm <player> to engage persistent message. /pm to return to normal chat.");
             }
             else
             {
@@ -179,7 +179,7 @@ public class CommandPm extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("help"))
             {
-                OutputHandler.chatConfirmation(sender, "Use /pm <player> to engage persistent message. /pm to return to normal chat.");
+                OutputHandler.chatNotification(sender, "Use /pm <player> to engage persistent message. /pm to return to normal chat.");
             }
             else
             {

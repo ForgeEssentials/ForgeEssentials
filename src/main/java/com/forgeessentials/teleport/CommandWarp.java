@@ -41,7 +41,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
             {
                 msg = warp + ", " + msg;
             }
-            OutputHandler.sendMessage(sender, msg);
+            OutputHandler.chatNotification(sender, msg);
         }
         else if (args.length == 1)
         {
@@ -82,7 +82,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                         TeleportDataManager.addWarp(warp);
                         if (!TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
                             {
-                                OutputHandler.sendMessage(sender, "Could not make warp! This is an error!");
+                                OutputHandler.chatError(sender, "Could not make warp! This is an error!");
                             }
                         else OutputHandler.chatConfirmation(sender, "Done!");
                     }

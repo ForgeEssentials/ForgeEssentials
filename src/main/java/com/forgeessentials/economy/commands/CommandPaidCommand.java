@@ -69,7 +69,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
         else
         {
             //this should be removed
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amount> <command [args]>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amount> <command [args]>");
         }
     }
 

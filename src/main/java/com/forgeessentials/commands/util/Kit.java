@@ -121,7 +121,7 @@ public class Kit {
 	{
 		if (PlayerInfo.getPlayerInfo(player.getPersistentID()).getKitCooldown().containsKey(getName()))
 		{
-			OutputHandler.sendMessage(
+			OutputHandler.chatWarning(
 					player,
 					"Kit cooldown active, %c seconds to go!".replaceAll("%c",
 							"" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).getKitCooldown().get(getName()))));
@@ -168,7 +168,7 @@ public class Kit {
 				}
 			}
 
-			OutputHandler.sendMessage(player, "Kit dropped.");
+			OutputHandler.chatConfirmation(player, "Kit dropped.");
 		}
 	}
 }

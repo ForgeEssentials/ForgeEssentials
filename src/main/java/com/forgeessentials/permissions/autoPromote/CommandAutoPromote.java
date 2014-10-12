@@ -71,19 +71,19 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		if (args.length == 0 || args.length == 1 || args[1].equalsIgnoreCase("get"))
 		{
 			String header = "--- AutoPromote for: " + ap.getZone() + " ---";
-			OutputHandler.sendMessage(sender, header);
-			OutputHandler.sendMessage(sender, "Enabled: " + (ap.isEnabled() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + ap.isEnabled());
-			OutputHandler.sendMessage(sender, "Promotion times: ");
+			OutputHandler.chatNotification(sender, header);
+			OutputHandler.chatNotification(sender, "Enabled: " + (ap.isEnabled() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + ap.isEnabled());
+			OutputHandler.chatNotification(sender, "Promotion times: ");
 			for (String i : ap.getPromoteList().keySet())
 			{
-				OutputHandler.sendMessage(sender, " " + i + " > " + ap.getPromoteList().get(i));
+				OutputHandler.chatNotification(sender, " " + i + " > " + ap.getPromoteList().get(i));
 			}
 			StringBuilder footer = new StringBuilder();
 			for (int i = 3; i < header.length(); i++)
 			{
 				footer.append("-");
 			}
-			OutputHandler.sendMessage(sender, footer.toString());
+			OutputHandler.chatNotification(sender, footer.toString());
 			return;
 		}
 

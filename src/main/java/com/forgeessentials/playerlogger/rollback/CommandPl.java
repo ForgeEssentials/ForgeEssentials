@@ -44,7 +44,7 @@ public class CommandPl extends ForgeEssentialsCommandBase {
         }
         if (args.length == 0)
         {
-            OutputHandler.sendMessage(sender, "You must use /playerlogger enable");
+            OutputHandler.chatError(sender, "You must use /playerlogger enable");
             return;
         }
         else if (args[0].equalsIgnoreCase("enable"))
@@ -56,7 +56,7 @@ public class CommandPl extends ForgeEssentialsCommandBase {
             }
             sender.getEntityData().setBoolean("lb", true);
             sender.getEntityData().setInteger("lb_limit", limit);
-            OutputHandler.sendMessage(sender, "Click a block and you will get the last " + limit + " changes.");
+            OutputHandler.chatNotification(sender, "Click a block and you will get the last " + limit + " changes.");
         }
         else if (args[0].equalsIgnoreCase("disable"))
         {

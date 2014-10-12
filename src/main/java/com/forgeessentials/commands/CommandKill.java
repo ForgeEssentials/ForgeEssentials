@@ -32,17 +32,17 @@ public class CommandKill extends FEcmdModuleCommands {
             if (player != null)
             {
                 player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-                OutputHandler.sendMessage(player, "You were killed. You probably deserved it.");
+                OutputHandler.chatError(player, "You were killed. You probably deserved it.");
             }
             else
             {
-                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
         {
             sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
-            OutputHandler.sendMessage(sender, "You were killed. You probably deserved it.");
+            OutputHandler.chatError(sender, "You were killed. You probably deserved it.");
         }
     }
 
@@ -55,16 +55,16 @@ public class CommandKill extends FEcmdModuleCommands {
             if (player != null)
             {
                 player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-                OutputHandler.sendMessage(player, "You were killed. You probably deserved it.");
+                OutputHandler.chatError(player, "You were killed. You probably deserved it.");
             }
             else
             {
-                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
         }
     }
 

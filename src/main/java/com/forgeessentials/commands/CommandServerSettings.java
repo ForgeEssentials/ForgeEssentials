@@ -40,8 +40,8 @@ public class CommandServerSettings extends FEcmdModuleCommands {
         DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
         if (args.length == 0)
         {
-            OutputHandler.sendMessage(sender, "Available options:");
-            OutputHandler.sendMessage(sender, options.toString());
+            OutputHandler.chatNotification(sender, "Available options:");
+            OutputHandler.chatNotification(sender, options.toString());
             return;
         }
 

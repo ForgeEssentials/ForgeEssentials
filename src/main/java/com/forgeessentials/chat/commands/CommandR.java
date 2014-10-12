@@ -83,7 +83,7 @@ public class CommandR extends ForgeEssentialsCommandBase {
                 }
                 catch (Exception e)
                 {
-                    OutputHandler.sendMessage(sender, "Unable to send message to: " + target);
+                    OutputHandler.chatError(sender, "Unable to send message to: " + target);
                 }
             }
             else
@@ -121,7 +121,7 @@ public class CommandR extends ForgeEssentialsCommandBase {
     {
         if (args.length == 0)
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: /msg <player> <message>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /msg <player> <message>");
             return;
         }
         if (args.length > 0)
@@ -129,13 +129,13 @@ public class CommandR extends ForgeEssentialsCommandBase {
             String target = CommandMsg.getPlayerReply("server");
             if (target == null)
             {
-                OutputHandler.sendMessage(sender, "You have no previous recorded message recipient.");
+                OutputHandler.chatError(sender, "You have no previous recorded message recipient.");
                 return;
             }
             EntityPlayer receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (receiver == null)
             {
-                OutputHandler.sendMessage(sender, target + " is not a valid username");
+                OutputHandler.chatError(sender, target + " is not a valid username");
                 return;
             }
             else

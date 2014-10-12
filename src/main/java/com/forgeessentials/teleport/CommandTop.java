@@ -40,7 +40,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
             }
             else
             {
-                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
@@ -61,12 +61,12 @@ public class CommandTop extends ForgeEssentialsCommandBase {
             }
             else
             {
-                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
         }
     }
 
@@ -79,7 +79,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
             point.setY(point.getY() - 1);
         }
         ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 1, point.getZ(), point.yaw, point.pitch);
-        OutputHandler.sendMessage(player, "Teleported.");
+        OutputHandler.chatConfirmation(player, "Teleported.");
     }
 
     @Override

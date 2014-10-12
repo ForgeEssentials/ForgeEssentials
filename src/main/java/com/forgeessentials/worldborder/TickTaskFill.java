@@ -145,7 +145,7 @@ public class TickTaskFill implements ITickTask {
 
         if (ticks % (20 * 25) == 0)
         {
-            OutputHandler.sendMessage(source, "Filler for " + dimID + ": " + getStatus());
+            OutputHandler.chatNotification(source, "Filler for " + dimID + ": " + getStatus());
         }
 
         for (int i = 0; i < speed; i++)

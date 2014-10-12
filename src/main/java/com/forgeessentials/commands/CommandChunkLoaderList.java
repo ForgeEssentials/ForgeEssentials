@@ -114,10 +114,10 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
 
         if (!key.equals("*"))
         {
-            OutputHandler.sendMessage(sender, EnumChatFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
+            OutputHandler.chatNotification(sender, EnumChatFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
         }
 
-        OutputHandler.sendMessage(sender, EnumChatFormatting.AQUA + "Dim " + world.provider.getDimensionName() + ":");
+        OutputHandler.chatNotification(sender, "Dim " + world.provider.getDimensionName() + ":");
 
         if (key.startsWith("p:") || key.equals("*"))
         {
@@ -127,7 +127,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
                 {
                     if (key.equals("*"))
                     {
-                        OutputHandler.sendMessage(sender, EnumChatFormatting.AQUA + username);
+                        OutputHandler.chatNotification(sender, username);
                     }
 
                     HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
@@ -142,7 +142,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
 
                     for (ChunkCoordIntPair coords : chunks)
                     {
-                        OutputHandler.sendMessage(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+                        OutputHandler.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
                     }
                 }
             }
@@ -154,7 +154,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
             {
                 if (key.equals("*"))
                 {
-                    OutputHandler.sendMessage(sender, EnumChatFormatting.AQUA + modID);
+                    OutputHandler.chatNotification(sender, modID);
                 }
                 HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
 
@@ -168,7 +168,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
 
                 for (ChunkCoordIntPair coords : chunks)
                 {
-                    OutputHandler.sendMessage(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+                    OutputHandler.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
                 }
             }
         }

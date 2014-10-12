@@ -168,8 +168,8 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 		}
 		else
 		{
-			OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: ");
-			OutputHandler.sendMessage(sender, getCommandUsage(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
+			OutputHandler.chatNotification(sender, getCommandUsage(sender));
 		}
 	}
 

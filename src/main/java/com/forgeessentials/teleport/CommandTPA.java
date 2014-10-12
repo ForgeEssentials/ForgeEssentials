@@ -44,8 +44,8 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
                 {
                     if (data.receiver == sender)
                     {
-                        OutputHandler.sendMessage(data.sender, "Teleport request accepted.");
-                        OutputHandler.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
+                        OutputHandler.chatNotification(data.sender, "Teleport request accepted.");
+                        OutputHandler.chatConfirmation(data.receiver, "Teleport request accepted by other party. Teleporting..");
                         PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(data.sender.getPersistentID());
                         playerInfo.setLastTeleportOrigin(new WarpPoint(data.sender));
                         CommandBack.justDied.remove(data.sender.getPersistentID());
@@ -66,8 +66,8 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
                 {
                     if (data.receiver == sender)
                     {
-                        OutputHandler.sendMessage(data.sender, "Teleport request declined.");
-                        OutputHandler.sendMessage(data.receiver, "Teleport request declined by other party.");
+                        OutputHandler.chatNotification(data.sender, "Teleport request declined.");
+                        OutputHandler.chatError(data.receiver, "Teleport request declined by other party.");
                         TeleportModule.tpaListToRemove.add(data);
                         return;
                     }
@@ -86,14 +86,14 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (receiver == null)
         {
-            OutputHandler.sendMessage(sender, args[0] + " not found.");
+            OutputHandler.chatError(sender, args[0] + " not found.");
         }
         else
         {
             TeleportModule.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, false));
 
-            OutputHandler.sendMessage(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
-            OutputHandler.sendMessage(receiver,
+            OutputHandler.chatNotification(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
+            OutputHandler.chatNotification(receiver,
                     String.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.", sender.getCommandSenderName()));
         }
     }

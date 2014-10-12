@@ -110,7 +110,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player> <['amount'x]item[:'meta']> <command [args]>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <['amount'x]item[:'meta']> <command [args]>");
         }
     }
 

@@ -95,12 +95,12 @@ public class CommandsEventHandler {
                 }
                 else
                 {
-                    OutputHandler.sendMessage(e.entityPlayer, "That is no sign!");
+                    OutputHandler.chatError(e.entityPlayer, "That is no sign!");
                 }
             }
             else
             {
-                OutputHandler.sendMessage(e.entityPlayer, "That is no sign!");
+                OutputHandler.chatError(e.entityPlayer, "That is no sign!");
             }
 
             e.entityPlayer.getEntityData().setBoolean("colorize", false);

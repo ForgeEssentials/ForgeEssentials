@@ -29,9 +29,9 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase {
 
     public void reload(ICommandSender sender)
     {
-        OutputHandler.sendMessage(sender, "Killing old one....");
+        OutputHandler.chatNotification(sender, "Killing old one....");
         ModuleSnooper.stop();
-        OutputHandler.sendMessage(sender, "Making new one....");
+        OutputHandler.chatNotification(sender, "Making new one....");
         ModuleSnooper.start();
     }
 

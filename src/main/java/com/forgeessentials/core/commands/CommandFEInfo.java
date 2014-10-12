@@ -39,21 +39,21 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     {
         if (args.length == 0)
         {
-            OutputHandler.sendMessage(sender, "/feinfo debug Produces ASM transformer debug output.");
-            OutputHandler.sendMessage(sender, "/feinfo reload Reloads all configs.");
-            OutputHandler.sendMessage(sender, "/feinfo about About ForgeEssentials");
+            OutputHandler.chatNotification(sender, "/feinfo debug Produces ASM transformer debug output.");
+            OutputHandler.chatNotification(sender, "/feinfo reload Reloads all configs.");
+            OutputHandler.chatNotification(sender, "/feinfo about About ForgeEssentials");
         }
         else if (args[0].equalsIgnoreCase("reload"))
         {
-            OutputHandler.sendMessage(sender, "Reloading ForgeEssentials configs. May not work for all settings!");
-            OutputHandler.sendMessage(sender, EnumChatFormatting.RED + "This is experimental!");
+            OutputHandler.chatNotification(sender, "Reloading ForgeEssentials configs. May not work for all settings!");
+            OutputHandler.chatNotification(sender, EnumChatFormatting.RED + "This is experimental!");
             ModuleLauncher.instance.reloadConfigs(sender);
-            OutputHandler.sendMessage(sender, "Done!");
+            OutputHandler.chatNotification(sender, "Done!");
         }
         else if (args[0].equalsIgnoreCase("about"))
         {
-            OutputHandler.sendMessage(sender, "You are currently running ForgeEssentials version " + FEModContainer.version);
-            OutputHandler.sendMessage(sender,
+            OutputHandler.chatNotification(sender, "You are currently running ForgeEssentials version " + FEModContainer.version);
+            OutputHandler.chatNotification(sender,
                     "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
         }
     }

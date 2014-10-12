@@ -112,7 +112,7 @@ public class TickTaskBlockFinder implements ITickTask {
 
     private void msg(String string)
     {
-        OutputHandler.sendMessage(player, EnumChatFormatting.AQUA + string);
+        OutputHandler.chatNotification(player, string);
     }
 
     @Override

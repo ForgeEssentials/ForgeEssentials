@@ -51,7 +51,7 @@ public class TimedTaskManager extends ForgeEssentialsCommandBase {
     {
         if (args.length == 0)
         {
-            OutputHandler.sendMessage(sender, syntax);
+            OutputHandler.chatNotification(sender, syntax);
         }
 
         else if (args[0].equalsIgnoreCase("create"))
@@ -64,23 +64,23 @@ public class TimedTaskManager extends ForgeEssentialsCommandBase {
             TimedTask task = new TimedTask(args[2], command, args[1]);
             taskList.put(args[1], task);
             data.saveObject(conTT, task);
-            OutputHandler.sendMessage(sender, "Added timed task " + args[1]);
+            OutputHandler.chatConfirmation(sender, "Added timed task " + args[1]);
         }
 
         else if (args[0].equalsIgnoreCase("remove"))
         {
             taskList.remove(args[1]);
             data.deleteObject(conTT, args[1]);
-            OutputHandler.sendMessage(sender, "Removed timed task " + args[1]);
+            OutputHandler.chatConfirmation(sender, "Removed timed task " + args[1]);
         }
         else if (args[0].equalsIgnoreCase("list"))
         {
-            OutputHandler.sendMessage(sender, "Listing all registered timed tasks");
+            OutputHandler.chatNotification(sender, "Listing all registered timed tasks");
             Iterator it = taskList.entrySet().iterator();
             while (it.hasNext())
             {
                 Map.Entry pairs = (Map.Entry) it.next();
-                OutputHandler.sendMessage(sender, String.format("%s1 - %s2", (String) pairs.getKey(), ((TimedTask) pairs.getValue()).getCommand()));
+                OutputHandler.chatNotification(sender, String.format("%s1 - %s2", (String) pairs.getKey(), ((TimedTask) pairs.getValue()).getCommand()));
             }
         }
 

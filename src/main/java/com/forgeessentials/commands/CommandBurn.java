@@ -84,11 +84,11 @@ public class CommandBurn extends FEcmdModuleCommands {
         if (player != null)
         {
             player.setFire(time);
-            OutputHandler.sendMessage(sender, "You should feel bad about doing that.");
+            OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
         }
         else
         {
-            OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+            OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
         }
     }
 

@@ -159,7 +159,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
                 EntityCreature mob = (EntityCreature) EntityList.createEntityByName(mobNames.get(args[0].toLowerCase()), world);
                 if (mob == null)
                 {
-                    OutputHandler.sendMessage(sender, String.format("%s was not recognized as a mob.", args[0]));
+                    OutputHandler.chatError(sender, String.format("%s was not recognized as a mob.", args[0]));
                     return;
                 }
                 if (args.length >= 6) {
@@ -180,7 +180,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax.");
+            OutputHandler.chatError(sender, "Improper syntax.");
         }
     }
 

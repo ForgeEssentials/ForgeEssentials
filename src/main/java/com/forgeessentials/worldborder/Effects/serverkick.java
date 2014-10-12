@@ -27,9 +27,9 @@ public class serverkick implements IEffect {
         }
         else
         {
-            OutputHandler.sendMessage(player, "You should have been kicked from the server with this message:");
+            OutputHandler.chatNotification(player, "You should have been kicked from the server with this message:");
             OutputHandler.sendMessage(player, message);
-            OutputHandler.sendMessage(player, "Since this is SSP, thats not possible.");
+            OutputHandler.chatNotification(player, "Since this is SSP, thats not possible.");
         }
     }
 }

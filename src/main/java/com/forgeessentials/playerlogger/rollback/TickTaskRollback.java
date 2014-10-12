@@ -121,7 +121,7 @@ public class TickTaskRollback implements ITickTask {
 			}
 			catch (Exception e)
 			{
-				OutputHandler.sendMessage(sender, "Could not restore TE data.");
+				OutputHandler.chatError(sender, "Could not restore TE data.");
 				e.printStackTrace();
 			}
 		}
@@ -136,7 +136,7 @@ public class TickTaskRollback implements ITickTask {
 	@Override
 	public void onComplete()
 	{
-		OutputHandler.sendMessage(sender, "Rollback done! Changed " + changed + " blocks.");
+		OutputHandler.chatConfirmation(sender, "Rollback done! Changed " + changed + " blocks.");
 	}
 
 	@Override

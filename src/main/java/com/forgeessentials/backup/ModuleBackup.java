@@ -57,7 +57,7 @@ public class ModuleBackup {
                 EntityPlayerMP player = manager.func_152612_a(username);
                 if (PermissionsManager.checkPermission(player, "ForgeEssentials.backup.msg"))
                 {
-                    OutputHandler.sendMessage(player, EnumChatFormatting.AQUA + "[ForgeEssentials] " + msg);
+                    OutputHandler.chatNotification(player, "[ForgeEssentials] " + msg);
                 }
             }
         }

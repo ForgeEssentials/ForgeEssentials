@@ -38,14 +38,14 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
                 NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
                 tag.removeTag("nickname");
                 sender.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-                OutputHandler.sendMessage(sender, "Nickname removed.");
+                OutputHandler.chatConfirmation(sender, "Nickname removed.");
             }
             else
             {
                 NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
                 tag.setString("nickname", args[0]);
                 sender.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-                OutputHandler.sendMessage(sender, "Nickname set to " + args[0]);
+                OutputHandler.chatConfirmation(sender, "Nickname set to " + args[0]);
             }
         }
         else if (args.length == 2)
@@ -56,12 +56,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
                 if (args[1].equalsIgnoreCase("del"))
                 {
                     player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
-                    OutputHandler.sendMessage(sender, "Nickname of player " + args[0] + " removed");
+                    OutputHandler.chatConfirmation(sender, "Nickname of player " + args[0] + " removed");
                 }
                 else
                 {
                     player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-                    OutputHandler.sendMessage(sender, "Nickname of player " + args[0] + " set to " + args[1]);
+                    OutputHandler.chatConfirmation(sender, "Nickname of player " + args[0] + " set to " + args[1]);
                 }
             }
             else
@@ -71,7 +71,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
         }
     }
 
@@ -89,21 +89,21 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
             if (args.length == 2)
             {
                 player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-                OutputHandler.sendMessage(sender, "Nickname of player " + player.getCommandSenderName() + " set to " + args[1]);
+                OutputHandler.chatConfirmation(sender, "Nickname of player " + player.getCommandSenderName() + " set to " + args[1]);
             }
             else if (args.length == 1)
             {
                 player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
-                OutputHandler.sendMessage(sender, "Nickname of player " + player.getCommandSenderName() + " removed");
+                OutputHandler.chatConfirmation(sender, "Nickname of player " + player.getCommandSenderName() + " removed");
             }
             else
             {
-                OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
+                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
             }
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
         }
     }
 

@@ -57,11 +57,11 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
         {
             // Header
             String header = "--- Fillers active ---";
-            OutputHandler.sendMessage(sender, header);
+            OutputHandler.chatNotification(sender, header);
             // Actual info
             for (Integer world : map.keySet())
             {
-                OutputHandler.sendMessage(sender, world + ": " + map.get(world).getStatus());
+                OutputHandler.chatNotification(sender, world + ": " + map.get(world).getStatus());
             }
             // Footer
             StringBuilder footer = new StringBuilder();
@@ -69,7 +69,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
             {
                 footer.append("-");
             }
-            OutputHandler.sendMessage(sender, footer.toString());
+            OutputHandler.chatNotification(sender, footer.toString());
             return;
         }
 

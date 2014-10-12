@@ -46,7 +46,7 @@ public class TeleportCenter {
 		long timeSinceLastTeleport = (System.currentTimeMillis() - pi.getLastTeleportTime()) / 1000L;
 		if (timeSinceLastTeleport < teleportCooldown && timeSinceLastTeleport >= 0 && !PermissionsManager.checkPermission(player, BYPASS_COOLDOWN))
 		{
-			OutputHandler.sendMessage(player, String.format("Cooldown still active. %s seconds to go.", teleportCooldown - timeSinceLastTeleport));
+			OutputHandler.chatNotification(player, String.format("Cooldown still active. %s seconds to go.", teleportCooldown - timeSinceLastTeleport));
 		}
 		else
 		{
@@ -57,7 +57,7 @@ public class TeleportCenter {
 			}
 			else
 			{
-				OutputHandler.sendMessage(player, String.format("Teleporting, please stand still for %s seconds.", FunctionHelper.parseTime(teleportWarmup)));
+				OutputHandler.chatNotification(player, String.format("Teleporting, please stand still for %s seconds.", FunctionHelper.parseTime(teleportWarmup)));
 				queue.add(data);
 			}
 		}

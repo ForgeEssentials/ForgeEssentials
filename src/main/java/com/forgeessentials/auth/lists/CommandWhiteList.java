@@ -23,8 +23,8 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 	{
 		if (!AuthEventHandler.whitelist)
 		{
-			OutputHandler.sendMessage(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
-			OutputHandler.sendMessage(sender, "Note that server.properties will take precedent over the auth config.");
+			OutputHandler.chatWarning(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
+			OutputHandler.chatWarning(sender, "Note that server.properties will take precedent over the auth config.");
 
 		}
 
@@ -33,12 +33,12 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 			if (AuthEventHandler.whitelist)
 			{
 				AuthEventHandler.whitelist = false;
-				OutputHandler.sendMessage(sender, "FE Whitelist was on, it is now turned off.");
+				OutputHandler.chatConfirmation(sender, "FE Whitelist was on, it is now turned off.");
 			}
 			else
 			{
 				AuthEventHandler.whitelist = true;
-				OutputHandler.sendMessage(sender, "FE Whitelist was off, it is now turned on.");
+				OutputHandler.chatConfirmation(sender, "FE Whitelist was off, it is now turned on.");
 			}
 		}
 

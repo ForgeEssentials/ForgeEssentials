@@ -79,7 +79,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 			}
 
 			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-			OutputHandler.sendMessage(player, "Teleporting to spawn.");
+			OutputHandler.chatNotification(player, "Teleporting to spawn.");
 			TeleportCenter.teleport(point, player);
 		}
 		else if (args.length == 0)
@@ -93,7 +93,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 			}
 
 			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-			OutputHandler.sendMessage(player, "Teleporting to spawn.");
+			OutputHandler.chatConfirmation(player, "Teleporting to spawn.");
 			TeleportCenter.teleport(point, player);
 		}
 	}
@@ -123,7 +123,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 		}
 
 		PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-		OutputHandler.sendMessage(player, "Teleporting to spawn.");
+		OutputHandler.chatNotification(player, "Teleporting to spawn.");
 		TeleportCenter.teleport(point, player);
 	}
 

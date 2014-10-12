@@ -39,7 +39,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
             if (info.getPoint1() == null || info.getPoint2() == null)
             {
 
-                OutputHandler.sendMessage(player, "Invalid previous selection.");
+                OutputHandler.chatError(player, "Invalid previous selection.");
                 return;
             }
 
@@ -109,7 +109,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
                     info.setPoint2(new Point(info.getPoint2().getX(), info.getPoint2().getY() - expandby, info.getPoint2().getZ()));
                 }
             }
-            OutputHandler.sendMessage(player, "Region expanded by: " + expandby);
+            OutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
             return;
         }
         else if (args.length == 2)
@@ -202,7 +202,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
             {
                 OutputHandler.chatError(player, "Invalid Direction");
             }
-            OutputHandler.sendMessage(player, "Region expanded by: " + expandby);
+            OutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
             return;
         }
         else

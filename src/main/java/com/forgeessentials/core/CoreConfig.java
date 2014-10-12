@@ -12,7 +12,7 @@ import java.io.File;
 
 public class CoreConfig {
     public static final File mainconfig = new File(ForgeEssentials.FEDIR, "main.cfg");
-    public static String largeComment_Cat_Groups, groupPrefixFormat, groupSuffixFormat, groupRankFormat;
+    public static String largeComment_Cat_Groups, groupPrefixFormat, groupSuffixFormat, groupRankFormat, largeComment_Cat_ChatColors;
     public final Configuration config;
 
     static
@@ -22,6 +22,11 @@ public class CoreConfig {
         largeComment_Cat_Groups += "\n {...<:>...} will display the data of each group the player is in in order of priority";
         largeComment_Cat_Groups += "\n you may put contsraints with ladders or zones with {...<:>zoneName} or {ladderName<:>...}";
         largeComment_Cat_Groups += "\n you may also use the color and MCFormat codes above.";
+        
+        largeComment_Cat_ChatColors = "This controls the colors of the various chats output by ForgeEssentials.";
+        largeComment_Cat_ChatColors += "\nValid output colors are as follows:";
+        largeComment_Cat_ChatColors += "\naqua, black, blue, dark_aqua, dark_blue, dark_gray, dark_green, dark_purple, dark_red";
+        largeComment_Cat_ChatColors += "\ngold, gray, green, light_purple, red, white, yellow";
     }
 
     // this is designed so it will work for any class.
@@ -56,6 +61,24 @@ public class CoreConfig {
         prop = config.get("Core", "canonicalConfigs", false);
         prop.comment = "For modules that support it, place their configs in this file.";
         ModuleLauncher.useCanonicalConfig = prop.getBoolean(false);
+        
+        config.addCustomCategoryComment("Core.Output", largeComment_Cat_ChatColors);
+        
+        prop = config.get("Core.Output", "confirmationColor", "green");
+        prop.comment = "Defaults to green.";
+        OutputHandler.setConfirmationColor(prop.getString());
+        
+        prop = config.get("Core.Output", "errorOutputColor", "red");
+        prop.comment = "Defaults to red.";
+        OutputHandler.setErrorColor(prop.getString());
+        
+        prop = config.get("Core.Output", "notificationOutputColor", "aqua");
+        prop.comment = "Defaults to aqua.";
+        OutputHandler.setNotificationColor(prop.getString());
+        
+        prop = config.get("Core.Output", "warningOutputColor", "yellow");
+        prop.comment = "Defaults to yellow.";
+        OutputHandler.setWarningColor(prop.getString());
 
         prop = config.get("Core.Misc", "tpWarmup", 5);
         prop.comment = "The amount of time you need to stand still to TP.";

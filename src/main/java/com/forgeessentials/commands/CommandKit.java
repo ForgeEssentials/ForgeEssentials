@@ -36,7 +36,7 @@ public class CommandKit extends FEcmdModuleCommands {
 		 */
         if (args.length == 0)
         {
-            OutputHandler.sendMessage(sender, "Available kits:");
+            OutputHandler.chatNotification(sender, "Available kits:");
 
             String msg = "";
             for (Kit kit : CommandDataManager.kits.values())
@@ -46,7 +46,7 @@ public class CommandKit extends FEcmdModuleCommands {
                     msg = kit.getName() + ", " + msg;
                 }
             }
-            OutputHandler.sendMessage(sender, msg);
+            OutputHandler.chatNotification(sender, msg);
             return;
         }
         /*
@@ -83,7 +83,7 @@ public class CommandKit extends FEcmdModuleCommands {
                 {
                     int cooldown = parseIntWithMin(sender, args[2], 0);
                     new Kit(sender, args[0].toLowerCase(), cooldown);
-                    OutputHandler.sendMessage(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
+                    OutputHandler.chatConfirmation(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
                 }
                 else
                 {
@@ -103,7 +103,7 @@ public class CommandKit extends FEcmdModuleCommands {
                 if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
                 {
                     CommandDataManager.removeKit(CommandDataManager.kits.get(args[0].toLowerCase()));
-                    OutputHandler.sendMessage(sender, "Kit removed.");
+                    OutputHandler.chatConfirmation(sender, "Kit removed.");
                 }
                 else
                 {

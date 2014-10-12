@@ -41,7 +41,7 @@ public class ChatFormatter {
         if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
         {
             event.setCanceled(true);
-            OutputHandler.sendMessage(event.player, "You are currently muted.");
+            OutputHandler.chatWarning(event.player, "You are currently muted.");
             return;
         }
 

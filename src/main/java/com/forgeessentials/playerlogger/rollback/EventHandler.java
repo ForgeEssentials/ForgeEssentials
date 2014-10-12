@@ -44,11 +44,11 @@ public class EventHandler {
                                 + p.getZ() + " ORDER BY id DESC LIMIT " + limit);
                 ResultSet res = st.getResultSet();
 
-                OutputHandler.sendMessage(e.entityPlayer, "Results: " + p.getX() + ", " + p.getY() + ", " + p.getZ());
+                OutputHandler.chatNotification(e.entityPlayer, "Results: " + p.getX() + ", " + p.getY() + ", " + p.getZ());
 
                 while (res.next())
                 {
-                    OutputHandler.sendMessage(e.entityPlayer,
+                    OutputHandler.chatNotification(e.entityPlayer,
                             res.getString("player") + " " + res.getString("category") + " block " + res.getString("block") + " at " + res.getTimestamp("time"));
                 }
                 res.close();
@@ -57,7 +57,7 @@ public class EventHandler {
             }
             catch (SQLException e1)
             {
-                OutputHandler.sendMessage(e.entityPlayer, "Connection error!");
+                OutputHandler.chatError(e.entityPlayer, "Connection error!");
                 e1.printStackTrace();
             }
         }

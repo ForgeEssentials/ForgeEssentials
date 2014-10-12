@@ -18,16 +18,19 @@ public final class OutputHandler {
 
     public static boolean debugmode;
 
+    private static EnumChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
+
     public OutputHandler()
     {
         felog = new LogWrapper(LogManager.getLogger("ForgeEssentials"));
     }
 
     /**
-     * outputs a message in bright green to the chat box of the given player.
+     * actually sends the color-formatted message to the sender
      *
-     * @param msg    the message to be chatted
-     * @param player player to chat to.
+     * @param sender CommandSender to chat to.
+     * @param msg    the message to be sent
+     * @param color  color of text to format
      */
     public static void chatColored(ICommandSender sender, String msg, EnumChatFormatting color)
     {
@@ -37,46 +40,59 @@ public final class OutputHandler {
     }
 
     /**
-     * outputs a message in red text to the chat box of the given player.
+     * outputs an error message to the chat box of the given sender.
      *
-     * @param msg    the message to be chatted
-     * @param player player to chat to.
+     * @param sender CommandSender to chat to.
+     * @param msg    the message to be sent
      */
     public static void chatError(ICommandSender sender, String msg)
     {
     	if(sender instanceof EntityPlayer)
-    		chatColored(sender, msg, EnumChatFormatting.RED);
+    		chatColored(sender, msg, chatErrorColor);
     	else
     		sendMessage(sender, msg);
     }
 
     /**
-     * outputs a message in bright green to the chat box of the given player.
+     * outputs a confirmation message to the chat box of the given sender.
      *
-     * @param msg    the message to be chatted
-     * @param player player to chat to.
+     * @param sender CommandSender to chat to.
+     * @param msg    the message to be sent
      */
     public static void chatConfirmation(ICommandSender sender, String msg)
     {
     	if(sender instanceof EntityPlayer)
-    		chatColored(sender, msg, EnumChatFormatting.GREEN);
+    		chatColored(sender, msg, chatConfirmationColor);
     	else
-    		sendMessage(sender, msg);
+    		sendMessage(sender, "SUCCESS: " + msg);
     }
 
     /**
-     * outputs a message in yellow to the chat box of the given player.
+     * outputs a warning message to the chat box of the given sender.
      *
-     * @param msg    the message to be chatted
-     * @param player player to chat to.
+     * @param sender CommandSender to chat to.
+     * @param msg    the message to be sent
      */
     public static void chatWarning(ICommandSender sender, String msg)
     {
     	if(sender instanceof EntityPlayer)
-    		chatColored(sender, msg, EnumChatFormatting.YELLOW);
+    		chatColored(sender, msg, chatWarningColor);
     	else
     		sendMessage(sender, "WARNING: " + msg);
     }
+    
+    /**
+     * outputs a notification message to the chat box of the given sender.
+     * @param sender CommandSender to chat to.
+     * @param msg
+     */
+	public static void chatNotification(ICommandSender sender, String msg)
+	{
+    	if(sender instanceof EntityPlayer)
+    		chatColored(sender, msg, chatNotificationColor);
+    	else
+    		sendMessage(sender, "NOTICE: " + msg);
+	}
 
     /**
      * Use this to throw errors that can continue without crashing the server.
@@ -145,6 +161,34 @@ public final class OutputHandler {
         ChatStyle style = new ChatStyle().setColor(colour);
         toColour.setChatStyle(style);
         return toColour;
+    }
+    
+    public static void setConfirmationColor(String color)
+    {
+    	chatConfirmationColor = EnumChatFormatting.getValueByName(color);
+    	if(chatConfirmationColor == null)
+    		chatConfirmationColor = EnumChatFormatting.GREEN;
+    }
+    
+    public static void setErrorColor(String color)
+    {
+    	chatErrorColor = EnumChatFormatting.getValueByName(color);
+    	if(chatErrorColor == null)
+    		chatErrorColor = EnumChatFormatting.RED;
+    }
+    
+    public static void setNotificationColor(String color)
+    {
+    	chatNotificationColor = EnumChatFormatting.getValueByName(color);
+    	if(chatNotificationColor == null)
+    		chatNotificationColor = EnumChatFormatting.AQUA;
+    }
+    
+    public static void setWarningColor(String color)
+    {
+    	chatWarningColor = EnumChatFormatting.getValueByName(color);
+    	if(chatWarningColor == null)
+    		chatWarningColor = EnumChatFormatting.YELLOW;
     }
 
     public class LogWrapper

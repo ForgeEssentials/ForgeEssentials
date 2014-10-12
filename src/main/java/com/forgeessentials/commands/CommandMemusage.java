@@ -18,19 +18,19 @@ public class CommandMemusage extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        OutputHandler.sendMessage(sender, "Memory usage:");
-        OutputHandler.sendMessage(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
-        OutputHandler.sendMessage(sender, "Total: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
-        OutputHandler.sendMessage(sender, "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
+        OutputHandler.chatNotification(sender, "Memory usage:");
+        OutputHandler.chatNotification(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
+        OutputHandler.chatNotification(sender, "Total: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
+        OutputHandler.chatNotification(sender, "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        OutputHandler.sendMessage(sender, "Memory usage:");
-        OutputHandler.sendMessage(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
-        OutputHandler.sendMessage(sender, "Total: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
-        OutputHandler.sendMessage(sender, "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
+        OutputHandler.chatNotification(sender, "Memory usage:");
+        OutputHandler.chatNotification(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
+        OutputHandler.chatNotification(sender, "Total: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
+        OutputHandler.chatNotification(sender, "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
     }
 
     @Override

@@ -47,26 +47,26 @@ public class CommandCapabilities extends FEcmdModuleCommands {
     {
         if (args.length > 3)
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: [player] [capability] [value|default]");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [player] [capability] [value|default]");
             return;
         }
 
         if (args.length == 0)
         {
-            OutputHandler.chatConfirmation(sender, "Possible capabilities:");
-            OutputHandler.chatConfirmation(sender, StringUtils.join(names.toArray(), ", "));
+            OutputHandler.chatNotification(sender, "Possible capabilities:");
+            OutputHandler.chatNotification(sender, StringUtils.join(names.toArray(), ", "));
         }
         else if (args.length == 1)
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                OutputHandler.chatConfirmation(sender, String.format("Capabilities for %s:", player.getCommandSenderName()));
-                OutputHandler.sendMessage(sender, names.get(0) + " = " + player.capabilities.disableDamage);
-                OutputHandler.sendMessage(sender, names.get(1) + " = " + player.capabilities.isFlying);
-                OutputHandler.sendMessage(sender, names.get(2) + " = " + player.capabilities.allowFlying);
-                OutputHandler.sendMessage(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
-                OutputHandler.sendMessage(sender, names.get(4) + " = " + player.capabilities.allowEdit);
+                OutputHandler.chatNotification(sender, String.format("Capabilities for %s:", player.getCommandSenderName()));
+                OutputHandler.chatNotification(sender, names.get(0) + " = " + player.capabilities.disableDamage);
+                OutputHandler.chatNotification(sender, names.get(1) + " = " + player.capabilities.isFlying);
+                OutputHandler.chatNotification(sender, names.get(2) + " = " + player.capabilities.allowFlying);
+                OutputHandler.chatNotification(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
+                OutputHandler.chatNotification(sender, names.get(4) + " = " + player.capabilities.allowEdit);
             }
             else
             {
@@ -88,23 +88,23 @@ public class CommandCapabilities extends FEcmdModuleCommands {
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
                 {
-                    OutputHandler.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
+                    OutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(1)))
                 {
-                    OutputHandler.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(1) + " = " + player.capabilities.isFlying);
+                    OutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(1) + " = " + player.capabilities.isFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(2)))
                 {
-                    OutputHandler.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
+                    OutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(3)))
                 {
-                    OutputHandler.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
+                    OutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(4)))
                 {
-                    OutputHandler.sendMessage(sender, player.getCommandSenderName() + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
+                    OutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
                 }
                 else
                 {
@@ -130,31 +130,31 @@ public class CommandCapabilities extends FEcmdModuleCommands {
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.disableDamage = bln;
-                    OutputHandler.sendMessage(sender, names.get(0) + " = " + player.capabilities.disableDamage);
+                    OutputHandler.chatNotification(sender, names.get(0) + " = " + player.capabilities.disableDamage);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(1)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.isFlying = bln;
-                    OutputHandler.sendMessage(sender, names.get(1) + " = " + player.capabilities.isFlying);
+                    OutputHandler.chatNotification(sender, names.get(1) + " = " + player.capabilities.isFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(2)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.allowFlying = bln;
-                    OutputHandler.sendMessage(sender, names.get(2) + " = " + player.capabilities.allowFlying);
+                    OutputHandler.chatNotification(sender, names.get(2) + " = " + player.capabilities.allowFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(3)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.isCreativeMode = bln;
-                    OutputHandler.sendMessage(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
+                    OutputHandler.chatNotification(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(4)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.allowEdit = bln;
-                    OutputHandler.sendMessage(sender, names.get(4) + " = " + player.capabilities.allowEdit);
+                    OutputHandler.chatNotification(sender, names.get(4) + " = " + player.capabilities.allowEdit);
                 }
                 else
                 {

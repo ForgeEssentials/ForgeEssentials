@@ -48,7 +48,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
                 PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
                 info.setHome(p);
                 info.save();                
-                OutputHandler.sendMessage(sender, String.format("Home set to: %1$d, %2$d, %3$d", p.getX(), p.getY(), p.getZ()));
+                OutputHandler.chatConfirmation(sender, String.format("Home set to: %1$d, %2$d, %3$d", p.getX(), p.getY(), p.getZ()));
             }
         }
     }

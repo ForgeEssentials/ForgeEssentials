@@ -32,7 +32,7 @@ public class CommandSmite extends FEcmdModuleCommands {
             if (args[0].toLowerCase().equals("me"))
             {
                 sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-                OutputHandler.sendMessage(sender, "Was that really a good idea?");
+                OutputHandler.chatConfirmation(sender, "Was that really a good idea?");
             }
             else
             {
@@ -40,7 +40,7 @@ public class CommandSmite extends FEcmdModuleCommands {
                 if (player != null)
                 {
                     player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-                    OutputHandler.sendMessage(sender, "You should feel bad about doing that.");
+                    OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
                 }
                 else
                 {
@@ -58,7 +58,7 @@ public class CommandSmite extends FEcmdModuleCommands {
             else
             {
                 sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
-                OutputHandler.sendMessage(sender, "I hope that didn't start a fire.");
+                OutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
             }
         }
     }
@@ -72,7 +72,7 @@ public class CommandSmite extends FEcmdModuleCommands {
             if (player != null)
             {
                 player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-                OutputHandler.sendMessage(sender, "You should feel bad about doing that.");
+                OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
             }
             else
             {
@@ -81,7 +81,7 @@ public class CommandSmite extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
         }
     }
 

@@ -101,19 +101,19 @@ public class CommandWB extends ForgeEssentialsCommandBase {
 		{
 			// Header
 			String header = "--- WorldBorder for " + zone.getName() + " ---";
-			OutputHandler.sendMessage(sender, header);
+			OutputHandler.chatNotification(sender, header);
 			// Actual info
-			OutputHandler.sendMessage(sender, "Enabled: " + (border.enabled ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + border.enabled);
-			OutputHandler.sendMessage(sender, "Center: " + border.center.toString());
-			OutputHandler.sendMessage(sender, "Radius: " + border.rad);
-			OutputHandler.sendMessage(sender, "Shape: " + border.getShape());
+			OutputHandler.chatNotification(sender, "Enabled: " + (border.enabled ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + border.enabled);
+			OutputHandler.chatNotification(sender, "Center: " + border.center.toString());
+			OutputHandler.chatNotification(sender, "Radius: " + border.rad);
+			OutputHandler.chatNotification(sender, "Shape: " + border.getShape());
 			// Footer
 			StringBuilder footer = new StringBuilder();
 			for (int i = 0; i < header.length(); i++)
 			{
 				footer.append("-");
 			}
-			OutputHandler.sendMessage(sender, footer.toString());
+			OutputHandler.chatNotification(sender, footer.toString());
 		}
 		/*
 		 * No. Want to en|disable?

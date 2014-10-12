@@ -35,13 +35,13 @@ public class CommandPing extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        OutputHandler.sendMessage(sender, response.replaceAll("%time", ((EntityPlayerMP) sender).ping + "ms."));
+        OutputHandler.chatNotification(sender, response.replaceAll("%time", ((EntityPlayerMP) sender).ping + "ms."));
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        OutputHandler.sendMessage(sender, response.replaceAll("%time", ""));
+        OutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
     }
 
     @Override

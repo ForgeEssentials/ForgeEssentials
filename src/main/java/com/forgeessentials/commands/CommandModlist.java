@@ -27,8 +27,7 @@ public class CommandModlist extends FEcmdModuleCommands {
         int page = args.length == 0 ? 0 : parseIntBounded(sender, args[0], 1, pages) - 1;
         int min = Math.min(page * perPage, size);
 
-        OutputHandler.chatConfirmation(sender, String.format("--- Showing modlist page %1$d of %2$d ---", page + 1, pages));
-
+        OutputHandler.chatNotification(sender, String.format("--- Showing modlist page %1$d of %2$d ---", page + 1, pages));
         for (int i = page * perPage; i < min + perPage; i++)
         {
             if (i >= size)
@@ -36,7 +35,7 @@ public class CommandModlist extends FEcmdModuleCommands {
                 break;
             }
             ModContainer mod = Loader.instance().getModList().get(i);
-            OutputHandler.sendMessage(sender, mod.getName() + " - " + mod.getVersion());
+            OutputHandler.chatNotification(sender, mod.getName() + " - " + mod.getVersion());
         }
     }
 

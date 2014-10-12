@@ -28,16 +28,16 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase {
 
             if (player == null)
             {
-                OutputHandler.sendMessage(sender, "The specified player does not exist, or is not online.");
+                OutputHandler.chatError(sender, "The specified player does not exist, or is not online.");
             }
             else
             {
-                OutputHandler.sendMessage(sender, player.getCommandSenderName() + "'s wallet contains:" + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
+                OutputHandler.chatNotification(sender, player.getCommandSenderName() + "'s wallet contains:" + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
             }
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player> ");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> ");
         }
     }
 

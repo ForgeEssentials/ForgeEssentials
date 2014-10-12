@@ -53,7 +53,7 @@ public class CommandRepair extends FEcmdModuleCommands {
             }
             else
             {
-                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
@@ -82,12 +82,12 @@ public class CommandRepair extends FEcmdModuleCommands {
             }
             else
             {
-                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: ");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
         }
     }
 

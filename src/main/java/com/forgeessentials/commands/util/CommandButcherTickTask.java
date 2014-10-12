@@ -281,14 +281,7 @@ public class CommandButcherTickTask implements ITickTask {
     @Override
     public void onComplete()
     {
-        if (playerCommand)
-        {
-            OutputHandler.chatConfirmation(player, String.format("%s mobs killed.", counter));
-        }
-        else
-        {
-            OutputHandler.sendMessage(sender, String.format("%s mobs killed.", counter));
-        }
+        OutputHandler.chatConfirmation(player, String.format("%s mobs killed.", counter));
     }
 
     @Override

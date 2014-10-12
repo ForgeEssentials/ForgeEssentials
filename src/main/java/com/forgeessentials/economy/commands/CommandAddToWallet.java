@@ -40,19 +40,19 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase {
 
             if (player == null)
             {
-                OutputHandler.sendMessage(sender, "Player %s does not exist, or is not online.");
+                OutputHandler.chatError(sender, "Player %s does not exist, or is not online.");
             }
             else
             {
                 APIRegistry.wallet.addToWallet(amountToAdd, player.getPersistentID());
 
-                OutputHandler.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to wallet.");
-                OutputHandler.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to your wallet.");
+                OutputHandler.chatConfirmation(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to wallet.");
+                OutputHandler.chatConfirmation(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to your wallet.");
             }
         }
         else
         {
-            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amounttoadd>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amounttoadd>");
         }
     }
 

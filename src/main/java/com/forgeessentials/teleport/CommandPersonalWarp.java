@@ -54,8 +54,8 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 
 		if (args.length == 0)
 		{
-			OutputHandler.sendMessage(sender, "Your personal warps:");
-			OutputHandler.sendMessage(sender, StringUtils.join(map.keySet().toArray(), ", "));
+			OutputHandler.chatNotification(sender, "Your personal warps:");
+			OutputHandler.chatNotification(sender, StringUtils.join(map.keySet().toArray(), ", "));
 		}
 		else
 		{
