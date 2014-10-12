@@ -13,7 +13,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
@@ -45,8 +44,8 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
                 {
                     if (data.receiver == sender)
                     {
-                        ChatUtils.sendMessage(data.sender, "Teleport request accepted.");
-                        ChatUtils.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
+                        OutputHandler.sendMessage(data.sender, "Teleport request accepted.");
+                        OutputHandler.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
                         PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(data.sender.getPersistentID());
                         playerInfo.setLastTeleportOrigin(new WarpPoint(data.sender));
                         CommandBack.justDied.remove(data.sender.getPersistentID());
@@ -67,8 +66,8 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
                 {
                     if (data.receiver == sender)
                     {
-                        ChatUtils.sendMessage(data.sender, "Teleport request declined.");
-                        ChatUtils.sendMessage(data.receiver, "Teleport request declined by other party.");
+                        OutputHandler.sendMessage(data.sender, "Teleport request declined.");
+                        OutputHandler.sendMessage(data.receiver, "Teleport request declined by other party.");
                         TeleportModule.tpaListToRemove.add(data);
                         return;
                     }
@@ -87,14 +86,14 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (receiver == null)
         {
-            ChatUtils.sendMessage(sender, args[0] + " not found.");
+            OutputHandler.sendMessage(sender, args[0] + " not found.");
         }
         else
         {
             TeleportModule.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, false));
 
-            ChatUtils.sendMessage(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
-            ChatUtils.sendMessage(receiver,
+            OutputHandler.sendMessage(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
+            OutputHandler.sendMessage(receiver,
                     String.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.", sender.getCommandSenderName()));
         }
     }

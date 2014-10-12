@@ -5,7 +5,7 @@ import java.util.Random;
 
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.TaskRegistry;
 
 public class AutoMessage implements Runnable {
@@ -38,7 +38,7 @@ public class AutoMessage implements Runnable {
     {
         if (server.getAllUsernames().length != 0 && enable && !msg.isEmpty())
         {
-            ChatUtils.sendMessage(server.getConfigurationManager(), msg.get(currentMsgID));
+            OutputHandler.sendMessage(server.getConfigurationManager(), msg.get(currentMsgID));
 
             if (random)
             {

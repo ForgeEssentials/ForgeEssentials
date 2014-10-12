@@ -15,7 +15,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.commands.CommandPm;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -41,7 +41,7 @@ public class ChatFormatter {
         if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
         {
             event.setCanceled(true);
-            ChatUtils.sendMessage(event.player, "You are currently muted.");
+            OutputHandler.sendMessage(event.player, "You are currently muted.");
             return;
         }
 

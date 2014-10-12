@@ -3,8 +3,8 @@ package com.forgeessentials.worldborder.Effects;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.worldborder.WorldBorder;
 
 public class message implements IEffect {
@@ -19,6 +19,6 @@ public class message implements IEffect {
     @Override
     public void execute(WorldBorder wb, EntityPlayerMP player)
     {
-        ChatUtils.sendMessage(player, FunctionHelper.formatColors(message));
+        OutputHandler.sendMessage(player, FunctionHelper.formatColors(message));
     }
 }

@@ -1,11 +1,7 @@
 package com.forgeessentials.util.teleport;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.WarpPoint;
@@ -40,7 +36,7 @@ public class TeleportData {
 		currentPos = new WarpPoint(player);
 		if (!lastPos.equals(currentPos))
 		{
-			ChatUtils.sendMessage(player, "Teleport cancelled.");
+			OutputHandler.sendMessage(player, "Teleport cancelled.");
 			return true;
 		}
 
@@ -67,7 +63,7 @@ public class TeleportData {
 					.transferPlayerToDimension((EntityPlayerMP) player, point.getDimension());
 		}
 		player.playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 0.1, point.zd, point.yaw, point.pitch);
-		ChatUtils.sendMessage(player, "Teleported.");
+		OutputHandler.sendMessage(player, "Teleported.");
 	}
 
 	public EntityPlayerMP getPlayer()

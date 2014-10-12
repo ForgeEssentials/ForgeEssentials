@@ -8,7 +8,7 @@ import org.pircbotx.User;
 
 import com.forgeessentials.chat.commands.CommandMsg;
 import com.forgeessentials.chat.irc.IRCHelper;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 
 public class ircCommandMessage extends ircCommand {
 
@@ -65,7 +65,7 @@ public class ircCommandMessage extends ircCommand {
             String send = EnumChatFormatting.GOLD + "(IRC)[" + user.getNick() + " -> me] " + EnumChatFormatting.GRAY + message;
             String recipt = "(IRC)[me -> " + player.getCommandSenderName() + "] " + message;
 
-            ChatUtils.sendMessage(player, send);
+            OutputHandler.sendMessage(player, send);
             IRCHelper.privateMessage(user.getNick(), recipt);
 
             // Add in /r stuff

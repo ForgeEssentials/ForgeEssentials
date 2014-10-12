@@ -26,7 +26,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.api.EnumMobType;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.ITickTask;
 
@@ -288,7 +287,7 @@ public class CommandButcherTickTask implements ITickTask {
         }
         else
         {
-            ChatUtils.sendMessage(sender, String.format("%s mobs killed.", counter));
+            OutputHandler.sendMessage(sender, String.format("%s mobs killed.", counter));
         }
     }
 

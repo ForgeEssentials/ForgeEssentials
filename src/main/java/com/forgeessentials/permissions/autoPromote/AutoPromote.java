@@ -6,14 +6,12 @@ import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 @SaveableObject
@@ -123,7 +121,7 @@ public class AutoPromote {
 //						msg = FunctionHelper.formatColors(msg);
 //						msg = msg.replaceAll("%group", groupName);
 //						msg = msg.replaceAll("%time", FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).getTimePlayed() * 60));
-//						ChatUtils.sendMessage(player, msg);
+//						OutputHandler.sendMessage(player, msg);
 //					}
 //				}
 			}

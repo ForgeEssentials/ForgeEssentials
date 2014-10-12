@@ -9,7 +9,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -31,7 +30,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
             {
-                ChatUtils.sendMessage(sender, args[0] + " not found!");
+                OutputHandler.sendMessage(sender, args[0] + " not found!");
             }
             else
             {
@@ -56,7 +55,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
             {
-                ChatUtils.sendMessage(sender, args[0] + " not found!");
+                OutputHandler.sendMessage(sender, args[0] + " not found!");
             }
             else
             {
@@ -69,7 +68,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amountRequested>");
+            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amountRequested>");
         }
     }
 

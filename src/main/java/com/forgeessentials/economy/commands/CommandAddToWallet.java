@@ -9,7 +9,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -40,19 +40,19 @@ public class CommandAddToWallet extends ForgeEssentialsCommandBase {
 
             if (player == null)
             {
-                ChatUtils.sendMessage(sender, "Player %s does not exist, or is not online.");
+                OutputHandler.sendMessage(sender, "Player %s does not exist, or is not online.");
             }
             else
             {
                 APIRegistry.wallet.addToWallet(amountToAdd, player.getPersistentID());
 
-                ChatUtils.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to wallet.");
-                ChatUtils.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to your wallet.");
+                OutputHandler.sendMessage(sender, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to wallet.");
+                OutputHandler.sendMessage(player, amountToAdd + " " + APIRegistry.wallet.currency(amountToAdd) + " added to your wallet.");
             }
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amounttoadd>");
+            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amounttoadd>");
         }
     }
 

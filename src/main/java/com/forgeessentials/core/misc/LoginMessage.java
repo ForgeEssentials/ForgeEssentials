@@ -18,10 +18,8 @@ import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.CompatReiMinimap;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -118,16 +116,16 @@ public class LoginMessage {
             {
                 if (sender instanceof EntityPlayer)
                 {
-                    ChatUtils.sendMessage(sender, CompatReiMinimap.reimotd((EntityPlayer) sender) + Format(messageList.get(id), sender.getCommandSenderName()));
+                    OutputHandler.sendMessage(sender, CompatReiMinimap.reimotd((EntityPlayer) sender) + Format(messageList.get(id), sender.getCommandSenderName()));
                 }
                 else
                 {
-                    ChatUtils.sendMessage(sender, Format(messageList.get(id), sender.getCommandSenderName()));
+                    OutputHandler.sendMessage(sender, Format(messageList.get(id), sender.getCommandSenderName()));
                 }
             }
             else
             {
-                ChatUtils.sendMessage(sender, Format(messageList.get(id), sender.getCommandSenderName()));
+                OutputHandler.sendMessage(sender, Format(messageList.get(id), sender.getCommandSenderName()));
             }
         }
     }

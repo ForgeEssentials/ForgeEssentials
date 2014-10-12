@@ -14,7 +14,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.Point;
@@ -102,19 +101,19 @@ public class CommandWB extends ForgeEssentialsCommandBase {
 		{
 			// Header
 			String header = "--- WorldBorder for " + zone.getName() + " ---";
-			ChatUtils.sendMessage(sender, header);
+			OutputHandler.sendMessage(sender, header);
 			// Actual info
-			ChatUtils.sendMessage(sender, "Enabled: " + (border.enabled ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + border.enabled);
-			ChatUtils.sendMessage(sender, "Center: " + border.center.toString());
-			ChatUtils.sendMessage(sender, "Radius: " + border.rad);
-			ChatUtils.sendMessage(sender, "Shape: " + border.getShape());
+			OutputHandler.sendMessage(sender, "Enabled: " + (border.enabled ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + border.enabled);
+			OutputHandler.sendMessage(sender, "Center: " + border.center.toString());
+			OutputHandler.sendMessage(sender, "Radius: " + border.rad);
+			OutputHandler.sendMessage(sender, "Shape: " + border.getShape());
 			// Footer
 			StringBuilder footer = new StringBuilder();
 			for (int i = 0; i < header.length(); i++)
 			{
 				footer.append("-");
 			}
-			ChatUtils.sendMessage(sender, footer.toString());
+			OutputHandler.sendMessage(sender, footer.toString());
 		}
 		/*
 		 * No. Want to en|disable?

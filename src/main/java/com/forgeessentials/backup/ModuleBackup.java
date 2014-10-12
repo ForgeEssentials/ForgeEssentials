@@ -1,13 +1,9 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Timer;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -18,9 +14,14 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Timer;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup {
     @FEModule.Config
@@ -48,7 +49,7 @@ public class ModuleBackup {
             }
             else
             {
-                ChatUtils.sendMessage(server, "[ForgeEssentials] " + msg);
+                OutputHandler.sendMessage(server, "[ForgeEssentials] " + msg);
             }
             ServerConfigurationManager manager = server.getConfigurationManager();
             for (String username : manager.getAllUsernames())
@@ -56,7 +57,7 @@ public class ModuleBackup {
                 EntityPlayerMP player = manager.func_152612_a(username);
                 if (PermissionsManager.checkPermission(player, "ForgeEssentials.backup.msg"))
                 {
-                    ChatUtils.sendMessage(player, EnumChatFormatting.AQUA + "[ForgeEssentials] " + msg);
+                    OutputHandler.sendMessage(player, EnumChatFormatting.AQUA + "[ForgeEssentials] " + msg);
                 }
             }
         }

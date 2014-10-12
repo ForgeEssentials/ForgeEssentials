@@ -11,7 +11,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -70,7 +69,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
         else
         {
             //this should be removed
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amount> <command [args]>");
+            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amount> <command [args]>");
         }
     }
 

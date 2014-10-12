@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.api.questioner.AnswerEnum;
 import com.forgeessentials.api.questioner.RunnableAnswer;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.WarpPoint;
 
 public class QuestionData {
@@ -70,7 +70,7 @@ public class QuestionData {
 
     public void doQuestion()
     {
-        ChatUtils.sendMessage(target, question);
+        OutputHandler.sendMessage(target, question);
     }
 
     public EntityPlayer getAsker()

@@ -28,7 +28,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
@@ -183,7 +182,7 @@ public class CommandRules extends FEcmdModuleCommands {
         {
             for (String rule : rules)
             {
-                ChatUtils.sendMessage(sender, rule);
+                OutputHandler.sendMessage(sender, rule);
             }
             return;
         }
@@ -229,7 +228,7 @@ public class CommandRules extends FEcmdModuleCommands {
                 return;
             }
 
-            ChatUtils.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            OutputHandler.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
             return;
         }
 
@@ -306,7 +305,7 @@ public class CommandRules extends FEcmdModuleCommands {
         {
             for (String rule : rules)
             {
-                ChatUtils.sendMessage(sender, rule);
+                OutputHandler.sendMessage(sender, rule);
             }
             return;
         }
@@ -322,7 +321,7 @@ public class CommandRules extends FEcmdModuleCommands {
 
             }
 
-            ChatUtils.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            OutputHandler.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
             return;
         }
 

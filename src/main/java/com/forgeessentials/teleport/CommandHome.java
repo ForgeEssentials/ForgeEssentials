@@ -9,7 +9,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.WarpPoint;
@@ -49,7 +48,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
                 PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
                 info.setHome(p);
                 info.save();                
-                ChatUtils.sendMessage(sender, String.format("Home set to: %1$d, %2$d, %3$d", p.getX(), p.getY(), p.getZ()));
+                OutputHandler.sendMessage(sender, String.format("Home set to: %1$d, %2$d, %3$d", p.getX(), p.getY(), p.getZ()));
             }
         }
     }

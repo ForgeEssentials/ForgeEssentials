@@ -9,7 +9,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.compat.EnvironmentChecker;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
@@ -62,16 +61,16 @@ public class WandController {
 		if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
 		{
 			info.setPoint1(point);
-			IChatComponent format = ChatUtils.createFromText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
-			player.addChatMessage(ChatUtils.colourize(format, EnumChatFormatting.DARK_PURPLE));
+			IChatComponent format = OutputHandler.createFromText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
+			player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
 			event.setCanceled(true);
 		}
 		// right Click
 		else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
 		{
 			info.setPoint2(point);
-			IChatComponent format = ChatUtils.createFromText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
-			player.addChatMessage(ChatUtils.colourize(format, EnumChatFormatting.DARK_PURPLE));
+			IChatComponent format = OutputHandler.createFromText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
+			player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
 			event.setCanceled(true);
 		}
 	}

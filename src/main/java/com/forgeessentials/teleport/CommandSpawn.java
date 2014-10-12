@@ -15,7 +15,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
@@ -79,7 +79,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 			}
 
 			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-			ChatUtils.sendMessage(player, "Teleporting to spawn.");
+			OutputHandler.sendMessage(player, "Teleporting to spawn.");
 			TeleportCenter.teleport(point, player);
 		}
 		else if (args.length == 0)
@@ -93,7 +93,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 			}
 
 			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-			ChatUtils.sendMessage(player, "Teleporting to spawn.");
+			OutputHandler.sendMessage(player, "Teleporting to spawn.");
 			TeleportCenter.teleport(point, player);
 		}
 	}
@@ -123,7 +123,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 		}
 
 		PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-		ChatUtils.sendMessage(player, "Teleporting to spawn.");
+		OutputHandler.sendMessage(player, "Teleporting to spawn.");
 		TeleportCenter.teleport(point, player);
 	}
 

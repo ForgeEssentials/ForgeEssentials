@@ -14,7 +14,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -72,19 +71,19 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		if (args.length == 0 || args.length == 1 || args[1].equalsIgnoreCase("get"))
 		{
 			String header = "--- AutoPromote for: " + ap.getZone() + " ---";
-			ChatUtils.sendMessage(sender, header);
-			ChatUtils.sendMessage(sender, "Enabled: " + (ap.isEnabled() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + ap.isEnabled());
-			ChatUtils.sendMessage(sender, "Promotion times: ");
+			OutputHandler.sendMessage(sender, header);
+			OutputHandler.sendMessage(sender, "Enabled: " + (ap.isEnabled() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + ap.isEnabled());
+			OutputHandler.sendMessage(sender, "Promotion times: ");
 			for (String i : ap.getPromoteList().keySet())
 			{
-				ChatUtils.sendMessage(sender, " " + i + " > " + ap.getPromoteList().get(i));
+				OutputHandler.sendMessage(sender, " " + i + " > " + ap.getPromoteList().get(i));
 			}
 			StringBuilder footer = new StringBuilder();
 			for (int i = 3; i < header.length(); i++)
 			{
 				footer.append("-");
 			}
-			ChatUtils.sendMessage(sender, footer.toString());
+			OutputHandler.sendMessage(sender, footer.toString());
 			return;
 		}
 
@@ -188,7 +187,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 			if (args.length == 2 || args[2].equalsIgnoreCase("get"))
 			{
 				OutputHandler.chatConfirmation(sender, "Current message:");
-				ChatUtils.sendMessage(sender, FunctionHelper.formatColors(ap.getMsg()));
+				OutputHandler.sendMessage(sender, FunctionHelper.formatColors(ap.getMsg()));
 			}
 			else if (args[2].equalsIgnoreCase("set"))
 			{
@@ -199,7 +198,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				}
 				ap.setMsg(newMsg.trim());
 				OutputHandler.chatConfirmation(sender, "New message:");
-				ChatUtils.sendMessage(sender, FunctionHelper.formatColors(ap.getMsg()));
+				OutputHandler.sendMessage(sender, FunctionHelper.formatColors(ap.getMsg()));
 			}
 			else if (args[2].equalsIgnoreCase("enable"))
 			{

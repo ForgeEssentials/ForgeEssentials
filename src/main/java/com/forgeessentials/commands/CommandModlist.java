@@ -4,7 +4,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Loader;
@@ -37,7 +36,7 @@ public class CommandModlist extends FEcmdModuleCommands {
                 break;
             }
             ModContainer mod = Loader.instance().getModList().get(i);
-            ChatUtils.sendMessage(sender, mod.getName() + " - " + mod.getVersion());
+            OutputHandler.sendMessage(sender, mod.getName() + " - " + mod.getVersion());
         }
     }
 

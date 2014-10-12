@@ -9,7 +9,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandPing extends FEcmdModuleCommands {
     String response = "Pong! %time";
@@ -35,13 +35,13 @@ public class CommandPing extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        ChatUtils.sendMessage(sender, response.replaceAll("%time", ((EntityPlayerMP) sender).ping + "ms."));
+        OutputHandler.sendMessage(sender, response.replaceAll("%time", ((EntityPlayerMP) sender).ping + "ms."));
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        ChatUtils.sendMessage(sender, response.replaceAll("%time", ""));
+        OutputHandler.sendMessage(sender, response.replaceAll("%time", ""));
     }
 
     @Override

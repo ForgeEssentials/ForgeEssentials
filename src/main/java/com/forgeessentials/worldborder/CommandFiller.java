@@ -11,7 +11,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
@@ -58,11 +57,11 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
         {
             // Header
             String header = "--- Fillers active ---";
-            ChatUtils.sendMessage(sender, header);
+            OutputHandler.sendMessage(sender, header);
             // Actual info
             for (Integer world : map.keySet())
             {
-                ChatUtils.sendMessage(sender, world + ": " + map.get(world).getStatus());
+                OutputHandler.sendMessage(sender, world + ": " + map.get(world).getStatus());
             }
             // Footer
             StringBuilder footer = new StringBuilder();
@@ -70,7 +69,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
             {
                 footer.append("-");
             }
-            ChatUtils.sendMessage(sender, footer.toString());
+            OutputHandler.sendMessage(sender, footer.toString());
             return;
         }
 

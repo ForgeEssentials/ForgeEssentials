@@ -12,9 +12,6 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
-
 public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
     // ---------------------------

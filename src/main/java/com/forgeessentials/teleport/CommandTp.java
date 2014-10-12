@@ -11,7 +11,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -169,8 +168,8 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: ");
-			ChatUtils.sendMessage(sender, getCommandUsage(sender));
+			OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: ");
+			OutputHandler.sendMessage(sender, getCommandUsage(sender));
 		}
 	}
 

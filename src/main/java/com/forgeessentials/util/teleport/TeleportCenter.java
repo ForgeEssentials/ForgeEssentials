@@ -7,9 +7,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.WarpPoint;
 
@@ -47,7 +46,7 @@ public class TeleportCenter {
 		long timeSinceLastTeleport = (System.currentTimeMillis() - pi.getLastTeleportTime()) / 1000L;
 		if (timeSinceLastTeleport < teleportCooldown && timeSinceLastTeleport >= 0 && !PermissionsManager.checkPermission(player, BYPASS_COOLDOWN))
 		{
-			ChatUtils.sendMessage(player, String.format("Cooldown still active. %s seconds to go.", teleportCooldown - timeSinceLastTeleport));
+			OutputHandler.sendMessage(player, String.format("Cooldown still active. %s seconds to go.", teleportCooldown - timeSinceLastTeleport));
 		}
 		else
 		{
@@ -58,7 +57,7 @@ public class TeleportCenter {
 			}
 			else
 			{
-				ChatUtils.sendMessage(player, String.format("Teleporting, please stand still for %s seconds.", FunctionHelper.parseTime(teleportWarmup)));
+				OutputHandler.sendMessage(player, String.format("Teleporting, please stand still for %s seconds.", FunctionHelper.parseTime(teleportWarmup)));
 				queue.add(data);
 			}
 		}

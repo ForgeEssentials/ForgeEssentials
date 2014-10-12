@@ -1,11 +1,6 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.teleport.util.TeleportDataManager;
-import com.forgeessentials.teleport.util.Warp;
-import com.forgeessentials.util.*;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.teleport.TeleportCenter;
+import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +9,14 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.teleport.util.TeleportDataManager;
+import com.forgeessentials.teleport.util.Warp;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 /**
  * Now uses TeleportCenter.
@@ -39,7 +41,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
             {
                 msg = warp + ", " + msg;
             }
-            ChatUtils.sendMessage(sender, msg);
+            OutputHandler.sendMessage(sender, msg);
         }
         else if (args.length == 1)
         {
@@ -80,7 +82,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                         TeleportDataManager.addWarp(warp);
                         if (!TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
                             {
-                                ChatUtils.sendMessage(sender, "Could not make warp! This is an error!");
+                                OutputHandler.sendMessage(sender, "Could not make warp! This is an error!");
                             }
                         else OutputHandler.chatConfirmation(sender, "Done!");
                     }

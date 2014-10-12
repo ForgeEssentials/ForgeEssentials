@@ -20,8 +20,8 @@ import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.commands.CommandVanish;
 import com.forgeessentials.core.misc.LoginMessage;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
@@ -95,12 +95,12 @@ public class CommandsEventHandler {
                 }
                 else
                 {
-                    ChatUtils.sendMessage(e.entityPlayer, "That is no sign!");
+                    OutputHandler.sendMessage(e.entityPlayer, "That is no sign!");
                 }
             }
             else
             {
-                ChatUtils.sendMessage(e.entityPlayer, "That is no sign!");
+                OutputHandler.sendMessage(e.entityPlayer, "That is no sign!");
             }
 
             e.entityPlayer.getEntityData().setBoolean("colorize", false);

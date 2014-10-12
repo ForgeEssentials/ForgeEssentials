@@ -10,7 +10,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
@@ -41,7 +40,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
             }
             else
             {
-                ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
@@ -62,12 +61,12 @@ public class CommandTop extends ForgeEssentialsCommandBase {
             }
             else
             {
-                ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
+            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
         }
     }
 
@@ -80,7 +79,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
             point.setY(point.getY() - 1);
         }
         ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 1, point.getZ(), point.yaw, point.pitch);
-        ChatUtils.sendMessage(player, "Teleported.");
+        OutputHandler.sendMessage(player, "Teleported.");
     }
 
     @Override

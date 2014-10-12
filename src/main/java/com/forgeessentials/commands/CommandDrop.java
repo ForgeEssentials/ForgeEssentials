@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -188,7 +188,7 @@ public class CommandDrop extends FEcmdModuleCommands {
         {
             throw new CommandException("Not enough Room for Items");
         }
-        ChatUtils.sendMessage(var1, "Items Droped into container");
+        OutputHandler.sendMessage(var1, "Items Droped into container");
     }
 
     private double func_82368_a(ICommandSender par1ICommandSender, double par2, String par4Str)

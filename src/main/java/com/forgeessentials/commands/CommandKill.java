@@ -10,7 +10,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -32,17 +32,17 @@ public class CommandKill extends FEcmdModuleCommands {
             if (player != null)
             {
                 player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-                ChatUtils.sendMessage(player, "You were killed. You probably deserved it.");
+                OutputHandler.sendMessage(player, "You were killed. You probably deserved it.");
             }
             else
             {
-                ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
         {
             sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
-            ChatUtils.sendMessage(sender, "You were killed. You probably deserved it.");
+            OutputHandler.sendMessage(sender, "You were killed. You probably deserved it.");
         }
     }
 
@@ -55,16 +55,16 @@ public class CommandKill extends FEcmdModuleCommands {
             if (player != null)
             {
                 player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-                ChatUtils.sendMessage(player, "You were killed. You probably deserved it.");
+                OutputHandler.sendMessage(player, "You were killed. You probably deserved it.");
             }
             else
             {
-                ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
+            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
         }
     }
 

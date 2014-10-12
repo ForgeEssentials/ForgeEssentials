@@ -11,7 +11,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -53,7 +52,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
         
 		// Check for unbind
 		if (!rebind && ((info.isWandEnabled() && info.getWandID().equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind")))) {
-			ChatUtils.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
+			OutputHandler.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
 			info.setWandEnabled(false);
 			return;
 		}

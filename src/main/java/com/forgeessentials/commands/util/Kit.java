@@ -12,8 +12,8 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 @SaveableObject
@@ -121,7 +121,7 @@ public class Kit {
 	{
 		if (PlayerInfo.getPlayerInfo(player.getPersistentID()).getKitCooldown().containsKey(getName()))
 		{
-			ChatUtils.sendMessage(
+			OutputHandler.sendMessage(
 					player,
 					"Kit cooldown active, %c seconds to go!".replaceAll("%c",
 							"" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).getKitCooldown().get(getName()))));
@@ -168,7 +168,7 @@ public class Kit {
 				}
 			}
 
-			ChatUtils.sendMessage(player, "Kit dropped.");
+			OutputHandler.sendMessage(player, "Kit dropped.");
 		}
 	}
 }

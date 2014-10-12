@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.Point;
@@ -40,7 +39,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
             if (info.getPoint1() == null || info.getPoint2() == null)
             {
 
-                ChatUtils.sendMessage(player, "Invalid previous selection.");
+                OutputHandler.sendMessage(player, "Invalid previous selection.");
                 return;
             }
 
@@ -110,7 +109,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
                     info.setPoint2(new Point(info.getPoint2().getX(), info.getPoint2().getY() - expandby, info.getPoint2().getZ()));
                 }
             }
-            ChatUtils.sendMessage(player, "Region expanded by: " + expandby);
+            OutputHandler.sendMessage(player, "Region expanded by: " + expandby);
             return;
         }
         else if (args.length == 2)
@@ -203,7 +202,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
             {
                 OutputHandler.chatError(player, "Invalid Direction");
             }
-            ChatUtils.sendMessage(player, "Region expanded by: " + expandby);
+            OutputHandler.sendMessage(player, "Region expanded by: " + expandby);
             return;
         }
         else

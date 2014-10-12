@@ -9,7 +9,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -46,9 +45,9 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
 
                 if (sender != player)
                 {
-                    ChatUtils.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
+                    OutputHandler.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
                 }
-                ChatUtils.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");
+                OutputHandler.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");
             }
         }
         else
@@ -67,19 +66,19 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
 
             if (player == null)
             {
-                ChatUtils.sendMessage(sender, "Player does not exist, or is not online.");
+                OutputHandler.sendMessage(sender, "Player does not exist, or is not online.");
             }
             else
             {
                 APIRegistry.wallet.removeFromWallet(amountToSubtract, player.getPersistentID());
 
-                ChatUtils.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
-                ChatUtils.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");
+                OutputHandler.sendMessage(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
+                OutputHandler.sendMessage(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");
             }
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amounttoremove>");
+            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amounttoremove>");
         }
     }
 

@@ -10,7 +10,6 @@ import net.minecraft.world.WorldSettings;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
@@ -41,8 +40,8 @@ public class CommandServerSettings extends FEcmdModuleCommands {
         DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
         if (args.length == 0)
         {
-            ChatUtils.sendMessage(sender, "Available options:");
-            ChatUtils.sendMessage(sender, options.toString());
+            OutputHandler.sendMessage(sender, "Available options:");
+            OutputHandler.sendMessage(sender, options.toString());
             return;
         }
 

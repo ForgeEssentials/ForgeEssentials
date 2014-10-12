@@ -10,7 +10,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -54,7 +53,7 @@ public class CommandRepair extends FEcmdModuleCommands {
             }
             else
             {
-                ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
@@ -83,12 +82,12 @@ public class CommandRepair extends FEcmdModuleCommands {
             }
             else
             {
-                ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: ");
+            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: ");
         }
     }
 

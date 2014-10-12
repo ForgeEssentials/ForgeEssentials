@@ -14,7 +14,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -62,8 +61,8 @@ public class CommandPm extends ForgeEssentialsCommandBase {
                         senderMessage += " ";
                     }
                 }
-                ChatUtils.sendMessage(MinecraftServer.getServer(), receiverMessage);
-                ChatUtils.sendMessage(sender, senderMessage);
+                OutputHandler.sendMessage(MinecraftServer.getServer(), receiverMessage);
+                OutputHandler.sendMessage(sender, senderMessage);
             }
             else
             {
@@ -91,8 +90,8 @@ public class CommandPm extends ForgeEssentialsCommandBase {
                         senderMessage += " ";
                     }
                 }
-                ChatUtils.sendMessage(sender, senderMessage);
-                ChatUtils.sendMessage(receiver, receiverMessage);
+                OutputHandler.sendMessage(sender, senderMessage);
+                OutputHandler.sendMessage(receiver, receiverMessage);
             }
         }
     }
@@ -230,8 +229,8 @@ public class CommandPm extends ForgeEssentialsCommandBase {
                         senderMessage += " ";
                     }
                 }
-                ChatUtils.sendMessage(sender, senderMessage);
-                ChatUtils.sendMessage(receiver, receiverMessage);
+                OutputHandler.sendMessage(sender, senderMessage);
+                OutputHandler.sendMessage(receiver, receiverMessage);
             }
         }
     }

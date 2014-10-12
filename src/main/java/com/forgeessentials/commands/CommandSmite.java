@@ -10,7 +10,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
@@ -33,7 +32,7 @@ public class CommandSmite extends FEcmdModuleCommands {
             if (args[0].toLowerCase().equals("me"))
             {
                 sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-                ChatUtils.sendMessage(sender, "Was that really a good idea?");
+                OutputHandler.sendMessage(sender, "Was that really a good idea?");
             }
             else
             {
@@ -41,7 +40,7 @@ public class CommandSmite extends FEcmdModuleCommands {
                 if (player != null)
                 {
                     player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-                    ChatUtils.sendMessage(sender, "You should feel bad about doing that.");
+                    OutputHandler.sendMessage(sender, "You should feel bad about doing that.");
                 }
                 else
                 {
@@ -59,7 +58,7 @@ public class CommandSmite extends FEcmdModuleCommands {
             else
             {
                 sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
-                ChatUtils.sendMessage(sender, "I hope that didn't start a fire.");
+                OutputHandler.sendMessage(sender, "I hope that didn't start a fire.");
             }
         }
     }
@@ -73,7 +72,7 @@ public class CommandSmite extends FEcmdModuleCommands {
             if (player != null)
             {
                 player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-                ChatUtils.sendMessage(sender, "You should feel bad about doing that.");
+                OutputHandler.sendMessage(sender, "You should feel bad about doing that.");
             }
             else
             {
@@ -82,7 +81,7 @@ public class CommandSmite extends FEcmdModuleCommands {
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
+            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
         }
     }
 

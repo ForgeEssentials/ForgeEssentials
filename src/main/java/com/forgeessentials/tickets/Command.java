@@ -12,7 +12,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.teleport.TeleportCenter;
@@ -69,7 +68,7 @@ public class Command extends ForgeEssentialsCommandBase {
             }
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
             Ticket t = ModuleTickets.getID(id);
-            ChatUtils.sendMessage(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
+            OutputHandler.sendMessage(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
         }
 
         if (args[0].equalsIgnoreCase("list") && permcheck(sender, "view"))
@@ -80,20 +79,20 @@ public class Command extends ForgeEssentialsCommandBase {
             {
                 page = parseIntBounded(sender, args[1], 0, pages);
             }
-            ChatUtils.sendMessage(sender, c + "--- Ticket List ---");
+            OutputHandler.sendMessage(sender, c + "--- Ticket List ---");
             for (int i = page * 7; i < (page + 1) * 7; i++)
             {
                 try
                 {
                     Ticket t = ModuleTickets.ticketList.get(i);
-                    ChatUtils.sendMessage(sender, "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
+                    OutputHandler.sendMessage(sender, "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
                 }
                 catch (Exception e)
                 {
                     break;
                 }
             }
-            ChatUtils.sendMessage(sender, c + String.format("--- Page %1$d of %2$d ---", page, pages));
+            OutputHandler.sendMessage(sender, c + String.format("--- Page %1$d of %2$d ---", page, pages));
             return;
         }
 
@@ -117,7 +116,7 @@ public class Command extends ForgeEssentialsCommandBase {
             msg = msg.substring(1);
             Ticket t = new Ticket(sender, args[1], msg);
             ModuleTickets.ticketList.add(t);
-            ChatUtils.sendMessage(sender, c + String.format("message.confim.ticketPost", t.id));
+            OutputHandler.sendMessage(sender, c + String.format("message.confim.ticketPost", t.id));
             return;
         }
 
@@ -141,7 +140,7 @@ public class Command extends ForgeEssentialsCommandBase {
             }
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
             ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
-            ChatUtils.sendMessage(sender, c + String.format("Your ticket has been posted. ID: %d", id));
+            OutputHandler.sendMessage(sender, c + String.format("Your ticket has been posted. ID: %d", id));
         }
     }
 

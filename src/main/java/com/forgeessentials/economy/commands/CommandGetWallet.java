@@ -1,14 +1,16 @@
 package com.forgeessentials.economy.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandGetWallet extends ForgeEssentialsCommandBase {
     @Override
@@ -26,16 +28,16 @@ public class CommandGetWallet extends ForgeEssentialsCommandBase {
 
             if (player == null)
             {
-                ChatUtils.sendMessage(sender, "The specified player does not exist, or is not online.");
+                OutputHandler.sendMessage(sender, "The specified player does not exist, or is not online.");
             }
             else
             {
-                ChatUtils.sendMessage(sender, player.getCommandSenderName() + "'s wallet contains:" + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
+                OutputHandler.sendMessage(sender, player.getCommandSenderName() + "'s wallet contains:" + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
             }
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> ");
+            OutputHandler.sendMessage(sender, "Improper syntax. Please try this instead: <player> ");
         }
     }
 
