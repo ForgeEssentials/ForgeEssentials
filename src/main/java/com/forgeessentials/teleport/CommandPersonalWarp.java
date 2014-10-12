@@ -44,7 +44,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		HashMap<String, PWarp> map = TeleportDataManager.pwMap.get(sender.getPersistentID());
+		HashMap<String, PWarp> map = TeleportDataManager.pwMap.get(sender.getPersistentID().toString());
 
 		if (map == null)
 		{
@@ -54,8 +54,13 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 
 		if (args.length == 0)
 		{
-			OutputHandler.chatNotification(sender, "Your personal warps:");
-			OutputHandler.chatNotification(sender, StringUtils.join(map.keySet().toArray(), ", "));
+			if(map.size() == 0)
+				OutputHandler.chatNotification(sender, "You have no personal warps.");
+			else
+			{
+				OutputHandler.chatNotification(sender, "Your personal warps:");
+				OutputHandler.chatNotification(sender, StringUtils.join(map.keySet().toArray(), ", "));
+			}
 		}
 		else
 		{
@@ -76,7 +81,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 			}
 			else if (args[0].equalsIgnoreCase("add"))
 			{
-				if (args[1] == null)
+				if (args.length == 1)
                 {
                     OutputHandler.chatError(sender, "You must specify a warp name!");
                     return;
