@@ -203,8 +203,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
-        return null;
+        return "/filler [worldID start|stop|reset|speed[value]]";
     }
 
     @Override
