@@ -102,7 +102,7 @@ public class PermissionCommandParser {
 	private static final String[] parseMainArgs = { "test", "user", "group", "list", "reload", "save" }; // "export", "promote", "test" };
 	private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
 	private static final String[] parseUserArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "spawn", "perms", "group" };
-	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "spawn", "priority", "parent" };
+	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "spawn", "perms", "priority", "parent" };
 	private static final String[] parseUserGroupArgs = { "add", "remove" };
 
 	private void parseMain()
