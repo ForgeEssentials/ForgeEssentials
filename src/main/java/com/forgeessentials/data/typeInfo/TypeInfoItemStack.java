@@ -33,7 +33,7 @@ public class TypeInfoItemStack implements ITypeInfo<ItemStack> {
         TypeData data = DataStorageManager.getDataForType(new ClassContainer(ItemStack.class));
 
         data.putField(SIZE, stack.stackSize);
-        data.putField(ITEM, stack.getUnlocalizedName());
+        data.putField(ITEM, GameData.getItemRegistry().getNameForObject(stack.getItem()));
         data.putField(DAMAGE, stack.getItemDamage());
         data.putField(COMPOUND, stack.getTagCompound());
 

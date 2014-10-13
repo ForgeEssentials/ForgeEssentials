@@ -1,15 +1,8 @@
 package com.forgeessentials.data.typeInfo;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByteArray;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagIntArray;
+import net.minecraft.nbt.*;
 
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.IReconstructData;
@@ -20,6 +13,7 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
     public static final String KEY = "name";
     public static final String TYPE = "type";
     public static final String PRIMITIVE = "value";
+    public static final String TAG_LIST = "taglist";
     public static final String COMPOUND = "compound";
     public static final String B_ARRAY = "byteArray";
     public static final String I_ARRAY = "intArray";
@@ -35,6 +29,7 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
         fields.put(KEY, new ClassContainer(String.class));
         fields.put(TYPE, new ClassContainer(int.class));
         fields.put(PRIMITIVE, new ClassContainer(String.class));
+        fields.put(TAG_LIST, new ClassContainer(NBTTagList.class));
         fields.put(COMPOUND, new ClassContainer(NBTTagCompound.class));
         fields.put(B_ARRAY, new ClassContainer(byte[].class));
         fields.put(I_ARRAY, new ClassContainer(int[].class));
@@ -55,7 +50,7 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
             tag = nbt.getTag(name);
             data = getEntryData();
             data.putField(TYPE, tag.getId());
-            data.putField(KEY, tag);
+            data.putField(KEY, name);
 
             if (tag instanceof NBTTagCompound)
             {
@@ -68,6 +63,9 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
             else if (tag instanceof NBTTagByteArray)
             {
                 data.putField(B_ARRAY, ((NBTTagByteArray) tag).func_150292_c());
+            }
+            else if(tag instanceof NBTTagList){
+                data.putField(TAG_LIST,tag);
             }
             else if (tag instanceof NBTBase.NBTPrimitive)
             {
@@ -87,9 +85,22 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
     }
 
     @Override
+    public ClassContainer getTypeOfField(String field)
+    {
+        if (field.equalsIgnoreCase(COMPOUND))
+        {
+            return new ClassContainer(NBTTagCompound.class);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    @Override
     public String getEntryName()
     {
-        return "NBTTag";
+        return "compound";
     }
 
     @Override
@@ -129,6 +140,9 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
                 break;
             case 8:
                 nbt.setString(name, (String) dat.getFieldValue(PRIMITIVE));
+                break;
+            case 9:
+                nbt.setTag(name, (NBTTagList) dat.getFieldValue(TAG_LIST));
                 break;
             case 10:
                 nbt.setTag(name, (NBTTagCompound) dat.getFieldValue(COMPOUND));

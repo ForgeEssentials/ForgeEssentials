@@ -20,7 +20,13 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.typeInfo.TypeInfoItemStack;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTCompound;
 import com.forgeessentials.util.*;
+import com.forgeessentials.data.typeInfo.TypeInfoNBTTagList;
 import com.forgeessentials.util.events.FEModuleEvent;
+import com.forgeessentials.util.FEChunkLoader;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.MiscEventHandler;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
@@ -99,6 +105,7 @@ public class ForgeEssentials {
 
 			DataStorageManager.registerSaveableType(TypeInfoItemStack.class, new ClassContainer(ItemStack.class));
 			DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
+			DataStorageManager.registerSaveableType(TypeInfoNBTTagList.class, new ClassContainer(NBTTagList.class));
 		}
 
 		new MiscEventHandler();
