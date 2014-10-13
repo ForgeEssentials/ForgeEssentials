@@ -22,16 +22,16 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.4.0-beta1"
+version = "1.4.0-beta2"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 minecraft {
-    version = "1.7.10-10.13.1.1224"
+    version = "1.7.10-10.13.1.1225"
     runDir = "rundir"
-    ext.forgeVersion = "10.13.1.1224"
+    ext.forgeVersion = "10.13.1.1225"
 
     replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
     replaceIn "com/forgeessentials/client/ForgeEssentialsClient.java"
