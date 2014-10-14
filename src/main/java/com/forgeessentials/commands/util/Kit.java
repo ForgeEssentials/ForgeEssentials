@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager;
 
@@ -48,12 +50,13 @@ public class Kit {
 		}
 
 		this.items = new ItemStack[items.size()];
-		armor = new ItemStack[player.inventory.armorInventory.length];
 
 		for (int i = 0; i < items.size(); i++)
 		{
 			this.items[i] = items.get(i);
 		}
+
+        armor = new ItemStack[player.inventory.armorInventory.length];
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -81,14 +84,14 @@ public class Kit {
 				this.items[i] = is;
 			}
 		}
-
-		for (ItemStack is : (ItemStack[]) armor)
-		{
-			for (int i = 0; i < 4; i++)
-			{
-				this.armor[i] = is;
-			}
-		}
+        for (ItemStack is : (ItemStack[]) armor)
+        {
+            if(is != null) {
+                // Armor slots seemed to be inverted
+                int atype = 3-((ItemArmor) is.getItem()).armorType;
+                this.armor[atype] = is;
+            }
+        }
 	}
 
 	@Reconstructor
