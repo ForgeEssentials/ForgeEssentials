@@ -28,11 +28,15 @@ public class knockback implements IEffect {
         if (player.worldObj.blockExists((int)vecp.getX(), (int)player.prevPosY, (int)vecp.getY()))
         {
             y = player.worldObj.getActualHeight();
-            rideY = player.ridingEntity.posY;
+
+            if (player.isRiding())
+                rideY = player.ridingEntity.posY;
+
             while (player.worldObj.blockExists((int)vecp.getX(), (int)y, (int)vecp.getY()))
             {
                 y--;
-                rideY--;
+                if (player.isRiding())
+                    rideY--;
             }
             y = y + 1;
             OutputHandler.chatNotification(player, "Teleported.");
@@ -40,6 +44,7 @@ public class knockback implements IEffect {
 
         if (player.ridingEntity != null)
         {
+
             player.ridingEntity
                     .setLocationAndAngles(vecp.getX(), rideY, vecp.getY(), player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
             player.playerNetServerHandler.setPlayerLocation(vecp.getX(), y, vecp.getY(), player.rotationYaw, player.rotationPitch);
