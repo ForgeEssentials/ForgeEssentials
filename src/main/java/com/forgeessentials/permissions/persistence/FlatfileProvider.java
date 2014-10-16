@@ -7,9 +7,12 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -36,6 +39,16 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 	public static final FileFilter permissionFilter = new FileFilters.Extension(PERMISSION_FILE_EXT);
 
 	public static final FileFilter directoryFilter = new FileFilters.Directory();
+
+	public static class SortedPermisssionProperties extends Properties {
+		@Override
+		public synchronized Enumeration<Object> keys()
+		{
+			TreeSet<Object> keys = new TreeSet<Object>(Zone.permissionComparator);
+			keys.addAll(super.keySet());
+			return Collections.enumeration(keys);
+		}
+	}
 
 	// ------------------------------------------------------------
 
@@ -190,7 +203,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 
 	public static Properties permissionListToProperties(PermissionList list)
 	{
-		Properties p = new Properties();
+		Properties p = new SortedPermisssionProperties();
 		for (Entry<String, String> permission : list.entrySet())
 			p.setProperty(permission.getKey(), permission.getValue() != null ? permission.getValue() : "");
 		return p;
@@ -361,7 +374,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 						continue;
 					}
 					UserIdent ident = new UserIdent(uuid, username);
-					
+
 					// Load permissions
 					PermissionList permissions = zone.getOrCreatePlayerPermissions(ident);
 					for (Entry permission : p.entrySet())
