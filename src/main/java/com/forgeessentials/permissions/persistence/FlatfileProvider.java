@@ -50,6 +50,9 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 		}
 	}
 
+	public static final String COMMENT_INFO = "\nDO NOT MODIFY OR REMOVE fe.internal PERMISSIONS UNLESS YOU KNOW WHAT YOU DO!"
+			+ "\nAfter you modified permissions in this file, remember to directly run \"/feperm reload\", or the changes get overwritten next time permissions are saved by the server.";
+
 	// ------------------------------------------------------------
 
 	public FlatfileProvider(File basePath)
@@ -180,7 +183,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 			UUID uuid = entry.getKey().getUuid();
 			String userIdentification = username == null ? uuid.toString() : username;
 			String comment = "Permissions for user " + (username != null ? username : "<unknown-username>") + " with UUID "
-					+ (uuid != null ? uuid.toString() : "<unknown-uuid>");
+					+ (uuid != null ? uuid.toString() : "<unknown-uuid>") + COMMENT_INFO;
 			userIdentification = userIdentification.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
 
 			// Save permissions
@@ -193,7 +196,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 		{
 			// Get filename and info
 			String groupName = entry.getKey();
-			String comment = "Permissions for group " + entry.getKey();
+			String comment = "Permissions for group " + entry.getKey() + COMMENT_INFO;
 
 			// Save permissions
 			Properties p = permissionListToProperties(entry.getValue());
