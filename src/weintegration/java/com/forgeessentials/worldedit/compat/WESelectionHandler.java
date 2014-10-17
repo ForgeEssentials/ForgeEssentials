@@ -1,8 +1,8 @@
 package com.forgeessentials.worldedit.compat;
 
+import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.Selection;
-import com.forgeessentials.util.selections.SelectionHandler;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.Vector;
@@ -14,7 +14,7 @@ import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.world.World;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class WESelectionHandler implements SelectionHandler.ISelectionProvider {
+public class WESelectionHandler implements ISelectionProvider {
     @Override public Point getPoint1(EntityPlayerMP player)
     {
         Point[] points  = getPoints(player);

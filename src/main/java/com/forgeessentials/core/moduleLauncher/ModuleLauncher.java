@@ -150,8 +150,6 @@ public class ModuleLauncher {
                     generate = true;
                 }
 
-                System.out.println(file.getAbsolutePath());
-
                 cfg.setGenerate(generate);
                 cfg.init();
             }

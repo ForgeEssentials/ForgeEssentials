@@ -1,6 +1,5 @@
 package com.forgeessentials.worldedit.compat;
 
-import com.forgeessentials.api.permissions.RegGroup;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.sk89q.worldedit.LocalConfiguration;
@@ -8,15 +7,19 @@ import com.sk89q.worldedit.entity.Player;
 import com.sk89q.worldedit.extension.platform.AbstractPlatform;
 import com.sk89q.worldedit.extension.platform.Capability;
 import com.sk89q.worldedit.extension.platform.Preference;
+import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import com.sk89q.worldedit.util.command.CommandMapping;
 import com.sk89q.worldedit.util.command.Description;
 import com.sk89q.worldedit.util.command.Dispatcher;
 import com.sk89q.worldedit.world.World;
+import cpw.mods.fml.common.Mod;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionsManager;
 
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,10 +35,7 @@ public class FEPlatform extends AbstractPlatform{
         return false;
     }
 
-    @Override public void reload()
-    {
-
-    }
+    @Override public void reload(){}
 
     @Override public Player matchPlayer(Player player)
     {
@@ -76,14 +76,14 @@ public class FEPlatform extends AbstractPlatform{
                 }
 
                 @Override
-                public String getCommandPerm()
+                public String getPermissionNode()
                 {
                     return command.getDescription().getPermissions().get(0);
                 }
 
                 @Override
-                public RegGroup getReggroup()
-                { return RegGroup.ZONE_ADMINS;}
+                public PermissionsManager.RegisteredPermValue getDefaultPermission()
+                { return PermissionsManager.RegisteredPermValue.OP;}
 
                 @Override public boolean canConsoleUseCommand(){return true;}
 
@@ -92,10 +92,7 @@ public class FEPlatform extends AbstractPlatform{
 
     }
 
-    @Override public void registerGameHooks()
-    {
-
-    }
+    @Override public void registerGameHooks(){}
 
     @Override public LocalConfiguration getConfiguration()
     {
@@ -104,7 +101,7 @@ public class FEPlatform extends AbstractPlatform{
 
     @Override public String getVersion()
     {
-        return FEModContainer.version;
+        return ForgeWorldEdit.class.getAnnotation(Mod.class).version();
     }
 
     @Override public String getPlatformName()
@@ -117,8 +114,16 @@ public class FEPlatform extends AbstractPlatform{
         return FEModContainer.version;
     }
 
-    @Override public Map<Capability, Preference> getCapabilities()
+    @Override
+    public Map<Capability, Preference> getCapabilities()
     {
-        return null;
+        Map<Capability, Preference> capabilities = new EnumMap<Capability, Preference>(Capability.class);
+        capabilities.put(Capability.CONFIGURATION, Preference.PREFER_OTHERS);
+        capabilities.put(Capability.WORLDEDIT_CUI, Preference.PREFER_OTHERS);
+        capabilities.put(Capability.GAME_HOOKS, Preference.PREFER_OTHERS);
+        capabilities.put(Capability.PERMISSIONS, Preference.PREFERRED);
+        capabilities.put(Capability.USER_COMMANDS, Preference.NORMAL);
+        capabilities.put(Capability.WORLD_EDITING, Preference.PREFER_OTHERS);
+        return capabilities;
     }
 }
