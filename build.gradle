@@ -231,11 +231,9 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 reobf {
-    /*
     reobf(weJar) { reobfSpec ->
         reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
     }
-    */
     reobf(clientJar) { reobfSpec ->
         reobfSpec.classpath = project.sourceSets.main.compileClasspath
     }
@@ -245,7 +243,7 @@ reobf {
 
 artifacts {
     archives clientJar
-    //archives weJar
+    archives weJar
     archives devDeobfJar
     archives javadocJar
     archives sourceJar
