@@ -1,5 +1,6 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,8 +24,61 @@ import com.forgeessentials.util.selections.WorldPoint;
  */
 public abstract class Zone {
 
-	public class PermissionList extends HashMap<String, String> {
+	public static class PermissionList extends HashMap<String, String> {
 	}
+
+	public static final Comparator permissionComparator = new Comparator()
+	{
+		@Override
+		public int compare(Object o1, Object o2)
+		{
+			if (!(o1 instanceof String && o2 instanceof String))
+				return 0;
+			String s1 = (String) o1;
+			String s2 = (String) o2;
+
+			if (s1.startsWith(FEPermissions.PLAYER))
+			{
+				if (s2.startsWith(FEPermissions.PLAYER))
+					return s1.compareTo(s2);
+				else
+					return -1;
+			}
+			else
+			{
+				if (s2.startsWith(FEPermissions.PLAYER))
+					return 1;
+			}
+			
+			if (s1.startsWith(FEPermissions.GROUP))
+			{
+				if (s2.startsWith(FEPermissions.GROUP))
+					return s1.compareTo(s2);
+				else
+					return -1;
+			}
+			else
+			{
+				if (s2.startsWith(FEPermissions.GROUP))
+					return 1;
+			}
+
+			if (s1.startsWith(FEPermissions.FE_INTERNAL))
+			{
+				if (s2.startsWith(FEPermissions.FE_INTERNAL))
+					return s1.compareTo(s2);
+				else
+					return -1;
+			}
+			else
+			{
+				if (s2.startsWith(FEPermissions.FE_INTERNAL))
+					return 1;
+				else
+					return s1.compareTo(s2);
+			}
+		}
+	};
 
 	private int id;
 
