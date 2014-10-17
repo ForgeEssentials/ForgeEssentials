@@ -99,7 +99,7 @@ sourceSets {
     }
 
     weintegration {
-        compileClasspath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
+        compileClasspath = files(project.configurations.compile, project.tasks.jar.getArchivePath(), project.sourceSets.api.output)
 
     }
 }

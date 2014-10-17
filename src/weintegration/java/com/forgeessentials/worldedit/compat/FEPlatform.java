@@ -16,7 +16,7 @@ import cpw.mods.fml.common.Mod;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -82,8 +82,8 @@ public class FEPlatform extends AbstractPlatform{
                 }
 
                 @Override
-                public PermissionsManager.RegisteredPermValue getDefaultPermission()
-                { return PermissionsManager.RegisteredPermValue.OP;}
+                public RegisteredPermValue getDefaultPermission()
+                { return RegisteredPermValue.OP;}
 
                 @Override public boolean canConsoleUseCommand(){return true;}
 
