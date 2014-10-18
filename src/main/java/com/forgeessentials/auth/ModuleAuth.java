@@ -60,8 +60,12 @@ public class ModuleAuth {
     public void serverStarting(FEModuleServerInitEvent e)
     {
         e.registerServerCommand(new CommandAuth());
-        e.registerServerCommand(new CommandWhiteList());
-        e.registerServerCommand(new CommandVIP());
+
+        if (AuthEventHandler.whitelist)
+        {
+            e.registerServerCommand(new CommandWhiteList());
+            e.registerServerCommand(new CommandVIP());
+        }
 
         if (checkVanillaAuthStatus && !forceEnabled)
         {
