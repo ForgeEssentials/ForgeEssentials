@@ -44,7 +44,7 @@ public class PermissionCommandParser {
 
 	enum PermissionAction
 	{
-		ALLOW, DENY, CLEAR
+		ALLOW, DENY, CLEAR, VALUE
 	}
 
 	private ICommandSender sender;
@@ -101,8 +101,8 @@ public class PermissionCommandParser {
 	// Variables for auto-complete
 	private static final String[] parseMainArgs = { "test", "user", "group", "list", "reload", "save" }; // "export", "promote", "test" };
 	private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
-	private static final String[] parseUserArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "spawn", "perms", "group" };
-	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "prefix", "suffix", "spawn", "perms", "priority", "parent" };
+	private static final String[] parseUserArgs = { "allow", "deny", "clear", "true", "false", "value", "prefix", "suffix", "spawn", "perms", "group" };
+	private static final String[] parseGroupArgs = { "allow", "deny", "clear", "true", "false", "value", "prefix", "suffix", "spawn", "perms", "priority", "parent" };
 	private static final String[] parseUserGroupArgs = { "add", "remove" };
 
 	private void parseMain()
@@ -456,6 +456,9 @@ public class PermissionCommandParser {
 				case "remove":
 					parseUserPermissions(ident, PermissionAction.CLEAR);
 					break;
+				case "value":
+					parseUserPermissions(ident, PermissionAction.VALUE);
+					break;
 				default:
 					break;
 				}
@@ -488,7 +491,7 @@ public class PermissionCommandParser {
 
 		// Get zone
 		Zone zone = APIRegistry.perms.getServerZone();
-		if (args.size() > 1)
+		if (args.size() > 1 || type == PermissionAction.VALUE)
 		{
 			String id = args.remove();
 			try
@@ -520,7 +523,13 @@ public class PermissionCommandParser {
 		while (!args.isEmpty())
 		{
 			String permissionNode = args.remove();
-			String result = null, msg = null;
+			String result = null, msg = null, value = null;
+			if (type == PermissionAction.VALUE) {
+				if (args.isEmpty()) {
+					error("Need to specify value");
+				}
+				value = StringUtils.join(args);
+			}
 			switch (type) {
 			case ALLOW:
 				zone.setPlayerPermission(ident, permissionNode, true);
@@ -534,8 +543,13 @@ public class PermissionCommandParser {
 				zone.clearPlayerPermission(ident, permissionNode);
 				msg = "Cleared %s's acces to %s";
 				break;
+			case VALUE:
+				zone.setPlayerPermissionProperty(ident, permissionNode, value);
+				info(String.format("Set %s for %s to %s", permissionNode, ident.getUsernameOrUUID(), value));
+				break;
 			}
-			info(String.format(msg, ident.getUsernameOrUUID(), permissionNode));
+			if (msg != null)
+				info(String.format(msg, ident.getUsernameOrUUID(), permissionNode));
 		}
 	}
 
@@ -821,6 +835,9 @@ public class PermissionCommandParser {
 				case "remove":
 					parseGroupPermissions(group, PermissionAction.CLEAR);
 					break;
+				case "value":
+					parseGroupPermissions(group, PermissionAction.VALUE);
+					break;
 				default:
 					break;
 				}
@@ -883,7 +900,7 @@ public class PermissionCommandParser {
 
 		// Get zone
 		Zone zone = APIRegistry.perms.getServerZone();
-		if (args.size() > 1)
+		if (args.size() > 1 || type == PermissionAction.VALUE)
 		{
 			String id = args.remove();
 			try
@@ -915,7 +932,13 @@ public class PermissionCommandParser {
 		while (!args.isEmpty())
 		{
 			String permissionNode = args.remove();
-			String result = null, msg = null;
+			String result = null, msg = null, value = null;
+			if (type == PermissionAction.VALUE) {
+				if (args.isEmpty()) {
+					error("Need to specify value");
+				}
+				value = StringUtils.join(args);
+			}
 			switch (type) {
 			case ALLOW:
 				zone.setGroupPermission(group, permissionNode, true);
@@ -929,8 +952,13 @@ public class PermissionCommandParser {
 				zone.clearGroupPermission(group, permissionNode);
 				msg = "Cleared %s's acces to %s";
 				break;
+			case VALUE:
+				zone.setGroupPermissionProperty(group, permissionNode, value);
+				info(String.format("Set %s for group %s to %s", permissionNode, group, value));
+				break;
 			}
-			info(String.format(msg, group, permissionNode));
+			if (msg != null)
+				info(String.format(msg, group, permissionNode));
 		}
 	}
 
