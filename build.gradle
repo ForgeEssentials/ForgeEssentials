@@ -83,6 +83,7 @@ jar {
     include "logo.png"
     include "mcmod.info"
     include "forgeessentials_at.cfg"
+    classifier = 'servercore'
     appendix = project.minecraft.version
     manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
@@ -203,6 +204,8 @@ task weJar(dependsOn: "jar", type: Jar) {
 }
 
 //core DEOBF use for development
+
+// to use: declare dependency com.forgeessentials:forgeessentials:<version>:deobf
 task devDeobfJar(dependsOn: "jar", type: Jar) {
     from project.sourceSets.main.output
     include "**"
@@ -213,7 +216,7 @@ task devDeobfJar(dependsOn: "jar", type: Jar) {
     manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
     }
-    classifier = "deobf"
+    classifier = 'deobf'
     appendix = project.minecraft.version
 }
 
@@ -254,4 +257,6 @@ build.dependsOn "cleanModules"
 task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
 }
+
+
 
