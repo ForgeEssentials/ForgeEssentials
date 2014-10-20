@@ -22,7 +22,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandEnchant extends FEcmdModuleCommands {
@@ -79,7 +78,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 			{
 				msg = "Efficiency, SilkTouch, Unbreaking";
 			}
-			ChatUtils.sendMessage(sender, msg);
+			OutputHandler.chatNotification(sender, msg);
 			return;
 		}
 
@@ -95,12 +94,12 @@ public class CommandEnchant extends FEcmdModuleCommands {
 				if (msg.length() > 100)
 				{
 					msg = msg.substring(0, msg.length() - 2);
-					ChatUtils.sendMessage(sender, msg);
+					OutputHandler.chatNotification(sender, msg);
 					msg = "";
 				}
 			}
 			msg = msg.substring(0, msg.length() - 2);
-			ChatUtils.sendMessage(sender, msg);
+			OutputHandler.chatNotification(sender, msg);
 			return;
 		}
 

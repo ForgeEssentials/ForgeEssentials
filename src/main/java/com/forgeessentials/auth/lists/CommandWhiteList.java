@@ -6,7 +6,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.auth.AuthEventHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
 public class CommandWhiteList extends ForgeEssentialsCommandBase {
@@ -23,8 +23,8 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 	{
 		if (!AuthEventHandler.whitelist)
 		{
-			ChatUtils.sendMessage(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
-			ChatUtils.sendMessage(sender, "Note that server.properties will take precedent over the auth config.");
+			OutputHandler.chatWarning(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
+			OutputHandler.chatWarning(sender, "Note that server.properties will take precedent over the auth config.");
 
 		}
 
@@ -33,12 +33,12 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 			if (AuthEventHandler.whitelist)
 			{
 				AuthEventHandler.whitelist = false;
-				ChatUtils.sendMessage(sender, "FE Whitelist was on, it is now turned off.");
+				OutputHandler.chatConfirmation(sender, "FE Whitelist was on, it is now turned off.");
 			}
 			else
 			{
 				AuthEventHandler.whitelist = true;
-				ChatUtils.sendMessage(sender, "FE Whitelist was off, it is now turned on.");
+				OutputHandler.chatConfirmation(sender, "FE Whitelist was off, it is now turned on.");
 			}
 		}
 

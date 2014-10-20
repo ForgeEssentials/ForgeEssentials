@@ -1,24 +1,9 @@
 package com.forgeessentials.core;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.HelpFixer;
-import com.forgeessentials.core.commands.selections.CommandDeselect;
-import com.forgeessentials.core.commands.selections.CommandExpand;
-import com.forgeessentials.core.commands.selections.CommandExpandY;
-import com.forgeessentials.core.commands.selections.CommandPos;
-import com.forgeessentials.core.commands.selections.CommandWand;
-import com.forgeessentials.core.commands.selections.WandController;
+import com.forgeessentials.core.commands.selections.*;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.misc.BlockModListFile;
@@ -34,6 +19,9 @@ import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.typeInfo.TypeInfoItemStack;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTCompound;
+import com.forgeessentials.util.*;
+import com.forgeessentials.data.typeInfo.TypeInfoNBTTagList;
+import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.MiscEventHandler;
@@ -44,18 +32,22 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main mod class
@@ -114,12 +106,13 @@ public class ForgeEssentials {
 
 			DataStorageManager.registerSaveableType(TypeInfoItemStack.class, new ClassContainer(ItemStack.class));
 			DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
+			DataStorageManager.registerSaveableType(TypeInfoNBTTagList.class, new ClassContainer(NBTTagList.class));
 		}
 
 		new MiscEventHandler();
 		LoginMessage.loadFile();
 		mdlaunch = new ModuleLauncher();
-		mdlaunch.preLoad(e);
+        mdlaunch.preLoad(e);
 	}
 
 	@EventHandler
@@ -128,22 +121,21 @@ public class ForgeEssentials {
 		// load up DataAPI
 		((StorageManager) DataStorageManager.manager).setupManager();
 
-		mdlaunch.load(e);
-
 		// other stuff
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		FMLCommonHandler.instance().bus().register(factory);
 		MinecraftForge.EVENT_BUS.register(factory);
 
 		MinecraftForge.EVENT_BUS.register(new WandController());
+
+        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
 	}
 
 	@EventHandler
 	public void postLoad(FMLPostInitializationEvent e)
-	{
-		mdlaunch.postLoad(e);
-
+    {
 		FunctionHelper.netHandler.registerMessage(PacketSelectionUpdate.class, PacketSelectionUpdate.Message.class, 0, Side.SERVER);
+        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModulePostInitEvent(e));
 	}
 
 	@EventHandler
@@ -181,10 +173,9 @@ public class ForgeEssentials {
 
 		tasks.onServerStart();
 
-		// do modules last... just in case...
-		mdlaunch.serverStarting(e);
-
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
+
+        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerInitEvent(e));
 	}
 
 	@EventHandler
@@ -192,16 +183,17 @@ public class ForgeEssentials {
 	{
 		CommandSetChecker.remove();
 
-		mdlaunch.serverStarted(e);
+		FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
 	}
 
 	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent e)
 	{
-		mdlaunch.serverStopping(e);
 		tasks.onServerStop();
 		PlayerInfo.saveAll();
 		PlayerInfo.clear();
+
+        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerStopEvent(e));
 	}
 
 }

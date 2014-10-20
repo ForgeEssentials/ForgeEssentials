@@ -3,7 +3,7 @@ package com.forgeessentials.worldborder.Effects;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.vector.Vector2;
 import com.forgeessentials.worldborder.ModuleWorldBorder;
 import com.forgeessentials.worldborder.WorldBorder;
@@ -28,18 +28,23 @@ public class knockback implements IEffect {
         if (player.worldObj.blockExists((int)vecp.getX(), (int)player.prevPosY, (int)vecp.getY()))
         {
             y = player.worldObj.getActualHeight();
-            rideY = player.ridingEntity.posY;
+
+            if (player.isRiding())
+                rideY = player.ridingEntity.posY;
+
             while (player.worldObj.blockExists((int)vecp.getX(), (int)y, (int)vecp.getY()))
             {
                 y--;
-                rideY--;
+                if (player.isRiding())
+                    rideY--;
             }
             y = y + 1;
-            ChatUtils.sendMessage(player, "Teleported.");
+            OutputHandler.chatNotification(player, "Teleported.");
         }
 
         if (player.ridingEntity != null)
         {
+
             player.ridingEntity
                     .setLocationAndAngles(vecp.getX(), rideY, vecp.getY(), player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
             player.playerNetServerHandler.setPlayerLocation(vecp.getX(), y, vecp.getY(), player.rotationYaw, player.rotationPitch);

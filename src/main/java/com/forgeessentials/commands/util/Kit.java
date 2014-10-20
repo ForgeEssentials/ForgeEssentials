@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager;
 
@@ -12,8 +14,8 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 @SaveableObject
@@ -48,12 +50,13 @@ public class Kit {
 		}
 
 		this.items = new ItemStack[items.size()];
-		armor = new ItemStack[player.inventory.armorInventory.length];
 
 		for (int i = 0; i < items.size(); i++)
 		{
 			this.items[i] = items.get(i);
 		}
+
+        armor = new ItemStack[player.inventory.armorInventory.length];
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -81,14 +84,14 @@ public class Kit {
 				this.items[i] = is;
 			}
 		}
-
-		for (ItemStack is : (ItemStack[]) armor)
-		{
-			for (int i = 0; i < 4; i++)
-			{
-				this.armor[i] = is;
-			}
-		}
+        for (ItemStack is : (ItemStack[]) armor)
+        {
+            if(is != null) {
+                // Armor slots seemed to be inverted
+                int atype = 3-((ItemArmor) is.getItem()).armorType;
+                this.armor[atype] = is;
+            }
+        }
 	}
 
 	@Reconstructor
@@ -121,7 +124,7 @@ public class Kit {
 	{
 		if (PlayerInfo.getPlayerInfo(player.getPersistentID()).getKitCooldown().containsKey(getName()))
 		{
-			ChatUtils.sendMessage(
+			OutputHandler.chatWarning(
 					player,
 					"Kit cooldown active, %c seconds to go!".replaceAll("%c",
 							"" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).getKitCooldown().get(getName()))));
@@ -168,7 +171,7 @@ public class Kit {
 				}
 			}
 
-			ChatUtils.sendMessage(player, "Kit dropped.");
+			OutputHandler.chatConfirmation(player, "Kit dropped.");
 		}
 	}
 }

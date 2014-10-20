@@ -15,7 +15,7 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.Point;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -44,11 +44,11 @@ public class EventHandler {
                                 + p.getZ() + " ORDER BY id DESC LIMIT " + limit);
                 ResultSet res = st.getResultSet();
 
-                ChatUtils.sendMessage(e.entityPlayer, "Results: " + p.getX() + ", " + p.getY() + ", " + p.getZ());
+                OutputHandler.chatNotification(e.entityPlayer, "Results: " + p.getX() + ", " + p.getY() + ", " + p.getZ());
 
                 while (res.next())
                 {
-                    ChatUtils.sendMessage(e.entityPlayer,
+                    OutputHandler.chatNotification(e.entityPlayer,
                             res.getString("player") + " " + res.getString("category") + " block " + res.getString("block") + " at " + res.getTimestamp("time"));
                 }
                 res.close();
@@ -57,7 +57,7 @@ public class EventHandler {
             }
             catch (SQLException e1)
             {
-                ChatUtils.sendMessage(e.entityPlayer, "Connection error!");
+                OutputHandler.chatError(e.entityPlayer, "Connection error!");
                 e1.printStackTrace();
             }
         }

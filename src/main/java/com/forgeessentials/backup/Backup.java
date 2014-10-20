@@ -160,6 +160,7 @@ public class Backup implements Runnable {
         Calendar cal = Calendar.getInstance();
         Integer day = cal.get(Calendar.DAY_OF_MONTH);
         Integer month = cal.get(Calendar.MONTH);
+        month += 1;
         Integer year = cal.get(Calendar.YEAR);
         Integer hour = cal.get(Calendar.HOUR_OF_DAY);
         Integer min = cal.get(Calendar.MINUTE);

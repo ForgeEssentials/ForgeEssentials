@@ -1,29 +1,19 @@
 package com.forgeessentials.afterlife;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.util.OutputHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.potion.PotionEffect;
+
+import java.util.ArrayList;
 
 public class ConfigAfterlife extends ModuleConfigBase {
-    public Configuration config;
     String cat = "Afterlife";
-
-    public ConfigAfterlife(File file)
-    {
-        super(file);
-    }
 
     @Override
     public void init()
     {
         OutputHandler.felog.finer("Loading Afterlife Config");
-        config = new Configuration(file, true);
 
         String subcat = cat + ".DeathChest";
         config.addCustomCategoryComment(subcat, "Permission needed:\n" + Deathchest.PERMISSION_MAKE);
@@ -122,4 +112,6 @@ public class ConfigAfterlife extends ModuleConfigBase {
 
         config.save();
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

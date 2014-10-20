@@ -15,8 +15,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.PermissionDeniedException;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -292,9 +290,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         {
             if (args[0].equalsIgnoreCase("help"))
             {
-                ChatUtils.sendMessage(sender, " - /auth kick <player>  - forces the player to login again");
-                ChatUtils.sendMessage(sender, " - /auth setpass <player> <password>  - sets the players password to the specified");
-                ChatUtils.sendMessage(sender, " - /auth unregister <player>  - forces the player to register again");
+                OutputHandler.chatNotification(sender, " - /auth kick <player>  - forces the player to login again");
+                OutputHandler.chatNotification(sender, " - /auth setpass <player> <password>  - sets the players password to the specified");
+                OutputHandler.chatNotification(sender, " - /auth unregister <player>  - forces the player to register again");
                 return;
             }
             else
@@ -311,7 +309,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
         if (player == null)
         {
-            ChatUtils.sendMessage(sender, "A player of that name is not on the server. Doing the action anyways.");
+            OutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
             isLogged = false;
         }
 
@@ -373,7 +371,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
                     data.password = encrypted;
                     data.save();
                 }
-                ChatUtils.sendMessage(sender, String.format("Password set for %s", name));
+                OutputHandler.chatConfirmation(sender, String.format("Password set for %s", name));
             }
         }
     }

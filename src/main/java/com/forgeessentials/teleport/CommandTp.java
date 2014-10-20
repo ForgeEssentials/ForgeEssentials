@@ -11,7 +11,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -71,7 +70,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 					WarpPoint point = new WarpPoint(target);
-					FunctionHelper.setPlayer(player, point);
+					FunctionHelper.teleportPlayer(player, point);
 				}
 				else
 				{
@@ -169,8 +168,8 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 		}
 		else
 		{
-			ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: ");
-			ChatUtils.sendMessage(sender, getCommandUsage(sender));
+			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
+			OutputHandler.chatNotification(sender, getCommandUsage(sender));
 		}
 	}
 

@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 public class CommandExpandY extends ForgeEssentialsCommandBase {
@@ -27,11 +27,12 @@ public class CommandExpandY extends ForgeEssentialsCommandBase {
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
 		if (info.getPoint1() == null || info.getPoint2() == null)
 		{
-			ChatUtils.sendMessage(player, "Invalid selection.");
+			OutputHandler.chatError(player, "Invalid selection.");
 			return;
 		}
 		info.getPoint1().setY(0);
 		info.getPoint2().setY(255);
+		OutputHandler.chatConfirmation(player, "Selection expanded to world height.");
 	}
 
 	@Override

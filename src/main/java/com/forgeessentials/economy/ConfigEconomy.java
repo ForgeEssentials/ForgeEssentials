@@ -2,27 +2,17 @@ package com.forgeessentials.economy;
 
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
-
-import java.io.File;
 
 public class ConfigEconomy extends ModuleConfigBase {
-    private Configuration config;
 
     public static final String CAT = "Economy";
 
     public static String currencySingular;
     public static String currencyPlural;
 
-    public ConfigEconomy(File file)
-    {
-        super(file);
-    }
-
     @Override
     public void init()
     {
-        config = new Configuration(file);
 
         currencySingular = config.get(CAT, "currencySingular", "gold").getString();
         currencyPlural = config.get(CAT, "currencyPlural", "gold").getString();
@@ -50,4 +40,6 @@ public class ConfigEconomy extends ModuleConfigBase {
         currencyPlural = config.get(CAT, "currencyPlural", "gold").getString();
         ModuleEconomy.startbudget = config.get(CAT, "startbuget", 100).getInt();
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

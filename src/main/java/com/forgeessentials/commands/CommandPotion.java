@@ -11,7 +11,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -117,7 +116,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         }
         else if (args.length != 3)
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <effect> <duration> [ampl]");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <effect> <duration> [ampl]");
             return;
         }
 

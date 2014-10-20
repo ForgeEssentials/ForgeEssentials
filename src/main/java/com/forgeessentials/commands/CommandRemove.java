@@ -10,7 +10,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.WorldPoint;
 
@@ -43,7 +42,7 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
             return;
         }
 
@@ -81,7 +80,7 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
             return;
         }
 

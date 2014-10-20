@@ -12,7 +12,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskPulseHelper;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.tasks.TaskRegistry;
@@ -65,7 +65,7 @@ public class CommandPulse extends FEcmdModuleCommands {
             }
 
             TaskRegistry.registerTask(new TickTaskPulseHelper(var11, new Point(var3, var4, var5), var6));
-            ChatUtils.sendMessage(var1, "Redstone Pulsed for " + var6 + " Ticks");
+            OutputHandler.chatConfirmation(var1, "Redstone Pulsed for " + var6 + " Ticks");
         }
         else
         {

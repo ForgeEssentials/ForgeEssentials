@@ -1,30 +1,19 @@
 package com.forgeessentials.chat;
 
-import java.io.File;
-import java.util.Arrays;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Property;
+
+import java.util.Arrays;
 
 public class ConfigChat extends ModuleConfigBase {
     public static String chatFormat;
     public static String largeComment_chatFormat = "";
     public static boolean logchat;
     public static boolean logcmd;
-    public Configuration config;
-
-    // this is designed so it will work for any class.
-    public ConfigChat(File file)
-    {
-        super(file);
-    }
-
     static
     {
         largeComment_chatFormat += "This String formats the Chat.";
@@ -46,12 +35,11 @@ public class ConfigChat extends ModuleConfigBase {
     public void init()
     {
         OutputHandler.felog.finer("Loading chatconfigs");
-        config = new Configuration(file, true);
 
         config.addCustomCategoryComment("Chat", "Chat Configs");
-        config.addCustomCategoryComment("Automessage", "Automated spamm");
+        config.addCustomCategoryComment("Chat.Automessage", "Automated spamm");
 
-        String[] msg = config.get("Automessage", "messages", new String[]
+        String[] msg = config.get("Chat.Automessage", "messages", new String[]
                         { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" },
                 "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
         for (int i = 0; i < msg.length; i++)
@@ -59,9 +47,9 @@ public class ConfigChat extends ModuleConfigBase {
             AutoMessage.msg.add(FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1))));
         }
 
-        AutoMessage.random = config.get("Automessage", "random", false, "Randomize the order of messages").getBoolean(false);
-        AutoMessage.waittime = config.get("Automessage", "inverval", 60, "Time in between each message in minutes").getInt();
-        AutoMessage.enable = config.get("Automessage", "enable", false).getBoolean(true);
+        AutoMessage.random = config.get("Chat.Automessage", "random", false, "Randomize the order of messages").getBoolean(false);
+        AutoMessage.waittime = config.get("Chat.Automessage", "inverval", 60, "Time in between each message in minutes").getInt();
+        AutoMessage.enable = config.get("Chat.Automessage", "enable", false).getBoolean(true);
 
         chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat)
                 .getString();
@@ -94,17 +82,17 @@ public class ConfigChat extends ModuleConfigBase {
         logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
         logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
 
-        config.addCustomCategoryComment("irc", "Configure the built-in IRC bot here.");
+        config.addCustomCategoryComment("Chat.irc", "Configure the built-in IRC bot here.");
 
-        ModuleChat.connectToIRC = config.get("irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
-        IRCHelper.port = config.get("irc", "port", 5555, "The port to connect to the IRC server through.").getInt();
-        IRCHelper.name = config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
-        IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
-        IRCHelper.channel = config.get("irc", "channel", "#something", "Channel to connect to").getString();
-        IRCHelper.suppressEvents = config.get("irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.")
+        ModuleChat.connectToIRC = config.get("Chat.irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
+        IRCHelper.port = config.get("Chat.irc", "port", 5555, "The port to connect to the IRC server through.").getInt();
+        IRCHelper.name = config.get("Chat.irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
+        IRCHelper.server = config.get("Chat.irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
+        IRCHelper.channel = config.get("Chat.irc", "channel", "#something", "Channel to connect to").getString();
+        IRCHelper.suppressEvents = config.get("Chat.irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.")
                 .getBoolean(true);
-        IRCHelper.password = config.get("irc", "nickservPass", "", "Nickserv password for the bot.").getString();
-        IRCHelper.serverPass = config.get("irc", "serverPass", "", "Server password for the bot.").getString();
+        IRCHelper.password = config.get("Chat.irc", "nickservPass", "", "Nickserv password for the bot.").getString();
+        IRCHelper.serverPass = config.get("Chat.irc", "serverPass", "", "Server password for the bot.").getString();
 
         config.save();
     }
@@ -112,10 +100,8 @@ public class ConfigChat extends ModuleConfigBase {
     @Override
     public void forceSave()
     {
-        config = new Configuration(file, true);
-
         config.addCustomCategoryComment("Chat", "Chatconfigs");
-        config.addCustomCategoryComment("Automessage", "Automated spam");
+        config.addCustomCategoryComment("Chat.Automessage", "Automated spam");
 
         Property prop = config
                 .get("Chat", "chatformat", "%groupPrefix%playerPrefix<%username>%playerSuffix%groupSuffix %reset%message", largeComment_chatFormat);
@@ -127,10 +113,10 @@ public class ConfigChat extends ModuleConfigBase {
             msg[i] = "\"" + msg[i] + "\"";
         }
 
-        config.get("Automessage", "messages", new String[] { }, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").set(msg);
-        config.get("Automessage", "random", false, "Randomize the order of messages").set(AutoMessage.random);
-        config.get("Automessage", "inverval", 1, "Time in between each message in minutes").set(AutoMessage.waittime);
-        config.get("Automessage", "enable", true).set(AutoMessage.enable);
+        config.get("Chat.Automessage", "messages", new String[] { }, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").set(msg);
+        config.get("Chat.Automessage", "random", false, "Randomize the order of messages").set(AutoMessage.random);
+        config.get("Chat.Automessage", "inverval", 1, "Time in between each message in minutes").set(AutoMessage.waittime);
+        config.get("Chat.Automessage", "enable", true).set(AutoMessage.enable);
 
         config.get("BannedWords", "censor", true, "censor the words in the censorList").set(ChatFormatter.censor);
         config.get("BannedWords", "censorList", new String[] { }, "List of words to be censored")
@@ -150,14 +136,14 @@ public class ConfigChat extends ModuleConfigBase {
         config.get(logCat, "logchat", true, "Log all chat messages").set(logchat);
         config.get(logCat, "logcmd", true, "Log all commands").set(logcmd);
 
-        config.get("irc", "enable", false, "Enable IRC interoperability?").set(ModuleChat.connectToIRC);
-        config.get("irc", "port", 5555, "The port to connect to the IRC server through.").set(IRCHelper.port);
-        config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").set(IRCHelper.name);
-        config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").set(IRCHelper.server);
-        config.get("irc", "channel", "#something", "Channel to connect to").set(IRCHelper.channel);
-        config.get("irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.").set(IRCHelper.suppressEvents);
-        config.get("irc", "nickservPass", "", "Nickserv password for the bot.").set(IRCHelper.password);
-        config.get("irc", "serverPass", "", "Server password for the bot.").set(IRCHelper.serverPass);
+        config.get("Chat.irc", "enable", false, "Enable IRC interoperability?").set(ModuleChat.connectToIRC);
+        config.get("Chat.irc", "port", 5555, "The port to connect to the IRC server through.").set(IRCHelper.port);
+        config.get("Chat.irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").set(IRCHelper.name);
+        config.get("Chat.irc", "server", "irc.something.com", "Hostname of the server to connect to").set(IRCHelper.server);
+        config.get("Chat.irc", "channel", "#something", "Channel to connect to").set(IRCHelper.channel);
+        config.get("Chat.irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.").set(IRCHelper.suppressEvents);
+        config.get("Chat.irc", "nickservPass", "", "Nickserv password for the bot.").set(IRCHelper.password);
+        config.get("Chat.irc", "serverPass", "", "Server password for the bot.").set(IRCHelper.serverPass);
 
         config.save();
     }
@@ -165,12 +151,10 @@ public class ConfigChat extends ModuleConfigBase {
     @Override
     public void forceLoad(ICommandSender sender)
     {
-        config = new Configuration(file, true);
-
         config.addCustomCategoryComment("Chat", "Chat Configs");
-        config.addCustomCategoryComment("Automessage", "Automated spamm");
+        config.addCustomCategoryComment("Chat.Automessage", "Automated spamm");
 
-        String[] msg = config.get("Automessage", "messages", new String[]
+        String[] msg = config.get("Chat.Automessage", "messages", new String[]
                         { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" },
                 "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
         for (int i = 0; i < msg.length; i++)
@@ -178,9 +162,9 @@ public class ConfigChat extends ModuleConfigBase {
             AutoMessage.msg.add(FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1))));
         }
 
-        AutoMessage.random = config.get("Automessage", "random", false, "Randomize the order of messages").getBoolean(false);
-        AutoMessage.waittime = config.get("Automessage", "inverval", 1, "Time in between each message in minutes").getInt();
-        AutoMessage.enable = config.get("Automessage", "enable", true).getBoolean(true);
+        AutoMessage.random = config.get("Chat.Automessage", "random", false, "Randomize the order of messages").getBoolean(false);
+        AutoMessage.waittime = config.get("Chat.Automessage", "inverval", 1, "Time in between each message in minutes").getInt();
+        AutoMessage.enable = config.get("Chat.Automessage", "enable", true).getBoolean(true);
 
         chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat)
                 .getString();
@@ -208,16 +192,18 @@ public class ConfigChat extends ModuleConfigBase {
         logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
         logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
 
-        ModuleChat.connectToIRC = config.get("irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
-        IRCHelper.port = config.get("irc", "port", 5555, "The port to connect to the IRC server through.").getInt();
-        IRCHelper.name = config.get("irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
-        IRCHelper.server = config.get("irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
-        IRCHelper.channel = config.get("irc", "channel", "#something", "Channels to connect to").getString();
-        IRCHelper.suppressEvents = config.get("irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.")
+        ModuleChat.connectToIRC = config.get("Chat.irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
+        IRCHelper.port = config.get("Chat.irc", "port", 5555, "The port to connect to the IRC server through.").getInt();
+        IRCHelper.name = config.get("Chat.irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
+        IRCHelper.server = config.get("Chat.irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
+        IRCHelper.channel = config.get("Chat.irc", "channel", "#something", "Channels to connect to").getString();
+        IRCHelper.suppressEvents = config.get("Chat.irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.")
                 .getBoolean(true);
-        IRCHelper.password = config.get("irc", "nickservPass", "", "Nickserv password for the bot.").getString();
-        IRCHelper.serverPass = config.get("irc", "serverPass", "", "Server password for the bot.").getString();
+        IRCHelper.password = config.get("Chat.irc", "nickservPass", "", "Nickserv password for the bot.").getString();
+        IRCHelper.serverPass = config.get("Chat.irc", "serverPass", "", "Server password for the bot.").getString();
 
         config.save();
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

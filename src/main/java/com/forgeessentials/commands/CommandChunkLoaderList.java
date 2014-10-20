@@ -17,7 +17,7 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.Loader;
@@ -114,10 +114,10 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
 
         if (!key.equals("*"))
         {
-            ChatUtils.sendMessage(sender, EnumChatFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
+            OutputHandler.chatNotification(sender, EnumChatFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
         }
 
-        ChatUtils.sendMessage(sender, EnumChatFormatting.AQUA + "Dim " + world.provider.getDimensionName() + ":");
+        OutputHandler.chatNotification(sender, "Dim " + world.provider.getDimensionName() + ":");
 
         if (key.startsWith("p:") || key.equals("*"))
         {
@@ -127,7 +127,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
                 {
                     if (key.equals("*"))
                     {
-                        ChatUtils.sendMessage(sender, EnumChatFormatting.AQUA + username);
+                        OutputHandler.chatNotification(sender, username);
                     }
 
                     HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
@@ -142,7 +142,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
 
                     for (ChunkCoordIntPair coords : chunks)
                     {
-                        ChatUtils.sendMessage(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+                        OutputHandler.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
                     }
                 }
             }
@@ -154,7 +154,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
             {
                 if (key.equals("*"))
                 {
-                    ChatUtils.sendMessage(sender, EnumChatFormatting.AQUA + modID);
+                    OutputHandler.chatNotification(sender, modID);
                 }
                 HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
 
@@ -168,7 +168,7 @@ public class CommandChunkLoaderList extends FEcmdModuleCommands {
 
                 for (ChunkCoordIntPair coords : chunks)
                 {
-                    ChatUtils.sendMessage(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+                    OutputHandler.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
                 }
             }
         }

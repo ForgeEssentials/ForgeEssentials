@@ -9,7 +9,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -39,7 +38,7 @@ public class CommandHeal extends FEcmdModuleCommands {
             }
             else
             {
-                ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
@@ -60,12 +59,12 @@ public class CommandHeal extends FEcmdModuleCommands {
             }
             else
             {
-                ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
         }
     }
 
@@ -74,7 +73,7 @@ public class CommandHeal extends FEcmdModuleCommands {
         target.heal(20);
         target.extinguish();
         target.getFoodStats().addStats(20, 1.0F);
-        ChatUtils.sendMessage(target, "You were healed");
+        OutputHandler.chatConfirmation(target, "You were healed");
     }
 
     @Override

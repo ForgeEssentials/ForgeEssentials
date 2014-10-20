@@ -15,7 +15,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.commands.util.AFKdata;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandAFK extends FEcmdModuleCommands {
@@ -73,7 +72,7 @@ public class CommandAFK extends FEcmdModuleCommands {
 
         if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
-            ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
+            OutputHandler.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
                     String.format(inMessage, afkData.player.getDisplayName()));
         }
         else
@@ -90,7 +89,7 @@ public class CommandAFK extends FEcmdModuleCommands {
 
         if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
-            ChatUtils.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
+            OutputHandler.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
                     String.format(outMessage, afkData.player.getDisplayName()));
         }
         else

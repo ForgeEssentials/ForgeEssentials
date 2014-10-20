@@ -14,17 +14,13 @@ import net.minecraftforge.common.MinecraftForge;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Config;
-import com.forgeessentials.core.moduleLauncher.FEModule.Init;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
-import com.forgeessentials.core.moduleLauncher.FEModule.ServerInit;
-import com.forgeessentials.core.moduleLauncher.FEModule.ServerStop;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -55,13 +51,13 @@ public class ModuleServerVote {
         OutputHandler.felog.finer("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
     }
 
-    @Init
+    @SubscribeEvent
     public void init(FEModuleInitEvent e)
     {
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    @ServerInit
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         try
@@ -78,7 +74,7 @@ public class ModuleServerVote {
 
         try
         {
-            File logFile = new File(e.getModuleDir(), "vote.log");
+            File logFile = new File(moduleDir, "vote.log");
             if (!logFile.exists())
             {
                 logFile.createNewFile();
@@ -114,7 +110,7 @@ public class ModuleServerVote {
         }
     }
 
-    @ServerStop
+    @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
         try
@@ -185,13 +181,13 @@ public class ModuleServerVote {
     {
         if (!config.msgAll.equals(""))
         {
-            player.playerNetServerHandler.sendPacket(new S02PacketChat(ChatUtils
+            player.playerNetServerHandler.sendPacket(new S02PacketChat(OutputHandler
                     .createFromText(FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
         }
 
         if (!config.msgVoter.equals(""))
         {
-            ChatUtils.sendMessage(player,
+            OutputHandler.sendMessage(player,
                     FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
         }
 

@@ -15,7 +15,6 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -146,7 +145,7 @@ public class TickTaskFill implements ITickTask {
 
         if (ticks % (20 * 25) == 0)
         {
-            ChatUtils.sendMessage(source, "Filler for " + dimID + ": " + getStatus());
+            OutputHandler.chatNotification(source, "Filler for " + dimID + ": " + getStatus());
         }
 
         for (int i = 0; i < speed; i++)

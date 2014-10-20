@@ -9,7 +9,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.chat.AutoMessage;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
@@ -58,7 +57,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
             try
             {
                 int id = parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
-                ChatUtils.sendMessage(FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager(),
+                OutputHandler.sendMessage(FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager(),
                         AutoMessage.msg.get(id));
                 return;
             }

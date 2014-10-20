@@ -1,7 +1,7 @@
 package com.forgeessentials.chat;
 
 import com.forgeessentials.chat.irc.IRCHelper;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.FunctionHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -28,7 +28,7 @@ public class CommandMuter {
             {
                 if (mutedCommands.contains(e.command.getCommandName()))
                 {
-                    ChatUtils.sendMessage(player, "You are currently muted.");
+                    OutputHandler.chatWarning(player, "You are currently muted.");
                     e.setCanceled(true);
                     return;
                 }
@@ -43,7 +43,7 @@ public class CommandMuter {
                     {
                         if (mutedCommands.contains(obj.toString()))
                         {
-                            ChatUtils.sendMessage(player, "You are currently muted.");
+                            OutputHandler.chatWarning(player, "You are currently muted.");
                             e.setCanceled(true);
                             return;
                         }

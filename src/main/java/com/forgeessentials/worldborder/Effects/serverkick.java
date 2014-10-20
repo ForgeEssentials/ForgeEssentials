@@ -3,7 +3,7 @@ package com.forgeessentials.worldborder.Effects;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.worldborder.WorldBorder;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -27,9 +27,9 @@ public class serverkick implements IEffect {
         }
         else
         {
-            ChatUtils.sendMessage(player, "You should have been kicked from the server with this message:");
-            ChatUtils.sendMessage(player, message);
-            ChatUtils.sendMessage(player, "Since this is SSP, thats not possible.");
+            OutputHandler.chatNotification(player, "You should have been kicked from the server with this message:");
+            OutputHandler.sendMessage(player, message);
+            OutputHandler.chatNotification(player, "Since this is SSP, thats not possible.");
         }
     }
 }

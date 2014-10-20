@@ -13,7 +13,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
@@ -43,8 +42,8 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
                 {
                     if (data.receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()))
                     {
-                        ChatUtils.sendMessage(data.sender, "Teleport request accepted.");
-                        ChatUtils.sendMessage(data.receiver, "Teleport request accepted by other party. Teleporting..");
+                        OutputHandler.chatNotification(data.sender, "Teleport request accepted.");
+                        OutputHandler.chatConfirmation(data.receiver, "Teleport request accepted by other party. Teleporting..");
                         TeleportModule.tpaListToRemove.add(data);
                         TeleportCenter.teleport(new WarpPoint(data.sender), data.receiver);
                         return;
@@ -62,8 +61,8 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
                 {
                     if (data.receiver.getCommandSenderName().equalsIgnoreCase(sender.getCommandSenderName()))
                     {
-                        ChatUtils.sendMessage(data.sender, "Teleport request declined.");
-                        ChatUtils.sendMessage(data.receiver, "Teleport request declined by other party.");
+                        OutputHandler.chatNotification(data.sender, "Teleport request declined.");
+                        OutputHandler.chatError(data.receiver, "Teleport request declined by other party.");
                         TeleportModule.tpaListToRemove.add(data);
                         return;
                     }
@@ -82,14 +81,14 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
         EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (receiver == null)
         {
-            ChatUtils.sendMessage(sender, args[0] + " not found.");
+            OutputHandler.chatError(sender, args[0] + " not found.");
         }
         else
         {
             TeleportModule.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
 
-            ChatUtils.sendMessage(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
-            ChatUtils.sendMessage(receiver,
+            OutputHandler.chatNotification(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
+            OutputHandler.chatNotification(receiver,
                     String.format("Received teleport request from %s. Enter '/tpahere accept' to accept, '/tpahere decline' to decline.",
                             sender.getCommandSenderName()));
         }

@@ -16,7 +16,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.network.PacketRollback;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -63,15 +62,15 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
 		 */
         if (args.length == 0)
         {
-            ChatUtils.sendMessage(sender, "--- Rollback usage ---");
-            ChatUtils.sendMessage(sender, "All actions must be confirmed with '/rb ok'.");
-            ChatUtils.sendMessage(sender, "All actions can be canceld with '/rb abort'.");
-            ChatUtils.sendMessage(sender, "'/rb clear <username>' => Removes a players data.");
-            ChatUtils.sendMessage(sender, "'/rb undo <username>' => Undo a rollback. You can specify time and radius");
-            ChatUtils.sendMessage(sender, "'/rb <undo|rollback> <username>' => Rolls back a players. All the way!");
-            ChatUtils.sendMessage(sender, "'/rb <undo|rollback> <username> <rad>' => Format like this: 10r");
-            ChatUtils.sendMessage(sender, "'/rb <undo|rollback> <username> <time>' => Format time like this: 10d = 10 days, 10h = 10 hours.");
-            ChatUtils.sendMessage(sender, "A combo of the above is possible too.");
+            OutputHandler.chatNotification(sender, "--- Rollback usage ---");
+            OutputHandler.chatNotification(sender, "All actions must be confirmed with '/rb ok'.");
+            OutputHandler.chatNotification(sender, "All actions can be canceld with '/rb abort'.");
+            OutputHandler.chatNotification(sender, "'/rb clear <username>' => Removes a players data.");
+            OutputHandler.chatNotification(sender, "'/rb undo <username>' => Undo a rollback. You can specify time and radius");
+            OutputHandler.chatNotification(sender, "'/rb <undo|rollback> <username>' => Rolls back a players. All the way!");
+            OutputHandler.chatNotification(sender, "'/rb <undo|rollback> <username> <rad>' => Format like this: 10r");
+            OutputHandler.chatNotification(sender, "'/rb <undo|rollback> <username> <time>' => Format time like this: 10d = 10 days, 10h = 10 hours.");
+            OutputHandler.chatNotification(sender, "A combo of the above is possible too.");
             return;
         }
 

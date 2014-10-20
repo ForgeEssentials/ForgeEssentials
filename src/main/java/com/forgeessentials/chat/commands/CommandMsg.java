@@ -16,7 +16,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -87,8 +86,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
                         senderMessage += " ";
                     }
                 }
-                ChatUtils.sendMessage(MinecraftServer.getServer(), receiverMessage);
-                ChatUtils.sendMessage(sender, senderMessage);
+                OutputHandler.sendMessage(MinecraftServer.getServer(), receiverMessage);
+                OutputHandler.sendMessage(sender, senderMessage);
             }
 
             // IRC messages.
@@ -114,11 +113,11 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
                 try
                 {
                     IRCHelper.privateMessage(sender.getCommandSenderName(), args[1], receiverMessage);
-                    ChatUtils.sendMessage(sender, senderMessage);
+                    OutputHandler.sendMessage(sender, senderMessage);
                 }
                 catch (Exception e)
                 {
-                    ChatUtils.sendMessage(sender, "Unable to send message to: " + args[1]);
+                    OutputHandler.sendMessage(sender, "Unable to send message to: " + args[1]);
                 }
             }
 
@@ -152,8 +151,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
                         senderMessage += " ";
                     }
                 }
-                ChatUtils.sendMessage(sender, senderMessage);
-                ChatUtils.sendMessage(receiver, receiverMessage);
+                OutputHandler.sendMessage(sender, senderMessage);
+                OutputHandler.sendMessage(receiver, receiverMessage);
             }
         }
     }
@@ -188,8 +187,8 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
                         senderMessage += " ";
                     }
                 }
-                ChatUtils.sendMessage(sender, senderMessage);
-                ChatUtils.sendMessage(receiver, receiverMessage);
+                OutputHandler.sendMessage(sender, senderMessage);
+                OutputHandler.sendMessage(receiver, receiverMessage);
             }
         }
     }

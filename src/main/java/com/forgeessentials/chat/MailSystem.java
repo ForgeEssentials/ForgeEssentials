@@ -7,7 +7,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.google.common.collect.HashMultimap;
 
@@ -51,13 +51,13 @@ public class MailSystem {
     {
         if (map.containsKey(receiver.getPersistentID()))
         {
-            ChatUtils.sendMessage(receiver, EnumChatFormatting.GREEN + "--- Your mail ---");
+            OutputHandler.sendMessage(receiver, EnumChatFormatting.GREEN + "--- Your mail ---");
             for (Mail mail : map.get(receiver.getPersistentID()))
             {
-                ChatUtils.sendMessage(receiver, EnumChatFormatting.GREEN + "{" + mail.getSender() + "} " + EnumChatFormatting.WHITE + mail.getMessage());
+                OutputHandler.sendMessage(receiver, EnumChatFormatting.GREEN + "{" + mail.getSender() + "} " + EnumChatFormatting.WHITE + mail.getMessage());
                 DataStorageManager.getReccomendedDriver().deleteObject(new ClassContainer(Mail.class), mail.getKey());
             }
-            ChatUtils.sendMessage(receiver, EnumChatFormatting.GREEN + "--- End of mail ---");
+            OutputHandler.sendMessage(receiver, EnumChatFormatting.GREEN + "--- End of mail ---");
         }
     }
 

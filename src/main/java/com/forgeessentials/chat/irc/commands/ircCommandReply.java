@@ -7,7 +7,7 @@ import net.minecraft.util.EnumChatFormatting;
 import org.pircbotx.User;
 
 import com.forgeessentials.chat.commands.CommandMsg;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 
 public class ircCommandReply extends ircCommand {
     @Override
@@ -52,7 +52,7 @@ public class ircCommandReply extends ircCommand {
             String send = EnumChatFormatting.GOLD + "(IRC)[" + user.getNick() + " -> me] " + EnumChatFormatting.GRAY + message;
             String recipt = "(IRC)[me -> " + player.getCommandSenderName() + "] " + message;
 
-            ChatUtils.sendMessage(player, send);
+            OutputHandler.sendMessage(player, send);
             user.sendMessage(recipt);
         }
         catch (Exception ex)

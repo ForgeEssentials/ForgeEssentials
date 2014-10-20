@@ -2,6 +2,7 @@ package com.forgeessentials.backup;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Timer;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -15,16 +16,12 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
-
-import java.util.Timer;
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup {
     @FEModule.Config
@@ -52,7 +49,7 @@ public class ModuleBackup {
             }
             else
             {
-                ChatUtils.sendMessage(server, "[ForgeEssentials] " + msg);
+                OutputHandler.sendMessage(server, "[ForgeEssentials] " + msg);
             }
             ServerConfigurationManager manager = server.getConfigurationManager();
             for (String username : manager.getAllUsernames())
@@ -60,7 +57,7 @@ public class ModuleBackup {
                 EntityPlayerMP player = manager.func_152612_a(username);
                 if (PermissionsManager.checkPermission(player, "ForgeEssentials.backup.msg"))
                 {
-                    ChatUtils.sendMessage(player, EnumChatFormatting.AQUA + "[ForgeEssentials] " + msg);
+                    OutputHandler.chatNotification(player, "[ForgeEssentials] " + msg);
                 }
             }
         }
@@ -69,14 +66,14 @@ public class ModuleBackup {
         }
     }
 
-    @FEModule.Init
+    @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(new WorldSaver());
     }
 
-    @FEModule.ServerInit
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         e.registerServerCommand(new CommandBackup());

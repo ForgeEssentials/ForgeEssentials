@@ -69,7 +69,7 @@ public class ShortcutCommands {
         String main = "shortcuts";
 
         String general = main + ".general";
-        config.addCustomCategoryComment(general, "Add a name to the 'list' list and use 'fereload' to genarate a new config category.");
+        config.addCustomCategoryComment(general, "Add a name to the 'list' list and use 'fereload' to genarate a new config category.  Separate by new line without commas.");
         names.addAll(
                 Arrays.asList(config.get(general, "list", new String[] { "fly" }, "Add names here and reload to add templates you can edit.").getStringList()));
 
@@ -85,8 +85,8 @@ public class ShortcutCommands {
             cats.remove(category);
 
             String command = config.get(category, "command", "capabilities", "Basic command you want to forward to. No syntax here.").getString();
-            String[] args = config.get(category, "args", new String[] { "\"#$sender\"", "\"allowflying\"", "\"$arg\"" }, ARGS_COMMENT).getStringList();
-            String syntax = config.get(category, "syntax", "\"<true|false>\"", "The syntax for this shortcuts. Use double quotes.").getString();
+            String[] args = config.get(category, "args", new String[] { "\"$sender\"", "\"allowflying\"", "\"$arg\"" }, ARGS_COMMENT).getStringList();
+            String syntax = config.get(category, "syntax", "\"<true|false>\"", "The syntax for this shortcut. Use double quotes.").getString();
 
             list.add(new CommandWrapper(command, name, args, syntax));
         }

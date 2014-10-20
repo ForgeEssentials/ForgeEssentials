@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandReloadQuery extends ForgeEssentialsCommandBase {
 
@@ -29,9 +29,9 @@ public class CommandReloadQuery extends ForgeEssentialsCommandBase {
 
     public void reload(ICommandSender sender)
     {
-        ChatUtils.sendMessage(sender, "Killing old one....");
+        OutputHandler.chatNotification(sender, "Killing old one....");
         ModuleSnooper.stop();
-        ChatUtils.sendMessage(sender, "Making new one....");
+        OutputHandler.chatNotification(sender, "Making new one....");
         ModuleSnooper.start();
     }
 

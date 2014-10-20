@@ -3,13 +3,17 @@ package com.forgeessentials.worldedit.compat;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.FEModule.Init;
-import com.forgeessentials.util.selections.SelectionHandler;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModulePostInitEvent;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.events.FEModuleEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.event.platform.PlatformReadyEvent;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
@@ -19,6 +23,7 @@ public class WEIntegration {
 
     protected static int syncInterval;
     private static boolean disable;
+    private FEPlatform platform;
 
     @FEModule.ModuleDir
     public static File moduleDir;
@@ -38,8 +43,7 @@ public class WEIntegration {
         }
     }
 
-    @Init
-    //@ModuleEventHandler
+    @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         if (getDevOverride())
@@ -51,14 +55,14 @@ public class WEIntegration {
         if (!EnvironmentChecker.worldEditInstalled)
         {
             OutputHandler.felog.severe("You cannot run the FE integration tools for WorldEdit without installing WorldEdit Forge.");
-            e.getModuleContainer().isLoadable = false;
+            ModuleLauncher.instance.unregister("WEIntegrationTools");
             return;
         }
         EnvironmentChecker.worldEditFEtoolsInstalled = true;
-        SelectionHandler.selectionProvider = new WESelectionHandler();
+        PlayerInfo.selprovider = new WESelectionHandler();
     }
 
-    @FEModule.PostInit
+    @SubscribeEvent
     public void postLoad(FEModulePostInitEvent e)
     {
         if (disable)
@@ -66,9 +70,28 @@ public class WEIntegration {
             OutputHandler.felog.severe("Requested to force-disable WorldEdit.");
             if (Loader.isModLoaded("WorldEdit"))
                 MinecraftForge.EVENT_BUS.unregister(ForgeWorldEdit.inst); //forces worldedit forge NOT to load
-            e.getModuleContainer().isLoadable = false;
+            ModuleLauncher.instance.unregister("WEIntegrationTools");
         }
 
+    }
+
+    @SubscribeEvent
+    public void serverStart(FEModuleEvent.FEModuleServerInitEvent e)
+    {
+        this.platform = new FEPlatform();
+        WorldEdit.getInstance().getPlatformManager().register(platform);
+    }
+
+    @SubscribeEvent
+    public void serverStarted(FEModuleEvent.FEModuleServerPostInitEvent e)
+    {
+        WorldEdit.getInstance().getEventBus().post(new PlatformReadyEvent());
+    }
+
+    @SubscribeEvent
+    public void serverStopping(FEModuleEvent.FEModuleServerStopEvent e)
+    {
+        WorldEdit.getInstance().getPlatformManager().unregister(platform);
     }
 
 }

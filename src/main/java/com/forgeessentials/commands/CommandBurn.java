@@ -9,7 +9,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -85,11 +84,11 @@ public class CommandBurn extends FEcmdModuleCommands {
         if (player != null)
         {
             player.setFire(time);
-            ChatUtils.sendMessage(sender, "You should feel bad about doing that.");
+            OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
         }
         else
         {
-            ChatUtils.sendMessage(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+            OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
         }
     }
 

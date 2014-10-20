@@ -8,7 +8,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -29,19 +29,19 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase {
 
             if (player == null)
             {
-                ChatUtils.sendMessage(sender, "Player does not exist, or is not online.");
+                OutputHandler.chatError(sender, "Player does not exist, or is not online.");
             }
             else
             {
                 APIRegistry.wallet.setWallet(amountToSet, player);
 
-                ChatUtils.sendMessage(sender, "Wallet set to: " + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
-                ChatUtils.sendMessage(player, "Your wallet was set to " + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
+                OutputHandler.chatConfirmation(sender, "Wallet set to: " + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
+                OutputHandler.chatNotification(player, "Your wallet was set to " + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
             }
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <player> <amount>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amount>");
         }
     }
 

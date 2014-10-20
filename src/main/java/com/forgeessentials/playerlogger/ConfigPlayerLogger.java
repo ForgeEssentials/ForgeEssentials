@@ -1,33 +1,21 @@
 package com.forgeessentials.playerlogger;
 
-import java.io.File;
-import java.util.Arrays;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import net.minecraft.command.ICommandSender;
+
+import java.util.Arrays;
 
 public class ConfigPlayerLogger extends ModuleConfigBase {
     public static final String[] exemptDefPlayers = { "\"[Forestry]\"", "\"[Buildcraft]\"" };
-    public Configuration config;
-
-    public ConfigPlayerLogger(File file)
-    {
-        super(file);
-    }
+    private static final String cat = "playerLogger";
 
     @Override
     public void init()
     {
-        config = new Configuration(file, true);
+        config.addCustomCategoryComment("playerLogger", "Configure the player logger here.");
+        ModulePlayerLogger.enable = config.get("playerLogger", "enable", false).getBoolean(false);
 
-        String cat = "playerLogger";
-        String subcat = cat;
-
-        ModulePlayerLogger.enable = config.get(subcat, "enable", false).getBoolean(false);
-
-        subcat = cat + ".DB";
+        String subcat = cat + ".DB";
         config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
 
         ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").getString();
@@ -85,14 +73,9 @@ public class ConfigPlayerLogger extends ModuleConfigBase {
     @Override
     public void forceLoad(ICommandSender sender)
     {
-        config = new Configuration(file, true);
+        ModulePlayerLogger.enable = config.get("playerLogger", "enable", false).getBoolean(false);
 
-        String cat = "playerLogger";
-        String subcat = cat;
-
-        ModulePlayerLogger.enable = config.get(subcat, "enable", false).getBoolean(false);
-
-        subcat = cat + ".DB";
+        String subcat = cat + ".DB";
         config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
 
         ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").getString();
@@ -140,4 +123,6 @@ public class ConfigPlayerLogger extends ModuleConfigBase {
         }
         config.save();
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

@@ -1,11 +1,12 @@
 package com.forgeessentials.core.commands;
 
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.preloader.FEModContainer;
-import com.forgeessentials.util.ChatUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.core.preloader.FEModContainer;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandFEInfo extends ForgeEssentialsCommandBase {
 
@@ -38,21 +39,21 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     {
         if (args.length == 0)
         {
-            ChatUtils.sendMessage(sender, "/feinfo debug Produces ASM transformer debug output.");
-            ChatUtils.sendMessage(sender, "/feinfo reload Reloads all configs.");
-            ChatUtils.sendMessage(sender, "/feinfo about About ForgeEssentials");
+            OutputHandler.chatNotification(sender, "/feinfo debug Produces ASM transformer debug output.");
+            OutputHandler.chatNotification(sender, "/feinfo reload Reloads all configs.");
+            OutputHandler.chatNotification(sender, "/feinfo about About ForgeEssentials");
         }
         else if (args[0].equalsIgnoreCase("reload"))
         {
-            ChatUtils.sendMessage(sender, "Reloading ForgeEssentials configs. May not work for all settings!");
-            ChatUtils.sendMessage(sender, EnumChatFormatting.RED + "This is experimental!");
+            OutputHandler.chatNotification(sender, "Reloading ForgeEssentials configs. May not work for all settings!");
+            OutputHandler.chatNotification(sender, EnumChatFormatting.RED + "This is experimental!");
             ModuleLauncher.instance.reloadConfigs(sender);
-            ChatUtils.sendMessage(sender, "Done!");
+            OutputHandler.chatNotification(sender, "Done!");
         }
         else if (args[0].equalsIgnoreCase("about"))
         {
-            ChatUtils.sendMessage(sender, "You are currently running ForgeEssentials version " + FEModContainer.version);
-            ChatUtils.sendMessage(sender,
+            OutputHandler.chatNotification(sender, "You are currently running ForgeEssentials version " + FEModContainer.version);
+            OutputHandler.chatNotification(sender,
                     "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
         }
     }

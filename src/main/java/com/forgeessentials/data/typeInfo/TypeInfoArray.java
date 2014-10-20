@@ -68,12 +68,13 @@ public class TypeInfoArray extends TypeMultiValInfo {
     @Override
     public Object reconstruct(TypeData[] data, IReconstructData rawData)
     {
+        int pos = 0;
         int size = (Integer) rawData.getFieldValue(LENGTH);
         Object array = Array.newInstance(container.getType().getComponentType(), size);
 
         for (TypeData dat : data)
         {
-            Array.set(array, (Integer) dat.getFieldValue(POS), dat.getFieldValue(ELEMENT));
+            Array.set(array, pos++, dat.getFieldValue(ELEMENT));
         }
 
         return array;

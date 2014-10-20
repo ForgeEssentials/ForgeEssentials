@@ -1,28 +1,21 @@
 package com.forgeessentials.commands;
 
-import java.io.File;
-
+import com.forgeessentials.commands.shortcut.ShortcutCommands;
+import com.forgeessentials.commands.util.*;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-import net.minecraftforge.server.CommandHandlerForge;
 
-import com.forgeessentials.commands.shortcut.ShortcutCommands;
-import com.forgeessentials.commands.util.CommandDataManager;
-import com.forgeessentials.commands.util.CommandRegistrar;
-import com.forgeessentials.commands.util.CommandsEventHandler;
-import com.forgeessentials.commands.util.ConfigCmd;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.MobTypeLoader;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModulePreInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
-
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.io.File;
 
 @FEModule(configClass = ConfigCmd.class, name = "CommandsModule", parentMod = ForgeEssentials.class)
 public class ModuleCommands {
@@ -34,7 +27,7 @@ public class ModuleCommands {
 
     public static CommandsEventHandler eventHandler = new CommandsEventHandler();
 
-    @FEModule.PreInit
+    @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
         MobTypeLoader.preLoad(e);
@@ -42,15 +35,14 @@ public class ModuleCommands {
         FMLCommonHandler.instance().bus().register(eventHandler);
     }
 
-    @FEModule.Init
+    @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-
-        CommandRegistrar.commandConfigs(conf.config);
+        CommandRegistrar.commandConfigs(conf.getConfig());
         ShortcutCommands.loadConfig(cmddir);
     }
 
-    @FEModule.ServerInit
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
     	CommandRegistrar.registerCommands(e);
@@ -66,7 +58,7 @@ public class ModuleCommands {
         ShortcutCommands.load();
     }
 
-    @FEModule.ServerStop
+    @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
         CommandDataManager.save();

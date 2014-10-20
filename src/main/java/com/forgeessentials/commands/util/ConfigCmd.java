@@ -1,26 +1,15 @@
 package com.forgeessentials.commands.util;
 
-import java.io.File;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.commands.CommandRules;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import net.minecraft.command.ICommandSender;
 
 public class ConfigCmd extends ModuleConfigBase {
-    public Configuration config;
-
-    public ConfigCmd(File file)
-    {
-        super(file);
-    }
 
     @Override
     public void init()
     {
-        config = new Configuration(file, true);
 
         config.addCustomCategoryComment("general", "General Commands configuration.");
         config.save();
@@ -41,9 +30,9 @@ public class ConfigCmd extends ModuleConfigBase {
     public void forceLoad(ICommandSender sender)
     {
         config.load();
-
-        config.save();
-
         CommandRegistrar.commandConfigs(config);
+        config.save();
     }
+
+    public boolean universalConfigAllowed(){return false;}
 }

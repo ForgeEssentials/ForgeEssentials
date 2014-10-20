@@ -1,14 +1,11 @@
 package com.forgeessentials.worldborder;
 
-import java.io.File;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.worldborder.Effects.IEffect;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 /**
  * This generates the configuration structure
@@ -17,12 +14,6 @@ import com.forgeessentials.worldborder.Effects.IEffect;
  */
 
 public class ConfigWorldBorder extends ModuleConfigBase {
-    private Configuration config;
-
-    public ConfigWorldBorder(File file)
-    {
-        super(file);
-    }
 
     /**
      * Does penalty part on config
@@ -107,7 +98,6 @@ public class ConfigWorldBorder extends ModuleConfigBase {
     @Override
     public void init()
     {
-        config = new Configuration(file, true);
         penaltiesConfig(config);
         commonConfig(config);
         config.save();
@@ -116,7 +106,6 @@ public class ConfigWorldBorder extends ModuleConfigBase {
     @Override
     public void forceLoad(ICommandSender sender)
     {
-        config = new Configuration(file, true);
         penaltiesConfig(config);
         commonConfig(config);
         config.save();
@@ -127,4 +116,6 @@ public class ConfigWorldBorder extends ModuleConfigBase {
     {
 
     }
+
+    public boolean universalConfigAllowed(){return true;}
 }

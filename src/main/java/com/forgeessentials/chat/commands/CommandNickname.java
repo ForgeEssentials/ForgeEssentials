@@ -11,7 +11,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.ChatUtils;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandNickname extends ForgeEssentialsCommandBase {
@@ -39,14 +38,14 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
                 NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
                 tag.removeTag("nickname");
                 sender.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-                ChatUtils.sendMessage(sender, "Nickname removed.");
+                OutputHandler.chatConfirmation(sender, "Nickname removed.");
             }
             else
             {
                 NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
                 tag.setString("nickname", args[0]);
                 sender.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-                ChatUtils.sendMessage(sender, "Nickname set to " + args[0]);
+                OutputHandler.chatConfirmation(sender, "Nickname set to " + args[0]);
             }
         }
         else if (args.length == 2)
@@ -57,12 +56,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
                 if (args[1].equalsIgnoreCase("del"))
                 {
                     player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
-                    ChatUtils.sendMessage(sender, "Nickname of player " + args[0] + " removed");
+                    OutputHandler.chatConfirmation(sender, "Nickname of player " + args[0] + " removed");
                 }
                 else
                 {
                     player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-                    ChatUtils.sendMessage(sender, "Nickname of player " + args[0] + " set to " + args[1]);
+                    OutputHandler.chatConfirmation(sender, "Nickname of player " + args[0] + " set to " + args[1]);
                 }
             }
             else
@@ -72,7 +71,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
         }
     }
 
@@ -90,21 +89,21 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
             if (args.length == 2)
             {
                 player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-                ChatUtils.sendMessage(sender, "Nickname of player " + player.getCommandSenderName() + " set to " + args[1]);
+                OutputHandler.chatConfirmation(sender, "Nickname of player " + player.getCommandSenderName() + " set to " + args[1]);
             }
             else if (args.length == 1)
             {
                 player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
-                ChatUtils.sendMessage(sender, "Nickname of player " + player.getCommandSenderName() + " removed");
+                OutputHandler.chatConfirmation(sender, "Nickname of player " + player.getCommandSenderName() + " removed");
             }
             else
             {
-                ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
+                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
             }
         }
         else
         {
-            ChatUtils.sendMessage(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
         }
     }
 

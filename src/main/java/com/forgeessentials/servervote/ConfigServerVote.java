@@ -1,34 +1,25 @@
 package com.forgeessentials.servervote;
 
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 
-import javax.xml.bind.DatatypeConverter;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
-
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.forgeessentials.util.OutputHandler;
-
-import cpw.mods.fml.common.registry.GameData;
-
 public class ConfigServerVote extends ModuleConfigBase {
     private static final String category = "ServerVote";
 
-    private Configuration config;
 
     public boolean allowOfflineVotes;
     public String msgAll = "";
@@ -46,16 +37,9 @@ public class ConfigServerVote extends ModuleConfigBase {
 
     public boolean flatfileLog;
 
-    public ConfigServerVote(File file)
-    {
-        super(file);
-    }
-
     @Override
     public void init()
     {
-        config = new Configuration(file, true);
-
         String subcat = category + ".Votifier";
         config.addCustomCategoryComment(subcat, "This is for votifier compatibility only.");
 
@@ -157,7 +141,7 @@ public class ConfigServerVote extends ModuleConfigBase {
 
     private void loadKeys()
     {
-        keyFolder = new File(ModuleServerVote.config.getFile().getParent(), "RSA");
+        keyFolder = new File(ModuleServerVote.moduleDir, "RSA");
         File publicFile = new File(keyFolder, "public.key");
         File privateFile = new File(keyFolder, "private.key");
 
@@ -225,5 +209,7 @@ public class ConfigServerVote extends ModuleConfigBase {
             }
         }
     }
+
+    public boolean universalConfigAllowed(){return true;}
 
 }

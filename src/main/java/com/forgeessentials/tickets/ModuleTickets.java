@@ -12,10 +12,10 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.events.modules.FEModuleInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.modules.FEModuleServerStopEvent;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -35,13 +35,13 @@ public class ModuleTickets {
 
     private static ClassContainer ticketContainer = new ClassContainer(Ticket.class);
 
-    @FEModule.Init
+    @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    @FEModule.ServerInit
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         e.registerServerCommand(new Command());
@@ -53,7 +53,7 @@ public class ModuleTickets {
         PermissionsManager.registerPermission(PERMBASE + ".admin", RegisteredPermValue.OP);
     }
 
-    @FEModule.ServerStop
+    @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
         saveAll();
@@ -106,7 +106,7 @@ public class ModuleTickets {
         {
             if (!ModuleTickets.ticketList.isEmpty())
             {
-                ChatUtils.sendMessage(e.player, EnumChatFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
+                OutputHandler.sendMessage(e.player, EnumChatFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
             }
         }
     }

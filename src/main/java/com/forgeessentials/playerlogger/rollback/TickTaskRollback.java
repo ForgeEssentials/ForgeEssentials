@@ -14,7 +14,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.playerlogger.BlockChange;
-import com.forgeessentials.util.ChatUtils;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.google.common.base.Charsets;
 
@@ -121,7 +121,7 @@ public class TickTaskRollback implements ITickTask {
 			}
 			catch (Exception e)
 			{
-				ChatUtils.sendMessage(sender, "Could not restore TE data.");
+				OutputHandler.chatError(sender, "Could not restore TE data.");
 				e.printStackTrace();
 			}
 		}
@@ -136,7 +136,7 @@ public class TickTaskRollback implements ITickTask {
 	@Override
 	public void onComplete()
 	{
-		ChatUtils.sendMessage(sender, "Rollback done! Changed " + changed + " blocks.");
+		OutputHandler.chatConfirmation(sender, "Rollback done! Changed " + changed + " blocks.");
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.forgeessentials.core.commands;
 import java.util.List;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandBlockLogic;
@@ -10,9 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.util.ChatUtils;
-import com.forgeessentials.util.OutputHandler;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
@@ -102,7 +100,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
      */
     public void error(ICommandSender sender)
     {
-        this.error(sender, getCommandUsage(sender));
+        this.error(getCommandUsage(sender));
     }
 
     /**
@@ -111,16 +109,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
      * @param sender  Object that issued the command
      * @param message Error message
      */
-    public void error(ICommandSender sender, String message)
+    public void error(String message)
     {
-        if (sender instanceof EntityPlayer)
-        {
-            OutputHandler.chatError(sender, message);
-        }
-        else
-        {
-            ChatUtils.sendMessage(sender, message);
-        }
+    	throw new CommandException(message);
     }
 
     public boolean checkCommandPerm(EntityPlayer player)
