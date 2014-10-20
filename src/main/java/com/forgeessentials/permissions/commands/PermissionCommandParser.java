@@ -527,6 +527,7 @@ public class PermissionCommandParser {
 			if (type == PermissionAction.VALUE) {
 				if (args.isEmpty()) {
 					error("Need to specify value");
+					return;
 				}
 				value = StringUtils.join(args);
 			}
@@ -679,18 +680,18 @@ public class PermissionCommandParser {
 		}
 		if (args.isEmpty())
 		{
-			info("Possible usage:");
-			info("/p user <player> group add : Add user to group");
-			info("/p user <player> group remove : Add user to group");
+			info(String.format("Groups for player %s:", ident.getUsernameOrUUID()));
+			for (String g : APIRegistry.perms.getPlayerGroups(ident)) {
+				info("  " + g);
+			}
 		}
 		else
 		{
 			String mode = args.remove().toLowerCase();
-			if (!mode.equals("add") && !mode.equals("remove"))
+			if (!mode.equals("add") && !mode.equals("remove") && !mode.equals("set"))
 			{
 				error("Syntax error. Please try this instead:");
-				error("/p user <player> group add : Add user to group");
-				error("/p user <player> group remove : Add user to group");
+				error("/p user <player> group add|set|remove <GROUP>");
 				return;
 			}
 
@@ -724,6 +725,13 @@ public class PermissionCommandParser {
 				case "remove":
 					APIRegistry.perms.removePlayerFromGroup(ident, group);
 					info(String.format("Player %s removed from group %s", ident.getUsernameOrUUID(), group));
+					break;
+				case "set":
+					for (String g : APIRegistry.perms.getPlayerGroups(ident)) {
+						APIRegistry.perms.removePlayerFromGroup(ident, g);
+					}
+					APIRegistry.perms.addPlayerToGroup(ident, group);
+					info(String.format("Set %s's group to %s", ident.getUsernameOrUUID(), group));
 					break;
 				}
 			}
@@ -936,6 +944,7 @@ public class PermissionCommandParser {
 			if (type == PermissionAction.VALUE) {
 				if (args.isEmpty()) {
 					error("Need to specify value");
+					return;
 				}
 				value = StringUtils.join(args);
 			}
