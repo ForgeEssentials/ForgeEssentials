@@ -34,6 +34,8 @@ minecraft {
     ext.forgeVersion = "10.13.1.1225"
 
     replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
+    replace "%VERSION%", project.version
+
     replaceIn "com/forgeessentials/client/ForgeEssentialsClient.java"
     replace "%VERSION%", project.version
 }
