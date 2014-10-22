@@ -188,8 +188,10 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 
 			// Save permissions
 			Properties p = permissionListToProperties(entry.getValue());
-			p.setProperty(FEPermissions.PLAYER_NAME, entry.getKey().getUsername() == null ? null : entry.getKey().getUsername());
-			p.setProperty(FEPermissions.PLAYER_UUID, entry.getKey().getUuid() == null ? null : entry.getKey().getUuid().toString());
+			if (entry.getKey().getUsername() != null)
+				p.setProperty(FEPermissions.PLAYER_NAME, entry.getKey().getUsername());
+			if (entry.getKey().getUuid() != null)
+				p.setProperty(FEPermissions.PLAYER_UUID, entry.getKey().getUuid().toString());
 			saveProperties(p, playersPath, userIdentification + PERMISSION_FILE_EXT, comment);
 		}
 		for (Entry<String, PermissionList> entry : zone.getGroupPermissions().entrySet())

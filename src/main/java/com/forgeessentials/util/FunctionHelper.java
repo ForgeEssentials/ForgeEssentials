@@ -8,10 +8,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventBus;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +29,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -79,6 +83,53 @@ public final class FunctionHelper {
 		{
 			return defaultValue;
 		}
+	}
+
+	/**
+	 * Checks if the blocks from [x,y,z] to [x,y+h-1,z] are either air or replacable
+	 * 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param h
+	 * @return y value
+	 */
+	public static boolean isFree(World world, int x, int y, int z, int h)
+	{
+		for (int i = 0; i < h; i++) {
+			Block block = world.getBlock(x, y + i, z);
+			if (block.getMaterial() != Material.air && !block.getMaterial().isReplaceable())
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Returns a free spot of height h in the world at the coordinates [x,z] near y.
+	 * If the blocks at [x,y,z] are free, it returns the next location that is on the ground.
+	 * If the blocks at [x,y,z] are not free, it goes up until it finds a free spot.
+	 * 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param h
+	 * @return y value
+	 */
+	public static int placeInWorld(World world, int x, int y, int z, int h)
+	{
+		if (isFree(world, x, y, z, h)) {
+			while (isFree(world, x, y - 1, z, h) && y > 0)
+				y--;
+		} else {
+			y++;
+			while (y + h < world.getHeight() && !isFree(world, x, y, z, h))
+				y++;
+		}
+		if (y == 0)
+			y = world.getHeight() - h;
+		return y;
 	}
 
 	/**
