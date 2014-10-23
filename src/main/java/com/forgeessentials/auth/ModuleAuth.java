@@ -31,7 +31,6 @@ public class ModuleAuth {
     public static boolean canMoveWithoutLogin;
 
     public static VanillaServiceChecker vanillaCheck;
-    public static HashSet<UUID> registered = new HashSet<>();
     public static HashSet<UUID> hasSession = new HashSet<>();
     public static String salt = EncryptionHelper.generateSalt();
     public static int checkInterval;

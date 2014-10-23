@@ -117,7 +117,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
 
                 String pass = ModuleAuth.encrypt(args[1]);
                 PlayerPassData.registerData(sender.getPersistentID(), pass);
-                ModuleAuth.registered.add(sender.getPersistentID());
                 OutputHandler.chatConfirmation(sender, "Registration successful.");
                 return;
             }
@@ -126,11 +125,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             if (!ModuleAuth.hasSession.contains(sender.getPersistentID()))
             {
                 OutputHandler.chatError(sender, "Login required. Try /auth help.");
-                return;
-            }
-            else if (!ModuleAuth.registered.contains(sender.getPersistentID()))
-            {
-                OutputHandler.chatError(sender, "Registration required. Try /auth help.");
                 return;
             }
 
@@ -208,16 +202,17 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
                 OutputHandler.chatError(sender, "Login required. Try /auth help.");
                 return;
             }
-            else if (!ModuleAuth.registered.contains(sender.getPersistentID()))
-            {
-                OutputHandler.chatError(sender, "Registration required. Try /auth help.");
-                return;
-            }
 
             // parse changePass
             if (args[0].equalsIgnoreCase("changepass"))
             {
-                PlayerPassData data = PlayerPassData.getData(sender.getPersistentID());
+                UUID name = sender.getPersistentID();
+                PlayerPassData data = PlayerPassData.getData(name);
+
+                if (data == null)
+                {
+                    throw new WrongUsageException(String.format("Player %s is not registered!", name));
+                }
                 String oldpass = ModuleAuth.encrypt(args[1]);
                 String newPass = ModuleAuth.encrypt(args[2]);
 
