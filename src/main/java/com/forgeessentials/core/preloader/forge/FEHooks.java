@@ -19,8 +19,9 @@ public class FEHooks
     // this thing is supposed to be smart.. it should detect forge version/presence of sponge and enable the necessary patches.
     public static void doInit()
     {
-        initNHPSPatch();
-        initCommandHandlerPatches();
+        initNHPSPatch(); // disable sign patch if 1459 is pulled, disable custompayload patch if 1403 is pulled
+        initCommandHandlerPatches();// disable if 1403 is pulled
+        initEntityPlayerMPPatch(); // disable if 1403 is pulled
     }
 
     public static void initNHPSPatch()
@@ -41,6 +42,25 @@ public class FEHooks
                 mv.visitLabel(l1);
                 mv.visitLocalVariable("this", "Lnet/minecraft/network/NetHandlerPlayServer;", null, l0, l1, 0);
                 mv.visitLocalVariable("packet", "Lnet/minecraft/network/play/client/C12PacketUpdateSign;", null, l0, l1, 1);
+                mv.visitMaxs(2, 2); // change this
+                mv.visitEnd();
+            }
+        });
+        nhps.methodMappings.add(new MethodMapping("func_147349_a", "processVanilla250Packet", "(Lnet/minecraft/network/play/client/C17PacketCustomPayload;)V"){
+            @Override
+            public void defineMethod(ClassWriter classWriter) {
+                MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, getName(), "(Lnet/minecraft/network/play/client/C17PacketCustomPayload;)V", null, null);
+                mv.visitCode();
+                Label l0 = new Label();
+                mv.visitLabel(l0);
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitVarInsn(ALOAD, 1);
+                mv.visitMethodInsn(INVOKESTATIC, "com/forgeessentials/core/preloader/forge/network_NetHandlerPlayServer", mcpName, "(Lnet/minecraft/network/NetHandlerPlayServer;Lnet/minecraft/network/play/client/C17PacketCustomPayload;)V", false);
+                mv.visitInsn(RETURN);
+                Label l1 = new Label();
+                mv.visitLabel(l1);
+                mv.visitLocalVariable("this", "Lnet/minecraft/network/NetHandlerPlayServer;", null, l0, l1, 0);
+                mv.visitLocalVariable("packet", "Lnet/minecraft/network/play/client/C17PacketCustomPayload;", null, l0, l1, 1);
                 mv.visitMaxs(2, 2); // change this
                 mv.visitEnd();
             }
@@ -77,7 +97,7 @@ public class FEHooks
         commandHandler.methodMappings.add(new MethodMapping("func_71557_a", "getPossibleCommands", "(Lnet/minecraft/command/ICommandSender;)Ljava/util/List;") {
             @Override
             public void defineMethod(ClassWriter classWriter) {
-                MethodVisitor mv = mv = classWriter.visitMethod(ACC_PUBLIC, getName(), "(Lnet/minecraft/command/ICommandSender;)Ljava/util/List;", null, null);
+                MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, getName(), "(Lnet/minecraft/command/ICommandSender;)Ljava/util/List;", null, null);
                 mv.visitCode();
                 Label l0 = new Label();
                 mv.visitLabel(l0);
@@ -96,5 +116,26 @@ public class FEHooks
         });
 
         EventInjector.addClassPatch(commandHandler);
+    }
+
+    public static void initEntityPlayerMPPatch()
+    {
+        ClassPatch patch = new ClassPatch("net/minecraft/entity/player/EntityPlayerMP");
+        patch.methodMappings.add(new MethodMapping("func_70003_b", "canCommandSenderUseCommand", "(ILjava/lang/String;)Z")
+        {
+            @Override public void defineMethod(ClassWriter classWriter)
+            {
+                MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, getName(), "(ILjava/lang/String;)Z", null, null);
+                mv.visitCode();
+                Label l0 = new Label();
+                mv.visitLabel(l0);
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitMethodInsn(INVOKESTATIC, "com/forgeessentials/core/preloader/forge/entity_player_EntityPlayerMP", mcpName, "(ILjava/lang/String;)Z", false);
+                mv.visitInsn(ARETURN);
+                mv.visitMaxs(2, 2);
+                mv.visitEnd();
+            }
+        });
+        EventInjector.addClassPatch(patch);
     }
 }

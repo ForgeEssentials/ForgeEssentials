@@ -5,7 +5,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
- * Forge PR 1404
+ * Forge PR 1459
  **/
 
 @Cancelable
