@@ -1,17 +1,18 @@
 package com.forgeessentials.afterlife;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.forgeessentials.util.UserIdent;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InventoryGrave extends InventoryBasic {
     private Grave grave;
 
     public InventoryGrave(Grave grave)
     {
-        super(grave.owner + "'s grave.", false, grave.getSize());
+        super(new UserIdent(grave.owner).getUsername() + "'s grave.", false, grave.getSize());
         this.grave = grave;
     }
 

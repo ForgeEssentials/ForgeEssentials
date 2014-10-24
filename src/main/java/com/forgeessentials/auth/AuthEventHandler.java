@@ -53,16 +53,10 @@ public class AuthEventHandler {
             return;
         }
 
-        if (ModuleAuth.unLogged.contains(username))
+        if (!ModuleAuth.hasSession.contains(username))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
-        }
-
-        if (ModuleAuth.unRegistered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
         }
     }
 
@@ -71,16 +65,10 @@ public class AuthEventHandler {
     {
         UUID username = event.player.getPersistentID();
 
-        if (ModuleAuth.unLogged.contains(username))
+        if (!ModuleAuth.hasSession.contains(username))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.player, "Login required. Try /auth help.");
-        }
-
-        if (ModuleAuth.unRegistered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.player, "Registration required. Try /auth help.");
         }
     }
 
@@ -94,16 +82,10 @@ public class AuthEventHandler {
 
         EntityPlayer player = (EntityPlayer) event.sender;
 
-        if (ModuleAuth.unLogged.contains(player.getPersistentID()) && !(event.command instanceof CommandAuth))
+        if (!ModuleAuth.hasSession.contains(player.getPersistentID()) && !(event.command instanceof CommandAuth))
         {
             event.setCanceled(true);
             OutputHandler.chatError(player, "Login required. Try /auth help.");
-        }
-
-        if (ModuleAuth.unRegistered.contains(player.getPersistentID()) && !(event.command instanceof CommandAuth))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(player, "Registration required. Try /auth help.");
         }
     }
 
@@ -112,16 +94,10 @@ public class AuthEventHandler {
     {
         UUID username = event.entityPlayer.getPersistentID();
 
-        if (ModuleAuth.unLogged.contains(username))
+        if (!ModuleAuth.hasSession.contains(username))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
-        }
-
-        if (ModuleAuth.unRegistered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
         }
     }
 
@@ -130,16 +106,10 @@ public class AuthEventHandler {
     {
         UUID username = event.entityPlayer.getPersistentID();
 
-        if (ModuleAuth.unLogged.contains(username))
+        if (!ModuleAuth.hasSession.contains(username))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
-        }
-
-        if (ModuleAuth.unRegistered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
         }
     }
 
@@ -148,16 +118,10 @@ public class AuthEventHandler {
     {
         UUID username = event.player.getPersistentID();
 
-        if (ModuleAuth.unLogged.contains(username))
+        if (!ModuleAuth.hasSession.contains(username))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.player, "Login required. Try /auth help.");
-        }
-
-        if (ModuleAuth.unRegistered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.player, "Registration required. Try /auth help.");
         }
     }
 
@@ -168,17 +132,11 @@ public class AuthEventHandler {
 
         boolean cancel = false;
 
-        if (ModuleAuth.unLogged.contains(username))
+        if (!ModuleAuth.hasSession.contains(username))
         {
             cancel = true;
 
             OutputHandler.chatError(event.player, "Login required. Try /auth help.");
-        }
-
-        if (ModuleAuth.unRegistered.contains(username))
-        {
-            cancel = true;
-            OutputHandler.chatError(event.player, "Registration required. Try /auth help.");
         }
 
         if (cancel)
@@ -195,16 +153,10 @@ public class AuthEventHandler {
     {
         UUID username = event.entityPlayer.getPersistentID();
 
-        if (ModuleAuth.unLogged.contains(username))
+        if (!ModuleAuth.hasSession.contains(username))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
-        }
-
-        if (ModuleAuth.unRegistered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
         }
     }
 
@@ -218,16 +170,10 @@ public class AuthEventHandler {
 
         EntityPlayer player = (EntityPlayer) event.entityLiving;
 
-        if (ModuleAuth.unLogged.contains(player.getPersistentID()))
+        if (!ModuleAuth.hasSession.contains(player.getPersistentID()))
         {
             event.setCanceled(true);
             OutputHandler.chatError(player, "Login required. Try /auth help.");
-        }
-
-        if (ModuleAuth.unRegistered.contains(player.getPersistentID()))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(player, "Registration required. Try /auth help.");
         }
     }
 
@@ -236,16 +182,10 @@ public class AuthEventHandler {
     {
         UUID username = event.entityPlayer.getPersistentID();
 
-        if (ModuleAuth.unLogged.contains(username))
+        if (!ModuleAuth.hasSession.contains(username))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
-        }
-
-        if (ModuleAuth.unRegistered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
         }
     }
 
@@ -261,12 +201,10 @@ public class AuthEventHandler {
         if (data == null)
         {
             OutputHandler.chatError(e.player, "Registration required. Try /auth help.");
-            ModuleAuth.unRegistered.add(e.player.getPersistentID());
         }
         else
         {
             OutputHandler.chatError(e.player, "Login required. Try /auth help.");
-            ModuleAuth.unLogged.add(e.player.getPersistentID());
         }
 
         maxcounter = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipslots - offset;
@@ -294,8 +232,7 @@ public class AuthEventHandler {
     @SubscribeEvent
     public void onLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
-        ModuleAuth.unLogged.remove(e.player.getPersistentID());
-        ModuleAuth.unRegistered.remove(e.player.getPersistentID());
+        ModuleAuth.hasSession.remove(e.player.getPersistentID());
         PlayerPassData.discardData(e.player.getPersistentID());
     }
 
