@@ -3,7 +3,12 @@ package com.forgeessentials.core;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.HelpFixer;
-import com.forgeessentials.core.commands.selections.*;
+import com.forgeessentials.core.commands.selections.CommandDeselect;
+import com.forgeessentials.core.commands.selections.CommandExpand;
+import com.forgeessentials.core.commands.selections.CommandExpandY;
+import com.forgeessentials.core.commands.selections.CommandPos;
+import com.forgeessentials.core.commands.selections.CommandWand;
+import com.forgeessentials.core.commands.selections.WandController;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.misc.BlockModListFile;
@@ -19,14 +24,13 @@ import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.typeInfo.TypeInfoItemStack;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTCompound;
-import com.forgeessentials.util.*;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTTagList;
-import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
@@ -36,7 +40,12 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -53,7 +62,7 @@ import java.util.List;
  * Main mod class
  */
 
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*")
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.1.1219,)")
 public class ForgeEssentials {
 
 	@Instance(value = "ForgeEssentials")
