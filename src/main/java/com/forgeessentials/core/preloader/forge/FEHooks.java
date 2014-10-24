@@ -21,13 +21,14 @@ public class FEHooks
     {
         initNHPSPatch(); // disable sign patch if 1459 is pulled, disable custompayload patch if 1403 is pulled
         initCommandHandlerPatches();// disable if 1403 is pulled
-        initEntityPlayerMPPatch(); // disable if 1403 is pulled
+        // currently not working
+        // initEntityPlayerMPPatch(); // disable if 1403 is pulled
     }
 
     public static void initNHPSPatch()
     {
         ClassPatch nhps = new ClassPatch("net.minecraft.network.NetHandlerPlayServer");
-        nhps.methodMappings.add(new MethodMapping("func_147343_a", "processUpdateSign", "(Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V"){
+        nhps.methodMappings.add(new MethodMapping("func_147343_a", "processUpdateSign", "(Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V", "Sign editing"){
             @Override
             public void defineMethod(ClassWriter classWriter) {
                 MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, getName(), "(Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V", null, null);
@@ -46,7 +47,7 @@ public class FEHooks
                 mv.visitEnd();
             }
         });
-        nhps.methodMappings.add(new MethodMapping("func_147349_a", "processVanilla250Packet", "(Lnet/minecraft/network/play/client/C17PacketCustomPayload;)V"){
+        nhps.methodMappings.add(new MethodMapping("func_147349_a", "processVanilla250Packet", "(Lnet/minecraft/network/play/client/C17PacketCustomPayload;)V", "Permissions (NetHandlerPlayServer)"){
             @Override
             public void defineMethod(ClassWriter classWriter) {
                 MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, getName(), "(Lnet/minecraft/network/play/client/C17PacketCustomPayload;)V", null, null);
@@ -71,7 +72,7 @@ public class FEHooks
     public static void initCommandHandlerPatches()
     {
         ClassPatch commandHandler = new ClassPatch("net.minecraft.command.CommandHandler");
-        commandHandler.methodMappings.add(new MethodMapping("func_71558_b", "getPossibleCommands", "(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Ljava/util/List;") {
+        commandHandler.methodMappings.add(new MethodMapping("func_71558_b", "getPossibleCommands", "(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Ljava/util/List;", "Permissions patch 1, CommandHandler") {
             @Override
             public void defineMethod(ClassWriter classWriter) {
                 MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, getName(), desc, null, null);
@@ -94,7 +95,7 @@ public class FEHooks
             }
         });
 
-        commandHandler.methodMappings.add(new MethodMapping("func_71557_a", "getPossibleCommands", "(Lnet/minecraft/command/ICommandSender;)Ljava/util/List;") {
+        commandHandler.methodMappings.add(new MethodMapping("func_71557_a", "getPossibleCommands", "(Lnet/minecraft/command/ICommandSender;)Ljava/util/List;",  "Permissions patch 2, CommandHandler") {
             @Override
             public void defineMethod(ClassWriter classWriter) {
                 MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, getName(), "(Lnet/minecraft/command/ICommandSender;)Ljava/util/List;", null, null);
@@ -121,7 +122,7 @@ public class FEHooks
     public static void initEntityPlayerMPPatch()
     {
         ClassPatch patch = new ClassPatch("net/minecraft/entity/player/EntityPlayerMP");
-        patch.methodMappings.add(new MethodMapping("func_70003_b", "canCommandSenderUseCommand", "(ILjava/lang/String;)Z")
+        patch.methodMappings.add(new MethodMapping("func_70003_b", "canCommandSenderUseCommand", "(ILjava/lang/String;)Z", "Permissions (EntityPlayerMP)")
         {
             @Override public void defineMethod(ClassWriter classWriter)
             {
@@ -130,6 +131,7 @@ public class FEHooks
                 Label l0 = new Label();
                 mv.visitLabel(l0);
                 mv.visitVarInsn(ALOAD, 0);
+                mv.visitVarInsn(ALOAD, 1);
                 mv.visitMethodInsn(INVOKESTATIC, "com/forgeessentials/core/preloader/forge/entity_player_EntityPlayerMP", mcpName, "(ILjava/lang/String;)Z", false);
                 mv.visitInsn(ARETURN);
                 mv.visitMaxs(2, 2);

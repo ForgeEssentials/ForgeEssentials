@@ -25,7 +25,9 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +37,8 @@ import java.util.Set;
 public class EventInjector implements IClassTransformer{
 
     private static final Map<String, ClassPatch> classPatches = new THashMap<>();
+
+    public static final List<String> injectedPatches = new ArrayList<>();
 
     public static void addClassPatch(ClassPatch classPatch) {
         classPatches.put(classPatch.targetClass, classPatch);
@@ -66,7 +70,10 @@ public class EventInjector implements IClassTransformer{
 
             for (MethodMapping mm : cp.methodMappings) {
                 mm.defineMethod(cw);
+                injectedPatches.add(mm.friendlyName);
             }
+
+            System.out.println("Injected patches for class " + transformedName);
 
             return cw.toByteArray();
         }
@@ -90,11 +97,13 @@ public class EventInjector implements IClassTransformer{
         public final String srgName;
         public final String mcpName;
         public final String desc;
+        public final String friendlyName;
 
-        public MethodMapping(String srgName, String mcpName, String desc) {
+        public MethodMapping(String srgName, String mcpName, String desc, String friendlyName) {
             this.srgName = srgName;
             this.mcpName = mcpName;
             this.desc = desc;
+            this.friendlyName = friendlyName;
         }
 
         public String getName() {
