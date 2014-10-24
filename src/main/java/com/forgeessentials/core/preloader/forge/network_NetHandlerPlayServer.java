@@ -1,6 +1,5 @@
 package com.forgeessentials.core.preloader.forge;
 
-import com.forgeessentials.core.preloader.asm.EventInjector.MethodMapping;
 import com.forgeessentials.util.events.forge.SignEditEvent;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.C12PacketUpdateSign;
@@ -9,22 +8,9 @@ import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-import static org.objectweb.asm.Opcodes.RETURN;
-
-public class network_NetHandlerPlayServer extends MethodMapping
+public class network_NetHandlerPlayServer
 {
-    public network_NetHandlerPlayServer()
-    {
-        super("func_147343_a", "processUpdateSign", "(Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V");
-    }
-
     // patch method
     public static void processUpdateSign(NetHandlerPlayServer net, C12PacketUpdateSign p_147343_1_)
     {
@@ -100,24 +86,5 @@ public class network_NetHandlerPlayServer extends MethodMapping
         }
         return e.text;
 
-    }
-
-    // actual method definition
-    @Override
-    public void defineMethod(ClassWriter classWriter) {
-        MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, getName(), "(Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V", null, null);
-        mv.visitCode();
-        Label l0 = new Label();
-        mv.visitLabel(l0);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKESTATIC, "com/forgeessentials/core/preloader/forge/network_NetHandlerPlayServer", mcpName, "(Lnet/minecraft/network/NetHandlerPlayServer;Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V", false);
-        mv.visitInsn(RETURN);
-        Label l1 = new Label();
-        mv.visitLabel(l1);
-        mv.visitLocalVariable("this", "Lnet/minecraft/network/NetHandlerPlayServer;", null, l0, l1, 0);
-        mv.visitLocalVariable("packet", "Lnet/minecraft/network/play/client/C12PacketUpdateSign;", null, l0, l1, 1);
-        mv.visitMaxs(2, 2); // change this
-        mv.visitEnd();
     }
 }

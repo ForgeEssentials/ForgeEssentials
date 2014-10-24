@@ -12,18 +12,40 @@ import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ARETURN;
 import static org.objectweb.asm.Opcodes.GETFIELD;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-
+import static org.objectweb.asm.Opcodes.RETURN;
 
 public class FEHooks
 {
     // this thing is supposed to be smart.. it should detect forge version/presence of sponge and enable the necessary patches.
     public static void doInit()
     {
-        ClassPatch nhps = new ClassPatch("net.minecraft.network.NetHandlerPlayServer");
-        nhps.methodMappings.add(new network_NetHandlerPlayServer());
-        EventInjector.addClassPatch(nhps);
-
+        initNHPSPatch();
         initCommandHandlerPatches();
+    }
+
+    public static void initNHPSPatch()
+    {
+        ClassPatch nhps = new ClassPatch("net.minecraft.network.NetHandlerPlayServer");
+        nhps.methodMappings.add(new MethodMapping("func_147343_a", "processUpdateSign", "(Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V"){
+            @Override
+            public void defineMethod(ClassWriter classWriter) {
+                MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, getName(), "(Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V", null, null);
+                mv.visitCode();
+                Label l0 = new Label();
+                mv.visitLabel(l0);
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitVarInsn(ALOAD, 1);
+                mv.visitMethodInsn(INVOKESTATIC, "com/forgeessentials/core/preloader/forge/network_NetHandlerPlayServer", mcpName, "(Lnet/minecraft/network/NetHandlerPlayServer;Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V", false);
+                mv.visitInsn(RETURN);
+                Label l1 = new Label();
+                mv.visitLabel(l1);
+                mv.visitLocalVariable("this", "Lnet/minecraft/network/NetHandlerPlayServer;", null, l0, l1, 0);
+                mv.visitLocalVariable("packet", "Lnet/minecraft/network/play/client/C12PacketUpdateSign;", null, l0, l1, 1);
+                mv.visitMaxs(2, 2); // change this
+                mv.visitEnd();
+            }
+        });
+        EventInjector.addClassPatch(nhps);
     }
 
     public static void initCommandHandlerPatches()
