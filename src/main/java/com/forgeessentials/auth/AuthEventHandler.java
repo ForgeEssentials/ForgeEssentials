@@ -58,12 +58,6 @@ public class AuthEventHandler {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
         }
-
-        if (!ModuleAuth.registered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -75,12 +69,6 @@ public class AuthEventHandler {
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.player, "Login required. Try /auth help.");
-        }
-
-        if (!ModuleAuth.registered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.player, "Registration required. Try /auth help.");
         }
     }
 
@@ -99,12 +87,6 @@ public class AuthEventHandler {
             event.setCanceled(true);
             OutputHandler.chatError(player, "Login required. Try /auth help.");
         }
-
-        if (!ModuleAuth.registered.contains(player.getPersistentID()) && !(event.command instanceof CommandAuth))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(player, "Registration required. Try /auth help.");
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -116,12 +98,6 @@ public class AuthEventHandler {
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
-        }
-
-        if (!ModuleAuth.registered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
         }
     }
 
@@ -135,12 +111,6 @@ public class AuthEventHandler {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
         }
-
-        if (!ModuleAuth.registered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -152,12 +122,6 @@ public class AuthEventHandler {
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.player, "Login required. Try /auth help.");
-        }
-
-        if (!ModuleAuth.registered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.player, "Registration required. Try /auth help.");
         }
     }
 
@@ -173,12 +137,6 @@ public class AuthEventHandler {
             cancel = true;
 
             OutputHandler.chatError(event.player, "Login required. Try /auth help.");
-        }
-
-        if (!ModuleAuth.registered.contains(username))
-        {
-            cancel = true;
-            OutputHandler.chatError(event.player, "Registration required. Try /auth help.");
         }
 
         if (cancel)
@@ -200,12 +158,6 @@ public class AuthEventHandler {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
         }
-
-        if (!ModuleAuth.registered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -223,12 +175,6 @@ public class AuthEventHandler {
             event.setCanceled(true);
             OutputHandler.chatError(player, "Login required. Try /auth help.");
         }
-
-        if (!ModuleAuth.registered.contains(player.getPersistentID()))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(player, "Registration required. Try /auth help.");
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -240,12 +186,6 @@ public class AuthEventHandler {
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
-        }
-
-        if (!ModuleAuth.registered.contains(username))
-        {
-            event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Registration required. Try /auth help.");
         }
     }
 
@@ -293,7 +233,6 @@ public class AuthEventHandler {
     public void onLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
         ModuleAuth.hasSession.remove(e.player.getPersistentID());
-        ModuleAuth.registered.remove(e.player.getPersistentID());
         PlayerPassData.discardData(e.player.getPersistentID());
     }
 
