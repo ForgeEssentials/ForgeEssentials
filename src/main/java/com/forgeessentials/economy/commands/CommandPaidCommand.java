@@ -43,7 +43,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
                 if (APIRegistry.wallet.getWallet(player.username) >= amount)
                 {
                     APIRegistry.wallet.removeFromWallet(amount, player.username);
-                    // Do command in name of player
+                    // Do command
 
                     StringBuilder cmd = new StringBuilder(args.toString().length());
                     for (int i = 2; i < args.length; i++)
@@ -52,7 +52,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
                         cmd.append(" ");
                     }
 
-                    MinecraftServer.getServer().getCommandManager().executeCommand(player, cmd.toString());
+                    MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
                     OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + APIRegistry.wallet.currency(amount));
                 }
                 else
