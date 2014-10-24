@@ -23,7 +23,7 @@ public class FEHooks
         nhps.methodMappings.add(new network_NetHandlerPlayServer());
         EventInjector.addClassPatch(nhps);
 
-        //initCommandHandlerPatches();
+        initCommandHandlerPatches();
     }
 
     public static void initCommandHandlerPatches()
@@ -40,7 +40,7 @@ public class FEHooks
                 mv.visitFieldInsn(GETFIELD, "net/minecraft/command/CommandHandler", "commandMap", "Ljava/util/Map;");
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
-                mv.visitMethodInsn(INVOKESTATIC, "info/servertools/permission/STPCommandHandler", mcpName, "(Ljava/util/Map;Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Ljava/util/List;", false);
+                mv.visitMethodInsn(INVOKESTATIC, "com/forgeessentials/core/preloader/forge/command_CommandHandler", mcpName, "(Ljava/util/Map;Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Ljava/util/List;", false);
                 mv.visitInsn(ARETURN);
                 Label l1 = new Label();
                 mv.visitLabel(l1);
@@ -62,7 +62,7 @@ public class FEHooks
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitFieldInsn(GETFIELD, "net/minecraft/command/CommandHandler", "commandMap", "Ljava/util/Map;");
                 mv.visitVarInsn(ALOAD, 1);
-                mv.visitMethodInsn(INVOKESTATIC, "info/servertools/permission/STPCommandHandler", mcpName, "(Ljava/util/Map;Lnet/minecraft/command/ICommandSender;)Ljava/util/List;", false);
+                mv.visitMethodInsn(INVOKESTATIC, "com/forgeessentials/core/preloader/forge/command_CommandHandler", mcpName, "(Ljava/util/Map;Lnet/minecraft/command/ICommandSender;)Ljava/util/List;", false);
                 mv.visitInsn(ARETURN);
                 Label l1 = new Label();
                 mv.visitLabel(l1);
