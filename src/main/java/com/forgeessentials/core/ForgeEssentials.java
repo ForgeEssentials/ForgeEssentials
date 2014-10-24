@@ -1,5 +1,6 @@
 package com.forgeessentials.core;
 
+import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.HelpFixer;
@@ -159,6 +160,7 @@ public class ForgeEssentials {
 
 		// commands
 		commands.add(new CommandFEInfo());
+        commands.add(new CommandFEDebug());
 		e.registerServerCommand(new HelpFixer());
 
 		if (!EnvironmentChecker.worldEditInstalled)
