@@ -1,166 +1,109 @@
+/*
+ * Copyright 2014 ServerTools (licensed to FE)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.forgeessentials.core.preloader.asm;
 
-import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
+import com.forgeessentials.core.preloader.FEPreLoader;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.launchwrapper.LaunchClassLoader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import java.io.IOException;
-import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Method replacement for adding FE hooks. Likely to be temporary until Forge gets its act together.
- * Originally by matthewprenger.
  */
 public class EventInjector implements IClassTransformer{
 
-    public static final Set<EventInjector.PatchNote> patches = new HashSet<>();
+    private static final Map<String, ClassPatch> classPatches = new THashMap<>();
 
-    private static final Logger log = LogManager.getLogger();
-    private static final FMLDeobfuscatingRemapper remapper = FMLDeobfuscatingRemapper.INSTANCE;
-
-    static{
-        EventInjector.PatchNote nhps = new EventInjector.PatchNote("net.minecraft.network.NetHandlerPlayServer", "com.forgeessentials.core.preloader.asm.forge.network_NetHandlerPlayServer");
-        nhps.addMethodToPatch(new EventInjector.MethodNote("processUpdateSign", "func_147343_a", "(Lnet/minecraft/network/play/client/C12PacketUpdateSign;)V"));
-        addPatch(nhps);
+    public static void addClassPatch(ClassPatch classPatch) {
+        classPatches.put(classPatch.targetClass, classPatch);
     }
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
 
-        if (bytes == null)
-            return null;
+        if (classPatches.containsKey(transformedName)) {
+            ClassPatch cp = classPatches.get(transformedName);
+            ClassNode cn = new ClassNode();
+            ClassReader cr = new ClassReader(bytes);
+            cr.accept(cn, 0);
 
-        log.trace("Class: {} | Transformed: {}", name, transformedName);
 
-        for (PatchNote patchNote : patches) {
-            if (patchNote.sourceClass.equals(transformedName)) {
-                log.info("Found Class To Patch, Name:{}, TransformedName:{}", name, transformedName);
-                return transform(name, patchNote, bytes);
+            Iterator<MethodNode> iter = cn.methods.iterator();
+
+            while (iter.hasNext()) {
+                MethodNode mn = iter.next();
+                for (MethodMapping mm : cp.methodMappings) {
+                    if (mm.getName().equals(mn.name) && mm.desc.equals(mn.desc)) {
+                        iter.remove();
+                    }
+                }
             }
+
+            ClassWriter cw = new ClassWriter(0);
+            cn.accept(cw);
+
+            for (MethodMapping mm : cp.methodMappings) {
+                mm.defineMethod(cw);
+            }
+
+            return cw.toByteArray();
         }
 
         return bytes;
     }
 
-    private static byte[] transform(String obfName, PatchNote patchNote, byte[] bytes) {
 
-        ClassNode classNode = new ClassNode();
-        ClassReader classReader = new ClassReader(bytes);
-        classReader.accept(classNode, 0);
+    public static class ClassPatch {
+        public final String targetClass;
 
-        if (patchNote.methodsToPatch.isEmpty())
-            return bytes;
+        public final Set<MethodMapping> methodMappings = new THashSet<>();
 
-        for (MethodNote methodNote : patchNote.methodsToPatch) {
-
-            MethodNode sourceMethod = null;
-            MethodNode replacementMethod = null;
-
-            try {
-
-                for (MethodNode method : classNode.methods) {
-                    if (methodNote.srgMethodName.equals(remapper.mapMethodName(obfName, method.name, method.desc))) {
-                        log.trace("Found Method to Patch: {}@{}", method.name, method.desc);
-                        sourceMethod = method;
-                        break;
-                    } else if (methodNote.methodName.equals(method.name) && methodNote.deobfDesc.equals(method.desc)) {
-                        log.trace("Found Deobfuscated Method to Patch: {}@{}", method.name, method.desc);
-                        sourceMethod = method;
-                    }
-                }
-
-
-                ClassNode replacementClass = loadClass(patchNote.replacementClass);
-                for (MethodNode method : replacementClass.methods) {
-                    if (methodNote.srgMethodName.equals(remapper.mapMethodName(patchNote.replacementClass, method.name, method.desc))) {
-                        log.trace("Found Replacement Method: {}@{}", method.name, method.desc);
-                        replacementMethod = method;
-                        break;
-                    } else if (methodNote.methodName.equals(method.name) && methodNote.deobfDesc.equals(method.desc)) {
-                        log.trace("Found Deobfuscated Replacement Method: {}@{}", method.name, method.desc);
-                        replacementMethod = method;
-                        break;
-                    }
-                }
-            } catch (Throwable t) {
-                log.warn("Failed to Map Replacement Method: {}", methodNote.methodName, t);
-            }
-
-            if (sourceMethod != null && replacementMethod != null) {
-                log.info("Successfully Mapped Method to be Replaced");
-                log.debug("  Source: {}@{} Replacement: {}@{}", sourceMethod.name, sourceMethod.desc, replacementMethod.name, replacementMethod.desc);
-                classNode.methods.remove(sourceMethod);
-                classNode.methods.add(replacementMethod);
-
-            } else {
-                log.info("Couldn't match methods to patch, skipping");
-                return bytes;
-            }
-        }
-
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        classNode.accept(classWriter);
-        return classWriter.toByteArray();
-    }
-
-    public static void addPatch(PatchNote patchNote) {
-
-        log.trace("Registering ASM Patch: {}", patchNote.sourceClass);
-        log.trace("  Replacement: {}", patchNote.replacementClass);
-
-        for (MethodNote note : patchNote.methodsToPatch) {
-            log.trace("  Method: {}", note.methodName);
-            log.trace("  SRG: {}", note.srgMethodName);
-        }
-
-        patches.add(patchNote);
-    }
-
-    private static ClassNode loadClass(String className) throws IOException {
-
-        LaunchClassLoader loader = (LaunchClassLoader) EventInjector.class.getClassLoader();
-        ClassNode classNode = new ClassNode();
-        ClassReader classReader = new ClassReader(loader.getClassBytes(className));
-        classReader.accept(classNode, 0);
-        return classNode;
-    }
-
-    public static class PatchNote {
-
-        public final String sourceClass;
-        public final String replacementClass;
-
-        public final Set<MethodNote> methodsToPatch = new HashSet<>();
-
-        public PatchNote(String sourceClass, String replacementClass) {
-            this.sourceClass = sourceClass;
-            this.replacementClass = replacementClass;
-        }
-
-        public void addMethodToPatch(MethodNote methodNote) {
-
-            methodsToPatch.add(methodNote);
+        public ClassPatch(String targetClass) {
+            this.targetClass = targetClass;
         }
     }
 
-    public static class MethodNote {
+    public abstract static class MethodMapping {
 
-        public final String methodName;
-        public final String srgMethodName;
-        public final String deobfDesc;
+        public final String srgName;
+        public final String mcpName;
+        public final String desc;
 
-        public MethodNote(String methodName, String srgMethodName, String deobfDesc) {
-
-            this.methodName = methodName;
-            this.srgMethodName = srgMethodName;
-            this.deobfDesc = deobfDesc;
+        public MethodMapping(String srgName, String mcpName, String desc) {
+            this.srgName = srgName;
+            this.mcpName = mcpName;
+            this.desc = desc;
         }
+
+        public String getName() {
+            if (FEPreLoader.runtimeDeobfEnabled)
+                return srgName;
+            else
+                return mcpName;
+        }
+
+        public abstract void defineMethod(ClassWriter classWriter);
     }
 }

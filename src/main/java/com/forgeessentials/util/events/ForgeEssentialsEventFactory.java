@@ -3,7 +3,6 @@ package com.forgeessentials.util.events;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.events.forge.SignEditEvent;
 import com.forgeessentials.util.selections.WarpPoint;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -94,14 +93,5 @@ public class ForgeEssentialsEventFactory {
     public static ForgeEssentialsEventFactory getInstance()
     {
         return INSTANCE;
-    }
-
-    @SubscribeEvent
-    public void test(SignEditEvent e)
-    {
-        for (String s : e.text)
-        {
-            System.out.println(s);
-        }
     }
 }

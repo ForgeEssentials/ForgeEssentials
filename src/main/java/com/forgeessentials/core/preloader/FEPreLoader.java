@@ -1,6 +1,7 @@
 package com.forgeessentials.core.preloader;
 
 import com.forgeessentials.core.preloader.classloading.FEClassLoader;
+import com.forgeessentials.core.preloader.forge.FEHooks;
 import cpw.mods.fml.relauncher.IFMLCallHook;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -15,6 +16,8 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
 
     public static File location;
     private LaunchClassLoader classLoader;
+
+    public static boolean runtimeDeobfEnabled;
     private File FEfolder;
 
     private String[] transformers = {
@@ -24,6 +27,7 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
     @Override
     public String[] getASMTransformerClass()
     {
+        FEHooks.doInit();
         return transformers;
     }
 
@@ -56,6 +60,10 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
         if (data.containsKey("classLoader") && data.get("classLoader") != null)
         {
             classLoader = (LaunchClassLoader) data.get("classLoader");
+        }
+        if (data.containsKey("runtimeDeobfuscationEnabled") && data.get("runtimeDeobfuscationEnabled") != null)
+        {
+            runtimeDeobfEnabled = (boolean) data.get("runtimeDeobfuscationEnabled");
         }
     }
 
