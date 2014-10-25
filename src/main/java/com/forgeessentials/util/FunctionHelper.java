@@ -431,12 +431,7 @@ public final class FunctionHelper {
     {
         Calendar c = Calendar.getInstance();
 
-        StringBuilder builder = new StringBuilder();
-        builder.append(c.get(Calendar.HOUR_OF_DAY));
-        builder.append(':');
-        builder.append(c.get(Calendar.MINUTE));
-
-        return builder.toString();
+        return String.format("%02d:%02d", c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
     }
 
     /**
