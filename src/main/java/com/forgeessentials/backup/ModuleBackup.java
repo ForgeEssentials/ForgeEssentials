@@ -7,13 +7,13 @@ import java.util.Timer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.OutputHandler;
@@ -87,7 +87,7 @@ public class ModuleBackup {
         }
         makeReadme();
 
-        PermissionsManager.registerPermission("fe.backup.msg", RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission("fe.backup.msg", RegisteredPermValue.TRUE);
     }
 
     @SubscribeEvent

@@ -122,8 +122,8 @@ public class ModuleWorldBorder {
 		e.registerServerCommand(new CommandWB());
 		e.registerServerCommand(new CommandFiller());
 
-		PermissionsManager.registerPermission("fe.worldborder.admin", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.worldborder.filler", RegisteredPermValue.OP);
+		APIRegistry.perms.registerPermission("fe.worldborder.admin", RegisteredPermValue.OP);
+		APIRegistry.perms.registerPermission("fe.worldborder.filler", RegisteredPermValue.OP);
 	}
 
 	/*

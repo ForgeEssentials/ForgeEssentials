@@ -1,6 +1,25 @@
 package com.forgeessentials.chat;
 
-import com.forgeessentials.chat.commands.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Set;
+
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.chat.commands.CommandAutoMessage;
+import com.forgeessentials.chat.commands.CommandMail;
+import com.forgeessentials.chat.commands.CommandMsg;
+import com.forgeessentials.chat.commands.CommandMute;
+import com.forgeessentials.chat.commands.CommandNickname;
+import com.forgeessentials.chat.commands.CommandPm;
+import com.forgeessentials.chat.commands.CommandR;
+import com.forgeessentials.chat.commands.CommandUnmute;
 import com.forgeessentials.chat.irc.IRCChatFormatter;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.chat.irc.PlayerEventHandler;
@@ -9,21 +28,15 @@ import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.FEModuleEvent.*;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Map;
-import java.util.Set;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class, configClass = ConfigChat.class)
 public class ModuleChat {
@@ -112,8 +125,8 @@ public class ModuleChat {
             OutputHandler.felog.warning("Could not create command log file!");
         }
 
-        PermissionsManager.registerPermission("fe.chat.usecolor", RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission("fe.chat.nickname.others", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission("fe.chat.usecolor", RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission("fe.chat.nickname.others", RegisteredPermValue.OP);
     }
 
     @SubscribeEvent

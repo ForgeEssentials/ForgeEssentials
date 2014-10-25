@@ -19,6 +19,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
@@ -143,41 +144,44 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	// -- Utilities
 	// ------------------------------------------------------------
 
-	public Set<String> enumRegisteredPermissions()
-	{
-		Set<String> perms = new TreeSet<String>();
-		for (Map<String, String> groupPerms : rootZone.getGroupPermissions().values())
-		{
-			for (String perm : groupPerms.keySet())
-			{
-				perms.add(perm);
-			}
-		}
-		return perms;
-	}
+    public Set<String> enumRegisteredPermissions()
+    {
+        Set<String> perms = new TreeSet<String>();
+        for (Map<String, String> groupPerms : rootZone.getGroupPermissions().values())
+        {
+            for (String perm : groupPerms.keySet())
+            {
+                if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                    perms.add(perm);
+            }
+        }
+        return perms;
+    }
 
-	public Set<String> enumAllPermissions()
-	{
-		Set<String> perms = new TreeSet<String>();
-		for (Zone zone : zones.values())
-		{
-			for (Map<String, String> groupPerms : zone.getGroupPermissions().values())
-			{
-				for (String perm : groupPerms.keySet())
-				{
-					perms.add(perm);
-				}
-			}
-			for (Map<String, String> playerPerms : zone.getPlayerPermissions().values())
-			{
-				for (String perm : playerPerms.keySet())
-				{
-					perms.add(perm);
-				}
-			}
-		}
-		return perms;
-	}
+    public Set<String> enumAllPermissions()
+    {
+        Set<String> perms = new TreeSet<String>();
+        for (Zone zone : zones.values())
+        {
+            for (Map<String, String> groupPerms : zone.getGroupPermissions().values())
+            {
+                for (String perm : groupPerms.keySet())
+                {
+                    if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                        perms.add(perm);
+                }
+            }
+            for (Map<String, String> playerPerms : zone.getPlayerPermissions().values())
+            {
+                for (String perm : playerPerms.keySet())
+                {
+                    if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                        perms.add(perm);
+                }
+            }
+        }
+        return perms;
+    }
 
 	public Map<Zone, Map<String, String>> enumUserPermissions(UserIdent ident)
 	{
@@ -359,6 +363,26 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	}
 
 	@Override
+    public void registerPermissionDescription(String permissionNode, String description)
+    {
+        registerPermissionProperty(permissionNode + FEPermissions.DESCRIPTION_PROPERTY, description);
+    }
+
+    @Override
+    public void registerPermission(String permissionNode, RegisteredPermValue level, String description)
+    {
+        registerPermission(permissionNode, level);
+        registerPermissionDescription(permissionNode, description);
+    }
+
+    @Override
+    public void registerPermissionProperty(String permissionNode, String defaultValue, String description)
+    {
+        registerPermissionProperty(permissionNode, defaultValue);
+        registerPermissionDescription(permissionNode, description);
+    }
+
+	@Override
 	public void setPlayerPermission(UserIdent ident, String permissionNode, boolean value)
 	{
 		getServerZone().setPlayerPermission(ident, permissionNode, value);
@@ -381,6 +405,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	{
 		getServerZone().setGroupPermissionProperty(group, permissionNode, value);
 	}
+
+    @Override
+    public String getPermissionDescription(String permissionNode)
+    {
+        return rootZone.getGroupPermission(GROUP_DEFAULT, permissionNode + FEPermissions.DESCRIPTION_PROPERTY);
+    }
 
 	// ------------------------------------------------------------
 	// -- IPermissionProvider
@@ -712,6 +742,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		zones.add(rootZone);
 		return getPermission(zones, ident, getPlayerGroups(ident), permissionNode, true);
 	}
+
 
 	// ------------------------------------------------------------
 }

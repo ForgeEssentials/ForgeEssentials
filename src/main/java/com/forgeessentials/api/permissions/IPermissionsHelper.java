@@ -8,6 +8,7 @@ import java.util.SortedSet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.IPermissionsProvider;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldArea;
@@ -57,6 +58,56 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @return property, if it exists, null otherwise
 	 */
 	String getPermissionProperty(EntityPlayer player, String permissionNode);
+
+    /**
+     * Register a permission description
+     * 
+     * @param permissionNode
+     * @param description
+     *            Description for the permission.
+     *            Description will be stored as "permissionNode.$desc" permission-property.
+     */
+    void registerPermissionDescription(String permissionNode, String description);
+
+    /**
+     * Get a permission description
+     * 
+     * @param permissionNode
+     * @return 
+     */
+    String getPermissionDescription(String permissionNode);
+
+    /**
+     * This is where permissions are registered with their default value.
+     * This function also allows to register a description.
+     * 
+     * @param permissionNode
+     * @param level
+     *            Default level of the permission. This can be used to tell the
+     *            underlying {@link IPermissionsProvider} whether a player
+     *            should be allowed to access this permission by default, or as
+     *            operator only.
+     * @param description
+     *            Description for the permission.
+     */
+    void registerPermission(String permissionNode, RegisteredPermValue level, String description);
+
+    /**
+     * Registers a permission property
+     * 
+     * @param permissionNode
+     * @param defaultValue
+     */
+    void registerPermissionProperty(String permissionNode, String defaultValue);
+
+    /**
+     * Registers a permission property
+     * 
+     * @param permissionNode
+     * @param defaultValue
+     * @param description
+     */
+    void registerPermissionProperty(String permissionNode, String defaultValue, String description);
 
 	// ---------------------------------------------------------------------------
 
@@ -186,14 +237,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 	 * @param value
 	 */
 	void setGroupPermissionProperty(String group, String permissionNode, String value);
-
-	/**
-	 * Registers a permission property
-	 * 
-	 * @param permissionNode
-	 * @param defaultValue
-	 */
-	void registerPermissionProperty(String permissionNode, String defaultValue);
 
 	// ---------------------------------------------------------------------------
 

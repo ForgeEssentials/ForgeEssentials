@@ -1,5 +1,16 @@
 package com.forgeessentials.core;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -37,6 +48,7 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -48,16 +60,6 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Main mod class
@@ -177,7 +179,7 @@ public class ForgeEssentials {
 		{
 			if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
 			{
-				PermissionsManager.registerPermission(command.getPermissionNode(), command.getDefaultPermission());
+				APIRegistry.perms.registerPermission(command.getPermissionNode(), command.getDefaultPermission());
 			}
 			e.registerServerCommand(command);
 		}

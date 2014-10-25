@@ -26,6 +26,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.FunctionHelper;
@@ -393,7 +394,7 @@ public class CommandRules extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        PermissionsManager.registerPermission(getPermissionNode() + ".edit", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", RegisteredPermValue.OP);
     }
 
     @Override

@@ -1,16 +1,18 @@
 package com.forgeessentials.afterlife;
 
+import java.io.File;
+
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.io.File;
 
 /**
  * This module handles Deathchest and respawn debuffs.
@@ -42,14 +44,13 @@ public class ModuleAfterlife {
     {
         deathchest.load();
         FMLCommonHandler.instance().bus().register(respawnDebuff);
-        PermissionsManager.registerPermission(BASEPERM, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(BASEPERM, RegisteredPermValue.OP);
 
-        PermissionsManager.registerPermission(RespawnDebuffHandler.BYPASSPOTION, RegisteredPermValue.OP);
-        PermissionsManager.registerPermission(RespawnDebuffHandler.BYPASSSTATS, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(RespawnDebuffHandler.BYPASSPOTION, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(RespawnDebuffHandler.BYPASSSTATS, RegisteredPermValue.OP);
 
-        PermissionsManager.registerPermission(Deathchest.PERMISSION_BYPASS, null);
-        PermissionsManager.registerPermission(Deathchest.PERMISSION_MAKE, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(Deathchest.PERMISSION_MAKE, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(Deathchest.PERMISSION_BYPASS, null);
+        APIRegistry.perms.registerPermission(Deathchest.PERMISSION_MAKE, RegisteredPermValue.TRUE, "Allows graves to spawn, if a player dies");
     }
 
     @SubscribeEvent

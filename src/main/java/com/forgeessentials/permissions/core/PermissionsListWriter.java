@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Collection;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.FunctionHelper;
 
@@ -41,8 +44,13 @@ public class PermissionsListWriter {
 			writer.newLine();
 			for (String perm : permissions)
 			{
-				writer.write(perm);
-				writer.newLine();
+			    String description = APIRegistry.perms.getPermissionDescription(perm);
+			    if (description != null) {
+                    writer.write("# " + description);
+                    writer.newLine();
+			    }
+                writer.write(perm);
+                writer.newLine();
 			}
 			writer.close();
 		}
@@ -51,4 +59,5 @@ public class PermissionsListWriter {
 
 		}
 	}
+	
 }

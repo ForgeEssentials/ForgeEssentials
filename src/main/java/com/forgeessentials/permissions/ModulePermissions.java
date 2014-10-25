@@ -105,19 +105,21 @@ public class ModulePermissions {
 
 	private void registerPermissions()
 	{
-		PermissionsManager.registerPermission(CommandZone.PERM_ALL, RegisteredPermValue.OP);
-		PermissionsManager.registerPermission(CommandZone.PERM_LIST, RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission(CommandZone.PERM_INFO, RegisteredPermValue.TRUE);
+	    APIRegistry.perms.registerPermissionDescription(CommandZone.PERM_NODE, "Permission nodes for area-management command");
+        APIRegistry.perms.registerPermission(CommandZone.PERM_ALL, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(CommandZone.PERM_LIST, RegisteredPermValue.TRUE);
+		APIRegistry.perms.registerPermission(CommandZone.PERM_INFO, RegisteredPermValue.TRUE);
 
-		PermissionsManager.registerPermission(PermissionCommandParser.PERM_ALL, RegisteredPermValue.OP);
-		PermissionsManager.registerPermission(PermissionCommandParser.PERM_LIST_PERMS, RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission(PermissionCommandParser.PERM_TEST, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermissionDescription(PermissionCommandParser.PERM, "Permission nodes for permission-management command");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_ALL, RegisteredPermValue.OP);
+		APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_PERMS, RegisteredPermValue.TRUE, "Allow listing all permissions affecting current user");
+		APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_TEST, RegisteredPermValue.TRUE, "Allow testing permission nodes");
 		
-		PermissionsManager.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.core.info", RegisteredPermValue.OP);
+		APIRegistry.perms.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
+		APIRegistry.perms.registerPermission("fe.core.info", RegisteredPermValue.OP);
 		
-		PermissionsManager.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP);
-		PermissionsManager.registerPermission(TeleportCenter.BYPASS_WARMUP, RegisteredPermValue.OP);
+		APIRegistry.perms.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP, "Allow bypassing teleport cooldown");
+		APIRegistry.perms.registerPermission(TeleportCenter.BYPASS_WARMUP, RegisteredPermValue.OP, "Allow bypassing teleport warmup");
 		// CommandSetChecker.regMCOverrides();
 	}
 

@@ -60,7 +60,6 @@ public class TeleportModule {
 		commands.add(new CommandTPAhere());
 		commands.add(new CommandPersonalWarp());
 		commands.add(new CommandTop());
-
 	}
 
 	@SubscribeEvent
@@ -80,19 +79,19 @@ public class TeleportModule {
 
 		APIRegistry.perms.registerPermissionProperty(FEPermissions.SPAWN_PROP, "bed");
 		
-		PermissionsManager.registerPermission("fe.teleport.back.ondeath", RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission("fe.teleport.back.ontp", RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission("fe.teleport.bed.others", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.teleport.home.set", RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission("fe.teleport.spawn.others", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.teleport.top.others", RegisteredPermValue.OP);
-		PermissionsManager.registerPermission("fe.teleport.tpa.sendrequest", RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission("fe.teleport.tpahere.sendrequest", RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission("fe.teleport.warp.admin", RegisteredPermValue.OP);
+		APIRegistry.perms.registerPermission("fe.teleport.back.ondeath", RegisteredPermValue.TRUE, "Allow returning to the last death location with back-command");
+		APIRegistry.perms.registerPermission("fe.teleport.back.ontp", RegisteredPermValue.TRUE, "Allow returning to the last location before teleport with back-command");
+		APIRegistry.perms.registerPermission("fe.teleport.bed.others", RegisteredPermValue.OP, "Allow teleporting to other player's bed location");
+		APIRegistry.perms.registerPermission("fe.teleport.home.set", RegisteredPermValue.TRUE, "Allow setting of home location");
+		APIRegistry.perms.registerPermission("fe.teleport.spawn.others", RegisteredPermValue.OP, "Allow setting other player's spawn");
+		APIRegistry.perms.registerPermission("fe.teleport.top.others", RegisteredPermValue.OP);
+		APIRegistry.perms.registerPermission("fe.teleport.tpa.sendrequest", RegisteredPermValue.TRUE, "Allow sending teleport-to requests");
+		APIRegistry.perms.registerPermission("fe.teleport.tpahere.sendrequest", RegisteredPermValue.TRUE, "Allow sending teleport-here requests");
+		APIRegistry.perms.registerPermission("fe.teleport.warp.admin", RegisteredPermValue.OP);
 
 		for (ForgeEssentialsCommandBase cmd : commands)
 		{
-			PermissionsManager.registerPermission(cmd.getPermissionNode(), cmd.getDefaultPermission());
+			APIRegistry.perms.registerPermission(cmd.getPermissionNode(), cmd.getDefaultPermission(), "Command: " + cmd.getCommandUsage(null));
 		}
 
 	}

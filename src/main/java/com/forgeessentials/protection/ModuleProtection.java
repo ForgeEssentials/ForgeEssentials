@@ -65,34 +65,34 @@ public class ModuleProtection
 	{
 		ev.registerServerCommand(new ProtectCommand());
 
-		PermissionsManager.registerPermission(PERM_PVP, RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission(PERM_EDITS, RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission(PERM_INTERACT_BLOCK, RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission(PERM_OVERRIDE, RegisteredPermValue.OP);
-		PermissionsManager.registerPermission(PERM_OVERRIDE_BANNEDITEMS, RegisteredPermValue.OP);
+		APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE);
+		APIRegistry.perms.registerPermission(PERM_EDITS, RegisteredPermValue.TRUE);
+		APIRegistry.perms.registerPermission(PERM_INTERACT_BLOCK, RegisteredPermValue.TRUE);
+		APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE);
+		APIRegistry.perms.registerPermission(PERM_OVERRIDE, RegisteredPermValue.OP);
+		APIRegistry.perms.registerPermission(PERM_OVERRIDE_BANNEDITEMS, RegisteredPermValue.OP);
 
 		for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
 		{
 			if (EntityLiving.class.isAssignableFrom(e.getValue()))
 			{
-				PermissionsManager.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + e.getKey(), RegisteredPermValue.TRUE);
-				PermissionsManager.registerPermission(PERM_MOB_SPAWN_FORCED + "." + e.getKey(), RegisteredPermValue.TRUE);
+				APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + e.getKey(), RegisteredPermValue.TRUE);
+				APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_FORCED + "." + e.getKey(), RegisteredPermValue.TRUE);
 			}
 		}
-		PermissionsManager.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
-		PermissionsManager.registerPermission(PERM_MOB_SPAWN_FORCED + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+		APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+		APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_FORCED + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
 
 		for (Item item : GameData.getItemRegistry().typeSafeIterable())
 		{
-			PermissionsManager.registerPermission(PERM_ITEM_USE + "." + item.getUnlocalizedName(), RegisteredPermValue.TRUE);
+			APIRegistry.perms.registerPermission(PERM_ITEM_USE + "." + item.getUnlocalizedName(), RegisteredPermValue.TRUE);
 		}
 
-		PermissionsManager.registerPermission(PERM_ITEM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+		APIRegistry.perms.registerPermission(PERM_ITEM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
 
 		for (int i : DimensionManager.getIDs())
 		{
-			PermissionsManager.registerPermission(PERM_DIMENSION + i, RegisteredPermValue.TRUE);
+			APIRegistry.perms.registerPermission(PERM_DIMENSION + i, RegisteredPermValue.TRUE);
 		}
 
 		APIRegistry.perms.registerPermissionProperty(PERMPROP_ZONE_GAMEMODE, Integer.toString(0));

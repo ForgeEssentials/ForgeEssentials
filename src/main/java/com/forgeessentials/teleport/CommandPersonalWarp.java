@@ -23,8 +23,8 @@ import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
-	public final String PERMSETLIMIT = getPermissionNode() + ".setLimit";
-	public final String PERMPROP = getPermissionNode() + ".max";
+	public final String PERM_SET_LIMIT = getPermissionNode() + ".setLimit";
+	public final String PERM_LIMIT_PROP = getPermissionNode() + ".max";
 
 	@Override
 	public String getCommandName()
@@ -89,7 +89,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 
                 if (!map.containsKey(args[1]))
 				{
-					Integer prop = APIRegistry.perms.getPermissionPropertyInt(new UserIdent(sender), PERMPROP);
+					Integer prop = APIRegistry.perms.getPermissionPropertyInt(new UserIdent(sender), PERM_LIMIT_PROP);
 					if (prop == null || prop == -1)
 					{
 						map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
@@ -129,7 +129,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 					OutputHandler.chatError(sender, "That personal warp doesn't exist!");
 				}
 			}
-			else if (args[0].equalsIgnoreCase("limit") && PermissionsManager.checkPermission(sender, PERMSETLIMIT))
+			else if (args[0].equalsIgnoreCase("limit") && PermissionsManager.checkPermission(sender, PERM_SET_LIMIT))
 			{
 				if (args.length == 1)
 				{
@@ -174,18 +174,18 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 
 	private String getLimit(EntityPlayer sender)
 	{
-		return APIRegistry.perms.getPermissionProperty(sender, PERMPROP);
+		return APIRegistry.perms.getPermissionProperty(sender, PERM_LIMIT_PROP);
 	}
 
 	private String getLimit(String target)
 	{
 		if (target.startsWith("p:"))
 		{
-			return APIRegistry.perms.getPermissionProperty(new UserIdent(target.replaceFirst("p:", "")), PERMPROP);
+			return APIRegistry.perms.getPermissionProperty(new UserIdent(target.replaceFirst("p:", "")), PERM_LIMIT_PROP);
 		}
 		else if (target.startsWith("g:"))
 		{
-			return APIRegistry.perms.getPermissionProperty(new UserIdent(target.replaceFirst("g:", "")), PERMPROP);
+			return APIRegistry.perms.getPermissionProperty(new UserIdent(target.replaceFirst("g:", "")), PERM_LIMIT_PROP);
 		}
 		else
 		{
@@ -197,11 +197,11 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	{
 		if (target.startsWith("p:"))
 		{
-			APIRegistry.perms.setPlayerPermissionProperty(new UserIdent(target.replaceFirst("p:", "")), PERMPROP, Integer.toString(limit));
+			APIRegistry.perms.setPlayerPermissionProperty(new UserIdent(target.replaceFirst("p:", "")), PERM_LIMIT_PROP, Integer.toString(limit));
 		}
 		else if (target.startsWith("g:"))
 		{
-			APIRegistry.perms.setGroupPermissionProperty(target.replaceFirst("g:", ""), PERMPROP, Integer.toString(limit));
+			APIRegistry.perms.setGroupPermissionProperty(target.replaceFirst("g:", ""), PERM_LIMIT_PROP, Integer.toString(limit));
 		}
 		else
 		{
@@ -268,9 +268,8 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 
 	public void registerExtraPermissions()
 	{
-		PermissionsManager.registerPermission(PERMSETLIMIT, RegisteredPermValue.OP);
-
-		APIRegistry.perms.registerPermissionProperty(PERMPROP, "10");
+	    APIRegistry.perms.registerPermission(PERM_SET_LIMIT, RegisteredPermValue.OP, "Allow setting the warp limit for players");
+		APIRegistry.perms.registerPermissionProperty(PERM_LIMIT_PROP, "10", "Maximum number of personal warps a player can create");
 		// APIRegistry.perms.registerPermissionProperty(PERMPROP, 0, GUEST);
 		// APIRegistry.perms.registerPermissionProperty(PERMPROP, 10, MEMBER);
 		// APIRegistry.perms.registerPermissionProperty(PERMPROP, -1, OP);
@@ -279,7 +278,6 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	@Override
 	public String getCommandUsage(ICommandSender sender)
 	{
-
 		return "/pwarp goto [name] OR <add|remove> <name> Teleports you to a personal warp.";
 	}
 }

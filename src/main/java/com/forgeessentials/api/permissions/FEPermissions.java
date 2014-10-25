@@ -11,10 +11,11 @@ public final class FEPermissions {
 	public static final String MSG_NOT_ENOUGH_ARGUMENTS = "Not enough arguments!";
 
 	// ------------------------------------------------
-	// -- Internal properties
+	// -- Internal permissions
 	// ------------------------------------------------
 
 	public static final String FE_INTERNAL = "fe.internal";
+    public static final String DESCRIPTION_PROPERTY = ".$desc";
 
 	public static final String ZONE_ENTRY_MESSAGE = FE_INTERNAL + ".zone.entry";
 	public static final String ZONE_EXIT_MESSAGE = FE_INTERNAL + ".zone.exit";

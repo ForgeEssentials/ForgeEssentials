@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
@@ -128,8 +129,8 @@ public class CommandKit extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        PermissionsManager.registerPermission(getPermissionNode() + ".admin", RegisteredPermValue.OP);
-        PermissionsManager.registerPermission(CommandsEventHandler.BYPASS_KIT_COOLDOWN, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".admin", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(CommandsEventHandler.BYPASS_KIT_COOLDOWN, RegisteredPermValue.OP);
     }
 
     @Override

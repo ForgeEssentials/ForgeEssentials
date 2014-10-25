@@ -10,6 +10,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.LoginMessage;
 
@@ -75,7 +76,7 @@ public class CommandMotd extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        PermissionsManager.registerPermission(getPermissionNode() + ".edit", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", RegisteredPermValue.OP);
     }
     
     @Override

@@ -8,6 +8,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.ClassContainer;
@@ -46,11 +47,11 @@ public class ModuleTickets {
     {
         e.registerServerCommand(new Command());
         loadAll();
-        PermissionsManager.registerPermission(PERMBASE + ".new", RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(PERMBASE + ".view", RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERMBASE + ".new", RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERMBASE + ".view", RegisteredPermValue.TRUE);
 
-        PermissionsManager.registerPermission(PERMBASE + ".tp", RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(PERMBASE + ".admin", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERMBASE + ".tp", RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERMBASE + ".admin", RegisteredPermValue.OP);
     }
 
     @SubscribeEvent

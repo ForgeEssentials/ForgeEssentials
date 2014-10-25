@@ -91,7 +91,6 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/back Teleport you to your last death or teleport location.";
     }
 

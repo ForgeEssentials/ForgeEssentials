@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
@@ -85,7 +86,7 @@ public class CommandHeal extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        PermissionsManager.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
     }
 
     @Override
