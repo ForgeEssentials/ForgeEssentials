@@ -1,5 +1,6 @@
 package com.forgeessentials.core.preloader.forge;
 
+import com.forgeessentials.core.preloader.FEPreLoader;
 import com.forgeessentials.core.preloader.asm.EventInjector;
 import com.forgeessentials.core.preloader.asm.EventInjector.ClassPatch;
 import com.forgeessentials.core.preloader.asm.EventInjector.MethodMapping;
@@ -80,7 +81,7 @@ public class FEHooks
                 Label l0 = new Label();
                 mv.visitLabel(l0);
                 mv.visitVarInsn(ALOAD, 0);
-                mv.visitFieldInsn(GETFIELD, "net/minecraft/command/CommandHandler", "commandMap", "Ljava/util/Map;");
+                mv.visitFieldInsn(GETFIELD, "net/minecraft/command/CommandHandler", getCommandMapFieldName(), "Ljava/util/Map;");
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
                 mv.visitMethodInsn(INVOKESTATIC, "com/forgeessentials/core/preloader/forge/command_CommandHandler", mcpName, "(Ljava/util/Map;Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Ljava/util/List;", false);
@@ -103,7 +104,7 @@ public class FEHooks
                 Label l0 = new Label();
                 mv.visitLabel(l0);
                 mv.visitVarInsn(ALOAD, 0);
-                mv.visitFieldInsn(GETFIELD, "net/minecraft/command/CommandHandler", "commandMap", "Ljava/util/Map;");
+                mv.visitFieldInsn(GETFIELD, "net/minecraft/command/CommandHandler", getCommandMapFieldName(), "Ljava/util/Map;");
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitMethodInsn(INVOKESTATIC, "com/forgeessentials/core/preloader/forge/command_CommandHandler", mcpName, "(Ljava/util/Map;Lnet/minecraft/command/ICommandSender;)Ljava/util/List;", false);
                 mv.visitInsn(ARETURN);
@@ -142,5 +143,12 @@ public class FEHooks
             }
         });
         EventInjector.addClassPatch(patch);
+    }
+
+    public static String getCommandMapFieldName()
+    {
+        if (FEPreLoader.runtimeDeobfEnabled)
+            return "field_71562_a";
+        else return "commandMap";
     }
 }
