@@ -4,6 +4,8 @@ import com.forgeessentials.core.preloader.classloading.FEClassLoader;
 import com.forgeessentials.core.preloader.forge.FEHooks;
 import cpw.mods.fml.relauncher.IFMLCallHook;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
 import java.io.File;
@@ -12,6 +14,8 @@ import java.util.Map;
 //In the event we need to mess with ASM and such, this is the place.
 //Kindly do not reference any FE classes outside the coremod package in this class.
 
+@MCVersion("1.7.10")
+@SortingIndex(1001)
 public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
 
     public static File location;

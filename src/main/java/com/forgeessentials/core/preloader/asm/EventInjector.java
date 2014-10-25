@@ -34,32 +34,43 @@ import java.util.Set;
 /**
  * Method replacement for adding FE hooks. Likely to be temporary until Forge gets its act together.
  */
-public class EventInjector implements IClassTransformer{
+public class EventInjector implements IClassTransformer
+{
 
     private static final Map<String, ClassPatch> classPatches = new THashMap<>();
 
     public static final List<String> injectedPatches = new ArrayList<>();
 
-    public static void addClassPatch(ClassPatch classPatch) {
+    public static void addClassPatch(ClassPatch classPatch)
+    {
+        for (MethodMapping mm : classPatch.methodMappings)
+        {
+            System.out.println("Adding patch for method " + mm.getName() + " from class " + classPatch.targetClass);
+        }
+
         classPatches.put(classPatch.targetClass, classPatch);
     }
 
     @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
+    public byte[] transform(String name, String transformedName, byte[] bytes)
+    {
 
-        if (classPatches.containsKey(transformedName)) {
+        if (classPatches.containsKey(transformedName))
+        {
             ClassPatch cp = classPatches.get(transformedName);
             ClassNode cn = new ClassNode();
             ClassReader cr = new ClassReader(bytes);
             cr.accept(cn, 0);
 
-
             Iterator<MethodNode> iter = cn.methods.iterator();
 
-            while (iter.hasNext()) {
+            while (iter.hasNext())
+            {
                 MethodNode mn = iter.next();
-                for (MethodMapping mm : cp.methodMappings) {
-                    if (mm.getName().equals(mn.name) && mm.desc.equals(mn.desc)) {
+                for (MethodMapping mm : cp.methodMappings)
+                {
+                    if (mm.getName().equals(mn.name) && mm.desc.equals(mn.desc))
+                    {
                         iter.remove();
                     }
                 }
@@ -68,7 +79,8 @@ public class EventInjector implements IClassTransformer{
             ClassWriter cw = new ClassWriter(0);
             cn.accept(cw);
 
-            for (MethodMapping mm : cp.methodMappings) {
+            for (MethodMapping mm : cp.methodMappings)
+            {
                 mm.defineMethod(cw);
                 injectedPatches.add(mm.friendlyName);
             }
@@ -81,36 +93,44 @@ public class EventInjector implements IClassTransformer{
         return bytes;
     }
 
-
-    public static class ClassPatch {
+    public static class ClassPatch
+    {
         public final String targetClass;
 
         public final Set<MethodMapping> methodMappings = new THashSet<>();
 
-        public ClassPatch(String targetClass) {
+        public ClassPatch(String targetClass)
+        {
             this.targetClass = targetClass;
         }
     }
 
-    public abstract static class MethodMapping {
+    public abstract static class MethodMapping
+    {
 
         public final String srgName;
         public final String mcpName;
         public final String desc;
         public final String friendlyName;
 
-        public MethodMapping(String srgName, String mcpName, String desc, String friendlyName) {
+        public MethodMapping(String srgName, String mcpName, String desc, String friendlyName)
+        {
             this.srgName = srgName;
             this.mcpName = mcpName;
             this.desc = desc;
             this.friendlyName = friendlyName;
         }
 
-        public String getName() {
+        public String getName()
+        {
             if (FEPreLoader.runtimeDeobfEnabled)
+            {
                 return srgName;
+            }
             else
+            {
                 return mcpName;
+            }
         }
 
         public abstract void defineMethod(ClassWriter classWriter);

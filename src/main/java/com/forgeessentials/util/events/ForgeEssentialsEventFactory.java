@@ -74,8 +74,6 @@ public class ForgeEssentialsEventFactory {
 		befores.remove(e.player.getPersistentID());
 	}
 
-	// BLOCK STUFF
-
 	// ZONE STUFF
 	@SubscribeEvent
 	public void playerMove(PlayerMoveEvent e)
