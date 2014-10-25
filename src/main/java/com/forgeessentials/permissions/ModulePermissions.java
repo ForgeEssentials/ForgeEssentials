@@ -1,6 +1,7 @@
 package com.forgeessentials.permissions;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -18,6 +19,7 @@ import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.util.events.FEModuleEvent.*;
 import com.forgeessentials.util.teleport.TeleportCenter;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -90,8 +92,7 @@ public class ModulePermissions {
 	@SubscribeEvent
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
-		//new PermissionsListWriter().write(permissionHelper.enumAllPermissions());
-		new PermissionsListWriter().write(permissionHelper.enumRegisteredPermissions());
+		new PermissionsListWriter().write(permissionHelper.getRegisteredPermissions());
 		permissionHelper.save();
 	}
 

@@ -1,7 +1,9 @@
 package com.forgeessentials.commands.util;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.*;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.server.CommandHandlerForge;
@@ -98,6 +100,7 @@ public class CommandRegistrar {
         {
             cmd.registerExtraPermissions();
             e.registerServerCommand(cmd);
+            APIRegistry.perms.registerPermissionDescription(cmd.getPermissionNode(), cmd.getCommandUsage(null));
         }
 	}
 }

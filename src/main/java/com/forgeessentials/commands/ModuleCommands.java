@@ -54,6 +54,7 @@ public class ModuleCommands {
     	CommandRegistrar.registerCommands(e);
         ShortcutCommands.load();
         CommandDataManager.load();
+        APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
         APIRegistry.perms.registerPermission("fe.commands.*", RegisteredPermValue.OP);
     }
 

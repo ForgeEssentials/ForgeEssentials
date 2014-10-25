@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Timer;
@@ -25,6 +26,7 @@ import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.Point;
@@ -144,16 +146,21 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	// -- Utilities
 	// ------------------------------------------------------------
 
+    public PermissionList getRegisteredPermissions()
+    {
+        PermissionList perms = (PermissionList) rootZone.getGroupPermissions(IPermissionsHelper.GROUP_DEFAULT).clone();
+        for (Entry<String, String> perm : rootZone.getGroupPermissions(IPermissionsHelper.GROUP_OPERATORS).entrySet())
+            perms.put(perm.getKey(), perm.getValue());
+        return perms;
+    }
+
     public Set<String> enumRegisteredPermissions()
     {
         Set<String> perms = new TreeSet<String>();
-        for (Map<String, String> groupPerms : rootZone.getGroupPermissions().values())
+        for (String perm : rootZone.getGroupPermissions(IPermissionsHelper.GROUP_DEFAULT).keySet())
         {
-            for (String perm : groupPerms.keySet())
-            {
-                if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
-                    perms.add(perm);
-            }
+            if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                perms.add(perm);
         }
         return perms;
     }
