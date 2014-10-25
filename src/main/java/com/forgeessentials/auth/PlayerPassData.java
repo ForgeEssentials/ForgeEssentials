@@ -87,10 +87,6 @@ public class PlayerPassData {
     {
         PlayerPassData data = datas.remove(username);
         DataStorageManager.getReccomendedDriver().deleteObject(container, username.toString());
-        if (data != null)
-        {
-            ModuleAuth.registered.remove(username);
-        }
     }
 
     @Reconstructor
