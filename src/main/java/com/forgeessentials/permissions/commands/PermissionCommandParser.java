@@ -32,9 +32,9 @@ public class PermissionCommandParser {
 	public static final String PERM_ALL = PERM + ".*";
 	public static final String PERM_TEST = PERM + ".test";
 	public static final String PERM_USER = PERM + ".user";
-	public static final String PERM_USER_SPAWN = PERM_USER + ".spawn";
+	public static final String PERM_SPAWN = PERM + ".spawn";
 	public static final String PERM_GROUP = PERM + ".group";
-	public static final String PERM_GROUP_SPAWN = PERM_GROUP + ".spawn";
+	public static final String PERM_GROUP_PRIORITY = PERM_GROUP + ".priority";
 
 	private static final String PERM_LIST = PERM + ".list";
 	public static final String PERM_LIST_PERMS = PERM_LIST + ".perms";
@@ -556,7 +556,7 @@ public class PermissionCommandParser {
 
 	private void parseUserSpawn(UserIdent ident)
 	{
-		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_USER_SPAWN))
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_SPAWN))
 		{
 			throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 		}
@@ -828,9 +828,12 @@ public class PermissionCommandParser {
 				case "suffix":
 					parseGroupPrefixSuffix(group, true);
 					break;
-				case "spawn":
-					parseGroupSpawn(group);
-					break;
+                case "spawn":
+                    parseGroupSpawn(group);
+                    break;
+                case "priority":
+                    parseGroupPriority(group);
+                    break;
 				case "true":
 				case "allow":
 					parseGroupPermissions(group, PermissionAction.ALLOW);
@@ -973,7 +976,7 @@ public class PermissionCommandParser {
 
 	private void parseGroupSpawn(String group)
 	{
-		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_USER_SPAWN))
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_SPAWN))
 		{
 			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -988,77 +991,95 @@ public class PermissionCommandParser {
 		if (args.isEmpty())
 		{
 			info("/feperm group " + group + " spawn (here|bed|clear|<x> <y> <z> <dim>) [zone] : Set spawn");
+			return;
 		}
-		else
+		String loc = args.remove().toLowerCase();
+		WorldPoint point = null;
+		boolean isBed = false;
+		switch (loc) {
+		case "here":
+			point = new WorldPoint(senderPlayer);
+			break;
+		case "bed":
+			isBed = true;
+			break;
+		case "clear":
+			break;
+		default:
+			if (args.size() < 3)
+				throw new CommandException("Too few arguments!");
+			try
+			{
+				int x = CommandBase.parseInt(sender, loc);
+				int y = CommandBase.parseInt(sender, args.remove());
+				int z = CommandBase.parseInt(sender, args.remove());
+				int dimension = CommandBase.parseInt(sender, args.remove());
+				point = new WorldPoint(dimension, x, y, z);
+			}
+			catch (NumberFormatException e)
+			{
+				error("Invalid location argument");
+				return;
+			}
+			break;
+		}
+
+		// Get zone
+		Zone zone = APIRegistry.perms.getServerZone();
+		if (!args.isEmpty())
 		{
-			String loc = args.remove().toLowerCase();
-			WorldPoint point = null;
-			boolean isBed = false;
-			switch (loc) {
-			case "here":
-				point = new WorldPoint(senderPlayer);
-				break;
-			case "bed":
-				isBed = true;
-				break;
-			case "clear":
-				break;
-			default:
-				if (args.size() < 3)
-					throw new CommandException("Too few arguments!");
-				try
+			String id = args.remove();
+			try
+			{
+				zone = APIRegistry.perms.getZoneById(Integer.parseInt(id));
+				if (zone == null)
 				{
-					int x = CommandBase.parseInt(sender, loc);
-					int y = CommandBase.parseInt(sender, args.remove());
-					int z = CommandBase.parseInt(sender, args.remove());
-					int dimension = CommandBase.parseInt(sender, args.remove());
-					point = new WorldPoint(dimension, x, y, z);
-				}
-				catch (NumberFormatException e)
-				{
-					error("Invalid location argument");
+					error(String.format("No zone by the ID %s exists!", id));
 					return;
 				}
-				break;
 			}
-
-			// Get zone
-			Zone zone = APIRegistry.perms.getServerZone();
-			if (!args.isEmpty())
+			catch (NumberFormatException e)
 			{
-				String id = args.remove();
-				try
+				if (senderPlayer == null)
 				{
-					zone = APIRegistry.perms.getZoneById(Integer.parseInt(id));
-					if (zone == null)
-					{
-						error(String.format("No zone by the ID %s exists!", id));
-						return;
-					}
+					error("Cannot identify zones by name from console!");
+					return;
 				}
-				catch (NumberFormatException e)
+				zone = APIRegistry.perms.getWorldZone(senderPlayer.dimension).getAreaZone(id);
+				if (zone == null)
 				{
-					if (senderPlayer == null)
-					{
-						error("Cannot identify zones by name from console!");
-						return;
-					}
-					zone = APIRegistry.perms.getWorldZone(senderPlayer.dimension).getAreaZone(id);
-					if (zone == null)
-					{
-						error(String.format("No zone by the name %s exists!", id));
-						return;
-					}
+					error(String.format("No zone by the name %s exists!", id));
+					return;
 				}
 			}
-
-			if (isBed)
-				zone.setGroupPermissionProperty(group, FEPermissions.SPAWN_PROP, "bed");
-			else if (point == null)
-				zone.clearGroupPermission(group, FEPermissions.SPAWN_PROP);
-			else
-				zone.setGroupPermissionProperty(group, FEPermissions.SPAWN_PROP, point.toString());
 		}
+
+		if (isBed)
+			zone.setGroupPermissionProperty(group, FEPermissions.SPAWN_PROP, "bed");
+		else if (point == null)
+			zone.clearGroupPermission(group, FEPermissions.SPAWN_PROP);
+		else
+			zone.setGroupPermissionProperty(group, FEPermissions.SPAWN_PROP, point.toString());
 	}
+
+    private void parseGroupPriority(String group)
+    {
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_GROUP_PRIORITY))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
+        if (args.isEmpty())
+        {
+            info("/feperm group " + group + " priority <prio> : Set group priority");
+        }
+        String priorityValue = args.remove();
+        try {
+            APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_PRIORITY, Integer.toString(Integer.parseInt(priorityValue)));
+            info(String.format("Set priority for group %s to %s", group, priorityValue));
+        } catch (NumberFormatException e) {
+            error(String.format("The string %s is not a valid integer", priorityValue));
+        }
+    }
 
 }
