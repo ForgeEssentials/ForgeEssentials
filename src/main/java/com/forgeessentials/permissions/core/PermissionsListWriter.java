@@ -3,6 +3,7 @@ package com.forgeessentials.permissions.core;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.TreeSet;
 
@@ -33,9 +34,13 @@ public class PermissionsListWriter {
         TreeSet<String> sortedPerms = new TreeSet<String>(permissions.keySet());
 
         int permCount = 0;
+        int permNameLength = 0;
         for (String perm : sortedPerms)
             if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
                 permCount++;
+            else
+                permNameLength = Math.max(permNameLength, perm.length());
+        permNameLength += 6;
 
         try
         {
@@ -49,8 +54,8 @@ public class PermissionsListWriter {
             writer.newLine();
             writer.write("#// ------------------------------------------ \\\\#");
             writer.newLine();
-            writer.newLine();
 
+            int lastPermLength = 0;
             for (String perm : sortedPerms)
             {
                 String value = permissions.get(perm);
@@ -58,15 +63,21 @@ public class PermissionsListWriter {
                     value = "";
                 if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
                 {
-                    writer.write("# " + value);
-                    writer.newLine();
+                    StringBuffer sb = new StringBuffer();
+                    if (permissions.containsKey(perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length()))) {
+                        for (; lastPermLength <= permNameLength; lastPermLength++)
+                            sb.append(' ');
+                    }
+                    sb.append("# ");
+                    sb.append(value);
+                    writer.write(sb.toString());
                 }
-//                if (value.equals(IPermissionsHelper.PERMISSION_TRUE))
-//                    writer.write("+");
-//                else if (value.equals(IPermissionsHelper.PERMISSION_FALSE))
-//                    writer.write("-");
-                writer.write(perm);
-                writer.newLine();
+                else
+                {
+                    writer.newLine();
+                    writer.write(perm);
+                    lastPermLength = perm.length();
+                }
             }
             writer.close();
         }

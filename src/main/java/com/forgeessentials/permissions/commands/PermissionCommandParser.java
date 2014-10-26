@@ -31,10 +31,16 @@ public class PermissionCommandParser {
 	public static final String PERM = "fe.perm";
 	public static final String PERM_ALL = PERM + ".*";
 	public static final String PERM_TEST = PERM + ".test";
+	
 	public static final String PERM_USER = PERM + ".user";
-	public static final String PERM_SPAWN = PERM + ".spawn";
+    public static final String PERM_USER_PERMS = PERM_USER + ".perms";
+    public static final String PERM_USER_SPAWN = PERM_USER + ".spawn";
+    public static final String PERM_USER_FIX = PERM_USER + ".fix";
+	
 	public static final String PERM_GROUP = PERM + ".group";
-	public static final String PERM_GROUP_PRIORITY = PERM_GROUP + ".priority";
+    public static final String PERM_GROUP_PERMS = PERM_GROUP + ".perms";
+    public static final String PERM_GROUP_SPAWN = PERM_GROUP + ".spawn";
+    public static final String PERM_GROUP_FIX = PERM_GROUP + ".fix";
 
 	private static final String PERM_LIST = PERM + ".list";
 	public static final String PERM_LIST_PERMS = PERM_LIST + ".perms";
@@ -468,6 +474,11 @@ public class PermissionCommandParser {
 
 	private void parseUserPermissions(UserIdent ident, PermissionAction type)
 	{
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_USER_PERMS))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
 		if (tabCompleteMode)
 		{
 			tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserArgs);
@@ -556,7 +567,7 @@ public class PermissionCommandParser {
 
 	private void parseUserSpawn(UserIdent ident)
 	{
-		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_SPAWN))
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_USER_SPAWN))
 		{
 			throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 		}
@@ -645,6 +656,11 @@ public class PermissionCommandParser {
 
 	private void parseUserPrefixSuffix(UserIdent ident, boolean isSuffix)
 	{
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_USER_FIX))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
 		if (tabCompleteMode)
 			return;
 		String fixName = isSuffix ? "suffix" : "prefix";
@@ -859,6 +875,11 @@ public class PermissionCommandParser {
 
 	private void parseGroupPrefixSuffix(String group, boolean isSuffix)
 	{
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_GROUP_FIX))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
 		if (tabCompleteMode)
 			return;
 		String fixName = isSuffix ? "suffix" : "prefix";
@@ -887,6 +908,11 @@ public class PermissionCommandParser {
 
 	private void parseGroupPermissions(String group, PermissionAction type)
 	{
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_GROUP_PERMS))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
 		if (tabCompleteMode)
 		{
 			tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserArgs);
@@ -976,7 +1002,7 @@ public class PermissionCommandParser {
 
 	private void parseGroupSpawn(String group)
 	{
-		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_SPAWN))
+		if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_GROUP_SPAWN))
 		{
 			OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -1064,7 +1090,7 @@ public class PermissionCommandParser {
 
     private void parseGroupPriority(String group)
     {
-        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_GROUP_PRIORITY))
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_GROUP_PERMS))
         {
             OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
