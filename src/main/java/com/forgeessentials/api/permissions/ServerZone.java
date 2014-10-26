@@ -205,6 +205,7 @@ public class ServerZone extends Zone {
 		{
 			result.add(IPermissionsHelper.GROUP_GUESTS);
 		}
+        result.add(IPermissionsHelper.GROUP_DEFAULT);
 		return result;
 	}
 

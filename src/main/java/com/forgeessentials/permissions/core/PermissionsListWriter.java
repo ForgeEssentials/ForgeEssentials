@@ -78,6 +78,15 @@ public class PermissionsListWriter {
                     sb.append(value);
                     writer.write(sb.toString());
                 }
+                else if (perm.endsWith("." + IPermissionsHelper.PERMISSION_ASTERIX))
+                {
+//                    String parentPerm = perm.substring(0, perm.length() - IPermissionsHelper.PERMISSION_ASTERIX.length() - 1);
+//                    if (!permissions.containsKey(parentPerm)) {
+//                        writer.newLine();
+//                        writer.write(parentPerm);
+//                        lastPermLength = perm.length();
+//                    }
+                }
                 else
                 {
                     writer.newLine();

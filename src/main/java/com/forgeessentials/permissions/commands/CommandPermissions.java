@@ -61,13 +61,6 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public boolean canPlayerUseCommand(EntityPlayer player)
-    {
-    	// Always allow - command checks permissions itself
-    	return true;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
     	return new PermissionCommandParser(sender, args, true).getTabCompleteList();
@@ -82,7 +75,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public RegisteredPermValue getDefaultPermission()
     {
-        return RegisteredPermValue.OP;
+        return RegisteredPermValue.TRUE;
     }
 
 }

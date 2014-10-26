@@ -77,14 +77,14 @@ public class ModulePermissions {
 		// Load permissions
 		permissionHelper.load();
 
-		// Register permissions
-		registerPermissions();
-
 		// Register commands
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandPermissions());
 		e.registerServerCommand(new CommandTestPermission());
 		e.registerServerCommand(new CommandAutoPromote());
+
+        // Register permissions
+        registerPermissions();
 
 		// Load auto-promote manager
 		autoPromoteManager = new AutoPromoteManager();
@@ -126,15 +126,15 @@ public class ModulePermissions {
         APIRegistry.perms.registerPermission(CommandZone.PERM_LIST, RegisteredPermValue.TRUE);
 		APIRegistry.perms.registerPermission(CommandZone.PERM_INFO, RegisteredPermValue.TRUE);
 
-        APIRegistry.perms.registerPermissionDescription(PermissionCommandParser.PERM, "Permission nodes for permission-management command");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM, RegisteredPermValue.TRUE, "Basic usage of permission-management command");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_ALL, RegisteredPermValue.OP);
         
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER, RegisteredPermValue.OP, "Allow modifying user permissions");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER, RegisteredPermValue.OP, "Allow basic access to users (displays infos)");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_PERMS, RegisteredPermValue.OP, "Allow modifying user permissions");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_SPAWN, RegisteredPermValue.OP, "Allow setting user spawn");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_FIX, RegisteredPermValue.OP, "Allow setting user prefix / suffix");
         
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP, RegisteredPermValue.OP, "Allow showing group info");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP, RegisteredPermValue.OP, "Allow basic access to groups (displays infos)");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_PERMS, RegisteredPermValue.OP, "Allow modifying group permissions");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_SPAWN, RegisteredPermValue.OP, "Allow setting group spawn");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_FIX, RegisteredPermValue.OP, "Allow setting group prefix / suffix");
