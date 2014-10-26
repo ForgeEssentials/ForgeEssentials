@@ -1,6 +1,7 @@
 package com.forgeessentials.permissions;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -106,6 +107,20 @@ public class ModulePermissions {
 
 	private void registerPermissions()
 	{
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.FE_INTERNAL, "Internal permissions - DO NOT TOUCH THESE UNLESS YOU KNOW WHAT YOU DO (WHICH YOU DON'T!)");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP, "Marks a group as being existant");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_ID, "Group ID");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PRIORITY, "Group priority");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER, "Player information");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_GROUPS, "Comma separated list of player groups");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_NAME, "Player name");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_UUID, "Player UUID");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.PREFIX, "Prefix property node");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.SUFFIX, "Suffix property node");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.SPAWN, "Player spawn property");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_ENTRY_MESSAGE, "Zone entry message");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_EXIT_MESSAGE, "Zone exit message");
+        
 	    APIRegistry.perms.registerPermissionDescription(CommandZone.PERM_NODE, "Permission nodes for area-management command");
         APIRegistry.perms.registerPermission(CommandZone.PERM_ALL, RegisteredPermValue.OP);
         APIRegistry.perms.registerPermission(CommandZone.PERM_LIST, RegisteredPermValue.TRUE);

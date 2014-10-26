@@ -22,6 +22,7 @@ public final class FEPermissions {
 
 	public static final String PREFIX = FE_INTERNAL + ".prefix";
 	public static final String SUFFIX = FE_INTERNAL + ".suffix";
+    public static final String SPAWN = FE_INTERNAL + ".spawn";
 
 	public static final String GROUP = FE_INTERNAL + ".group";
 	public static final String GROUP_ID = GROUP + ".id";
@@ -34,10 +35,4 @@ public final class FEPermissions {
 	public static final String PLAYER_NAME = PLAYER + ".name";
 	public static final String PLAYER_GROUPS = PLAYER + ".groups";
 
-	// ------------------------------------------------
-	// -- Internal properties
-	// ------------------------------------------------
-
-	public static final String SPAWN_PROP = "fe.teleport.spawnPoint";
-	
 }

@@ -19,6 +19,8 @@ public class PermissionsListWriter {
     private static final String OUTPUT_FILE = "PermissionsList.txt";
 
     private File output;
+    
+    private static final String NEW_LINE = System.getProperty("line.separator");
 
     public PermissionsListWriter()
     {
@@ -64,10 +66,14 @@ public class PermissionsListWriter {
                 if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
                 {
                     StringBuffer sb = new StringBuffer();
-                    if (permissions.containsKey(perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length()))) {
-                        for (; lastPermLength <= permNameLength; lastPermLength++)
-                            sb.append(' ');
+                    String parentPerm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
+                    if (!permissions.containsKey(parentPerm)) {
+                        sb.append(NEW_LINE);
+                        sb.append(parentPerm);
+                        lastPermLength = parentPerm.length();
                     }
+                    for (; lastPermLength <= permNameLength; lastPermLength++)
+                        sb.append(' ');
                     sb.append("# ");
                     sb.append(value);
                     writer.write(sb.toString());

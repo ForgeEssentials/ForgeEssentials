@@ -646,11 +646,11 @@ public class PermissionCommandParser {
 			}
 
 			if (isBed)
-				zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN_PROP, "bed");
+				zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN, "bed");
 			else if (point == null)
-				zone.clearPlayerPermission(ident, FEPermissions.SPAWN_PROP);
+				zone.clearPlayerPermission(ident, FEPermissions.SPAWN);
 			else
-				zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN_PROP, point.toString());
+				zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN, point.toString());
 		}
 	}
 
@@ -1081,11 +1081,11 @@ public class PermissionCommandParser {
 		}
 
 		if (isBed)
-			zone.setGroupPermissionProperty(group, FEPermissions.SPAWN_PROP, "bed");
+			zone.setGroupPermissionProperty(group, FEPermissions.SPAWN, "bed");
 		else if (point == null)
-			zone.clearGroupPermission(group, FEPermissions.SPAWN_PROP);
+			zone.clearGroupPermission(group, FEPermissions.SPAWN);
 		else
-			zone.setGroupPermissionProperty(group, FEPermissions.SPAWN_PROP, point.toString());
+			zone.setGroupPermissionProperty(group, FEPermissions.SPAWN, point.toString());
 	}
 
     private void parseGroupPriority(String group)

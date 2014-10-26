@@ -34,7 +34,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 
 	public static WarpPoint getPlayerSpawn(EntityPlayerMP player)
 	{
-		String spawnProperty = APIRegistry.perms.getPermissionProperty(player, FEPermissions.SPAWN_PROP);
+		String spawnProperty = APIRegistry.perms.getPermissionProperty(player, FEPermissions.SPAWN);
 		WorldPoint point = null;
 		if (spawnProperty == null)
 			return null;

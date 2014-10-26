@@ -77,7 +77,7 @@ public class TeleportModule {
 			e.registerServerCommand(cmd);
 		}
 
-		APIRegistry.perms.registerPermissionProperty(FEPermissions.SPAWN_PROP, "bed");
+		APIRegistry.perms.registerPermissionProperty(FEPermissions.SPAWN, "bed");
 		
 		APIRegistry.perms.registerPermission("fe.teleport.back.ondeath", RegisteredPermValue.TRUE, "Allow returning to the last death location with back-command");
 		APIRegistry.perms.registerPermission("fe.teleport.back.ontp", RegisteredPermValue.TRUE, "Allow returning to the last location before teleport with back-command");
