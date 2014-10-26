@@ -9,7 +9,8 @@ public class TPAdata {
     public EntityPlayerMP sender;
     public EntityPlayerMP receiver;
     public boolean tphere;
-    int timeout;
+    private int timeout;
+    private long startTime;
 
     public TPAdata(EntityPlayerMP sender, EntityPlayerMP receiver, boolean tpaHere)
     {
@@ -17,6 +18,7 @@ public class TPAdata {
         this.receiver = receiver;
 
         timeout = TeleportModule.timeout;
+        startTime = System.currentTimeMillis();
         tphere = tpaHere;
     }
 
@@ -34,7 +36,7 @@ public class TPAdata {
             return;
         }
 
-        if (timeout == 0)
+        if ((System.currentTimeMillis() - startTime) / 1000L > timeout)
         {
             TeleportModule.tpaListToRemove.add(this);
             if (tphere)
@@ -48,6 +50,5 @@ public class TPAdata {
                 OutputHandler.chatWarning(sender, String.format("TPA to %s timed out.", receiver.getCommandSenderName()));
             }
         }
-        timeout--;
     }
 }

@@ -143,12 +143,6 @@ public class TeleportModule {
 		handleTick();
 	}
 
-	@SubscribeEvent
-	public void worldTick(TickEvent.WorldTickEvent e)
-	{
-		handleTick();
-	}
-
 	private void handleTick()
 	{
 		try
