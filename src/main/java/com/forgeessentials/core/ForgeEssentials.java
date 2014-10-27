@@ -4,11 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.CommandFEDebug;
@@ -37,6 +40,7 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.typeInfo.TypeInfoItemStack;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTCompound;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTTagList;
+import com.forgeessentials.teleport.CommandSpawn;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.MiscEventHandler;
@@ -59,6 +63,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.relauncher.Side;
 
 /**
@@ -130,6 +137,9 @@ public class ForgeEssentials {
 	@EventHandler
 	public void load(FMLInitializationEvent e)
 	{
+        MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this);
+        
 		// load up DataAPI
 		((StorageManager) DataStorageManager.manager).setupManager();
 
@@ -209,4 +219,30 @@ public class ForgeEssentials {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerStopEvent(e));
 	}
 
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onPlayerDeath(LivingDeathEvent e)
+    {
+        if (e.entityLiving instanceof EntityPlayer)
+        {
+            EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
+            PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastDeathLocation(new WarpPoint(player));
+        }
+    }
+
+    @SubscribeEvent
+    public void doRespawn(PlayerEvent.PlayerRespawnEvent e)
+    {
+        WarpPoint lastDeathLocation = PlayerInfo.getPlayerInfo(e.player.getPersistentID()).getLastDeathLocation();
+        if (lastDeathLocation != null) {
+            WarpPoint p = CommandSpawn.getPlayerSpawn((EntityPlayerMP) e.player, lastDeathLocation);
+            if (p != null)
+            {
+                FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
+                e.player.posX = p.xd;
+                e.player.posY = p.yd;
+                e.player.posZ = p.zd;
+            }
+        }
+    }
+    
 }

@@ -249,6 +249,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	 * @param isProperty
 	 * @return
 	 */
+    @Override
 	public String getPermission(UserIdent ident, WorldPoint point, WorldArea area, Collection<String> groups, String permissionNode, boolean isProperty)
 	{
 		// Get world zone

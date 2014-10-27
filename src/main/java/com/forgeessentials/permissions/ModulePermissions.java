@@ -118,6 +118,7 @@ public class ModulePermissions {
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PREFIX, "Prefix property node");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.SUFFIX, "Suffix property node");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.SPAWN, "Player spawn property");
+        APIRegistry.perms.registerPermissionProperty(FEPermissions.SPAWN, "bed");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_ENTRY_MESSAGE, "Zone entry message");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_EXIT_MESSAGE, "Zone exit message");
         

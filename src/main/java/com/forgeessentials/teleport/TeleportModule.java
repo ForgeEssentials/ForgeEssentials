@@ -76,8 +76,6 @@ public class TeleportModule {
 		{
 			e.registerServerCommand(cmd);
 		}
-
-		APIRegistry.perms.registerPermissionProperty(FEPermissions.SPAWN, "bed");
 		
 		APIRegistry.perms.registerPermission("fe.teleport.back.ondeath", RegisteredPermValue.TRUE, "Allow returning to the last death location with back-command");
 		APIRegistry.perms.registerPermission("fe.teleport.back.ontp", RegisteredPermValue.TRUE, "Allow returning to the last location before teleport with back-command");
@@ -108,34 +106,16 @@ public class TeleportModule {
 		TeleportDataManager.save();
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void onPlayerDeath(LivingDeathEvent e)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			return;
-		}
-		if (e.entityLiving instanceof EntityPlayer)
-		{
-			EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
-			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-			CommandBack.justDied.add(player.getPersistentID());
-		}
-	}
-
-	@SubscribeEvent
-	public void doRespawn(PlayerEvent.PlayerRespawnEvent e)
-	{
-		// send to spawn point
-		WarpPoint p = CommandSpawn.getPlayerSpawn((EntityPlayerMP) e.player);
-		if (p != null)
-		{
-			FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
-			e.player.posX = p.xd;
-			e.player.posY = p.yd;
-			e.player.posZ = p.zd;
-		}
-	}
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onPlayerDeath(LivingDeathEvent e)
+    {
+        if (e.entityLiving instanceof EntityPlayer)
+        {
+            EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
+            PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
+            CommandBack.justDied.add(player.getPersistentID());
+        }
+    }
 
 	@SubscribeEvent
 	public void serverTick(TickEvent.ServerTickEvent e)

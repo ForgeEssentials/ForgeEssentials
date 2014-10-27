@@ -32,9 +32,12 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 		return "spawn";
 	}
 
-	public static WarpPoint getPlayerSpawn(EntityPlayerMP player)
+	public static WarpPoint getPlayerSpawn(EntityPlayerMP player, WorldPoint location)
 	{
-		String spawnProperty = APIRegistry.perms.getPermissionProperty(player, FEPermissions.SPAWN);
+	    UserIdent ident = new UserIdent(player);
+	    if (location == null)
+	        location = new WorldPoint(player);
+		String spawnProperty = APIRegistry.perms.getPermission(ident, location, null, APIRegistry.perms.getPlayerGroups(ident), FEPermissions.SPAWN, true);
 		WorldPoint point = null;
 		if (spawnProperty == null)
 			return null;
@@ -72,7 +75,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 				throw new CommandException(String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 
-			WarpPoint point = getPlayerSpawn(player);
+			WarpPoint point = getPlayerSpawn(player, null);
 			if (point == null)
 			{
 				throw new CommandException("There is no spawnpoint set for that player.");
@@ -86,7 +89,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 		{
 			EntityPlayerMP player = (EntityPlayerMP) sender;
 
-			WarpPoint point = getPlayerSpawn(player);
+			WarpPoint point = getPlayerSpawn(player, null);
 			if (point == null)
 			{
 				throw new CommandException("There is no spawnpoint set for that player.");
@@ -116,7 +119,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 			throw new CommandException(String.format("Player %s does not exist, or is not online.", args[0]));
 		}
 
-		WarpPoint point = getPlayerSpawn(player);
+		WarpPoint point = getPlayerSpawn(player, null);
 		if (point == null)
 		{
 			throw new CommandException("There is no spawnpoint set for that player.");

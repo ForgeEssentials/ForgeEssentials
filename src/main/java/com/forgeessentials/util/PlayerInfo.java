@@ -75,6 +75,9 @@ public class PlayerInfo {
 	@SaveableField()
 	private WarpPoint lastTeleportOrigin;
 
+    @SaveableField()
+    private WarpPoint lastDeathLocation;
+
 	// 0: Normal 1: World spawn 2: Bed 3: Home
 	@SaveableField()
 	private int spawnType;
@@ -143,7 +146,8 @@ public class PlayerInfo {
 		info.setPoint2((Point) tag.getFieldValue("sel2"));
 
 		info.home = (WarpPoint) tag.getFieldValue("home");
-		info.lastTeleportOrigin = (WarpPoint) tag.getFieldValue("back");
+        info.lastTeleportOrigin = (WarpPoint) tag.getFieldValue("lastTeleportOrigin");
+        info.lastDeathLocation = (WarpPoint) tag.getFieldValue("lastDeathLocation");
 
 		info.spawnType = (Integer) tag.getFieldValue("spawnType");
 
@@ -428,6 +432,16 @@ public class PlayerInfo {
 	{
 		this.lastTeleportOrigin = lastTeleportStart;
 	}
+
+    public WarpPoint getLastDeathLocation()
+    {
+        return lastDeathLocation;
+    }
+
+    public void setLastDeathLocation(WarpPoint lastDeathLocation)
+    {
+        this.lastDeathLocation = lastDeathLocation;
+    }
 
 	public long getLastTeleportTime()
 	{
