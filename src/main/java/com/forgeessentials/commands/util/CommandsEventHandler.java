@@ -18,6 +18,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.permissions.PermissionsManager;
 
+import com.forgeessentials.commands.CommandNoClip;
 import com.forgeessentials.commands.CommandVanish;
 import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.util.FunctionHelper;
@@ -30,6 +31,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 public class CommandsEventHandler {
     public static final String BYPASS_KIT_COOLDOWN = "fe.TickHandlerCommands.BypassKitCooldown";
@@ -297,6 +299,8 @@ public class CommandsEventHandler {
                 inv.update();
             }
         }
+    	if(event.phase == TickEvent.Phase.END)
+    		CommandNoClip.checkClip(event.player);
     }
 
 }
