@@ -41,6 +41,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
         {
             OutputHandler.chatNotification(sender, "/feinfo debug Produces ASM transformer debug output.");
             OutputHandler.chatNotification(sender, "/feinfo reload Reloads all configs.");
+            OutputHandler.chatNotification(sender, "/feinfo modules Prints a list of loaded FE modules");
             OutputHandler.chatNotification(sender, "/feinfo about About ForgeEssentials");
         }
         else if (args[0].equalsIgnoreCase("reload"))
@@ -49,6 +50,17 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
             OutputHandler.chatNotification(sender, EnumChatFormatting.RED + "This is experimental!");
             ModuleLauncher.instance.reloadConfigs(sender);
             OutputHandler.chatNotification(sender, "Done!");
+        }
+        else if (args[0].equalsIgnoreCase("modules"))
+        {
+            StringBuilder buff = new StringBuilder();
+            String sep = "";
+            for (String str : ModuleLauncher.getModuleList()) {
+                buff.append(sep);
+                buff.append(str);
+                sep = ", ";
+            }
+            OutputHandler.chatNotification(sender, "Currently loaded modules: " + buff.toString());
         }
         else if (args[0].equalsIgnoreCase("about"))
         {
