@@ -13,7 +13,7 @@ public class QuestionData {
     private EntityPlayer target;
     private int waitTime;
     private int interval;
-    private int intervalCounter;
+    private long startTime;
     private AnswerEnum affirmative;
     private AnswerEnum negative;
 
@@ -30,9 +30,10 @@ public class QuestionData {
         this.question = question;
         this.affirmative = affirmative;
         this.negative = negative;
+        startTime = System.currentTimeMillis();
         processAnswer = runnable;
         waitTime = QuestionCenter.defaultTime;
-        interval = intervalCounter = QuestionCenter.defaultInterval;
+        interval = QuestionCenter.defaultInterval;
     }
 
     public void setWaitTime(int seconds)
@@ -42,20 +43,17 @@ public class QuestionData {
 
     public void setInterval(int seconds)
     {
-        interval = intervalCounter = seconds;
+        interval = seconds;
     }
 
     public void count()
     {
-        intervalCounter--;
-        if (intervalCounter == 0)
+        if ((System.currentTimeMillis() - startTime) / 1000L > interval)
         {
             doQuestion();
-            intervalCounter = interval;
         }
 
-        waitTime--;
-        if (waitTime == 0)
+        if ((System.currentTimeMillis() - startTime) / 1000L > waitTime)
         {
             QuestionCenter.abort(this);
         }

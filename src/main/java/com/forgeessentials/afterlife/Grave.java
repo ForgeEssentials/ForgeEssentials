@@ -40,6 +40,8 @@ public class Grave {
 
     private boolean opened;
 
+	private long startTime;
+
     public Grave(WorldPoint point, EntityPlayer player, ArrayList<EntityItem> drops, Deathchest deathchest)
     {
         key = point.toString();
@@ -61,6 +63,7 @@ public class Grave {
         protTime = Deathchest.protectionTime;
 
         deathchest.gravemap.put(point.toString(), this);
+        startTime = System.currentTimeMillis();
     }
 
     private Grave(String key, Object point, Object owner, Object inv, Object xp, Object protTime, Object protEnable)
@@ -72,6 +75,7 @@ public class Grave {
         this.xp = (Integer) xp;
         this.protTime = (Integer) protTime;
         this.protEnable = (Boolean) protEnable;
+        startTime = System.currentTimeMillis();
     }
 
     @Reconstructor
@@ -100,11 +104,7 @@ public class Grave {
 
     public void tick()
     {
-        if (protTime != 0)
-        {
-            protTime--;
-        }
-        else
+        if ((System.currentTimeMillis() - startTime) / 1000L > protTime)
         {
             protEnable = false;
         }
@@ -137,4 +137,9 @@ public class Grave {
     {
         return opened;
     }
+
+	public void setSaveProtTime()
+	{
+		protTime -= (System.currentTimeMillis() - startTime) / 1000L;
+	}
 }

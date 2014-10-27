@@ -66,6 +66,7 @@ public class Deathchest {
 	{
 		for (Grave grave : gravemap.values())
 		{
+			grave.setSaveProtTime();
 			DataStorageManager.getReccomendedDriver().saveObject(graveType, grave);
 		}
 	}

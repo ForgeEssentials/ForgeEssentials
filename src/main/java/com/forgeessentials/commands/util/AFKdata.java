@@ -9,7 +9,8 @@ import com.forgeessentials.util.selections.WorldPoint;
 public class AFKdata {
     public EntityPlayerMP player;
     public boolean needstowait;
-    int waittime;
+    private int waittime;
+    private long startTime;
     private WorldPoint lastPos;
     private WorldPoint currentPos;
 
@@ -19,6 +20,7 @@ public class AFKdata {
         waittime = CommandAFK.warmup;
         lastPos = new WarpPoint(player);
         needstowait = true;
+        startTime = System.currentTimeMillis();
     }
 
     public void count()
@@ -37,11 +39,11 @@ public class AFKdata {
 
         if (needstowait)
         {
-            if (waittime == 0)
+            if ((System.currentTimeMillis() - startTime) / 1000L > waittime)
             {
                 CommandAFK.instance.makeAFK(this);
+                needstowait = false;
             }
-            waittime--;
         }
     }
 }
