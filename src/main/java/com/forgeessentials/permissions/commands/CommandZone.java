@@ -219,30 +219,14 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             {
                 throw new CommandException("Command not usable from console. Try /zone set <name> <coords> instead");
             }
+
             AreaBase area = null;
-            if (EnvironmentChecker.worldEditInstalled)
-            {
-                try
-                {
-                    com.sk89q.worldedit.LocalSession session = com.sk89q.worldedit.forge.ForgeWorldEdit.inst.getSession((EntityPlayerMP) sender);
-                    com.sk89q.worldedit.world.World selWorld = session.getSelectionWorld();
-                    com.sk89q.worldedit.regions.Region sel = session.getSelection(selWorld);
-                    com.sk89q.worldedit.Vector l = sel.getMinimumPoint();
-                    com.sk89q.worldedit.Vector h = sel.getMaximumPoint();
-                    area = new AreaBase(new Point(l.getBlockX(), l.getBlockY(), l.getBlockZ()), new Point(h.getBlockX(), h.getBlockY(), h.getBlockZ()));
-                }
-                catch (com.sk89q.worldedit.IncompleteRegionException e)
-                {
-                    // Error handled below
-                }
-            }
-            else
-            {
-                PlayerInfo info = PlayerInfo.getPlayerInfo(new UserIdent((EntityPlayerMP) sender));
-                area = info.getSelection();
-            }
+            PlayerInfo info = PlayerInfo.getPlayerInfo(new UserIdent((EntityPlayerMP) sender));
+            area = info.getSelection();
             if (area == null)
+            {
                 throw new CommandException("No selection available. Please select a region first.");
+            }
 
             PermissionContext context = new PermissionContext();
             context.setCommandSender(sender);
