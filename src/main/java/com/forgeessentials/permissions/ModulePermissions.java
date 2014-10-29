@@ -108,7 +108,7 @@ public class ModulePermissions {
 	private void registerPermissions()
 	{
         APIRegistry.perms.registerPermissionDescription(FEPermissions.FE_INTERNAL, "Internal permissions - DO NOT TOUCH THESE UNLESS YOU KNOW WHAT YOU DO (WHICH YOU DON'T!)");
-        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP, "Marks a group as being existant");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP, "(optional) Permission to keep groups saved, even if they have no permissions set.");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_ID, "Group ID");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PRIORITY, "Group priority");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER, "Player information");
@@ -144,9 +144,11 @@ public class ModulePermissions {
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_GROUPS, RegisteredPermValue.OP, "Allow listing groups");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_ZONES, RegisteredPermValue.OP, "Allow listing zones");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_PERMS, RegisteredPermValue.TRUE, "Allow listing all permissions affecting current user");
+
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_TEST, RegisteredPermValue.TRUE, "Allow testing permission nodes");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_RELOAD, RegisteredPermValue.TRUE, "Allow reloading changed permission files");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_SAVE, RegisteredPermValue.TRUE, "Allow force-saving permission files");
         
-		APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_TEST, RegisteredPermValue.TRUE, "Allow testing permission nodes");
-		
 		APIRegistry.perms.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
 		APIRegistry.perms.registerPermission("fe.core.info", RegisteredPermValue.OP);
 		

@@ -253,7 +253,11 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	public String getPermission(UserIdent ident, WorldPoint point, WorldArea area, Collection<String> groups, String permissionNode, boolean isProperty)
 	{
 		// Get world zone
-		WorldZone worldZone = getWorldZone(point != null ? point.getDimension() : area.getDimension());
+		WorldZone worldZone = null;
+		if (point != null)
+		    worldZone = getWorldZone(point.getDimension());
+		else if (area != null)
+		    worldZone = getWorldZone(area.getDimension());
 
 		// Get zones in correct order
 		List<Zone> zones = new ArrayList<Zone>();

@@ -32,6 +32,8 @@ public class PermissionCommandParser {
     public static final String PERM = "fe.perm";
     public static final String PERM_ALL = PERM + ".*";
     public static final String PERM_TEST = PERM + ".test";
+    public static final String PERM_RELOAD = PERM + ".reload";
+    public static final String PERM_SAVE = PERM + ".save";
 
     public static final String PERM_USER = PERM + ".user";
     public static final String PERM_USER_PERMS = PERM_USER + ".perms";
@@ -224,7 +226,7 @@ public class PermissionCommandParser {
         if (tabCompleteMode)
             return;
 
-        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST))
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST_PERMS))
         {
             OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
@@ -238,9 +240,7 @@ public class PermissionCommandParser {
             boolean printedZone = false;
             for (Entry<String, String> perm : zone.getValue().entrySet())
             {
-                if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
-                        || perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
-                        || perm.getKey().equals(FEPermissions.SUFFIX))
+                if (perm.getKey().startsWith(FEPermissions.GROUP))
                     continue;
                 if (!printedZone)
                 {
