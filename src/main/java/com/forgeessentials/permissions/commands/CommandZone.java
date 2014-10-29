@@ -31,7 +31,6 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.Point;
-import com.sk89q.worldedit.IncompleteRegionException;
 
 public class CommandZone extends ForgeEssentialsCommandBase {
 
@@ -232,7 +231,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                     com.sk89q.worldedit.Vector h = sel.getMaximumPoint();
                     area = new AreaBase(new Point(l.getBlockX(), l.getBlockY(), l.getBlockZ()), new Point(h.getBlockX(), h.getBlockY(), h.getBlockZ()));
                 }
-                catch (IncompleteRegionException e)
+                catch (com.sk89q.worldedit.IncompleteRegionException e)
                 {
                     // Error handled below
                 }
