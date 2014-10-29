@@ -50,7 +50,7 @@ public class WandController {
 		}
 
 		WorldPoint point = new WorldPoint(player.dimension, event.x, event.y, event.z);
-		if (!APIRegistry.perms.checkPermission(new UserIdent(player), point, "ForgeEssentials.CoreCommands.select.pos"))
+		if (!APIRegistry.perms.checkPermission(new UserIdent(player), point, "fe.core.pos"))
 		{
 			OutputHandler.chatError(player,
 					"You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
