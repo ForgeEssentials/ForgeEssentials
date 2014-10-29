@@ -47,10 +47,11 @@ public class ModuleProtection
 	@SubscribeEvent
 	public void preLoad(FEModulePreInitEvent e)
 	{
-		if (FMLCommonHandler.instance().getSide().isClient() || !enable)
+		if (!enable)
 		{
             ModuleLauncher.instance.unregister("protection");
-		}
+		} else
+		    MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@SubscribeEvent
@@ -59,7 +60,6 @@ public class ModuleProtection
 		MinecraftForge.EVENT_BUS.register(new ProtectionEventHandler());
 	}
 
-	@SuppressWarnings("unchecked")
 	@SubscribeEvent
 	public void registerPermissions(FEModuleServerInitEvent ev)
 	{

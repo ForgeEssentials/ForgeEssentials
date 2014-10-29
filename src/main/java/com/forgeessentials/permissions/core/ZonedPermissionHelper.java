@@ -301,17 +301,17 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		// Check player permissions
 		if (ident != null)
 		{
-			for (String node : nodes)
-			{
-				for (Zone zone : zones)
-				{
-					String result = zone.getPlayerPermission(ident, node);
-					if (result != null)
-					{
-						return result;
-					}
-				}
-			}
+            for (Zone zone : zones)
+            {
+                for (String node : nodes)
+                {
+                    String result = zone.getPlayerPermission(ident, node);
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
+            }
 		}
 
 		// Check group permissions
