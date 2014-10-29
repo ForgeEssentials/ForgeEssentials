@@ -8,7 +8,6 @@ import java.util.Calendar;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-import com.forgeessentials.core.CoreConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
 

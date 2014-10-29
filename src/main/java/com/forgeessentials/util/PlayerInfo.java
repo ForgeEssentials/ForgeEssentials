@@ -1,7 +1,7 @@
 package com.forgeessentials.util;
 
 import com.forgeessentials.core.compat.EnvironmentChecker;
-import com.forgeessentials.core.network.PacketSelectionUpdate.Message;
+import com.forgeessentials.core.network.S1PacketSelectionUpdate.Message;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.api.IReconstructData;
@@ -113,6 +113,8 @@ public class PlayerInfo {
 
 	public static ISelectionProvider selprovider;
 
+    private boolean hasFEClient;
+
 	private PlayerInfo(UUID uuid)
 	{
 		this.uuid = uuid;
@@ -134,6 +136,7 @@ public class PlayerInfo {
 
 		// if (!EnvironmentChecker.worldEditFEtoolsInstalled)
 		selprovider = new FESelectionProvider(uuid);
+        hasFEClient = false;
 	}
 
 	@Reconstructor()
@@ -469,5 +472,16 @@ public class PlayerInfo {
 	{
 		return selprovider.getPoint2(UserIdent.getPlayerByUuid(uuid));
 	}
+
+    // network stuff
+    public boolean getHasFEClient()
+    {
+        return hasFEClient;
+    }
+
+    public void setHasFEClient(boolean status)
+    {
+        this.hasFEClient = status;
+    }
 
 }

@@ -1,5 +1,6 @@
-package com.forgeessentials.client;
+package com.forgeessentials.client.core;
 
+import com.forgeessentials.client.ForgeEssentialsClient;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -26,7 +27,7 @@ public class ClientConfig {
 
         Property prop = config.get(Configuration.CATEGORY_GENERAL, "allowCUI", true);
         prop.comment = "Set to false to disable graphical selections.";
-        ForgeEssentialsClient.allowCUI = prop.getBoolean(true);
+        ForgeEssentialsClient.instance.allowCUI = prop.getBoolean(true);
         // any other parts please config here
         config.save();
     }

@@ -1,18 +1,5 @@
 package com.forgeessentials.core;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -27,9 +14,11 @@ import com.forgeessentials.core.commands.selections.WandController;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.compat.EnvironmentChecker;
 import com.forgeessentials.core.misc.BlockModListFile;
+import com.forgeessentials.core.misc.CoreConfig;
 import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.network.PacketSelectionUpdate;
+import com.forgeessentials.core.network.S0PacketHandshake;
+import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.forgeessentials.data.ForgeConfigDataDriver;
 import com.forgeessentials.data.NBTDataDriver;
@@ -52,7 +41,6 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -67,6 +55,18 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main mod class
@@ -148,15 +148,14 @@ public class ForgeEssentials {
 		FMLCommonHandler.instance().bus().register(factory);
 		MinecraftForge.EVENT_BUS.register(factory);
 
-		MinecraftForge.EVENT_BUS.register(new WandController());
-
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
 	}
 
 	@EventHandler
 	public void postLoad(FMLPostInitializationEvent e)
     {
-		FunctionHelper.netHandler.registerMessage(PacketSelectionUpdate.class, PacketSelectionUpdate.Message.class, 0, Side.SERVER);
+		FunctionHelper.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.Message.class, 0, Side.SERVER);
+        FunctionHelper.netHandler.registerMessage(S1PacketSelectionUpdate.class, S1PacketSelectionUpdate.Message.class, 1, Side.CLIENT);
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModulePostInitEvent(e));
 	}
 
@@ -183,6 +182,7 @@ public class ForgeEssentials {
 			commands.add(new CommandDeselect());
 			commands.add(new CommandExpand());
 			commands.add(new CommandExpandY());
+            MinecraftForge.EVENT_BUS.register(new WandController());
 		}
 
 		for (ForgeEssentialsCommandBase command : commands)

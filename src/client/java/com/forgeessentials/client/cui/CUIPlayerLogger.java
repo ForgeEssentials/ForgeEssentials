@@ -1,7 +1,7 @@
 package com.forgeessentials.client.cui;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.PlayerInfoClient;
+import com.forgeessentials.client.core.PlayerInfoClient;
 import com.forgeessentials.client.util.ClientPoint;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -23,7 +23,7 @@ public class CUIPlayerLogger {
     public void render(RenderWorldLastEvent event)
     {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
-        PlayerInfoClient info = ForgeEssentialsClient.getInfo();
+        PlayerInfoClient info = ForgeEssentialsClient.info;
 
         if (player == null || info == null || !info.playerLogger)
         {

@@ -1,5 +1,6 @@
-package com.forgeessentials.core;
+package com.forgeessentials.core.misc;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.MiscEventHandler;

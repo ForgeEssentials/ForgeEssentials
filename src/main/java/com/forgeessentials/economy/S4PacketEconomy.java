@@ -1,18 +1,16 @@
 package com.forgeessentials.economy;
 
+import com.forgeessentials.api.APIRegistry;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
 
-import com.forgeessentials.api.APIRegistry;
+public class S4PacketEconomy implements IMessageHandler<S4PacketEconomy.Message, IMessage> {
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-public class PacketEconomy implements IMessageHandler<PacketEconomy.Message, IMessage> {
-
-    @Override public IMessage onMessage(PacketEconomy.Message message, MessageContext ctx)
+    @Override public IMessage onMessage(S4PacketEconomy.Message message, MessageContext ctx)
     {
         return new Message(ctx.getServerHandler().playerEntity.getPersistentID());
     }

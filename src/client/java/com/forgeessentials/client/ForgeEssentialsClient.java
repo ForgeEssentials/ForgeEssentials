@@ -1,91 +1,72 @@
 package com.forgeessentials.client;
 
-import com.forgeessentials.client.cui.CUIPlayerLogger;
-import com.forgeessentials.client.cui.CUIRenderrer;
-import com.forgeessentials.client.cui.CUIRollback;
+import com.forgeessentials.client.core.PlayerInfoClient;
+import com.forgeessentials.client.util.DummyProxy;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkCheckHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Map;
 
 @Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = "%VERSION%", guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true)
 public class ForgeEssentialsClient {
 
     public static Logger feclientlog;
-    @SideOnly(Side.CLIENT)
-    private static PlayerInfoClient info;
-    protected static boolean allowCUI;
-    private ClientConfig config;
 
     @SideOnly(Side.CLIENT)
-    public static PlayerInfoClient getInfo()
+    public static PlayerInfoClient info;
+
+    @SidedProxy(clientSide = "com.forgeessentials.client.core.ClientProxy", serverSide = "com.forgeessentials.client.util.DummyProxy")
+    public static DummyProxy proxy;
+
+    public boolean serverHasFE;
+
+    public static boolean allowCUI;
+
+    public static SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
+
+    @Instance("ForgeEssentialsClient")
+    public static ForgeEssentialsClient instance;
+
+    @NetworkCheckHandler
+    public boolean getServerMods(Map<String, String> map, Side side)
     {
-        if (info == null)
+        if (map.containsKey("ForgeEssentials"))
         {
-            info = new PlayerInfoClient();
+            serverHasFE = true;
+            feclientlog.info("The server is running ForgeEssentials.");
         }
-        return info;
-    }
 
-    @SideOnly(Side.CLIENT)
-    public static void setInfo(PlayerInfoClient info)
-    {
-        ForgeEssentialsClient.info = info;
-    }
-
-    private boolean getDevOverride()
-    {
-        String prop = System.getProperty("forgeessentials.developermode");
-        if (prop != null && prop.equals("true"))
-        { // FOR DEVS ONLY! THAT IS WHY IT IS A PROPERTY!!!
-
-            feclientlog.warn("Developer mode has been enabled, things may break.");
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return true;
     }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
-        feclientlog = LogManager.getLogger("ForgeEssentials");
+        feclientlog = LogManager.getLogger("forgeessentials");
 
-        if (FMLCommonHandler.instance().getSide().isServer() && getDevOverride() == false)
+        if (FMLCommonHandler.instance().getSide().isServer())
         {
-            throw new RuntimeException("ForgeEssentialsClient should not be installed on a server!");
+            feclientlog.error("ForgeEssentialsClient should not be installed on a server! It will be automatically disabled.");
         }
-
-        if (FMLCommonHandler.instance().getSide().isClient())
-        {
-            config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));
-            config.init();
-        }
+        proxy.doPreInit(e);
     }
 
-
-
-    @SideOnly(Side.CLIENT)
     @EventHandler
     public void load(FMLInitializationEvent e)
     {
-
-        FMLCommonHandler.instance().bus().register(new ClientEventHandler());
-        if (allowCUI)
-        {
-            MinecraftForge.EVENT_BUS.register(new CUIRenderrer());
-            MinecraftForge.EVENT_BUS.register(new CUIPlayerLogger());
-            MinecraftForge.EVENT_BUS.register(new CUIRollback());
-        }
+        proxy.load(e);
     }
 
 }

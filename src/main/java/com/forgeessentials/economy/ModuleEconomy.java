@@ -3,11 +3,22 @@ package com.forgeessentials.economy;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.economy.commands.*;
+import com.forgeessentials.economy.commands.CommandAddToWallet;
+import com.forgeessentials.economy.commands.CommandGetWallet;
+import com.forgeessentials.economy.commands.CommandMoney;
+import com.forgeessentials.economy.commands.CommandPaidCommand;
+import com.forgeessentials.economy.commands.CommandPay;
+import com.forgeessentials.economy.commands.CommandRemoveWallet;
+import com.forgeessentials.economy.commands.CommandSellCommand;
+import com.forgeessentials.economy.commands.CommandSetWallet;
 import com.forgeessentials.economy.plots.PlotManager;
-import com.forgeessentials.util.events.FEModuleEvent.*;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
 
 import java.io.File;
 
@@ -31,6 +42,7 @@ public class ModuleEconomy {
     {
         APIRegistry.wallet = new WalletHandler();
         FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
+        FunctionHelper.netHandler.registerMessage(S4PacketEconomy.class, S4PacketEconomy.Message.class, 4, Side.CLIENT);
 
     }
 

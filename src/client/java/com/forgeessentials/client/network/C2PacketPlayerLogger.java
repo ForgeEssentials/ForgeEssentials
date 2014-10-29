@@ -10,9 +10,9 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 
 @SideOnly(Side.CLIENT)
-public class C1PacketPlayerLogger implements IMessageHandler<C1PacketPlayerLogger.Message, IMessage> {
+public class C2PacketPlayerLogger implements IMessageHandler<C2PacketPlayerLogger.Message, IMessage> {
 
-    @Override public IMessage onMessage(C1PacketPlayerLogger.Message message, MessageContext ctx)
+    @Override public IMessage onMessage(C2PacketPlayerLogger.Message message, MessageContext ctx)
     {
         return null;
     }
@@ -32,7 +32,7 @@ public class C1PacketPlayerLogger implements IMessageHandler<C1PacketPlayerLogge
 
         @Override public void fromBytes(ByteBuf buf)
         {
-            ForgeEssentialsClient.getInfo().playerLogger = buf.readBoolean();
+            ForgeEssentialsClient.info.playerLogger = buf.readBoolean();
         }
 
         @Override

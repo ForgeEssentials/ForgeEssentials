@@ -6,9 +6,9 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketPlayerLogger implements IMessageHandler<PacketPlayerLogger.Message, IMessage> {
+public class S2PacketPlayerLogger implements IMessageHandler<S2PacketPlayerLogger.Message, IMessage> {
 
-    @Override public IMessage onMessage(PacketPlayerLogger.Message message, MessageContext ctx)
+    @Override public IMessage onMessage(S2PacketPlayerLogger.Message message, MessageContext ctx)
     {
         return null;
     }

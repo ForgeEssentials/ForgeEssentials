@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 
 public final class FunctionHelper {
 
-	public static SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("ForgeEssentials");
+	public static SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
 
     public static final EventBus FE_INTERNAL_EVENTBUS = new EventBus();
 

@@ -1,14 +1,13 @@
 package com.forgeessentials.commands;
 
-import net.minecraft.client.Minecraft;
+import com.forgeessentials.commands.network.S5PacketNoclip;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
 
 public class CommandNoClip extends FEcmdModuleCommands
 {
@@ -40,7 +39,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayer player, String[] args)
 	{
-		if(!player.capabilities.isFlying && !player.noClip)
+        if(!player.capabilities.isFlying && !player.noClip)
 		{
 			OutputHandler.chatError(player, "Must be flying.");
 			return;
@@ -56,8 +55,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 		}
 		if(!player.noClip)
 			findSafeY(player);
-		if(player.isClientWorld())
-			Minecraft.getMinecraft().thePlayer.noClip = player.noClip;
+		S5PacketNoclip.setPlayerNoclipStatus(player, player.noClip);
 		OutputHandler.chatConfirmation(player, "NoClip " + (player.noClip ? "enabled." : "disabled."));
 	}
 	
@@ -69,8 +67,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 			{
 				player.noClip = false;
 				findSafeY(player);
-				if(player.isClientWorld())
-					Minecraft.getMinecraft().thePlayer.noClip = false;
+                S5PacketNoclip.setPlayerNoclipStatus(player, player.noClip);
 				OutputHandler.chatNotification(player, "NoClip auto-disabled: not flying");
 			}
 		}

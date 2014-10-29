@@ -10,10 +10,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
 @SideOnly(Side.CLIENT)
-public class C0PacketSelectionUpdate implements IMessageHandler<C0PacketSelectionUpdate.Message, IMessage> {
+public class C1PacketSelectionUpdate implements IMessageHandler<C1PacketSelectionUpdate.Message, IMessage> {
 
     @Override
-    public IMessage onMessage(C0PacketSelectionUpdate.Message message, MessageContext context)
+    public IMessage onMessage(C1PacketSelectionUpdate.Message message, MessageContext context)
     {
         return null;
     }
@@ -32,11 +32,11 @@ public class C0PacketSelectionUpdate implements IMessageHandler<C0PacketSelectio
                 double y = byteBuf.readDouble();
                 double z = byteBuf.readDouble();
 
-                ForgeEssentialsClient.getInfo().setPoint1(new ClientPoint(x, y, z));
+                ForgeEssentialsClient.info.setPoint1(new ClientPoint(x, y, z));
             }
             else
             {
-                ForgeEssentialsClient.getInfo().setPoint1(null);
+                ForgeEssentialsClient.info.setPoint1(null);
             }
 
             // podouble 2 available
@@ -46,11 +46,11 @@ public class C0PacketSelectionUpdate implements IMessageHandler<C0PacketSelectio
                 double y = byteBuf.readDouble();
                 double z = byteBuf.readDouble();
 
-                ForgeEssentialsClient.getInfo().setPoint2(new ClientPoint(x, y, z));
+                ForgeEssentialsClient.info.setPoint2(new ClientPoint(x, y, z));
             }
             else
             {
-                ForgeEssentialsClient.getInfo().setPoint2(null);
+                ForgeEssentialsClient.info.setPoint2(null);
             }
         }
 

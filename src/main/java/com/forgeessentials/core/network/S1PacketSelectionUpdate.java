@@ -10,10 +10,10 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketSelectionUpdate implements IMessageHandler<PacketSelectionUpdate.Message, IMessage> {
+public class S1PacketSelectionUpdate implements IMessageHandler<S1PacketSelectionUpdate.Message, IMessage> {
 
     @Override
-    public IMessage onMessage(PacketSelectionUpdate.Message message, MessageContext context)
+    public IMessage onMessage(S1PacketSelectionUpdate.Message message, MessageContext context)
     {
         return null;
     }

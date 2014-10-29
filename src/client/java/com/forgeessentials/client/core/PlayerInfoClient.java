@@ -1,4 +1,4 @@
-package com.forgeessentials.client;
+package com.forgeessentials.client.core;
 
 import com.forgeessentials.client.util.ClientPoint;
 import com.forgeessentials.client.util.ClientSelection;
@@ -13,7 +13,8 @@ import java.util.HashMap;
  * @author AbrarSyed
  */
 @SideOnly(value = Side.CLIENT)
-public class PlayerInfoClient {
+public class PlayerInfoClient
+{
     public boolean playerLogger = false;
 
     // selection stuff

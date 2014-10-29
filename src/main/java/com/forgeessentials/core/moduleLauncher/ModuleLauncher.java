@@ -1,7 +1,7 @@
 package com.forgeessentials.core.moduleLauncher;
 
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
-import com.forgeessentials.core.CoreConfig;
+import com.forgeessentials.core.misc.CoreConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;

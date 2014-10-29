@@ -1,6 +1,6 @@
 package com.forgeessentials.client.gui.forge;
 
-import com.forgeessentials.client.ClientConfig;
+import com.forgeessentials.client.core.ClientConfig;
 import cpw.mods.fml.client.config.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;

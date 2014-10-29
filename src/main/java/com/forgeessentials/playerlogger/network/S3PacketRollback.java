@@ -11,10 +11,10 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketRollback implements IMessageHandler<PacketRollback.Message, IMessage> {
+public class S3PacketRollback implements IMessageHandler<S3PacketRollback.Message, IMessage> {
 
     @Override
-    public IMessage onMessage(PacketRollback.Message message, MessageContext ctx)
+    public IMessage onMessage(S3PacketRollback.Message message, MessageContext ctx)
     {
         return null;
     }

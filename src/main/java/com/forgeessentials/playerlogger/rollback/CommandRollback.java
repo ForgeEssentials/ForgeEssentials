@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import com.forgeessentials.playerlogger.network.S3PacketRollback;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,7 +16,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.playerlogger.network.PacketRollback;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -96,7 +96,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             {
                 que.remove(sender);
 
-                FunctionHelper.netHandler.sendTo(new PacketRollback.Message(((EntityPlayer) sender).dimension, null), ((EntityPlayerMP) sender));
+                FunctionHelper.netHandler.sendTo(new S3PacketRollback.Message(((EntityPlayer) sender).dimension, null), ((EntityPlayerMP) sender));
 
                 OutputHandler.chatConfirmation(sender, "Command aborted");
             }
@@ -215,7 +215,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             que.put(sender, sb.toString().trim());
             if (sender instanceof EntityPlayer)
             {
-                FunctionHelper.netHandler.sendTo(new PacketRollback.Message(((EntityPlayer) sender).dimension,
+                FunctionHelper.netHandler.sendTo(new S3PacketRollback.Message(((EntityPlayer) sender).dimension,
                         ModulePlayerLogger.getBlockChangesWithinParameters(args[1], undo, time, point, rad)), (EntityPlayerMP) sender);
             }
         }
