@@ -318,20 +318,25 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		// Add default group
 		if (groups != null)
 		{
+            // Lowest order: group hierarchy
+            // (e.g. ADMIN, MEMBER, _OPS_, _ALL_)
 			for (String group : groups)
 			{
-				for (String node : nodes)
-				{
-					// Check group permissions
-					for (Zone zone : zones)
-					{
-						String result = zone.getGroupPermission(group, node);
-						if (result != null)
-						{
-							return result;
-						}
-					}
-				}
+			    // Second order: zones
+			    // (e.g. area, world, server, root)
+                for (Zone zone : zones)
+                {
+                    // First order: nodes
+                    // (e.g. fe.commands.time, fe.commands.time.*, fe.commands.*, fe.*, *)
+                    for (String node : nodes)
+                    {
+                        String result = zone.getGroupPermission(group, node);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
+                }
 			}
 		}
 
