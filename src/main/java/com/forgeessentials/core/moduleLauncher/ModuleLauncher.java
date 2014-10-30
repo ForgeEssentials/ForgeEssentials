@@ -6,6 +6,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent;
+
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
@@ -14,6 +15,7 @@ import net.minecraft.command.ICommandSender;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -179,8 +181,13 @@ public class ModuleLauncher {
         containerMap.remove(moduleName);
     }
 
-    public static String[] getModuleList()
+    public static Collection<String> getModuleList()
     {
-        return containerMap.keySet().toArray(new String[] { });
+        return containerMap.keySet();
+    }
+    
+    public static Map<String, ModuleContainer> getModuleMap()
+    {
+        return containerMap;
     }
 }

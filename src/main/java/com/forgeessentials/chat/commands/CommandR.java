@@ -166,12 +166,6 @@ public class CommandR extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public boolean canPlayerUseCommand(EntityPlayer player)
-    {
-        return PermissionsManager.checkPermission(player, getPermissionNode());
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return "fe.chat." + getCommandName();

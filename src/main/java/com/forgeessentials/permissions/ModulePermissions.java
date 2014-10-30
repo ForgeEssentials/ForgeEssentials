@@ -1,8 +1,13 @@
 package com.forgeessentials.permissions;
 
+import java.io.File;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -10,7 +15,6 @@ import com.forgeessentials.permissions.autoPromote.AutoPromote;
 import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
 import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
-import com.forgeessentials.permissions.commands.CommandTestPermission;
 import com.forgeessentials.permissions.commands.CommandZone;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.permissions.core.ConfigPermissions;
@@ -18,15 +22,14 @@ import com.forgeessentials.permissions.core.PermissionEventHandler;
 import com.forgeessentials.permissions.core.PermissionsListWriter;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
-import com.forgeessentials.util.events.FEModuleEvent.*;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.teleport.TeleportCenter;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.io.File;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions {
@@ -55,9 +58,6 @@ public class ModulePermissions {
 		// Register permission manager
 		APIRegistry.perms = permissionHelper;
 		PermissionsManager.setPermProvider(permissionHelper);
-		
-		// Register event handler
-		permissionEventHandler = new PermissionEventHandler();
 	}
 
 	@SubscribeEvent
@@ -67,8 +67,9 @@ public class ModulePermissions {
 		SqlHelper.getInstance();
 
 		DataStorageManager.registerSaveableType(AutoPromote.class);
-
-		MinecraftForge.EVENT_BUS.register(new PermissionEventHandler());
+        
+        // Register permission event-handler
+        permissionEventHandler = new PermissionEventHandler();
 	}
 
 	@SubscribeEvent
@@ -80,7 +81,6 @@ public class ModulePermissions {
 		// Register commands
 		e.registerServerCommand(new CommandZone());
 		e.registerServerCommand(new CommandPermissions());
-		e.registerServerCommand(new CommandTestPermission());
 		e.registerServerCommand(new CommandAutoPromote());
 
         // Register permissions

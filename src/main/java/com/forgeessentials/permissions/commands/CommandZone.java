@@ -24,7 +24,7 @@ import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.compat.EnvironmentChecker;
+import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -202,6 +202,20 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         {
             throw new CommandException("Missing arguments!");
         }
+        if (tabCompleteMode)
+        {
+            if (!redefine)
+                return;
+            for (Zone z: APIRegistry.perms.getZones()) {
+                if (z instanceof AreaZone) {
+                    if (z.getName().startsWith(args.peek()))
+                        tabComplete.add(z.getName());
+                    if (Integer.toString(z.getId()).startsWith(args.peek()))
+                        tabComplete.add(Integer.toString(z.getId()));
+                }
+            }
+            return;
+        }
         String zoneName = args.remove();
         AreaZone zone = getZone(worldZone, zoneName);
         if (!redefine && zone != null)
@@ -219,14 +233,11 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             {
                 throw new CommandException("Command not usable from console. Try /zone set <name> <coords> instead");
             }
-
-            AreaBase area = null;
-            PlayerInfo info = PlayerInfo.getPlayerInfo(new UserIdent((EntityPlayerMP) sender));
-            area = info.getSelection();
+            
+            PlayerInfo info = PlayerInfo.getPlayerInfo((EntityPlayerMP) sender);
+            AreaBase area = info.getSelection();
             if (area == null)
-            {
                 throw new CommandException("No selection available. Please select a region first.");
-            }
 
             PermissionContext context = new PermissionContext();
             context.setCommandSender(sender);
@@ -245,8 +256,6 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             else
             {
                 zone = new AreaZone(worldZone, zoneName, area);
-                // TODO: Make zone registration automatic
-                ((ZonedPermissionHelper) APIRegistry.perms).addZone(zone);
                 OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been defined.", zoneName));
             }
         }
@@ -263,7 +272,6 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
         }
-
         if (worldZone == null)
         {
             throw new CommandException("No world found");
@@ -272,17 +280,27 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         {
             throw new CommandException("Missing arguments!");
         }
-        String zoneName = args.remove();
-
-        AreaZone zone = getZone(worldZone, zoneName);
-        if (worldZone.removeAreaZone(zoneName))
+        if (tabCompleteMode)
         {
-            OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been deleted.", zoneName));
+            for (Zone z: APIRegistry.perms.getZones()) {
+                if (z instanceof AreaZone) {
+                    if (z.getName().startsWith(args.peek()))
+                        tabComplete.add(z.getName());
+                    if (Integer.toString(z.getId()).startsWith(args.peek()))
+                        tabComplete.add(Integer.toString(z.getId()));
+                }
+            }
+            return;
         }
-        else
+        String zoneName = args.remove();
+        AreaZone zone = getZone(worldZone, zoneName);
+        if (zone == null)
         {
             OutputHandler.chatError(sender, String.format("Area \"%s\" has does not exist!", zoneName));
+            return;
         }
+        zone.getWorldZone().removeAreaZone(zone);
+        OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been deleted.", zoneName));
     }
 
     private void parseEntryExitMessage(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean isEntry)
@@ -348,13 +366,6 @@ public class CommandZone extends ForgeEssentialsCommandBase {
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public boolean canPlayerUseCommand(EntityPlayer player)
-    {
-        // Always allow - command checks permissions itself
-        return true;
     }
 
     @Override

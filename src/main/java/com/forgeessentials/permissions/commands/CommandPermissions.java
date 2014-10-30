@@ -43,6 +43,13 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     }
 
     @Override
+    public boolean canPlayerUseCommand(EntityPlayer player)
+    {
+        // Always allow - command checks permissions itself
+        return true;
+    }
+
+    @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
     	new PermissionCommandParser(sender, args, false);

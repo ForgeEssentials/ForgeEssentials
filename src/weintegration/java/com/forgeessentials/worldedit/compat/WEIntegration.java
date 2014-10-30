@@ -1,7 +1,7 @@
 package com.forgeessentials.worldedit.compat;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.EnvironmentChecker;
+import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.OutputHandler;
@@ -52,14 +52,14 @@ public class WEIntegration {
             return;
         }
 
-        if (!EnvironmentChecker.worldEditInstalled)
+        if (!Environment.hasWorldEdit)
         {
             OutputHandler.felog.severe("You cannot run the FE integration tools for WorldEdit without installing WorldEdit Forge.");
             ModuleLauncher.instance.unregister("WEIntegrationTools");
             return;
         }
-        EnvironmentChecker.worldEditFEtoolsInstalled = true;
-        PlayerInfo.selprovider = new WESelectionHandler();
+        ForgeEssentials.worldEditCompatilityPresent = true;
+        PlayerInfo.selectionProvider = new WESelectionHandler();
     }
 
     @SubscribeEvent

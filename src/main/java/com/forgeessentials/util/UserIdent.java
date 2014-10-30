@@ -1,13 +1,14 @@
 package com.forgeessentials.util;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.compress.archivers.dump.InvalidFormatException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerSelector;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.commands.util.Kit;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
@@ -15,12 +16,6 @@ import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.PlayerSelector;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 
 @SaveableObject(SaveInline = true)
 public class UserIdent {
@@ -31,7 +26,7 @@ public class UserIdent {
 	@SaveableField
 	private String username;
 
-	private EntityPlayer player;
+	private EntityPlayerMP player;
 
 	public UserIdent(UUID uuid)
 	{
@@ -58,7 +53,7 @@ public class UserIdent {
 		}
 	}
 
-	public UserIdent(EntityPlayer player)
+	public UserIdent(EntityPlayerMP player)
 	{
 		if (player == null)
 			throw new IllegalArgumentException();
@@ -66,6 +61,16 @@ public class UserIdent {
 		this.uuid = player.getPersistentID();
 		this.username = player.getCommandSenderName();
 	}
+
+    public UserIdent(EntityPlayer player)
+    {
+        if (player == null)
+            throw new IllegalArgumentException();
+        if (player instanceof EntityPlayerMP)
+            this.player = (EntityPlayerMP) player;
+        this.uuid = player.getPersistentID();
+        this.username = player.getCommandSenderName();
+    }
 
 	public UserIdent(UUID uuid, String username)
 	{
@@ -147,7 +152,7 @@ public class UserIdent {
 		return username;
 	}
 
-	public EntityPlayer getPlayer()
+	public EntityPlayerMP getPlayer()
 	{
 		identifyUser();
 		return player;

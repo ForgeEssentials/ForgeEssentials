@@ -43,7 +43,6 @@ public class ModuleAfterlife {
     public void serverStarting(FEModuleServerInitEvent e)
     {
         deathchest.load();
-        FMLCommonHandler.instance().bus().register(respawnDebuff);
         APIRegistry.perms.registerPermission(BASEPERM, RegisteredPermValue.OP);
 
         APIRegistry.perms.registerPermission(RespawnDebuffHandler.BYPASSPOTION, RegisteredPermValue.OP);

@@ -1,5 +1,20 @@
 package com.forgeessentials.core;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.server.CommandHandlerForge;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -12,7 +27,7 @@ import com.forgeessentials.core.commands.selections.CommandPos;
 import com.forgeessentials.core.commands.selections.CommandWand;
 import com.forgeessentials.core.commands.selections.WandController;
 import com.forgeessentials.core.compat.CommandSetChecker;
-import com.forgeessentials.core.compat.EnvironmentChecker;
+import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.CoreConfig;
 import com.forgeessentials.core.misc.LoginMessage;
@@ -41,6 +56,7 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -55,18 +71,6 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Main mod class
@@ -87,6 +91,9 @@ public class ForgeEssentials {
 	public ModuleLauncher mdlaunch;
 	private TaskRegistry tasks;
 
+	// static FE-module flags / variables
+    public static boolean worldEditCompatilityPresent = false;
+
 	public ForgeEssentials()
 	{
 		tasks = new TaskRegistry();
@@ -103,8 +110,7 @@ public class ForgeEssentials {
 
 		// setup fedir stuff
 		config = new CoreConfig();
-		EnvironmentChecker.checkBukkit();
-		EnvironmentChecker.checkWorldEdit();
+		Environment.check();
 
 		// Data API stuff
 		{
@@ -167,31 +173,21 @@ public class ForgeEssentials {
 
 		BlockModListFile.makeModList();
 
-		List<ForgeEssentialsCommandBase> commands = new ArrayList();
-
 		// commands
-		commands.add(new CommandFEInfo());
-        commands.add(new CommandFEDebug());
 		e.registerServerCommand(new HelpFixer());
+		
+		new CommandFEInfo().register(RegisteredPermValue.OP);
+        new CommandFEDebug().register(RegisteredPermValue.OP);
 
-		if (!EnvironmentChecker.worldEditInstalled)
+		if (!worldEditCompatilityPresent)
 		{
-			commands.add(new CommandPos(1));
-			commands.add(new CommandPos(2));
-			commands.add(new CommandWand());
-			commands.add(new CommandDeselect());
-			commands.add(new CommandExpand());
-			commands.add(new CommandExpandY());
+			new CommandPos(1).register(RegisteredPermValue.OP);
+			new CommandPos(2).register(RegisteredPermValue.OP);
+			new CommandWand().register(RegisteredPermValue.OP);
+			new CommandDeselect().register(RegisteredPermValue.OP);
+			new CommandExpand().register(RegisteredPermValue.OP);
+			new CommandExpandY().register(RegisteredPermValue.OP);
             MinecraftForge.EVENT_BUS.register(new WandController());
-		}
-
-		for (ForgeEssentialsCommandBase command : commands)
-		{
-			if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
-			{
-				APIRegistry.perms.registerPermission(command.getPermissionNode(), command.getDefaultPermission());
-			}
-			e.registerServerCommand(command);
 		}
 
 		tasks.onServerStart();

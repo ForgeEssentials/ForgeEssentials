@@ -8,7 +8,7 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.compat.EnvironmentChecker;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
@@ -25,7 +25,7 @@ public class WandController {
 	{
 		// if worldedit is installed, don't do anything
 		// and only handle server events
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient() || EnvironmentChecker.worldEditFEtoolsInstalled)
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient() || ForgeEssentials.worldEditCompatilityPresent)
 			return;
 
 		// get info now rather than later

@@ -1,5 +1,6 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,8 @@ public class ServerZone extends Zone {
 
 	private RootZone rootZone;
 
+	private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
+	
 	private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
 
 	private int maxZoneID;
@@ -127,6 +130,7 @@ public class ServerZone extends Zone {
 	public void addWorldZone(WorldZone zone)
 	{
 		worldZones.put(zone.getDimensionID(), zone);
+		addZone(zone);
 		setDirty();
 	}
 
@@ -223,7 +227,41 @@ public class ServerZone extends Zone {
 			return null;
 	}
 
-	// ------------------------------------------------------------
+    // ------------------------------------------------------------
+
+    public void addZone(Zone zone) {
+        zones.put(zone.getId(), zone);
+    }
+
+    public boolean removeZone(Zone zone) {
+        return zones.remove(zone.getId()) != null;
+    }
+
+    public void rebuildZonesMap() {
+        zones.clear();
+        addZone(getRootZone());
+        addZone(this);
+        for (WorldZone worldZone : worldZones.values())
+        {
+            addZone(worldZone);
+            for (AreaZone areaZone : worldZone.getAreaZones())
+            {
+                addZone(areaZone);
+            }
+        }
+    }
+
+    public Map<Integer, Zone> getZoneMap()
+    {
+        return zones;
+    }
+
+    public Collection<Zone> getZones()
+    {
+        return zones.values();
+    }
+    
+    // ------------------------------------------------------------
 
 	public void registerPlayer(UserIdent ident)
 	{

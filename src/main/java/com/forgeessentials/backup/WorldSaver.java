@@ -10,6 +10,7 @@ import net.minecraft.world.WorldServer;
 
 import com.forgeessentials.util.OutputHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
@@ -24,7 +25,7 @@ public class WorldSaver {
 
     public WorldSaver()
     {
-        // nthing
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     public static void addWorldNeedsSave(World world)

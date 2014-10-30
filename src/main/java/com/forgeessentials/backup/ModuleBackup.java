@@ -70,7 +70,7 @@ public class ModuleBackup {
     public void load(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(new WorldSaver());
+        new WorldSaver();
     }
 
     @SubscribeEvent

@@ -2,6 +2,8 @@ package com.forgeessentials.core.commands;
 
 import java.util.List;
 
+import com.forgeessentials.permissions.core.PermissionEventHandler;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -11,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.server.CommandHandlerForge;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
@@ -79,8 +82,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
     public abstract boolean canConsoleUseCommand();
 
     /**
-     * returns canConsoleUseCommand() by default. Override if you want to change
-     * that.
+     * returns canConsoleUseCommand() by default. Override if you want to change that.
      */
     public boolean canCommandBlockUseCommand(TileEntityCommandBlock block)
     {
@@ -89,14 +91,14 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-        // This will make the /help menu only display allowed commands.
-        return checkCommandPerm(player);
+        return checkCommandPermission(player);
     }
 
     /**
      * Simply prints a usage message to the sender of the command.
      *
-     * @param sender Object that issued the command
+     * @param sender
+     *            Object that issued the command
      */
     public void error(ICommandSender sender)
     {
@@ -106,26 +108,35 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
     /**
      * Prints an error message to the sender of the command.
      *
-     * @param sender  Object that issued the command
-     * @param message Error message
+     * @param sender
+     *            Object that issued the command
+     * @param message
+     *            Error message
      */
     public void error(String message)
     {
-    	throw new CommandException(message);
+        throw new CommandException(message);
     }
 
-    public boolean checkCommandPerm(EntityPlayer player)
+    /**
+     * Registers this command
+     * 
+     * @param permLevel
+     */
+    public void register(RegisteredPermValue permLevel)
+    {
+        CommandHandlerForge.registerCommand(this, getPermissionNode(), permLevel);
+    }
+
+    public boolean checkCommandPermission(EntityPlayer player)
     {
         String perm = getPermissionNode();
-        if (perm == null)
+        if (perm != null && !PermissionsManager.checkPermission(player, perm))
         {
-            return true;
+            //PermissionEventHandler.permissionDeniedMessage(player);
+            return false;
         }
-        else
-        {
-            //return APIRegistry.perms.checkPermAllowed(player, perm);
-        	return PermissionsManager.checkPermission(player, perm);
-        }
+        return true;
     }
 
     // permissions

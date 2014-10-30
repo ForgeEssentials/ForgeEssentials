@@ -58,7 +58,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
 		}
 
 		// Check for permissions
-		if (!checkCommandPerm(sender)) {
+		if (!checkCommandPermission(sender)) {
 			OutputHandler.chatError(sender, "You have no permission to use fewand!");
 			return;
 		}
@@ -90,7 +90,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
         }
         else
         {
-            return checkCommandPerm(player);
+            return checkCommandPermission(player);
         }
     }
 

@@ -45,8 +45,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
 	private RootZone rootZone;
 
-	private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
-
 	private IZonePersistenceProvider persistenceProvider;
 
 	private Timer persistenceTimer;
@@ -58,11 +56,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	public ZonedPermissionHelper()
 	{
 		FMLCommonHandler.instance().bus().register(this);
-
 		rootZone = new RootZone(this);
-
-		addZone(rootZone);
-		addZone(new ServerZone(rootZone));
+		rootZone.setServerZone(new ServerZone(rootZone));
 	}
 
 	// ------------------------------------------------------------
@@ -108,19 +103,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 			{
 				// Set new server zone
 				rootZone.setServerZone(serverZone);
-
-				// Rebuild zones map
-				zones.clear();
-				addZone(rootZone);
-				addZone(serverZone);
-				for (WorldZone worldZone : serverZone.getWorldZones().values())
-				{
-					addZone(worldZone);
-					for (AreaZone areaZone : worldZone.getAreaZones())
-					{
-						addZone(areaZone);
-					}
-				}
+				serverZone.rebuildZonesMap();
 				dirty = false;
 				return true;
 			}
@@ -168,7 +151,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     public Set<String> enumAllPermissions()
     {
         Set<String> perms = new TreeSet<String>();
-        for (Zone zone : zones.values())
+        for (Zone zone : getZones())
         {
             for (Map<String, String> groupPerms : zone.getGroupPermissions().values())
             {
@@ -193,7 +176,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	public Map<Zone, Map<String, String>> enumUserPermissions(UserIdent ident)
 	{
 		Map<Zone, Map<String, String>> result = new HashMap<Zone, Map<String, String>>();
-		for (Zone zone : zones.values())
+		for (Zone zone : getZones())
 		{
 			if (zone.getPlayerPermissions(ident) != null)
 			{
@@ -208,7 +191,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	public Map<Zone, Map<String, String>> enumGroupPermissions(String group, boolean enumRootPermissions)
 	{
 		Map<Zone, Map<String, String>> result = new HashMap<Zone, Map<String, String>>();
-		for (Zone zone : zones.values())
+		for (Zone zone : getZones())
 		{
 			if (!enumRootPermissions && zone instanceof RootZone)
 				continue;
@@ -229,7 +212,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@SubscribeEvent
 	public void playerLogin(PlayerLoggedInEvent e)
 	{
-		for (Zone zone : zones.values())
+		for (Zone zone : getZones())
 		{
 			zone.updatePlayerIdents();
 		}
@@ -515,13 +498,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public Collection<Zone> getZones()
 	{
-		return zones.values();
+		return getServerZone().getZones();
 	}
 
 	@Override
 	public Zone getZoneById(int id)
 	{
-		return zones.get(id);
+		return getServerZone().getZoneMap().get(id);
 	}
 
 	@Override
@@ -529,7 +512,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	{
 		try
 		{
-			return zones.get(Integer.parseInt(id));
+			return getServerZone().getZoneMap().get(Integer.parseInt(id));
 		}
 		catch (NumberFormatException e)
 		{
@@ -555,7 +538,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 		if (zone == null)
 		{
 			zone = new WorldZone(getServerZone(), dimensionId);
-			addZone(zone);
 		}
 		return zone;
 	}
@@ -564,12 +546,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	public WorldZone getWorldZone(World world)
 	{
 		return getWorldZone(world.provider.dimensionId);
-	}
-
-	public Zone addZone(Zone zone)
-	{
-		zones.put(zone.getId(), zone);
-		return zone;
 	}
 
 	@Override

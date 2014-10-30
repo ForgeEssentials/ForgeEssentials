@@ -73,12 +73,6 @@ public class CommandBackup extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public boolean canPlayerUseCommand(EntityPlayer sender)
-    {
-        return PermissionsManager.checkPermission(sender, getPermissionNode());
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return "fe.backup";

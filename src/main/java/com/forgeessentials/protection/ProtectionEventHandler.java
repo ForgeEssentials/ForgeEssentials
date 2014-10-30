@@ -196,7 +196,6 @@ public class ProtectionEventHandler {
         }
     }
 
-
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void playerInteractEventItemUse(PlayerInteractEvent e)
 	{

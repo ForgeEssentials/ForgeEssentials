@@ -99,9 +99,9 @@ public class WorldZone extends Zone {
 		return null;
 	}
 
-	public boolean removeAreaZone(String areaName)
+	public boolean removeAreaZone(AreaZone zone)
 	{
-		return areaZones.remove(areaName);
+		return serverZone.removeZone(zone) | areaZones.remove(zone);
 	}
 
 	public Collection<AreaZone> getAreaZones()
@@ -117,6 +117,7 @@ public class WorldZone extends Zone {
 	void addAreaZone(AreaZone areaZone)
 	{
 		areaZones.add(areaZone);
+		getServerZone().addZone(areaZone);
 		sortAreaZones();
 		setDirty();
 	}

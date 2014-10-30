@@ -1,6 +1,7 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.core.compat.EnvironmentChecker;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate.Message;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -13,6 +14,7 @@ import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.Selection;
 import com.forgeessentials.util.selections.WarpPoint;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,417 +26,383 @@ import java.util.*;
 @SaveableObject
 public class PlayerInfo {
 
-	private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
+    private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
 
-	// -------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------
 
-	public class FESelectionProvider implements ISelectionProvider {
-		private UUID user;
+    public static ISelectionProvider selectionProvider = new FESelectionProvider();
 
-		protected FESelectionProvider(UUID username)
-		{
-			user = username;
-		}
+    public static class FESelectionProvider implements ISelectionProvider {
 
-		@Override
-		public Point getPoint1(EntityPlayerMP player)
-		{
-			return sel1;
-		}
+        @Override
+        public Point getPoint1(EntityPlayerMP player)
+        {
+            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+            return pi.sel1;
+        }
 
-		@Override
-		public Point getPoint2(EntityPlayerMP player)
-		{
-			return sel2;
-		}
+        @Override
+        public Point getPoint2(EntityPlayerMP player)
+        {
+            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+            return pi.sel2;
+        }
 
-		@Override
-		public Selection getSelection(EntityPlayerMP player)
-		{
-			return selection;
-		}
-	}
+        @Override
+        public Selection getSelection(EntityPlayerMP player)
+        {
+            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+            if (pi.sel1 == null || pi.sel2 == null)
+                return null;
+            return new Selection(pi.sel1, pi.sel2);
+        }
 
-	// -------------------------------------------------------------------------------------------
+    }
 
-	@UniqueLoadingKey
-	private final String uuid_string;
-	
-	private final UUID uuid;
+    // -------------------------------------------------------------------------------------------
 
-	// wand stuff
-	private String wandID;
+    private UserIdent ident;
 
-	private int wandDmg;
+    @UniqueLoadingKey
+    private final String uuid_string;
 
-	private boolean wandEnabled = false;
+    // wand stuff
+    private String wandID;
 
-	@SaveableField()
-	private WarpPoint home;
+    private int wandDmg;
 
-	@SaveableField()
-	private WarpPoint lastTeleportOrigin;
+    private boolean wandEnabled = false;
+
+    @SaveableField()
+    private WarpPoint home;
+
+    @SaveableField()
+    private WarpPoint lastTeleportOrigin;
 
     @SaveableField()
     private WarpPoint lastDeathLocation;
 
-	// 0: Normal 1: World spawn 2: Bed 3: Home
-	@SaveableField()
-	private int spawnType;
+    // 0: Normal 1: World spawn 2: Bed 3: Home
+    @SaveableField()
+    private int spawnType;
 
-	private long lastTeleportTime = 0;
+    private long lastTeleportTime = 0;
 
-	private HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
+    private HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
 
-	// selection stuff
-	@SaveableField()
-	private Point sel1;
+    // selection stuff
+    @SaveableField()
+    private Point sel1;
 
-	@SaveableField()
-	private Point sel2;
+    @SaveableField()
+    private Point sel2;
 
-	private Selection selection;
+    @SaveableField()
+    private int timePlayed;
 
-	@SaveableField()
-	private int timePlayed;
+    private long loginTime;
 
-	private long loginTime;
+    @SaveableField()
+    private long firstJoin;
 
-	@SaveableField()
-	private long firstJoin;
+    // undo and redo stuff
+    private Stack<BackupArea> undos;
 
-	// undo and redo stuff
-	private Stack<BackupArea> undos;
+    private Stack<BackupArea> redos;
 
-	private Stack<BackupArea> redos;
-
-	@SaveableField
-	private List<ItemStack> hiddenItems;
-
-	public static ISelectionProvider selprovider;
+    @SaveableField
+    private List<ItemStack> hiddenItems;
 
     private boolean hasFEClient;
 
-	private PlayerInfo(UUID uuid)
-	{
-		this.uuid = uuid;
-		this.uuid_string = uuid.toString();
-		
-		sel1 = null;
-		sel2 = null;
-		selection = null;
+    private PlayerInfo(UUID uuid)
+    {
+        this.ident = new UserIdent(uuid);
+        this.uuid_string = uuid.toString();
 
-		undos = new Stack<BackupArea>();
-		redos = new Stack<BackupArea>();
+        sel1 = null;
+        sel2 = null;
 
-		firstJoin = System.currentTimeMillis();
-		loginTime = System.currentTimeMillis();
+        undos = new Stack<BackupArea>();
+        redos = new Stack<BackupArea>();
 
-		timePlayed = 0;
+        firstJoin = System.currentTimeMillis();
+        loginTime = System.currentTimeMillis();
 
-		hiddenItems = new ArrayList<ItemStack>();
+        timePlayed = 0;
 
-		// if (!EnvironmentChecker.worldEditFEtoolsInstalled)
-		selprovider = new FESelectionProvider(uuid);
+        hiddenItems = new ArrayList<ItemStack>();
         hasFEClient = false;
-	}
+    }
 
-	@Reconstructor()
-	public static PlayerInfo reconstruct(IReconstructData tag)
-	{
-		UUID uuid = UUID.fromString((String) tag.getUniqueKey());
-		PlayerInfo info = new PlayerInfo(uuid);
+    @Reconstructor()
+    public static PlayerInfo reconstruct(IReconstructData tag)
+    {
+        UUID uuid = UUID.fromString((String) tag.getUniqueKey());
+        PlayerInfo info = new PlayerInfo(uuid);
 
-		info.setPoint1((Point) tag.getFieldValue("sel1"));
-		info.setPoint2((Point) tag.getFieldValue("sel2"));
+        info.setPoint1((Point) tag.getFieldValue("sel1"));
+        info.setPoint2((Point) tag.getFieldValue("sel2"));
 
-		info.home = (WarpPoint) tag.getFieldValue("home");
+        info.home = (WarpPoint) tag.getFieldValue("home");
         info.lastTeleportOrigin = (WarpPoint) tag.getFieldValue("lastTeleportOrigin");
         info.lastDeathLocation = (WarpPoint) tag.getFieldValue("lastDeathLocation");
 
-		info.spawnType = (Integer) tag.getFieldValue("spawnType");
+        info.spawnType = (Integer) tag.getFieldValue("spawnType");
 
-		info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
+        info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
 
-		info.firstJoin = (Long) tag.getFieldValue("firstJoin");
-		return info;
-	}
+        info.firstJoin = (Long) tag.getFieldValue("firstJoin");
+        return info;
+    }
 
-	/**
-	 * Notifies the PlayerInfo to save itself to the Data store.
-	 */
-	public void save()
-	{
-		recalcTimePlayed();
-		DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
-	}
+    /**
+     * Notifies the PlayerInfo to save itself to the Data store.
+     */
+    public void save()
+    {
+        recalcTimePlayed();
+        DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
+    }
 
-	@SubscribeEvent
-	public void initForPlayer(PlayerEvent.LoadFromFile event)
-	{
-		getPlayerInfo(event.entityPlayer);
-	}
+    @SubscribeEvent
+    public void initForPlayer(PlayerEvent.LoadFromFile event)
+    {
+        getPlayerInfo(event.entityPlayer);
+    }
 
-	// @Deprecated Why? it doesn't have to be removed?
-	public static PlayerInfo getPlayerInfo(EntityPlayer player)
-	{
-		return getPlayerInfo(player.getPersistentID());
-	}
+    public static PlayerInfo getPlayerInfo(EntityPlayer player)
+    {
+        return getPlayerInfo(player.getPersistentID());
+    }
 
-	public static PlayerInfo getPlayerInfo(UserIdent ident)
-	{
-		if (!ident.hasUUID())
-			return null;
-		return getPlayerInfo(ident.getUuid());
-	}
+    public static PlayerInfo getPlayerInfo(UserIdent ident)
+    {
+        if (!ident.hasUUID())
+            return null;
+        return getPlayerInfo(ident.getUuid());
+    }
 
-	public static PlayerInfo getPlayerInfo(UUID playerID)
-	{
-		PlayerInfo info = playerInfoMap.get(playerID);
-		// load or create one
-		if (info == null)
-		{
-			// Attempt to populate this info with some data from our storage.
-			info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), playerID.toString());
-			if (info == null)
-			{
-				info = new PlayerInfo(playerID);
-			}
-			playerInfoMap.put(playerID, info);
-		}
-		return info;
-	}
+    public static PlayerInfo getPlayerInfo(UUID playerID)
+    {
+        PlayerInfo info = playerInfoMap.get(playerID);
+        // load or create one
+        if (info == null)
+        {
+            // Attempt to populate this info with some data from our storage.
+            info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), playerID.toString());
+            if (info == null)
+            {
+                info = new PlayerInfo(playerID);
+            }
+            playerInfoMap.put(playerID, info);
+        }
+        return info;
+    }
 
-	public static void discardInfo(UUID username)
-	{
-		PlayerInfo info = playerInfoMap.remove(username);
-		if (info != null)
-		{
-			info.save();
-		}
-	}
+    public static void discardInfo(UUID username)
+    {
+        PlayerInfo info = playerInfoMap.remove(username);
+        if (info != null)
+        {
+            info.save();
+        }
+    }
 
-	/**
-	 * Saves all player-infos
-	 */
-	public static void saveAll()
-	{
-		for (PlayerInfo info : playerInfoMap.values())
-		{
-			info.save();
-		}
-	}
+    /**
+     * Saves all player-infos
+     */
+    public static void saveAll()
+    {
+        for (PlayerInfo info : playerInfoMap.values())
+        {
+            info.save();
+        }
+    }
 
-	/**
-	 * Clear player-infos
-	 */
-	public static void clear()
-	{
-		playerInfoMap.clear();
-	}
+    /**
+     * Clear player-infos
+     */
+    public static void clear()
+    {
+        playerInfoMap.clear();
+    }
 
-	// ----------------------------------------------
+    // ----------------------------------------------
 
-	public String getWandID()
-	{
-		return wandID;
-	}
+    public String getWandID()
+    {
+        return wandID;
+    }
 
-	public void setWandID(String wandID)
-	{
-		this.wandID = wandID;
-	}
+    public void setWandID(String wandID)
+    {
+        this.wandID = wandID;
+    }
 
-	public boolean isWandEnabled()
-	{
-		return wandEnabled;
-	}
+    public boolean isWandEnabled()
+    {
+        return wandEnabled;
+    }
 
-	public void setWandEnabled(boolean wandEnabled)
-	{
-		this.wandEnabled = wandEnabled;
-	}
+    public void setWandEnabled(boolean wandEnabled)
+    {
+        this.wandEnabled = wandEnabled;
+    }
 
-	public int getWandDmg()
-	{
-		return wandDmg;
-	}
+    public int getWandDmg()
+    {
+        return wandDmg;
+    }
 
-	public void setWandDmg(int wandDmg)
-	{
-		this.wandDmg = wandDmg;
-	}
+    public void setWandDmg(int wandDmg)
+    {
+        this.wandDmg = wandDmg;
+    }
 
-	// ----------------------------------------------
+    // ----------------------------------------------
 
-	public long getFirstJoin()
-	{
-		return firstJoin;
-	}
+    public long getFirstJoin()
+    {
+        return firstJoin;
+    }
 
-	public int getTimePlayed()
-	{
-		recalcTimePlayed();
-		return timePlayed;
-	}
+    public int getTimePlayed()
+    {
+        recalcTimePlayed();
+        return timePlayed;
+    }
 
-	public void recalcTimePlayed()
-	{
-		long current = System.currentTimeMillis() - loginTime;
-		int min = (int) (current / 60000);
-		timePlayed += min;
-		loginTime = System.currentTimeMillis();
-	}
+    public void recalcTimePlayed()
+    {
+        long current = System.currentTimeMillis() - loginTime;
+        int min = (int) (current / 60000);
+        timePlayed += min;
+        loginTime = System.currentTimeMillis();
+    }
 
-	// ----------------------------------------------
-	// ------------- Command stuff ------------------
-	// ----------------------------------------------
+    // ----------------------------------------------
+    // ------------- Command stuff ------------------
+    // ----------------------------------------------
 
-	public void KitCooldownTick()
-	{
-		for (String key : kitCooldown.keySet())
-		{
-			if (kitCooldown.get(key) == 0)
-			{
-				kitCooldown.remove(key);
-			}
-			else
-			{
-				kitCooldown.put(key, kitCooldown.get(key) - 1);
-			}
-		}
-	}
+    public void KitCooldownTick()
+    {
+        for (String key : kitCooldown.keySet())
+        {
+            if (kitCooldown.get(key) == 0)
+            {
+                kitCooldown.remove(key);
+            }
+            else
+            {
+                kitCooldown.put(key, kitCooldown.get(key) - 1);
+            }
+        }
+    }
 
-	// ----------------------------------------------
-	// ------------ Selection stuff -----------------
-	// ----------------------------------------------
+    // ----------------------------------------------
+    // ------------ Selection stuff -----------------
+    // ----------------------------------------------
 
-	public void setPoint1(Point sel1)
-	{
-		if (EnvironmentChecker.worldEditFEtoolsInstalled)
-			return;
+    public Point getPoint1()
+    {
+        return selectionProvider.getPoint1(ident.getPlayer());
+    }
 
-		this.sel1 = sel1;
+    public Point getPoint2()
+    {
+        return selectionProvider.getPoint2(ident.getPlayer());
+    }
 
-		if (sel1 != null)
-		{
-			if (selection == null)
-			{
-				if (sel1 != null && sel2 != null)
-				{
-					selection = new Selection(sel1, sel2);
-				}
-			}
-			else
-			{
-				selection.setStart(sel1);
-			}
-		}
+    public void setPoint1(Point sel1)
+    {
+        if (!ForgeEssentials.worldEditCompatilityPresent)
+        {
+            this.sel1 = sel1;
+            FunctionHelper.netHandler.sendTo(new Message(this), ident.getPlayer());
+        }
+    }
 
-		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(uuid));
-	}
+    public void setPoint2(Point sel2)
+    {
+        if (!ForgeEssentials.worldEditCompatilityPresent)
+        {
+            this.sel2 = sel2;
+            FunctionHelper.netHandler.sendTo(new Message(this), ident.getPlayer());
+        }
+    }
 
-	public void setPoint2(Point sel2)
-	{
-		if (EnvironmentChecker.worldEditFEtoolsInstalled)
-			return;
+    public Selection getSelection()
+    {
+        return selectionProvider.getSelection(ident.getPlayer());
+    }
 
-		this.sel2 = sel2;
+    public void clearSelection()
+    {
+        if (!ForgeEssentials.worldEditCompatilityPresent)
+        {
+            sel1 = null;
+            sel2 = null;
+            FunctionHelper.netHandler.sendTo(new Message(this), ident.getPlayer());
+        }
+    }
 
-		if (sel2 != null)
-		{
-			if (selection == null)
-			{
-				if (sel1 != null && sel2 != null)
-				{
-					selection = new Selection(sel1, sel2);
-				}
-			}
-			else
-			{
-				selection.setEnd(sel2);
-			}
-		}
+    // ----------------------------------------------
+    // ------------ Undo/Redo stuff -----------------
+    // ----------------------------------------------
 
-		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(uuid));
-	}
+    public void addUndoAction(BackupArea backup)
+    {
+        undos.push(backup);
+        redos.clear();
+    }
 
-	public Point getPoint1()
-	{
-		return selprovider.getPoint1(UserIdent.getPlayerByUuid(uuid));
-	}
+    public BackupArea getNextUndo()
+    {
+        if (undos.empty())
+        {
+            return null;
+        }
 
-	public Selection getSelection()
-	{
-		return selprovider.getSelection(UserIdent.getPlayerByUuid(uuid));
-	}
+        BackupArea back = undos.pop();
+        redos.push(back);
+        return back;
+    }
 
-	// ----------------------------------------------
-	// ------------ Undo/Redo stuff -----------------
-	// ----------------------------------------------
+    public BackupArea getNextRedo()
+    {
+        if (redos.empty())
+        {
+            return null;
+        }
 
-	public void addUndoAction(BackupArea backup)
-	{
-		undos.push(backup);
-		redos.clear();
-	}
+        BackupArea back = redos.pop();
+        undos.push(back);
+        return back;
+    }
 
-	public BackupArea getNextUndo()
-	{
-		if (undos.empty())
-		{
-			return null;
-		}
+    public List<ItemStack> getHiddenItems()
+    {
+        return hiddenItems;
 
-		BackupArea back = undos.pop();
-		redos.push(back);
-		return back;
-	}
+    }
 
-	public BackupArea getNextRedo()
-	{
-		if (redos.empty())
-		{
-			return null;
-		}
+    public HashMap<String, Integer> getKitCooldown()
+    {
+        return kitCooldown;
+    }
 
-		BackupArea back = redos.pop();
-		undos.push(back);
-		return back;
-	}
+    // ----------------------------------------------
 
-	public void clearSelection()
-	{
-		if (EnvironmentChecker.worldEditFEtoolsInstalled)
-			return;
-		selection = null;
-		sel1 = null;
-		sel2 = null;
-		FunctionHelper.netHandler.sendTo(new Message(this), UserIdent.getPlayerByUuid(uuid));
-	}
+    public WarpPoint getLastTeleportOrigin()
+    {
+        return lastTeleportOrigin;
+    }
 
-	public List<ItemStack> getHiddenItems()
-	{
-		return hiddenItems;
-
-	}
-
-	public HashMap<String, Integer> getKitCooldown()
-	{
-		return kitCooldown;
-	}
-
-	// ----------------------------------------------
-
-	public WarpPoint getLastTeleportOrigin()
-	{
-		return lastTeleportOrigin;
-	}
-
-	public void setLastTeleportOrigin(WarpPoint lastTeleportStart)
-	{
-		this.lastTeleportOrigin = lastTeleportStart;
-	}
+    public void setLastTeleportOrigin(WarpPoint lastTeleportStart)
+    {
+        this.lastTeleportOrigin = lastTeleportStart;
+    }
 
     public WarpPoint getLastDeathLocation()
     {
@@ -446,32 +414,27 @@ public class PlayerInfo {
         this.lastDeathLocation = lastDeathLocation;
     }
 
-	public long getLastTeleportTime()
-	{
-		return lastTeleportTime;
-	}
+    public long getLastTeleportTime()
+    {
+        return lastTeleportTime;
+    }
 
-	public void setLastTeleportTime(long currentTimeMillis)
-	{
-		this.lastTeleportTime = currentTimeMillis;
-	}
+    public void setLastTeleportTime(long currentTimeMillis)
+    {
+        this.lastTeleportTime = currentTimeMillis;
+    }
 
-	public WarpPoint getHome()
-	{
-		return home;
-	}
+    public WarpPoint getHome()
+    {
+        return home;
+    }
 
-	public void setHome(WarpPoint home)
-	{
-		this.home = home;
-	}
+    public void setHome(WarpPoint home)
+    {
+        this.home = home;
+    }
 
-	// ----------------------------------------------
-
-	public Point getPoint2()
-	{
-		return selprovider.getPoint2(UserIdent.getPlayerByUuid(uuid));
-	}
+    // ----------------------------------------------
 
     // network stuff
     public boolean getHasFEClient()

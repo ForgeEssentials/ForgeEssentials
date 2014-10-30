@@ -95,7 +95,8 @@ public class CommandHandlerForge {
         {
             return PermissionsManager.checkPermission((EntityPlayerMP) sender, permMap.get(command.getCommandName()));
         }
-        else return command.canCommandSenderUseCommand(sender);
+        else 
+            return command.canCommandSenderUseCommand(sender);
     }
 
  
