@@ -23,10 +23,12 @@ Set up for ForgeEssentials development is simalar to any other ForgeGradle-based
 *Note: ForgeGradle versions for Minecraft 1.7 recommends Java 7.*
 
 1. Clone this repo.
-2. Download the respective MinecraftForge ForgeGradle version into the repo.
-3. Open a terminal, and navigate to the cloned repo.
-4. Depending on your system, run either 'gradlew.bat setupDecompWorkspace eclipse' (Windows Command Prompt), './gradlew.bat setupDecompWorkspace eclipse' (Windows PowerShell), or './gradlew setupDecompWorkspace eclipse' (Unix)
-5. Open the newly created workspace in Eclipse, and you will be good to go!
+2. Open a terminal, and navigate to the cloned repo.
+3. Prepare your environment by running the command for your system. To prepare IntelliJ, replace 'eclipse' with 'idea'.
+ * 'gradlew.bat setupDecompWorkspace eclipse' (Windows Command Prompt)
+ * './gradlew.bat setupDecompWorkspace eclipse' (Windows PowerShell)
+ * './gradlew setupDecompWorkspace eclipse' (Unix)
+4. Open the newly created workspace, and you will be good to go!
 
 *Notes:*
 1. Please consider squashing all commits before initially submitting pull requests.
@@ -38,6 +40,15 @@ Downloads
 =========
 
 If you would like test builds, go [here](http://198.23.242.205:8080/job/ForgeEssentials/). Untested and probably buggy!
+
+Troubleshooting
+===============
+
+_gradlew fails due to insufficient memory_
+ * Open the gradlew file used by your platform. In the quotes beside DEFAULT_JVM_OPTS, enter *-Xmx4096M*, where 4096 is the amount of memory you wish to allocate.
+
+_When I launch my debugger, I get the exception "ForgeEssentialsClient should not be installed on a server!"_
+ * This happens if developer mode has not been enabled. Create an environmental variable named "forgeessentials.developermode" with the value "true".
 
 FE Team Members:
 ================
