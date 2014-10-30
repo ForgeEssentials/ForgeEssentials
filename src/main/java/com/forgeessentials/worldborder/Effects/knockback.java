@@ -24,10 +24,14 @@ public class knockback implements IEffect {
         double y = 0;
         double rideY = 0;
 
+        /* blockExists doesn't work as expected, disabled for now.
         if (player.worldObj.blockExists((int)vecp.x, (int)player.prevPosY, (int)vecp.y))
         {
             y = player.worldObj.getActualHeight();
-            rideY = player.ridingEntity.posY;
+            if (player.ridingEntity != null)
+            {
+                rideY = player.ridingEntity.posY;
+            }
             while (player.worldObj.blockExists((int)vecp.x, (int)y, (int)vecp.y))
             {
                 y--;
@@ -36,16 +40,17 @@ public class knockback implements IEffect {
             y = y + 1;
             ChatUtils.sendMessage(player, "Teleported.");
         }
+        */
 
         if (player.ridingEntity != null)
         {
             player.ridingEntity
-                    .setLocationAndAngles(vecp.x, rideY, vecp.y, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
-            player.playerNetServerHandler.setPlayerLocation(vecp.x, y, vecp.y, player.rotationYaw, player.rotationPitch);
+                    .setLocationAndAngles(vecp.x, player.ridingEntity.posY, vecp.y, player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
+            player.playerNetServerHandler.setPlayerLocation(vecp.x, player.prevPosY, vecp.y, player.rotationYaw, player.rotationPitch);
         }
         else
         {
-            player.playerNetServerHandler.setPlayerLocation(vecp.x, y, vecp.y, player.rotationYaw, player.rotationPitch);
+            player.playerNetServerHandler.setPlayerLocation(vecp.x, player.prevPosY, vecp.y, player.rotationYaw, player.rotationPitch);
         }
     }
 }

@@ -81,6 +81,11 @@ public class Deathchest {
             return;
         }
         WorldPoint point = new WorldPoint(e.entityPlayer);
+        if (point.y < 0)
+        {
+            OutputHandler.chatWarning(e.entityPlayer, "No deathchest for you as you fell out of the world!");
+            return;
+        }
         World world = e.entityPlayer.worldObj;
         if (world.isRemote)
         {

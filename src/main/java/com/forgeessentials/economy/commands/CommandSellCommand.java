@@ -81,7 +81,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                 }
                 if (found)
                 {
-                    // Do command in name of player
+                    // Do command
 
                     StringBuilder cmd = new StringBuilder(args.toString().length());
                     for (int i = 2; i < args.length; i++)
@@ -89,7 +89,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                         cmd.append(args[i]);
                         cmd.append(" ");
                     }
-                    MinecraftServer.getServer().getCommandManager().executeCommand(player, cmd.toString());
+                    MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
                     OutputHandler.chatConfirmation(player, "That cost you " + amount + " x " + target.getDisplayName());
                 }
                 else
