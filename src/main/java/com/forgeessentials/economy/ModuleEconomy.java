@@ -11,6 +11,11 @@ import com.forgeessentials.economy.commands.CommandPay;
 import com.forgeessentials.economy.commands.CommandRemoveWallet;
 import com.forgeessentials.economy.commands.CommandSellCommand;
 import com.forgeessentials.economy.commands.CommandSetWallet;
+import com.forgeessentials.economy.commands.plots.CommandBuyPlot;
+import com.forgeessentials.economy.commands.plots.CommandListPlot;
+import com.forgeessentials.economy.commands.plots.CommandRemovePlot;
+import com.forgeessentials.economy.commands.plots.CommandSellPlot;
+import com.forgeessentials.economy.commands.plots.CommandSetPlot;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -57,6 +62,11 @@ public class ModuleEconomy {
         e.registerServerCommand(new CommandPaidCommand());
         e.registerServerCommand(new CommandSellCommand());
         e.registerServerCommand(new CommandMoney());
+        e.registerServerCommand(new CommandBuyPlot());
+        e.registerServerCommand(new CommandRemovePlot());
+        e.registerServerCommand(new CommandSellPlot());
+        e.registerServerCommand(new CommandSetPlot());
+        e.registerServerCommand(new CommandListPlot());
         PlotManager.load();
     }
 

@@ -40,6 +40,11 @@ public class Plot extends WorldArea{
         return name;
     }
 
+    public UUID getOwner()
+    {
+        return UUID.fromString(owner);
+    }
+
     public int getValuation()
     {
         return value;
