@@ -19,7 +19,7 @@ public class S5PacketNoclip implements IMessageHandler<S5PacketNoclip, IMessage>
 
     public S5PacketNoclip(){}
 
-    protected S5PacketNoclip(boolean mode)
+    private S5PacketNoclip(boolean mode)
     {
         this.mode = mode;
     }

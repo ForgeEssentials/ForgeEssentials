@@ -4,6 +4,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.playerlogger.network.S2PacketPlayerLogger;
+import com.forgeessentials.playerlogger.network.S3PacketRollback;
 import com.forgeessentials.playerlogger.rollback.CommandPl;
 import com.forgeessentials.playerlogger.rollback.CommandRollback;
 import com.forgeessentials.playerlogger.rollback.EventHandler;
@@ -11,10 +13,12 @@ import com.forgeessentials.playerlogger.types.BlockChangeType;
 import com.forgeessentials.playerlogger.types.CommandType;
 import com.forgeessentials.playerlogger.types.LogType;
 import com.forgeessentials.playerlogger.types.PlayerTrackerType;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.*;
 import com.forgeessentials.util.selections.WorldPoint;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -162,6 +166,8 @@ public class ModulePlayerLogger {
         {
             throw new RuntimeException("Could not find MySQL JDBC Driver.");
         }
+        FunctionHelper.netHandler.registerMessage(S2PacketPlayerLogger.class, S2PacketPlayerLogger.class, 2, Side.CLIENT);
+        FunctionHelper.netHandler.registerMessage(S3PacketRollback.class, S3PacketRollback.class, 3, Side.CLIENT);
     }
 
     @SubscribeEvent

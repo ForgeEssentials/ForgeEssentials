@@ -1,4 +1,4 @@
-package com.forgeessentials.commands;
+package com.forgeessentials.commands.admin;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,4 +1,4 @@
-package com.forgeessentials.commands;
+package com.forgeessentials.commands.admin;
 
 import java.util.Arrays;
 import java.util.List;

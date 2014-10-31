@@ -2,11 +2,14 @@ package com.forgeessentials.commands.util;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.*;
+import com.forgeessentials.commands.admin.CommandDoAs;
+import com.forgeessentials.commands.admin.CommandMemusage;
+import com.forgeessentials.commands.admin.CommandServerDo;
+import com.forgeessentials.commands.admin.CommandServerSettings;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.server.CommandHandlerForge;
 
 import java.util.ArrayList;
 
