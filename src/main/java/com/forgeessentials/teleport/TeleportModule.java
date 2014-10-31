@@ -1,9 +1,6 @@
 package com.forgeessentials.teleport;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -11,14 +8,12 @@ import com.forgeessentials.teleport.util.ConfigTeleport;
 import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.selections.WorldPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -26,11 +21,8 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import java.util.ArrayList;
@@ -114,6 +106,22 @@ public class TeleportModule {
             EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
             PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
             CommandBack.justDied.add(player.getPersistentID());
+        }
+    }
+
+    @SubscribeEvent
+    public void doRespawn(PlayerEvent.PlayerRespawnEvent e)
+    {
+        WarpPoint lastDeathLocation = PlayerInfo.getPlayerInfo(e.player.getPersistentID()).getLastDeathLocation();
+        if (lastDeathLocation != null) {
+            WarpPoint p = CommandSpawn.getPlayerSpawn((EntityPlayerMP) e.player, lastDeathLocation);
+            if (p != null)
+            {
+                FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
+                e.player.posX = p.xd;
+                e.player.posY = p.yd;
+                e.player.posZ = p.zd;
+            }
         }
     }
 

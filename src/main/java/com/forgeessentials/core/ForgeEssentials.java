@@ -27,7 +27,6 @@ import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.typeInfo.TypeInfoItemStack;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTCompound;
 import com.forgeessentials.data.typeInfo.TypeInfoNBTTagList;
-import com.forgeessentials.teleport.CommandSpawn;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.MiscEventHandler;
@@ -51,7 +50,6 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -215,22 +213,6 @@ public class ForgeEssentials {
         {
             EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
             PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastDeathLocation(new WarpPoint(player));
-        }
-    }
-
-    @SubscribeEvent
-    public void doRespawn(PlayerEvent.PlayerRespawnEvent e)
-    {
-        WarpPoint lastDeathLocation = PlayerInfo.getPlayerInfo(e.player.getPersistentID()).getLastDeathLocation();
-        if (lastDeathLocation != null) {
-            WarpPoint p = CommandSpawn.getPlayerSpawn((EntityPlayerMP) e.player, lastDeathLocation);
-            if (p != null)
-            {
-                FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
-                e.player.posX = p.xd;
-                e.player.posY = p.yd;
-                e.player.posZ = p.zd;
-            }
         }
     }
     
