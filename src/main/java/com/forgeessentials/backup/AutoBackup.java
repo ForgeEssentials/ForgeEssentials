@@ -57,16 +57,19 @@ public class AutoBackup extends TimerTask{
 
         for (String folder : BackupConfig.extraFolders)
         {
-            Backup backup = new Backup(new File(folder));
-            while (!backup.isDone())
-            {
-                try
+            if (!folder.equals("")) {
+                Backup backup = new Backup(new File(folder));
+                backup.startThread();
+                while (!backup.isDone())
                 {
-                    Thread.sleep(1000);
-                }
-                catch (InterruptedException e)
-                {
-                    break;
+                    try
+                    {
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        break;
+                    }
                 }
             }
         }
