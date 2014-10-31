@@ -1,7 +1,7 @@
 package com.forgeessentials.util.selections;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
@@ -60,7 +60,7 @@ public class WarpPoint extends WorldPoint {
         zd = z;
     }
 
-    public WarpPoint(EntityPlayer sender)
+    public WarpPoint(Entity sender)
     {
         super(sender);
         xd = sender.posX;

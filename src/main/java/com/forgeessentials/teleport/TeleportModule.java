@@ -109,22 +109,6 @@ public class TeleportModule {
         }
     }
 
-    @SubscribeEvent
-    public void doRespawn(PlayerEvent.PlayerRespawnEvent e)
-    {
-        WarpPoint lastDeathLocation = PlayerInfo.getPlayerInfo(e.player.getPersistentID()).getLastDeathLocation();
-        if (lastDeathLocation != null) {
-            WarpPoint p = CommandSpawn.getPlayerSpawn((EntityPlayerMP) e.player, lastDeathLocation);
-            if (p != null)
-            {
-                FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
-                e.player.posX = p.xd;
-                e.player.posY = p.yd;
-                e.player.posZ = p.zd;
-            }
-        }
-    }
-
 	@SubscribeEvent
 	public void serverTick(TickEvent.ServerTickEvent e)
 	{

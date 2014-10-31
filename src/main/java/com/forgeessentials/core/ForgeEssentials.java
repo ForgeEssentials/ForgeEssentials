@@ -14,6 +14,7 @@ import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.CoreConfig;
 import com.forgeessentials.core.misc.LoginMessage;
+import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.network.S0PacketHandshake;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
@@ -38,6 +39,7 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -81,6 +83,8 @@ public class ForgeEssentials {
 	public static boolean mcstats;
 	public ModuleLauncher mdlaunch;
 	private TaskRegistry tasks;
+
+    private static RespawnHandler respawnHandler;
 
 	// static FE-module flags / variables
     public static boolean worldEditCompatilityPresent = false;
@@ -144,6 +148,7 @@ public class ForgeEssentials {
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		FMLCommonHandler.instance().bus().register(factory);
 		MinecraftForge.EVENT_BUS.register(factory);
+		respawnHandler = new RespawnHandler();
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
 	}
@@ -206,14 +211,4 @@ public class ForgeEssentials {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerStopEvent(e));
 	}
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void onPlayerDeath(LivingDeathEvent e)
-    {
-        if (e.entityLiving instanceof EntityPlayer)
-        {
-            EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
-            PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastDeathLocation(new WarpPoint(player));
-        }
-    }
-    
 }

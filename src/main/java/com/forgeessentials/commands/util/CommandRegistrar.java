@@ -1,17 +1,15 @@
 package com.forgeessentials.commands.util;
 
+import java.util.ArrayList;
+
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.*;
-import com.forgeessentials.commands.admin.CommandDoAs;
-import com.forgeessentials.commands.admin.CommandMemusage;
-import com.forgeessentials.commands.admin.CommandServerDo;
-import com.forgeessentials.commands.admin.CommandServerSettings;
+import com.forgeessentials.commands.admin.*;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.common.config.Configuration;
-
-import java.util.ArrayList;
 
 public class CommandRegistrar {
 	

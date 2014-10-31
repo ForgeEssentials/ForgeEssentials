@@ -15,6 +15,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
@@ -30,33 +31,6 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 	public String getCommandName()
 	{
 		return "spawn";
-	}
-
-	public static WarpPoint getPlayerSpawn(EntityPlayerMP player, WorldPoint location)
-	{
-	    UserIdent ident = new UserIdent(player);
-	    if (location == null)
-	        location = new WorldPoint(player);
-		String spawnProperty = APIRegistry.perms.getPermission(ident, location, null, APIRegistry.perms.getPlayerGroups(ident), FEPermissions.SPAWN, true);
-		WorldPoint point = null;
-		if (spawnProperty == null)
-			return null;
-		if (spawnProperty.equalsIgnoreCase("bed"))
-		{
-			if (player.getBedLocation() != null)
-			{
-				ChunkCoordinates spawn = player.getBedLocation();
-				EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
-				point = new WorldPoint(player.dimension, spawn.posX, spawn.posY, spawn.posZ);
-			}
-		}
-		else
-		{
-			point = WorldPoint.fromString(spawnProperty);
-		}
-		if (point == null)
-			return null;
-		return new WarpPoint(point, player.cameraYaw, player.cameraPitch);
 	}
 
 	@Override
@@ -75,7 +49,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 				throw new CommandException(String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 
-			WarpPoint point = getPlayerSpawn(player, null);
+			WarpPoint point = RespawnHandler.getPlayerSpawn(player, null);
 			if (point == null)
 			{
 				throw new CommandException("There is no spawnpoint set for that player.");
@@ -89,7 +63,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 		{
 			EntityPlayerMP player = (EntityPlayerMP) sender;
 
-			WarpPoint point = getPlayerSpawn(player, null);
+			WarpPoint point = RespawnHandler.getPlayerSpawn(player, null);
 			if (point == null)
 			{
 				throw new CommandException("There is no spawnpoint set for that player.");
@@ -119,7 +93,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 			throw new CommandException(String.format("Player %s does not exist, or is not online.", args[0]));
 		}
 
-		WarpPoint point = getPlayerSpawn(player, null);
+		WarpPoint point = RespawnHandler.getPlayerSpawn(player, null);
 		if (point == null)
 		{
 			throw new CommandException("There is no spawnpoint set for that player.");
