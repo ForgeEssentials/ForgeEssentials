@@ -8,36 +8,31 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
 
-public class S4PacketEconomy implements IMessageHandler<S4PacketEconomy.Message, IMessage> {
+public class S4PacketEconomy implements IMessageHandler<S4PacketEconomy, IMessage>, IMessage
+{
 
-    @Override public IMessage onMessage(S4PacketEconomy.Message message, MessageContext ctx)
+    @Override public IMessage onMessage(S4PacketEconomy message, MessageContext ctx)
     {
-        return new Message(ctx.getServerHandler().playerEntity.getPersistentID());
+        return new S4PacketEconomy(ctx.getServerHandler().playerEntity.getPersistentID());
     }
 
-    public static class Message implements IMessage {
+    private UUID player;
 
-        private UUID player;
+    public S4PacketEconomy(){}
 
-        public Message()
-        {
-        }
-
-        public Message(UUID player)
-        {
-            this.player = player;
-        }
-
-        @Override
-        public void fromBytes(ByteBuf buf)
-        {
-        }
-
-        @Override public void toBytes(ByteBuf buf)
-        {
-            buf.writeInt(APIRegistry.wallet.getWallet(player));
-
-        }
+    public S4PacketEconomy(UUID player)
+    {
+        this.player = player;
     }
+
+    @Override
+    public void fromBytes(ByteBuf buf){}
+
+    @Override public void toBytes(ByteBuf buf)
+    {
+        buf.writeInt(APIRegistry.wallet.getWallet(player));
+
+    }
+
 }
 

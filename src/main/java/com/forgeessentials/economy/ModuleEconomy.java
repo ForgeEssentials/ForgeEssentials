@@ -42,7 +42,7 @@ public class ModuleEconomy {
     {
         APIRegistry.wallet = new WalletHandler();
         FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
-        FunctionHelper.netHandler.registerMessage(S4PacketEconomy.class, S4PacketEconomy.Message.class, 4, Side.CLIENT);
+        FunctionHelper.netHandler.registerMessage(S4PacketEconomy.class, S4PacketEconomy.class, 4, Side.CLIENT);
 
     }
 

@@ -1,8 +1,7 @@
 package com.forgeessentials.util;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.Environment;
-import com.forgeessentials.core.network.S1PacketSelectionUpdate.Message;
+import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.api.IReconstructData;
@@ -14,14 +13,17 @@ import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.Selection;
 import com.forgeessentials.util.selections.WarpPoint;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+import java.util.UUID;
 
 @SaveableObject
 public class PlayerInfo {
@@ -319,7 +321,7 @@ public class PlayerInfo {
         if (!ForgeEssentials.worldEditCompatilityPresent)
         {
             this.sel1 = sel1;
-            FunctionHelper.netHandler.sendTo(new Message(this), ident.getPlayer());
+            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(this), ident.getPlayer());
         }
     }
 
@@ -328,7 +330,7 @@ public class PlayerInfo {
         if (!ForgeEssentials.worldEditCompatilityPresent)
         {
             this.sel2 = sel2;
-            FunctionHelper.netHandler.sendTo(new Message(this), ident.getPlayer());
+            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(this), ident.getPlayer());
         }
     }
 
@@ -343,7 +345,7 @@ public class PlayerInfo {
         {
             sel1 = null;
             sel2 = null;
-            FunctionHelper.netHandler.sendTo(new Message(this), ident.getPlayer());
+            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(this), ident.getPlayer());
         }
     }
 

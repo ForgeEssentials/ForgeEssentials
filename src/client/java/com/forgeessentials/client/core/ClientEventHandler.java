@@ -1,7 +1,7 @@
 package com.forgeessentials.client.core;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.network.C0PacketHandshake.Message;
+import com.forgeessentials.client.network.C0PacketHandshake;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -38,7 +38,7 @@ public class ClientEventHandler
         if (ForgeEssentialsClient.instance.serverHasFE)
         {
             System.out.println("Dispatching FE handshake packet");
-            ForgeEssentialsClient.instance.netHandler.sendToServer(new Message());
+            ForgeEssentialsClient.netHandler.sendToServer(new C0PacketHandshake());
 
         }
     }

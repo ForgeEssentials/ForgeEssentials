@@ -10,54 +10,47 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
 @SideOnly(Side.CLIENT)
-public class C1PacketSelectionUpdate implements IMessageHandler<C1PacketSelectionUpdate.Message, IMessage> {
+public class C1PacketSelectionUpdate implements IMessageHandler<C1PacketSelectionUpdate, IMessage>, IMessage
+{
 
     @Override
-    public IMessage onMessage(C1PacketSelectionUpdate.Message message, MessageContext context)
+    public IMessage onMessage(C1PacketSelectionUpdate message, MessageContext context)
     {
         return null;
     }
 
-    public static class Message implements IMessage {
-        public Message()
+    @Override
+    public void fromBytes(ByteBuf byteBuf)
+    {
+        if (byteBuf.readBoolean())
         {
+            double x = byteBuf.readDouble();
+            double y = byteBuf.readDouble();
+            double z = byteBuf.readDouble();
+
+            ForgeEssentialsClient.info.setPoint1(new ClientPoint(x, y, z));
+        }
+        else
+        {
+            ForgeEssentialsClient.info.setPoint1(null);
         }
 
-        @Override
-        public void fromBytes(ByteBuf byteBuf)
+        // podouble 2 available
+        if (byteBuf.readBoolean())
         {
-            if (byteBuf.readBoolean())
-            {
-                double x = byteBuf.readDouble();
-                double y = byteBuf.readDouble();
-                double z = byteBuf.readDouble();
+            double x = byteBuf.readDouble();
+            double y = byteBuf.readDouble();
+            double z = byteBuf.readDouble();
 
-                ForgeEssentialsClient.info.setPoint1(new ClientPoint(x, y, z));
-            }
-            else
-            {
-                ForgeEssentialsClient.info.setPoint1(null);
-            }
-
-            // podouble 2 available
-            if (byteBuf.readBoolean())
-            {
-                double x = byteBuf.readDouble();
-                double y = byteBuf.readDouble();
-                double z = byteBuf.readDouble();
-
-                ForgeEssentialsClient.info.setPoint2(new ClientPoint(x, y, z));
-            }
-            else
-            {
-                ForgeEssentialsClient.info.setPoint2(null);
-            }
+            ForgeEssentialsClient.info.setPoint2(new ClientPoint(x, y, z));
         }
-
-        @Override
-        public void toBytes(ByteBuf byteBuf)
+        else
         {
-        } // noop - receiving only
+            ForgeEssentialsClient.info.setPoint2(null);
+        }
     }
+
+    @Override
+    public void toBytes(ByteBuf byteBuf){} // noop - receiving only
 
 }

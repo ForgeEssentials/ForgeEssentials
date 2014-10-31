@@ -38,7 +38,7 @@ public class ClientProxy extends DummyProxy
             MinecraftForge.EVENT_BUS.register(new CUIPlayerLogger());
             MinecraftForge.EVENT_BUS.register(new CUIRollback());
         }
-        ForgeEssentialsClient.netHandler.registerMessage(C0PacketHandshake.class, C0PacketHandshake.Message.class, 0, Side.SERVER);
-        ForgeEssentialsClient.netHandler.registerMessage(C1PacketSelectionUpdate.class, C1PacketSelectionUpdate.Message.class, 1, Side.CLIENT);
+        ForgeEssentialsClient.netHandler.registerMessage(C0PacketHandshake.class, C0PacketHandshake.class, 0, Side.SERVER);
+        ForgeEssentialsClient.netHandler.registerMessage(C1PacketSelectionUpdate.class, C1PacketSelectionUpdate.class, 1, Side.CLIENT);
     }
 }

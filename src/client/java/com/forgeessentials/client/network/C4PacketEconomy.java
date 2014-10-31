@@ -5,27 +5,24 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 
-public class C4PacketEconomy implements IMessageHandler<C4PacketEconomy.Message, IMessage> {
+public class C4PacketEconomy implements IMessageHandler<C4PacketEconomy, IMessage>, IMessage
+{
 
-    @Override public IMessage onMessage(C4PacketEconomy.Message message, MessageContext ctx)
+    @Override
+    public IMessage onMessage(C4PacketEconomy message, MessageContext ctx)
     {
         return null;
     }
 
-    public static class Message implements IMessage {
+    public C4PacketEconomy(){}
 
-        public Message()
-        {
-        }
-
-        @Override
-        public void fromBytes(ByteBuf buf)
-        {
-            //GuiEconomy.amount = buf.readInt();
-        }
-
-        @Override public void toBytes(ByteBuf buf)
-        {
-        }
+    @Override
+    public void fromBytes(ByteBuf buf)
+    {
+        //GuiEconomy.amount = buf.readInt();
     }
+
+    @Override
+    public void toBytes(ByteBuf buf){}
+
 }

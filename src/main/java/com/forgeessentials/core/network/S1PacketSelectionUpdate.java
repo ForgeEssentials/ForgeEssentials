@@ -10,31 +10,25 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class S1PacketSelectionUpdate implements IMessageHandler<S1PacketSelectionUpdate.Message, IMessage> {
+public class S1PacketSelectionUpdate implements IMessageHandler<S1PacketSelectionUpdate, IMessage>, IMessage {
 
     @Override
-    public IMessage onMessage(S1PacketSelectionUpdate.Message message, MessageContext context)
+    public IMessage onMessage(S1PacketSelectionUpdate message, MessageContext context)
     {
         return null;
     }
 
-    public static class Message implements IMessage {
-        private PlayerInfo info;
+    private PlayerInfo info;
 
-        public Message()
-        {
-        }
+        public S1PacketSelectionUpdate(){}
 
-        public Message(PlayerInfo info)
+        public S1PacketSelectionUpdate(PlayerInfo info)
         {
             this.info = info;
         }
 
         @Override
-        public void fromBytes(ByteBuf byteBuf)
-        {
-            // noop - sending only
-        }
+        public void fromBytes(ByteBuf byteBuf){}
 
         @Override
         public void toBytes(ByteBuf byteBuf)
@@ -74,6 +68,6 @@ public class S1PacketSelectionUpdate implements IMessageHandler<S1PacketSelectio
             }
 
         }
-    }
+
 
 }
