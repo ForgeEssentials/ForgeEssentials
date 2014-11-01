@@ -442,7 +442,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 	@Override
 	public boolean checkPermission(IContext context, String permissionNode)
 	{
-		// if (contextIsConsole(context)) return true;
+        if (contextIsConsole(context))
+            return true;
 
 		UserIdent ident = null;
 		EntityPlayer player = contextGetPlayerOrCommandPlayer(context);
