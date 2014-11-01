@@ -62,13 +62,13 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
 		return isPointInZone(area.getLowPoint()) && isPointInZone(area.getHighPoint());
 	}
 
-	@Override
-	public boolean isPartOfZone(WorldArea area)
-	{
-		if (!worldZone.isPartOfZone(area))
-			return false;
-		return isPointInZone(area.getLowPoint()) || isPointInZone(area.getHighPoint());
-	}
+    @Override
+    public boolean isPartOfZone(WorldArea area)
+    {
+        if (!worldZone.isPartOfZone(area))
+            return false;
+        return this.area.intersectsWith(area);
+    }
 
 	@Override
 	public String getName()

@@ -1,8 +1,5 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.teleport.CommandSetSpawn;
-
-
 public final class FEPermissions {
 
 	public static final String MSG_NO_COMMAND_PERM = "You don't have permissions to use this command!";

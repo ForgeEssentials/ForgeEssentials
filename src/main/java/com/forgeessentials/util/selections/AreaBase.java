@@ -104,13 +104,12 @@ public class AreaBase {
      */
     public boolean intersectsWith(AreaBase area)
     {
-        if (this.contains(area.high) || this.contains(area.low))
+        if (this.getIntersection(area) == null)
         {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
-
     /**
      * @param area The area to be checked.
      * @return NULL if the areas to do not intersect. Argument if this area
@@ -118,19 +117,56 @@ public class AreaBase {
      */
     public AreaBase getIntersection(AreaBase area)
     {
-        if (intersectsWith(area))
+        if (area == null)
         {
             return null;
         }
-        else if (this.contains(area))
+
+        boolean hasIntersection = false;
+        Point p    = new Point(0, 0, 0);
+        Point minp = new Point(0, 0, 0);
+        Point maxp = new Point(0, 0, 0);
+        int[] xs = {this.low.x, this.high.x, area.low.x, area.high.x};
+        int[] ys = {this.low.y, this.high.y, area.low.y, area.high.y};
+        int[] zs = {this.low.z, this.high.z, area.low.z, area.high.z};
+
+        for (int x : xs)
         {
-            return area;
+            p.setX(x);
+            for (int y : ys)
+            {
+                p.setY(y);
+                for (int z : ys)
+                {
+                    p.setZ(z);
+                    if (this.contains(p) && area.contains(p))
+                    {
+                        if (!hasIntersection)
+                        {
+                            hasIntersection = true;
+                            minp = p;
+                            maxp = p;
+                        }
+                        else
+                        {
+                            minp = AreaBase.getMinPoint(minp, p);
+                            maxp = AreaBase.getMaxPoint(minp, p);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!hasIntersection)
+        {
+            return null;
         }
         else
         {
-            return new Selection(getMaxPoint(low, area.low), getMinPoint(high, area.high));
+            return new AreaBase(minp, maxp);
         }
     }
+
 
     public boolean makesCuboidWith(AreaBase area)
     {
