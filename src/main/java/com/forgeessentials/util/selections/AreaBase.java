@@ -136,7 +136,7 @@ public class AreaBase {
             for (int y : ys)
             {
                 p.setY(y);
-                for (int z : ys)
+                for (int z : zs)
                 {
                     p.setZ(z);
                     if (this.contains(p) && area.contains(p))
@@ -150,7 +150,7 @@ public class AreaBase {
                         else
                         {
                             minp = AreaBase.getMinPoint(minp, p);
-                            maxp = AreaBase.getMaxPoint(minp, p);
+                            maxp = AreaBase.getMaxPoint(maxp, p);
                         }
                     }
                 }
