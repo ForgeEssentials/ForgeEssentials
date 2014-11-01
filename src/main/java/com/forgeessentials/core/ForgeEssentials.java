@@ -52,6 +52,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -97,6 +98,10 @@ public class ForgeEssentials {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		FunctionHelper.netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
+		FunctionHelper.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
+        FunctionHelper.netHandler.registerMessage(S1PacketSelectionUpdate.class, S1PacketSelectionUpdate.class, 1, Side.CLIENT);
+        
 		FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
 
 		OutputHandler log = new OutputHandler(); // init the logger
@@ -156,8 +161,6 @@ public class ForgeEssentials {
 	@EventHandler
 	public void postLoad(FMLPostInitializationEvent e)
     {
-		FunctionHelper.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
-        FunctionHelper.netHandler.registerMessage(S1PacketSelectionUpdate.class, S1PacketSelectionUpdate.class, 1, Side.CLIENT);
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModulePostInitEvent(e));
 	}
 

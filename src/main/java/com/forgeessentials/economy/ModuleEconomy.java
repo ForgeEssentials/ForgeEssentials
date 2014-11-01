@@ -1,5 +1,7 @@
 package com.forgeessentials.economy;
 
+import java.io.File;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -19,13 +21,13 @@ import com.forgeessentials.economy.commands.plots.CommandSetPlot;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
-
-import java.io.File;
 
 /**
  * Call the WalletHandler class when working with Economy
@@ -41,14 +43,18 @@ public class ModuleEconomy {
     public static int startbudget;
 
     public static int psfPrice;
+    
+    @SubscribeEvent
+    public void preLoad(FEModulePreInitEvent e)
+    {
+        FunctionHelper.netHandler.registerMessage(S4PacketEconomy.class, S4PacketEconomy.class, 4, Side.CLIENT);
+    }
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         APIRegistry.wallet = new WalletHandler();
         FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
-        FunctionHelper.netHandler.registerMessage(S4PacketEconomy.class, S4PacketEconomy.class, 4, Side.CLIENT);
-
     }
 
     @SubscribeEvent

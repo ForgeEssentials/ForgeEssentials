@@ -67,8 +67,11 @@ public class CommandNoClip extends FEcmdModuleCommands
 			{
 				player.noClip = false;
 				findSafeY(player);
-                S5PacketNoclip.setPlayerNoclipStatus(player, player.noClip);
-				OutputHandler.chatNotification(player, "NoClip auto-disabled: not flying");
+				if(!player.worldObj.isRemote)
+				{
+					S5PacketNoclip.setPlayerNoclipStatus(player, player.noClip);
+					OutputHandler.chatNotification(player, "NoClip auto-disabled: not flying");
+				}
 			}
 		}
 	}

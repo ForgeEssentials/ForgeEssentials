@@ -146,6 +146,8 @@ public class ModulePlayerLogger {
             ModuleLauncher.instance.unregister("PlayerLogger");
         }
         OutputHandler.felog.info("PlayerLogger module is enabled. Loading...");
+        FunctionHelper.netHandler.registerMessage(S2PacketPlayerLogger.class, S2PacketPlayerLogger.class, 2, Side.CLIENT);
+        FunctionHelper.netHandler.registerMessage(S3PacketRollback.class, S3PacketRollback.class, 3, Side.CLIENT);
     }
 
     @SubscribeEvent
@@ -166,8 +168,6 @@ public class ModulePlayerLogger {
         {
             throw new RuntimeException("Could not find MySQL JDBC Driver.");
         }
-        FunctionHelper.netHandler.registerMessage(S2PacketPlayerLogger.class, S2PacketPlayerLogger.class, 2, Side.CLIENT);
-        FunctionHelper.netHandler.registerMessage(S3PacketRollback.class, S3PacketRollback.class, 3, Side.CLIENT);
     }
 
     @SubscribeEvent
