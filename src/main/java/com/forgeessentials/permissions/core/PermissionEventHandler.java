@@ -10,6 +10,7 @@ import net.minecraftforge.server.CommandHandlerForge;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.ServerEventHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -20,11 +21,10 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class PermissionEventHandler {
+public class PermissionEventHandler extends ServerEventHandler {
 
     public PermissionEventHandler()
     {
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

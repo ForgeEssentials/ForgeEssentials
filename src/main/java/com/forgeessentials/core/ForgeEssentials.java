@@ -1,5 +1,14 @@
 package com.forgeessentials.core;
 
+import java.io.File;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
@@ -50,21 +59,8 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.io.File;
 
 /**
  * Main mod class
@@ -186,7 +182,7 @@ public class ForgeEssentials {
 			new CommandDeselect().register(RegisteredPermValue.OP);
 			new CommandExpand().register(RegisteredPermValue.OP);
 			new CommandExpandY().register(RegisteredPermValue.OP);
-            MinecraftForge.EVENT_BUS.register(new WandController());
+            new WandController();
 		}
 
 		tasks.onServerStart();

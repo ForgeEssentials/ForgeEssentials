@@ -23,78 +23,75 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 @FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true, configClass = ConfigProtection.class)
-public class ModuleProtection
-{
+public class ModuleProtection {
 
-	public final static String PERM_EDITS = "fe.protection.allowEdits";
-	public final static String PERM_ITEM_USE = "fe.protection.itemUse";
-	public final static String PERM_INTERACT_BLOCK = "fe.protection.allowBlockInteractions";
-	public final static String PERM_INTERACT_ENTITY = "fe.protection.allowEntityInteractions";
-	public final static String PERM_OVERRIDE = "fe.protection.overrideProtection";
-	public final static String PERM_PVP = "fe.protection.pvp";
-	public final static String PERM_MOB_SPAWN_NATURAL = "fe.protection.mobSpawn.natural";
-	public final static String PERM_MOB_SPAWN_FORCED = "fe.protection.mobSpawn.forced";
-	public final static String PERM_DIMENSION = "fe.protection.dimension.";
-	public final static String PERM_OVERRIDE_BANNEDITEMS = "fe.protection.overrideProtection.banneditems";
-	public final static String PERMPROP_ZONE_GAMEMODE = "fe.protection.data.zonegamemode";
+    public final static String PERM_EDITS = "fe.protection.allowEdits";
+    public final static String PERM_ITEM_USE = "fe.protection.itemUse";
+    public final static String PERM_INTERACT_BLOCK = "fe.protection.allowBlockInteractions";
+    public final static String PERM_INTERACT_ENTITY = "fe.protection.allowEntityInteractions";
+    public final static String PERM_OVERRIDE = "fe.protection.overrideProtection";
+    public final static String PERM_PVP = "fe.protection.pvp";
+    public final static String PERM_MOB_SPAWN_NATURAL = "fe.protection.mobSpawn.natural";
+    public final static String PERM_MOB_SPAWN_FORCED = "fe.protection.mobSpawn.forced";
+    public final static String PERM_DIMENSION = "fe.protection.dimension.";
+    public final static String PERM_OVERRIDE_BANNEDITEMS = "fe.protection.overrideProtection.banneditems";
+    public final static String PERMPROP_ZONE_GAMEMODE = "fe.protection.data.zonegamemode";
 
-	@FEModule.Config
-	public static ConfigProtection config;
-	public static boolean enable;
-	public static boolean enableMobSpawns;
+    @FEModule.Config
+    public static ConfigProtection config;
+    public static boolean enable;
+    public static boolean enableMobSpawns;
+    
+    private ProtectionEventHandler protectionHandler;
 
-
-	@SubscribeEvent
-	public void preLoad(FEModulePreInitEvent e)
-	{
-		if (!enable)
-		{
+    @SubscribeEvent
+    public void preLoad(FEModulePreInitEvent e)
+    {
+        if (!enable)
             ModuleLauncher.instance.unregister("protection");
-		} else
-		    MinecraftForge.EVENT_BUS.register(this);
-	}
+    }
 
-	@SubscribeEvent
-	public void load(FEModuleInitEvent e)
-	{
-		MinecraftForge.EVENT_BUS.register(new ProtectionEventHandler());
-	}
+    @SubscribeEvent
+    public void load(FEModuleInitEvent e)
+    {
+        protectionHandler = new ProtectionEventHandler();
+    }
 
-	@SubscribeEvent
-	public void registerPermissions(FEModuleServerInitEvent ev)
-	{
-		ev.registerServerCommand(new ProtectCommand());
+    @SubscribeEvent
+    public void registerPermissions(FEModuleServerInitEvent ev)
+    {
+        ev.registerServerCommand(new ProtectCommand());
 
-		APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE);
-		APIRegistry.perms.registerPermission(PERM_EDITS, RegisteredPermValue.TRUE);
-		APIRegistry.perms.registerPermission(PERM_INTERACT_BLOCK, RegisteredPermValue.TRUE);
-		APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE);
-		APIRegistry.perms.registerPermission(PERM_OVERRIDE, RegisteredPermValue.OP);
-		APIRegistry.perms.registerPermission(PERM_OVERRIDE_BANNEDITEMS, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_EDITS, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_INTERACT_BLOCK, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_OVERRIDE, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_OVERRIDE_BANNEDITEMS, RegisteredPermValue.OP);
 
-		for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
-		{
-			if (EntityLiving.class.isAssignableFrom(e.getValue()))
-			{
-				APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + e.getKey(), RegisteredPermValue.TRUE);
-				APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_FORCED + "." + e.getKey(), RegisteredPermValue.TRUE);
-			}
-		}
-		APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
-		APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_FORCED + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
+        {
+            if (EntityLiving.class.isAssignableFrom(e.getValue()))
+            {
+                APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + e.getKey(), RegisteredPermValue.TRUE);
+                APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_FORCED + "." + e.getKey(), RegisteredPermValue.TRUE);
+            }
+        }
+        APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_FORCED + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
 
-		for (Item item : GameData.getItemRegistry().typeSafeIterable())
-		{
-			APIRegistry.perms.registerPermission(PERM_ITEM_USE + "." + item.getUnlocalizedName(), RegisteredPermValue.TRUE);
-		}
+        for (Item item : GameData.getItemRegistry().typeSafeIterable())
+        {
+            APIRegistry.perms.registerPermission(PERM_ITEM_USE + "." + item.getUnlocalizedName(), RegisteredPermValue.TRUE);
+        }
 
-		APIRegistry.perms.registerPermission(PERM_ITEM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_ITEM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
 
-		for (int i : DimensionManager.getIDs())
-		{
-			APIRegistry.perms.registerPermission(PERM_DIMENSION + i, RegisteredPermValue.TRUE);
-		}
+        for (int i : DimensionManager.getIDs())
+        {
+            APIRegistry.perms.registerPermission(PERM_DIMENSION + i, RegisteredPermValue.TRUE);
+        }
 
-		APIRegistry.perms.registerPermissionProperty(PERMPROP_ZONE_GAMEMODE, Integer.toString(0));
-	}
+        APIRegistry.perms.registerPermissionProperty(PERMPROP_ZONE_GAMEMODE, Integer.toString(0));
+    }
 }

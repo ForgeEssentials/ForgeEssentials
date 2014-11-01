@@ -1,7 +1,5 @@
 package com.forgeessentials.core.commands.selections;
 
-//Depreciated
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
@@ -9,6 +7,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.ServerEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
@@ -18,7 +17,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class WandController {
+public class WandController extends ServerEventHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void playerInteractEvent(PlayerInteractEvent event)

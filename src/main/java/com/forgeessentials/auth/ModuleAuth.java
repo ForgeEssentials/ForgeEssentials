@@ -127,4 +127,5 @@ public class ModuleAuth {
     {
         return pwdEnc.sha1(str);
     }
+    
 }

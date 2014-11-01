@@ -1,13 +1,7 @@
 package com.forgeessentials.protection;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldPoint;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
+import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,10 +20,18 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
-import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.ServerEventHandler;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldPoint;
 
-public class ProtectionEventHandler {
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+public class ProtectionEventHandler extends ServerEventHandler {
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void playerAttack(AttackEntityEvent e)
 	{

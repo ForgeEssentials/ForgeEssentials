@@ -1,5 +1,16 @@
 package com.forgeessentials.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+import java.util.UUID;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.api.ClassContainer;
@@ -13,17 +24,8 @@ import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.Selection;
 import com.forgeessentials.util.selections.WarpPoint;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
-import java.util.UUID;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @SaveableObject
 public class PlayerInfo {
