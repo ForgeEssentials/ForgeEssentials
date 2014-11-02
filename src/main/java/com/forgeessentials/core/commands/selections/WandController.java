@@ -36,7 +36,7 @@ public class WandController extends ServerEventHandler {
 		// Check if wand should activate
 		if (player.getCurrentEquippedItem() == null)
 		{
-			if (info.getWandID() != null)
+			if (info.getWandID() != "hands")
 				return;
 		}
 		else

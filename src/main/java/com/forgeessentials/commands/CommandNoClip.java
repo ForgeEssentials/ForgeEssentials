@@ -21,7 +21,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 	@Override
 	public String getCommandUsage(ICommandSender p_71518_1_)
 	{
-		return "/noclip [distance]";
+		return "/noclip [true/false]";
 	}
 
 	@Override
