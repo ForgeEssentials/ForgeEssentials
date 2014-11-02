@@ -63,6 +63,8 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -88,7 +90,6 @@ public class ForgeEssentials {
     @SuppressWarnings("unused")
     private RespawnHandler respawnHandler;
     
-    @SuppressWarnings("unused")
     private WandController wandHandler;
     
     @SuppressWarnings("unused")
@@ -157,7 +158,9 @@ public class ForgeEssentials {
 		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
 		FMLCommonHandler.instance().bus().register(factory);
 		MinecraftForge.EVENT_BUS.register(factory);
+		
 		respawnHandler = new RespawnHandler();
+        wandHandler = new WandController(true);
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
 	}
@@ -196,7 +199,6 @@ public class ForgeEssentials {
 			new CommandDeselect().register(RegisteredPermValue.OP);
 			new CommandExpand().register(RegisteredPermValue.OP);
 			new CommandExpandY().register(RegisteredPermValue.OP);
-            wandHandler = new WandController(true);
 		}
 
 		tasks.onServerStart();
@@ -228,6 +230,12 @@ public class ForgeEssentials {
     public void serverStopped(FMLServerStoppedEvent e)
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerStoppedEvent(e));
+    }
+
+    @SubscribeEvent
+    public void serverTick(TickEvent.ServerTickEvent e)
+    {
+        wandHandler.sendSelectionUpdates();
     }
 
 }

@@ -72,8 +72,7 @@ public class PlayerInfo
         {
             PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
             pi.sel1 = sel1;
-            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(pi), player);
-
+            pi.sendSelectionUpdate();
         }
 
         @Override
@@ -81,8 +80,7 @@ public class PlayerInfo
         {
             PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
             pi.sel2 = sel2;
-            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(pi), player);
-
+            pi.sendSelectionUpdate();
         }
 
     }
@@ -362,6 +360,11 @@ public class PlayerInfo
         }
     }
 
+    public void sendSelectionUpdate()
+    {
+        FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(this), ident.getPlayer());
+    }
+    
     // ----------------------------------------------
     // ------------ Undo/Redo stuff -----------------
     // ----------------------------------------------

@@ -1,5 +1,8 @@
 package com.forgeessentials.core.commands.selections;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumChatFormatting;
@@ -14,29 +17,41 @@ import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.selections.WorldPoint;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class WandController extends ServerEventHandler {
+
+    protected List<PlayerInfo> updatedSelectionPlayers = new ArrayList<PlayerInfo>();
     
     public WandController(boolean forceRegister)
     {
         super(forceRegister);
     }
+    
+    public void sendSelectionUpdates()
+    {
+        for (PlayerInfo pi : updatedSelectionPlayers)
+        {
+            pi.sendSelectionUpdate();
+        }
+        updatedSelectionPlayers.clear();
+    }
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void playerInteractEvent(PlayerInteractEvent event)
 	{
-		// if worldedit is installed, don't do anything
-		// and only handle server events
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient() || ForgeEssentials.worldEditCompatilityPresent)
-			return;
-
 		// get info now rather than later
 		EntityPlayer player = event.entityPlayer;
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
 
+        if (ForgeEssentials.worldEditCompatilityPresent)
+        {
+            // Send update packet with some delay
+            updatedSelectionPlayers.add(info);
+            return;
+        }
+        
 		if (!info.isWandEnabled())
 			return;
 
