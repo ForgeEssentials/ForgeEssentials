@@ -17,6 +17,7 @@ import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.selections.WorldPoint;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -41,6 +42,9 @@ public class WandController extends ServerEventHandler {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void playerInteractEvent(PlayerInteractEvent event)
 	{
+		// Only handle server events
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return;
 		// get info now rather than later
 		EntityPlayer player = event.entityPlayer;
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
