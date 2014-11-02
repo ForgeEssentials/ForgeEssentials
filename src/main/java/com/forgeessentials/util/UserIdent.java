@@ -220,7 +220,7 @@ public class UserIdent {
 			if (uuid != null && ident.uuid != null)
 				return uuid.equals(ident.uuid);
 			if (username != null && ident.username != null)
-				return uuid.equals(ident.uuid);
+				return username.equals(ident.username);
 			return false;
 		}
 		else if (other instanceof UUID)
@@ -265,7 +265,8 @@ public class UserIdent {
 		return profile.getName();
 	}
 
-	public static EntityPlayerMP getPlayerByUuid(UUID uuid)
+	@SuppressWarnings("unchecked")
+    public static EntityPlayerMP getPlayerByUuid(UUID uuid)
 	{
 		for (EntityPlayerMP player : (List<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
 		{
@@ -277,7 +278,8 @@ public class UserIdent {
 		return null;
 	}
 
-	public static EntityPlayerMP getPlayerByUsername(String name)
+	@SuppressWarnings("unchecked")
+    public static EntityPlayerMP getPlayerByUsername(String name)
 	{
 		// EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, name);
 		for (EntityPlayerMP player : (List<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
