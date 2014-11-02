@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.api.APIRegistry;
@@ -24,7 +25,10 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class WandController extends ServerEventHandler {
 
     protected List<PlayerInfo> updatedSelectionPlayers = new ArrayList<PlayerInfo>();
-    
+
+    public static final String[] worldEditSelectionCommands = new String[] { "/pos1", "/pos2", "/sel", "/desel", "/hpos1", "/hpos2", "/chunk", "/expand",
+            "/contract", "/outset", "/inset", "/shift" };
+
     public void sendSelectionUpdates()
     {
         for (PlayerInfo pi : updatedSelectionPlayers)
@@ -34,15 +38,15 @@ public class WandController extends ServerEventHandler {
         updatedSelectionPlayers.clear();
     }
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void playerInteractEvent(PlayerInteractEvent event)
-	{
-		// Only handle server events
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-			return;
-		// get info now rather than later
-		EntityPlayer player = event.entityPlayer;
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void playerInteractEvent(PlayerInteractEvent event)
+    {
+        // Only handle server events
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+
+        // get info now rather than later
+        EntityPlayer player = event.entityPlayer;
+        PlayerInfo info = PlayerInfo.getPlayerInfo(player);
 
         if (ForgeEssentials.worldEditCompatilityPresent)
         {
@@ -50,48 +54,61 @@ public class WandController extends ServerEventHandler {
             updatedSelectionPlayers.add(info);
             return;
         }
-        
-		if (!info.isWandEnabled())
-			return;
 
-		// Check if wand should activate
-		if (player.getCurrentEquippedItem() == null)
-		{
-			if (info.getWandID() != "hands")
-				return;
-		}
-		else
-		{
-			if (!(player.getCurrentEquippedItem().getItem().getUnlocalizedName().equals(info.getWandID())))
-				return;
-			if (player.getCurrentEquippedItem().getItemDamage() != info.getWandDmg())
-				return;
-		}
+        if (!info.isWandEnabled()) return;
 
-		WorldPoint point = new WorldPoint(player.dimension, event.x, event.y, event.z);
-		if (!APIRegistry.perms.checkPermission(new UserIdent(player), point, "fe.core.pos"))
-		{
-			OutputHandler.chatError(player,
-					"You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-			return;
-		}
+        // Check if wand should activate
+        if (player.getCurrentEquippedItem() == null)
+        {
+            if (info.getWandID() != "hands") return;
+        }
+        else
+        {
+            if (!(player.getCurrentEquippedItem().getItem().getUnlocalizedName().equals(info.getWandID()))) return;
+            if (player.getCurrentEquippedItem().getItemDamage() != info.getWandDmg()) return;
+        }
 
-		// left Click
-		if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
-		{
-			PlayerInfo.selectionProvider.setPoint1((EntityPlayerMP)event.entityPlayer, point);
-			IChatComponent format = OutputHandler.createFromText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
-			player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
-			event.setCanceled(true);
-		}
-		// right Click
-		else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
-		{
-            PlayerInfo.selectionProvider.setPoint2((EntityPlayerMP)event.entityPlayer, point);
-			IChatComponent format = OutputHandler.createFromText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
-			player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
-			event.setCanceled(true);
-		}
-	}
+        WorldPoint point = new WorldPoint(player.dimension, event.x, event.y, event.z);
+        if (!APIRegistry.perms.checkPermission(new UserIdent(player), point, "fe.core.pos"))
+        {
+            OutputHandler.chatError(player,
+                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
+            return;
+        }
+
+        // left Click
+        if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
+        {
+            PlayerInfo.selectionProvider.setPoint1((EntityPlayerMP) event.entityPlayer, point);
+            IChatComponent format = OutputHandler.createFromText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
+            player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
+            event.setCanceled(true);
+        }
+        // right Click
+        else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
+        {
+            PlayerInfo.selectionProvider.setPoint2((EntityPlayerMP) event.entityPlayer, point);
+            IChatComponent format = OutputHandler.createFromText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
+            player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void checkWECommands(CommandEvent e)
+    {
+        if (e.sender instanceof EntityPlayerMP)
+        {
+            String cmd = e.command.getCommandName();
+            for (String weCmd : worldEditSelectionCommands)
+            {
+                if (cmd.equals(weCmd))
+                {
+                    updatedSelectionPlayers.add(PlayerInfo.getPlayerInfo((EntityPlayerMP) e.sender));
+                    return;
+                }
+            }
+        }
+    }
 
 }
