@@ -1,7 +1,8 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
+
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 public class AuthConfig extends ModuleConfigBase {
     private static final String CATEGORY_MAIN = "Auth";
@@ -84,6 +85,10 @@ public class AuthConfig extends ModuleConfigBase {
         AuthEventHandler.notvip = config.get(CATEGORY_MAIN + "lists.kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
     }
 
-    public boolean universalConfigAllowed(){return true;}
+    @Override
+    public boolean universalConfigAllowed()
+    {
+        return true;
+    }
 
 }

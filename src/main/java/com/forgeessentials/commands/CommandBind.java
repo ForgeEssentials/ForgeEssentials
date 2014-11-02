@@ -71,7 +71,7 @@ public class CommandBind extends FEcmdModuleCommands {
                     System.out.println("NOT 0");
                     for (int j = 0; j < list.tagCount(); ++j)
                     {
-                        if (list.getCompoundTagAt(j).getString("FEbinding").startsWith(color + args[0].toLowerCase()));
+                        if (list.getCompoundTagAt(j).getString("FEbinding").startsWith(color + args[0].toLowerCase()))
                         {
                             System.out.println("Match found");
                             list.removeTag(j);

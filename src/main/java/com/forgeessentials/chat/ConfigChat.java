@@ -1,13 +1,14 @@
 package com.forgeessentials.chat;
 
+import java.util.Arrays;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Property;
+
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Property;
-
-import java.util.Arrays;
 
 public class ConfigChat extends ModuleConfigBase {
     public static String chatFormat;
@@ -205,5 +206,9 @@ public class ConfigChat extends ModuleConfigBase {
         config.save();
     }
 
-    public boolean universalConfigAllowed(){return true;}
+    @Override
+    public boolean universalConfigAllowed()
+    {
+        return true;
+    }
 }

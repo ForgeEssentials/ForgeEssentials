@@ -18,6 +18,7 @@ public final class FileFilters {
 			this.ext = ext.toLowerCase();
 		}
 
+		@Override
 		public boolean accept(File file)
 		{
 			return !file.isDirectory() && file.getName().toLowerCase().endsWith(ext);
@@ -25,6 +26,7 @@ public final class FileFilters {
 	}
 
 	public static class Directory implements FileFilter {
+		@Override
 		public boolean accept(File file)
 		{
 			return file.isDirectory();

@@ -1,19 +1,22 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.TickTaskBlockFinder;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.registry.GameData;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.util.TickTaskBlockFinder;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.registry.GameData;
 
 public class CommandFindblock extends FEcmdModuleCommands {
+	
     public static final int defaultCount = 1;
     public static int defaultRange = 20 * 16;
     public static int defaultSpeed = 16 * 16;
@@ -25,7 +28,8 @@ public class CommandFindblock extends FEcmdModuleCommands {
         defaultSpeed = config.get(category, "defaultSpeed", defaultSpeed, "Default speed used.").getInt();
     }
 
-    public String[] getDefaultAliases()
+    @Override
+	public String[] getDefaultAliases()
     {
         return new String[] { "fb" };
     }

@@ -1,17 +1,19 @@
 package com.forgeessentials.core.compat;
 
-import com.forgeessentials.util.OutputHandler;
-import com.google.common.collect.HashMultimap;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.CommandHandlerForge;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import com.forgeessentials.util.OutputHandler;
+import com.google.common.collect.HashMultimap;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class CommandSetChecker {
 	
@@ -117,18 +119,13 @@ public class CommandSetChecker {
 		{
 			Class<?> cmdClass = cmd.getClass();
 			Package pkg = cmdClass.getPackage();
-			if (pkg == null || pkg.getName().contains("net.minecraft"))
-			{
+			if (pkg == null)
+			    return 0;
+			if (pkg.getName().contains("net.minecraft"))
 				return 0;
-			}
-			else if (pkg == null || pkg.getName().contains("forgeessentials"))
-			{
+			if (pkg.getName().contains("forgeessentials"))
 				return 1;
-			}
-			else
-			{
-				return 2;
-			}
+			return 2;
 		}
 		catch (Exception e)
 		{

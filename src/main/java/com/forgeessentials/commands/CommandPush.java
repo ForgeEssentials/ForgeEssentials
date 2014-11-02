@@ -19,12 +19,15 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
 public class CommandPush extends FEcmdModuleCommands {
-    public String getCommandName()
+	
+    @Override
+	public String getCommandName()
     {
         return "push";
     }
 
-    public String getCommandUsage(ICommandSender par1ICommandSender)
+    @Override
+	public String getCommandUsage(ICommandSender par1ICommandSender)
     {
         return "/push <X> <Y> <Z>";
     }
@@ -45,9 +48,9 @@ public class CommandPush extends FEcmdModuleCommands {
 
             if (var1 instanceof TileEntity)
             {
-                var3 = (int) this.func_82368_a(var1, (double) ((TileEntity) var1).xCoord, var2[0]);
-                var4 = (int) this.func_82367_a(var1, (double) ((TileEntity) var1).yCoord, var2[1], 0, 0);
-                var5 = (int) this.func_82368_a(var1, (double) ((TileEntity) var1).zCoord, var2[2]);
+                var3 = (int) this.func_82368_a(var1, ((TileEntity) var1).xCoord, var2[0]);
+                var4 = (int) this.func_82367_a(var1, ((TileEntity) var1).yCoord, var2[1], 0, 0);
+                var5 = (int) this.func_82368_a(var1, ((TileEntity) var1).zCoord, var2[2]);
                 var7 = ((TileEntity) var1).getWorldObj();
             }
             else if (var1 instanceof EntityPlayerMP)
@@ -93,10 +96,10 @@ public class CommandPush extends FEcmdModuleCommands {
             int var5 = 0;
             World var7 = null;
 
-            var3 = (int) this.func_82368_a(playermp, ((EntityPlayerMP) playermp).posX, args[0]);
-            var4 = (int) this.func_82367_a(playermp, ((EntityPlayerMP) playermp).posY, args[1], 0, 0);
-            var5 = (int) this.func_82368_a(playermp, ((EntityPlayerMP) playermp).posZ, args[2]);
-            var7 = ((EntityPlayerMP) playermp).worldObj;
+            var3 = (int) this.func_82368_a(playermp, playermp.posX, args[0]);
+            var4 = (int) this.func_82367_a(playermp, playermp.posY, args[1], 0, 0);
+            var5 = (int) this.func_82368_a(playermp, playermp.posZ, args[2]);
+            var7 = playermp.worldObj;
 
             if ((var7.getBlock(var3, var4, var5) == Blocks.air || !((var7.getBlock(var3, var4, var5)) instanceof BlockButton))
                     && !(((var7.getBlock(var3, var4, var5)) instanceof BlockLever)))
@@ -140,12 +143,12 @@ public class CommandPush extends FEcmdModuleCommands {
 
         if (par5 != 0 || par6 != 0)
         {
-            if (d1 < (double) par5)
+            if (d1 < par5)
             {
                 throw new NumberInvalidException("commands.generic.double.tooSmall", new Object[] { Double.valueOf(d1), Integer.valueOf(par5) });
             }
 
-            if (d1 > (double) par6)
+            if (d1 > par6)
             {
                 throw new NumberInvalidException("commands.generic.double.tooBig", new Object[] { Double.valueOf(d1), Integer.valueOf(par6) });
             }

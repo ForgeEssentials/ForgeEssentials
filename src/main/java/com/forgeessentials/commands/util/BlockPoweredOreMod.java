@@ -27,7 +27,8 @@ public class BlockPoweredOreMod extends BlockCompressedPowered {
     /**
      * Can this block provide power. Only wire currently seems to have this change based on its state.
      */
-    public boolean canProvidePower()
+    @Override
+	public boolean canProvidePower()
     {
         return true;
     }
@@ -37,7 +38,8 @@ public class BlockPoweredOreMod extends BlockCompressedPowered {
      * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
      * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
      */
-    public int isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    @Override
+	public int isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
         return isPulsed ? this.strength : 15;
     }
@@ -45,7 +47,8 @@ public class BlockPoweredOreMod extends BlockCompressedPowered {
     /**
      * Ticks the block if it's been scheduled
      */
-    public void updateTick(World var1, int var2, int var3, int var4, Random var5)
+    @Override
+	public void updateTick(World var1, int var2, int var3, int var4, Random var5)
     {
         if (this.isPulsed)
         {

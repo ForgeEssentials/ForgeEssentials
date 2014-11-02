@@ -1,10 +1,11 @@
 package com.forgeessentials.permissions.core;
 
+import net.minecraft.command.ICommandSender;
+
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
-import net.minecraft.command.ICommandSender;
 
 public class ConfigPermissions extends ModuleConfigBase {
 
@@ -52,6 +53,10 @@ public class ConfigPermissions extends ModuleConfigBase {
 		return connector;
 	}
 
-    public boolean universalConfigAllowed(){return true;}
+    @Override
+    public boolean universalConfigAllowed()
+    {
+        return true;
+    }
 
 }

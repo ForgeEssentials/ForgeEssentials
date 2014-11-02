@@ -174,22 +174,26 @@ public class PlayerInfoResponse extends Response
         String gameMode, group;
         WarpPoint home, back, position;
         List<String> potions;
+        public Data() {}
     }
 
     private static final class Capabilities
     {
-        boolean allowEdit, allowFlying, isFlying, disableDamage;
+       public boolean allowEdit, allowFlying, isFlying, disableDamage;
+       public Capabilities() {}
     }
 
     private static final class FoodStats
     {
-        int food;
-        float saturation;
+        public int food;
+        public float saturation;
+        public FoodStats() {}
     }
 
     private static final class XP
     {
-        int lvl;
-        float bar;
+        public int lvl;
+        public float bar;
+        public XP() {}
     }
 }

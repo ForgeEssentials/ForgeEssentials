@@ -1,11 +1,12 @@
 package com.forgeessentials.client.core;
 
+import java.util.HashMap;
+
 import com.forgeessentials.client.util.ClientPoint;
 import com.forgeessentials.client.util.ClientSelection;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import java.util.HashMap;
 
 /**
  * Clone of the PlayerInfo for the client only.
@@ -45,20 +46,9 @@ public class PlayerInfoClient
     public void setPoint1(ClientPoint sel1)
     {
         this.sel1 = sel1;
-
-        if (sel1 != null)
+        if (sel1 != null && sel2 != null)
         {
-            if (selection == null)
-            {
-                if (sel1 != null && sel2 != null)
-                {
-                    selection = new ClientSelection(sel1, sel2);
-                }
-            }
-            else
-            {
-                selection.setStart(sel1);
-            }
+            selection = new ClientSelection(sel1, sel2);
         }
     }
 
@@ -70,20 +60,9 @@ public class PlayerInfoClient
     public void setPoint2(ClientPoint sel2)
     {
         this.sel2 = sel2;
-
-        if (sel2 != null)
+        if (sel1 != null && sel2 != null)
         {
-            if (selection == null)
-            {
-                if (sel1 != null && sel2 != null)
-                {
-                    selection = new ClientSelection(sel1, sel2);
-                }
-            }
-            else
-            {
-                selection.setEnd(sel2);
-            }
+            selection = new ClientSelection(sel1, sel2);
         }
     }
 

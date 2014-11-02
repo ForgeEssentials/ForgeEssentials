@@ -1,9 +1,10 @@
 package com.forgeessentials.commands.util;
 
+import net.minecraft.command.ICommandSender;
+
 import com.forgeessentials.commands.CommandRules;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import net.minecraft.command.ICommandSender;
 
 public class ConfigCmd extends ModuleConfigBase {
 
@@ -34,5 +35,9 @@ public class ConfigCmd extends ModuleConfigBase {
         config.save();
     }
 
-    public boolean universalConfigAllowed(){return false;}
+    @Override
+    public boolean universalConfigAllowed()
+    {
+        return false;
+    }
 }

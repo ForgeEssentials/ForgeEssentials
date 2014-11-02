@@ -7,11 +7,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Vec3;
 
 /**
- * This is the base class for a context. A permission framework
- * <i><b>might</b></i> subclass this context, to allow additional properties for
- * the context.
+ * This is the base class for a context. A permission framework <i><b>might</b></i> subclass this context, to allow additional properties for the context.
  */
-public class PermissionContext implements IContext{
+public class PermissionContext implements IContext {
 
     private EntityPlayer player;
 
@@ -33,51 +31,61 @@ public class PermissionContext implements IContext{
 
     private Entity targetEntity;
 
+    @Override
     public EntityPlayer getPlayer()
     {
         return player;
     }
 
+    @Override
     public EntityPlayer getTargetPlayer()
     {
         return targetPlayer;
     }
 
+    @Override
     public ICommand getCommand()
     {
         return command;
     }
 
+    @Override
     public ICommandSender getCommandSender()
     {
         return commandSender;
     }
 
+    @Override
     public Vec3 getSourceLocationStart()
     {
         return sourceLocationStart;
     }
 
+    @Override
     public Vec3 getSourceLocationEnd()
     {
         return sourceLocationEnd;
     }
 
+    @Override
     public Vec3 getTargetLocationStart()
     {
         return targetLocationStart;
     }
 
+    @Override
     public Vec3 getTargetLocationEnd()
     {
         return targetLocationEnd;
     }
 
+    @Override
     public Entity getSourceEntity()
     {
         return sourceEntity;
     }
 
+    @Override
     public Entity getTargetEntity()
     {
         return targetEntity;
@@ -143,7 +151,9 @@ public class PermissionContext implements IContext{
         return this;
     }
 
-    public PermissionContext(){}
+    public PermissionContext()
+    {
+    }
 
     public boolean isConsole()
     {

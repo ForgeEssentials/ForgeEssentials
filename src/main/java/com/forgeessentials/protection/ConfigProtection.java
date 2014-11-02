@@ -1,7 +1,8 @@
 package com.forgeessentials.protection;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
+
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 /**
  * This generates the configuration structure + an example file.
@@ -39,5 +40,10 @@ public class ConfigProtection extends ModuleConfigBase {
         ModuleProtection.enableMobSpawns = config.get(cat, "enableMobCheck", true).getBoolean(true);
     }
 
-    public boolean universalConfigAllowed(){return true;}
+    @Override
+    public boolean universalConfigAllowed()
+    {
+        return true;
+    }
+
 }

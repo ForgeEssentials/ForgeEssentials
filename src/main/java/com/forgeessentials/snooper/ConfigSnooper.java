@@ -1,8 +1,9 @@
 package com.forgeessentials.snooper;
 
+import net.minecraft.command.ICommandSender;
+
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import net.minecraft.command.ICommandSender;
 
 public class ConfigSnooper extends ModuleConfigBase {
 
@@ -63,5 +64,10 @@ public class ConfigSnooper extends ModuleConfigBase {
         }
     }
 
-    public boolean universalConfigAllowed(){return true;}
+    @Override
+    public boolean universalConfigAllowed()
+    {
+        return true;
+    }
+
 }

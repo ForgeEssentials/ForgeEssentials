@@ -77,6 +77,7 @@ public class WorldZone extends Zone {
 		return serverZone;
 	}
 
+	@Override
 	public ServerZone getServerZone()
 	{
 		return serverZone;

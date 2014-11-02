@@ -1,12 +1,12 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import net.minecraft.command.ICommandSender;
-
 import java.io.File;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import net.minecraft.command.ICommandSender;
 
 @Retention(RetentionPolicy.RUNTIME)
 // If you need more than one thing in the FE API, make a module class using this
@@ -135,7 +135,11 @@ public @interface FEModule {
             return null;
         }
 
-        public boolean universalConfigAllowed(){return true;}
+        @Override
+        public boolean universalConfigAllowed()
+        {
+            return true;
+        }
 
     }
 }

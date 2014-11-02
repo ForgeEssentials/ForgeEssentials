@@ -306,12 +306,11 @@ public class ForgeConfigDataDriver extends TextDataDriver {
                 {
                     name = child.getQualifiedName().replace(cat.getQualifiedName() + ".", "");
                     newInfo = info.getInfoForField(name);
-                    newData = DataStorageManager.getDataForType(newInfo.getType());
-
-                    if (newData == null || newInfo == null)
-                    {
+                    if (newInfo == null)
                         continue;
-                    }
+                    newData = DataStorageManager.getDataForType(newInfo.getType());
+                    if (newData == null)
+                        continue;
                     readClassFromProperty(cfg, child, newData, newInfo);
                     value = newData;
                     data.putField(name, value);

@@ -14,6 +14,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandNickname extends ForgeEssentialsCommandBase {
+	
     @Override
     public String getCommandName()
     {
@@ -29,7 +30,8 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
 
     // Syntax: /nick [nickname|del]
     // Syntax: /nick <username> [nickname|del]
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    @Override
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
         if (args.length == 1)
         {

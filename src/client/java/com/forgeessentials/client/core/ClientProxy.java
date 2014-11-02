@@ -26,6 +26,7 @@ public class ClientProxy extends DummyProxy
 {
     private ClientConfig config;
 
+    @Override
     public void doPreInit(FMLPreInitializationEvent e)
     {
 
@@ -42,6 +43,8 @@ public class ClientProxy extends DummyProxy
         netHandler.registerMessage(C4PacketEconomy.class, C4PacketEconomy.class, 4, Side.CLIENT);
         netHandler.registerMessage(C5PacketNoclip.class, C5PacketNoclip.class, 5, Side.CLIENT);
     }
+    
+    @Override
     public void load(FMLInitializationEvent e)
     {
         super.load(e);

@@ -2,15 +2,17 @@ package com.forgeessentials.data.api;
 
 import java.rmi.server.UID;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import com.forgeessentials.data.StorageManager;
 
-public abstract class TypeMultiValInfo implements ITypeInfo {
+@SuppressWarnings("rawtypes")
+public abstract class TypeMultiValInfo implements ITypeInfo<Object> {
+    
     protected ClassContainer container;
     private HashMap<String, ClassContainer> entryFields;
     private HashMap<String, ClassContainer> fields;
@@ -145,9 +147,8 @@ public abstract class TypeMultiValInfo implements ITypeInfo {
     @Override
     public final Object reconstruct(IReconstructData data)
     {
-        Collection values = data.getAllValues();
-        ArrayList<TypeData> list = new ArrayList();
-        for (Object obj : values)
+        List<TypeData> list = new ArrayList<>();
+        for (Object obj : data.getAllValues())
         {
             if (obj instanceof TypeData)
             {

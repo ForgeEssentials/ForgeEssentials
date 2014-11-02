@@ -81,7 +81,7 @@ public class ForgeEssentials {
 	public ModuleLauncher mdlaunch;
 	private TaskRegistry tasks;
 
-    private static RespawnHandler respawnHandler;
+    private RespawnHandler respawnHandler;
 
 	// static FE-module flags / variables
     public static boolean worldEditCompatilityPresent = false;

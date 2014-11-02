@@ -27,7 +27,7 @@ public abstract class Zone {
 	public static class PermissionList extends HashMap<String, String> {
 	}
 
-	public static final Comparator permissionComparator = new Comparator()
+	public static final Comparator<Object> permissionComparator = new Comparator<Object>()
 	{
 		@Override
 		public int compare(Object o1, Object o2)

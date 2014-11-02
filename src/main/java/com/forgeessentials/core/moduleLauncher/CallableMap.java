@@ -129,12 +129,12 @@ public class CallableMap {
         return callables.get(annotName);
     }
 
-    public final class FECallable {
+    public static final class FECallable {
         private Method method;
         private Object instance = null;
         private String ident;
 
-        private FECallable(Method m, Object instance)
+        FECallable(Method m, Object instance)
         {
             this(m);
 
@@ -159,7 +159,7 @@ public class CallableMap {
 
         }
 
-        private FECallable(Method m)
+        FECallable(Method m)
         {
             method = m;
 

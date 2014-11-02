@@ -29,7 +29,9 @@ import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
+@SuppressWarnings("rawtypes")
 public class SQLDataDriver extends AbstractDataDriver {
+    
     protected static final String SEPERATOR = "__";
     private Connection dbConnection;
     private HashSet<String> classTableChecked = new HashSet<String>();

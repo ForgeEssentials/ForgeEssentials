@@ -18,17 +18,21 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.tasks.TaskRegistry;
 
 public class CommandPulse extends FEcmdModuleCommands {
-    public String getCommandName()
+	
+    @Override
+	public String getCommandName()
     {
         return "pulse";
     }
 
-    public String getCommandUsage(ICommandSender par1ICommandSender)
+    @Override
+	public String getCommandUsage(ICommandSender par1ICommandSender)
     {
         return "/pulse <X> <Y> <Z> [PulseLength]";
     }
 
-    public void processCommand(ICommandSender var1, String[] var2)
+    @Override
+	public void processCommand(ICommandSender var1, String[] var2)
     {
         if (var2.length >= 3 && var2.length <= 4)
         {
@@ -39,9 +43,9 @@ public class CommandPulse extends FEcmdModuleCommands {
             World var11 = null;
             if (var1 instanceof TileEntityCommandBlock)
             {
-                var3 = (int) this.func_82368_a(var1, (double) ((TileEntityCommandBlock) var1).xCoord, var2[0]);
-                var4 = (int) this.func_82367_a(var1, (double) ((TileEntityCommandBlock) var1).yCoord, var2[1], 0, 0);
-                var5 = (int) this.func_82368_a(var1, (double) ((TileEntityCommandBlock) var1).zCoord, var2[2]);
+                var3 = (int) this.func_82368_a(var1, ((TileEntityCommandBlock) var1).xCoord, var2[0]);
+                var4 = (int) this.func_82367_a(var1, ((TileEntityCommandBlock) var1).yCoord, var2[1], 0, 0);
+                var5 = (int) this.func_82368_a(var1, ((TileEntityCommandBlock) var1).zCoord, var2[2]);
                 var11 = ((TileEntityCommandBlock) var1).getWorldObj();
             }
             else if (var1 instanceof EntityPlayerMP)
@@ -102,12 +106,12 @@ public class CommandPulse extends FEcmdModuleCommands {
 
         if (par5 != 0 || par6 != 0)
         {
-            if (d1 < (double) par5)
+            if (d1 < par5)
             {
                 throw new NumberInvalidException("commands.generic.double.tooSmall", new Object[] { Double.valueOf(d1), Integer.valueOf(par5) });
             }
 
-            if (d1 > (double) par6)
+            if (d1 > par6)
             {
                 throw new NumberInvalidException("commands.generic.double.tooBig", new Object[] { Double.valueOf(d1), Integer.valueOf(par6) });
             }

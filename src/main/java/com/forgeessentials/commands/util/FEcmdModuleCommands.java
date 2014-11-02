@@ -57,7 +57,8 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase {
     /* 
      * Returns the permission node based on the command name
      */
-    public String getPermissionNode()
+    @Override
+	public String getPermissionNode()
     {
         return "fe.commands." + getCommandName();
     }

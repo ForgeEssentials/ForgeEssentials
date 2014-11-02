@@ -24,22 +24,27 @@ import com.forgeessentials.util.UserIdent;
 import cpw.mods.fml.common.registry.GameData;
 
 public class CommandDrop extends FEcmdModuleCommands {
-    public String getCommandName()
+	
+    @Override
+	public String getCommandName()
     {
         return "drop";
     }
 
-    public int getRequiredPermissionLevel()
+    @Override
+	public int getRequiredPermissionLevel()
     {
         return 2;
     }
 
-    public String getCommandUsage(ICommandSender par1ICommandSender)
+    @Override
+	public String getCommandUsage(ICommandSender par1ICommandSender)
     {
         return "/drop <X> <Y> <Z> <ItemID> <Meta> <Qty>";
     }
 
-    public void processCommand(ICommandSender var1, String[] var2)
+    @Override
+	public void processCommand(ICommandSender var1, String[] var2)
     {
         if (var2.length != 6)
         {
@@ -220,12 +225,12 @@ public class CommandDrop extends FEcmdModuleCommands {
 
         if (par5 != 0 || par6 != 0)
         {
-            if (d1 < (double) par5)
+            if (d1 < par5)
             {
                 throw new NumberInvalidException("commands.generic.double.tooSmall", new Object[] { Double.valueOf(d1), Integer.valueOf(par5) });
             }
 
-            if (d1 > (double) par6)
+            if (d1 > par6)
             {
                 throw new NumberInvalidException("commands.generic.double.tooBig", new Object[] { Double.valueOf(d1), Integer.valueOf(par6) });
             }

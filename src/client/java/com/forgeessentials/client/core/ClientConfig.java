@@ -1,13 +1,15 @@
 package com.forgeessentials.client.core;
 
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
 import com.forgeessentials.client.ForgeEssentialsClient;
+
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 
 @SideOnly(Side.CLIENT)
 public class ClientConfig {
@@ -16,7 +18,7 @@ public class ClientConfig {
 
     public ClientConfig(Configuration config)
     {
-        this.config = config;
+        ClientConfig.config = config;
         FMLCommonHandler.instance().bus().register(this);
     }
 
@@ -27,7 +29,7 @@ public class ClientConfig {
 
         Property prop = config.get(Configuration.CATEGORY_GENERAL, "allowCUI", true);
         prop.comment = "Set to false to disable graphical selections.";
-        ForgeEssentialsClient.instance.allowCUI = prop.getBoolean(true);
+        ForgeEssentialsClient.allowCUI = prop.getBoolean(true);
         // any other parts please config here
         config.save();
     }

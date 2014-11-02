@@ -49,6 +49,9 @@ public abstract class Response
     private static class NBTBaseAdapter implements JsonDeserializer<NBTBase>, JsonSerializer<NBTBase> 
     {
 
+        public NBTBaseAdapter() {}
+        
+
         @Override
         public JsonElement serialize(NBTBase src, Type typeOfSrc, JsonSerializationContext context)
         {

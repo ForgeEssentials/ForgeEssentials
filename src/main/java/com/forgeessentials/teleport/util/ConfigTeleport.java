@@ -1,9 +1,10 @@
 package com.forgeessentials.teleport.util;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.forgeessentials.teleport.TeleportModule;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
+
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.teleport.TeleportModule;
 
 public class ConfigTeleport extends ModuleConfigBase
 {
@@ -33,6 +34,10 @@ public class ConfigTeleport extends ModuleConfigBase
         config.save();
     }
 
-    public boolean universalConfigAllowed(){return true;}
+    @Override
+    public boolean universalConfigAllowed()
+    {
+        return true;
+    }
 
 }

@@ -289,7 +289,7 @@ public final class FunctionHelper {
 	}
 
 	/**
-	 * Get tps per word.
+	 * Get tps per world.
 	 *
 	 * @param dimID
 	 * @return -1 if error

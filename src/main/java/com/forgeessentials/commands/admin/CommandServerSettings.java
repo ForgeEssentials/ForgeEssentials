@@ -16,6 +16,7 @@ import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandServerSettings extends FEcmdModuleCommands {
+	
     public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MOTD", "spawnProtection", "gamemode");
 
     @Override
@@ -31,7 +32,8 @@ public class CommandServerSettings extends FEcmdModuleCommands {
                 { "ss" };
     }
 
-    public void processCommand(ICommandSender sender, String[] args)
+    @Override
+	public void processCommand(ICommandSender sender, String[] args)
     {
         if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
         {

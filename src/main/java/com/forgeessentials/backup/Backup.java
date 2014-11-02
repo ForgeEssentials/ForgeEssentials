@@ -19,7 +19,7 @@ public class Backup implements Runnable {
     private Thread thread;
     private WorldServer world;
     private boolean isWorld;
-    private String name, nameDim;
+    private String name;
     private File basefolder = ModuleBackup.baseFolder;
     private File folder;
     private List<String> fileList;

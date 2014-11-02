@@ -1,11 +1,12 @@
 package com.forgeessentials.worldborder;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.worldborder.Effects.IEffect;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.worldborder.Effects.IEffect;
 
 /**
  * This generates the configuration structure
@@ -117,5 +118,10 @@ public class ConfigWorldBorder extends ModuleConfigBase {
 
     }
 
-    public boolean universalConfigAllowed(){return true;}
+    @Override
+    public boolean universalConfigAllowed()
+    {
+        return true;
+    }
+
 }

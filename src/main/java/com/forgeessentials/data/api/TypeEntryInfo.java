@@ -3,6 +3,7 @@ package com.forgeessentials.data.api;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("rawtypes")
 public class TypeEntryInfo implements ITypeInfo {
     private ClassContainer parent;
     private HashMap<String, ClassContainer> types;

@@ -1,7 +1,8 @@
 package com.forgeessentials.economy;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 import net.minecraft.command.ICommandSender;
+
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
 
 public class ConfigEconomy extends ModuleConfigBase {
 
@@ -41,5 +42,9 @@ public class ConfigEconomy extends ModuleConfigBase {
         ModuleEconomy.startbudget = config.get(CAT, "startbuget", 100).getInt();
     }
 
-    public boolean universalConfigAllowed(){return true;}
+    @Override
+    public boolean universalConfigAllowed()
+    {
+        return true;
+    }
 }

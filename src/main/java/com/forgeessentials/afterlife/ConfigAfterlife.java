@@ -1,11 +1,12 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
-import com.forgeessentials.util.OutputHandler;
+import java.util.ArrayList;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.potion.PotionEffect;
 
-import java.util.ArrayList;
+import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.util.OutputHandler;
 
 public class ConfigAfterlife extends ModuleConfigBase {
     String cat = "Afterlife";
@@ -113,5 +114,9 @@ public class ConfigAfterlife extends ModuleConfigBase {
         config.save();
     }
 
-    public boolean universalConfigAllowed(){return true;}
+    @Override
+    public boolean universalConfigAllowed()
+    {
+        return true;
+    }
 }
