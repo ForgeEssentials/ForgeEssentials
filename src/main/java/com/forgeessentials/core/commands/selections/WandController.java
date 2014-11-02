@@ -25,11 +25,6 @@ public class WandController extends ServerEventHandler {
 
     protected List<PlayerInfo> updatedSelectionPlayers = new ArrayList<PlayerInfo>();
     
-    public WandController(boolean forceRegister)
-    {
-        super(forceRegister);
-    }
-    
     public void sendSelectionUpdates()
     {
         for (PlayerInfo pi : updatedSelectionPlayers)

@@ -24,13 +24,9 @@ import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.compat.Environment;
-import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;
-import com.forgeessentials.util.selections.Point;
 
 public class CommandZone extends ForgeEssentialsCommandBase {
 
@@ -62,6 +58,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         return list;
     }
 
+    @SuppressWarnings("unchecked")
     public void parse(ICommandSender sender, Queue<String> args)
     {
         if (tabCompleteMode && args.size() == 1)
@@ -110,7 +107,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         }
     }
 
-    private AreaZone getZone(WorldZone worldZone, String arg)
+    private static AreaZone getAreaZone(WorldZone worldZone, String arg)
     {
         try
         {
@@ -124,7 +121,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         return worldZone.getAreaZone(arg);
     }
 
-    private void parseList(ICommandSender sender, WorldZone worldZone, Queue<String> args)
+    private static void parseList(ICommandSender sender, WorldZone worldZone, Queue<String> args)
     {
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST))
         {
@@ -217,7 +214,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             return;
         }
         String zoneName = args.remove();
-        AreaZone zone = getZone(worldZone, zoneName);
+        AreaZone zone = getAreaZone(worldZone, zoneName);
         if (!redefine && zone != null)
         {
             throw new CommandException(String.format("Area \"%s\" already exists!", zoneName));
@@ -293,7 +290,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             return;
         }
         String zoneName = args.remove();
-        AreaZone zone = getZone(worldZone, zoneName);
+        AreaZone zone = getAreaZone(worldZone, zoneName);
         if (zone == null)
         {
             OutputHandler.chatError(sender, String.format("Area \"%s\" has does not exist!", zoneName));
@@ -320,7 +317,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             throw new CommandException("Missing arguments!");
         }
         String zoneName = args.remove();
-        AreaZone zone = getZone(worldZone, zoneName);
+        AreaZone zone = getAreaZone(worldZone, zoneName);
         if (zone == null)
         {
             throw new CommandException(String.format("Area \"%s\" does not exist!", zoneName));
@@ -347,7 +344,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         parse(sender, argsList);
     }
 
-    private void help(ICommandSender sender)
+    private static void help(ICommandSender sender)
     {
         OutputHandler.chatConfirmation(sender, "/zone list [page]: Lists all zones");
         OutputHandler.chatConfirmation(sender, "/zone info <zone>|here: Zone information");

@@ -160,7 +160,7 @@ public class ForgeEssentials {
 		MinecraftForge.EVENT_BUS.register(factory);
 		
 		respawnHandler = new RespawnHandler();
-        wandHandler = new WandController(true);
+        wandHandler = new WandController();
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
 	}
