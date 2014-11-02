@@ -36,20 +36,17 @@ public class LoginMessage {
         {
             try
             {
-                FileReader fr = new FileReader(file);
-                BufferedReader br = new BufferedReader(fr);
-
-                while (br.ready())
+                try (BufferedReader br = new BufferedReader(new FileReader(file)))
                 {
-                    String line = br.readLine().trim();
-                    if (!(line.startsWith("#") || line.isEmpty()))
+                    while (br.ready())
                     {
-                        messageList.add(line);
+                        String line = br.readLine().trim();
+                        if (!(line.startsWith("#") || line.isEmpty()))
+                        {
+                            messageList.add(line);
+                        }
                     }
                 }
-
-                br.close();
-                fr.close();
             }
             catch (IOException e)
             {
@@ -61,37 +58,35 @@ public class LoginMessage {
             try
             {
                 file.createNewFile();
-                PrintWriter pw = new PrintWriter(file);
-
-                pw.println("# This file contains the message sent to the player on login.");
-                pw.println("# Lines starting with # are not read.");
-                pw.println("# There are several codes that can be used to format the text.");
-                pw.println("# If you want to use color, use this symbol & (ALT code 21) to indicate a color.");
-                pw.println("# Handy link: http://www.minecraftwiki.net/wiki/Formatting_codes");
-                pw.println("# Other codes:");
-                pw.println("# %playername% => The name of the player the message is send to");
-                pw.println("# %rank% => Players rank (see chat config)");
-                pw.println("# %groupPrefix% => Group prefix (see chat config)");
-                pw.println("# %groupSuffix% => Group suffix (see chat config)");
-                pw.println("# %playerPrefix% => Player prefix (see chat config)");
-                pw.println("# %playerSuffix% => Player suffix (see chat config)");
-                // pw.println("# %balance% => Prints the users balance (economy)");
-                pw.println("# %players% => Amount of players online.");
-                pw.println("# %uptime% => Current server uptime.");
-                pw.println("# %uniqueplayers% => Amount of unique player logins.");
-                pw.println("# %time% => Local server time. All in one string.");
-                pw.println("# %hour% ; %min% ; %sec% => Local server time.");
-                pw.println("# %day% ; %month% ; %year% => Local server date.");
-                pw.println("# %online => Nice list of online players.");
-                pw.println("# ");
-                pw.println("# If you would like more codes, you can make an issue on https://github.com/ForgeEssentials/ForgeEssentialsMain/issues");
-                pw.println("");
-                pw.println("Welcome %playername%, to a server running ForgeEssentials.");
-                pw.println("There are %players% players online, and we have had %uniqueplayers% unique players.");
-                pw.println("Server time: %time%. Uptime: %uptime%");
-
-                pw.close();
-                
+                try (PrintWriter pw = new PrintWriter(file))
+                {
+                    pw.println("# This file contains the message sent to the player on login.");
+                    pw.println("# Lines starting with # are not read.");
+                    pw.println("# There are several codes that can be used to format the text.");
+                    pw.println("# If you want to use color, use this symbol & (ALT code 21) to indicate a color.");
+                    pw.println("# Handy link: http://www.minecraftwiki.net/wiki/Formatting_codes");
+                    pw.println("# Other codes:");
+                    pw.println("# %playername% => The name of the player the message is send to");
+                    pw.println("# %rank% => Players rank (see chat config)");
+                    pw.println("# %groupPrefix% => Group prefix (see chat config)");
+                    pw.println("# %groupSuffix% => Group suffix (see chat config)");
+                    pw.println("# %playerPrefix% => Player prefix (see chat config)");
+                    pw.println("# %playerSuffix% => Player suffix (see chat config)");
+                    // pw.println("# %balance% => Prints the users balance (economy)");
+                    pw.println("# %players% => Amount of players online.");
+                    pw.println("# %uptime% => Current server uptime.");
+                    pw.println("# %uniqueplayers% => Amount of unique player logins.");
+                    pw.println("# %time% => Local server time. All in one string.");
+                    pw.println("# %hour% ; %min% ; %sec% => Local server time.");
+                    pw.println("# %day% ; %month% ; %year% => Local server date.");
+                    pw.println("# %online => Nice list of online players.");
+                    pw.println("# ");
+                    pw.println("# If you would like more codes, you can make an issue on https://github.com/ForgeEssentials/ForgeEssentialsMain/issues");
+                    pw.println("");
+                    pw.println("Welcome %playername%, to a server running ForgeEssentials.");
+                    pw.println("There are %players% players online, and we have had %uniqueplayers% unique players.");
+                    pw.println("Server time: %time%. Uptime: %uptime%");
+                }
                 loadFile();
             }
             catch (Exception e)

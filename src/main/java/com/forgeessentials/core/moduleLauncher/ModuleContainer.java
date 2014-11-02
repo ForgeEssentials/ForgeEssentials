@@ -1,19 +1,27 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule.*;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.google.common.base.Throwables;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-import net.minecraft.command.ICommandSender;
-
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+
+import net.minecraft.command.ICommandSender;
+
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule.Config;
+import com.forgeessentials.core.moduleLauncher.FEModule.Container;
+import com.forgeessentials.core.moduleLauncher.FEModule.DummyConfig;
+import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
+import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
+import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
+import com.forgeessentials.core.moduleLauncher.FEModule.Reload;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.google.common.base.Throwables;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 
 @SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable {
@@ -291,23 +299,26 @@ public class ModuleContainer implements Comparable {
     @Override
     public int compareTo(Object o)
     {
-        ModuleContainer container = (ModuleContainer) o;
+        if (!(o instanceof ModuleContainer))
+            return -1;
+        
+        ModuleContainer other = (ModuleContainer) o;
 
-        if (equals(container))
+        if (equals(other))
         {
             return 0;
         }
 
-        if (isCore && !container.isCore)
+        if (isCore && !other.isCore)
         {
             return 1;
         }
-        else if (!isCore && container.isCore)
+        else if (!isCore && other.isCore)
         {
             return -1;
         }
 
-        return name.compareTo(container.name);
+        return name.compareTo(other.name);
     }
 
     @Override
@@ -321,6 +332,12 @@ public class ModuleContainer implements Comparable {
         ModuleContainer c = (ModuleContainer) o;
 
         return isCore == c.isCore && name.equals(c.name) && className.equals(c.className);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return (11 + name.hashCode()) * 29 + className.hashCode();
     }
 
     private static Object handleMod(Class c)

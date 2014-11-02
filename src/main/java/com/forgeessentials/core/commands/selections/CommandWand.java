@@ -65,7 +65,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
 
 		if (args.length > 0 && !rebind) {
 			Pair<String, Integer> data = FunctionHelper.parseIdAndMetaFromString(args[0], false);
-			wandItem = ((Item) GameData.getItemRegistry().getObject(data.getLeft()));
+			wandItem = GameData.getItemRegistry().getObject(data.getLeft());
 			wandId = wandItem.getUnlocalizedName();
 			wandDmg = data.getRight();
 			if (wandDmg == -1) {

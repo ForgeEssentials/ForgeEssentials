@@ -28,29 +28,28 @@ public class BlockModListFile {
             {
                 modListFile.delete();
             }
-            FileWriter fstream = new FileWriter(modListFile);
-            PrintWriter out = new PrintWriter(fstream);
-            out.println("# --- ModList ---");
-            out.println(
-                    "# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR) + " (Server time)");
-            out.println("# Change the location of this file in " + CoreConfig.mainconfig);
-            out.println();
-
-            for (ModContainer mod : Loader.instance().getModList())
+            try (PrintWriter out = new PrintWriter(new FileWriter(modListFile)))
             {
-                String url = "";
-                if (!mod.getMetadata().url.isEmpty())
+                out.println("# --- ModList ---");
+                out.println(
+                        "# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR) + " (Server time)");
+                out.println("# Change the location of this file in " + CoreConfig.mainconfig);
+                out.println();
+    
+                for (ModContainer mod : Loader.instance().getModList())
                 {
-                    url = mod.getMetadata().url;
+                    String url = "";
+                    if (!mod.getMetadata().url.isEmpty())
+                    {
+                        url = mod.getMetadata().url;
+                    }
+                    if (!mod.getMetadata().updateUrl.isEmpty())
+                    {
+                        url = mod.getMetadata().updateUrl;
+                    }
+                    out.println(mod.getName() + ";" + mod.getVersion() + ";" + url);
                 }
-                if (!mod.getMetadata().updateUrl.isEmpty())
-                {
-                    url = mod.getMetadata().updateUrl;
-                }
-                out.println(mod.getName() + ";" + mod.getVersion() + ";" + url);
             }
-
-            out.close();
         }
         catch (Exception e)
         {
@@ -67,23 +66,22 @@ public class BlockModListFile {
             {
                 modListFile.delete();
             }
-            FileWriter fstream = new FileWriter(modListFile);
-            PrintWriter out = new PrintWriter(fstream);
-            out.println("# --- Block/Item List ---");
-            out.println(
-                    "# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR) + " (Server time)");
-            out.println();
-
-            for (Item i : GameData.getItemRegistry().typeSafeIterable())
+            try (PrintWriter out = new PrintWriter(new FileWriter(modListFile)))
             {
-                out.println(i.getUnlocalizedName());
+                out.println("# --- Block/Item List ---");
+                out.println(
+                        "# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR) + " (Server time)");
+                out.println();
+    
+                for (Item i : GameData.getItemRegistry().typeSafeIterable())
+                {
+                    out.println(i.getUnlocalizedName());
+                }
+                for (Block b : GameData.getBlockRegistry().typeSafeIterable())
+                {
+                    out.println(b.getUnlocalizedName());
+                }
             }
-            for (Block b : GameData.getBlockRegistry().typeSafeIterable())
-            {
-                out.println(b.getUnlocalizedName());
-            }
-
-            out.close();
         }
         catch (Exception e)
         {

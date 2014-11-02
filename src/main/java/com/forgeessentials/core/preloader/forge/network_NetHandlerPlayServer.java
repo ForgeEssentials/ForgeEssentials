@@ -1,8 +1,11 @@
 package com.forgeessentials.core.preloader.forge;
 
-import com.forgeessentials.util.events.forge.SignEditEvent;
-import com.google.common.base.Charsets;
 import io.netty.buffer.Unpooled;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityMinecartCommandBlock;
@@ -30,9 +33,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
+import com.forgeessentials.util.events.forge.SignEditEvent;
+import com.google.common.base.Charsets;
 
 public class network_NetHandlerPlayServer
 {
@@ -152,7 +154,7 @@ public class network_NetHandlerPlayServer
             }
             catch (Exception exception4)
             {
-                net.logger.error("Couldn\'t handle book info", exception4);
+                NetHandlerPlayServer.logger.error("Couldn\'t handle book info", exception4);
                 return;
             }
             finally
@@ -197,7 +199,7 @@ public class network_NetHandlerPlayServer
             }
             catch (Exception exception3)
             {
-                net.logger.error("Couldn\'t sign book", exception3);
+                NetHandlerPlayServer.logger.error("Couldn\'t sign book", exception3);
                 return;
             }
             finally
@@ -227,7 +229,7 @@ public class network_NetHandlerPlayServer
                 }
                 catch (Exception exception2)
                 {
-                    net.logger.error("Couldn\'t select trade", exception2);
+                    NetHandlerPlayServer.logger.error("Couldn\'t select trade", exception2);
                 }
             }
             else if ("MC|AdvCdm".equals(p_147349_1_.func_149559_c()))
@@ -275,7 +277,7 @@ public class network_NetHandlerPlayServer
                     }
                     catch (Exception exception1)
                     {
-                        net.logger.error("Couldn\'t set command block", exception1);
+                        NetHandlerPlayServer.logger.error("Couldn\'t set command block", exception1);
                     }
                     finally
                     {
@@ -310,7 +312,7 @@ public class network_NetHandlerPlayServer
                     }
                     catch (Exception exception)
                     {
-                        net.logger.error("Couldn\'t set beacon", exception);
+                        NetHandlerPlayServer.logger.error("Couldn\'t set beacon", exception);
                     }
                 }
             }

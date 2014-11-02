@@ -1,9 +1,9 @@
 package com.forgeessentials.core.moduleLauncher;
 
+import java.io.File;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
-
-import java.io.File;
 
 /**
  * The constructor of this should only set the file. Any creation of a Forge
@@ -25,7 +25,7 @@ public abstract class ModuleConfigBase {
     /**
      * to get properties
      */
-    public ModuleConfigBase(){};
+    public ModuleConfigBase(){}
 
     public void setFile(File file)
     {
@@ -34,7 +34,7 @@ public abstract class ModuleConfigBase {
         );
     }
 
-   public void setGenerate(boolean generate)
+    public void setGenerate(boolean generate)
     {
         genrate = generate;
     }

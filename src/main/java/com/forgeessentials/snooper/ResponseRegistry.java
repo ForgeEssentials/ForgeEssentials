@@ -54,7 +54,6 @@ public class ResponseRegistry {
      *
      * @return
      */
-    @SuppressWarnings("unchecked")
     public static ImmutableMap<Integer, Response> getAllResponses()
     {
     	return ImmutableMap.copyOf(map);
