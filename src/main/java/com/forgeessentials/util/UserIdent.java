@@ -104,7 +104,7 @@ public class UserIdent {
 		{
 			username = getUsernameByUuid(uuid);
 		}
-		else if (player == null && uuid != null)
+		if (player == null && uuid != null)
 		{
 			player = getPlayerByUuid(uuid);
 		}
