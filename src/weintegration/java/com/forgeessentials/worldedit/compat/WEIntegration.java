@@ -5,18 +5,20 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.events.FEModuleEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.event.platform.PlatformReadyEvent;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.server.CommandHandlerForge;
 
 import java.io.File;
 
@@ -46,7 +48,7 @@ public class WEIntegration {
     }
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FMLInitializationEvent e)
     {
         if (getDevOverride())
         {
@@ -65,7 +67,7 @@ public class WEIntegration {
     }
 
     @SubscribeEvent
-    public void postLoad(FEModulePostInitEvent e)
+    public void postLoad(FMLPostInitializationEvent e)
     {
         if (disable)
         {
@@ -78,7 +80,7 @@ public class WEIntegration {
     }
 
     @SubscribeEvent
-    public void serverStart(FEModuleEvent.FEModuleServerInitEvent e)
+    public void serverStart(FMLServerStartingEvent e)
     {
         this.platform = new FEPlatform();
         WorldEdit.getInstance().getPlatformManager().register(platform);
@@ -86,20 +88,17 @@ public class WEIntegration {
     }
 
     @SubscribeEvent
-    public void serverStarted(FEModuleEvent.FEModuleServerPostInitEvent e)
+    public void serverStarted(FMLServerStartedEvent e)
     {
         for (ForgeEssentialsCommandBase cmd : FEPlatform.commands)
         {
-            if (cmd.getPermissionNode() != null && cmd.getDefaultPermission() != null)
-            {
-                CommandHandlerForge.registerCommand(cmd, cmd.getPermissionNode(), cmd.getDefaultPermission());
-            }
+            FunctionHelper.registerServerCommand(cmd);
         }
         WorldEdit.getInstance().getEventBus().post(new PlatformReadyEvent());
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleEvent.FEModuleServerStopEvent e)
+    public void serverStopping(FMLServerStoppingEvent e)
     {
         WorldEdit.getInstance().getPlatformManager().unregister(platform);
     }

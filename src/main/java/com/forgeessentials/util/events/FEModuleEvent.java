@@ -1,9 +1,15 @@
 package com.forgeessentials.util.events;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.event.FMLStateEvent;
 import cpw.mods.fml.common.eventhandler.Event;
-import net.minecraftforge.server.CommandHandlerForge;
 
 public class FEModuleEvent extends Event{
 
@@ -53,19 +59,19 @@ public class FEModuleEvent extends Event{
 
     }
 
+    public static class FEModuleServerPreInitEvent extends FEModuleEvent
+    {
+        public FEModuleServerPreInitEvent(FMLServerAboutToStartEvent event)
+        {
+            this.event = event;
+        }
+    }
+
     public static class FEModuleServerInitEvent extends FEModuleEvent
     {
         public FEModuleServerInitEvent(FMLServerStartingEvent event)
         {
             this.event = event;
-        }
-
-        public void registerServerCommand(ForgeEssentialsCommandBase command)
-        {
-            if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
-            {
-                CommandHandlerForge.registerCommand(command, command.getPermissionNode(), command.getDefaultPermission());
-            }
         }
     }
 
@@ -84,4 +90,13 @@ public class FEModuleEvent extends Event{
             this.event = event;
         }
     }
+
+    public static class FEModuleServerStoppedEvent extends FEModuleEvent
+    {
+        public FEModuleServerStoppedEvent(FMLServerStoppedEvent event)
+        {
+            this.event = event;
+        }
+    }
+
 }

@@ -1,12 +1,11 @@
 package com.forgeessentials.core.moduleLauncher;
 
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
-import com.forgeessentials.core.misc.CoreConfig;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.CoreConfig;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.FEModuleEvent;
-
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
@@ -157,7 +156,7 @@ public class ModuleLauncher {
             }
         }
 
-        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModulePreInitEvent(e));
+        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModulePreInitEvent(e));
     }
 
     public void reloadConfigs(ICommandSender sender)

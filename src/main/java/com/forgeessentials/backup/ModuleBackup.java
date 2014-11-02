@@ -1,9 +1,14 @@
 package com.forgeessentials.backup;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Timer;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -13,15 +18,9 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Timer;
 
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup {
@@ -68,16 +67,16 @@ public class ModuleBackup {
     }
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FMLInitializationEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
         new WorldSaver();
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FMLServerStartingEvent e)
     {
-        e.registerServerCommand(new CommandBackup());
+        FunctionHelper.registerServerCommand(new CommandBackup());
         if (BackupConfig.autoInterval != 0)
         {
             timer.schedule(new AutoBackup(), BackupConfig.autoInterval*60*1000, BackupConfig.autoInterval*60*1000);

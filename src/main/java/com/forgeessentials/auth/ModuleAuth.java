@@ -1,11 +1,5 @@
 package com.forgeessentials.auth;
 
-import java.util.HashSet;
-import java.util.UUID;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.auth.lists.CommandVIP;
 import com.forgeessentials.auth.lists.CommandWhiteList;
@@ -13,13 +7,18 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Config;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.tasks.TaskRegistry;
-
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.HashSet;
+import java.util.UUID;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, configClass = AuthConfig.class)
 public class ModuleAuth {
@@ -41,31 +40,31 @@ public class ModuleAuth {
     private static boolean oldEnabled = false;
 
     @SubscribeEvent
-    public void preInit(FEModulePreInitEvent e)
+    public void preInit(FMLPreInitializationEvent e)
     {
         // No Auth Module on client
-        if (e.getFMLEvent().getSide().isClient())
+        if (e.getSide().isClient())
         {
             ModuleLauncher.instance.unregister("AuthLogin");
         }
     }
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FMLInitializationEvent e)
     {
         pwdEnc = new EncryptionHelper();
         handler = new AuthEventHandler();
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FMLServerStartingEvent e)
     {
-        e.registerServerCommand(new CommandAuth());
+        FunctionHelper.registerServerCommand(new CommandAuth());
 
         if (AuthEventHandler.whitelist)
         {
-            e.registerServerCommand(new CommandWhiteList());
-            e.registerServerCommand(new CommandVIP());
+            FunctionHelper.registerServerCommand(new CommandWhiteList());
+            FunctionHelper.registerServerCommand(new CommandVIP());
         }
 
         if (checkVanillaAuthStatus && !forceEnabled)

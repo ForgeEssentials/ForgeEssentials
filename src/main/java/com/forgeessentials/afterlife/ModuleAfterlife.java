@@ -1,18 +1,15 @@
 package com.forgeessentials.afterlife;
 
-import java.io.File;
-
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-
-import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.io.File;
 
 /**
  * This module handles Deathchest and respawn debuffs.
@@ -33,14 +30,14 @@ public class ModuleAfterlife {
     public RespawnDebuffHandler respawnDebuff;
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FMLInitializationEvent e)
     {
         deathchest = new Deathchest();
         respawnDebuff = new RespawnDebuffHandler();
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FMLServerStartingEvent e)
     {
         deathchest.load();
         APIRegistry.perms.registerPermission(BASEPERM, RegisteredPermValue.OP);
@@ -53,7 +50,7 @@ public class ModuleAfterlife {
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FMLServerStoppingEvent e)
     {
         deathchest.save();
     }

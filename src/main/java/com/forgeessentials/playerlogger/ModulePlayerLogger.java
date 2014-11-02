@@ -15,14 +15,22 @@ import com.forgeessentials.playerlogger.types.LogType;
 import com.forgeessentials.playerlogger.types.PlayerTrackerType;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.FEModuleEvent.*;
 import com.forgeessentials.util.selections.WorldPoint;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -139,7 +147,7 @@ public class ModulePlayerLogger {
     }
 
     @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
+    public void preLoad(FMLPreInitializationEvent e)
     {
         if (!enable)
         {
@@ -151,7 +159,7 @@ public class ModulePlayerLogger {
     }
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FMLInitializationEvent e)
     {
         for (String name : EventLogger.exempt_groups)
         {
@@ -171,10 +179,10 @@ public class ModulePlayerLogger {
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FMLServerStartingEvent e)
     {
-        e.registerServerCommand(new CommandPl());
-        e.registerServerCommand(new CommandRollback());
+        FunctionHelper.registerServerCommand(new CommandPl());
+        FunctionHelper.registerServerCommand(new CommandRollback());
         try
         {
             connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
@@ -202,7 +210,7 @@ public class ModulePlayerLogger {
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FMLServerStoppingEvent e)
     {
         try
         {

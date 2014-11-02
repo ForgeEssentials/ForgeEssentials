@@ -1,26 +1,28 @@
 package com.forgeessentials.util.events;
 
-import net.minecraftforge.common.MinecraftForge;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 public class ServerEventHandler {
 
     public ServerEventHandler()
     {
         FMLCommonHandler.instance().bus().register(this);
+        FunctionHelper.FE_INTERNAL_EVENTBUS.register(this);
     }
 
-    @EventHandler
-    public void serverAboutToStart(FMLServerAboutToStartEvent e)
+    @SubscribeEvent
+    public void serverAboutToStart(FEModuleServerPreInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @EventHandler
-    public void serverStopped(FMLServerStoppedEvent e)
+    @SubscribeEvent
+    public void serverStopped(FEModuleServerStoppedEvent e)
     {
         MinecraftForge.EVENT_BUS.unregister(this);
     }

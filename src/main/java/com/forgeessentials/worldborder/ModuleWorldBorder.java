@@ -1,29 +1,30 @@
 package com.forgeessentials.worldborder;
 
-import java.util.HashMap;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
-import com.forgeessentials.util.events.FEModuleEvent.*;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.vector.Vector2;
 import com.forgeessentials.worldborder.Effects.IEffect;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.HashMap;
 
 /**
  * Bounces players back into the border if they pass it. No bypass permissions available, If needed, tell me on github.
@@ -119,8 +120,8 @@ public class ModuleWorldBorder {
 	@SubscribeEvent
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
-		e.registerServerCommand(new CommandWB());
-		e.registerServerCommand(new CommandFiller());
+        FunctionHelper.registerServerCommand(new CommandWB());
+        FunctionHelper.registerServerCommand(new CommandFiller());
 
 		APIRegistry.perms.registerPermission("fe.worldborder.admin", RegisteredPermValue.OP);
 		APIRegistry.perms.registerPermission("fe.worldborder.filler", RegisteredPermValue.OP);

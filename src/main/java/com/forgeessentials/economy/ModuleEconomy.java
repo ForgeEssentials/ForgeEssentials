@@ -1,7 +1,5 @@
 package com.forgeessentials.economy;
 
-import java.io.File;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -20,14 +18,15 @@ import com.forgeessentials.economy.commands.plots.CommandSellPlot;
 import com.forgeessentials.economy.commands.plots.CommandSetPlot;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
+
+import java.io.File;
 
 /**
  * Call the WalletHandler class when working with Economy
@@ -45,39 +44,39 @@ public class ModuleEconomy {
     public static int psfPrice;
     
     @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
+    public void preLoad(FMLPreInitializationEvent e)
     {
         FunctionHelper.netHandler.registerMessage(S4PacketEconomy.class, S4PacketEconomy.class, 4, Side.CLIENT);
     }
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FMLInitializationEvent e)
     {
         APIRegistry.wallet = new WalletHandler();
         FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FMLServerStartingEvent e)
     {
-        e.registerServerCommand(new CommandAddToWallet());
-        e.registerServerCommand(new CommandRemoveWallet());
-        e.registerServerCommand(new CommandGetWallet());
-        e.registerServerCommand(new CommandSetWallet());
-        e.registerServerCommand(new CommandPay());
-        e.registerServerCommand(new CommandPaidCommand());
-        e.registerServerCommand(new CommandSellCommand());
-        e.registerServerCommand(new CommandMoney());
-        e.registerServerCommand(new CommandBuyPlot());
-        e.registerServerCommand(new CommandRemovePlot());
-        e.registerServerCommand(new CommandSellPlot());
-        e.registerServerCommand(new CommandSetPlot());
-        e.registerServerCommand(new CommandListPlot());
+        FunctionHelper.registerServerCommand(new CommandAddToWallet());
+        FunctionHelper.registerServerCommand(new CommandRemoveWallet());
+        FunctionHelper.registerServerCommand(new CommandGetWallet());
+        FunctionHelper.registerServerCommand(new CommandSetWallet());
+        FunctionHelper.registerServerCommand(new CommandPay());
+        FunctionHelper.registerServerCommand(new CommandPaidCommand());
+        FunctionHelper.registerServerCommand(new CommandSellCommand());
+        FunctionHelper.registerServerCommand(new CommandMoney());
+        FunctionHelper.registerServerCommand(new CommandBuyPlot());
+        FunctionHelper.registerServerCommand(new CommandRemovePlot());
+        FunctionHelper.registerServerCommand(new CommandSellPlot());
+        FunctionHelper.registerServerCommand(new CommandSetPlot());
+        FunctionHelper.registerServerCommand(new CommandListPlot());
         PlotManager.load();
     }
 
     @SubscribeEvent
-    public void serverStop(FEModuleServerStopEvent e)
+    public void serverStop(FMLServerStoppingEvent e)
     {
         PlotManager.save();
     }

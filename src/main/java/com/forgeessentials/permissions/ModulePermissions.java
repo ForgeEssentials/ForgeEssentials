@@ -1,11 +1,5 @@
 package com.forgeessentials.permissions;
 
-import java.io.File;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
@@ -22,14 +16,19 @@ import com.forgeessentials.permissions.core.PermissionEventHandler;
 import com.forgeessentials.permissions.core.PermissionsListWriter;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.teleport.TeleportCenter;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.io.File;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, configClass = ConfigPermissions.class)
 public class ModulePermissions {
@@ -79,9 +78,9 @@ public class ModulePermissions {
 		permissionHelper.load();
 
 		// Register commands
-		e.registerServerCommand(new CommandZone());
-		e.registerServerCommand(new CommandPermissions());
-		e.registerServerCommand(new CommandAutoPromote());
+        FunctionHelper.registerServerCommand(new CommandZone());
+        FunctionHelper.registerServerCommand(new CommandPermissions());
+		FunctionHelper.registerServerCommand(new CommandAutoPromote());
 
         // Register permissions
         registerPermissions();

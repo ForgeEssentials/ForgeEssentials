@@ -2,9 +2,10 @@ package com.forgeessentials.scripting;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
@@ -38,16 +39,16 @@ public class ModuleScripting {
     }
 
     @SubscribeEvent
-    public void preInit(FEModulePreInitEvent e)
+    public void preInit(FMLPreInitializationEvent e)
     {
         OutputHandler.felog.info("Scripts are being read from " + moduleDir.getAbsolutePath());
         startup();
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FMLServerStartingEvent e)
     {
-        e.registerServerCommand(new CommandScript());
-        e.registerServerCommand(new TimedTaskManager());
+        FunctionHelper.registerServerCommand(new CommandScript());
+        FunctionHelper.registerServerCommand(new TimedTaskManager());
     }
 }

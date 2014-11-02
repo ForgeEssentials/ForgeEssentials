@@ -5,18 +5,16 @@ import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import java.util.Map.Entry;
@@ -60,7 +58,7 @@ public class ModuleProtection {
     @SubscribeEvent
     public void registerPermissions(FEModuleServerInitEvent ev)
     {
-        ev.registerServerCommand(new ProtectCommand());
+        FunctionHelper.registerServerCommand(new ProtectCommand());
 
         APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE);
         APIRegistry.perms.registerPermission(PERM_EDITS, RegisteredPermValue.TRUE);
