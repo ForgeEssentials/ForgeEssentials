@@ -67,6 +67,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
         return "fe.teleport.tphere";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {

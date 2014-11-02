@@ -32,7 +32,8 @@ public class TeleportCenter {
 
 	private static ArrayList<TeleportData> queue = new ArrayList<TeleportData>();
 
-	private static final TeleportCenter instance = new TeleportCenter();
+	@SuppressWarnings("unused")
+    private static final TeleportCenter instance = new TeleportCenter();
 
 	private TeleportCenter()
 	{

@@ -48,7 +48,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
         execute(sender, args);
     }
 
-    private void execute(ICommandSender sender, String[] args)
+    private static void execute(ICommandSender sender, String[] args)
     {
         /*
          * No world, Status update.
@@ -152,7 +152,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
                     }
                     else
                     {
-                        map.get(world.provider.dimensionId).speed(parseIntWithMin(sender, args[2], 0));
+                        map.get(world.provider.dimensionId).setSpeed(parseIntWithMin(sender, args[2], 0));
                         if (map.get(world.provider.dimensionId).source != sender)
                         {
                             OutputHandler.chatError(sender, "Changed speed to " + args[2]);
@@ -169,13 +169,14 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         // Zone selection
         if (args.length == 1)
         {
-            ArrayList<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<String>();
             if (sender instanceof EntityPlayer)
             {
                 list.add("world");
@@ -183,7 +184,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
             }
             for (int i : DimensionManager.getIDs())
             {
-                list.add("" + i);
+                list.add(Integer.toString(i));
             }
             return getListOfStringsFromIterableMatchingLastWord(args, list);
         }

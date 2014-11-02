@@ -1,7 +1,6 @@
 package com.forgeessentials.util.selections;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;

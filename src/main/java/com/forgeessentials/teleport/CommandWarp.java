@@ -156,6 +156,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         return "fe.teleport.warp";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {

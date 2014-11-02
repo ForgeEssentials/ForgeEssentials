@@ -1,5 +1,14 @@
 package com.forgeessentials.snooper;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
+import javax.crypto.KeyGenerator;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.MinecraftForge;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -12,14 +21,8 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.MinecraftForge;
 
-import javax.crypto.KeyGenerator;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "SnooperModule", parentMod = ForgeEssentials.class, configClass = ConfigSnooper.class)
 public class ModuleSnooper {
@@ -85,22 +88,24 @@ public class ModuleSnooper {
             File file = new File(folder, "key.key");
             if (file.exists())
             {
-                FileInputStream in = new FileInputStream(file);
-                byte[] buffer = new byte[in.available()];
-                in.read(buffer);
-                in.close();
-                key = new String(buffer);
+                try (FileInputStream in = new FileInputStream(file))
+                {
+                    byte[] buffer = new byte[in.available()];
+                    in.read(buffer);
+                    key = new String(buffer);
+                }
             }
             else
             {
                 file.createNewFile();
-                FileOutputStream out = new FileOutputStream(file.getAbsoluteFile());
-                KeyGenerator kgen = KeyGenerator.getInstance("AES");
-                kgen.init(128);
-                byte[] buffer = kgen.generateKey().getEncoded();
-                out.write(buffer);
-                out.close();
-                key = new String(buffer);
+                try (FileOutputStream out = new FileOutputStream(file.getAbsoluteFile()))
+                {
+                    KeyGenerator kgen = KeyGenerator.getInstance("AES");
+                    kgen.init(128);
+                    byte[] buffer = kgen.generateKey().getEncoded();
+                    out.write(buffer);
+                    key = new String(buffer);
+                }
             }
         }
         catch (Exception e)

@@ -60,7 +60,7 @@ public class TeleportData {
 		if (player.dimension != point.getDimension())
 		{
 			FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager()
-					.transferPlayerToDimension((EntityPlayerMP) player, point.getDimension());
+					.transferPlayerToDimension(player, point.getDimension());
 		}
 		player.playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 0.1, point.zd, point.yaw, point.pitch);
 		OutputHandler.chatConfirmation(player, "Teleported.");

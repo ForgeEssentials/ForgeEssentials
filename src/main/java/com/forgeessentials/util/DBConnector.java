@@ -65,17 +65,17 @@ public class DBConnector {
 
         String newcat;
         HashMap<String, Property> props;
-        for (EnumDBType type : EnumDBType.values())
+        for (EnumDBType dbType : EnumDBType.values())
         {
-            newcat = cat + "." + type;
+            newcat = cat + "." + dbType;
 
-            props = data.get(type);
+            props = data.get(dbType);
             if (props == null)
             {
                 continue;
             }
 
-            if (type.isRemote)
+            if (dbType.isRemote)
             {
                 config.get(newcat, "host", "localhost").set(props.get("host").getString());
                 config.get(newcat, "port", 3360).set(props.get("port").getString());
@@ -115,18 +115,18 @@ public class DBConnector {
 
         String newcat;
         HashMap<String, Property> props;
-        for (EnumDBType type : EnumDBType.values())
+        for (EnumDBType dbType : EnumDBType.values())
         {
-            newcat = cat + "." + type;
+            newcat = cat + "." + dbType;
 
-            props = data.get(type);
+            props = data.get(dbType);
             if (props == null)
             {
                 props = new HashMap<String, Property>();
-                data.put(type, props);
+                data.put(dbType, props);
             }
 
-            if (type.isRemote)
+            if (dbType.isRemote)
             {
                 props.put("host", config.get(newcat, "host", "localhost"));
                 props.put("port", config.get(newcat, "port", 3306));
@@ -232,29 +232,29 @@ public class DBConnector {
     }
 
     /**
-     * @param type Only use this for remote types.
+     * @param dbType Only use this for remote types.
      * @return NULL if some error occurred.
      * @throws IllegalArgumentException if the type is not remote
      */
-    private Connection getSpecificConnection(EnumDBType type) throws IllegalArgumentException
+    private Connection getSpecificConnection(EnumDBType dbType) throws IllegalArgumentException
     {
-        if (!type.isRemote)
+        if (!dbType.isRemote)
         {
-            throw new IllegalArgumentException("Non remote type " + type + " is asking for parent config!");
+            throw new IllegalArgumentException("Non remote type " + dbType + " is asking for parent config!");
         }
 
         try
         {
 
-            HashMap<String, Property> props = data.get(type);
+            HashMap<String, Property> props = data.get(dbType);
             String host = props.get("host").getString();
             int port = props.get("port").getInt();
             String database = props.get("database").getString();
             String user = props.get("user").getString();
             String pass = props.get("pass").getString();
 
-            type.loadClass();
-            String connect = type.getConnectionString(host, port, database);
+            dbType.loadClass();
+            String connect = dbType.getConnectionString(host, port, database);
             return DriverManager.getConnection(connect, user, pass);
         }
         catch (Exception e)

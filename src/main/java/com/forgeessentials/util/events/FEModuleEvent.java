@@ -38,11 +38,11 @@ public class FEModuleEvent extends Event{
 
     public static class FEModulePostInitEvent extends FEModuleEvent
     {
-        private FMLPostInitializationEvent event;
+        private FMLPostInitializationEvent parentEvent;
 
         public FEModulePostInitEvent(FMLPostInitializationEvent event)
         {
-            this.event = event;
+            this.parentEvent = event;
         }
 
         /**
@@ -54,7 +54,7 @@ public class FEModuleEvent extends Event{
          */
         public Object buildSoftDependProxy(String modId, String className)
         {
-            return event.buildSoftDependProxy(modId, className);
+            return parentEvent.buildSoftDependProxy(modId, className);
         }
 
     }

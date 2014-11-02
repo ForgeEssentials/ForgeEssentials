@@ -6,7 +6,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 
 public class ZoneEvent extends Event {
 
-    private static Zone zone;
+    protected static Zone zone;
 
     public static class Create extends ZoneEvent
     {
@@ -24,5 +24,8 @@ public class ZoneEvent extends Event {
         }
     }
 
-    public Zone getZone(){return zone;}
+    public Zone getZone()
+    {
+        return zone;
+    }
 }

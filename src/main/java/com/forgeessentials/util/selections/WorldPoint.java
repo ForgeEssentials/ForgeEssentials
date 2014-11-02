@@ -3,7 +3,6 @@ package com.forgeessentials.util.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import scala.MatchError;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;

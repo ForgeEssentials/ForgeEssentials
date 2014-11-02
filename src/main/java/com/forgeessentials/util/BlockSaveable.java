@@ -67,6 +67,18 @@ public class BlockSaveable {
         }
     }
 
+    @Override
+    public int hashCode()
+    {
+        int h = 11 + x;
+        h = h * 29 + y;
+        h = h * 29 + z;
+        h = h * 29 + blockID.hashCode();
+        h = h * 29 + metadata;
+        h = h * 29 + tile.hashCode();
+        return h;
+    }
+
     /**
      * @param world
      * @return if the block was actually set.

@@ -52,6 +52,15 @@ public class WorldBorder {
         }
     }
 
+    public WorldBorder(String zone, Point center, int rad, byte shape, boolean enabled)
+    {
+        this.zone = zone;
+        this.center = center;
+        this.rad = rad;
+        this.shapeByte = shape;
+        this.enabled = enabled;
+    }
+
     public WorldBorder(Zone zone)
     {
         if (zone instanceof ServerZone || zone instanceof WorldZone)
@@ -68,20 +77,15 @@ public class WorldBorder {
         }
     }
 
-    public WorldBorder(String zone, Object center, Object rad, Object shapeByte, Object enabled)
-    {
-        this.zone = zone;
-        this.center = (Point) center;
-        this.rad = (Integer) rad;
-        this.shapeByte = (Byte) shapeByte;
-        this.enabled = (Boolean) enabled;
-    }
-
+    @SuppressWarnings("boxing")
     @Reconstructor
     private static WorldBorder reconstruct(IReconstructData tag)
     {
-        return new WorldBorder(tag.getUniqueKey(), tag.getFieldValue("center"), tag.getFieldValue("rad"), tag.getFieldValue("shapeByte"),
-                tag.getFieldValue("enabled"));
+        Point center = (Point) tag.getFieldValue("center");
+        int rad = (int) tag.getFieldValue("rad");
+        byte shape = (byte) tag.getFieldValue("shapeByte");
+        boolean enabled = (boolean) tag.getFieldValue("enabled");
+        return new WorldBorder(tag.getUniqueKey(), center, rad, shape, enabled);
     }
 
     public void check(EntityPlayerMP player)
@@ -122,7 +126,7 @@ public class WorldBorder {
         }
     }
 
-    public Long getETA()
+    public long getETA()
     {
         try
         {

@@ -94,6 +94,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
         return "fe.teleport.top";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {

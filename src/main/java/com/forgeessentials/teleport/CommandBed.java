@@ -124,6 +124,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
         return "fe.teleport.bed";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {

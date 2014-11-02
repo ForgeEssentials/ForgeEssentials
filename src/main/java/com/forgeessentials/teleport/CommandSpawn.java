@@ -6,21 +6,17 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -36,7 +32,6 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 	@Override
 	public void processCommandPlayer(EntityPlayer sender, String[] args)
 	{
-		Zone zone = APIRegistry.perms.getWorldZone(sender.worldObj);
 		if (args.length >= 1)
 		{
 			if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
@@ -116,6 +111,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 		return "fe.teleport.spawn";
 	}
 
+    @SuppressWarnings("unchecked")
 	@Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

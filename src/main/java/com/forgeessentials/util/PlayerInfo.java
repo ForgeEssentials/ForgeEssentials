@@ -1,5 +1,16 @@
 package com.forgeessentials.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+import java.util.UUID;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.api.ClassContainer;
@@ -13,17 +24,8 @@ import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.Selection;
 import com.forgeessentials.util.selections.WarpPoint;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
-import java.util.UUID;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @SaveableObject
 public class PlayerInfo
@@ -39,8 +41,6 @@ public class PlayerInfo
 
     public static class FESelectionProvider implements ISelectionProvider
     {
-
-        private PlayerInfo pi;
 
         @Override
         public Point getPoint1(EntityPlayerMP player)
@@ -120,10 +120,10 @@ public class PlayerInfo
 
     // selection stuff
     @SaveableField()
-    private Point sel1;
+    protected Point sel1;
 
     @SaveableField()
-    private Point sel2;
+    protected Point sel2;
 
     @SaveableField()
     private int timePlayed;
@@ -166,7 +166,7 @@ public class PlayerInfo
     @Reconstructor()
     public static PlayerInfo reconstruct(IReconstructData tag)
     {
-        UUID uuid = UUID.fromString((String) tag.getUniqueKey());
+        UUID uuid = UUID.fromString(tag.getUniqueKey());
         PlayerInfo info = new PlayerInfo(uuid);
 
         if (persistSelections)

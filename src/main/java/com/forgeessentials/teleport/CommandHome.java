@@ -59,6 +59,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
         return "fe.teleport." + getCommandName();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {

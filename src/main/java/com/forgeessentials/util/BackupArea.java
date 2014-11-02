@@ -29,4 +29,10 @@ public class BackupArea implements Serializable {
         return false;
     }
 
+    @Override
+    public int hashCode()
+    {
+        return (11 + before.hashCode()) * 29 + after.hashCode();
+    }
+
 }

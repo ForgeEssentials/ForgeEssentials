@@ -191,15 +191,15 @@ public class ServerInfo extends Response {
     {
         try
         {
-            JsonObject data = new JsonObject();
-            for (int id : TPSList)
+            JsonObject tpsData = new JsonObject();
+            for (int dimId : TPSList)
             {
-                if (server.worldTickTimes.containsKey(id))
+                if (server.worldTickTimes.containsKey(dimId))
                 {
-                    data.add("Dim " + id, new JsonPrimitive("" + getTPSFromData(server.worldTickTimes.get(id))));
+                    tpsData.add("Dim " + dimId, new JsonPrimitive("" + getTPSFromData(server.worldTickTimes.get(dimId))));
                 }
             }
-            return data;
+            return tpsData;
         }
         catch (Exception e)
         {

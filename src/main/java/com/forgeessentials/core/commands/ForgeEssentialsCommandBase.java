@@ -2,8 +2,6 @@ package com.forgeessentials.core.commands;
 
 import java.util.List;
 
-import com.forgeessentials.permissions.core.PermissionEventHandler;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;

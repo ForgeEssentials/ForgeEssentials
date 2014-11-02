@@ -14,16 +14,11 @@ import org.apache.logging.log4j.Logger;
 
 public final class OutputHandler {
 	
-    public static LogWrapper felog;
+    public static LogWrapper felog = new LogWrapper(LogManager.getLogger("ForgeEssentials"));
 
     public static boolean debugmode;
 
     private static EnumChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
-
-    public OutputHandler()
-    {
-        felog = new LogWrapper(LogManager.getLogger("ForgeEssentials"));
-    }
 
     /**
      * actually sends the color-formatted message to the sender
@@ -191,7 +186,7 @@ public final class OutputHandler {
     		chatWarningColor = EnumChatFormatting.YELLOW;
     }
 
-    public class LogWrapper
+    public static class LogWrapper
     {
         private Logger wrapped;
 

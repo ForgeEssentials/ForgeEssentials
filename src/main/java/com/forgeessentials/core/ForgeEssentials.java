@@ -1,5 +1,14 @@
 package com.forgeessentials.core;
 
+import java.io.File;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
@@ -41,6 +50,7 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -55,14 +65,6 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.io.File;
 
 /**
  * Main mod class
@@ -83,7 +85,14 @@ public class ForgeEssentials {
 	public ModuleLauncher mdlaunch;
 	private TaskRegistry tasks;
 
+    @SuppressWarnings("unused")
     private RespawnHandler respawnHandler;
+    
+    @SuppressWarnings("unused")
+    private WandController wandHandler;
+    
+    @SuppressWarnings("unused")
+    private MiscEventHandler miscEventHandler;
 
 	// static FE-module flags / variables
     public static boolean worldEditCompatilityPresent = false;
@@ -101,9 +110,6 @@ public class ForgeEssentials {
         FunctionHelper.netHandler.registerMessage(S1PacketSelectionUpdate.class, S1PacketSelectionUpdate.class, 1, Side.CLIENT);
         
 		FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
-
-		OutputHandler log = new OutputHandler(); // init the logger
-
 		OutputHandler.felog.info("Forge Essentials version " + FEModContainer.version + " loading, reading config from " + FEDIR.getAbsolutePath());
 
 		// setup fedir stuff
@@ -132,7 +138,7 @@ public class ForgeEssentials {
 			DataStorageManager.registerSaveableType(TypeInfoNBTTagList.class, new ClassContainer(NBTTagList.class));
 		}
 
-		new MiscEventHandler();
+		miscEventHandler = new MiscEventHandler();
 		LoginMessage.loadFile();
 		mdlaunch = new ModuleLauncher();
         mdlaunch.preLoad(e);
@@ -190,7 +196,7 @@ public class ForgeEssentials {
 			new CommandDeselect().register(RegisteredPermValue.OP);
 			new CommandExpand().register(RegisteredPermValue.OP);
 			new CommandExpandY().register(RegisteredPermValue.OP);
-            new WandController();
+            wandHandler = new WandController(true);
 		}
 
 		tasks.onServerStart();

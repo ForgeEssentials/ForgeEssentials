@@ -230,7 +230,8 @@ public class CommandWB extends ForgeEssentialsCommandBase {
 		return "fe.worldborder.admin";
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		// Zone selection

@@ -111,6 +111,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
         return "fe.teleport.tpahere";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
     {

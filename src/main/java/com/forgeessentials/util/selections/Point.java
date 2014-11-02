@@ -147,6 +147,14 @@ public class Point implements Serializable, Comparable<Point> {
 		return false;
 	}
 
+	@Override
+    public int hashCode() {
+	    int h = 11 + x;
+        h = h * 29 + y;
+        h = h * 29 + z;
+        return h;
+	}
+	
 	/**
 	 * @param point
 	 * @return The distance to a given Block.

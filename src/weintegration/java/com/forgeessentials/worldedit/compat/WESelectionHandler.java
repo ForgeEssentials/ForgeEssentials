@@ -1,5 +1,7 @@
 package com.forgeessentials.worldedit.compat;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.Selection;
@@ -11,8 +13,6 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
-import com.sk89q.worldedit.world.World;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 public class WESelectionHandler implements ISelectionProvider {
 
@@ -64,8 +64,10 @@ public class WESelectionHandler implements ISelectionProvider {
         try
         {
             Region region = selector.getRegion();
-            World world = session.getSelectionWorld();
-
+            
+            //World world = session.getSelectionWorld();
+            // TODO ISSUE #1100: Redesign selections to remember the world they belong to
+            
             if (region instanceof CuboidRegion)
             {
                 Vector wepos1 = ((CuboidRegion) region).getPos1();

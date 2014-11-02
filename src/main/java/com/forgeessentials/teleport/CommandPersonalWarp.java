@@ -221,7 +221,8 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		return "fe.teleport." + getCommandName();
 	}
 
-	@Override
+    @SuppressWarnings("unchecked")
+    @Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)

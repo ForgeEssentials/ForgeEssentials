@@ -17,7 +17,8 @@ import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandBack extends ForgeEssentialsCommandBase {
-    public static List justDied = new ArrayList<UUID>();
+    
+    public static List<UUID> justDied = new ArrayList<UUID>();
 
     @Override
     public String getCommandName()

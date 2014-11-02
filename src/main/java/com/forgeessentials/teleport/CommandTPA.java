@@ -110,6 +110,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         return "fe.teleport.tpa";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
     {

@@ -47,11 +47,11 @@ public class SocketHandler extends Thread
             String out;
             try
             {
-                out = Security.encrypt(getResponce(i, parser.parse(inDecr)), ModuleSnooper.key);
+                out = Security.encrypt(getResponse(i, parser.parse(inDecr)), ModuleSnooper.key);
             }
             catch (Exception e)
             {
-                out = Security.encrypt(getResponce(i, new JsonObject()), ModuleSnooper.key);
+                out = Security.encrypt(getResponse(i, new JsonObject()), ModuleSnooper.key);
             }
 
             os.write(out.getBytes(Charsets.UTF_8));
@@ -64,14 +64,14 @@ public class SocketHandler extends Thread
         close();
     }
 
-    private String getResponce(int i, JsonElement jsonElement)
+    private static String getResponse(int i, JsonElement jsonElement)
     {
         try
         {
-            Response responce = ResponseRegistry.getResponse(i);
-            if (responce.allowed)
+            Response response = ResponseRegistry.getResponse(i);
+            if (response.allowed)
             {
-                return responce.getResponse(jsonElement.getAsJsonObject()).toString();
+                return response.getResponse(jsonElement.getAsJsonObject()).toString();
             }
         }
         catch (JsonParseException e)

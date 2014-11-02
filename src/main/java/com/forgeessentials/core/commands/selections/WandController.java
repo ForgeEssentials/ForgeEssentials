@@ -1,5 +1,11 @@
 package com.forgeessentials.core.commands.selections;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
@@ -7,16 +13,17 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.selections.WorldPoint;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class WandController extends ServerEventHandler {
+    
+    public WandController(boolean forceRegister)
+    {
+        super(forceRegister);
+    }
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void playerInteractEvent(PlayerInteractEvent event)

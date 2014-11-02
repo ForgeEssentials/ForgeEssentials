@@ -15,7 +15,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -32,13 +31,14 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-
 import net.minecraftforge.server.CommandHandlerForge;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.google.gson.JsonArray;
@@ -296,7 +296,8 @@ public final class FunctionHelper {
 	 * @param dimID
 	 * @return -1 if error
 	 */
-	private static double getTPS(int dimID)
+	@SuppressWarnings("unused")
+    private static double getTPS(int dimID)
 	{
 		try
 		{
@@ -428,48 +429,48 @@ public final class FunctionHelper {
 	/**
 	 * Uses the % char as identifier
 	 *
-	 * @param format
+	 * @param message
 	 * @return
 	 */
-	public static String format(String format)
+	public static String format(String message)
 	{
-		format = replaceAllIgnoreCase(format, "%smile", "\u263A");
-		format = replaceAllIgnoreCase(format, "%copyrighted", "\u00A9");
-		format = replaceAllIgnoreCase(format, "%registered", "\u00AE");
-		format = replaceAllIgnoreCase(format, "%diamond", "\u2662");
-		format = replaceAllIgnoreCase(format, "%spade", "\u2664");
-		format = replaceAllIgnoreCase(format, "%club", "\u2667");
-		format = replaceAllIgnoreCase(format, "%heart", "\u2661");
-		format = replaceAllIgnoreCase(format, "%female", "\u2640");
-		format = replaceAllIgnoreCase(format, "%male", "\u2642");
+		message = replaceAllIgnoreCase(message, "%smile", "\u263A");
+		message = replaceAllIgnoreCase(message, "%copyrighted", "\u00A9");
+		message = replaceAllIgnoreCase(message, "%registered", "\u00AE");
+		message = replaceAllIgnoreCase(message, "%diamond", "\u2662");
+		message = replaceAllIgnoreCase(message, "%spade", "\u2664");
+		message = replaceAllIgnoreCase(message, "%club", "\u2667");
+		message = replaceAllIgnoreCase(message, "%heart", "\u2661");
+		message = replaceAllIgnoreCase(message, "%female", "\u2640");
+		message = replaceAllIgnoreCase(message, "%male", "\u2642");
 
 		// replace colors
-		format = replaceAllIgnoreCase(format, "%red", EnumChatFormatting.RED.toString());
-		format = replaceAllIgnoreCase(format, "%yellow", EnumChatFormatting.YELLOW.toString());
-		format = replaceAllIgnoreCase(format, "%black", EnumChatFormatting.BLACK.toString());
-		format = replaceAllIgnoreCase(format, "%darkblue", EnumChatFormatting.DARK_BLUE.toString());
-		format = replaceAllIgnoreCase(format, "%darkgreen", EnumChatFormatting.DARK_GREEN.toString());
-		format = replaceAllIgnoreCase(format, "%darkaqua", EnumChatFormatting.DARK_AQUA.toString());
-		format = replaceAllIgnoreCase(format, "%darkred", EnumChatFormatting.DARK_RED.toString());
-		format = replaceAllIgnoreCase(format, "%purple", EnumChatFormatting.DARK_PURPLE.toString());
-		format = replaceAllIgnoreCase(format, "%gold", EnumChatFormatting.GOLD.toString());
-		format = replaceAllIgnoreCase(format, "%grey", EnumChatFormatting.GRAY.toString());
-		format = replaceAllIgnoreCase(format, "%darkgrey", EnumChatFormatting.DARK_GRAY.toString());
-		format = replaceAllIgnoreCase(format, "%indigo", EnumChatFormatting.BLUE.toString());
-		format = replaceAllIgnoreCase(format, "%green", EnumChatFormatting.GREEN.toString());
-		format = replaceAllIgnoreCase(format, "%aqua", EnumChatFormatting.AQUA.toString());
-		format = replaceAllIgnoreCase(format, "%pink", EnumChatFormatting.LIGHT_PURPLE.toString());
-		format = replaceAllIgnoreCase(format, "%white", EnumChatFormatting.WHITE.toString());
+		message = replaceAllIgnoreCase(message, "%red", EnumChatFormatting.RED.toString());
+		message = replaceAllIgnoreCase(message, "%yellow", EnumChatFormatting.YELLOW.toString());
+		message = replaceAllIgnoreCase(message, "%black", EnumChatFormatting.BLACK.toString());
+		message = replaceAllIgnoreCase(message, "%darkblue", EnumChatFormatting.DARK_BLUE.toString());
+		message = replaceAllIgnoreCase(message, "%darkgreen", EnumChatFormatting.DARK_GREEN.toString());
+		message = replaceAllIgnoreCase(message, "%darkaqua", EnumChatFormatting.DARK_AQUA.toString());
+		message = replaceAllIgnoreCase(message, "%darkred", EnumChatFormatting.DARK_RED.toString());
+		message = replaceAllIgnoreCase(message, "%purple", EnumChatFormatting.DARK_PURPLE.toString());
+		message = replaceAllIgnoreCase(message, "%gold", EnumChatFormatting.GOLD.toString());
+		message = replaceAllIgnoreCase(message, "%grey", EnumChatFormatting.GRAY.toString());
+		message = replaceAllIgnoreCase(message, "%darkgrey", EnumChatFormatting.DARK_GRAY.toString());
+		message = replaceAllIgnoreCase(message, "%indigo", EnumChatFormatting.BLUE.toString());
+		message = replaceAllIgnoreCase(message, "%green", EnumChatFormatting.GREEN.toString());
+		message = replaceAllIgnoreCase(message, "%aqua", EnumChatFormatting.AQUA.toString());
+		message = replaceAllIgnoreCase(message, "%pink", EnumChatFormatting.LIGHT_PURPLE.toString());
+		message = replaceAllIgnoreCase(message, "%white", EnumChatFormatting.WHITE.toString());
 
 		// replace MC formating
-		format = replaceAllIgnoreCase(format, "%random", EnumChatFormatting.OBFUSCATED.toString());
-		format = replaceAllIgnoreCase(format, "%bold", EnumChatFormatting.BOLD.toString());
-		format = replaceAllIgnoreCase(format, "%strike", EnumChatFormatting.STRIKETHROUGH.toString());
-		format = replaceAllIgnoreCase(format, "%underline", EnumChatFormatting.UNDERLINE.toString());
-		format = replaceAllIgnoreCase(format, "%italics", EnumChatFormatting.ITALIC.toString());
-		format = replaceAllIgnoreCase(format, "%reset", EnumChatFormatting.RESET.toString());
+		message = replaceAllIgnoreCase(message, "%random", EnumChatFormatting.OBFUSCATED.toString());
+		message = replaceAllIgnoreCase(message, "%bold", EnumChatFormatting.BOLD.toString());
+		message = replaceAllIgnoreCase(message, "%strike", EnumChatFormatting.STRIKETHROUGH.toString());
+		message = replaceAllIgnoreCase(message, "%underline", EnumChatFormatting.UNDERLINE.toString());
+		message = replaceAllIgnoreCase(message, "%italics", EnumChatFormatting.ITALIC.toString());
+		message = replaceAllIgnoreCase(message, "%reset", EnumChatFormatting.RESET.toString());
 
-		return format;
+		return message;
 	}
 
 	/**
@@ -581,24 +582,23 @@ public final class FunctionHelper {
 					try
 					{
 						savefile.createNewFile();
-						FileWriter fstream = new FileWriter(savefile);
-						BufferedWriter out = new BufferedWriter(fstream);
-						for (int c = 0; c < pages.tagCount(); c++)
-						{
-							String line = pages.getCompoundTagAt(c).toString();
-							while (line.contains("\n"))
-							{
-								out.write(line.substring(0, line.indexOf("\n")));
-								out.newLine();
-								line = line.substring(line.indexOf("\n") + 1);
-							}
-							if (line.length() > 0)
-							{
-								out.write(line);
-							}
-						}
-						out.close();
-						fstream.close();
+						try (BufferedWriter out = new BufferedWriter(new FileWriter(savefile)))
+                        {
+    						for (int c = 0; c < pages.tagCount(); c++)
+    						{
+    							String line = pages.getCompoundTagAt(c).toString();
+    							while (line.contains("\n"))
+    							{
+    								out.write(line.substring(0, line.indexOf("\n")));
+    								out.newLine();
+    								line = line.substring(line.indexOf("\n") + 1);
+    							}
+    							if (line.length() > 0)
+    							{
+    								out.write(line);
+    							}
+    						}
+                        }
 					}
 					catch (Exception e)
 					{
@@ -624,23 +624,21 @@ public final class FunctionHelper {
 				{
 					lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
 					lines.add("");
-					FileInputStream stream = new FileInputStream(file);
-					InputStreamReader streamReader = new InputStreamReader(stream);
-					BufferedReader reader = new BufferedReader(streamReader);
-					String line = reader.readLine();
-					while (line != null)
+					try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
 					{
-						while (line.length() > 21)
-						{
-							lines.add(line.substring(0, 20));
-							line = line.substring(20);
-						}
-						lines.add(line);
-						line = reader.readLine();
+    					String line = reader.readLine();
+    					while (line != null)
+    					{
+    						while (line.length() > 21)
+    						{
+    							lines.add(line.substring(0, 20));
+    							line = line.substring(20);
+    						}
+    						lines.add(line);
+    						line = reader.readLine();
+    					}
+    					reader.close();
 					}
-					reader.close();
-					streamReader.close();
-					stream.close();
 					lines.add("");
 					lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
 
@@ -701,23 +699,20 @@ public final class FunctionHelper {
 				{
 					lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
 					lines.add("");
-					FileInputStream stream = new FileInputStream(file);
-					InputStreamReader streamReader = new InputStreamReader(stream);
-					BufferedReader reader = new BufferedReader(streamReader);
-					String line = reader.readLine();
-					while (line != null)
-					{
-						while (line.length() > 21)
-						{
-							lines.add(line.substring(0, 20));
-							line = line.substring(20);
-						}
-						lines.add(line);
-						line = reader.readLine();
-					}
-					reader.close();
-					streamReader.close();
-					stream.close();
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    {
+    					String line = reader.readLine();
+    					while (line != null)
+    					{
+    						while (line.length() > 21)
+    						{
+    							lines.add(line.substring(0, 20));
+    							line = line.substring(20);
+    						}
+    						lines.add(line);
+    						line = reader.readLine();
+    					}
+                    }
 					lines.add("");
 					lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
 
@@ -776,19 +771,15 @@ public final class FunctionHelper {
 				List<String> lines = new ArrayList<String>();
 				try
 				{
-					FileInputStream stream = new FileInputStream(file);
-					InputStreamReader streamReader = new InputStreamReader(stream);
-					BufferedReader reader = new BufferedReader(streamReader);
-					String line = reader.readLine();
-					while (line != null)
-					{
-						lines.add(line);
-						line = reader.readLine();
-					}
-					reader.close();
-					streamReader.close();
-					stream.close();
-
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    {
+                        String line = reader.readLine();
+                        while (line != null)
+                        {
+                            lines.add(line);
+                            line = reader.readLine();
+                        }
+                    }
 				}
 				catch (Exception e)
 				{
@@ -835,19 +826,15 @@ public final class FunctionHelper {
 				List<String> lines = new ArrayList<String>();
 				try
 				{
-					FileInputStream stream = new FileInputStream(file);
-					InputStreamReader streamReader = new InputStreamReader(stream);
-					BufferedReader reader = new BufferedReader(streamReader);
-					String line = reader.readLine();
-					while (line != null)
-					{
-						lines.add(line);
-						line = reader.readLine();
-					}
-					reader.close();
-					streamReader.close();
-					stream.close();
-
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    {
+                        String line = reader.readLine();
+                        while (line != null)
+                        {
+                            lines.add(line);
+                            line = reader.readLine();
+                        }
+                    }
 				}
 				catch (Exception e)
 				{
@@ -901,23 +888,20 @@ public final class FunctionHelper {
 					{
 						lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
 						lines.add("");
-						FileInputStream stream = new FileInputStream(file);
-						InputStreamReader streamReader = new InputStreamReader(stream);
-						BufferedReader reader = new BufferedReader(streamReader);
-						String line = reader.readLine();
-						while (line != null)
-						{
-							while (line.length() > 21)
-							{
-								lines.add(line.substring(0, 20));
-								line = line.substring(20);
-							}
-							lines.add(line);
-							line = reader.readLine();
-						}
-						reader.close();
-						streamReader.close();
-						stream.close();
+                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                        {
+                            String line = reader.readLine();
+                            while (line != null)
+                            {
+                                while (line.length() > 21)
+                                {
+                                    lines.add(line.substring(0, 20));
+                                    line = line.substring(20);
+                                }
+                                lines.add(line);
+                                line = reader.readLine();
+                            }
+                        }
 						lines.add("");
 						lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
 
@@ -984,23 +968,20 @@ public final class FunctionHelper {
 					{
 						lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
 						lines.add("");
-						FileInputStream stream = new FileInputStream(file);
-						InputStreamReader streamReader = new InputStreamReader(stream);
-						BufferedReader reader = new BufferedReader(streamReader);
-						String line = reader.readLine();
-						while (line != null)
-						{
-							while (line.length() > 21)
-							{
-								lines.add(line.substring(0, 20));
-								line = line.substring(20);
-							}
-							lines.add(line);
-							line = reader.readLine();
-						}
-						reader.close();
-						streamReader.close();
-						stream.close();
+                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                        {
+                            String line = reader.readLine();
+                            while (line != null)
+                            {
+                                while (line.length() > 21)
+                                {
+                                    lines.add(line.substring(0, 20));
+                                    line = line.substring(20);
+                                }
+                                lines.add(line);
+                                line = reader.readLine();
+                            }
+                        }
 						lines.add("");
 						lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
 

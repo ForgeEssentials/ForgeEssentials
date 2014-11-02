@@ -51,7 +51,7 @@ public class PlayerInfoResponse extends Response
         Data data = new Data();
 
         PlayerInfo pi = PlayerInfo.getPlayerInfo(player.getPersistentID());
-        if (pi != null && sendHome)
+        if (sendHome)
         {
             data.home = pi.getHome();
             data.back = pi.getLastTeleportOrigin();
@@ -163,6 +163,7 @@ public class PlayerInfoResponse extends Response
         config.get(category, "sendMoney", true).set(sendMoney);
     }
 
+    @SuppressWarnings("unused")
     private static final class Data
     {
         Capabilities capabilities;
@@ -177,12 +178,14 @@ public class PlayerInfoResponse extends Response
         public Data() {}
     }
 
+    @SuppressWarnings("unused")
     private static final class Capabilities
     {
        public boolean allowEdit, allowFlying, isFlying, disableDamage;
        public Capabilities() {}
     }
 
+    @SuppressWarnings("unused")
     private static final class FoodStats
     {
         public int food;
@@ -190,6 +193,7 @@ public class PlayerInfoResponse extends Response
         public FoodStats() {}
     }
 
+    @SuppressWarnings("unused")
     private static final class XP
     {
         public int lvl;

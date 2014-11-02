@@ -185,6 +185,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 		return "fe.teleport.tp";
 	}
 
+    @SuppressWarnings("unchecked")
 	@Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

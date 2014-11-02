@@ -156,6 +156,7 @@ public class Command extends ForgeEssentialsCommandBase {
         return ModuleTickets.PERMBASE + ".command";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {

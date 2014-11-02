@@ -279,7 +279,7 @@ public class TickTaskFill implements ITickTask {
         return "Todo: " + getETA() + " at " + speed + " chuncks per ticks.";
     }
 
-    public void speed(int speed)
+    public void setSpeed(int speed)
     {
         this.speed = speed;
         OutputHandler.chatWarning(source, "Changed speed of filler " + dimID + " to " + speed);
