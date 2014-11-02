@@ -15,11 +15,11 @@ import com.forgeessentials.playerlogger.types.LogType;
 import com.forgeessentials.playerlogger.types.PlayerTrackerType;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.selections.WorldPoint;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.server.MinecraftServer;
@@ -147,7 +147,7 @@ public class ModulePlayerLogger {
     }
 
     @SubscribeEvent
-    public void preLoad(FMLPreInitializationEvent e)
+    public void preLoad(FEModulePreInitEvent e)
     {
         if (!enable)
         {
@@ -159,7 +159,7 @@ public class ModulePlayerLogger {
     }
 
     @SubscribeEvent
-    public void load(FMLInitializationEvent e)
+    public void load(FEModuleInitEvent e)
     {
         for (String name : EventLogger.exempt_groups)
         {
@@ -179,7 +179,7 @@ public class ModulePlayerLogger {
     }
 
     @SubscribeEvent
-    public void serverStarting(FMLServerStartingEvent e)
+    public void serverStarting(FEModuleServerInitEvent e)
     {
         FunctionHelper.registerServerCommand(new CommandPl());
         FunctionHelper.registerServerCommand(new CommandRollback());
@@ -210,7 +210,7 @@ public class ModulePlayerLogger {
     }
 
     @SubscribeEvent
-    public void serverStopping(FMLServerStoppingEvent e)
+    public void serverStopping(FEModuleServerStopEvent e)
     {
         try
         {

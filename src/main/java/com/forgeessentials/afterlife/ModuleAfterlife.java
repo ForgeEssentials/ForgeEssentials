@@ -3,9 +3,9 @@ package com.forgeessentials.afterlife;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -30,14 +30,14 @@ public class ModuleAfterlife {
     public RespawnDebuffHandler respawnDebuff;
 
     @SubscribeEvent
-    public void load(FMLInitializationEvent e)
+    public void load(FEModuleInitEvent e)
     {
         deathchest = new Deathchest();
         respawnDebuff = new RespawnDebuffHandler();
     }
 
     @SubscribeEvent
-    public void serverStarting(FMLServerStartingEvent e)
+    public void serverStarting(FEModuleServerInitEvent e)
     {
         deathchest.load();
         APIRegistry.perms.registerPermission(BASEPERM, RegisteredPermValue.OP);
@@ -50,7 +50,7 @@ public class ModuleAfterlife {
     }
 
     @SubscribeEvent
-    public void serverStopping(FMLServerStoppingEvent e)
+    public void serverStopping(FEModuleServerStopEvent e)
     {
         deathchest.save();
     }

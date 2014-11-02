@@ -18,11 +18,11 @@ import com.forgeessentials.economy.commands.plots.CommandSellPlot;
 import com.forgeessentials.economy.commands.plots.CommandSetPlot;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 
@@ -44,20 +44,20 @@ public class ModuleEconomy {
     public static int psfPrice;
     
     @SubscribeEvent
-    public void preLoad(FMLPreInitializationEvent e)
+    public void preLoad(FEModulePreInitEvent e)
     {
         FunctionHelper.netHandler.registerMessage(S4PacketEconomy.class, S4PacketEconomy.class, 4, Side.CLIENT);
     }
 
     @SubscribeEvent
-    public void load(FMLInitializationEvent e)
+    public void load(FEModuleInitEvent e)
     {
         APIRegistry.wallet = new WalletHandler();
         FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
     }
 
     @SubscribeEvent
-    public void serverStarting(FMLServerStartingEvent e)
+    public void serverStarting(FEModuleServerInitEvent e)
     {
         FunctionHelper.registerServerCommand(new CommandAddToWallet());
         FunctionHelper.registerServerCommand(new CommandRemoveWallet());
@@ -76,7 +76,7 @@ public class ModuleEconomy {
     }
 
     @SubscribeEvent
-    public void serverStop(FMLServerStoppingEvent e)
+    public void serverStop(FEModuleServerStopEvent e)
     {
         PlotManager.save();
     }

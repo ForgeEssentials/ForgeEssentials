@@ -9,12 +9,12 @@ import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.selections.WarpPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -54,14 +54,14 @@ public class TeleportModule {
     }
 
     @SubscribeEvent
-    public void load(FMLInitializationEvent e)
+    public void load(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
     }
 
     @SubscribeEvent
-    public void serverStarting(FMLServerStartingEvent e)
+    public void serverStarting(FEModuleServerInitEvent e)
     {
         for (ForgeEssentialsCommandBase cmd : commands)
         {
@@ -88,13 +88,13 @@ public class TeleportModule {
     }
 
     @SubscribeEvent
-    public void serverStarted(FMLServerStartedEvent e)
+    public void serverStarted(FEModuleServerPostInitEvent e)
     {
         TeleportDataManager.load();
     }
 
     @SubscribeEvent
-    public void serverStop(FMLServerStoppingEvent e)
+    public void serverStop(FEModuleServerStopEvent e)
     {
         TeleportDataManager.save();
     }

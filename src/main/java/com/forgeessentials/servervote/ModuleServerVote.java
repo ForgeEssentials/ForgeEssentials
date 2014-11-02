@@ -7,11 +7,11 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -50,13 +50,13 @@ public class ModuleServerVote {
     }
 
     @SubscribeEvent
-    public void init(FMLInitializationEvent e)
+    public void init(FEModuleInitEvent e)
     {
         FMLCommonHandler.instance().bus().register(this);
     }
 
     @SubscribeEvent
-    public void serverStarting(FMLServerStartingEvent e)
+    public void serverStarting(FEModuleServerInitEvent e)
     {
         try
         {
@@ -109,7 +109,7 @@ public class ModuleServerVote {
     }
 
     @SubscribeEvent
-    public void serverStopping(FMLServerStoppingEvent e)
+    public void serverStopping(FEModuleServerStopEvent e)
     {
         try
         {

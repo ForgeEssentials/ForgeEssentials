@@ -17,12 +17,12 @@ import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.command.CommandHandler;
@@ -52,7 +52,7 @@ public class ModuleChat {
     private PlayerEventHandler ircPlayerHandler;
 
     @SubscribeEvent
-    public void load(FMLInitializationEvent e)
+    public void load(FEModuleInitEvent e)
     {
 
         MinecraftForge.EVENT_BUS.register(new ChatFormatter());
@@ -68,14 +68,14 @@ public class ModuleChat {
     }
 
     @SubscribeEvent
-    public void postLoad(FMLPostInitializationEvent e)
+    public void postLoad(FEModulePostInitEvent e)
     {
         mailsystem = new MailSystem();
 
     }
 
     @SubscribeEvent
-    public void serverStarting(FMLServerStartingEvent e)
+    public void serverStarting(FEModuleServerInitEvent e)
     {
         FunctionHelper.registerServerCommand(new CommandMsg());
         FunctionHelper.registerServerCommand(new CommandR());
@@ -128,7 +128,7 @@ public class ModuleChat {
     }
 
     @SubscribeEvent
-    public void serverStarted(FMLServerStartedEvent e)
+    public void serverStarted(FEModuleServerPostInitEvent e)
     {
         removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
         new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
@@ -141,7 +141,7 @@ public class ModuleChat {
     }
 
     @SubscribeEvent
-    public void serverStopping(FMLServerStoppingEvent e)
+    public void serverStopping(FEModuleServerStopEvent e)
     {
         MailSystem.SaveAll();
 

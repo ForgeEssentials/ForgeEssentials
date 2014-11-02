@@ -9,9 +9,9 @@ import com.forgeessentials.snooper.response.PlayerInv;
 import com.forgeessentials.snooper.response.Responses;
 import com.forgeessentials.snooper.response.ServerInfo;
 import com.forgeessentials.util.FunctionHelper;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
@@ -62,7 +62,7 @@ public class ModuleSnooper {
     }
 
     @SubscribeEvent
-    public void load(FMLPreInitializationEvent e)
+    public void load(FEModuleInitEvent e)
     {
         if (!enable)
         {
@@ -71,7 +71,7 @@ public class ModuleSnooper {
     }
 
     @SubscribeEvent
-    public void serverStarting(FMLServerStartingEvent e)
+    public void serverStarting(FEModuleServerInitEvent e)
     {
         getKey();
         FunctionHelper.registerServerCommand(new CommandReloadQuery());
@@ -111,7 +111,7 @@ public class ModuleSnooper {
     }
 
     @SubscribeEvent
-    public void serverStopping(FMLServerStoppingEvent e)
+    public void serverStopping(FEModuleServerStopEvent e)
     {
         stop();
     }
