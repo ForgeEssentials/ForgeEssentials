@@ -1,16 +1,5 @@
 package com.forgeessentials.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
-import java.util.UUID;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.api.ClassContainer;
@@ -24,11 +13,21 @@ import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.Selection;
 import com.forgeessentials.util.selections.WarpPoint;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+import java.util.UUID;
 
 @SaveableObject
-public class PlayerInfo {
+public class PlayerInfo
+{
 
     private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
 
@@ -36,7 +35,12 @@ public class PlayerInfo {
 
     public static ISelectionProvider selectionProvider = new FESelectionProvider();
 
-    public static class FESelectionProvider implements ISelectionProvider {
+    public static boolean persistSelections;
+
+    public static class FESelectionProvider implements ISelectionProvider
+    {
+
+        private PlayerInfo pi;
 
         @Override
         public Point getPoint1(EntityPlayerMP player)
@@ -57,8 +61,28 @@ public class PlayerInfo {
         {
             PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
             if (pi.sel1 == null || pi.sel2 == null)
+            {
                 return null;
+            }
             return new Selection(pi.sel1, pi.sel2);
+        }
+
+        @Override
+        public void setPoint1(EntityPlayerMP player, Point sel1)
+        {
+            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+            pi.sel1 = sel1;
+            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(pi), player);
+
+        }
+
+        @Override
+        public void setPoint2(EntityPlayerMP player, Point sel2)
+        {
+            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+            pi.sel2 = sel2;
+            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(pi), player);
+
         }
 
     }
@@ -145,8 +169,11 @@ public class PlayerInfo {
         UUID uuid = UUID.fromString((String) tag.getUniqueKey());
         PlayerInfo info = new PlayerInfo(uuid);
 
-        info.setPoint1((Point) tag.getFieldValue("sel1"));
-        info.setPoint2((Point) tag.getFieldValue("sel2"));
+        if (persistSelections)
+        {
+            info.sel1 = ((Point) tag.getFieldValue("sel1"));
+            info.sel2 = ((Point) tag.getFieldValue("sel2"));
+        }
 
         info.home = (WarpPoint) tag.getFieldValue("home");
         info.lastTeleportOrigin = (WarpPoint) tag.getFieldValue("lastTeleportOrigin");
@@ -183,7 +210,9 @@ public class PlayerInfo {
     public static PlayerInfo getPlayerInfo(UserIdent ident)
     {
         if (!ident.hasUUID())
+        {
             return null;
+        }
         return getPlayerInfo(ident.getUuid());
     }
 
@@ -316,24 +345,6 @@ public class PlayerInfo {
     public Point getPoint2()
     {
         return selectionProvider.getPoint2(ident.getPlayer());
-    }
-
-    public void setPoint1(Point sel1)
-    {
-        if (!ForgeEssentials.worldEditCompatilityPresent)
-        {
-            this.sel1 = sel1;
-            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(this), ident.getPlayer());
-        }
-    }
-
-    public void setPoint2(Point sel2)
-    {
-        if (!ForgeEssentials.worldEditCompatilityPresent)
-        {
-            this.sel2 = sel2;
-            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(this), ident.getPlayer());
-        }
     }
 
     public Selection getSelection()

@@ -5,6 +5,7 @@ import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.teleport.TeleportCenter;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -62,6 +63,10 @@ public class CoreConfig {
         prop = config.get("Core", "canonicalConfigs", false);
         prop.comment = "For modules that support it, place their configs in this file.";
         ModuleLauncher.useCanonicalConfig = prop.getBoolean(false);
+
+        prop = config.get("Core", "persistSelections", false);
+        prop.comment = "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.";
+        PlayerInfo.persistSelections = prop.getBoolean(false);
         
         config.addCustomCategoryComment("Core.Output", largeComment_Cat_ChatColors);
         

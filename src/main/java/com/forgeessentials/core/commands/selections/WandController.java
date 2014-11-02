@@ -1,21 +1,20 @@
 package com.forgeessentials.core.commands.selections;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.ServerEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.selections.WorldPoint;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class WandController extends ServerEventHandler {
 
@@ -59,7 +58,7 @@ public class WandController extends ServerEventHandler {
 		// left Click
 		if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
 		{
-			info.setPoint1(point);
+			PlayerInfo.selectionProvider.setPoint1((EntityPlayerMP)event.entityPlayer, point);
 			IChatComponent format = OutputHandler.createFromText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
 			player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
 			event.setCanceled(true);
@@ -67,7 +66,7 @@ public class WandController extends ServerEventHandler {
 		// right Click
 		else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
 		{
-			info.setPoint2(point);
+            PlayerInfo.selectionProvider.setPoint2((EntityPlayerMP)event.entityPlayer, point);
 			IChatComponent format = OutputHandler.createFromText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
 			player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
 			event.setCanceled(true);

@@ -14,16 +14,19 @@ import com.sk89q.worldedit.util.command.Dispatcher;
 import com.sk89q.worldedit.world.World;
 import cpw.mods.fml.common.Mod;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-public class FEPlatform extends AbstractPlatform{
+public class FEPlatform extends AbstractPlatform
+{
+    protected static List<ForgeEssentialsCommandBase> commands = new ArrayList<>();
 
     @Override public int resolveItem(String s)
     {
@@ -51,12 +54,11 @@ public class FEPlatform extends AbstractPlatform{
     {
         final MinecraftServer server = MinecraftServer.getServer();
         if (server == null) return;
-        ServerCommandManager mcMan = (ServerCommandManager) server.getCommandManager();
 
         for (final CommandMapping command : dispatcher.getCommands()) {
             final Description description = command.getDescription();
 
-            mcMan.registerCommand(new ForgeEssentialsCommandBase() {
+            commands.add(new ForgeEssentialsCommandBase() {
                 @Override
                 public String getCommandName() {
                     return command.getPrimaryAlias();
@@ -88,6 +90,14 @@ public class FEPlatform extends AbstractPlatform{
                 @Override public boolean canConsoleUseCommand(){return true;}
 
             });
+
+            // register additional permissions
+            if (command.getDescription().getPermissions().size() > 0)
+            {
+                for (int i = 1; i < command.getDescription().getPermissions().size(); i++) {
+                    PermissionsManager.registerPermission(command.getDescription().getPermissions().get(i), RegisteredPermValue.OP);
+                }
+            }
         }
 
     }

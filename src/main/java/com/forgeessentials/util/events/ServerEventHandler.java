@@ -1,4 +1,4 @@
-package com.forgeessentials.core;
+package com.forgeessentials.util.events;
 
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;

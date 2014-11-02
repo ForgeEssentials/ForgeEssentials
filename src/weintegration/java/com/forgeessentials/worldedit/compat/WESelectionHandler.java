@@ -1,7 +1,5 @@
 package com.forgeessentials.worldedit.compat;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-
 import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.Selection;
@@ -14,6 +12,7 @@ import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.world.World;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 public class WESelectionHandler implements ISelectionProvider {
 
@@ -44,9 +43,19 @@ public class WESelectionHandler implements ISelectionProvider {
         return null;
     }
 
+    // these methods don't do anything, because in this case the selection is read-only
+
+    @Override
+    public void setPoint1(EntityPlayerMP player, Point point){}
+
+    @Override
+    public void setPoint2(EntityPlayerMP player, Point point){}
+
     public Point[] getPoints(EntityPlayerMP player)
     {
         Point[] points = new Point[2];
+
+        System.out.println(player.getPersistentID());
 
         // the following code is a modified version of WorldEdit Bukkit's selection sharing API.
         LocalSession session = ForgeWorldEdit.inst.getSession(player);

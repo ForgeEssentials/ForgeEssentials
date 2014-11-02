@@ -10,4 +10,8 @@ public interface ISelectionProvider {
 
     public Selection getSelection(EntityPlayerMP player);
 
+    public void setPoint1(EntityPlayerMP player, Point point);
+
+    public void setPoint2(EntityPlayerMP player, Point point);
+
 }

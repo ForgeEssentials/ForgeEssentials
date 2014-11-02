@@ -1,6 +1,7 @@
 package com.forgeessentials.worldedit.compat;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -15,6 +16,7 @@ import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.server.CommandHandlerForge;
 
 import java.io.File;
 
@@ -80,11 +82,19 @@ public class WEIntegration {
     {
         this.platform = new FEPlatform();
         WorldEdit.getInstance().getPlatformManager().register(platform);
+
     }
 
     @SubscribeEvent
     public void serverStarted(FEModuleEvent.FEModuleServerPostInitEvent e)
     {
+        for (ForgeEssentialsCommandBase cmd : FEPlatform.commands)
+        {
+            if (cmd.getPermissionNode() != null && cmd.getDefaultPermission() != null)
+            {
+                CommandHandlerForge.registerCommand(cmd, cmd.getPermissionNode(), cmd.getDefaultPermission());
+            }
+        }
         WorldEdit.getInstance().getEventBus().post(new PlatformReadyEvent());
     }
 

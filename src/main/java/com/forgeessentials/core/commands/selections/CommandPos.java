@@ -4,6 +4,7 @@ package com.forgeessentials.core.commands.selections;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -45,11 +46,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
                 if (type == 1)
                 {
-                    PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint1(new Point(x, y, z));
+                    PlayerInfo.selectionProvider.setPoint1((EntityPlayerMP)player,new Point(x, y, z));
                 }
                 else
                 {
-                    PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint2(new Point(x, y, z));
+                    PlayerInfo.selectionProvider.setPoint2((EntityPlayerMP)player,new Point(x, y, z));
                 }
 
                 OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -85,11 +86,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
             if (type == 1)
             {
-                PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint1(new Point(x, y, z));
+                PlayerInfo.selectionProvider.setPoint1((EntityPlayerMP)player,new Point(x, y, z));
             }
             else
             {
-                PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint2(new Point(x, y, z));
+                PlayerInfo.selectionProvider.setPoint2((EntityPlayerMP)player,new Point(x, y, z));
             }
 
             OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -117,11 +118,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
         if (type == 1)
         {
-            PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint1(point);
+            PlayerInfo.selectionProvider.setPoint1((EntityPlayerMP)player, point);
         }
         else
         {
-            PlayerInfo.getPlayerInfo(player.getPersistentID()).setPoint2(point);
+            PlayerInfo.selectionProvider.setPoint2((EntityPlayerMP)player, point);
         }
 
         OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
