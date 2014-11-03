@@ -31,7 +31,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     {
         if (justDied.contains(sender.getPersistentID()))
         {
-            if (PermissionsManager.checkPermission(sender, "fe.teleport.back.ondeath"))
+            if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
             {
                 PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
                 if (info.getLastTeleportOrigin() != null)
@@ -53,7 +53,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
                 OutputHandler.chatError(sender, "You have nowhere to get back to");
             }
         }
-        else if (PermissionsManager.checkPermission(sender, "fe.teleport.back.ontp"))
+        else if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_BACK_ONTP))
         {
             PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
             if (info.getLastTeleportOrigin() != null)
@@ -80,7 +80,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return "fe.teleport.back";
+        return TeleportModule.PERM_BACK;
     }
 
     @Override

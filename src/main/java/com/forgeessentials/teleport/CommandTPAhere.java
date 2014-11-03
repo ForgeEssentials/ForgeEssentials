@@ -71,7 +71,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
             return;
         }
 
-        if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".sendrequest"))
+        if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_TPAHERE_SENDREQUEST))
         {
             OutputHandler.chatError(sender,
                     "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
@@ -108,7 +108,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return "fe.teleport.tpahere";
+        return TeleportModule.PERM_TPAHERE;
     }
 
     @SuppressWarnings("unchecked")

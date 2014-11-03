@@ -40,7 +40,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
                 TeleportCenter.teleport(home, player);
             }
         }
-        else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".set"))
+        else if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_SET))
         {
             if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
             {
@@ -56,7 +56,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return "fe.teleport." + getCommandName();
+        return TeleportModule.PERM_HOME;
     }
 
     @SuppressWarnings("unchecked")

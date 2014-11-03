@@ -31,7 +31,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
         {
             top(sender);
         }
-        else if (args.length == 1 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
+        else if (args.length == 1 && PermissionsManager.checkPermission(sender, TeleportModule.PERM_TOP_OTHERS))
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
@@ -91,7 +91,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return "fe.teleport.top";
+        return TeleportModule.PERM_TOP;
     }
 
     @SuppressWarnings("unchecked")

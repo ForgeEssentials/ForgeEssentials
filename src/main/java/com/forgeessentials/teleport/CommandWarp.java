@@ -68,7 +68,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 2)
         {
-            if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
+            if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_WARP_ADMIN))
             {
                 if (args[0].equalsIgnoreCase("set"))
                 {
@@ -153,7 +153,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return "fe.teleport.warp";
+        return TeleportModule.PERM_WARP;
     }
 
     @SuppressWarnings("unchecked")

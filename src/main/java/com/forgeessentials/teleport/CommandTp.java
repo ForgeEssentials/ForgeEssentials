@@ -57,7 +57,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
 			}
 		}
-		else if (args.length == 2 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
+		else if (args.length == 2 && PermissionsManager.checkPermission(sender, TeleportModule.PERM_TP_OTHERS))
 		{
 
 			EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
@@ -182,7 +182,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 	@Override
 	public String getPermissionNode()
 	{
-		return "fe.teleport.tp";
+		return TeleportModule.PERM_TP;
 	}
 
     @SuppressWarnings("unchecked")

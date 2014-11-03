@@ -23,6 +23,7 @@ import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
+    
 	public final String PERM_SET_LIMIT = getPermissionNode() + ".setLimit";
 	public final String PERM_LIMIT_PROP = getPermissionNode() + ".max";
 

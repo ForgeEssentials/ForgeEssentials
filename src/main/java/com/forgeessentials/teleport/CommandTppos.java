@@ -58,7 +58,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return "fe.teleport.tppos";
+        return TeleportModule.PERM_TPPOS;
     }
 
     @SuppressWarnings("unchecked")

@@ -34,7 +34,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 	{
 		if (args.length >= 1)
 		{
-			if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
+			if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_SPAWN_OTHERS))
 			{
 				throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 			}
@@ -78,7 +78,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 			throw new CommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
 		}
 
-		if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(this), getPermissionNode() + ".others"))
+		if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(this), TeleportModule.PERM_SPAWN_OTHERS))
 		{
 			throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 		}
@@ -108,7 +108,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 	@Override
 	public String getPermissionNode()
 	{
-		return "fe.teleport.spawn";
+		return TeleportModule.PERM_SPAWN;
 	}
 
     @SuppressWarnings("unchecked")
