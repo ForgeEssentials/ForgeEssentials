@@ -13,6 +13,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -51,6 +52,12 @@ public class ModuleProtection {
     public void load(FEModuleInitEvent e)
     {
         protectionHandler = new ProtectionEventHandler();
+    }
+
+    @SubscribeEvent
+    public void serverStarting(FEModuleServerInitEvent e)
+    {
+        FunctionHelper.registerServerCommand(new CommandItemPermission());
     }
 
     @SuppressWarnings("unchecked")
