@@ -4,7 +4,6 @@ import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
 import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -18,7 +17,6 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.OutputHandler;
@@ -32,326 +30,246 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ProtectionEventHandler extends ServerEventHandler {
-    
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void playerAttack(AttackEntityEvent e)
-	{
-		if (e.target == null)
-		{
-			return;
-		}
 
-		if (e.target instanceof EntityPlayer)
-		{
-			// Stops players from hitting each other.
-
-			boolean sourceB = !PermissionsManager.checkPermission(e.entityPlayer, ModuleProtection.PERM_PVP);
-
-			if (sourceB)
-			{
-				e.setCanceled(true);
-				return;
-			}
-
-			boolean receiverB = !PermissionsManager.checkPermission((EntityPlayer) e.target, ModuleProtection.PERM_PVP);
-
-			if (sourceB || receiverB)
-			{
-				e.setCanceled(true);
-			}
-
-		}
-		else
-		{
-			// Stops players from hitting entities.
-
-			boolean result = PermissionsManager.checkPermission(e.entityPlayer, ModuleProtection.PERM_OVERRIDE);
-			if (!result)
-			{
-				result = PermissionsManager.checkPermission(e.entityPlayer, ModuleProtection.PERM_INTERACT_ENTITY);
-			}
-
-			e.setCanceled(!result);
-		}
-	}
-
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void damage(LivingHurtEvent e)
-	{
-		// do nothing if the source isnt a living thing.
-		// actually... if its ANY entity.
-		if (e.source.getEntity() == null || !(e.source.getEntity() instanceof EntityLiving))
-		{
-			return;
-		}
-
-		EntityLivingBase source = (EntityLivingBase) e.source.getEntity();
-
-		boolean sourcePlayer = e.source.getEntity() instanceof EntityPlayer;
-		boolean targetPlayer = e.entityLiving instanceof EntityPlayer;
-
-		if (e.entityLiving == null)
-		{
-			return;
-		}
-
-		if (sourcePlayer && targetPlayer)
-		{
-			// PVP checks
-			boolean sourceB = !APIRegistry.perms.checkPermission(new UserIdent((EntityPlayer) e.entityLiving), new WorldPoint(e.source.getEntity()),
-					ModuleProtection.PERM_PVP);
-			if (sourceB)
-			{
-				e.setCanceled(true);
-				return;
-			}
-
-			boolean receiverB = !PermissionsManager.checkPermission((EntityPlayer) e.source.getEntity(), ModuleProtection.PERM_PVP);
-			if (sourceB || receiverB)
-			{
-				e.setCanceled(true);
-			}
-		}
-		else if (sourcePlayer)
-		{
-			// stop players hitting animals.
-			boolean result = APIRegistry.perms.checkPermission(new UserIdent((EntityPlayer) source), new WorldPoint(e.entityLiving),
-					ModuleProtection.PERM_OVERRIDE);
-			if (!result)
-			{
-				result = APIRegistry.perms.checkPermission(new UserIdent((EntityPlayer) source), new WorldPoint(e.entityLiving),
-						ModuleProtection.PERM_INTERACT_ENTITY);
-			}
-			e.setCanceled(!result);
-		}
-		else if (targetPlayer)
-		{
-			// stop people from hitting entites.
-			boolean result = APIRegistry.perms.checkPermission(new UserIdent((EntityPlayer) e.entityLiving), new WorldPoint(e.entityLiving),
-					ModuleProtection.PERM_OVERRIDE);
-			if (!result)
-			{
-				result = APIRegistry.perms.checkPermission(new UserIdent((EntityPlayer) e.entityLiving), new WorldPoint(e.entityLiving),
-						ModuleProtection.PERM_INTERACT_ENTITY);
-			}
-			e.setCanceled(!result);
-		}
-	}
-
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void breakEvent(BreakEvent e)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			return;
-		}
-
-		WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
-		boolean overall = APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_OVERRIDE);
-		boolean breaks = APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_EDITS);
-		if (!overall)
-		{
-			if (!breaks)
-				e.setCanceled(true);
-		}
-
-	}
-
-	@SubscribeEvent(priority = EventPriority.LOW)
-    public void placeEvent(BlockEvent.PlaceEvent e)
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void attackEntityEvent(AttackEntityEvent e)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-        {
-            return;
-        }
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+        
+        if (e.target == null) return;
 
-        WorldPoint point = new WorldPoint(e.player.dimension, e.x, e.y, e.z);
-        boolean overall = APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE);
-        boolean breaks = APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_EDITS);
-
-        if (!overall)
+        EntityPlayer source = e.entityPlayer;
+        WorldPoint sourcePos = new WorldPoint(source);
+        if (e.target instanceof EntityPlayer)
         {
-            if (!breaks)
+            // player -> player
+            EntityPlayer target = (EntityPlayer) e.target;
+            WorldPoint targetPos = new WorldPoint(target);
+
+            if (!APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, ModuleProtection.PERM_PVP)
+                    || !APIRegistry.perms.checkPermission(new UserIdent(source), sourcePos, ModuleProtection.PERM_PVP)
+                    || !APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_PVP))
+            {
                 e.setCanceled(true);
+            }
+        }
+        else
+        {
+            // player -> entity
+            WorldPoint targetPos = new WorldPoint(e.target);
+
+            if (APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_OVERRIDE)
+                    || !APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
+            {
+                e.setCanceled(true);
+            }
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public void placeEvent(BlockEvent.MultiPlaceEvent e)
+    public void livingHurtEvent(LivingHurtEvent e)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+
+        // Do nothing if not both source and target are EntityLiving
+        if (e.entityLiving == null || !(e.source.getEntity() instanceof EntityLiving)) return;
+
+        if (e.source.getEntity() instanceof EntityPlayer)
         {
-            return;
+            EntityPlayer source = (EntityPlayer) e.source.getEntity();
+            WorldPoint sourcePos = new WorldPoint(source);
+            if (e.entityLiving instanceof EntityPlayer)
+            {
+                // player -> player
+                EntityPlayer target = (EntityPlayer) e.entityLiving;
+                WorldPoint targetPos = new WorldPoint(target);
+
+                if (!APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, ModuleProtection.PERM_PVP)
+                        || !APIRegistry.perms.checkPermission(new UserIdent(source), sourcePos, ModuleProtection.PERM_PVP)
+                        || !APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_PVP))
+                {
+                    e.setCanceled(true);
+                }
+            }
+            else
+            {
+                // player -> living
+                WorldPoint targetPos = new WorldPoint(e.entityLiving);
+
+                if (APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_OVERRIDE)
+                        || !APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
+                {
+                    e.setCanceled(true);
+                }
+            }
         }
+        else
+        {
+            // Entity source = e.source.getEntity();
+            // WorldPoint sourcePos = new WorldPoint(source);
+            if (e.entityLiving instanceof EntityPlayer)
+            {
+                // entity -> player
+                EntityPlayer target = (EntityPlayer) e.entityLiving;
+                WorldPoint targetPos = new WorldPoint(target);
+
+                // TODO: Change permission to PERM_DAMAGE_BY_ENTITY or so
+                if (!APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, ModuleProtection.PERM_OVERRIDE)
+                        && !APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
+                {
+                    e.setCanceled(true);
+                }
+            }
+            else
+            {
+                // entity -> living
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void breakEvent(BreakEvent e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+
+        WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
+        if (!APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_OVERRIDE)
+                && !APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_EDITS))
+        {
+            e.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void placeEvent(BlockEvent.PlaceEvent e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+
+        WorldPoint point = new WorldPoint(e.player.dimension, e.x, e.y, e.z);
+        if (!APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE)
+                && !APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_EDITS))
+        {
+            e.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void multiPlaceEvent(BlockEvent.MultiPlaceEvent e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
 
         for (BlockSnapshot b : e.getReplacedBlockSnapshots())
         {
             WorldPoint point = new WorldPoint(e.player.dimension, b.x, b.y, b.z);
-            boolean overall = APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE);
-            boolean breaks = APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_EDITS);
-
-
-        if (!overall)
-        {
-            if (!breaks)
+            if (!APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE)
+                    && !APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_EDITS))
+            {
                 e.setCanceled(true);
-        }
+                return;
+            }
         }
     }
 
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void playerInteractEventItemUse(PlayerInteractEvent e)
-	{
-		if (e.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
-		{
-			return;
-		}
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void playerInteractEvent(PlayerInteractEvent e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
 
-		// item check
-		ItemStack stack = e.entityPlayer.getCurrentEquippedItem();
-		if (stack == null)
-		{
-			return;
-		}
+        // Check for block interaction
+        if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+        {
+            WorldPoint point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
+            boolean allow = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE)
+                    || APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_INTERACT_BLOCK);
+            e.useBlock = allow ? ALLOW : DENY;
+        }
 
-		WorldPoint point = new WorldPoint(e.entityPlayer);
-		if (e.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
-		{
-			if (stack.getItem() instanceof ItemBlock)
-			{
-				// calculate offsets.
-				ForgeDirection dir = ForgeDirection.getOrientation(e.face);
-				int x = e.x + dir.offsetX;
-				int y = e.y + dir.offsetY;
-				int z = e.z + dir.offsetZ;
+        // Check item (and block) usage
+        ItemStack stack = e.entityPlayer.getCurrentEquippedItem();
+        if (stack == null) return;
 
-				point = new WorldPoint(e.entityPlayer.dimension, x, y, z);
-			}
-			else
-			{
-				point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
-			}
-		}
+        WorldPoint point = new WorldPoint(e.entityPlayer);
+        if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && stack.getItem() instanceof ItemBlock)
+        {
+            // calculate offsets.
+            ForgeDirection dir = ForgeDirection.getOrientation(e.face);
+            int x = e.x + dir.offsetX;
+            int y = e.y + dir.offsetY;
+            int z = e.z + dir.offsetZ;
+            point = new WorldPoint(e.entityPlayer.dimension, x, y, z);
+        }
+        else
+        {
+            point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
+        }
 
-		boolean result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE);
-		if (!result)
-		{
-			String name = stack.getUnlocalizedName();
-			name = ModuleProtection.PERM_ITEM_USE + "." + name;
-			name = name + "." + stack.getItemDamage();
+        String permission = ModuleProtection.PERM_ITEM_USE + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
+        boolean allow = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE)
+                || APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, permission);
+        e.useItem = allow ? ALLOW : DENY;
+    }
 
-			result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, name);
-		}
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void entityInteractEvent(EntityInteractEvent e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
 
-		if (result)
-		{
-			e.useItem = ALLOW;
-		}
-		else
-		{
-			e.useItem = DENY;
-		}
-	}
+        WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
+        boolean allow = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE)
+                || APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_INTERACT_ENTITY);
+        if (!allow) e.setCanceled(true);
+    }
 
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void playerInteractEventBlockUse(PlayerInteractEvent e)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			return;
-		}
-
-		if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
-		{
-			WorldPoint point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
-
-			boolean result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE);
-			if (!result)
-			{
-				// check block usage perm
-				result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_INTERACT_BLOCK);
-			}
-
-			if (result)
-			{
-				e.useBlock = ALLOW;
-			}
-			else
-			{
-				e.useBlock = DENY;
-			}
-		}
-	}
-
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void entityInteractEvent(EntityInteractEvent e)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			return;
-		}
-
-		WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
-
-		boolean result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE);
-		if (!result)
-		{
-			result = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_INTERACT_ENTITY);
-		}
-
-		e.setCanceled(!result);
-	}
-
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void handleSpawn(CheckSpawn e)
-	{
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void checkSpawnEvent(CheckSpawn e)
+    {
         if (e.entityLiving instanceof EntityPlayer) return;
 
-		WorldPoint point = new WorldPoint(e.entityLiving);
-		String mobID = EntityList.getEntityString(e.entity);
+        WorldPoint point = new WorldPoint(e.entityLiving);
+        String mobID = EntityList.getEntityString(e.entity);
 
-		if (!APIRegistry.perms.checkPermission(null, point, ModuleProtection.PERM_MOB_SPAWN_NATURAL + "." + mobID))
-		{
-			e.setResult(Result.DENY);
-			OutputHandler.debug(mobID + " : DENIED");
-		}
-		else
-		{
-			OutputHandler.debug(mobID + " : ALLOWED");
-		}
-	}
+        if (!APIRegistry.perms.checkPermission(null, point, ModuleProtection.PERM_MOB_SPAWN_NATURAL + "." + mobID))
+        {
+            e.setResult(Result.DENY);
+            OutputHandler.debug(mobID + " : DENIED");
+        }
+        else
+        {
+            OutputHandler.debug(mobID + " : ALLOWED");
+        }
+    }
 
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void handleSpawn(SpecialSpawn e)
-	{
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void specialSpawnEvent(SpecialSpawn e)
+    {
         if (e.entityLiving instanceof EntityPlayer) return;
 
-		WorldPoint point = new WorldPoint(e.entityLiving);
-		String mobID = EntityList.getEntityString(e.entity);
+        WorldPoint point = new WorldPoint(e.entityLiving);
+        String mobID = EntityList.getEntityString(e.entity);
 
-		if (!APIRegistry.perms.checkPermission(null, point, ModuleProtection.PERM_MOB_SPAWN_FORCED + "." + mobID))
-		{
-			e.setResult(Result.DENY);
-		}
-	}
+        if (!APIRegistry.perms.checkPermission(null, point, ModuleProtection.PERM_MOB_SPAWN_FORCED + "." + mobID))
+        {
+            e.setResult(Result.DENY);
+        }
+    }
 
-	/*
-	 * @SubscribeEvent public void manageZoneBannedItems(PlayerChangedZone e) { for (ItemStack returned :
-	 * PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems()) { e.entityPlayer.inventory.addItemStackToInventory(returned); }
-	 * 
-	 * AdditionalZoneData bi = ModuleProtection.itemsList.get(e.afterZone); List<String> biList = bi.getBannedItems(); for (ListIterator<String> iter =
-	 * biList.listIterator(); iter.hasNext(); ) { String element = iter.next(); String[] split = element.split(":"); int id = Integer.parseInt(split[0]); int
-	 * meta = Integer.parseInt(split[1]); ItemStack is = new ItemStack(element, 0, meta);
-	 * 
-	 * if (e.entityPlayer.inventory.hasItemStack(is)) { PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems().add(is); } } }
-	 * 
-	 * @SubscribeEvent public void manageCrafting(PlayerEvent.ItemCraftedEvent e) { }
-	 *
-	 * @SubscribeEvent public void manageZoneGameModes(PlayerChangedZone e) { String val = APIRegistry.perms.getPermissionPropForPlayer(e.entityPlayer.username,
-	 * e.afterZone.getName(), ModuleProtection.PERMPROP_ZONE_GAMEMODE); e.entityPlayer.setGameType(EnumGameType.getByID(Integer.parseInt(val)));
-	 * System.out.println("yoohoo");
-	 *
-	 * }
-	 */
+    /*
+     * @SubscribeEvent public void manageZoneBannedItems(PlayerChangedZone e) { for (ItemStack returned :
+     * PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems()) { e.entityPlayer.inventory.addItemStackToInventory(returned); }
+     * 
+     * AdditionalZoneData bi = ModuleProtection.itemsList.get(e.afterZone); List<String> biList = bi.getBannedItems(); for (ListIterator<String> iter =
+     * biList.listIterator(); iter.hasNext(); ) { String element = iter.next(); String[] split = element.split(":"); int id = Integer.parseInt(split[0]); int
+     * meta = Integer.parseInt(split[1]); ItemStack is = new ItemStack(element, 0, meta);
+     * 
+     * if (e.entityPlayer.inventory.hasItemStack(is)) { PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems().add(is); } } }
+     * 
+     * @SubscribeEvent public void manageCrafting(PlayerEvent.ItemCraftedEvent e) { }
+     * 
+     * @SubscribeEvent public void manageZoneGameModes(PlayerChangedZone e) { String val = APIRegistry.perms.getPermissionPropForPlayer(e.entityPlayer.username,
+     * e.afterZone.getName(), ModuleProtection.PERMPROP_ZONE_GAMEMODE); e.entityPlayer.setGameType(EnumGameType.getByID(Integer.parseInt(val)));
+     * System.out.println("yoohoo");
+     * 
+     * }
+     */
 
 }
