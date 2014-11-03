@@ -1,8 +1,16 @@
 package com.forgeessentials.data.typeInfo;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByteArray;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagIntArray;
+import net.minecraft.nbt.NBTTagList;
 
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.IReconstructData;
@@ -64,16 +72,17 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
             {
                 data.putField(B_ARRAY, ((NBTTagByteArray) tag).func_150292_c());
             }
-            else if(tag instanceof NBTTagList){
-                data.putField(TAG_LIST,tag);
+            else if (tag instanceof NBTTagList)
+            {
+                data.putField(TAG_LIST, tag);
             }
             else if (tag instanceof NBTBase.NBTPrimitive)
             {
                 String val = tag.toString();
-                
+
                 if (tag.getId() != new NBTTagInt(0).getId())
                 {
-                    val = val.substring(0, val.length()-1);
+                    val = val.substring(0, val.length() - 1);
                 }
 
                 data.putField(PRIMITIVE, val);
@@ -139,8 +148,12 @@ public class TypeInfoNBTCompound extends TypeMultiValInfo {
                 nbt.setByteArray(name, (byte[]) dat.getFieldValue(B_ARRAY));
                 break;
             case 8:
-                nbt.setString(name, (String) dat.getFieldValue(PRIMITIVE));
+            {
+                String v = (String) dat.getFieldValue(PRIMITIVE);
+                if (v != null)
+                    nbt.setString(name, v);
                 break;
+            }
             case 9:
                 nbt.setTag(name, (NBTTagList) dat.getFieldValue(TAG_LIST));
                 break;
