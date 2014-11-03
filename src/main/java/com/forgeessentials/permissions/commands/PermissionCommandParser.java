@@ -2,11 +2,13 @@ package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.Set;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -20,13 +22,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldPoint;
 
+@SuppressWarnings("unchecked")
 public class PermissionCommandParser {
 
     public static final String PERM = "fe.perm";
@@ -159,7 +161,7 @@ public class PermissionCommandParser {
     }
 
     // ------------------------------------------------------------
-    // -- Utils
+    // -- Listings
     // ------------------------------------------------------------
 
     private void parseList()
@@ -595,12 +597,7 @@ public class PermissionCommandParser {
         }
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserArgs);
-            for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
-            {
-                if (CommandBase.doesStringStartWith(args.peek(), perm))
-                    tabComplete.add(perm);
-            }
+            tabComplete = completePermission(args.peek());
             return;
         }
 
@@ -608,7 +605,7 @@ public class PermissionCommandParser {
         while (!args.isEmpty())
         {
             String permissionNode = args.remove();
-            String result = null, msg = null, value = null;
+            String msg = null, value = null;
             if (type == PermissionAction.VALUE)
             {
                 if (args.isEmpty())
@@ -1016,12 +1013,7 @@ public class PermissionCommandParser {
         }
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserArgs);
-            for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
-            {
-                if (CommandBase.doesStringStartWith(args.peek(), perm))
-                    tabComplete.add(perm);
-            }
+            tabComplete = completePermission(args.peek());
             return;
         }
 
@@ -1029,7 +1021,7 @@ public class PermissionCommandParser {
         while (!args.isEmpty())
         {
             String permissionNode = args.remove();
-            String result = null, msg = null, value = null;
+            String msg = null, value = null;
             if (type == PermissionAction.VALUE)
             {
                 if (args.isEmpty())
@@ -1144,4 +1136,25 @@ public class PermissionCommandParser {
         }
     }
 
+    // ------------------------------------------------------------
+    // -- Utils
+    // ------------------------------------------------------------
+
+    private static List<String> completePermission(String permission)
+    {
+        Set<String> perms = new HashSet<String>();
+        for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
+        {
+            int nodeIndex = perm.indexOf('.', permission.length());
+            if (nodeIndex >= 0)
+            {
+                String permBase = perm.substring(0, nodeIndex);
+                if (CommandBase.doesStringStartWith(permission, permBase))
+                    perms.add(permBase);
+            }
+        }
+        
+        return new ArrayList<String>(perms);
+    }
+    
 }
