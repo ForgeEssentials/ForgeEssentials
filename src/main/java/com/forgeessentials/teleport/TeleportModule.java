@@ -13,7 +13,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.teleport.util.ConfigTeleport;
 import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.FunctionHelper;
@@ -29,10 +28,9 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-@FEModule(name = "TeleportModule", parentMod = ForgeEssentials.class, configClass = ConfigTeleport.class)
+@FEModule(name = "TeleportModule", parentMod = ForgeEssentials.class)
 public class TeleportModule {
 
-    public static int timeout;
     public static List<TPAdata> tpaList = new ArrayList<TPAdata>();
     public static List<TPAdata> tpaListToAdd = new ArrayList<TPAdata>();
     public static List<TPAdata> tpaListToRemove = new ArrayList<TPAdata>();

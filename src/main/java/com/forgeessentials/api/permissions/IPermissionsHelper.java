@@ -2,7 +2,6 @@ package com.forgeessentials.api.permissions;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -197,6 +196,78 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @return property, if it exists, null otherwise
      */
     String getPermissionProperty(UserIdent ident, Zone zone, String permissionNode);
+
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Gets a permission-property for the specified group
+     * 
+     * @param permissionNode
+     * @return property, if it exists, null otherwise
+     */
+    String getPermissionProperty(String group, String permissionNode);
+
+    /**
+     * Gets a permission-property for the specified group in the specified zone
+     * 
+     * @param zone
+     * @param permissionNode
+     * @return property, if it exists, null otherwise
+     */
+    String getPermissionProperty(String group, Zone zone, String permissionNode);
+
+    /**
+     * Gets a permission for the specified group
+     * 
+     * @param permissionNode
+     * @return property, if it exists, null otherwise
+     */
+    boolean checkPermission(String group, String permissionNode);
+
+    /**
+     * Gets a permission for the specified group in the specified zone
+     * 
+     * @param zone
+     * @param permissionNode
+     * @return property, if it exists, null otherwise
+     */
+    boolean checkPermission(String group, Zone zone, String permissionNode);
+
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Gets a global permission-property from the _ALL_ group
+     * 
+     * @param permissionNode
+     * @return property, if it exists, null otherwise
+     */
+    String getPermissionProperty(String permissionNode);
+
+    /**
+     * Gets a global permission-property from the _ALL_ group in the specified zone
+     * 
+     * @param zone
+     * @param permissionNode
+     * @return property, if it exists, null otherwise
+     */
+    String getPermissionProperty(Zone zone, String permissionNode);
+
+    /**
+     * Gets a global permission from the _ALL_ group
+     * 
+     * @param permissionNode
+     * @return
+     */
+    boolean checkPermission(String permissionNode);
+
+    /**
+     * Gets a global permission from the _ALL_ group in the specified zone
+     * 
+     * @param zone
+     * @param permissionNode
+     * @return
+     */
+    boolean checkPermission(Zone zone, String permissionNode);
 
     // ---------------------------------------------------------------------------
 

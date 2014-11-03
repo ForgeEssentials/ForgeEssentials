@@ -3,11 +3,8 @@ package com.forgeessentials.permissions.core;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.StringWriter;
-import java.util.Collection;
 import java.util.TreeSet;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
@@ -47,54 +44,55 @@ public class PermissionsListWriter {
         try
         {
             output.createNewFile();
-            BufferedWriter writer = new BufferedWriter(new FileWriter(output));
-            writer.write("#// ------------ PERMISSIONS LIST ------------ \\\\#");
-            writer.newLine();
-            writer.write("#// --------------- " + FunctionHelper.getCurrentDateString() + " --------------- \\\\#");
-            writer.newLine();
-            writer.write("#// ------------ Total amount: " + permCount + " ------------ \\\\#");
-            writer.newLine();
-            writer.write("#// ------------------------------------------ \\\\#");
-            writer.newLine();
-
-            int lastPermLength = 0;
-            for (String perm : sortedPerms)
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(output)))
             {
-                String value = permissions.get(perm);
-                if (value == null)
-                    value = "";
-                if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                writer.write("#// ------------ PERMISSIONS LIST ------------ \\\\#");
+                writer.newLine();
+                writer.write("#// --------------- " + FunctionHelper.getCurrentDateString() + " --------------- \\\\#");
+                writer.newLine();
+                writer.write("#// ------------ Total amount: " + permCount + " ------------ \\\\#");
+                writer.newLine();
+                writer.write("#// ------------------------------------------ \\\\#");
+                writer.newLine();
+    
+                int lastPermLength = 0;
+                for (String perm : sortedPerms)
                 {
-                    StringBuffer sb = new StringBuffer();
-                    String parentPerm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
-                    if (!permissions.containsKey(parentPerm)) {
-                        sb.append(NEW_LINE);
-                        sb.append(parentPerm);
-                        lastPermLength = parentPerm.length();
+                    String value = permissions.get(perm);
+                    if (value == null)
+                        value = "";
+                    if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                    {
+                        StringBuffer sb = new StringBuffer();
+                        String parentPerm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
+                        if (!permissions.containsKey(parentPerm)) {
+                            sb.append(NEW_LINE);
+                            sb.append(parentPerm);
+                            lastPermLength = parentPerm.length();
+                        }
+                        for (; lastPermLength <= permNameLength; lastPermLength++)
+                            sb.append(' ');
+                        sb.append("# ");
+                        sb.append(value);
+                        writer.write(sb.toString());
                     }
-                    for (; lastPermLength <= permNameLength; lastPermLength++)
-                        sb.append(' ');
-                    sb.append("# ");
-                    sb.append(value);
-                    writer.write(sb.toString());
-                }
-                else if (perm.endsWith("." + IPermissionsHelper.PERMISSION_ASTERIX))
-                {
-//                    String parentPerm = perm.substring(0, perm.length() - IPermissionsHelper.PERMISSION_ASTERIX.length() - 1);
-//                    if (!permissions.containsKey(parentPerm)) {
-//                        writer.newLine();
-//                        writer.write(parentPerm);
-//                        lastPermLength = perm.length();
-//                    }
-                }
-                else
-                {
-                    writer.newLine();
-                    writer.write(perm);
-                    lastPermLength = perm.length();
+                    else if (perm.endsWith("." + IPermissionsHelper.PERMISSION_ASTERIX))
+                    {
+    //                    String parentPerm = perm.substring(0, perm.length() - IPermissionsHelper.PERMISSION_ASTERIX.length() - 1);
+    //                    if (!permissions.containsKey(parentPerm)) {
+    //                        writer.newLine();
+    //                        writer.write(parentPerm);
+    //                        lastPermLength = perm.length();
+    //                    }
+                    }
+                    else
+                    {
+                        writer.newLine();
+                        writer.write(perm);
+                        lastPermLength = perm.length();
+                    }
                 }
             }
-            writer.close();
         }
         catch (Exception e)
         {

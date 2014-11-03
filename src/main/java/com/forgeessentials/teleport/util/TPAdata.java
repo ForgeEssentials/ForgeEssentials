@@ -2,7 +2,9 @@ package com.forgeessentials.teleport.util;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.teleport.TeleportModule;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
 public class TPAdata {
@@ -17,7 +19,7 @@ public class TPAdata {
         this.sender = sender;
         this.receiver = receiver;
 
-        timeout = TeleportModule.timeout;
+        timeout = FunctionHelper.parseIntDefault(APIRegistry.perms.getPermissionProperty("fe.teleport.timeout"), 30);
         startTime = System.currentTimeMillis();
         tphere = tpaHere;
     }
