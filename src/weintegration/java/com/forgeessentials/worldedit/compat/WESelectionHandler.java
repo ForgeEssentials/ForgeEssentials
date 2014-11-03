@@ -55,8 +55,6 @@ public class WESelectionHandler implements ISelectionProvider {
     {
         Point[] points = new Point[2];
 
-        System.out.println(player.getPersistentID());
-
         // the following code is a modified version of WorldEdit Bukkit's selection sharing API.
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         RegionSelector selector = session.getRegionSelector(ForgeWorldEdit.inst.getWorld(player.worldObj));
@@ -66,7 +64,6 @@ public class WESelectionHandler implements ISelectionProvider {
             Region region = selector.getRegion();
             
             //World world = session.getSelectionWorld();
-            // TODO ISSUE #1100: Redesign selections to remember the world they belong to
             
             if (region instanceof CuboidRegion)
             {

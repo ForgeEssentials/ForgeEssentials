@@ -1,42 +1,22 @@
 package com.forgeessentials.core.commands.selections;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.selections.WorldPoint;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public class WandController extends ServerEventHandler {
+public class SelectionEventHandler extends ServerEventHandler {
 
-    protected List<PlayerInfo> updatedSelectionPlayers = new ArrayList<PlayerInfo>();
-
-    public static final String[] worldEditSelectionCommands = new String[] { "/pos1", "/pos2", "/sel", "/desel", "/hpos1", "/hpos2", "/chunk", "/expand",
-            "/contract", "/outset", "/inset", "/shift" };
-
-    public void sendSelectionUpdates()
-    {
-        for (PlayerInfo pi : updatedSelectionPlayers)
-        {
-            pi.sendSelectionUpdate();
-        }
-        updatedSelectionPlayers.clear();
-    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
@@ -47,13 +27,6 @@ public class WandController extends ServerEventHandler {
         // get info now rather than later
         EntityPlayer player = event.entityPlayer;
         PlayerInfo info = PlayerInfo.getPlayerInfo(player);
-
-        if (ForgeEssentials.worldEditCompatilityPresent)
-        {
-            // Send update packet with some delay
-            updatedSelectionPlayers.add(info);
-            return;
-        }
 
         if (!info.isWandEnabled()) return;
 
@@ -93,22 +66,4 @@ public class WandController extends ServerEventHandler {
             event.setCanceled(true);
         }
     }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void checkWECommands(CommandEvent e)
-    {
-        if (e.sender instanceof EntityPlayerMP)
-        {
-            String cmd = e.command.getCommandName();
-            for (String weCmd : worldEditSelectionCommands)
-            {
-                if (cmd.equals(weCmd))
-                {
-                    updatedSelectionPlayers.add(PlayerInfo.getPlayerInfo((EntityPlayerMP) e.sender));
-                    return;
-                }
-            }
-        }
-    }
-
 }

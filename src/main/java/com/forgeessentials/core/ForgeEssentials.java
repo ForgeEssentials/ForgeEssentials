@@ -1,14 +1,5 @@
 package com.forgeessentials.core;
 
-import java.io.File;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
@@ -17,7 +8,7 @@ import com.forgeessentials.core.commands.selections.CommandExpand;
 import com.forgeessentials.core.commands.selections.CommandExpandY;
 import com.forgeessentials.core.commands.selections.CommandPos;
 import com.forgeessentials.core.commands.selections.CommandWand;
-import com.forgeessentials.core.commands.selections.WandController;
+import com.forgeessentials.core.commands.selections.SelectionEventHandler;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
@@ -50,7 +41,6 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -63,10 +53,16 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.io.File;
 
 /**
  * Main mod class
@@ -90,7 +86,7 @@ public class ForgeEssentials {
     @SuppressWarnings("unused")
     private RespawnHandler respawnHandler;
     
-    private WandController wandHandler;
+    private SelectionEventHandler wandHandler;
     
     @SuppressWarnings("unused")
     private MiscEventHandler miscEventHandler;
@@ -160,7 +156,7 @@ public class ForgeEssentials {
 		MinecraftForge.EVENT_BUS.register(factory);
 		
 		respawnHandler = new RespawnHandler();
-        wandHandler = new WandController();
+        wandHandler = new SelectionEventHandler();
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
 	}
@@ -230,12 +226,6 @@ public class ForgeEssentials {
     public void serverStopped(FMLServerStoppedEvent e)
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerStoppedEvent(e));
-    }
-
-    @SubscribeEvent
-    public void serverTick(TickEvent.ServerTickEvent e)
-    {
-        wandHandler.sendSelectionUpdates();
     }
 
 }
