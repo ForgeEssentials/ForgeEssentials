@@ -689,11 +689,20 @@ public class PermissionCommandParser {
         }
 
         if (isBed)
+        {
             zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN, "bed");
+            info(String.format("Set spawn for user %s to be bed-location in zone %s", ident.getUsernameOrUUID(), zone.getName()));
+        }
         else if (point == null)
+        {
             zone.clearPlayerPermission(ident, FEPermissions.SPAWN);
+            info(String.format("Cleared spawn-rule for user %s in zone %s", ident.getUsernameOrUUID(), zone.getName()));
+        }
         else
+        {
             zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN, point.toString());
+            info(String.format("Set spawn for user %s to %s in zone %s", ident.getUsernameOrUUID(), point.toString(), zone.getName()));
+        }
     }
 
     private void parseUserGroup(UserIdent ident)
@@ -1106,11 +1115,20 @@ public class PermissionCommandParser {
         }
 
         if (isBed)
+        {
             zone.setGroupPermissionProperty(group, FEPermissions.SPAWN, "bed");
+            info(String.format("Set spawn for group %s to be bed-location in zone %s", group, zone.getName()));
+        }
         else if (point == null)
+        {
             zone.clearGroupPermission(group, FEPermissions.SPAWN);
+            info(String.format("Cleared spawn-rule for group %s in zone %s", group, zone.getName()));
+        }
         else
+        {
             zone.setGroupPermissionProperty(group, FEPermissions.SPAWN, point.toString());
+            info(String.format("Set spawn for group %s to %s in zone %s", group, point.toString(), zone.getName()));
+        }
     }
 
     private void parseGroupPriority(String group)
