@@ -148,7 +148,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
                 {
                     if (args.length != 3)
                     {
-                        OutputHandler.chatConfirmation(sender, "Current speed: " + map.get(world.provider.dimensionId));
+                        OutputHandler.chatConfirmation(sender, "Current speed: " + map.get(world.provider.dimensionId).speed + " Chunks per Second");
                     }
                     else
                     {
