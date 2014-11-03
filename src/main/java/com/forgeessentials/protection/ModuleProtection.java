@@ -1,12 +1,15 @@
 package com.forgeessentials.protection;
 
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
@@ -14,6 +17,7 @@ import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
+import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -25,17 +29,30 @@ import cpw.mods.fml.common.registry.GameData;
 @FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true)
 public class ModuleProtection {
 
-    public final static String PERM_EDITS = "fe.protection.allowEdits";
-    public final static String PERM_ITEM_USE = "fe.protection.itemUse";
-    public final static String PERM_INTERACT_BLOCK = "fe.protection.allowBlockInteractions";
-    public final static String PERM_INTERACT_ENTITY = "fe.protection.allowEntityInteractions";
-    public final static String PERM_OVERRIDE = "fe.protection.overrideProtection";
-    public final static String PERM_PVP = "fe.protection.pvp";
-    public final static String PERM_MOB_SPAWN_NATURAL = "fe.protection.mobSpawn.natural";
-    public final static String PERM_MOB_SPAWN_FORCED = "fe.protection.mobSpawn.forced";
-    public final static String PERM_DIMENSION = "fe.protection.dimension.";
-    public final static String PERM_OVERRIDE_BANNEDITEMS = "fe.protection.overrideProtection.banneditems";
-    public final static String PERMPROP_ZONE_GAMEMODE = "fe.protection.data.zonegamemode";
+    public final static String BASE_PERM = "fe.protection";
+
+    public final static String PERM_PVP = BASE_PERM + ".pvp";
+    // public final static String PERMPROP_ZONE_GAMEMODE = BASE_PERM + ".data.zonegamemode";
+
+    public final static String PERM_USE = BASE_PERM + ".use";
+    public final static String PERM_BREAK = BASE_PERM + ".break";
+    public final static String PERM_PLACE = BASE_PERM + ".place";
+    public final static String PERM_INTERACT = BASE_PERM + ".interact";
+    public final static String PERM_INTERACT_ENTITY = BASE_PERM + ".interact.entity";
+
+    private final static String PERM_OVERRIDE = BASE_PERM + ".override";
+    public final static String PERM_OVERRIDE_USE = PERM_OVERRIDE + ".use";
+    public final static String PERM_OVERRIDE_BREAK = PERM_OVERRIDE + ".break";
+    public final static String PERM_OVERRIDE_PLACE = PERM_OVERRIDE + ".place";
+    public final static String PERM_OVERRIDE_INTERACT = PERM_OVERRIDE + ".interact";
+    public final static String PERM_OVERRIDE_INTERACT_ENTITY = PERM_OVERRIDE + ".interact.entity";
+    public final static String PERM_OVERRIDE_BANNEDITEMS = PERM_OVERRIDE + ".banneditems";
+
+    public final static String PERM_MOBSPAWN = BASE_PERM + ".mobspawn";
+    public final static String PERM_MOBSPAWN_NATURAL = PERM_MOBSPAWN + ".natural";
+    public final static String PERM_MOBSPAWN_FORCED = PERM_MOBSPAWN + ".forced";
+
+    public static Set<String> debugModePlayers = new HashSet<>();
 
     @SuppressWarnings("unused")
     private ProtectionEventHandler protectionHandler;
@@ -44,8 +61,8 @@ public class ModuleProtection {
     public void preLoad(FEModulePreInitEvent e)
     {
         // To disable now - just delete module-jar / might be canged in the future
-        //if (!enable)
-        //    ModuleLauncher.instance.unregister("protection");
+        // if (!enable)
+        // ModuleLauncher.instance.unregister("protection");
     }
 
     @SubscribeEvent
@@ -58,6 +75,7 @@ public class ModuleProtection {
     public void serverStarting(FEModuleServerInitEvent e)
     {
         FunctionHelper.registerServerCommand(new CommandItemPermission());
+        FunctionHelper.registerServerCommand(new CommandProtectionDebug());
     }
 
     @SuppressWarnings("unchecked")
@@ -66,37 +84,72 @@ public class ModuleProtection {
     {
         FunctionHelper.registerServerCommand(new ProtectCommand());
 
-        APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE);
-        APIRegistry.perms.registerPermission(PERM_EDITS, RegisteredPermValue.TRUE);
-        APIRegistry.perms.registerPermission(PERM_INTERACT_BLOCK, RegisteredPermValue.TRUE);
-        APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE);
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE, "Allow PvP");
+        // APIRegistry.perms.registerPermissionProperty(PERMPROP_ZONE_GAMEMODE, Integer.toString(0));
+
+        APIRegistry.perms.registerPermission(PERM_USE, RegisteredPermValue.TRUE, "Allow using items");
+        APIRegistry.perms.registerPermission(PERM_BREAK, RegisteredPermValue.TRUE, "Allow breaking blocks");
+        APIRegistry.perms.registerPermission(PERM_PLACE, RegisteredPermValue.TRUE, "Allow placing blocks");
+        APIRegistry.perms.registerPermission(PERM_INTERACT, RegisteredPermValue.TRUE, "Allow interacting with blocks");
+        APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE, "Allow interacting with entities");
+
+        APIRegistry.perms.registerPermission(PERM_OVERRIDE + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.OP, "Override protection permissions");
+        APIRegistry.perms.registerPermission(PERM_OVERRIDE_USE, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_OVERRIDE_BREAK, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_OVERRIDE_PLACE, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_OVERRIDE_INTERACT, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_OVERRIDE_INTERACT_ENTITY, RegisteredPermValue.OP);
         APIRegistry.perms.registerPermission(PERM_OVERRIDE_BANNEDITEMS, RegisteredPermValue.OP);
 
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED, RegisteredPermValue.TRUE);
+
+        // ----------------------------------------
+        // Register mobs
         for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
-        {
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
             {
-                APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + e.getKey(), RegisteredPermValue.TRUE);
-                APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_FORCED + "." + e.getKey(), RegisteredPermValue.TRUE);
+                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), RegisteredPermValue.TRUE);
+                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getKey(), RegisteredPermValue.TRUE);
             }
-        }
-        APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_NATURAL + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
-        APIRegistry.perms.registerPermission(PERM_MOB_SPAWN_FORCED + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
 
+        // ----------------------------------------
+        // Register items
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
+            if (!(item instanceof ItemBlock))
+                APIRegistry.perms.registerPermission(PERM_USE + "." + item.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX,
+                        RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+
+        // ----------------------------------------
+        // Register blocks
+        for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
-            APIRegistry.perms.registerPermission(PERM_ITEM_USE + "." + item.getUnlocalizedName(), RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(PERM_BREAK + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX,
+                    RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(PERM_INTERACT + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX,
+                    RegisteredPermValue.TRUE);
         }
-
-        APIRegistry.perms.registerPermission(PERM_ITEM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
-
-        for (int i : DimensionManager.getIDs())
-        {
-            APIRegistry.perms.registerPermission(PERM_DIMENSION + i, RegisteredPermValue.TRUE);
-        }
-
-        APIRegistry.perms.registerPermissionProperty(PERMPROP_ZONE_GAMEMODE, Integer.toString(0));
+        APIRegistry.perms.registerPermission(PERM_INTERACT + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_BREAK + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
     }
-    
+
+    public static void enableDebugMode(EntityPlayer player)
+    {
+        debugModePlayers.add(player.getCommandSenderName());
+    }
+
+    public static void disableDebugMode(EntityPlayer player)
+    {
+        debugModePlayers.remove(player.getCommandSenderName());
+    }
+
+    public static boolean isDebugMode(EntityPlayer player)
+    {
+        return debugModePlayers.contains(player.getCommandSenderName());
+    }
+
 }

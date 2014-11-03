@@ -381,6 +381,14 @@ public interface IPermissionsHelper extends IPermissionsProvider {
     // ---------------------------------------------------------------------------
 
     /**
+     * Checks, if the specified group is a system-group
+     * 
+     * @param group
+     * @return
+     */
+    boolean isSystemGroup(String group);
+
+    /**
      * Checks, if a group exists
      * 
      * @param groupName

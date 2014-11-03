@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.OutputHandler;
@@ -109,18 +110,20 @@ public class PermissionCommandParser {
     }
 
     // Variables for auto-complete
-    private static final String[] parseMainArgs = { "test", "user", "group", "list", "reload", "save" }; // "export", "promote", "test" };
+    private static final String[] parseMainArgs = { "test", "user", "group", "global", "list", "reload", "save" }; // "export", "promote", "test" };
     private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
     private static final String[] parseUserArgs = { "zone", "allow", "deny", "clear", "true", "false", "value", "prefix", "suffix", "spawn", "perms", "group" };
     private static final String[] parseGroupArgs = { "zone", "allow", "deny", "clear", "true", "false", "value", "prefix", "suffix", "spawn", "perms",
             "priority", "include" };
     private static final String[] parseUserGroupArgs = { "add", "remove" };
+    private static final String[] parseGroupIncludeArgs = { "add", "remove", "clear" };
+    private static final String[] parseSpawnArgs = { "here", "clear", "bed" };
 
     private void parseMain()
     {
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseMainArgs);
+            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseMainArgs);
             return;
         }
         if (args.isEmpty())
@@ -153,6 +156,9 @@ public class PermissionCommandParser {
             case "group":
                 parseGroup();
                 break;
+            case "global":
+                parseGlobal();
+                break;
             default:
                 error("Unknown command argument");
                 break;
@@ -168,7 +174,7 @@ public class PermissionCommandParser {
     {
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseListArgs);
+            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseListArgs);
             return;
         }
         if (args.isEmpty())
@@ -339,7 +345,7 @@ public class PermissionCommandParser {
         }
         if (tabCompleteMode)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserArgs);
+            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseUserArgs);
             for (Zone zone : APIRegistry.perms.getZones())
             {
                 if (CommandBase.doesStringStartWith(args.peek(), zone.getName()))
@@ -437,7 +443,7 @@ public class PermissionCommandParser {
             if (zone == null)
             {
                 info(String.format("Groups for player %s:", ident.getUsernameOrUUID()));
-                for (String group : APIRegistry.perms.getStoredPlayerGroups(ident))
+                for (String group : APIRegistry.perms.getPlayerGroups(ident))
                 {
                     info("  " + group);
                 }
@@ -456,7 +462,7 @@ public class PermissionCommandParser {
         // TAB-complete command
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserArgs);
+            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseUserArgs);
             if (zone != null)
                 tabComplete.remove("zone");
             return;
@@ -541,7 +547,6 @@ public class PermissionCommandParser {
             parseUserPermissions(ident, zone, PermissionAction.DENY);
             break;
         case "clear":
-        case "remove":
             parseUserPermissions(ident, zone, PermissionAction.CLEAR);
             break;
         case "value":
@@ -655,8 +660,7 @@ public class PermissionCommandParser {
         }
         if (tabCompleteMode && args.size() == 1)
         {
-            final String[] parseUserSpawnArgs = { "here", "clear", "bed" };
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserSpawnArgs);
+            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseSpawnArgs);
             return;
         }
 
@@ -713,12 +717,12 @@ public class PermissionCommandParser {
     {
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserGroupArgs);
+            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseUserGroupArgs);
             return;
         }
         if (args.isEmpty())
         {
-            info(String.format("Groups for player %s:", ident.getUsernameOrUUID()));
+            info(String.format("Groups for player %s (without includes):", ident.getUsernameOrUUID()));
             for (String g : APIRegistry.perms.getStoredPlayerGroups(ident))
             {
                 info("  " + g);
@@ -820,7 +824,7 @@ public class PermissionCommandParser {
         {
             if (tabCompleteMode && args.size() == 1)
             {
-                tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), "create");
+                tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, "create");
                 return;
             }
             if (args.isEmpty())
@@ -846,6 +850,28 @@ public class PermissionCommandParser {
         parseGroupInner(group, null);
     }
 
+    private void parseGlobal()
+    {
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_GROUP))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
+        if (args.isEmpty())
+        {
+            info("Possible usage:");
+            info("/p global : Display global-group info");
+            info("/p global zone <zone> ... : Work with zones");
+            info("/p global perms : List global permissions");
+            info("/p global allow|deny|clear <perms> : Set permissions");
+            info("/p global value <perm> <value> : Set permission property");
+            info("/p global spawn : Set global spawn");
+            return;
+        }
+
+        parseGroupInner(IPermissionsHelper.GROUP_DEFAULT, null);
+    }
+
     private void parseGroupInner(String group, Zone zone)
     {
         // Display help or player info
@@ -862,7 +888,8 @@ public class PermissionCommandParser {
             else
             {
                 info("Possible usage:");
-                info("/p ... group add|remove <group>: Player's group settings");
+                if (!APIRegistry.perms.isSystemGroup(group))
+                    info("/p ... group add|remove <group>: Player's group settings");
                 info("/p ... allow|deny|clear <perms> : Set permissions");
                 info("/p ... value <perm> <value> : Set permission property");
                 info("/p ... spawn : Set player spawn");
@@ -873,7 +900,7 @@ public class PermissionCommandParser {
         // TAB-complete command
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseGroupArgs);
+            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseGroupArgs);
             if (zone != null)
                 tabComplete.remove("zone");
             return;
@@ -973,7 +1000,6 @@ public class PermissionCommandParser {
             parseGroupPermissions(group, zone, PermissionAction.DENY);
             break;
         case "clear":
-        case "remove":
             parseGroupPermissions(group, zone, PermissionAction.CLEAR);
             break;
         case "value":
@@ -1088,8 +1114,7 @@ public class PermissionCommandParser {
         }
         if (tabCompleteMode && args.size() == 1)
         {
-            final String[] parseUserSpawnArgs = { "here", "clear", "bed" };
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseUserSpawnArgs);
+            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseSpawnArgs);
             return;
         }
 
@@ -1173,6 +1198,12 @@ public class PermissionCommandParser {
             return;
         }
 
+        if (tabCompleteMode && args.size() == 1)
+        {
+            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseGroupIncludeArgs);
+            return;
+        }
+
         // Get included groups
         String includedGroupsStr = APIRegistry.perms.getPermissionProperty(group, FEPermissions.GROUP_INCLUDES);
         Set<String> includedGroups = new HashSet<String>();
@@ -1183,11 +1214,12 @@ public class PermissionCommandParser {
 
         if (args.isEmpty())
         {
-            info("/feperm group " + group + " include add|remove <group> : Manage included groups");
-            info("/feperm group " + group + " include clear : Clear included groups");
+            info("/feperm group " + group + " include add|remove <group>");
+            info("/feperm group " + group + " include clear");
             info(String.format("Included groups for %s:", group));
             for (String includedGroup : includedGroups)
                 info("  " + includedGroup);
+            return;
         }
 
         String cmd = args.remove().toLowerCase();
@@ -1201,6 +1233,18 @@ public class PermissionCommandParser {
         if (args.isEmpty())
         {
             error(FEPermissions.MSG_INVALID_SYNTAX);
+            return;
+        }
+
+        // Auto-complete group name
+        if (tabCompleteMode && args.size() == 1)
+        {
+            tabComplete = new ArrayList<String>();
+            for (String g : APIRegistry.perms.getServerZone().getGroups())
+            {
+                if (CommandBase.doesStringStartWith(args.peek(), g))
+                    tabComplete.add(g);
+            }
             return;
         }
 
@@ -1220,7 +1264,7 @@ public class PermissionCommandParser {
             error(FEPermissions.MSG_INVALID_SYNTAX);
             return;
         }
-        
+
         APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(includedGroups, ","));
     }
 

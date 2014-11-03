@@ -2,13 +2,13 @@ package com.forgeessentials.protection;
 
 import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
 import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
@@ -34,9 +34,11 @@ public class ProtectionEventHandler extends ServerEventHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void attackEntityEvent(AttackEntityEvent e)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
-        
-        if (e.target == null) return;
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+
+        if (e.target == null)
+            return;
 
         EntityPlayer source = e.entityPlayer;
         WorldPoint sourcePos = new WorldPoint(source);
@@ -58,7 +60,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             // player -> entity
             WorldPoint targetPos = new WorldPoint(e.target);
 
-            if (APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_OVERRIDE)
+            if (APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_OVERRIDE_INTERACT_ENTITY)
                     || !APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
             {
                 e.setCanceled(true);
@@ -69,10 +71,12 @@ public class ProtectionEventHandler extends ServerEventHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void livingHurtEvent(LivingHurtEvent e)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
 
         // Do nothing if not both source and target are EntityLiving
-        if (e.entityLiving == null || !(e.source.getEntity() instanceof EntityLiving)) return;
+        if (e.entityLiving == null || !(e.source.getEntity() instanceof EntityLiving))
+            return;
 
         if (e.source.getEntity() instanceof EntityPlayer)
         {
@@ -96,7 +100,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 // player -> living
                 WorldPoint targetPos = new WorldPoint(e.entityLiving);
 
-                if (APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_OVERRIDE)
+                if (APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_OVERRIDE_INTERACT_ENTITY)
                         || !APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
                 {
                     e.setCanceled(true);
@@ -114,7 +118,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 WorldPoint targetPos = new WorldPoint(target);
 
                 // TODO: Change permission to PERM_DAMAGE_BY_ENTITY or so
-                if (!APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, ModuleProtection.PERM_OVERRIDE)
+                if (!APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, ModuleProtection.PERM_OVERRIDE_INTERACT_ENTITY)
                         && !APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
                 {
                     e.setCanceled(true);
@@ -130,11 +134,16 @@ public class ProtectionEventHandler extends ServerEventHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void breakEvent(BreakEvent e)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
 
+        Block block = e.world.getBlock(e.x, e.y, e.z);
+        String permission = ModuleProtection.PERM_BREAK + "." + block.getUnlocalizedName() + "." + block.getDamageValue(e.world, e.x, e.y, e.z);
+        if (ModuleProtection.isDebugMode(e.getPlayer()))
+            OutputHandler.chatNotification(e.getPlayer(), permission);
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
-        if (!APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_OVERRIDE)
-                && !APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_EDITS))
+        if (!APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_OVERRIDE_BREAK)
+                && !APIRegistry.perms.checkPermission(new UserIdent(e.getPlayer()), point, permission))
         {
             e.setCanceled(true);
         }
@@ -143,11 +152,16 @@ public class ProtectionEventHandler extends ServerEventHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void placeEvent(BlockEvent.PlaceEvent e)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
 
+        Block block = e.world.getBlock(e.x, e.y, e.z);
+        String permission = ModuleProtection.PERM_PLACE + "." + block.getUnlocalizedName() + "." + block.getDamageValue(e.world, e.x, e.y, e.z);
+        if (ModuleProtection.isDebugMode(e.player))
+            OutputHandler.chatNotification(e.player, permission);
         WorldPoint point = new WorldPoint(e.player.dimension, e.x, e.y, e.z);
-        if (!APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE)
-                && !APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_EDITS))
+        if (!APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE_PLACE)
+                && !APIRegistry.perms.checkPermission(new UserIdent(e.player), point, permission))
         {
             e.setCanceled(true);
         }
@@ -156,13 +170,18 @@ public class ProtectionEventHandler extends ServerEventHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void multiPlaceEvent(BlockEvent.MultiPlaceEvent e)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
 
         for (BlockSnapshot b : e.getReplacedBlockSnapshots())
         {
+            Block block = e.world.getBlock(b.x, b.y, b.z);
+            String permission = ModuleProtection.PERM_PLACE + "." + block.getUnlocalizedName() + "." + block.getDamageValue(e.world, e.x, e.y, e.z);
+            if (ModuleProtection.isDebugMode(e.player))
+                OutputHandler.chatNotification(e.player, permission);
             WorldPoint point = new WorldPoint(e.player.dimension, b.x, b.y, b.z);
-            if (!APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE)
-                    && !APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_EDITS))
+            if (!APIRegistry.perms.checkPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE_PLACE)
+                    && !APIRegistry.perms.checkPermission(new UserIdent(e.player), point, permission))
             {
                 e.setCanceled(true);
                 return;
@@ -173,62 +192,76 @@ public class ProtectionEventHandler extends ServerEventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent e)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
 
         // Check for block interaction
         if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
         {
+            Block block = e.world.getBlock(e.x, e.y, e.z);
+            String permission = ModuleProtection.PERM_INTERACT + "." + block.getUnlocalizedName() + "." + block.getDamageValue(e.world, e.x, e.y, e.z);
+            if (ModuleProtection.isDebugMode(e.entityPlayer))
+                OutputHandler.chatNotification(e.entityPlayer, permission);
             WorldPoint point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
-            boolean allow = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE)
-                    || APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_INTERACT_BLOCK);
+            boolean allow = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE_INTERACT)
+                    || APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, permission);
             e.useBlock = allow ? ALLOW : DENY;
         }
 
         // Check item (and block) usage
         ItemStack stack = e.entityPlayer.getCurrentEquippedItem();
-        if (stack == null) return;
-
-        WorldPoint point = new WorldPoint(e.entityPlayer);
-        if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && stack.getItem() instanceof ItemBlock)
+        if (stack != null)
         {
-            // calculate offsets.
-            ForgeDirection dir = ForgeDirection.getOrientation(e.face);
-            int x = e.x + dir.offsetX;
-            int y = e.y + dir.offsetY;
-            int z = e.z + dir.offsetZ;
-            point = new WorldPoint(e.entityPlayer.dimension, x, y, z);
-        }
-        else
-        {
-            point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
-        }
+            WorldPoint point = new WorldPoint(e.entityPlayer);
+            if (stack.getItem() instanceof ItemBlock)
+            {
+                // Blocks are covered in placeEvent
+                return;
+                // ForgeDirection dir = ForgeDirection.getOrientation(e.face);
+                // int x = e.x + dir.offsetX;
+                // int y = e.y + dir.offsetY;
+                // int z = e.z + dir.offsetZ;
+                // point = new WorldPoint(e.entityPlayer.dimension, x, y, z);
+            }
+            else
+            {
+                point = new WorldPoint(e.entityPlayer.dimension, e.x, e.y, e.z);
+            }
 
-        String permission = ModuleProtection.PERM_ITEM_USE + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
-        boolean allow = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE)
-                || APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, permission);
-        e.useItem = allow ? ALLOW : DENY;
+            String permission = ModuleProtection.PERM_USE + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
+            if (ModuleProtection.isDebugMode(e.entityPlayer))
+                OutputHandler.chatNotification(e.entityPlayer, permission);
+            boolean allow = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE_USE)
+                    || APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, permission);
+            e.useItem = allow ? ALLOW : DENY;
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void entityInteractEvent(EntityInteractEvent e)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
 
         WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
-        boolean allow = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE)
+        String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + e.target.getClass().getSimpleName();
+        if (ModuleProtection.isDebugMode(e.entityPlayer))
+            OutputHandler.chatNotification(e.entityPlayer, permission);
+        boolean allow = APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_OVERRIDE_INTERACT_ENTITY)
                 || APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), point, ModuleProtection.PERM_INTERACT_ENTITY);
-        if (!allow) e.setCanceled(true);
+        if (!allow)
+            e.setCanceled(true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void checkSpawnEvent(CheckSpawn e)
     {
-        if (e.entityLiving instanceof EntityPlayer) return;
+        if (e.entityLiving instanceof EntityPlayer)
+            return;
 
         WorldPoint point = new WorldPoint(e.entityLiving);
         String mobID = EntityList.getEntityString(e.entity);
-
-        if (!APIRegistry.perms.checkPermission(null, point, ModuleProtection.PERM_MOB_SPAWN_NATURAL + "." + mobID))
+        if (!APIRegistry.perms.checkPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + mobID))
         {
             e.setResult(Result.DENY);
             OutputHandler.debug(mobID + " : DENIED");
@@ -242,12 +275,13 @@ public class ProtectionEventHandler extends ServerEventHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void specialSpawnEvent(SpecialSpawn e)
     {
-        if (e.entityLiving instanceof EntityPlayer) return;
+        if (e.entityLiving instanceof EntityPlayer)
+            return;
 
         WorldPoint point = new WorldPoint(e.entityLiving);
         String mobID = EntityList.getEntityString(e.entity);
 
-        if (!APIRegistry.perms.checkPermission(null, point, ModuleProtection.PERM_MOB_SPAWN_FORCED + "." + mobID))
+        if (!APIRegistry.perms.checkPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + mobID))
         {
             e.setResult(Result.DENY);
         }

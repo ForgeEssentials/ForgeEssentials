@@ -2,38 +2,39 @@ package com.forgeessentials.protection.commands;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandItemPermission extends ForgeEssentialsCommandBase {
+public class CommandProtectionDebug extends ForgeEssentialsCommandBase {
 
     @Override
     public String getCommandName()
     {
-        return "itemperm";
+        return "protectdebug";
     }
 
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        ItemStack stack = sender.getCurrentEquippedItem();
-        if (stack == null)
+        if (ModuleProtection.isDebugMode(sender))
         {
-            OutputHandler.chatError(sender, "No item equipped!");
-            return;
+            ModuleProtection.disableDebugMode(sender);
+            OutputHandler.chatConfirmation(sender, "Turned protection debug-mode OFF");
         }
-        String permission = ModuleProtection.PERM_USE + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
-        OutputHandler.chatNotification(sender, permission);
+        else
+        {
+            ModuleProtection.enableDebugMode(sender);
+            OutputHandler.chatConfirmation(sender, "Turned protection debug-mode ON");
+        }
     }
 
     @Override
     public String getPermissionNode()
     {
-        return "fe.protection.cmd.itemperm";
+        return "fe.protection.cmd.protectdebug";
     }
 
     @Override
@@ -45,7 +46,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/itemperm: Shows full item permission node";
+        return "/protectdebug: Toggles protection-module debug-mode";
     }
 
     @Override

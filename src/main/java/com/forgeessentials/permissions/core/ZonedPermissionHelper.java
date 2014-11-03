@@ -70,7 +70,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         @Override
         public void run()
         {
-            if (persistenceProvider == null) return;
+            if (persistenceProvider == null)
+                return;
             if (dirty)
             {
                 save();
@@ -91,7 +92,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     public void save()
     {
         OutputHandler.felog.info("Saving permissions...");
-        if (persistenceProvider != null) persistenceProvider.save(rootZone.getServerZone());
+        if (persistenceProvider != null)
+            persistenceProvider.save(rootZone.getServerZone());
         dirty = false;
     }
 
@@ -121,7 +123,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     public void setDirty()
     {
         this.dirty = true;
-        if (persistenceTimer != null) persistenceTimer.cancel();
+        if (persistenceTimer != null)
+            persistenceTimer.cancel();
         persistenceTimer = new Timer("permission persistence timer", true);
         persistenceTimer.schedule(new PersistenceTask(), 2000);
     }
@@ -143,7 +146,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         Set<String> perms = new TreeSet<String>();
         for (String perm : rootZone.getGroupPermissions(IPermissionsHelper.GROUP_DEFAULT).keySet())
         {
-            if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY)) perms.add(perm);
+            if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                perms.add(perm);
         }
         return perms;
     }
@@ -157,14 +161,16 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
             {
                 for (String perm : groupPerms.keySet())
                 {
-                    if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY)) perms.add(perm);
+                    if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                        perms.add(perm);
                 }
             }
             for (Map<String, String> playerPerms : zone.getPlayerPermissions().values())
             {
                 for (String perm : playerPerms.keySet())
                 {
-                    if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY)) perms.add(perm);
+                    if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                        perms.add(perm);
                 }
             }
         }
@@ -191,7 +197,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         Map<Zone, Map<String, String>> result = new HashMap<Zone, Map<String, String>>();
         for (Zone zone : getZones())
         {
-            if (!enumRootPermissions && zone instanceof RootZone) continue;
+            if (!enumRootPermissions && zone instanceof RootZone)
+                continue;
             if (zone.getGroupPermissions(group) != null)
             {
                 Map<String, String> zonePerms = new TreeMap<String, String>();
@@ -236,7 +243,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         WorldZone worldZone = null;
         if (point != null)
             worldZone = getWorldZone(point.getDimension());
-        else if (area != null) worldZone = getWorldZone(area.getDimension());
+        else if (area != null)
+            worldZone = getWorldZone(area.getDimension());
 
         // Get zones in correct order
         List<Zone> zones = new ArrayList<Zone>();
@@ -433,7 +441,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public boolean checkPermission(IContext context, String permissionNode)
     {
-        if (contextIsConsole(context)) return true;
+        if (contextIsConsole(context))
+            return true;
 
         UserIdent ident = null;
         EntityPlayer player = contextGetPlayerOrCommandPlayer(context);
@@ -545,7 +554,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         WorldZone w = getWorldZone(worldPoint.getDimension());
         List<Zone> result = new ArrayList<Zone>();
         for (AreaZone zone : w.getAreaZones())
-            if (zone.isInZone(worldPoint)) result.add(zone);
+            if (zone.isInZone(worldPoint))
+                result.add(zone);
         result.add(w);
         result.add(w.getParent());
         return result;
@@ -557,7 +567,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         WorldZone w = getWorldZone(worldPoint.getDimension());
         List<AreaZone> result = new ArrayList<AreaZone>();
         for (AreaZone zone : w.getAreaZones())
-            if (zone.isInZone(worldPoint)) result.add(zone);
+            if (zone.isInZone(worldPoint))
+                result.add(zone);
         return result;
     }
 
@@ -595,6 +606,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     // ------------------------------------------------------------
     // -- Groups
     // ------------------------------------------------------------
+
+    @Override
+    public boolean isSystemGroup(String group)
+    {
+        return group.equals(IPermissionsHelper.GROUP_DEFAULT) || group.equals(IPermissionsHelper.GROUP_OPERATORS)
+                || group.equals(IPermissionsHelper.GROUP_GUESTS);
+    }
 
     @Override
     public boolean groupExists(String name)
