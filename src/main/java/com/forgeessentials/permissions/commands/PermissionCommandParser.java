@@ -1165,11 +1165,9 @@ public class PermissionCommandParser {
         {
             int nodeIndex = perm.indexOf('.', permission.length());
             if (nodeIndex >= 0)
-            {
-                String permBase = perm.substring(0, nodeIndex);
-                if (CommandBase.doesStringStartWith(permission, permBase))
-                    perms.add(permBase);
-            }
+                perm = perm.substring(0, nodeIndex);
+            if (CommandBase.doesStringStartWith(permission, perm))
+                perms.add(perm);
         }
         
         return new ArrayList<String>(perms);
