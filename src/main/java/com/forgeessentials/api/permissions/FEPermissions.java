@@ -5,7 +5,8 @@ public final class FEPermissions {
 	public static final String MSG_NO_COMMAND_PERM = "You don't have permissions to use this command!";
 	public static final String MSG_NO_PERM = "You don't have permissions for that!";
 	public static final String MSG_NO_CONSOLE_COMMAND = "This command cannot be invoked from console";
-	public static final String MSG_NOT_ENOUGH_ARGUMENTS = "Not enough arguments!";
+    public static final String MSG_NOT_ENOUGH_ARGUMENTS = "Not enough arguments!";
+    public static final String MSG_INVALID_SYNTAX = "Invalid syntax!";
 
 	// ------------------------------------------------
 	// -- Internal permissions
@@ -22,8 +23,9 @@ public final class FEPermissions {
     public static final String SPAWN = FE_INTERNAL + ".spawn";
 
 	public static final String GROUP = FE_INTERNAL + ".group";
-	public static final String GROUP_ID = GROUP + ".id";
+    public static final String GROUP_ID = GROUP + ".id";
 	public static final String GROUP_PRIORITY = GROUP + ".priority";
+    public static final String GROUP_INCLUDES = GROUP + ".includes";
 
 	public static final int GROUP_PRIORITY_DEFAULT = 20;
 

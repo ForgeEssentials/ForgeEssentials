@@ -632,6 +632,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         return getServerZone().getPlayerGroups(ident);
     }
 
+    @Override
+    public SortedSet<String> getStoredPlayerGroups(UserIdent ident)
+    {
+        return getServerZone().getStoredPlayerGroups(ident);
+    }
+
     // ------------------------------------------------------------
     // -- Permission checking
     // ------------------------------------------------------------

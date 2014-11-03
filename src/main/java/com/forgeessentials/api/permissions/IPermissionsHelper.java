@@ -419,11 +419,20 @@ public interface IPermissionsHelper extends IPermissionsProvider {
     String getPrimaryGroup(UserIdent ident);
 
     /**
-     * Get all groups the player belongs to, ordered by priority.
+     * Get all groups the player belongs to, together with the system- and included groups.
+     * Groups are ordered by priority.
      * 
      * @param ident
      */
     SortedSet<String> getPlayerGroups(UserIdent ident);
+
+    /**
+     * Get all groups the player belongs to.
+     * Groups are ordered by priority.
+     * 
+     * @param ident
+     */
+    SortedSet<String> getStoredPlayerGroups(UserIdent ident);
 
     // ---------------------------------------------------------------------------
 

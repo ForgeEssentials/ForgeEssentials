@@ -41,7 +41,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 	public static final FileFilter directoryFilter = new FileFilters.Directory();
 
 	public static class SortedPermisssionProperties extends Properties {
-		@Override
+        @Override
 		public synchronized Enumeration<Object> keys()
 		{
 			TreeSet<Object> keys = new TreeSet<Object>(Zone.permissionComparator);
@@ -197,7 +197,6 @@ public class FlatfileProvider implements IZonePersistenceProvider {
 		for (Entry<String, PermissionList> entry : zone.getGroupPermissions().entrySet())
 		{
 			// Get filename and info
-			String groupName = entry.getKey();
 			String comment = "Permissions for group " + entry.getKey() + COMMENT_INFO;
 
 			// Save permissions
