@@ -40,6 +40,8 @@ public class CoreConfig {
 
         config.addCustomCategoryComment("Core", "Configure ForgeEssentials Core.");
 
+        config.addCustomCategoryComment("Core.Modules", "Enable/disable modules here.");
+
         Property prop = config.get("Core", "versionCheck", true);
         prop.comment = "Check for newer versions of ForgeEssentials on load?";
         ForgeEssentials.verCheck = prop.getBoolean(true);
@@ -55,10 +57,6 @@ public class CoreConfig {
         prop = config.get("Core", "removeDuplicateCommands", true);
         prop.comment = "Remove commands from the list if they already exist outside of FE.";
         CommandSetChecker.removeDuplicateCommands = prop.getBoolean(true);
-
-        prop = config.get("Core", "disabledModules", new String[]{});
-        prop.comment = "Names of modules to be disabled. A full list of module names is available in your ForgeEssentials folder.";
-        ModuleLauncher.disabledModules = prop.getStringList();
 
         prop = config.get("Core", "canonicalConfigs", false);
         prop.comment = "For modules that support it, place their configs in this file.";
@@ -124,5 +122,10 @@ public class CoreConfig {
         config.get("Core.groups", "groupSuffix", "").set(groupSuffixFormat);
         config.get("Core.groups", "rank", "").set(groupRankFormat);
 
+    }
+
+    public boolean canLoadModule(String moduleName)
+    {
+        return config.get("Core.Modules", moduleName, true).getBoolean(true);
     }
 }

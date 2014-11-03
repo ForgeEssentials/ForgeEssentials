@@ -27,7 +27,6 @@ public class ModuleLauncher {
     public static ModuleLauncher instance;
     private static TreeMap<String, ModuleContainer> containerMap = new TreeMap<String, ModuleContainer>();
 
-    public static String[] disabledModules;
     public static boolean useCanonicalConfig;
 
     public void preLoad(FMLPreInitializationEvent e)
