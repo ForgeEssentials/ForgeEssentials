@@ -25,7 +25,7 @@ public final class FEPermissions {
 	public static final String GROUP_ID = GROUP + ".id";
 	public static final String GROUP_PRIORITY = GROUP + ".priority";
 
-	public static final int GROUP_PRIORITY_DEFAULT = 10;
+	public static final int GROUP_PRIORITY_DEFAULT = 20;
 
 	public static final String PLAYER = FE_INTERNAL + ".player";
 	public static final String PLAYER_UUID = PLAYER + ".uuid";
