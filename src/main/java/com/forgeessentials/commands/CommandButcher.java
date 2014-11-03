@@ -3,18 +3,17 @@ package com.forgeessentials.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
@@ -34,6 +33,12 @@ public class CommandButcher extends FEcmdModuleCommands {
     public String getCommandName()
     {
         return "butcher";
+    }
+    
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "febutcher" };
     }
 
     @Override

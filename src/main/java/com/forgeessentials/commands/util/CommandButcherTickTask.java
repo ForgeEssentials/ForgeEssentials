@@ -30,10 +30,10 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.ITickTask;
 
 public class CommandButcherTickTask implements ITickTask {
+    
     double MAX_ENTITY_RADIUS;
     boolean isComplete;
     AxisAlignedBB aabb;
-    EntityPlayer player;
     ICommandSender sender;
     boolean playerCommand;
     String mobType;
@@ -44,7 +44,6 @@ public class CommandButcherTickTask implements ITickTask {
 
     public CommandButcherTickTask(EntityPlayer sender, String mobType, AxisAlignedBB aabb, int radius)
     {
-        player = sender;
         this.sender = sender;
         this.mobType = mobType;
         this.radius = radius;
@@ -281,7 +280,7 @@ public class CommandButcherTickTask implements ITickTask {
     @Override
     public void onComplete()
     {
-        OutputHandler.chatConfirmation(player, String.format("%s mobs killed.", counter));
+        OutputHandler.chatConfirmation(sender, String.format("%s mobs killed.", counter));
     }
 
     @Override

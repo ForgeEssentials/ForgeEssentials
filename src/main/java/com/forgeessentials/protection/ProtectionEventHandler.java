@@ -21,9 +21,9 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.selections.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -32,6 +32,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ProtectionEventHandler extends ServerEventHandler {
+    
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void playerAttack(AttackEntityEvent e)
 	{
@@ -304,11 +305,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void handleSpawn(CheckSpawn e)
 	{
-		// ignore players
-		if (!ModuleProtection.enableMobSpawns || e.entityLiving instanceof EntityPlayer)
-		{
-			return;
-		}
+        if (e.entityLiving instanceof EntityPlayer) return;
 
 		WorldPoint point = new WorldPoint(e.entityLiving);
 		String mobID = EntityList.getEntityString(e.entity);
@@ -327,11 +324,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void handleSpawn(SpecialSpawn e)
 	{
-		// ignore players
-		if (!ModuleProtection.enableMobSpawns || e.entityLiving instanceof EntityPlayer)
-		{
-			return;
-		}
+        if (e.entityLiving instanceof EntityPlayer) return;
 
 		WorldPoint point = new WorldPoint(e.entityLiving);
 		String mobID = EntityList.getEntityString(e.entity);

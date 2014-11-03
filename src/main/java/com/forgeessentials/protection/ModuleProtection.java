@@ -1,26 +1,27 @@
 package com.forgeessentials.protection;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameData;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.Map.Entry;
-import java.util.Set;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
-@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true, configClass = ConfigProtection.class)
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.registry.GameData;
+
+@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true)
 public class ModuleProtection {
 
     public final static String PERM_EDITS = "fe.protection.allowEdits";
@@ -35,18 +36,15 @@ public class ModuleProtection {
     public final static String PERM_OVERRIDE_BANNEDITEMS = "fe.protection.overrideProtection.banneditems";
     public final static String PERMPROP_ZONE_GAMEMODE = "fe.protection.data.zonegamemode";
 
-    @FEModule.Config
-    public static ConfigProtection config;
-    public static boolean enable;
-    public static boolean enableMobSpawns;
-    
+    @SuppressWarnings("unused")
     private ProtectionEventHandler protectionHandler;
 
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
-        if (!enable)
-            ModuleLauncher.instance.unregister("protection");
+        // To disable now - just delete module-jar / might be canged in the future
+        //if (!enable)
+        //    ModuleLauncher.instance.unregister("protection");
     }
 
     @SubscribeEvent
@@ -55,6 +53,7 @@ public class ModuleProtection {
         protectionHandler = new ProtectionEventHandler();
     }
 
+    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public void registerPermissions(FEModuleServerInitEvent ev)
     {
@@ -92,4 +91,5 @@ public class ModuleProtection {
 
         APIRegistry.perms.registerPermissionProperty(PERMPROP_ZONE_GAMEMODE, Integer.toString(0));
     }
+    
 }
