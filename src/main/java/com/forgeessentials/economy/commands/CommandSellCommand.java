@@ -83,7 +83,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                 }
                 if (found)
                 {
-                    // Do command in name of player
+                    // Do command
 
                     StringBuilder cmd = new StringBuilder(args.toString().length());
                     for (int i = 2; i < args.length; i++)

@@ -42,7 +42,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
                 if (APIRegistry.wallet.getWallet(player.getPersistentID()) >= amount)
                 {
                     APIRegistry.wallet.removeFromWallet(amount, player.getPersistentID());
-                    // Do command in name of player
+                    // Do command
 
                     StringBuilder cmd = new StringBuilder(args.toString().length());
                     for (int i = 2; i < args.length; i++)
@@ -98,7 +98,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public RegGroup getReggroup()
     {
 
         return null;
