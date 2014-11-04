@@ -41,7 +41,7 @@ public class ModuleProtection {
     public final static String PERM_INTERACT_ENTITY = BASE_PERM + ".interact.entity";
     public final static String PERM_DAMAGE_TO = BASE_PERM + ".damageto";
     public final static String PERM_DAMAGE_BY = BASE_PERM + ".damageby";
-    public final static String PERM_BAN = BASE_PERM + ".ban";
+    public final static String PERM_INVENTORY = BASE_PERM + ".inventory";
 
     private final static String PERM_OVERRIDE = BASE_PERM + ".override";
     public final static String PERM_OVERRIDE_USE = PERM_OVERRIDE + ".use";
@@ -132,11 +132,11 @@ public class ModuleProtection {
             {
                 String itemPerm = "." + item.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX;
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, RegisteredPermValue.TRUE, "USE " + getItemName(item));
-                APIRegistry.perms.registerPermission(PERM_BAN + itemPerm, RegisteredPermValue.TRUE, "USE " + getItemName(item));
+                APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, RegisteredPermValue.TRUE, "USE " + getItemName(item));
             }
 
         APIRegistry.perms.registerPermission(PERM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
-        APIRegistry.perms.registerPermission(PERM_BAN + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_INVENTORY + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
 
         // ----------------------------------------
         // Register blocks

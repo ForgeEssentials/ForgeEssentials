@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBlock;
@@ -17,6 +18,7 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -33,7 +35,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 
 public class ProtectionEventHandler extends ServerEventHandler {
 
@@ -208,7 +209,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        
+
         WorldPoint point;
         if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
         {
@@ -293,52 +294,78 @@ public class ProtectionEventHandler extends ServerEventHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    public boolean isInventoryItemBanned(EntityPlayer player, ItemStack stack)
+    {
+        String permission = ModuleProtection.PERM_INVENTORY + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
+        if (ModuleProtection.isDebugMode(player))
+            OutputHandler.chatNotification(player, permission);
+        return !APIRegistry.perms.checkPermission(new UserIdent(player), permission);
+    }
+
+    public void handleBannedInventoryItemEvent(net.minecraftforge.event.entity.player.PlayerEvent e, ItemStack stack)
+    {
+        if (isInventoryItemBanned(e.entityPlayer, stack))
+        {
+            e.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void itemPickupEvent(EntityItemPickupEvent e)
+    {
+        handleBannedInventoryItemEvent(e, e.item.getEntityItem());
+    }
+
+//    @SubscribeEvent
+//    public void itemCraftedEvent(ItemCraftedEvent e)
+//    {
+//        handleBannedInventoryItemEvent(e, e.crafting);
+//    }
+//
+//    @SubscribeEvent
+//    public void itemSmeltedEvent(ItemSmeltedEvent e)
+//    {
+//        handleBannedInventoryItemEvent(e, e.smelting);
+//    }
+
     @SubscribeEvent
     public void playerChangedZoneEvent(PlayerChangedZone e)
     {
-//        for (ItemStack returned : PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems())
-//        {
-//            e.entityPlayer.inventory.addItemStackToInventory(returned);
-//        }
-
         InventoryPlayer inventory = e.entityPlayer.inventory;
         for (int slotIdx = 0; slotIdx < inventory.getSizeInventory(); slotIdx++)
         {
             ItemStack stack = inventory.getStackInSlot(slotIdx);
             if (stack != null)
             {
-                String permission = ModuleProtection.PERM_BAN + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
-                if (!APIRegistry.perms.checkPermission(new UserIdent(e.entityPlayer), permission))
+                if (isInventoryItemBanned(e.entityPlayer, stack))
                 {
+                    EntityItem droppedItem = e.entityPlayer.func_146097_a(stack, true, false);
+                    droppedItem.motionX = 0;
+                    droppedItem.motionY = 0;
+                    droppedItem.motionZ = 0;
                     e.entityPlayer.inventory.setInventorySlotContents(slotIdx, null);
                 }
             }
         }
-        
-//        List<String> biList = bi.getBannedItems();
-//        for (ListIterator<String> iter = biList.listIterator(); iter.hasNext();)
-//        {
-//            String element = iter.next();
-//            String[] split = element.split(":");
-//            int id = Integer.parseInt(split[0]);
-//            int meta = Integer.parseInt(split[1]);
-//            ItemStack is = new ItemStack(element, 0, meta);
-//
-//            if (e.entityPlayer.inventory.hasItemStack(is))
-//            {
-//                PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems().add(is);
-//            }
-//        }
 
-//        String val = APIRegistry.perms.getPermissionPropForPlayer(e.entityPlayer.username, e.afterZone.getName(), ModuleProtection.PERMPROP_ZONE_GAMEMODE);
-//        e.entityPlayer.setGameType(EnumGameType.getByID(Integer.parseInt(val)));
-//        System.out.println("yoohoo");
-    }
+        // List<String> biList = bi.getBannedItems();
+        // for (ListIterator<String> iter = biList.listIterator(); iter.hasNext();)
+        // {
+        // String element = iter.next();
+        // String[] split = element.split(":");
+        // int id = Integer.parseInt(split[0]);
+        // int meta = Integer.parseInt(split[1]);
+        // ItemStack is = new ItemStack(element, 0, meta);
+        //
+        // if (e.entityPlayer.inventory.hasItemStack(is))
+        // {
+        // PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems().add(is);
+        // }
+        // }
 
-    @SubscribeEvent
-    public void manageCrafting(ItemCraftedEvent e)
-    {
+        // String val = APIRegistry.perms.getPermissionPropForPlayer(e.entityPlayer.username, e.afterZone.getName(), ModuleProtection.PERMPROP_ZONE_GAMEMODE);
+        // e.entityPlayer.setGameType(EnumGameType.getByID(Integer.parseInt(val)));
+        // System.out.println("yoohoo");
     }
 
 }

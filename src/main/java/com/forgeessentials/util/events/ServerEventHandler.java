@@ -6,6 +6,7 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ServerEventHandler {
@@ -29,6 +30,7 @@ public class ServerEventHandler {
         if (registered) return;
         registered = true;
         MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     private void unregister()
@@ -38,6 +40,14 @@ public class ServerEventHandler {
             try
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
+            }
+            catch (NullPointerException ex)
+            {
+                // event handler was not registered to begin with
+            }
+            try
+            {
+                FMLCommonHandler.instance().bus().unregister(this);
             }
             catch (NullPointerException ex)
             {
