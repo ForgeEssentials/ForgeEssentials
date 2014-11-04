@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
@@ -121,8 +122,7 @@ public class ModuleProtection {
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
-                APIRegistry.perms.registerPermission(PERM_USE + "." + item.getUnlocalizedName(), RegisteredPermValue.TRUE);
-                APIRegistry.perms.registerPermission(PERM_USE + "." + item.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+                APIRegistry.perms.registerPermission(PERM_USE + "." + item.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "USE " + item.getItemStackDisplayName(new ItemStack(item)));
             }
 
         APIRegistry.perms.registerPermission(PERM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
@@ -131,13 +131,13 @@ public class ModuleProtection {
         // Register blocks
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
-            APIRegistry.perms.registerPermission(PERM_BREAK + "." + block.getUnlocalizedName(), RegisteredPermValue.TRUE);
-            APIRegistry.perms.registerPermission(PERM_INTERACT + "." + block.getUnlocalizedName(), RegisteredPermValue.TRUE);
-            APIRegistry.perms.registerPermission(PERM_BREAK + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
-            APIRegistry.perms.registerPermission(PERM_INTERACT + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(PERM_BREAK + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "BREAK " + block.getLocalizedName());
+            APIRegistry.perms.registerPermission(PERM_PLACE + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "PLACE " + block.getLocalizedName());
+            APIRegistry.perms.registerPermission(PERM_INTERACT + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "INTERACT " + block.getLocalizedName());
         }
-        APIRegistry.perms.registerPermission(PERM_INTERACT + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
         APIRegistry.perms.registerPermission(PERM_BREAK + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_PLACE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_INTERACT + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
     }
 
     public static void enableDebugMode(EntityPlayer player)

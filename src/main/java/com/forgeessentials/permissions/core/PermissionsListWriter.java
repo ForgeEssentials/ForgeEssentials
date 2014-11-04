@@ -36,10 +36,11 @@ public class PermissionsListWriter {
         int permNameLength = 0;
         for (String perm : sortedPerms)
             if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+            {
                 permCount++;
-            else
                 permNameLength = Math.max(permNameLength, perm.length());
-        permNameLength += 6;
+            }
+        permNameLength += 2;
 
         try
         {
@@ -78,12 +79,12 @@ public class PermissionsListWriter {
                     }
                     else if (perm.endsWith("." + IPermissionsHelper.PERMISSION_ASTERIX))
                     {
-    //                    String parentPerm = perm.substring(0, perm.length() - IPermissionsHelper.PERMISSION_ASTERIX.length() - 1);
-    //                    if (!permissions.containsKey(parentPerm)) {
-    //                        writer.newLine();
-    //                        writer.write(parentPerm);
-    //                        lastPermLength = perm.length();
-    //                    }
+                        String parentPerm = perm.substring(0, perm.length() - IPermissionsHelper.PERMISSION_ASTERIX.length() - 1);
+                        if (!permissions.containsKey(parentPerm)) {
+                            writer.newLine();
+                            writer.write(parentPerm);
+                            lastPermLength = parentPerm.length();
+                        }
                     }
                     else
                     {
