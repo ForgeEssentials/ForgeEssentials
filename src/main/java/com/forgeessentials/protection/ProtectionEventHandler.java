@@ -33,6 +33,7 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -227,7 +228,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             return;
 
         UserIdent ident = new UserIdent(e.entityPlayer);
-        
+
         WorldPoint point;
         if (e.action == RIGHT_CLICK_AIR)
         {
@@ -344,18 +345,13 @@ public class ProtectionEventHandler extends ServerEventHandler {
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        
+
         if (e.target instanceof EntityItem)
         {
-            // Destroy item when player in creative mode
-            if (getGamemode(e.entityPlayer) == GameType.CREATIVE)
+            // 1) Destroy item when player in creative mode
+            // 2) If creative mode is set for any group at the location where the block was destroyed, prevent drops
+            if (getGamemode(e.entityPlayer) == GameType.CREATIVE || anyCreativeModeAtPoint(e.entityPlayer, new WorldPoint(e.target)))
             {
-                e.target.worldObj.removeEntity(e.target);
-                return;
-            }
-            if (anyCreativeModeAtPoint(e.entityPlayer, new WorldPoint(e.target)))
-            {
-                // If creative mode is set for any group at the location where the block was destroyed, prevent drops
                 e.target.worldObj.removeEntity(e.target);
                 return;
             }
@@ -402,7 +398,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             return;
         EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
         UserIdent ident = new UserIdent(player);
-        
+
         checkPlayerInventory(player);
 
         GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE));
@@ -410,31 +406,18 @@ public class ProtectionEventHandler extends ServerEventHandler {
             gm = GameType.SURVIVAL;
         if (gm != GameType.NOT_SET)
         {
-            if (player.theItemInWorldManager.getGameType() != gm)
+            GameType lastGm = player.theItemInWorldManager.getGameType();
+            if (lastGm != gm)
             {
+                if (gm == GameType.CREATIVE || lastGm == GameType.CREATIVE)
+                {
+                    PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+                    pi.setGamemodeInventory(FunctionHelper.swapInventory(player, pi.getGamemodeInventory()));
+                }
                 player.setGameType(gm);
-                //OutputHandler.chatNotification(player, "You gamemode has been changed to " + gm.getName());
+                // OutputHandler.chatNotification(player, "You gamemode has been changed to " + gm.getName());
             }
         }
-
-        // List<String> biList = bi.getBannedItems();
-        // for (ListIterator<String> iter = biList.listIterator(); iter.hasNext();)
-        // {
-        // String element = iter.next();
-        // String[] split = element.split(":");
-        // int id = Integer.parseInt(split[0]);
-        // int meta = Integer.parseInt(split[1]);
-        // ItemStack is = new ItemStack(element, 0, meta);
-        //
-        // if (e.entityPlayer.inventory.hasItemStack(is))
-        // {
-        // PlayerInfo.getPlayerInfo(e.entityPlayer).getHiddenItems().add(is);
-        // }
-        // }
-
-        // String val = APIRegistry.perms.getPermissionPropForPlayer(e.entityPlayer.username, e.afterZone.getName(), ModuleProtection.PERMPROP_ZONE_GAMEMODE);
-        // e.entityPlayer.setGameType(EnumGameType.getByID(Integer.parseInt(val)));
-        // System.out.println("yoohoo");
     }
 
     // ----------------------------------------
@@ -482,8 +465,8 @@ public class ProtectionEventHandler extends ServerEventHandler {
     public static boolean isInventoryItemBanned(EntityPlayer player, ItemStack stack)
     {
         String permission = ModuleProtection.PERM_INVENTORY + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
-        //if (ModuleProtection.isDebugMode(player))
-        //    OutputHandler.chatNotification(player, permission);
+        // if (ModuleProtection.isDebugMode(player))
+        // OutputHandler.chatNotification(player, permission);
         return !APIRegistry.perms.checkUserPermission(new UserIdent(player), permission);
     }
 
@@ -497,8 +480,8 @@ public class ProtectionEventHandler extends ServerEventHandler {
 
     public static void checkPlayerInventory(EntityPlayer player)
     {
-        //if (ModuleProtection.isDebugMode(player))
-        //    OutputHandler.chatNotification(player, "PDBG: Checking inventory");
+        // if (ModuleProtection.isDebugMode(player))
+        // OutputHandler.chatNotification(player, "PDBG: Checking inventory");
         for (int slotIdx = 0; slotIdx < player.inventory.getSizeInventory(); slotIdx++)
         {
             ItemStack stack = player.inventory.getStackInSlot(slotIdx);

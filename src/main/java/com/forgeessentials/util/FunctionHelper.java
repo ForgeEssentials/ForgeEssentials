@@ -98,6 +98,29 @@ public final class FunctionHelper {
 		}
 	}
 
+	// ------------------------------------------------------------
+	
+    /**
+     * Swaps the player's inventory with the one provided and returns the old.
+     * 
+     * @param player
+     * @param newItems
+     * @return
+     */
+    public static List<ItemStack> swapInventory(EntityPlayerMP player, List<ItemStack> newItems)
+    {
+        List<ItemStack> oldItems = new ArrayList<>();
+        for (int slotIdx = 0; slotIdx < player.inventory.getSizeInventory(); slotIdx++)
+        {
+            oldItems.add(player.inventory.getStackInSlot(slotIdx));
+            if (newItems != null && slotIdx < newItems.size())
+                player.inventory.setInventorySlotContents(slotIdx, newItems.get(slotIdx));
+        }
+        return oldItems;
+    }
+
+    // ------------------------------------------------------------
+
 	/**
 	 * Checks if the blocks from [x,y,z] to [x,y+h-1,z] are either air or replacable
 	 * 

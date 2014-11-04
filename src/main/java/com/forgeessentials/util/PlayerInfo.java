@@ -137,7 +137,7 @@ public class PlayerInfo
     private Stack<BackupArea> redos;
 
     @SaveableField
-    private List<ItemStack> hiddenItems;
+    private List<ItemStack> gamemodeInventory;
 
     private boolean hasFEClient;
 
@@ -157,10 +157,11 @@ public class PlayerInfo
 
         timePlayed = 0;
 
-        hiddenItems = new ArrayList<ItemStack>();
+        gamemodeInventory = new ArrayList<ItemStack>();
         hasFEClient = false;
     }
 
+    @SuppressWarnings("unchecked")
     @Reconstructor()
     public static PlayerInfo reconstruct(IReconstructData tag)
     {
@@ -178,10 +179,11 @@ public class PlayerInfo
         info.lastDeathLocation = (WarpPoint) tag.getFieldValue("lastDeathLocation");
 
         info.spawnType = (Integer) tag.getFieldValue("spawnType");
-
         info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
-
         info.firstJoin = (Long) tag.getFieldValue("firstJoin");
+        
+        info.gamemodeInventory = (List<ItemStack>) tag.getFieldValue("gamemodeInventory");
+        
         return info;
     }
 
@@ -399,10 +401,14 @@ public class PlayerInfo
         return back;
     }
 
-    public List<ItemStack> getHiddenItems()
+    public void setGamemodeInventory(List<ItemStack> stacks)
     {
-        return hiddenItems;
+        gamemodeInventory = stacks;
+    }
 
+    public List<ItemStack> getGamemodeInventory()
+    {
+        return gamemodeInventory;
     }
 
     public HashMap<String, Integer> getKitCooldown()
