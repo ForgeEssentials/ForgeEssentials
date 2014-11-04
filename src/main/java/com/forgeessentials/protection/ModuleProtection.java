@@ -34,9 +34,6 @@ public class ModuleProtection {
     public final static String PERM_PVP = BASE_PERM + ".pvp";
 
     public final static String PERM_GAMEMODE = BASE_PERM + ".gamemode";
-    public final static String PERM_GAMEMODE_CREATIVE = PERM_GAMEMODE + ".creative";
-    public final static String PERM_GAMEMODE_SURVIVAL = PERM_GAMEMODE + ".survival";
-    public final static String PERM_GAMEMODE_ADVENTURE = PERM_GAMEMODE + ".adventure";
 
     public final static String PERM_USE = BASE_PERM + ".use";
     public final static String PERM_BREAK = BASE_PERM + ".break";
@@ -106,10 +103,7 @@ public class ModuleProtection {
         APIRegistry.perms.registerPermission(PERM_DAMAGE_TO, RegisteredPermValue.TRUE, "Allow damaging entities");
         APIRegistry.perms.registerPermission(PERM_DAMAGE_BY, RegisteredPermValue.TRUE, "Allow getting hurt by entities");
 
-        APIRegistry.perms.registerPermission(PERM_GAMEMODE, RegisteredPermValue.FALSE, "Force gamemode");
-        APIRegistry.perms.registerPermission(PERM_GAMEMODE_SURVIVAL, RegisteredPermValue.FALSE, "Force gamemode to survival");
-        APIRegistry.perms.registerPermission(PERM_GAMEMODE_CREATIVE, RegisteredPermValue.FALSE, "Force gamemode to creative");
-        APIRegistry.perms.registerPermission(PERM_GAMEMODE_ADVENTURE, RegisteredPermValue.FALSE, "Force gamemode to adventure");
+        APIRegistry.perms.registerPermission(PERM_GAMEMODE, RegisteredPermValue.FALSE, "Force gamemode (value = gamemode-index)");
 
         APIRegistry.perms.registerPermission(PERM_OVERRIDE + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.OP, "Override protection permissions");
         APIRegistry.perms.registerPermission(PERM_OVERRIDE_USE, RegisteredPermValue.OP);

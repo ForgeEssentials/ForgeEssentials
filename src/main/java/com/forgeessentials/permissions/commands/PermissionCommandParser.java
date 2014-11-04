@@ -1205,7 +1205,7 @@ public class PermissionCommandParser {
         }
 
         // Get included groups
-        String includedGroupsStr = APIRegistry.perms.getPermissionProperty(group, FEPermissions.GROUP_INCLUDES);
+        String includedGroupsStr = APIRegistry.perms.getGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES);
         Set<String> includedGroups = new HashSet<String>();
         if (includedGroupsStr != null)
             for (String includedGroup : includedGroupsStr.split(","))

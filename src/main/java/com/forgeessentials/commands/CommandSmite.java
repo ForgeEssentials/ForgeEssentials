@@ -50,7 +50,7 @@ public class CommandSmite extends FEcmdModuleCommands {
         }
         else
         {
-            MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
+            MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, 500);
             if (mop == null)
             {
                 OutputHandler.chatError(sender, "You must first look at the ground!");

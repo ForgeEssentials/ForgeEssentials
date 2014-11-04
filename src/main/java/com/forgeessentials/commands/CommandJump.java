@@ -32,7 +32,7 @@ public class CommandJump extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayer sender, String[] args)
     {
-        MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(sender, false);
+        MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(sender, 500);
         if (mo == null)
         {
             OutputHandler.chatError(sender, "Even jumpman couldn't make that jump!");

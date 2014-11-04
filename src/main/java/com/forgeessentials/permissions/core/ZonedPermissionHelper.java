@@ -691,22 +691,22 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     // ------------------------------------------------------------
 
     @Override
-    public boolean checkPermission(UserIdent ident, String permissionNode)
+    public boolean checkUserPermission(UserIdent ident, String permissionNode)
     {
         return checkBooleanPermission(getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null, getPlayerGroups(ident),
                 permissionNode, false));
     }
 
     @Override
-    public String getPermissionProperty(UserIdent ident, String permissionNode)
+    public String getUserPermissionProperty(UserIdent ident, String permissionNode)
     {
         return getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null, getPlayerGroups(ident), permissionNode, true);
     }
 
     @Override
-    public Integer getPermissionPropertyInt(UserIdent ident, String permissionNode)
+    public Integer getUserPermissionPropertyInt(UserIdent ident, String permissionNode)
     {
-        String value = getPermissionProperty(ident, permissionNode);
+        String value = getUserPermissionProperty(ident, permissionNode);
         try
         {
             return Integer.parseInt(value);
@@ -720,13 +720,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     // ------------------------------------------------------------
 
     @Override
-    public boolean checkPermission(UserIdent ident, WorldPoint targetPoint, String permissionNode)
+    public boolean checkUserPermission(UserIdent ident, WorldPoint targetPoint, String permissionNode)
     {
         return checkBooleanPermission(getPermission(ident, targetPoint, null, getPlayerGroups(ident), permissionNode, false));
     }
 
     @Override
-    public String getPermissionProperty(UserIdent ident, WorldPoint targetPoint, String permissionNode)
+    public String getUserPermissionProperty(UserIdent ident, WorldPoint targetPoint, String permissionNode)
     {
         return getPermission(ident, targetPoint, null, getPlayerGroups(ident), permissionNode, true);
     }
@@ -734,13 +734,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     // ------------------------------------------------------------
 
     @Override
-    public boolean checkPermission(UserIdent ident, WorldArea targetArea, String permissionNode)
+    public boolean checkUserPermission(UserIdent ident, WorldArea targetArea, String permissionNode)
     {
         return checkBooleanPermission(getPermission(ident, null, targetArea, getPlayerGroups(ident), permissionNode, false));
     }
 
     @Override
-    public String getPermissionProperty(UserIdent ident, WorldArea targetArea, String permissionNode)
+    public String getUserPermissionProperty(UserIdent ident, WorldArea targetArea, String permissionNode)
     {
         return getPermission(ident, null, targetArea, getPlayerGroups(ident), permissionNode, true);
     }
@@ -748,13 +748,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     // ------------------------------------------------------------
 
     @Override
-    public boolean checkPermission(UserIdent ident, Zone zone, String permissionNode)
+    public boolean checkUserPermission(UserIdent ident, Zone zone, String permissionNode)
     {
         return checkBooleanPermission(getPermission(getGlobalZones(zone), ident, getPlayerGroups(ident), permissionNode, false));
     }
 
     @Override
-    public String getPermissionProperty(UserIdent ident, Zone zone, String permissionNode)
+    public String getUserPermissionProperty(UserIdent ident, Zone zone, String permissionNode)
     {
         return getPermission(getGlobalZones(zone), ident, getPlayerGroups(ident), permissionNode, true);
     }
@@ -762,53 +762,65 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     // ------------------------------------------------------------
 
     @Override
-    public String getPermissionProperty(String group, String permissionNode)
+    public String getGroupPermissionProperty(String group, String permissionNode)
     {
         return getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, true);
     }
 
     @Override
-    public String getPermissionProperty(String group, Zone zone, String permissionNode)
+    public String getGroupPermissionProperty(String group, Zone zone, String permissionNode)
     {
         return getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, true);
     }
 
     @Override
-    public boolean checkPermission(String group, String permissionNode)
+    public boolean checkGroupPermission(String group, String permissionNode)
     {
         return checkBooleanPermission(getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, false));
     }
 
     @Override
-    public boolean checkPermission(String group, Zone zone, String permissionNode)
+    public boolean checkGroupPermission(String group, Zone zone, String permissionNode)
     {
         return checkBooleanPermission(getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, false));
+    }
+
+    @Override
+    public String getGroupPermissionProperty(String group, WorldPoint point, String permissionNode)
+    {
+        return getPermission(getZonesAt(point), null, Arrays.asList(group), permissionNode, true);
+    }
+
+    @Override
+    public boolean checkGroupPermission(String group, WorldPoint point, String permissionNode)
+    {
+        return checkBooleanPermission(getPermission(getZonesAt(point), null, Arrays.asList(group), permissionNode, false));
     }
 
     // ------------------------------------------------------------
 
     @Override
-    public String getPermissionProperty(String permissionNode)
+    public String getGlobalPermissionProperty(String permissionNode)
     {
-        return getPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, permissionNode);
+        return getGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, permissionNode);
     }
 
     @Override
-    public String getPermissionProperty(Zone zone, String permissionNode)
+    public String getGlobalPermissionProperty(Zone zone, String permissionNode)
     {
-        return getPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, zone, permissionNode);
+        return getGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, zone, permissionNode);
     }
 
     @Override
-    public boolean checkPermission(String permissionNode)
+    public boolean checkGlobalPermission(String permissionNode)
     {
-        return checkPermission(IPermissionsHelper.GROUP_DEFAULT, permissionNode);
+        return checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, permissionNode);
     }
 
     @Override
-    public boolean checkPermission(Zone zone, String permissionNode)
+    public boolean checkGlobalPermission(Zone zone, String permissionNode)
     {
-        return checkPermission(IPermissionsHelper.GROUP_DEFAULT, zone, permissionNode);
+        return checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, zone, permissionNode);
     }
 
     // ------------------------------------------------------------

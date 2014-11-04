@@ -145,42 +145,36 @@ public final class FunctionHelper {
 		return y;
 	}
 
-	/**
-	 * Get player's looking spot.
-	 *
-	 * @param player
-	 * @param restrict
-	 *            Keep max distance to 5.
-	 * @return The position as a MovingObjectPosition Null if not existent.
-	 */
-	public static MovingObjectPosition getPlayerLookingSpot(EntityPlayer player, boolean restrict)
-	{
-		return getPlayerLookingSpot(player, restrict, 500);
-	}
+    /**
+     * Get player's looking-at spot.
+     *
+     * @param player
+     * @return The position as a MovingObjectPosition Null if not existent.
+     */
+    public static MovingObjectPosition getPlayerLookingSpot(EntityPlayer player)
+    {
+        if (player instanceof EntityPlayerMP)
+            return getPlayerLookingSpot(player, ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance());
+        else
+            return getPlayerLookingSpot(player, 5);
+    }
 
-	/**
-	 * Get player's looking spot.
-	 *
-	 * @param player
-	 * @param restrict
-	 *            Keep max distance to 5.
-	 * @return The position as a MovingObjectPosition Null if not existent.
-	 */
-	public static MovingObjectPosition getPlayerLookingSpot(EntityPlayer player, boolean restrict, double maxDistance)
-	{
-		if (restrict)
-		{
-			if (player instanceof EntityPlayerMP)
-				maxDistance = Math.min(maxDistance, ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance());
-			else
-				maxDistance = Math.min(maxDistance, 5);
-		}
-		Vec3 lookAt = player.getLook(1);
-		Vec3 playerPos = Vec3.createVectorHelper(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
-		Vec3 pos1 = playerPos.addVector(0, player.getEyeHeight(), 0);
-		Vec3 pos2 = pos1.addVector(lookAt.xCoord * maxDistance, lookAt.yCoord * maxDistance, lookAt.zCoord * maxDistance);
-		return player.worldObj.rayTraceBlocks(pos1, pos2);
-	}
+    /**
+     * Get player's looking spot.
+     *
+     * @param player
+     * @param restrict
+     *            Keep max distance to 5.
+     * @return The position as a MovingObjectPosition Null if not existent.
+     */
+    public static MovingObjectPosition getPlayerLookingSpot(EntityPlayer player, double maxDistance)
+    {
+        Vec3 lookAt = player.getLook(1);
+        Vec3 playerPos = Vec3.createVectorHelper(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
+        Vec3 pos1 = playerPos.addVector(0, player.getEyeHeight(), 0);
+        Vec3 pos2 = pos1.addVector(lookAt.xCoord * maxDistance, lookAt.yCoord * maxDistance, lookAt.zCoord * maxDistance);
+        return player.worldObj.rayTraceBlocks(pos1, pos2);
+    }
 
 	/**
 	 * Gets a nice string with only needed elements. Max time is weeks

@@ -115,7 +115,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param ident
      * @param permissionNode
      */
-    boolean checkPermission(UserIdent ident, String permissionNode);
+    boolean checkUserPermission(UserIdent ident, String permissionNode);
 
     /**
      * Gets a permission-property for a player
@@ -124,7 +124,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(UserIdent ident, String permissionNode);
+    String getUserPermissionProperty(UserIdent ident, String permissionNode);
 
     /**
      * Gets a permission-property for a player as integer
@@ -133,7 +133,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    Integer getPermissionPropertyInt(UserIdent ident, String permissionNode);
+    Integer getUserPermissionPropertyInt(UserIdent ident, String permissionNode);
 
     // ---------------------------------------------------------------------------
 
@@ -144,7 +144,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param targetPoint
      * @param permissionNode
      */
-    boolean checkPermission(UserIdent ident, WorldPoint targetPoint, String permissionNode);
+    boolean checkUserPermission(UserIdent ident, WorldPoint targetPoint, String permissionNode);
 
     /**
      * Gets a permission-property for a player at a certain position
@@ -154,7 +154,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(UserIdent ident, WorldPoint targetPoint, String permissionNode);
+    String getUserPermissionProperty(UserIdent ident, WorldPoint targetPoint, String permissionNode);
 
     // ---------------------------------------------------------------------------
 
@@ -165,7 +165,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param targetArea
      * @param permissionNode
      */
-    boolean checkPermission(UserIdent ident, WorldArea targetArea, String permissionNode);
+    boolean checkUserPermission(UserIdent ident, WorldArea targetArea, String permissionNode);
 
     /**
      * Gets a permission-property for a player in a certain area
@@ -175,7 +175,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(UserIdent ident, WorldArea targetArea, String permissionNode);
+    String getUserPermissionProperty(UserIdent ident, WorldArea targetArea, String permissionNode);
 
     // ---------------------------------------------------------------------------
 
@@ -186,7 +186,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param zone
      * @param permissionNode
      */
-    boolean checkPermission(UserIdent ident, Zone zone, String permissionNode);
+    boolean checkUserPermission(UserIdent ident, Zone zone, String permissionNode);
 
     /**
      * Gets a permission-property for a player in the specified zone
@@ -196,17 +196,17 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(UserIdent ident, Zone zone, String permissionNode);
+    String getUserPermissionProperty(UserIdent ident, Zone zone, String permissionNode);
 
     // ---------------------------------------------------------------------------
-
+ 
     /**
      * Gets a permission-property for the specified group
      * 
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(String group, String permissionNode);
+    String getGroupPermissionProperty(String group, String permissionNode);
 
     /**
      * Gets a permission-property for the specified group in the specified zone
@@ -215,7 +215,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(String group, Zone zone, String permissionNode);
+    String getGroupPermissionProperty(String group, Zone zone, String permissionNode);
 
     /**
      * Gets a permission for the specified group
@@ -223,7 +223,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    boolean checkPermission(String group, String permissionNode);
+    boolean checkGroupPermission(String group, String permissionNode);
 
     /**
      * Gets a permission for the specified group in the specified zone
@@ -232,8 +232,27 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    boolean checkPermission(String group, Zone zone, String permissionNode);
+    boolean checkGroupPermission(String group, Zone zone, String permissionNode);
 
+    /**
+     * Gets a permission-property for a group at a certain position
+     * 
+     * @param group
+     * @param targetPoint
+     * @param permissionNode
+     * @return property, if it exists, null otherwise
+     */
+    String getGroupPermissionProperty(String group, WorldPoint point, String permissionNode);
+
+    /**
+     * Checks a permission for a group at a certain position
+     * 
+     * @param group
+     * @param targetPoint
+     * @param permissionNode
+     */
+    boolean checkGroupPermission(String group, WorldPoint point, String permissionNode);
+   
     // ---------------------------------------------------------------------------
 
     /**
@@ -242,7 +261,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(String permissionNode);
+    String getGlobalPermissionProperty(String permissionNode);
 
     /**
      * Gets a global permission-property from the _ALL_ group in the specified zone
@@ -251,7 +270,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(Zone zone, String permissionNode);
+    String getGlobalPermissionProperty(Zone zone, String permissionNode);
 
     /**
      * Gets a global permission from the _ALL_ group
@@ -259,7 +278,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return
      */
-    boolean checkPermission(String permissionNode);
+    boolean checkGlobalPermission(String permissionNode);
 
     /**
      * Gets a global permission from the _ALL_ group in the specified zone
@@ -268,7 +287,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      * @return
      */
-    boolean checkPermission(Zone zone, String permissionNode);
+    boolean checkGlobalPermission(Zone zone, String permissionNode);
 
     // ---------------------------------------------------------------------------
 

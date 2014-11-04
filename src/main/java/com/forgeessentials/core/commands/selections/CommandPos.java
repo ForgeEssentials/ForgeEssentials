@@ -97,7 +97,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
             return;
         }
 
-        MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player, true);
+        MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player);
 
         if (mop == null)
         {
@@ -110,7 +110,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         z = mop.blockZ;
 
         WorldPoint point = new WorldPoint(player.dimension, x, y, z);
-        if (!APIRegistry.perms.checkPermission(new UserIdent(player), point, getPermissionNode()))
+        if (!APIRegistry.perms.checkUserPermission(new UserIdent(player), point, getPermissionNode()))
         {
             OutputHandler.chatError(player, "Insufficient permissions.");
             return;

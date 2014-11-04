@@ -79,7 +79,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
     {
         if (args.length >= 1)
         {
-            MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, false);
+            MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, 500);
             if (mop == null)
             {
                 OutputHandler.chatError(sender, "You must first look at the ground!");

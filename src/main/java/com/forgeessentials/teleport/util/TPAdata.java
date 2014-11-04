@@ -19,7 +19,7 @@ public class TPAdata {
         this.sender = sender;
         this.receiver = receiver;
 
-        timeout = FunctionHelper.parseIntDefault(APIRegistry.perms.getPermissionProperty(TeleportModule.PERM_TIMEOUT), 30);
+        timeout = FunctionHelper.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(TeleportModule.PERM_TIMEOUT), 30);
         startTime = System.currentTimeMillis();
         tphere = tpaHere;
     }

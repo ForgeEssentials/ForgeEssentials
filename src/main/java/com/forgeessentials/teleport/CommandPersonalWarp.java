@@ -90,7 +90,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 
                 if (!map.containsKey(args[1]))
 				{
-					Integer prop = APIRegistry.perms.getPermissionPropertyInt(new UserIdent(sender), PERM_LIMIT_PROP);
+					Integer prop = APIRegistry.perms.getUserPermissionPropertyInt(new UserIdent(sender), PERM_LIMIT_PROP);
 					if (prop == null || prop == -1)
 					{
 						map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
@@ -182,11 +182,11 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	{
 		if (target.startsWith("p:"))
 		{
-			return APIRegistry.perms.getPermissionProperty(new UserIdent(target.replaceFirst("p:", "")), PERM_LIMIT_PROP);
+			return APIRegistry.perms.getUserPermissionProperty(new UserIdent(target.replaceFirst("p:", "")), PERM_LIMIT_PROP);
 		}
 		else if (target.startsWith("g:"))
 		{
-			return APIRegistry.perms.getPermissionProperty(new UserIdent(target.replaceFirst("g:", "")), PERM_LIMIT_PROP);
+			return APIRegistry.perms.getUserPermissionProperty(new UserIdent(target.replaceFirst("g:", "")), PERM_LIMIT_PROP);
 		}
 		else
 		{
