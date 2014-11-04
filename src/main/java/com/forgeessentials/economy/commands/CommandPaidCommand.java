@@ -98,7 +98,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public RegGroup getReggroup()
+    public RegisteredPermValue getDefaultPermission()
     {
 
         return null;

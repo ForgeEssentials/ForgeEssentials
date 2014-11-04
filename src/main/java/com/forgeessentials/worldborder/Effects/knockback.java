@@ -26,7 +26,6 @@ public class knockback implements IEffect {
         double rideY = 0;
 
         if (player.worldObj.blockExists((int)vecp.getX(), (int)player.prevPosY, (int)vecp.getY()))
-        if (player.worldObj.blockExists((int)vecp.x, (int)player.prevPosY, (int)vecp.y))
         {
             y = player.worldObj.getActualHeight();
             if (player.ridingEntity != null)
