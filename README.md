@@ -14,7 +14,7 @@ The Forge Essentials project consists of a permissions and protection system to 
 
 #### This repo is for a port to Minecraft 1.7.10.
 There are compiled builds [here](http://198.23.242.205:8080/job/ForgeEssentials/).
-Betas are to be considered very unstable. Approach with caution. Please make backups before attempting to use this on a live server. [Here is a small updater-script by helinus](https://github.com/helinus/FE-updater)
+Betas are to be considered very unstable. Approach with caution. Please make backups before attempting to use this on a live server.
 
 <br>
 
