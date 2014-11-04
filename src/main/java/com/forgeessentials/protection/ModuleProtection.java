@@ -79,6 +79,18 @@ public class ModuleProtection {
         FunctionHelper.registerServerCommand(new CommandProtectionDebug());
     }
 
+    public static String getItemName(Item item)
+    {
+        try
+        {
+            return item.getItemStackDisplayName(new ItemStack(item));
+        }
+        catch (Exception e)
+        {
+            return item.getUnlocalizedName();
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @SubscribeEvent
     public void registerPermissions(FEModuleServerInitEvent ev)
@@ -122,7 +134,8 @@ public class ModuleProtection {
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
-                APIRegistry.perms.registerPermission(PERM_USE + "." + item.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "USE " + item.getItemStackDisplayName(new ItemStack(item)));
+                String itemPerm = "." + item.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX;
+                APIRegistry.perms.registerPermission(PERM_USE + itemPerm, RegisteredPermValue.TRUE, "USE " + getItemName(item));
             }
 
         APIRegistry.perms.registerPermission(PERM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
@@ -131,9 +144,10 @@ public class ModuleProtection {
         // Register blocks
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
-            APIRegistry.perms.registerPermission(PERM_BREAK + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "BREAK " + block.getLocalizedName());
-            APIRegistry.perms.registerPermission(PERM_PLACE + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "PLACE " + block.getLocalizedName());
-            APIRegistry.perms.registerPermission(PERM_INTERACT + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "INTERACT " + block.getLocalizedName());
+            String blockPerm = "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX;
+            APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, RegisteredPermValue.TRUE, "BREAK " + block.getLocalizedName());
+            APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, RegisteredPermValue.TRUE, "PLACE " + block.getLocalizedName());
+            APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, RegisteredPermValue.TRUE, "INTERACT " + block.getLocalizedName());
         }
         APIRegistry.perms.registerPermission(PERM_BREAK + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
         APIRegistry.perms.registerPermission(PERM_PLACE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
