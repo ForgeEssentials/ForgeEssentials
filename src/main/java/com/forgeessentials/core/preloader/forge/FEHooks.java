@@ -122,7 +122,7 @@ public class FEHooks
 
     public static void initEntityPlayerMPPatch()
     {
-        ClassPatch patch = new ClassPatch("net/minecraft/entity/player/EntityPlayerMP");
+        ClassPatch patch = new ClassPatch("net.minecraft.entity.player.EntityPlayerMP");
         patch.methodMappings.add(new MethodMapping("func_70003_b", "canCommandSenderUseCommand", "(ILjava/lang/String;)Z", "Permissions (EntityPlayerMP)")
         {
             @Override public void defineMethod(ClassWriter classWriter)
