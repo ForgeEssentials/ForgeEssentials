@@ -9,6 +9,7 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.forgeessentials.core.ForgeEssentials;
@@ -138,6 +139,9 @@ public class PlayerInfo
 
     @SaveableField
     private List<ItemStack> gamemodeInventory;
+    
+    @SaveableField
+    private GameType gamemodeInventoryType;
 
     private boolean hasFEClient;
 
@@ -158,6 +162,7 @@ public class PlayerInfo
         timePlayed = 0;
 
         gamemodeInventory = new ArrayList<ItemStack>();
+        gamemodeInventoryType = GameType.NOT_SET;
         hasFEClient = false;
     }
 
@@ -183,6 +188,7 @@ public class PlayerInfo
         info.firstJoin = (Long) tag.getFieldValue("firstJoin");
         
         info.gamemodeInventory = (List<ItemStack>) tag.getFieldValue("gamemodeInventory");
+        info.gamemodeInventoryType = (GameType) tag.getFieldValue("gamemodeInventoryType");
         
         return info;
     }
@@ -368,6 +374,30 @@ public class PlayerInfo
     }
     
     // ----------------------------------------------
+    // ---------- protection gamemode ---------------
+    // ----------------------------------------------
+
+    public List<ItemStack> getGamemodeInventory()
+    {
+        return gamemodeInventory;
+    }
+
+    public void setGamemodeInventory(List<ItemStack> stacks)
+    {
+        gamemodeInventory = stacks;
+    }
+
+    public GameType getGamemodeInventoryType()
+    {
+        return gamemodeInventoryType;
+    }
+
+    public void setGamemodeInventoryType(GameType gamemodeInventoryType)
+    {
+        this.gamemodeInventoryType = gamemodeInventoryType;
+    }
+
+    // ----------------------------------------------
     // ------------ Undo/Redo stuff -----------------
     // ----------------------------------------------
 
@@ -399,16 +429,6 @@ public class PlayerInfo
         BackupArea back = redos.pop();
         undos.push(back);
         return back;
-    }
-
-    public void setGamemodeInventory(List<ItemStack> stacks)
-    {
-        gamemodeInventory = stacks;
-    }
-
-    public List<ItemStack> getGamemodeInventory()
-    {
-        return gamemodeInventory;
     }
 
     public HashMap<String, Integer> getKitCooldown()

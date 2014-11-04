@@ -409,13 +409,14 @@ public class ProtectionEventHandler extends ServerEventHandler {
             GameType lastGm = player.theItemInWorldManager.getGameType();
             if (lastGm != gm)
             {
-                if (gm == GameType.CREATIVE || lastGm == GameType.CREATIVE)
-                {
-                    PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-                    pi.setGamemodeInventory(FunctionHelper.swapInventory(player, pi.getGamemodeInventory()));
-                }
                 player.setGameType(gm);
                 // OutputHandler.chatNotification(player, "You gamemode has been changed to " + gm.getName());
+            }
+            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+            if (gm != pi.getGamemodeInventoryType() && (gm == GameType.CREATIVE || pi.getGamemodeInventoryType() == GameType.CREATIVE))
+            {
+                pi.setGamemodeInventory(FunctionHelper.swapInventory(player, pi.getGamemodeInventory()));
+                pi.setGamemodeInventoryType(gm);
             }
         }
     }
