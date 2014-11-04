@@ -1,18 +1,17 @@
 package com.forgeessentials.economy.commands;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
+import java.util.Arrays;
+import java.util.List;
 
 public class CommandPaidCommand extends ForgeEssentialsCommandBase {
     @Override
@@ -52,7 +51,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
                         cmd.append(" ");
                     }
 
-                    MinecraftServer.getServer().getCommandManager().executeCommand(player, cmd.toString());
+                    MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
                     OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + APIRegistry.wallet.currency(amount));
                 }
                 else

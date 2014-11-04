@@ -1,8 +1,9 @@
 package com.forgeessentials.economy.commands;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,11 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-
-import cpw.mods.fml.common.registry.GameData;
+import java.util.Arrays;
+import java.util.List;
 
 public class CommandSellCommand extends ForgeEssentialsCommandBase {
     @Override
@@ -93,7 +91,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                         cmd.append(args[i]);
                         cmd.append(" ");
                     }
-                    MinecraftServer.getServer().getCommandManager().executeCommand(player, cmd.toString());
+                    MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
                     OutputHandler.chatConfirmation(player, "That cost you " + amount + " x " + target.getDisplayName());
                 }
                 else
