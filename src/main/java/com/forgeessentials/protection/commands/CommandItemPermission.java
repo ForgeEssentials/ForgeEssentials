@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandItemPermission extends ForgeEssentialsCommandBase {
@@ -26,8 +25,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBase {
             OutputHandler.chatError(sender, "No item equipped!");
             return;
         }
-        String permission = ModuleProtection.PERM_USE + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
-        OutputHandler.chatNotification(sender, permission);
+        OutputHandler.chatNotification(sender, stack.getUnlocalizedName() + "." + stack.getItemDamage());
     }
 
     @Override

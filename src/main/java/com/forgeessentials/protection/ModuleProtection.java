@@ -120,18 +120,21 @@ public class ModuleProtection {
         // Register items
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
-                APIRegistry.perms.registerPermission(PERM_USE + "." + item.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX,
-                        RegisteredPermValue.TRUE);
+            {
+                APIRegistry.perms.registerPermission(PERM_USE + "." + item.getUnlocalizedName(), RegisteredPermValue.TRUE);
+                APIRegistry.perms.registerPermission(PERM_USE + "." + item.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+            }
+
         APIRegistry.perms.registerPermission(PERM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
 
         // ----------------------------------------
         // Register blocks
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
-            APIRegistry.perms.registerPermission(PERM_BREAK + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX,
-                    RegisteredPermValue.TRUE);
-            APIRegistry.perms.registerPermission(PERM_INTERACT + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX,
-                    RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(PERM_BREAK + "." + block.getUnlocalizedName(), RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(PERM_INTERACT + "." + block.getUnlocalizedName(), RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(PERM_BREAK + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(PERM_INTERACT + "." + block.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
         }
         APIRegistry.perms.registerPermission(PERM_INTERACT + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
         APIRegistry.perms.registerPermission(PERM_BREAK + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
