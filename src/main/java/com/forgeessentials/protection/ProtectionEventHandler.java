@@ -5,7 +5,6 @@ import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -63,7 +62,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             Entity target = e.target;
             WorldPoint targetPos = new WorldPoint(e.target);
 
-            String permission = ModuleProtection.PERM_DAMAGE_TO_ENTITY + "." + target.getClass().getSimpleName();
+            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + target.getClass().getSimpleName();
             if (ModuleProtection.isDebugMode(source))
                 OutputHandler.chatNotification(source, permission);
             if (!APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, permission))
@@ -79,8 +78,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
-        // Do nothing if not both source and target are EntityLiving
-        if (e.entityLiving == null || !(e.source.getEntity() instanceof EntityLiving))
+        if (e.entityLiving == null)
             return;
 
         if (e.source.getEntity() instanceof EntityPlayer)
@@ -92,12 +90,12 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 // player -> player
                 EntityPlayer target = (EntityPlayer) e.entityLiving;
                 WorldPoint targetPos = new WorldPoint(target);
-
                 if (!APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, ModuleProtection.PERM_PVP)
                         || !APIRegistry.perms.checkPermission(new UserIdent(source), sourcePos, ModuleProtection.PERM_PVP)
                         || !APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_PVP))
                 {
                     e.setCanceled(true);
+                    return;
                 }
             }
             else
@@ -105,37 +103,47 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 // player -> living
                 EntityLivingBase target = e.entityLiving;
                 WorldPoint targetPos = new WorldPoint(target);
-
-                String permission = ModuleProtection.PERM_DAMAGE_TO_ENTITY + "." + target.getClass().getSimpleName();
+                String permission = ModuleProtection.PERM_DAMAGE_TO + "." + target.getClass().getSimpleName();
                 if (ModuleProtection.isDebugMode(source))
                     OutputHandler.chatNotification(source, permission);
                 if (!APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
                 {
                     e.setCanceled(true);
+                    return;
                 }
             }
         }
         else
         {
-            Entity source = e.source.getEntity();
-            // WorldPoint sourcePos = new WorldPoint(source);
             if (e.entityLiving instanceof EntityPlayer)
             {
-                // entity -> player
+                // non-player -> player (fall-damage, mob, dispenser, lava)
                 EntityPlayer target = (EntityPlayer) e.entityLiving;
                 WorldPoint targetPos = new WorldPoint(target);
-
-                String permission = ModuleProtection.PERM_DAMAGE_BY_ENTITY + "." + source.getClass().getSimpleName();
+                String permission = ModuleProtection.PERM_DAMAGE_BY + "." + e.source.damageType;
                 if (ModuleProtection.isDebugMode(target))
                     OutputHandler.chatNotification(target, permission);
                 if (!APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, permission))
                 {
                     e.setCanceled(true);
+                    return;
                 }
             }
-            else
+            
+            if (e.entityLiving instanceof EntityPlayer && e.source.getEntity() != null)
             {
-                // entity -> living
+                // non-player-entity -> player (mob)
+                EntityPlayer target = (EntityPlayer) e.entityLiving;
+                WorldPoint targetPos = new WorldPoint(target);
+                Entity source = e.source.getEntity();
+                String permission = ModuleProtection.PERM_DAMAGE_BY + "." + source.getClass().getSimpleName();
+                if (ModuleProtection.isDebugMode(target))
+                    OutputHandler.chatNotification(target, permission);
+                if (!APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, permission))
+                {
+                    e.setCanceled(true);
+                    return;
+                }
             }
         }
     }

@@ -106,6 +106,8 @@ public class CommandTime extends FEcmdModuleCommands {
 			} else {
 				world.setWorldTime(parseInt(sender, args[1]));
 			}
+            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
+            wt.freezeTime = world.getWorldTime();
 			return String.format("Set time to %s.", args[1]);
 		}
 		case "add":
@@ -114,6 +116,8 @@ public class CommandTime extends FEcmdModuleCommands {
 				throw new CommandException("Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
 			}
 			world.setWorldTime(world.getWorldTime() + parseInt(sender, args[1]));
+            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
+            wt.freezeTime = world.getWorldTime();
 			return String.format("Added %d to the current time.", args[1]);
 
 		}
@@ -122,7 +126,6 @@ public class CommandTime extends FEcmdModuleCommands {
 			WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
 			wt.freezeTime = world.getWorldTime();
 			wt.timeFreeze = !wt.timeFreeze;
-			CommandDataManager.WTmap.put(wt.dimID, wt);
 			return "Time freeze" + (wt.timeFreeze ? "on" : "off");
 		}
 		case "lock":
@@ -140,7 +143,6 @@ public class CommandTime extends FEcmdModuleCommands {
 					throw new CommandException("Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
 				}
 			}
-			CommandDataManager.WTmap.put(wt.dimID, wt);
 			return String.format("Locked time to %s.", args[1]);
 		}
 		default:
@@ -156,7 +158,8 @@ public class CommandTime extends FEcmdModuleCommands {
 		return true;
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		if (args.length == 1)

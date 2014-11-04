@@ -40,8 +40,8 @@ public class ModuleProtection {
     public final static String PERM_PLACE = BASE_PERM + ".place";
     public final static String PERM_INTERACT = BASE_PERM + ".interact";
     public final static String PERM_INTERACT_ENTITY = BASE_PERM + ".interact.entity";
-    public final static String PERM_DAMAGE_TO_ENTITY = BASE_PERM + ".damageto";
-    public final static String PERM_DAMAGE_BY_ENTITY = BASE_PERM + ".damageby";
+    public final static String PERM_DAMAGE_TO = BASE_PERM + ".damageto";
+    public final static String PERM_DAMAGE_BY = BASE_PERM + ".damageby";
 
     private final static String PERM_OVERRIDE = BASE_PERM + ".override";
     public final static String PERM_OVERRIDE_USE = PERM_OVERRIDE + ".use";
@@ -107,8 +107,8 @@ public class ModuleProtection {
         APIRegistry.perms.registerPermission(PERM_PLACE, RegisteredPermValue.TRUE, "Allow placing blocks");
         APIRegistry.perms.registerPermission(PERM_INTERACT, RegisteredPermValue.TRUE, "Allow interacting with blocks");
         APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE, "Allow interacting with entities");
-        APIRegistry.perms.registerPermission(PERM_DAMAGE_TO_ENTITY, RegisteredPermValue.TRUE, "Allow damaging entities");
-        APIRegistry.perms.registerPermission(PERM_DAMAGE_BY_ENTITY, RegisteredPermValue.TRUE, "Allow getting hurt by entities");
+        APIRegistry.perms.registerPermission(PERM_DAMAGE_TO, RegisteredPermValue.TRUE, "Allow damaging entities");
+        APIRegistry.perms.registerPermission(PERM_DAMAGE_BY, RegisteredPermValue.TRUE, "Allow getting hurt by entities");
 
         APIRegistry.perms.registerPermission(PERM_OVERRIDE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.OP, "Override protection permissions");
         APIRegistry.perms.registerPermission(PERM_OVERRIDE_USE, RegisteredPermValue.OP);
