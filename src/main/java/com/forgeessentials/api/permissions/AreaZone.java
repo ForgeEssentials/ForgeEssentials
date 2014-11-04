@@ -17,7 +17,7 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
 
 	private String name;
 
-	private AreaBase area;
+	private AreaBase region;
 
 	private int priority;
 
@@ -31,7 +31,7 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
 		this(id);
 		this.worldZone = worldZone;
 		this.name = name;
-		this.area = area;
+		this.region = area;
 		this.worldZone.addAreaZone(this);
 	}
 
@@ -42,8 +42,8 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
 
 	protected boolean isPointInZone(Point point)
 	{
-		return point.getX() >= area.getLowPoint().getX() && point.getZ() >= area.getLowPoint().getZ() && point.getX() <= area.getHighPoint().getX()
-				&& point.getZ() <= area.getHighPoint().getZ() && point.getY() >= area.getLowPoint().getY() && point.getY() <= area.getHighPoint().getY();
+		return point.getX() >= region.getLowPoint().getX() && point.getZ() >= region.getLowPoint().getZ() && point.getX() <= region.getHighPoint().getX()
+				&& point.getZ() <= region.getHighPoint().getZ() && point.getY() >= region.getLowPoint().getY() && point.getY() <= region.getHighPoint().getY();
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
     {
         if (!worldZone.isPartOfZone(area))
             return false;
-        return this.area.intersectsWith(area);
+        return this.region.intersectsWith(area);
     }
 
 	@Override
@@ -107,12 +107,12 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
 
 	public AreaBase getArea()
 	{
-		return area;
+		return region;
 	}
 
 	public void setArea(AreaBase area)
 	{
-		this.area = area;
+		this.region = area;
 		getWorldZone().sortAreaZones();
 	}
 
@@ -126,7 +126,6 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
 		this.priority = priority;
 	}
 
-
 	@Override
 	public int compareTo(AreaZone area)
 	{
@@ -135,7 +134,7 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
 		
 		Point areaSize = area.getArea().getSize();
 		Point thisSize = getArea().getSize();
-		cmp = (areaSize.getX() * areaSize.getY()) - (thisSize.getX() * thisSize.getY());
+		cmp = (thisSize.getX() * thisSize.getY()) - (areaSize.getX() * areaSize.getY());
 		if (cmp != 0) return cmp;
 		
 		return cmp;

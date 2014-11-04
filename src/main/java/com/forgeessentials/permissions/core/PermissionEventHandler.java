@@ -30,15 +30,15 @@ public class PermissionEventHandler extends ServerEventHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onZoneChange(PlayerChangedZone event)
     {
-        String query1 = APIRegistry.perms.getPermissionProperty(new UserIdent(event.entityPlayer), event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
-        if (query1 != null)
+        String exitMsg = APIRegistry.perms.getPermissionProperty(new UserIdent(event.entityPlayer), event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
+        if (exitMsg != null)
         {
-            OutputHandler.sendMessage(event.entityPlayer, FunctionHelper.formatColors(query1));
+            OutputHandler.sendMessage(event.entityPlayer, FunctionHelper.formatColors(exitMsg));
         }
-        String query2 = APIRegistry.perms.getPermissionProperty(new UserIdent(event.entityPlayer), event.afterZone, FEPermissions.ZONE_ENTRY_MESSAGE);
-        if (query2 != null)
+        String entryMsg = APIRegistry.perms.getPermissionProperty(new UserIdent(event.entityPlayer), event.afterZone, FEPermissions.ZONE_ENTRY_MESSAGE);
+        if (entryMsg != null)
         {
-            OutputHandler.sendMessage(event.entityPlayer, FunctionHelper.formatColors(query2));
+            OutputHandler.sendMessage(event.entityPlayer, FunctionHelper.formatColors(entryMsg));
         }
     }
 

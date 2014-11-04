@@ -21,7 +21,6 @@ import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -42,6 +41,7 @@ public class ModuleProtection {
     public final static String PERM_INTERACT_ENTITY = BASE_PERM + ".interact.entity";
     public final static String PERM_DAMAGE_TO = BASE_PERM + ".damageto";
     public final static String PERM_DAMAGE_BY = BASE_PERM + ".damageby";
+    public final static String PERM_BAN = BASE_PERM + ".ban";
 
     private final static String PERM_OVERRIDE = BASE_PERM + ".override";
     public final static String PERM_OVERRIDE_USE = PERM_OVERRIDE + ".use";
@@ -59,14 +59,6 @@ public class ModuleProtection {
 
     @SuppressWarnings("unused")
     private ProtectionEventHandler protectionHandler;
-
-    @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
-    {
-        // To disable now - just delete module-jar / might be canged in the future
-        // if (!enable)
-        // ModuleLauncher.instance.unregister("protection");
-    }
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
@@ -140,9 +132,11 @@ public class ModuleProtection {
             {
                 String itemPerm = "." + item.getUnlocalizedName() + "." + IPermissionsHelper.PERMISSION_ASTERIX;
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, RegisteredPermValue.TRUE, "USE " + getItemName(item));
+                APIRegistry.perms.registerPermission(PERM_BAN + itemPerm, RegisteredPermValue.TRUE, "USE " + getItemName(item));
             }
 
         APIRegistry.perms.registerPermission(PERM_USE + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_BAN + "." + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE);
 
         // ----------------------------------------
         // Register blocks
