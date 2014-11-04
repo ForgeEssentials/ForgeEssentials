@@ -77,7 +77,7 @@ public class PermissionsListWriter {
                         sb.append(value);
                         writer.write(sb.toString());
                     }
-                    else if (perm.endsWith("." + IPermissionsHelper.PERMISSION_ASTERIX))
+                    else if (perm.endsWith(IPermissionsHelper.ALL_PERMS))
                     {
                         String parentPerm = perm.substring(0, perm.length() - IPermissionsHelper.PERMISSION_ASTERIX.length() - 1);
                         if (!permissions.containsKey(parentPerm)) {

@@ -27,6 +27,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
     static final String PERMISSION_ASTERIX = "*";
     static final String PERMISSION_FALSE = "false";
     static final String PERMISSION_TRUE = "true";
+    static final String ALL_PERMS = "." + PERMISSION_ASTERIX;
 
     // ---------------------------------------------------------------------------
     // -- Persistence

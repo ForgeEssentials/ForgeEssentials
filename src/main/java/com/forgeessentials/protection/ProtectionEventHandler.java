@@ -2,10 +2,6 @@ package com.forgeessentials.protection;
 
 import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
 import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -22,6 +18,8 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -39,11 +37,9 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class ProtectionEventHandler extends ServerEventHandler {
-
-    public static final List<EntityPlayer> playerTickList = new ArrayList<>();
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void attackEntityEvent(AttackEntityEvent e)
@@ -220,7 +216,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         WorldPoint point;
         if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
         {
-            MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, true);
+            MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, true, 100);
             point = new WorldPoint(e.entityPlayer.dimension, mop.blockX, mop.blockY, mop.blockZ);
         }
         else
@@ -308,6 +304,41 @@ public class ProtectionEventHandler extends ServerEventHandler {
     }
 
     @SubscribeEvent
+    public void dropItemEvent(StartTracking e)
+    {
+        if (e.target instanceof EntityItem)
+        {
+            // Destroy item when player in creative mode
+            if (isCreativeMode(e.entityPlayer))
+            {
+                e.target.worldObj.removeEntity(e.target);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void debugEvents(PlayerEvent e)
+    {
+        // try
+        // {
+        // if (e instanceof PlayerOpenContainerEvent)
+        // return;
+        // if (e instanceof ItemTooltipEvent)
+        // return;
+        // OutputHandler.chatNotification(e.entityPlayer, e.getClass().getSimpleName());
+        // }
+        // catch (Exception ex)
+        // {
+        // }
+    }
+
+    // @SubscribeEvent
+    // public void itemDropEvent(EntityItemPickupEvent e)
+    // {
+    // handleBannedInventoryItemEvent(e, e.item.getEntityItem());
+    // }
+
+    @SubscribeEvent
     public void playerOpenContainerEvent(PlayerOpenContainerEvent e)
     {
         // If it's the player's own inventory - ignore
@@ -317,12 +348,9 @@ public class ProtectionEventHandler extends ServerEventHandler {
     }
 
     @SubscribeEvent
-    public void tickHandler(ServerTickEvent e)
+    public void playerLogin(PlayerLoggedInEvent e)
     {
-        for (EntityPlayer player : playerTickList)
-            checkPlayerInventory(player);
-        playerTickList.clear();
-        // handleBannedInventoryItemEvent(e, e.smelting);
+        checkPlayerInventory(e.player);
     }
 
     @SubscribeEvent
@@ -351,6 +379,11 @@ public class ProtectionEventHandler extends ServerEventHandler {
     }
 
     // ----------------------------------------
+
+    public boolean isCreativeMode(EntityPlayer player)
+    {
+        return !APIRegistry.perms.checkPermission(new UserIdent(player), ModuleProtection.PERM_GAMEMODE_CREATIVE);
+    }
 
     public boolean isInventoryItemBanned(EntityPlayer player, ItemStack stack)
     {
