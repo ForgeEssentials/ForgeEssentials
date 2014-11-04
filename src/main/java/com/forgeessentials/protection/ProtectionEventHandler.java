@@ -2,13 +2,16 @@ package com.forgeessentials.protection;
 
 import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
 import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
@@ -20,6 +23,7 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
@@ -35,8 +39,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class ProtectionEventHandler extends ServerEventHandler {
+
+    public static final List<EntityPlayer> playerTickList = new ArrayList<>();
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void attackEntityEvent(AttackEntityEvent e)
@@ -294,59 +301,34 @@ public class ProtectionEventHandler extends ServerEventHandler {
         }
     }
 
-    public boolean isInventoryItemBanned(EntityPlayer player, ItemStack stack)
-    {
-        String permission = ModuleProtection.PERM_INVENTORY + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
-        if (ModuleProtection.isDebugMode(player))
-            OutputHandler.chatNotification(player, permission);
-        return !APIRegistry.perms.checkPermission(new UserIdent(player), permission);
-    }
-
-    public void handleBannedInventoryItemEvent(net.minecraftforge.event.entity.player.PlayerEvent e, ItemStack stack)
-    {
-        if (isInventoryItemBanned(e.entityPlayer, stack))
-        {
-            e.setCanceled(true);
-        }
-    }
-
     @SubscribeEvent
     public void itemPickupEvent(EntityItemPickupEvent e)
     {
         handleBannedInventoryItemEvent(e, e.item.getEntityItem());
     }
 
-//    @SubscribeEvent
-//    public void itemCraftedEvent(ItemCraftedEvent e)
-//    {
-//        handleBannedInventoryItemEvent(e, e.crafting);
-//    }
-//
-//    @SubscribeEvent
-//    public void itemSmeltedEvent(ItemSmeltedEvent e)
-//    {
-//        handleBannedInventoryItemEvent(e, e.smelting);
-//    }
+    @SubscribeEvent
+    public void playerOpenContainerEvent(PlayerOpenContainerEvent e)
+    {
+        // If it's the player's own inventory - ignore
+        if (e.entityPlayer.openContainer == e.entityPlayer.inventoryContainer)
+            return;
+        checkPlayerInventory(e.entityPlayer);
+    }
+
+    @SubscribeEvent
+    public void tickHandler(ServerTickEvent e)
+    {
+        for (EntityPlayer player : playerTickList)
+            checkPlayerInventory(player);
+        playerTickList.clear();
+        // handleBannedInventoryItemEvent(e, e.smelting);
+    }
 
     @SubscribeEvent
     public void playerChangedZoneEvent(PlayerChangedZone e)
     {
-        InventoryPlayer inventory = e.entityPlayer.inventory;
-        for (int slotIdx = 0; slotIdx < inventory.getSizeInventory(); slotIdx++)
-        {
-            ItemStack stack = inventory.getStackInSlot(slotIdx);
-            if (stack != null)
-            {
-                if (isInventoryItemBanned(e.entityPlayer, stack))
-                {
-                    EntityItem droppedItem = e.entityPlayer.func_146097_a(stack, true, false);
-                    droppedItem.motionX = 0;
-                    droppedItem.motionY = 0;
-                    droppedItem.motionZ = 0;
-                    e.entityPlayer.inventory.setInventorySlotContents(slotIdx, null);
-                }
-            }
-        }
+        checkPlayerInventory(e.entityPlayer);
 
         // List<String> biList = bi.getBannedItems();
         // for (ListIterator<String> iter = biList.listIterator(); iter.hasNext();)
@@ -366,6 +348,43 @@ public class ProtectionEventHandler extends ServerEventHandler {
         // String val = APIRegistry.perms.getPermissionPropForPlayer(e.entityPlayer.username, e.afterZone.getName(), ModuleProtection.PERMPROP_ZONE_GAMEMODE);
         // e.entityPlayer.setGameType(EnumGameType.getByID(Integer.parseInt(val)));
         // System.out.println("yoohoo");
+    }
+
+    // ----------------------------------------
+
+    public boolean isInventoryItemBanned(EntityPlayer player, ItemStack stack)
+    {
+        String permission = ModuleProtection.PERM_INVENTORY + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
+        if (ModuleProtection.isDebugMode(player))
+            OutputHandler.chatNotification(player, permission);
+        return !APIRegistry.perms.checkPermission(new UserIdent(player), permission);
+    }
+
+    public void handleBannedInventoryItemEvent(net.minecraftforge.event.entity.player.PlayerEvent e, ItemStack stack)
+    {
+        if (isInventoryItemBanned(e.entityPlayer, stack))
+        {
+            e.setCanceled(true);
+        }
+    }
+
+    public void checkPlayerInventory(EntityPlayer player)
+    {
+        for (int slotIdx = 0; slotIdx < player.inventory.getSizeInventory(); slotIdx++)
+        {
+            ItemStack stack = player.inventory.getStackInSlot(slotIdx);
+            if (stack != null)
+            {
+                if (isInventoryItemBanned(player, stack))
+                {
+                    EntityItem droppedItem = player.func_146097_a(stack, true, false);
+                    droppedItem.motionX = 0;
+                    droppedItem.motionY = 0;
+                    droppedItem.motionZ = 0;
+                    player.inventory.setInventorySlotContents(slotIdx, null);
+                }
+            }
+        }
     }
 
 }
