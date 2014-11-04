@@ -3,8 +3,10 @@ package com.forgeessentials.protection;
 import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
 import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -58,10 +60,13 @@ public class ProtectionEventHandler extends ServerEventHandler {
         else
         {
             // player -> entity
+            Entity target = e.target;
             WorldPoint targetPos = new WorldPoint(e.target);
 
-            if (APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_OVERRIDE_INTERACT_ENTITY)
-                    || !APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
+            String permission = ModuleProtection.PERM_DAMAGE_TO_ENTITY + "." + target.getClass().getSimpleName();
+            if (ModuleProtection.isDebugMode(source))
+                OutputHandler.chatNotification(source, permission);
+            if (!APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, permission))
             {
                 e.setCanceled(true);
             }
@@ -98,10 +103,13 @@ public class ProtectionEventHandler extends ServerEventHandler {
             else
             {
                 // player -> living
-                WorldPoint targetPos = new WorldPoint(e.entityLiving);
+                EntityLivingBase target = e.entityLiving;
+                WorldPoint targetPos = new WorldPoint(target);
 
-                if (APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_OVERRIDE_INTERACT_ENTITY)
-                        || !APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
+                String permission = ModuleProtection.PERM_DAMAGE_TO_ENTITY + "." + target.getClass().getSimpleName();
+                if (ModuleProtection.isDebugMode(source))
+                    OutputHandler.chatNotification(source, permission);
+                if (!APIRegistry.perms.checkPermission(new UserIdent(source), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
                 {
                     e.setCanceled(true);
                 }
@@ -109,7 +117,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         }
         else
         {
-            // Entity source = e.source.getEntity();
+            Entity source = e.source.getEntity();
             // WorldPoint sourcePos = new WorldPoint(source);
             if (e.entityLiving instanceof EntityPlayer)
             {
@@ -117,9 +125,10 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 EntityPlayer target = (EntityPlayer) e.entityLiving;
                 WorldPoint targetPos = new WorldPoint(target);
 
-                // TODO: Change permission to PERM_DAMAGE_BY_ENTITY or so
-                if (!APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, ModuleProtection.PERM_OVERRIDE_INTERACT_ENTITY)
-                        && !APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, ModuleProtection.PERM_INTERACT_ENTITY))
+                String permission = ModuleProtection.PERM_DAMAGE_BY_ENTITY + "." + source.getClass().getSimpleName();
+                if (ModuleProtection.isDebugMode(target))
+                    OutputHandler.chatNotification(target, permission);
+                if (!APIRegistry.perms.checkPermission(new UserIdent(target), targetPos, permission))
                 {
                     e.setCanceled(true);
                 }
