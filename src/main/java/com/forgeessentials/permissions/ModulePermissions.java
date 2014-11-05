@@ -37,9 +37,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class)
 public class ModulePermissions {
 
-    @FEModule.ModuleDir
-    public static File moduleFolder;
-
     public static AutoPromoteManager autoPromoteManager;
 
     public static ZonedPermissionHelper permissionHelper;
@@ -77,7 +74,7 @@ public class ModulePermissions {
         // Load permissions
         File permPath = new File(FunctionHelper.getWorldPath(), "FEPermissions");
         {
-            File oldPermPath = new File(moduleFolder, "flat");
+            File oldPermPath = new File(ForgeEssentials.FEDIR, "Permissions/flat");
             if (oldPermPath.exists() && !permPath.exists())
             {
                 try

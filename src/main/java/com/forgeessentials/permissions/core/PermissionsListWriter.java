@@ -8,7 +8,7 @@ import java.util.TreeSet;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
-import com.forgeessentials.permissions.ModulePermissions;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.FunctionHelper;
 
 public class PermissionsListWriter {
@@ -21,7 +21,7 @@ public class PermissionsListWriter {
 
     public PermissionsListWriter()
     {
-        output = new File(ModulePermissions.moduleFolder, OUTPUT_FILE);
+        output = new File(ForgeEssentials.FEDIR, OUTPUT_FILE);
         if (output.exists())
         {
             output.delete();

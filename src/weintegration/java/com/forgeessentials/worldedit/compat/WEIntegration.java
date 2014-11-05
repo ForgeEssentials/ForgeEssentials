@@ -1,7 +1,5 @@
 package com.forgeessentials.worldedit.compat;
 
-import java.io.File;
-
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.core.ForgeEssentials;
@@ -28,11 +26,13 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class WEIntegration {
 
     protected static int syncInterval;
+    
     private static boolean disable;
+    
     private FEPlatform platform;
 
-    @FEModule.ModuleDir
-    public static File moduleDir;
+    @SuppressWarnings("unused")
+    private CUIComms cuiComms;
 
     private static boolean getDevOverride()
     {
@@ -86,8 +86,7 @@ public class WEIntegration {
     {
         this.platform = new FEPlatform();
         WorldEdit.getInstance().getPlatformManager().register(platform);
-        new CUIComms();
-
+        cuiComms = new CUIComms();
     }
 
     @SubscribeEvent

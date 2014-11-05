@@ -1,15 +1,15 @@
 package com.forgeessentials.afterlife;
 
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.io.File;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * This module handles Deathchest and respawn debuffs.
@@ -24,8 +24,6 @@ public class ModuleAfterlife {
     public static ConfigAfterlife conf;
     @FEModule.Instance
     public static ModuleAfterlife instance;
-    @FEModule.ModuleDir
-    public static File moduleDir;
     public Deathchest deathchest;
     public RespawnDebuffHandler respawnDebuff;
 
