@@ -39,6 +39,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.google.gson.JsonArray;
@@ -314,7 +315,10 @@ public final class FunctionHelper {
      */
     public static File getWorldPath()
     {
-        return new File(MinecraftServer.getServer().getFile("saves"), MinecraftServer.getServer().getFolderName());
+        if (Environment.isClient())
+            return new File(MinecraftServer.getServer().getFile("saves"), MinecraftServer.getServer().getFolderName());
+        else
+            return MinecraftServer.getServer().getFile(MinecraftServer.getServer().getFolderName());
     }
     
 	/**
