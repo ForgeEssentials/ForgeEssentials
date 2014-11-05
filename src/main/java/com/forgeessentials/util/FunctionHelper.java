@@ -308,6 +308,15 @@ public final class FunctionHelper {
 		}
 	}
 
+    /**
+     * Get's the directory where the world is saved
+     * @return
+     */
+    public static File getWorldPath()
+    {
+        return new File(MinecraftServer.getServer().getFile("saves"), MinecraftServer.getServer().getFolderName());
+    }
+    
 	/**
 	 * Get tps per world.
 	 *

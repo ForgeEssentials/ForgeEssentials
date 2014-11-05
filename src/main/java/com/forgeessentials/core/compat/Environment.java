@@ -7,31 +7,21 @@ import cpw.mods.fml.common.Loader;
 
 public class Environment {
     
-    public static boolean hasWorldEdit = false;
+    private static boolean hasWorldEdit = false;
+    
+    private static boolean isClient = false;
 
     public static void check()
     {
-        // Check for BukkitForge
-        if (Loader.isModLoaded("BukkitForge"))
-        {
-            OutputHandler.felog.severe("Sanity check failed: Detected BukkitForge, bad things may happen, proceed at your own risk.");
-        }
-
-        // Check for Fihgu's mods
-        if (Loader.isModLoaded("fihgu's Core Mod"))
-        {
-            OutputHandler.felog.severe("Sanity check failed: Detected Fihgu's mods, bad things may happen, proceed at your own risk.");
-        }
-
-        // Check for Cauldron or LavaBukkit
+        // Check if dedicated or integrated server
         try
         {
-            Class.forName("org.bukkit.craftbukkit.Main");
-            OutputHandler.felog.severe("Sanity check failed: Detected a ForgeBukkit server implementation, bad things may happen, proceed at your own risk.");
+            Class.forName("net.minecraft.client.Minecraft");
+            isClient = true;
         }
         catch (ClassNotFoundException e)
         {
-            // Safe!
+            isClient = false;
         }
 
         if (Loader.isModLoaded("WorldEdit"))
@@ -54,8 +44,45 @@ public class Environment {
             ForgeEssentials.worldEditCompatilityPresent = false;
             return;
         }
+        
+        // ============================================================
+        // Some additional checks
+        
+        // Check for BukkitForge
+        if (Loader.isModLoaded("BukkitForge"))
+        {
+            OutputHandler.felog.severe("Sanity check failed: Detected BukkitForge, bad things may happen, proceed at your own risk.");
+        }
+
+        // Check for Fihgu's mods
+        if (Loader.isModLoaded("fihgu's Core Mod"))
+        {
+            OutputHandler.felog.severe("Sanity check failed: Detected Fihgu's mods, bad things may happen, proceed at your own risk.");
+        }
+
+        // Check for Cauldron or LavaBukkit
+        try
+        {
+            Class.forName("org.bukkit.craftbukkit.Main");
+            OutputHandler.felog.severe("Sanity check failed: Detected a ForgeBukkit server implementation, bad things may happen, proceed at your own risk.");
+        }
+        catch (ClassNotFoundException e)
+        {
+            // class not found
+        }
 
         OutputHandler.felog.fine("Check passed, it's all good to go!");
+    }
+
+
+    public static boolean isClient()
+    {
+        return isClient;
+    }
+
+    public static boolean hasWorldEdit()
+    {
+        return hasWorldEdit;
     }
 
 }

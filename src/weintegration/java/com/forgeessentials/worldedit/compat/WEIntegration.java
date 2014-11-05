@@ -1,5 +1,9 @@
 package com.forgeessentials.worldedit.compat;
 
+import java.io.File;
+
+import net.minecraftforge.common.MinecraftForge;
+
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.compat.Environment;
@@ -16,11 +20,9 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.event.platform.PlatformReadyEvent;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
+
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.common.MinecraftForge;
-
-import java.io.File;
 
 @FEModule(name = "WEIntegrationTools", parentMod = ForgeEssentials.class)
 public class WEIntegration {
@@ -56,7 +58,7 @@ public class WEIntegration {
             return;
         }
 
-        if (!Environment.hasWorldEdit)
+        if (!Environment.hasWorldEdit())
         {
             OutputHandler.felog.severe("You cannot run the FE integration tools for WorldEdit without installing WorldEdit Forge.");
             ModuleLauncher.instance.unregister("WEIntegrationTools");

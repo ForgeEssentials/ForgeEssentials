@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import com.forgeessentials.api.APIRegistry;
@@ -17,7 +18,7 @@ import com.forgeessentials.util.selections.WorldPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class RespawnHandler {
 
@@ -27,7 +28,7 @@ public class RespawnHandler {
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    public static WarpPoint getPlayerSpawn(EntityPlayerMP player, WorldPoint location)
+    public static WarpPoint getPlayerSpawn(EntityPlayer player, WorldPoint location)
     {
         UserIdent ident = new UserIdent(player);
         if (location == null)
@@ -65,19 +66,39 @@ public class RespawnHandler {
     }
     
     @SubscribeEvent
-    public void doRespawn(PlayerEvent.PlayerRespawnEvent e)
+    public void doFirstRespawn(EntityJoinWorldEvent e)
+    {
+        if (e.entity instanceof EntityPlayerMP)
+        {
+            EntityPlayerMP player = (EntityPlayerMP) e.entity;
+            if (!PlayerInfo.playerInfoExists(player.getPersistentID()))
+            {
+                WarpPoint p = getPlayerSpawn(player, null);
+                if (p != null)
+                {
+                    FunctionHelper.teleportPlayer(player, p);
+                    player.posX = p.xd;
+                    player.posY = p.yd;
+                    player.posZ = p.zd;
+                }
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    public void doRespawn(PlayerRespawnEvent e)
     {
         WarpPoint lastDeathLocation = PlayerInfo.getPlayerInfo(e.player.getPersistentID()).getLastDeathLocation();
-        if (lastDeathLocation != null)
+        if (lastDeathLocation == null)
+            lastDeathLocation = new WarpPoint(e.player);
+        
+        WarpPoint p = getPlayerSpawn(e.player, lastDeathLocation);
+        if (p != null)
         {
-            WarpPoint p = getPlayerSpawn((EntityPlayerMP) e.player, lastDeathLocation);
-            if (p != null)
-            {
-                FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
-                e.player.posX = p.xd;
-                e.player.posY = p.yd;
-                e.player.posZ = p.zd;
-            }
+            FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
+            e.player.posX = p.xd;
+            e.player.posY = p.yd;
+            e.player.posZ = p.zd;
         }
     }
 

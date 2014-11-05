@@ -208,6 +208,18 @@ public class PlayerInfo
         getPlayerInfo(event.entityPlayer);
     }
 
+    public static boolean playerInfoExists(UUID playerID)
+    {
+        if (playerInfoMap.containsKey(playerID))
+            return true;
+        PlayerInfo info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), playerID.toString());
+        if (info != null)
+            return true;
+        info = new PlayerInfo(playerID);
+        playerInfoMap.put(playerID, info);
+        return false;
+    }
+
     public static PlayerInfo getPlayerInfo(EntityPlayer player)
     {
         return getPlayerInfo(player.getPersistentID());
