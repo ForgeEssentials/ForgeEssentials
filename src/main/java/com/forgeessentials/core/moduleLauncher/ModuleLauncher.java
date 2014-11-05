@@ -1,22 +1,24 @@
 package com.forgeessentials.core.moduleLauncher;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import net.minecraft.command.ICommandSender;
+
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.CoreConfig;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import net.minecraft.command.ICommandSender;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 public class ModuleLauncher {
     public ModuleLauncher()
@@ -134,7 +136,7 @@ public class ModuleLauncher {
                 }
                 else
                 {
-                    cfg.setFile(new File(ForgeEssentials.FEDIR, module.name + "/config.cfg"));
+                    cfg.setFile(new File(ForgeEssentials.FEDIR, module.name + ".cfg"));
                 }
 
                 File file = cfg.getFile();

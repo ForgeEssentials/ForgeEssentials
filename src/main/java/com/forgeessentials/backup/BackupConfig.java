@@ -41,7 +41,7 @@ public class BackupConfig extends ModuleConfigBase {
         config.addCustomCategoryComment(MAIN, "Configure the backup system.");
         backupName = config.get(MAIN, "name", "%name_%year-%month-%day_%hour-%min",
                 "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").getString();
-        backupDir = config.get(MAIN, "backupsDir", "ForgeEssentials/Backups/files", "The path to the backup folder.").getString();
+        backupDir = config.get(MAIN, "backupsDir", "ForgeEssentials/Backups", "The path to the backup folder.").getString();
         backupOnWorldUnload = config.get(MAIN, "backupOnWorldUnload", true, "Make a backup when a dim unloads.").getBoolean(true);
         backupIfUnloaded = config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").getBoolean(true);
         enableMsg = config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").getBoolean(true);
@@ -97,7 +97,7 @@ public class BackupConfig extends ModuleConfigBase {
         config.addCustomCategoryComment(MAIN, "Configure the backup system.");
         config.get(MAIN, "name", "%name_%year-%month-%day_%hour-%min",
                 "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").set(backupName);
-        config.get(MAIN, "backupsDir", "ForgeEssentials/Backups/files", "The path to the backup folder.").set(backupDir);
+        config.get(MAIN, "backupsDir", "ForgeEssentials/Backups", "The path to the backup folder.").set(backupDir);
         config.get(MAIN, "backupOnWorldUnload", true, "Make a backup when a dim unloads.").set(backupOnWorldUnload);
         config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").set(backupIfUnloaded);
         config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").set(enableMsg);
@@ -141,7 +141,7 @@ public class BackupConfig extends ModuleConfigBase {
         config.addCustomCategoryComment(MAIN, "Configure the backup system.");
         backupName = config.get(MAIN, "name", "%name_%year-%month-%day_%hour-%min",
                 "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").getString();
-        backupDir = config.get(MAIN, "backupsDir", "ForgeEssentials/Backups/files", "The path to the backup folder.").getString();
+        backupDir = config.get(MAIN, "backupsDir", "ForgeEssentials/Backups", "The path to the backup folder.").getString();
         backupOnWorldUnload = config.get(MAIN, "backupOnWorldUnload", true, "Make a backup when a dim unloads.").getBoolean(true);
         backupIfUnloaded = config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").getBoolean(true);
         enableMsg = config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").getBoolean(true);

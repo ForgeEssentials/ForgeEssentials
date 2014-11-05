@@ -19,6 +19,7 @@ import net.minecraftforge.common.config.Configuration;
  * @author Dries007
  */
 public class ShortcutCommands {
+
     private static final String ARGS_COMMENT =
             "The argumtens to be send to the command. Use double quotes.\n" +
                     "Usable variables:\n" +
@@ -28,7 +29,9 @@ public class ShortcutCommands {
                     "$oArg => the next argument, but optional. If there is no argument, doesn't do anything.";
 
     static ArrayList<CommandWrapper> list = new ArrayList<CommandWrapper>();
+
     static HashMap<String, CommandWrapper> cmdMap = new HashMap<String, CommandWrapper>();
+
     static Configuration config;
 
     /**
@@ -52,7 +55,7 @@ public class ShortcutCommands {
      */
     public static void loadConfig(File folder)
     {
-        File confFile = new File(folder, "shortcuts.cfg");
+        File confFile = new File(folder, "CommandShortcuts.cfg");
         config = new Configuration(confFile);
         parseConfig();
     }

@@ -1,14 +1,9 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Timer;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -18,12 +13,20 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Timer;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
 public class ModuleBackup {
+    
     @FEModule.Config
     public static BackupConfig config;
 
@@ -33,6 +36,9 @@ public class ModuleBackup {
     public static File baseFolder;
 
     private Timer timer = new Timer();
+
+    @SuppressWarnings("unused")
+    private WorldSaver worldSaver;
 
     public static void msg(String msg)
     {
@@ -70,7 +76,7 @@ public class ModuleBackup {
     public void load(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-        new WorldSaver();
+        worldSaver = new WorldSaver();
     }
 
     @SubscribeEvent
@@ -111,7 +117,7 @@ public class ModuleBackup {
         }
     }
 
-    private void makeReadme()
+    private static void makeReadme()
     {
         try
         {
@@ -124,21 +130,20 @@ public class ModuleBackup {
             {
                 return;
             }
-            PrintWriter pw = new PrintWriter(file);
-
-            pw.println("############");
-            pw.println("## WARNING ##");
-            pw.println("############");
-            pw.println("");
-            pw.println("DON'T CHANGE ANYTHING IN THIS FOLDER.");
-            pw.println("IF YOU DO, AUTOREMOVE WILL SCREW UP.");
-            pw.println("");
-            pw.println("If you have problems with this, report an issue and don't put:");
-            pw.println("\"Yes, I read the readme\" in the issue or your message on github,");
-            pw.println("YOU WILL BE IGNORED.");
-            pw.println("- The FE Team");
-
-            pw.close();
+            try (PrintWriter pw = new PrintWriter(file))
+            {
+                pw.println("############");
+                pw.println("## WARNING ##");
+                pw.println("############");
+                pw.println("");
+                pw.println("DON'T CHANGE ANYTHING IN THIS FOLDER.");
+                pw.println("IF YOU DO, AUTOREMOVE WILL SCREW UP.");
+                pw.println("");
+                pw.println("If you have problems with this, report an issue and don't put:");
+                pw.println("\"Yes, I read the readme\" in the issue or your message on github,");
+                pw.println("YOU WILL BE IGNORED.");
+                pw.println("- The FE Team");
+            }
         }
         catch (Exception e)
         {

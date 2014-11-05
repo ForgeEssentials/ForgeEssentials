@@ -28,7 +28,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-@FEModule(name = "TeleportModule", parentMod = ForgeEssentials.class)
+@FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
 public class TeleportModule {
 
     public static final String PERM_TP = "fe.teleport.tp";

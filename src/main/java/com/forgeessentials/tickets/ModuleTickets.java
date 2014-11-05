@@ -1,5 +1,12 @@
 package com.forgeessentials.tickets;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -10,25 +17,21 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 @FEModule(name = "Tickets", parentMod = ForgeEssentials.class, configClass = ConfigTickets.class)
 public class ModuleTickets {
+
     public static final String PERMBASE = "fe.tickets";
+    
     @FEModule.Config
     public static ConfigTickets config;
-    @FEModule.ModuleDir
-    public static File moduleDir;
+    
     public static ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
+    
     public static List<String> categories = new ArrayList<String>();
 
     public static int currentID;
