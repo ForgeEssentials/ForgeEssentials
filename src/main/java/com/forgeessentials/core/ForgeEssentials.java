@@ -1,5 +1,13 @@
 package com.forgeessentials.core;
 
+import java.io.File;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
@@ -41,6 +49,7 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -55,14 +64,6 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.io.File;
 
 /**
  * Main mod class
@@ -184,17 +185,17 @@ public class ForgeEssentials {
 		// commands
 		e.registerServerCommand(new HelpFixer());
 		
-		new CommandFEInfo().register(RegisteredPermValue.OP);
-        new CommandFEDebug().register(RegisteredPermValue.OP);
+		new CommandFEInfo().register();
+        new CommandFEDebug().register();
 
 		if (!worldEditCompatilityPresent)
 		{
-			new CommandPos(1).register(RegisteredPermValue.OP);
-			new CommandPos(2).register(RegisteredPermValue.OP);
-			new CommandWand().register(RegisteredPermValue.OP);
-			new CommandDeselect().register(RegisteredPermValue.OP);
-			new CommandExpand().register(RegisteredPermValue.OP);
-			new CommandExpandY().register(RegisteredPermValue.OP);
+			new CommandPos(1).register();
+			new CommandPos(2).register();
+			new CommandWand().register();
+			new CommandDeselect().register();
+			new CommandExpand().register();
+			new CommandExpandY().register();
 		}
 
 		tasks.onServerStart();

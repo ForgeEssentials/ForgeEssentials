@@ -1,5 +1,10 @@
 package com.forgeessentials.core.misc;
 
+import java.io.File;
+
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -7,14 +12,13 @@ import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.teleport.TeleportCenter;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
-import java.io.File;
 
 public class CoreConfig {
+
     public static final File mainconfig = new File(ForgeEssentials.FEDIR, "main.cfg");
+    
     public static String largeComment_Cat_Groups, groupPrefixFormat, groupSuffixFormat, groupRankFormat, largeComment_Cat_ChatColors;
+    
     public final Configuration config;
 
     static

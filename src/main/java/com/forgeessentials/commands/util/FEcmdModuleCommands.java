@@ -11,27 +11,46 @@ import net.minecraftforge.common.config.Configuration;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase {
-	
+
     private boolean enabledForCmdBlock = true;
     private boolean enabledForConsole = true;
     private boolean enabledForPlayer = true;
     private List<String> aliases = new ArrayList<String>();
 
-    // ---------------------------
-    // config interaction
-    // ---------------------------
+    // ------------------------------------------------------------
+    // Command usage
+
+    @Override
+    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    {
+        if (!super.canCommandSenderUseCommand(sender))
+            return false;
+
+        if (sender instanceof EntityPlayer)
+            if (!enabledForPlayer)
+                return canCommandSenderUseCommandException("This command is disabled for players");
+
+        if (sender instanceof TileEntityCommandBlock)
+            if (!enabledForCmdBlock)
+                return canCommandSenderUseCommandException("This command is disabled for command-blocks");
+
+        if (!enabledForConsole)
+            return canCommandSenderUseCommandException("This command is disabled for console");
+
+        return true;
+    }
+
+    // ------------------------------------------------------------
+    // Command configuration
 
     /**
      * Loads configuration for the command.
-     * Remember to call super.loadConfig if you overwrite this method.
      */
     public void loadConfig(Configuration config, String category)
     {
         config.addCustomCategoryComment(category, getPermissionNode());
         for (String alias : config.get(category, "aliases", getDefaultAliases()).getStringList())
-        {
             aliases.add(alias);
-        }
     }
 
     @Override
@@ -41,54 +60,42 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase {
     }
 
     /**
-     * Returns a list of default aliases, that will be added to the configuration on firstrun
+     * Returns a list of default aliases, that will be added to the configuration on first run
      */
     public String[] getDefaultAliases()
     {
-        return new String[] { };
+        return new String[] {};
     }
+
+    // ------------------------------------------------------------
+    // Permissions
 
     /**
-     * You don't need to register the commandpermission.
+     * Register other permissions in addition to the command-permission.
      */
-    public void registerExtraPermissions() {
+    public void registerExtraPermissions()
+    {
     }
 
-    /* 
+    /*
      * Returns the permission node based on the command name
      */
     @Override
-	public String getPermissionNode()
+    public String getPermissionNode()
     {
         return "fe.commands." + getCommandName();
     }
 
-	/* 
-	 * Check, if the command-sender can use the command.
-	 * This checks, if the command has been invoked by a player, a command-block or by console.
-	 * @see com.forgeessentials.core.commands.ForgeEssentialsCommandBase#canCommandSenderUseCommand(net.minecraft.command.ICommandSender)
-	 */
-	@Override
-	public boolean canCommandSenderUseCommand(ICommandSender sender)
-	{
-		if (sender instanceof EntityPlayer) {
-			if (!enabledForPlayer)
-				return false;
-			return canPlayerUseCommand((EntityPlayer) sender);
-		} else if (sender instanceof TileEntityCommandBlock) {
-			if (!enabledForCmdBlock)
-				return false;
-			return canCommandBlockUseCommand((TileEntityCommandBlock) sender);
-		} else {
-			if (!enabledForConsole)
-				return false;
-			return canConsoleUseCommand();
-		}
-	}
+    // ------------------------------------------------------------
+    // Command usage
 
-    // ---------------------------
-    // command usage
-    // ---------------------------
+    /**
+     * Can the command be used by a player?
+     */
+    public boolean usableByPlayer()
+    {
+        return true;
+    }
 
     /**
      * Can the command be used by a command-block?
@@ -99,59 +106,51 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase {
     }
 
     /**
-     * Can the command be used by a player?
+     * Is the command allowed to be used by command-blocks?
      */
-    public boolean usableByPlayer()
+    public boolean isEnabledForCmdBlock()
     {
-        return true;
+        return enabledForCmdBlock;
     }
 
-	/**
-	 * Is the command allowed to be used by command-blocks?
-	 */
-	public boolean isEnabledForCmdBlock()
-	{
-		return enabledForCmdBlock;
-	}
+    /**
+     * Is the command allowed to be used by console?
+     */
+    public boolean isEnabledForConsole()
+    {
+        return enabledForConsole;
+    }
 
-	/**
-	 * Is the command allowed to be used by console?
-	 */
-	public boolean isEnabledForConsole()
-	{
-		return enabledForConsole;
-	}
+    /**
+     * Is the command allowed to be used by a player?
+     */
+    public boolean isEnabledForPlayer()
+    {
+        return enabledForPlayer;
+    }
 
-	/**
-	 * Is the command allowed to be used by a player?
-	 */
-	public boolean isEnabledForPlayer()
-	{
-		return enabledForPlayer;
-	}
+    /**
+     * Is the command allowed to be used by command-blocks?
+     */
+    public void setEnabledForCmdBlock(boolean enabledForCmdBlock)
+    {
+        this.enabledForCmdBlock = enabledForCmdBlock;
+    }
 
-	/**
-	 * Is the command allowed to be used by command-blocks?
-	 */
-	public void setEnabledForCmdBlock(boolean enabledForCmdBlock)
-	{
-		this.enabledForCmdBlock = enabledForCmdBlock;
-	}
+    /**
+     * Is the command allowed to be used by console?
+     */
+    public void setEnabledForConsole(boolean enabledForConsole)
+    {
+        this.enabledForConsole = enabledForConsole;
+    }
 
-	/**
-	 * Is the command allowed to be used by console?
-	 */
-	public void setEnabledForConsole(boolean enabledForConsole)
-	{
-		this.enabledForConsole = enabledForConsole;
-	}
-
-	/**
-	 * Is the command allowed to be used by a player?
-	 */
-	public void setEnabledForPlayer(boolean enabledForPlayer)
-	{
-		this.enabledForPlayer = enabledForPlayer;
-	}
+    /**
+     * Is the command allowed to be used by a player?
+     */
+    public void setEnabledForPlayer(boolean enabledForPlayer)
+    {
+        this.enabledForPlayer = enabledForPlayer;
+    }
 
 }

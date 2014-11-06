@@ -14,14 +14,14 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
-public class HelpFixer extends CommandHelp{
+public class HelpFixer extends CommandHelp {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected List<ICommand> getSortedPossibleCommands(ICommandSender sender) {
+    protected List<ICommand> getSortedPossibleCommands(ICommandSender sender)
+    {
         List<ICommand> list = MinecraftServer.getServer().getCommandManager().getPossibleCommands(sender);
         Collections.sort(list, new Comparator<ICommand>() {
-
             @Override
             public int compare(ICommand o1, ICommand o2)
             {
@@ -43,4 +43,5 @@ public class HelpFixer extends CommandHelp{
             return 0;
         }
     }
+
 }

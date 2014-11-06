@@ -1,5 +1,9 @@
 package com.forgeessentials.commands.util;
 
+import java.util.ArrayList;
+
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.CommandAFK;
 import com.forgeessentials.commands.CommandBind;
@@ -44,10 +48,8 @@ import com.forgeessentials.commands.admin.CommandServerDo;
 import com.forgeessentials.commands.admin.CommandServerSettings;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.common.config.Configuration;
 
-import java.util.ArrayList;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class CommandRegistrar {
 	
@@ -113,9 +115,9 @@ public class CommandRegistrar {
 			if (fecmd.usableByCmdBlock())
 				fecmd.setEnabledForCmdBlock(config.get("CommandBlock", fecmd.getCommandName(), fecmd.isEnabledForCmdBlock()).getBoolean());
 			if (fecmd.usableByPlayer())
-				fecmd.setEnabledForCmdBlock(config.get("Player", fecmd.getCommandName(), fecmd.isEnabledForPlayer()).getBoolean());
+				fecmd.setEnabledForPlayer(config.get("Player", fecmd.getCommandName(), fecmd.isEnabledForPlayer()).getBoolean());
 			if (fecmd.canConsoleUseCommand())
-				fecmd.setEnabledForCmdBlock(config.get("Console", fecmd.getCommandName(), fecmd.isEnabledForConsole()).getBoolean());
+				fecmd.setEnabledForConsole(config.get("Console", fecmd.getCommandName(), fecmd.isEnabledForConsole()).getBoolean());
 
 			String category = "commands." + fecmd.getCommandName();
 			config.addCustomCategoryComment(category, fecmd.getPermissionNode());

@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.admin;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -8,6 +9,7 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 
 import cpw.mods.fml.common.FMLCommonHandler;

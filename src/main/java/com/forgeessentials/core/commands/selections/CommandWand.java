@@ -2,6 +2,7 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -10,6 +11,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -58,10 +60,8 @@ public class CommandWand extends ForgeEssentialsCommandBase {
 		}
 
 		// Check for permissions
-		if (!checkCommandPermission(sender)) {
-			OutputHandler.chatError(sender, "You have no permission to use fewand!");
-			return;
-		}
+		if (!checkCommandPermission(sender))
+		    throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
 		if (args.length > 0 && !rebind) {
 			Pair<String, Integer> data = FunctionHelper.parseIdAndMetaFromString(args[0], false);

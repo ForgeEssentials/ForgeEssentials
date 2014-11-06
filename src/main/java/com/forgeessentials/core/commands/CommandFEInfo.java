@@ -73,7 +73,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     @Override
     public RegisteredPermValue getDefaultPermission()
     {
-        return RegisteredPermValue.TRUE;
+        return RegisteredPermValue.OP;
     }
 
 }
