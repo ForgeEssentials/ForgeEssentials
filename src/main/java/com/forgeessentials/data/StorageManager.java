@@ -10,10 +10,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -30,7 +30,6 @@ import com.forgeessentials.data.typeInfo.TypeInfoSerialize;
 import com.forgeessentials.data.typeInfo.TypeInfoSet;
 import com.forgeessentials.data.typeInfo.TypeInfoStandard;
 import com.forgeessentials.util.DBConnector;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 

@@ -1,5 +1,13 @@
 package com.forgeessentials.worldborder;
 
+import java.util.HashMap;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
@@ -16,15 +24,9 @@ import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.vector.Vector2;
 import com.forgeessentials.worldborder.Effects.IEffect;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.HashMap;
 
 /**
  * Bounces players back into the border if they pass it. No bypass permissions available, If needed, tell me on github.

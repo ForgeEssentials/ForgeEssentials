@@ -6,10 +6,10 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Throwables;
 

@@ -14,12 +14,12 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.playerlogger.types.BlockChangeType;
 import com.forgeessentials.playerlogger.types.BlockChangeType.blockChangeLogCategory;
 import com.forgeessentials.playerlogger.types.CommandType;
 import com.forgeessentials.playerlogger.types.PlayerTrackerType;
 import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;

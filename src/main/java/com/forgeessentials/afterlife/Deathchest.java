@@ -1,13 +1,7 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.selections.WorldPoint;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import java.util.HashMap;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -22,7 +16,15 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import java.util.HashMap;
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.selections.WorldPoint;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class Deathchest extends ServerEventHandler {
     /**

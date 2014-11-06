@@ -2,7 +2,6 @@ package com.forgeessentials.chat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,10 +12,9 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.commands.CommandPm;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.google.common.base.Strings;

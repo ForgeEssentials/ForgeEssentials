@@ -1,13 +1,11 @@
 package com.forgeessentials.commands;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.teleport.CommandBack;
 import com.forgeessentials.util.FunctionHelper;
