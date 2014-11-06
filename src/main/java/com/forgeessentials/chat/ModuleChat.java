@@ -1,5 +1,16 @@
 package com.forgeessentials.chat;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Set;
+
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.commands.CommandAutoMessage;
 import com.forgeessentials.chat.commands.CommandMail;
@@ -22,22 +33,14 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Map;
-import java.util.Set;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class, configClass = ConfigChat.class)
 public class ModuleChat {
+    
     @FEModule.Config
     public static ConfigChat conf;
 
@@ -45,11 +48,19 @@ public class ModuleChat {
     public static File moduleDir;
 
     public static PrintWriter chatLog;
+    
     public static PrintWriter cmdLog;
+    
     public static File logdir;
+    
     public static boolean connectToIRC;
+    
     private MailSystem mailsystem;
+    
     private PlayerEventHandler ircPlayerHandler;
+
+    @SuppressWarnings("unused")
+    private AutoMessage autoMessage;
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
@@ -88,7 +99,7 @@ public class ModuleChat {
 
         try
         {
-            logdir = new File(moduleDir, "logs/");
+            logdir = moduleDir;
             logdir.mkdirs();
         }
         catch (Exception e1)
@@ -131,7 +142,7 @@ public class ModuleChat {
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
         removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
-        new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
+        autoMessage = new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
         MailSystem.LoadAll();
         FMLCommonHandler.instance().bus().register(mailsystem);
         if (connectToIRC)
@@ -153,7 +164,7 @@ public class ModuleChat {
         }
     }
 
-    private void removeTell(MinecraftServer server)
+    private static void removeTell(MinecraftServer server)
     {
         if (server.getCommandManager() instanceof CommandHandler)
         {
@@ -187,7 +198,7 @@ public class ModuleChat {
                         }
                     }
                 }
-                if (toRemove != null)
+                if (cmdClass != null && toRemove != null)
                 {
                     OutputHandler.felog.finer("Removing command '" + toRemove.getCommandName() + "' from class: " + cmdClass.getName());
                     cmdList.remove(toRemove);

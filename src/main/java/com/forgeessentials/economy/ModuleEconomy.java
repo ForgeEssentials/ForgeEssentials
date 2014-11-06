@@ -22,11 +22,10 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
-
-import java.io.File;
 
 /**
  * Call the WalletHandler class when working with Economy
@@ -35,9 +34,6 @@ import java.io.File;
 public class ModuleEconomy {
     @FEModule.Config
     public static ConfigEconomy config;
-
-    @FEModule.ModuleDir
-    public static File moduleDir;
 
     public static int startbudget;
 

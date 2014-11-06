@@ -24,19 +24,24 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@FEModule(name = "SnooperModule", parentMod = ForgeEssentials.class, configClass = ConfigSnooper.class)
+@FEModule(name = "Snooper", parentMod = ForgeEssentials.class, configClass = ConfigSnooper.class)
 public class ModuleSnooper {
+
     @FEModule.Config
     public static ConfigSnooper configSnooper;
-    public static int port;
-    public static String hostname;
-    public static boolean enable;
-    public static SocketListner socketListner;
-    public static String key;
-    private static int id = 0;
-    @FEModule.ModuleDir
-    public File folder;
 
+    public static int port;
+    
+    public static String hostname;
+    
+    public static boolean enable;
+    
+    public static SocketListner socketListner;
+    
+    public static String key;
+    
+    private static int id = 0;
+    
     public ModuleSnooper()
     {
         MinecraftForge.EVENT_BUS.register(this);
@@ -69,7 +74,7 @@ public class ModuleSnooper {
     {
         if (!enable)
         {
-            ModuleLauncher.instance.unregister("SnooperModule");
+            ModuleLauncher.instance.unregister("Snooper");
         }
     }
 
@@ -81,11 +86,11 @@ public class ModuleSnooper {
         start();
     }
 
-    private void getKey()
+    private static void getKey()
     {
         try
         {
-            File file = new File(folder, "key.key");
+            File file = new File(ForgeEssentials.FEDIR, "snooper.key");
             if (file.exists())
             {
                 try (FileInputStream in = new FileInputStream(file))
