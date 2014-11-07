@@ -35,8 +35,11 @@ public class CommandDataManager {
         Object[] objs = data.loadAllObjects(conKit);
         for (Object obj : objs)
         {
-            Kit kit = (Kit) obj;
-            kits.put(kit.getName(), kit);
+            if (obj != null)
+            {
+                Kit kit = (Kit) obj;
+                kits.put(kit.getName(), kit);
+            }
         }
     }
 
