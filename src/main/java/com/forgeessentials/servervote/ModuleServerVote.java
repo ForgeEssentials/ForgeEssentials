@@ -13,7 +13,6 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.FEModule.Config;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.FunctionHelper;
@@ -28,10 +27,8 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 
-@FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, configClass = ConfigServerVote.class)
+@FEModule(name = "ServerVote", parentMod = ForgeEssentials.class)
 public class ModuleServerVote {
-    @Config
-    public static ConfigServerVote config;
 
     @ModuleDir
     public static File moduleDir;
@@ -55,6 +52,7 @@ public class ModuleServerVote {
     public void init(FEModuleInitEvent e)
     {
         FMLCommonHandler.instance().bus().register(this);
+        ForgeEssentials.getConfigManager().registerLoader("ServerVote", new ConfigServerVote());
     }
 
     @SubscribeEvent
@@ -62,7 +60,7 @@ public class ModuleServerVote {
     {
         try
         {
-            votifier = new VoteReceiver(config.hostname, config.port);
+            votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port);
             votifier.start();
         }
         catch (Exception e1)
@@ -173,27 +171,27 @@ public class ModuleServerVote {
     {
         if (offlineList.containsKey(e.player.getCommandSenderName()))
         {
-            doPlayer((EntityPlayerMP)e.player, offlineList.remove(e.player.getCommandSenderName()));
+            doPlayer((EntityPlayerMP) e.player, offlineList.remove(e.player.getCommandSenderName()));
         }
     }
 
-    private void doPlayer(EntityPlayerMP player, VoteEvent vote)
+    private static void doPlayer(EntityPlayerMP player, VoteEvent vote)
     {
-        if (!config.msgAll.equals(""))
+        if (!ConfigServerVote.msgAll.equals(""))
         {
-            player.playerNetServerHandler.sendPacket(new S02PacketChat(OutputHandler
-                    .createFromText(FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
+            player.playerNetServerHandler.sendPacket(new S02PacketChat(OutputHandler.createFromText(FunctionHelper.formatColors(ConfigServerVote.msgAll
+                    .replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
         }
 
-        if (!config.msgVoter.equals(""))
+        if (!ConfigServerVote.msgVoter.equals(""))
         {
             OutputHandler.sendMessage(player,
-                    FunctionHelper.formatColors(config.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
+                    FunctionHelper.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
         }
 
-        if (!config.freeStuff.isEmpty())
+        if (!ConfigServerVote.freeStuff.isEmpty())
         {
-            for (ItemStack stack : config.freeStuff)
+            for (ItemStack stack : ConfigServerVote.freeStuff)
             {
                 OutputHandler.felog.finer(stack.toString());
                 player.inventory.addItemStackToInventory(stack.copy());

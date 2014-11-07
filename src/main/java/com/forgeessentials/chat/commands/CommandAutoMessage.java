@@ -8,6 +8,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.chat.AutoMessage;
 import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -79,7 +80,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
                 }
                 OutputHandler.chatConfirmation(sender, msg.substring(1));
                 AutoMessage.msg.add(msg.substring(1));
-                ModuleChat.conf.forceSave();
+                ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_CATEGORY);
                 return;
             }
             catch (Exception e)

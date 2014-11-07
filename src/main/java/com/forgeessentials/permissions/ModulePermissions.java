@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -12,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.permissions.autoPromote.AutoPromote;
@@ -24,6 +26,8 @@ import com.forgeessentials.permissions.core.PermissionEventHandler;
 import com.forgeessentials.permissions.core.PermissionsListWriter;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
+import com.forgeessentials.util.DBConnector;
+import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -35,13 +39,20 @@ import com.forgeessentials.util.teleport.TeleportCenter;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class)
-public class ModulePermissions {
+public class ModulePermissions extends ConfigLoaderBase {
+
+    private static final String CONFIG_CAT = "Permissions";
 
     public static AutoPromoteManager autoPromoteManager;
 
     public static ZonedPermissionHelper permissionHelper;
 
     public static PermissionEventHandler permissionEventHandler;
+
+    private String persistenceBackend = "flatfile";
+
+    private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath(),
+            false);
 
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
@@ -59,9 +70,6 @@ public class ModulePermissions {
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        // Open database
-        // SqlHelper.getInstance();
-
         DataStorageManager.registerSaveableType(AutoPromote.class);
 
         // Register permission event-handler
@@ -72,22 +80,32 @@ public class ModulePermissions {
     public void serverStarting(FEModuleServerInitEvent e)
     {
         // Load permissions
-        File permPath = new File(FunctionHelper.getWorldPath(), "FEPermissions");
+        switch (persistenceBackend.toLowerCase())
         {
-            File oldPermPath = new File(ForgeEssentials.FEDIR, "Permissions/flat");
-            if (oldPermPath.exists() && !permPath.exists())
+        case "sql":
+            throw new RuntimeException("Not yet implemented");
+        case "":
+        default:
+        {
+            File permPath = new File(FunctionHelper.getWorldPath(), "FEPermissions");
             {
-                try
+                File oldPermPath = new File(ForgeEssentials.getFEDirectory(), "Permissions/flat");
+                if (oldPermPath.exists() && !permPath.exists())
                 {
-                    FileUtils.moveDirectory(oldPermPath, permPath);
-                }
-                catch (IOException e1)
-                {
-                    e1.printStackTrace();
+                    try
+                    {
+                        FileUtils.moveDirectory(oldPermPath, permPath);
+                    }
+                    catch (IOException e1)
+                    {
+                        e1.printStackTrace();
+                    }
                 }
             }
+            permissionHelper.setPersistenceProvider(new FlatfileProvider(permPath));
+            break;
         }
-        permissionHelper.setPersistenceProvider(new FlatfileProvider(permPath));
+        }
         permissionHelper.load();
 
         // Register commands
@@ -168,6 +186,14 @@ public class ModulePermissions {
 
         APIRegistry.perms.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP, "Allow bypassing teleport cooldown");
         APIRegistry.perms.registerPermission(TeleportCenter.BYPASS_WARMUP, RegisteredPermValue.OP, "Allow bypassing teleport warmup");
+    }
+
+    @Override
+    public void load(Configuration config, boolean isReload)
+    {
+        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile", "Choose a permission persistence backend (flatfile, sql)").getString();
+
+        dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
     }
 
 }

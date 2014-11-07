@@ -31,7 +31,7 @@ public class LoginMessage {
     public static void loadFile()
     {
         messageList.clear();
-        File file = new File(ForgeEssentials.FEDIR, "MOTD.txt");
+        File file = new File(ForgeEssentials.getFEDirectory(), "MOTD.txt");
         if (file.exists())
         {
             try

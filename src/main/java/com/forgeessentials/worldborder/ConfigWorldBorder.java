@@ -1,10 +1,9 @@
 package com.forgeessentials.worldborder;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.worldborder.Effects.IEffect;
 
@@ -14,7 +13,7 @@ import com.forgeessentials.worldborder.Effects.IEffect;
  * @author Dries007
  */
 
-public class ConfigWorldBorder extends ModuleConfigBase {
+public class ConfigWorldBorder extends ConfigLoaderBase {
 
     /**
      * Does penalty part on config
@@ -97,31 +96,10 @@ public class ConfigWorldBorder extends ModuleConfigBase {
     }
 
     @Override
-    public void init()
+    public void load(Configuration config, boolean isReload)
     {
         penaltiesConfig(config);
         commonConfig(config);
-        config.save();
-    }
-
-    @Override
-    public void forceLoad(ICommandSender sender)
-    {
-        penaltiesConfig(config);
-        commonConfig(config);
-        config.save();
-    }
-
-    @Override
-    public void forceSave()
-    {
-
-    }
-
-    @Override
-    public boolean universalConfigAllowed()
-    {
-        return true;
     }
 
 }

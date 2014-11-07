@@ -1,6 +1,5 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -10,7 +9,7 @@ import net.minecraft.command.ICommandSender;
 
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.CoreConfig;
+import com.forgeessentials.core.config.IConfigLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -29,13 +28,11 @@ public class ModuleLauncher {
     public static ModuleLauncher instance;
     private static TreeMap<String, ModuleContainer> containerMap = new TreeMap<String, ModuleContainer>();
 
-    public static boolean useCanonicalConfig;
-
     public void preLoad(FMLPreInitializationEvent e)
     {
         OutputHandler.felog.info("Discovering and loading modules...");
 
-        // started ASM handling for the module loading.
+        // started ASM handling for the module loading
         Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
 
         // LOAD THE MODULES!
@@ -70,8 +67,6 @@ public class ModuleLauncher {
                 OutputHandler.felog.info("Loaded " + temp.name);
             }
         }
-
-        Collection<ModuleContainer> modules = containerMap.values();
 
         CallableMap map = new CallableMap();
 
@@ -108,70 +103,37 @@ public class ModuleLauncher {
         }
 
         for (ModContainer container : Loader.instance().getModList())
-        {
             if (container.getMod() != null)
-            {
                 map.scanObject(container);
-            }
-        }
 
-        // check modules for the CallableMap stuff.
-        for (ModuleContainer module : modules)
-        {
+        // Check modules for callables
+        for (ModuleContainer module : containerMap.values())
             map.scanObject(module);
-        }
 
-        // run the config init methods..
-        boolean generate = false;
-        for (ModuleContainer module : modules)
-        {
-            ModuleConfigBase cfg = module.getConfig();
-
-
-            if (cfg != null)
-            {
-                if (cfg.universalConfigAllowed() && useCanonicalConfig)
-                {
-                    cfg.setFile(CoreConfig.mainconfig);
-                }
-                else
-                {
-                    cfg.setFile(new File(ForgeEssentials.FEDIR, module.name + ".cfg"));
-                }
-
-                File file = cfg.getFile();
-
-                if (!file.getParentFile().exists())
-                {
-                    generate = true;
-                    file.getParentFile().mkdirs();
-                }
-
-                if (!generate && (!file.exists() || !file.isFile()))
-                {
-                    generate = true;
-                }
-
-                cfg.setGenerate(generate);
-                cfg.init();
-            }
-        }
-
-        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModulePreInitEvent(e));
-    }
-
-    public void reloadConfigs(ICommandSender sender)
-    {
-        ModuleConfigBase config;
+        // Register modules with configuration manager
         for (ModuleContainer module : containerMap.values())
         {
-            config = module.getConfig();
-            if (config != null)
+            if (module.module instanceof IConfigLoader)
             {
-                config.forceLoad(sender);
+                OutputHandler.felog.info("Registering configuration for FE module " + module.name);
+                ForgeEssentials.getConfigManager().registerLoader(module.name, (IConfigLoader) module.module, false);
             }
-            module.runReload(sender);
+            else
+            {
+                OutputHandler.felog.info("No configuration for FE module " + module.name);
+            }
         }
+        
+        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModulePreInitEvent(e));
+
+        ForgeEssentials.getConfigManager().load(false);
+    }
+    
+    public void reloadConfigs(ICommandSender sender)
+    {
+        ForgeEssentials.getConfigManager().load(true);
+        for (ModuleContainer module : containerMap.values())
+            module.runReload(sender);
     }
 
     public void unregister(String moduleName)

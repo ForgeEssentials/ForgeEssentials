@@ -1,7 +1,10 @@
 package com.forgeessentials.economy;
 
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.economy.commands.CommandAddToWallet;
 import com.forgeessentials.economy.commands.CommandGetWallet;
@@ -30,11 +33,13 @@ import cpw.mods.fml.relauncher.Side;
 /**
  * Call the WalletHandler class when working with Economy
  */
-@FEModule(name = "Economy", parentMod = ForgeEssentials.class, configClass = ConfigEconomy.class)
-public class ModuleEconomy {
-    @FEModule.Config
-    public static ConfigEconomy config;
+@FEModule(name = "Economy", parentMod = ForgeEssentials.class)
+public class ModuleEconomy extends ConfigLoaderBase {
 
+    public static final String CONFIG_CAT = "Economy";
+    public static String currencySingular;
+    public static String currencyPlural;
+    
     public static int startbudget;
 
     public static int psfPrice;
@@ -76,4 +81,21 @@ public class ModuleEconomy {
     {
         PlotManager.save();
     }
+
+    @Override
+    public void load(Configuration config, boolean isReload)
+    {
+        currencySingular = config.get(CONFIG_CAT, "currencySingular", "gold").getString();
+        currencyPlural = config.get(CONFIG_CAT, "currencyPlural", "gold").getString();
+        startbudget = config.get(CONFIG_CAT, "startbuget", 100).getInt();
+    }
+
+    @Override
+    public void save(Configuration config)
+    {
+        config.get(CONFIG_CAT, "currencySingular", "gold").set(currencySingular);
+        config.get(CONFIG_CAT, "currencyPlural", "gold").set(currencyPlural);
+        config.get(CONFIG_CAT, "startbudget", 100).set(startbudget);
+    }
+
 }

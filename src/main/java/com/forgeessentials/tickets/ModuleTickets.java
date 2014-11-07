@@ -22,13 +22,10 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 
-@FEModule(name = "Tickets", parentMod = ForgeEssentials.class, configClass = ConfigTickets.class)
+@FEModule(name = "Tickets", parentMod = ForgeEssentials.class)
 public class ModuleTickets {
 
     public static final String PERMBASE = "fe.tickets";
-    
-    @FEModule.Config
-    public static ConfigTickets config;
     
     public static ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
     
@@ -42,6 +39,7 @@ public class ModuleTickets {
     public void load(FEModuleInitEvent e)
     {
         FMLCommonHandler.instance().bus().register(this);
+        ForgeEssentials.getConfigManager().registerLoader("Tickets", new ConfigTickets());
     }
 
     @SubscribeEvent
@@ -60,7 +58,6 @@ public class ModuleTickets {
     public void serverStopping(FEModuleServerStopEvent e)
     {
         saveAll();
-        config.forceSave();
     }
 
     /**

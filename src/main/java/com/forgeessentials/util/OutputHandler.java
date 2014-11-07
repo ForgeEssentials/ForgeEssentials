@@ -7,18 +7,22 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.common.config.Configuration;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public final class OutputHandler {
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
+
+public final class OutputHandler extends ConfigLoaderBase {
 	
     public static LogWrapper felog = new LogWrapper(LogManager.getLogger("ForgeEssentials"));
 
-    public static boolean debugmode;
-
     private static EnumChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
+
+    public static final String CONFIG_CAT = "Core.Output";
 
     /**
      * actually sends the color-formatted message to the sender
@@ -108,7 +112,7 @@ public final class OutputHandler {
      */
     public static void debug(Object msg)
     {
-        if (debugmode)
+        if (ForgeEssentials.isDebugMode())
         {
             System.out.println(" {DEBUG} >>>> " + msg);
         }
@@ -210,6 +214,20 @@ public final class OutputHandler {
         public void log(Level level, String message, Throwable error){wrapped.log(level, message, error);}
 
         public Logger getWrapper(){return wrapped;}
+    }
+
+    
+    @Override
+    public void load(Configuration config, boolean isReload)
+    {
+        config.addCustomCategoryComment(CONFIG_CAT, "This controls the colors of the various chats output by ForgeEssentials."
+                + "\nValid output colors are as follows:" + "\naqua, black, blue, dark_aqua, dark_blue, dark_gray, dark_green, dark_purple, dark_red"
+                + "\ngold, gray, green, light_purple, red, white, yellow");
+
+        OutputHandler.setConfirmationColor(config.get(CONFIG_CAT, "confirmationColor", "green", "Defaults to green.").getString());
+        OutputHandler.setErrorColor(config.get(CONFIG_CAT, "errorOutputColor", "red", "Defaults to red.").getString());
+        OutputHandler.setNotificationColor(config.get(CONFIG_CAT, "notificationOutputColor", "aqua", "Defaults to aqua.").getString());
+        OutputHandler.setWarningColor(config.get(CONFIG_CAT, "warningOutputColor", "yellow", "Defaults to yellow.").getString());
     }
 
 }

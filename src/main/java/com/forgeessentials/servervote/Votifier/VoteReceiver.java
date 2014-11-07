@@ -37,6 +37,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.forgeessentials.servervote.ConfigServerVote;
 import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.OutputHandler;
@@ -154,7 +155,7 @@ public class VoteReceiver extends Thread {
 
                 // Decrypt the block.
                 Cipher cipher = Cipher.getInstance("RSA");
-                cipher.init(Cipher.DECRYPT_MODE, ModuleServerVote.config.privateKey);
+                cipher.init(Cipher.DECRYPT_MODE, ConfigServerVote.privateKey);
                 block = cipher.doFinal(block);
                 int position = 0;
 
@@ -185,7 +186,7 @@ public class VoteReceiver extends Thread {
                 EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(vote.player);
                 if (player == null)
                 {
-                    if (!ModuleServerVote.config.allowOfflineVotes)
+                    if (!ConfigServerVote.allowOfflineVotes)
                     {
                         OutputHandler.felog.finer("Player for vote not online, vote canceled.");
                         vote.setFeedback("notOnline");
@@ -230,7 +231,7 @@ public class VoteReceiver extends Thread {
      * @param data The data to read from
      * @return The string
      */
-    private String readString(byte[] data, int offset)
+    private static String readString(byte[] data, int offset)
     {
         StringBuilder builder = new StringBuilder();
         for (int i = offset; i < data.length; i++)

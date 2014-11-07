@@ -12,7 +12,6 @@ import net.minecraftforge.common.MinecraftForge;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.snooper.response.PlayerInfoResponse;
 import com.forgeessentials.snooper.response.PlayerInv;
 import com.forgeessentials.snooper.response.Responses;
@@ -24,24 +23,19 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@FEModule(name = "Snooper", parentMod = ForgeEssentials.class, configClass = ConfigSnooper.class)
+@FEModule(name = "Snooper", parentMod = ForgeEssentials.class)
 public class ModuleSnooper {
 
-    @FEModule.Config
-    public static ConfigSnooper configSnooper;
-
     public static int port;
-    
+
     public static String hostname;
-    
-    public static boolean enable;
-    
+
     public static SocketListner socketListner;
-    
+
     public static String key;
-    
+
     private static int id = 0;
-    
+
     public ModuleSnooper()
     {
         MinecraftForge.EVENT_BUS.register(this);
@@ -72,10 +66,7 @@ public class ModuleSnooper {
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        if (!enable)
-        {
-            ModuleLauncher.instance.unregister("Snooper");
-        }
+        ForgeEssentials.getConfigManager().registerLoader("Snooper", new ConfigSnooper());
     }
 
     @SubscribeEvent
@@ -90,7 +81,7 @@ public class ModuleSnooper {
     {
         try
         {
-            File file = new File(ForgeEssentials.FEDIR, "snooper.key");
+            File file = new File(ForgeEssentials.getFEDirectory(), "snooper.key");
             if (file.exists())
             {
                 try (FileInputStream in = new FileInputStream(file))

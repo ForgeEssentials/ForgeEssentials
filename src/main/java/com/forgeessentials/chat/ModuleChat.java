@@ -38,12 +38,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
-@FEModule(name = "Chat", parentMod = ForgeEssentials.class, configClass = ConfigChat.class)
+@FEModule(name = "Chat", parentMod = ForgeEssentials.class)
 public class ModuleChat {
     
-    @FEModule.Config
-    public static ConfigChat conf;
-
+    public static final String CONFIG_CATEGORY = "Chat";
+    
     @FEModule.ModuleDir
     public static File moduleDir;
 
@@ -65,6 +64,8 @@ public class ModuleChat {
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
+        // Register configuration
+        ForgeEssentials.getConfigManager().registerLoader(CONFIG_CATEGORY, new ConfigChat());
 
         MinecraftForge.EVENT_BUS.register(new ChatFormatter());
         MinecraftForge.EVENT_BUS.register(new CommandMuter());

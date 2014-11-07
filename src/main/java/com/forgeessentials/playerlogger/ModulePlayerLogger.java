@@ -37,11 +37,8 @@ import com.forgeessentials.util.selections.WorldPoint;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 
-@FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, configClass = ConfigPlayerLogger.class)
+@FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class)
 public class ModulePlayerLogger {
-
-    @FEModule.Config
-    public static ConfigPlayerLogger config;
 
     public static String url;
     public static String username;
@@ -93,7 +90,8 @@ public class ModulePlayerLogger {
         }
     }
 
-    public static ArrayList<com.forgeessentials.playerlogger.BlockChange> getBlockChangesWithinParameters(String username, boolean undo, int timeBack, WorldPoint p, int rad)
+    public static ArrayList<com.forgeessentials.playerlogger.BlockChange> getBlockChangesWithinParameters(String playername, boolean undo, int timeBack,
+            WorldPoint p, int rad)
     {
         ArrayList<com.forgeessentials.playerlogger.BlockChange> data = new ArrayList<com.forgeessentials.playerlogger.BlockChange>();
         try
@@ -101,13 +99,13 @@ public class ModulePlayerLogger {
             Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
             Statement st = connection.createStatement();
 
-            String sql = "SELECT * FROM  `blockChange` WHERE  `player` LIKE  '" + username + "'";
+            String sql = "SELECT * FROM  `blockChange` WHERE  `player` LIKE  '" + playername + "'";
 
             if (timeBack != 0)
             {
                 Date date = new Date();
                 Timestamp time = new Timestamp(date.getTime());
-                //                                 Hours,  mins, sec, nano
+                // Hours, mins, sec, nano
                 time.setNanos(time.getNanos() - (timeBack * 60 * 60 * 1000 * 1000));
                 sql = sql + " AND `time` = '" + time.toString() + "'";
             }
@@ -167,7 +165,7 @@ public class ModulePlayerLogger {
         {
             if (!APIRegistry.perms.groupExists(name))
             {
-                throw new RuntimeException("Group '" + name + "' doesn't exist. Used in " + config.getFile().getName());
+                throw new RuntimeException("Group '" + name + "' doesn't exist.");
             }
         }
         try
@@ -190,10 +188,9 @@ public class ModulePlayerLogger {
             connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
             Statement s = connection.createStatement();
 
-			/*
-             * if (DEBUG && false) { for (logEntry type : logTypes) {
-			 * s.execute("DROP TABLE IF EXISTS " + type.getName()); } }
-			 */
+            /*
+             * if (DEBUG && false) { for (logEntry type : logTypes) { s.execute("DROP TABLE IF EXISTS " + type.getName()); } }
+             */
 
             for (LogType type : logTypes)
             {

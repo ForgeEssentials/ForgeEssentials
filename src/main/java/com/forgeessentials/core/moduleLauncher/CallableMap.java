@@ -17,6 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class CallableMap {
+    
     private HashMultimap<String, FECallable> callables;
 
     public CallableMap()

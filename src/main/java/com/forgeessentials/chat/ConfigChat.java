@@ -2,15 +2,16 @@ package com.forgeessentials.chat;
 
 import java.util.Arrays;
 
-import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 import com.forgeessentials.chat.irc.IRCHelper;
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
-public class ConfigChat extends ModuleConfigBase {
+public class ConfigChat extends ConfigLoaderBase {
+    
     public static String chatFormat;
     public static String largeComment_chatFormat = "";
     public static boolean logchat;
@@ -33,16 +34,19 @@ public class ConfigChat extends ModuleConfigBase {
     }
 
     @Override
-    public void init()
+    public void load(Configuration config, boolean isReload)
     {
         OutputHandler.felog.finer("Loading chatconfigs");
 
         config.addCustomCategoryComment("Chat", "Chat Configs");
         config.addCustomCategoryComment("Chat.Automessage", "Automated spamm");
 
-        String[] msg = config.get("Chat.Automessage", "messages", new String[]
-                        { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" },
-                "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
+        String[] msg = config
+                .get("Chat.Automessage",
+                        "messages",
+                        new String[] { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"",
+                                "\"The timing can be changed there too!\"" }, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES")
+                .getStringList().clone();
         for (int i = 0; i < msg.length; i++)
         {
             AutoMessage.msg.add(FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1))));
@@ -61,16 +65,14 @@ public class ConfigChat extends ModuleConfigBase {
         ChatFormatter.gmA = config.get("Chat.gm", "Adventure", "[Adv]").getString();
 
         ChatFormatter.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
-        ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
-                { "fuck", "ass", "bitch", "shit" }, "List of words to be censored").getStringList());
+        ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[] { "fuck", "ass", "bitch", "shit" },
+                "List of words to be censored").getStringList());
         ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 heart, ...").getInt();
-        ChatFormatter.censorSymbol = config
-                .get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").getString();
-
-        config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
+        ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#",
+                "Character to replace censored words with (Use only one character in this config)").getString();
 
         config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
-
+        CommandMuter.mutedCommands.clear();
         for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] { "me" }, "All commands in here will be blocked if the player is muted.")
                 .getStringList())
         {
@@ -99,13 +101,13 @@ public class ConfigChat extends ModuleConfigBase {
     }
 
     @Override
-    public void forceSave()
+    public void save(Configuration config)
     {
         config.addCustomCategoryComment("Chat", "Chatconfigs");
         config.addCustomCategoryComment("Chat.Automessage", "Automated spam");
 
-        Property prop = config
-                .get("Chat", "chatformat", "%groupPrefix%playerPrefix<%username>%playerSuffix%groupSuffix %reset%message", largeComment_chatFormat);
+        Property prop = config.get("Chat", "chatformat", "%groupPrefix%playerPrefix<%username>%playerSuffix%groupSuffix %reset%message",
+                largeComment_chatFormat);
         prop.set(chatFormat);
 
         String[] msg = AutoMessage.msg.toArray(new String[0]);
@@ -114,22 +116,22 @@ public class ConfigChat extends ModuleConfigBase {
             msg[i] = "\"" + msg[i] + "\"";
         }
 
-        config.get("Chat.Automessage", "messages", new String[] { }, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").set(msg);
+        config.get("Chat.Automessage", "messages", new String[] {}, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").set(msg);
         config.get("Chat.Automessage", "random", false, "Randomize the order of messages").set(AutoMessage.random);
         config.get("Chat.Automessage", "inverval", 1, "Time in between each message in minutes").set(AutoMessage.waittime);
         config.get("Chat.Automessage", "enable", true).set(AutoMessage.enable);
 
         config.get("BannedWords", "censor", true, "censor the words in the censorList").set(ChatFormatter.censor);
-        config.get("BannedWords", "censorList", new String[] { }, "List of words to be censored")
-                .set(ChatFormatter.bannedWords.toArray(new String[ChatFormatter.bannedWords.size()]));
+        config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").set(
+                ChatFormatter.bannedWords.toArray(new String[ChatFormatter.bannedWords.size()]));
         config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 heart, ...").set(ChatFormatter.censorSlap);
 
         config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
 
         config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
 
-        config.get("Chat.mute", "mutedCommands", new String[] { "me" }, "All commands in here will be blocked if the player is muted.")
-                .set(CommandMuter.mutedCommands.toArray(new String[CommandMuter.mutedCommands.size()]));
+        config.get("Chat.mute", "mutedCommands", new String[] { "me" }, "All commands in here will be blocked if the player is muted.").set(
+                CommandMuter.mutedCommands.toArray(new String[CommandMuter.mutedCommands.size()]));
 
         String logCat = "Chat.log";
         config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
@@ -149,66 +151,4 @@ public class ConfigChat extends ModuleConfigBase {
         config.save();
     }
 
-    @Override
-    public void forceLoad(ICommandSender sender)
-    {
-        config.addCustomCategoryComment("Chat", "Chat Configs");
-        config.addCustomCategoryComment("Chat.Automessage", "Automated spamm");
-
-        String[] msg = config.get("Chat.Automessage", "messages", new String[]
-                        { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"", "\"The timing can be changed there too!\"" },
-                "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").getStringList().clone();
-        for (int i = 0; i < msg.length; i++)
-        {
-            AutoMessage.msg.add(FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1))));
-        }
-
-        AutoMessage.random = config.get("Chat.Automessage", "random", false, "Randomize the order of messages").getBoolean(false);
-        AutoMessage.waittime = config.get("Chat.Automessage", "inverval", 1, "Time in between each message in minutes").getInt();
-        AutoMessage.enable = config.get("Chat.Automessage", "enable", true).getBoolean(true);
-
-        chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat)
-                .getString();
-
-        ChatFormatter.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
-        ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[]
-                { "fuck", "ass", "bitch", "shit" }, "List of words to be censored").getStringList());
-        ChatFormatter.censorSymbol = config
-                .get("BannedWords", "censorSymbol", "#", "Character to replace censored words with (Use only one character in this config)").getString();
-        ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 heart, ...").getInt();
-        config.addCustomCategoryComment("Chat.groups", "THIS HAS BEEN MOVED TO THE CORE CONFIG");
-
-        config.addCustomCategoryComment("Chat.mute", "Settings for muted players");
-
-        CommandMuter.mutedCommands.clear();
-        for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] { "me" }, "All commands in here will be blocked if the player is muted.")
-                .getStringList())
-        {
-            CommandMuter.mutedCommands.add(cmd);
-        }
-
-        String logCat = "Chat.log";
-        config.addCustomCategoryComment(logCat, "Logging of all things going through chat.");
-
-        logchat = config.get(logCat, "logchat", true, "Log all chat messages").getBoolean(true);
-        logcmd = config.get(logCat, "logcmd", true, "Log all commands").getBoolean(true);
-
-        ModuleChat.connectToIRC = config.get("Chat.irc", "enable", false, "Enable IRC interoperability?").getBoolean(false);
-        IRCHelper.port = config.get("Chat.irc", "port", 5555, "The port to connect to the IRC server through.").getInt();
-        IRCHelper.name = config.get("Chat.irc", "name", "FEIRCBot", "The nickname used to connect to the IRC server with.").getString();
-        IRCHelper.server = config.get("Chat.irc", "server", "irc.something.com", "Hostname of the server to connect to").getString();
-        IRCHelper.channel = config.get("Chat.irc", "channel", "#something", "Channels to connect to").getString();
-        IRCHelper.suppressEvents = config.get("Chat.irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.")
-                .getBoolean(true);
-        IRCHelper.password = config.get("Chat.irc", "nickservPass", "", "Nickserv password for the bot.").getString();
-        IRCHelper.serverPass = config.get("Chat.irc", "serverPass", "", "Server password for the bot.").getString();
-
-        config.save();
-    }
-
-    @Override
-    public boolean universalConfigAllowed()
-    {
-        return true;
-    }
 }

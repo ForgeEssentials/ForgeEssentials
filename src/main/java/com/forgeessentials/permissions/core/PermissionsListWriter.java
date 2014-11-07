@@ -21,7 +21,7 @@ public class PermissionsListWriter {
 
     public PermissionsListWriter()
     {
-        output = new File(ForgeEssentials.FEDIR, OUTPUT_FILE);
+        output = new File(ForgeEssentials.getFEDirectory(), OUTPUT_FILE);
         if (output.exists())
         {
             output.delete();
