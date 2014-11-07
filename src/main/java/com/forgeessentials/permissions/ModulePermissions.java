@@ -123,7 +123,7 @@ public class ModulePermissions extends ConfigLoaderBase {
     @SubscribeEvent
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
-        new PermissionsListWriter().write(permissionHelper.getRegisteredPermissions());
+        PermissionsListWriter.write(permissionHelper.getRegisteredPermissions(), new File(ForgeEssentials.getFEDirectory(), "PermissionsList.txt"));
         permissionHelper.save();
     }
 

@@ -8,28 +8,17 @@ import java.util.TreeSet;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.FunctionHelper;
 
-public class PermissionsListWriter {
+public final class PermissionsListWriter {
 
-    private static final String OUTPUT_FILE = "PermissionsList.txt";
-
-    private File output;
-    
     private static final String NEW_LINE = System.getProperty("line.separator");
 
-    public PermissionsListWriter()
+    public static void write(PermissionList permissions, File output)
     {
-        output = new File(ForgeEssentials.getFEDirectory(), OUTPUT_FILE);
-        if (output.exists())
-        {
-            output.delete();
-        }
-    }
-
-    public void write(PermissionList permissions)
-    {
+//        if (output.exists())
+//            output.delete();
+        
         TreeSet<String> sortedPerms = new TreeSet<String>(permissions.keySet());
 
         int permCount = 0;

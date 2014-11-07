@@ -67,4 +67,5 @@ public class CUIComms
             updatedSelectionPlayers.add(PlayerInfo.getPlayerInfo(event.entityPlayer));
         }
     }
+
 }

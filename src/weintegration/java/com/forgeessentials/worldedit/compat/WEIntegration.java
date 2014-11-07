@@ -3,11 +3,9 @@ package com.forgeessentials.worldedit.compat;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -78,7 +76,6 @@ public class WEIntegration {
                 MinecraftForge.EVENT_BUS.unregister(ForgeWorldEdit.inst); //forces worldedit forge NOT to load
             ModuleLauncher.instance.unregister("WEIntegrationTools");
         }
-
     }
 
     @SubscribeEvent
@@ -86,16 +83,14 @@ public class WEIntegration {
     {
         this.platform = new FEPlatform();
         WorldEdit.getInstance().getPlatformManager().register(platform);
+        WorldEdit.getInstance().getEventBus().post(new PlatformReadyEvent());
+        
         cuiComms = new CUIComms();
     }
 
     @SubscribeEvent
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
-        for (ForgeEssentialsCommandBase cmd : FEPlatform.commands)
-        {
-            FunctionHelper.registerServerCommand(cmd);
-        }
         WorldEdit.getInstance().getEventBus().post(new PlatformReadyEvent());
     }
 
