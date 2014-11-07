@@ -15,37 +15,37 @@ import java.util.ArrayList;
 
 import javax.xml.bind.DatatypeConverter;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.registry.GameData;
 
-public class ConfigServerVote extends ModuleConfigBase {
+public class ConfigServerVote extends ConfigLoaderBase {
     private static final String category = "ServerVote";
 
 
-    public boolean allowOfflineVotes;
-    public String msgAll = "";
-    public String msgVoter = "";
-    public ArrayList<ItemStack> freeStuff = new ArrayList<ItemStack>();
+    public static boolean allowOfflineVotes;
+    public static String msgAll = "";
+    public static String msgVoter = "";
+    public static ArrayList<ItemStack> freeStuff = new ArrayList<ItemStack>();
 
     public File keyFolder;
 
     public KeyPair keyPair;
-    public PrivateKey privateKey;
+    public static PrivateKey privateKey;
     public PublicKey publicKey;
 
-    public String hostname;
-    public Integer port;
+    public static String hostname;
+    public static Integer port;
 
     public boolean flatfileLog;
 
     @Override
-    public void init()
+    public void load(Configuration config, boolean isReload)
     {
         String subcat = category + ".Votifier";
         config.addCustomCategoryComment(subcat, "This is for votifier compatibility only.");
@@ -91,58 +91,6 @@ public class ConfigServerVote extends ModuleConfigBase {
             freeStuff.add(stack);
         }
 
-        config.save();
-        loadKeys();
-    }
-
-    @Override
-    public void forceSave()
-    {
-
-    }
-
-    @Override
-    public void forceLoad(ICommandSender sender)
-    {
-        config.load();
-        allowOfflineVotes = config.get(category, "allowOfflineVotes", true, "If false, votes of offline players will be canceled.").getBoolean(true);
-        msgAll = config.get(category, "msgAll", "%player has voted for this server on %service.", "You can use color codes (&), %player and %service")
-                .getString();
-        msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").getString();
-
-        flatfileLog = config.get(category, "flatFileLog", true, "Log the votes in \"votes.log\"").getBoolean(true);
-
-        String[] tempArray = config.get(category, "rewards", new String[] { }, "Format is like this: [amount]x<id>[:meta]").getStringList();
-
-        freeStuff.clear();
-        for (String temp : tempArray)
-        {
-            int amount = 1;
-            int meta = 0;
-
-            if (temp.contains("x"))
-            {
-                String[] temp2 = temp.split("x");
-                amount = Integer.parseInt(temp2[0]);
-                temp = temp2[1];
-            }
-
-            if (temp.contains(":"))
-            {
-                String[] temp2 = temp.split(":");
-                meta = Integer.parseInt(temp2[2]);
-                temp = temp2[0] + ":" + temp2[1];
-            }
-
-            Item item = GameData.getItemRegistry().getObject(temp);
-
-            ItemStack stack = new ItemStack(item, amount, meta);
-            OutputHandler.felog.finer(stack.toString());
-
-            freeStuff.add(stack);
-        }
-
-        config.save();
         loadKeys();
     }
 
@@ -215,12 +163,6 @@ public class ConfigServerVote extends ModuleConfigBase {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public boolean universalConfigAllowed()
-    {
-        return true;
     }
 
 }

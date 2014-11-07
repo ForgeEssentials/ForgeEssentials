@@ -7,6 +7,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -19,8 +21,9 @@ import com.forgeessentials.core.commands.selections.CommandWand;
 import com.forgeessentials.core.commands.selections.SelectionEventHandler;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.compat.Environment;
+import com.forgeessentials.core.config.ConfigManager;
+import com.forgeessentials.core.config.IConfigLoader;
 import com.forgeessentials.core.misc.BlockModListFile;
-import com.forgeessentials.core.misc.CoreConfig;
 import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -49,6 +52,7 @@ import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
+import com.forgeessentials.util.teleport.TeleportCenter;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -70,163 +74,276 @@ import cpw.mods.fml.relauncher.Side;
  */
 
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.1.1219,)")
-public class ForgeEssentials {
+public class ForgeEssentials implements IConfigLoader {
 
-	@Instance(value = "ForgeEssentials")
-	public static ForgeEssentials instance;
+    public static final String CONFIG_CAT = "Core";
+    public static final String CONFIG_CAT_OUT = "Core.Output";
+    public static final String CONFIG_CAT_MISC = "Core.Misc";
 
-	public static CoreConfig config;
-	public static boolean verCheck = true;
-	public static boolean preload;
-	public static String modlistLocation;
-	public static File FEDIR;
-	public static boolean mcstats;
-	public ModuleLauncher mdlaunch;
-	private TaskRegistry tasks;
+    @Instance(value = "ForgeEssentials")
+    public static ForgeEssentials instance;
+
+    private File FEDIR;
+
+    private ConfigManager configManager;
+
+    public static boolean versionCheck = true;
+
+    public static boolean preload;
+
+    public static String modlistLocation;
+
+    public static boolean mcstats;
+
+    public ModuleLauncher moduleLauncher;
+
+    private TaskRegistry tasks;
 
     @SuppressWarnings("unused")
     private RespawnHandler respawnHandler;
-    
+
+    @SuppressWarnings("unused")
     private SelectionEventHandler wandHandler;
-    
+
     @SuppressWarnings("unused")
     private MiscEventHandler miscEventHandler;
 
-	// static FE-module flags / variables
+    // static FE-module flags / variables
     public static boolean worldEditCompatilityPresent = false;
 
-	public ForgeEssentials()
-	{
-		tasks = new TaskRegistry();
-	}
+    public ForgeEssentials()
+    {
+        tasks = new TaskRegistry();
+    }
 
-	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent e)
-	{
-		FunctionHelper.netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
-		FunctionHelper.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent e)
+    {
+        FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
+        OutputHandler.felog.info("Initializing ForgeEssentials version " + FEModContainer.version + " (configDir = " + FEDIR.getAbsolutePath() + ")");
+
+        // Check environment
+        Environment.check();
+
+        // Load configuration
+        configManager = new ConfigManager(FEDIR, "main");
+        configManager.registerLoader(configManager.getMainConfigName(), this);
+
+        // Initialize data-API
+        StorageManager storageManager = new StorageManager(configManager.getConfig("DataStorage"));
+        DataStorageManager.manager = storageManager;
+        DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
+        DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
+        DataStorageManager.registerDriver("SQL_DB", SQLDataDriver.class);
+        registerDataTypes();
+        storageManager.setupManager();
+
+        // Load network packages
+        FunctionHelper.netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
+        FunctionHelper.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
         FunctionHelper.netHandler.registerMessage(S1PacketSelectionUpdate.class, S1PacketSelectionUpdate.class, 1, Side.CLIENT);
-        
-		FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
-		OutputHandler.felog.info("Forge Essentials version " + FEModContainer.version + " loading, reading config from " + FEDIR.getAbsolutePath());
 
-		// setup fedir stuff
-		config = new CoreConfig();
-		Environment.check();
+        // Misc
+        miscEventHandler = new MiscEventHandler();
+        LoginMessage.loadFile();
 
-		// Data API stuff
-		{
-			// setup
-			DataStorageManager.manager = new StorageManager(config.config);
+        // Load modules
+        moduleLauncher = new ModuleLauncher();
+        moduleLauncher.preLoad(e);
+    }
 
-			// register DataDrivers
-			DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
-			DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
-			DataStorageManager.registerDriver("SQL_DB", SQLDataDriver.class);
+    public void registerDataTypes()
+    {
+        // Register data types
+        DataStorageManager.registerSaveableType(PlayerInfo.class);
 
-			// Register saveables..
-			DataStorageManager.registerSaveableType(PlayerInfo.class);
+        DataStorageManager.registerSaveableType(Point.class);
+        DataStorageManager.registerSaveableType(WorldPoint.class);
+        DataStorageManager.registerSaveableType(WarpPoint.class);
 
-			DataStorageManager.registerSaveableType(Point.class);
-			DataStorageManager.registerSaveableType(WorldPoint.class);
-			DataStorageManager.registerSaveableType(WarpPoint.class);
+        DataStorageManager.registerSaveableType(TypeInfoItemStack.class, new ClassContainer(ItemStack.class));
+        DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
+        DataStorageManager.registerSaveableType(TypeInfoNBTTagList.class, new ClassContainer(NBTTagList.class));
+    }
 
-			DataStorageManager.registerSaveableType(TypeInfoItemStack.class, new ClassContainer(ItemStack.class));
-			DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
-			DataStorageManager.registerSaveableType(TypeInfoNBTTagList.class, new ClassContainer(NBTTagList.class));
-		}
+    @EventHandler
+    public void load(FMLInitializationEvent e)
+    {
+        // MinecraftForge.EVENT_BUS.register(this);
+        // FMLCommonHandler.instance().bus().register(this);
 
-		miscEventHandler = new MiscEventHandler();
-		LoginMessage.loadFile();
-		mdlaunch = new ModuleLauncher();
-        mdlaunch.preLoad(e);
-	}
+        // other stuff
+        ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
+        FMLCommonHandler.instance().bus().register(factory);
+        MinecraftForge.EVENT_BUS.register(factory);
 
-	@EventHandler
-	public void load(FMLInitializationEvent e)
-	{
-        MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
-        
-		// load up DataAPI
-		((StorageManager) DataStorageManager.manager).setupManager();
-
-		// other stuff
-		ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
-		FMLCommonHandler.instance().bus().register(factory);
-		MinecraftForge.EVENT_BUS.register(factory);
-		
-		respawnHandler = new RespawnHandler();
+        respawnHandler = new RespawnHandler();
         wandHandler = new SelectionEventHandler();
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
-	}
+    }
 
-	@EventHandler
-	public void postLoad(FMLPostInitializationEvent e)
+    @EventHandler
+    public void postLoad(FMLPostInitializationEvent e)
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModulePostInitEvent(e));
-	}
+    }
 
-	@EventHandler
+    @EventHandler
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerPreInitEvent(e));
     }
 
     @EventHandler
-	public void serverStarting(FMLServerStartingEvent e)
-	{
-		// load up DataAPI
-		((StorageManager) DataStorageManager.manager).serverStart(e);
+    public void serverStarting(FMLServerStartingEvent e)
+    {
+        // load up DataAPI
+        ((StorageManager) DataStorageManager.manager).serverStart(e);
 
-		BlockModListFile.makeModList();
+        BlockModListFile.makeModList();
 
-		// commands
-		e.registerServerCommand(new HelpFixer());
-		
-		new CommandFEInfo().register();
+        // commands
+        e.registerServerCommand(new HelpFixer());
+
+        new CommandFEInfo().register();
         new CommandFEDebug().register();
 
-		if (!worldEditCompatilityPresent)
-		{
-			new CommandPos(1).register();
-			new CommandPos(2).register();
-			new CommandWand().register();
-			new CommandDeselect().register();
-			new CommandExpand().register();
-			new CommandExpandY().register();
-		}
+        if (!worldEditCompatilityPresent)
+        {
+            new CommandPos(1).register();
+            new CommandPos(2).register();
+            new CommandWand().register();
+            new CommandDeselect().register();
+            new CommandExpand().register();
+            new CommandExpandY().register();
+        }
 
-		tasks.onServerStart();
+        tasks.onServerStart();
 
-		ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
+        ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerInitEvent(e));
-	}
+    }
 
-	@EventHandler
-	public void serverStarted(FMLServerStartedEvent e)
-	{
-		CommandSetChecker.remove();
+    @EventHandler
+    public void serverStarted(FMLServerStartedEvent e)
+    {
+        CommandSetChecker.remove();
 
-		FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
-	}
+        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
+    }
 
-	@EventHandler
-	public void serverStopping(FMLServerStoppingEvent e)
-	{
-		tasks.onServerStop();
-		PlayerInfo.saveAll();
-		PlayerInfo.clear();
+    @EventHandler
+    public void serverStopping(FMLServerStoppingEvent e)
+    {
+        tasks.onServerStop();
+        PlayerInfo.saveAll();
+        PlayerInfo.clear();
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerStopEvent(e));
-	}
+    }
 
     @EventHandler
     public void serverStopped(FMLServerStoppedEvent e)
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerStoppedEvent(e));
+    }
+
+    @Override
+    public void load(Configuration config, boolean isReload)
+    {
+        config.addCustomCategoryComment(CONFIG_CAT, "Configure ForgeEssentials Core.");
+
+        Property prop = config.get(CONFIG_CAT, "versionCheck", true);
+        prop.comment = "Check for newer versions of ForgeEssentials on load?";
+        ForgeEssentials.versionCheck = prop.getBoolean(true);
+
+        prop = config.get(CONFIG_CAT, "canonicalConfigs", false);
+        prop.comment = "For modules that support it, place their configs in this file.";
+        configManager.setUseCanonicalConfig(prop.getBoolean(false));
+
+        prop = config.get(CONFIG_CAT, "modlistLocation", "modlist.txt");
+        prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
+        ForgeEssentials.modlistLocation = prop.getString();
+
+        // ----------------------------------------
+
+        config.addCustomCategoryComment("Core.Modules", "Enable/disable modules here.");
+
+        prop = config.get(CONFIG_CAT, "debug", false);
+        prop.comment = "Activates developer debug mode. Spams your FML logs.";
+        OutputHandler.debugmode = prop.getBoolean(false);
+
+        prop = config.get(CONFIG_CAT, "removeDuplicateCommands", true);
+        prop.comment = "Remove commands from the list if they already exist outside of FE.";
+        CommandSetChecker.removeDuplicateCommands = prop.getBoolean(true);
+
+        prop = config.get(CONFIG_CAT, "persistSelections", false);
+        prop.comment = "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.";
+        PlayerInfo.persistSelections = prop.getBoolean(false);
+
+        // ----------------------------------------
+
+        config.addCustomCategoryComment(CONFIG_CAT_OUT, "This controls the colors of the various chats output by ForgeEssentials."
+                + "\nValid output colors are as follows:" + "\naqua, black, blue, dark_aqua, dark_blue, dark_gray, dark_green, dark_purple, dark_red"
+                + "\ngold, gray, green, light_purple, red, white, yellow");
+
+        prop = config.get(CONFIG_CAT_OUT, "confirmationColor", "green");
+        prop.comment = "Defaults to green.";
+        OutputHandler.setConfirmationColor(prop.getString());
+
+        prop = config.get(CONFIG_CAT_OUT, "errorOutputColor", "red");
+        prop.comment = "Defaults to red.";
+        OutputHandler.setErrorColor(prop.getString());
+
+        prop = config.get(CONFIG_CAT_OUT, "notificationOutputColor", "aqua");
+        prop.comment = "Defaults to aqua.";
+        OutputHandler.setNotificationColor(prop.getString());
+
+        prop = config.get(CONFIG_CAT_OUT, "warningOutputColor", "yellow");
+        prop.comment = "Defaults to yellow.";
+        OutputHandler.setWarningColor(prop.getString());
+
+        // ----------------------------------------
+
+        prop = config.get(CONFIG_CAT_MISC, "tpWarmup", 5);
+        prop.comment = "The amount of time you need to stand still to TP.";
+        TeleportCenter.setTeleportWarmup(prop.getInt(3));
+
+        prop = config.get(CONFIG_CAT_MISC, "tpCooldown", 5);
+        prop.comment = "The amount of time you need to wait to TP again.";
+        TeleportCenter.setTeleportCooldown(prop.getInt(5));
+
+        prop = config.get(CONFIG_CAT_MISC, "MajoritySleep", true);
+        prop.comment = "If +50% of players sleep, make it day.";
+        MiscEventHandler.MajoritySleep = prop.getBoolean(true);
+    }
+
+    @Override
+    public void save(Configuration config)
+    {
+    }
+
+    @Override
+    public boolean supportsCanonicalConfig()
+    {
+        return true;
+    }
+
+    public static boolean canLoadModule(String moduleName)
+    {
+        return getConfigManager().getMainConfig().get("Core.Modules", moduleName, true).getBoolean(true);
+    }
+
+    public static ConfigManager getConfigManager()
+    {
+        return instance.configManager;
+    }
+
+    public static File getFEDirectory()
+    {
+        return instance.FEDIR;
     }
 
 }

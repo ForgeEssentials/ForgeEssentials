@@ -1,21 +1,14 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import java.io.File;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.minecraft.command.ICommandSender;
-
 @Retention(RetentionPolicy.RUNTIME)
 // If you need more than one thing in the FE API, make a module class using this
 // annotation.
 public @interface FEModule {
-    /**
-     * this may be null
-     */
-    Class<? extends ModuleConfigBase> configClass() default DummyConfig.class;
 
     /**
      * "Module" is not automatically ie: "WorldControlModule" "SnooperModule"
@@ -92,16 +85,6 @@ public @interface FEModule {
     }
 
     /**
-     * This field will be populated with an instance of this Module's Config
-     * object.
-     */
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(
-            { ElementType.FIELD })
-    public @interface Config {
-    }
-
-    /**
      * This field will be populated with a File instance of this Modules
      * directory.
      */
@@ -111,35 +94,4 @@ public @interface FEModule {
     public @interface ModuleDir {
     }
 
-    // dummy for the default config.
-    class DummyConfig extends ModuleConfigBase {
-
-        @Override
-        public void init()
-        {
-        }
-
-        @Override
-        public void forceSave()
-        {
-        }
-
-        @Override
-        public void forceLoad(ICommandSender sender)
-        {
-        }
-
-        @Override
-        public File getFile()
-        {
-            return null;
-        }
-
-        @Override
-        public boolean universalConfigAllowed()
-        {
-            return true;
-        }
-
-    }
 }

@@ -1,9 +1,14 @@
 package com.forgeessentials.core.moduleLauncher;
 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+
+import net.minecraft.command.ICommandSender;
+
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule.Config;
 import com.forgeessentials.core.moduleLauncher.FEModule.Container;
-import com.forgeessentials.core.moduleLauncher.FEModule.DummyConfig;
 import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
@@ -11,29 +16,23 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Reload;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
+
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-import net.minecraft.command.ICommandSender;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashSet;
 
 @SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable {
+
     protected static HashSet<Class> modClasses = new HashSet<Class>();
 
     public Object module, mod;
-    private ModuleConfigBase configObj;
-    private Class<? extends ModuleConfigBase> configClass;
 
     // methods..
-    private String reload;
+    private String reloadMethodName;
 
     // fields
-    private String instance, container, config, parentMod, moduleDir;
+    private String instanceFieldName, containerFieldName, parentModFieldName, moduleDirFieldName;
 
     // other vars..
     public final String className;
@@ -76,9 +75,8 @@ public class ModuleContainer implements Comparable {
         name = annot.name();
         isCore = annot.isCore();
         doesOverride = annot.doesOverride();
-        configClass = annot.configClass();
 
-        if (!ForgeEssentials.config.canLoadModule(name))
+        if (!ForgeEssentials.canLoadModule(name))
         {
             OutputHandler.felog.info("Requested to disable module " + name);
             isLoadable = false;
@@ -94,9 +92,9 @@ public class ModuleContainer implements Comparable {
         Class[] params;
         for (Method m : c.getDeclaredMethods())
         {
-           if (m.isAnnotationPresent(Reload.class))
+            if (m.isAnnotationPresent(Reload.class))
             {
-                if (reload != null)
+                if (reloadMethodName != null)
                 {
                     throw new RuntimeException("Only one class may be marked as Reload");
                 }
@@ -110,7 +108,7 @@ public class ModuleContainer implements Comparable {
                     throw new RuntimeException(m + " must take " + ICommandSender.class.getSimpleName() + " as a param!");
                 }
                 m.setAccessible(true);
-                reload = m.getName();
+                reloadMethodName = m.getName();
             }
         }
 
@@ -119,16 +117,16 @@ public class ModuleContainer implements Comparable {
         {
             if (f.isAnnotationPresent(Instance.class))
             {
-                if (instance != null)
+                if (instanceFieldName != null)
                 {
                     throw new RuntimeException("Only one field may be marked as Instance");
                 }
                 f.setAccessible(true);
-                instance = f.getName();
+                instanceFieldName = f.getName();
             }
             else if (f.isAnnotationPresent(Container.class))
             {
-                if (container != null)
+                if (containerFieldName != null)
                 {
                     throw new RuntimeException("Only one field may be marked as Container");
                 }
@@ -137,33 +135,20 @@ public class ModuleContainer implements Comparable {
                     throw new RuntimeException("This field must have the type ModuleContainer!");
                 }
                 f.setAccessible(true);
-                container = f.getName();
-            }
-            else if (f.isAnnotationPresent(Config.class))
-            {
-                if (config != null)
-                {
-                    throw new RuntimeException("Only one field may be marked as Config");
-                }
-                if (!ModuleConfigBase.class.isAssignableFrom(f.getType()))
-                {
-                    throw new RuntimeException("This field must be the type ModuleConfigBase!");
-                }
-                f.setAccessible(true);
-                config = f.getName();
+                containerFieldName = f.getName();
             }
             else if (f.isAnnotationPresent(ParentMod.class))
             {
-                if (parentMod != null)
+                if (parentModFieldName != null)
                 {
                     throw new RuntimeException("Only one field may be marked as ParentMod");
                 }
                 f.setAccessible(true);
-                parentMod = f.getName();
+                parentModFieldName = f.getName();
             }
             else if (f.isAnnotationPresent(ModuleDir.class))
             {
-                if (moduleDir != null)
+                if (moduleDirFieldName != null)
                 {
                     throw new RuntimeException("Only one field may be marked as ModuleDir");
                 }
@@ -172,7 +157,7 @@ public class ModuleContainer implements Comparable {
                     throw new RuntimeException("This field must be the type File!");
                 }
                 f.setAccessible(true);
-                moduleDir = f.getName();
+                moduleDirFieldName = f.getName();
             }
         }
     }
@@ -200,33 +185,33 @@ public class ModuleContainer implements Comparable {
         // now for the fields...
         try
         {
-            if (instance != null)
+            if (instanceFieldName != null)
             {
-                f = c.getDeclaredField(instance);
+                f = c.getDeclaredField(instanceFieldName);
                 f.setAccessible(true);
                 f.set(module, module);
             }
 
-            if (container != null)
+            if (containerFieldName != null)
             {
-                f = c.getDeclaredField(container);
+                f = c.getDeclaredField(containerFieldName);
                 f.setAccessible(true);
                 f.set(module, this);
             }
 
-            if (parentMod != null)
+            if (parentModFieldName != null)
             {
-                f = c.getDeclaredField(parentMod);
+                f = c.getDeclaredField(parentModFieldName);
                 f.setAccessible(true);
                 f.set(module, mod);
             }
 
-            if (moduleDir != null)
+            if (moduleDirFieldName != null)
             {
-                File file = new File(ForgeEssentials.FEDIR, name);
+                File file = new File(ForgeEssentials.getFEDirectory(), name);
                 file.mkdirs();
 
-                f = c.getDeclaredField(moduleDir);
+                f = c.getDeclaredField(moduleDirFieldName);
                 f.setAccessible(true);
                 f.set(module, file);
             }
@@ -236,47 +221,19 @@ public class ModuleContainer implements Comparable {
             OutputHandler.felog.info("Error populating fields of " + name);
             Throwables.propagate(e);
         }
-
-        // now for the config..
-        if (configClass.equals(DummyConfig.class))
-        {
-            OutputHandler.felog.info("No config specified for " + name);
-            configObj = null;
-            return;
-        }
-
-        try
-        {
-            configObj = configClass.getConstructor().newInstance();
-
-            if (config != null)
-            {
-                f = c.getDeclaredField(config);
-                f.setAccessible(true);
-                f.set(module, configObj);
-            }
-
-        }
-        catch (Throwable e)
-        {
-            OutputHandler.felog.info("Error Instantiating or populating config for " + name);
-            Throwables.propagate(e);
-        }
     }
 
-    @SuppressWarnings("unchecked")
     public void runReload(ICommandSender user)
     {
-        if (!isLoadable || reload == null)
+        if (!isLoadable || reloadMethodName == null)
         {
             return;
         }
 
         try
         {
-            Class c = Class.forName(className);
-            Method m = c.getDeclaredMethod(reload, new Class[]
-                    { ICommandSender.class });
+            Class<?> c = Class.forName(className);
+            Method m = c.getDeclaredMethod(reloadMethodName, new Class<?>[] { ICommandSender.class });
             m.invoke(module, user);
         }
         catch (Throwable e)
@@ -288,17 +245,7 @@ public class ModuleContainer implements Comparable {
 
     public File getModuleDir()
     {
-        return new File(ForgeEssentials.FEDIR, name);
-    }
-
-    /**
-     * May be null if the module has no config
-     *
-     * @return
-     */
-    public ModuleConfigBase getConfig()
-    {
-        return configObj;
+        return new File(ForgeEssentials.getFEDirectory(), name);
     }
 
     @Override
@@ -306,7 +253,7 @@ public class ModuleContainer implements Comparable {
     {
         if (!(o instanceof ModuleContainer))
             return -1;
-        
+
         ModuleContainer other = (ModuleContainer) o;
 
         if (equals(other))

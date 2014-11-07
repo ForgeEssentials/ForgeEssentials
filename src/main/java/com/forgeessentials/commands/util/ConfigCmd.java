@@ -1,37 +1,29 @@
 package com.forgeessentials.commands.util;
 
-import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 
-public class ConfigCmd extends ModuleConfigBase {
-
-    @Override
-    public void init()
-    {
-
-        config.addCustomCategoryComment("general", "General Commands configuration.");
-        config.save();
-    }
+public class ConfigCmd extends ConfigLoaderBase {
 
     @Override
-    public void forceSave()
+    public void load(Configuration config, boolean isReload)
     {
         config.addCustomCategoryComment("general", "General Commands configuration.");
-        config.save();
-    }
-
-    @Override
-    public void forceLoad(ICommandSender sender)
-    {
-        config.load();
         CommandRegistrar.commandConfigs(config);
-        config.save();
     }
 
     @Override
-    public boolean universalConfigAllowed()
+    public void save(Configuration config)
+    {
+        config.addCustomCategoryComment("general", "General Commands configuration.");
+        CommandRegistrar.commandConfigs(config);
+    }
+
+    @Override
+    public boolean supportsCanonicalConfig()
     {
         return false;
     }
+    
 }

@@ -145,4 +145,5 @@ public class CommandRegistrar {
             APIRegistry.perms.registerPermissionDescription(cmd.getPermissionNode(), cmd.getCommandUsage(null));
         }
 	}
+	
 }

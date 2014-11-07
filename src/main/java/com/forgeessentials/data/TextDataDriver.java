@@ -13,7 +13,6 @@ import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.util.FunctionHelper;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public abstract class TextDataDriver extends AbstractDataDriver {
@@ -38,23 +37,10 @@ public abstract class TextDataDriver extends AbstractDataDriver {
     @Override
     public final void serverStart(FMLServerStartingEvent e)
     {
-        String worldName = e.getServer().getFolderName();
-
         if (useFEBase)
-        {
-            baseFile = new File(ForgeEssentials.FEDIR, "saves/" + getName() + "/" + worldName + "/");
-        }
+            baseFile = new File(ForgeEssentials.getFEDirectory(), "saves/" + getName() + "/" + e.getServer().getFolderName() + "/");
         else
-        {
-            File parent = FunctionHelper.getBaseDir();
-
-            if (FMLCommonHandler.instance().getSide().isClient())
-            {
-                parent = new File(FunctionHelper.getBaseDir(), "saves/");
-            }
-
-            baseFile = new File(parent, worldName + "/FEData/" + getName() + "/");
-        }
+            baseFile = FunctionHelper.getWorldPath();
     }
 
     protected final File getTypePath(ClassContainer type)

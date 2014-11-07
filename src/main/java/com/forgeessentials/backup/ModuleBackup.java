@@ -24,12 +24,9 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@FEModule(name = "Backups", parentMod = ForgeEssentials.class, configClass = BackupConfig.class)
+@FEModule(name = "Backups", parentMod = ForgeEssentials.class)
 public class ModuleBackup {
     
-    @FEModule.Config
-    public static BackupConfig config;
-
     @FEModule.ModuleDir
     public static File moduleDir;
 
@@ -75,6 +72,9 @@ public class ModuleBackup {
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
+        // Register configuration
+        ForgeEssentials.getConfigManager().registerLoader("Backups", new BackupConfig());
+        
         MinecraftForge.EVENT_BUS.register(this);
         worldSaver = new WorldSaver();
     }

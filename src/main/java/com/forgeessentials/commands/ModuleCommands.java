@@ -25,12 +25,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 
-@FEModule(configClass = ConfigCmd.class, name = "Commands", parentMod = ForgeEssentials.class)
+@FEModule(name = "Commands", parentMod = ForgeEssentials.class)
 public class ModuleCommands {
     
-    @FEModule.Config
-    public static ConfigCmd conf;
-
     public static CommandsEventHandler eventHandler = new CommandsEventHandler();
 
     @SubscribeEvent
@@ -45,8 +42,8 @@ public class ModuleCommands {
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        CommandRegistrar.commandConfigs(conf.getConfig());
-        ShortcutCommands.loadConfig(ForgeEssentials.FEDIR);
+        ForgeEssentials.getConfigManager().registerLoader("Commands", new ConfigCmd());
+        ShortcutCommands.loadConfig(ForgeEssentials.getFEDirectory());
     }
 
     @SubscribeEvent

@@ -15,7 +15,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ModuleScripting {
 
     @FEModule.ModuleDir
-    public static File moduleDir = new File(ForgeEssentials.FEDIR, "scripting/");
+    public static File moduleDir = new File(ForgeEssentials.getFEDirectory(), "scripting/");
 
     static File loginplayer = new File(moduleDir, "login/player/");
     static File logingroup = new File(moduleDir, "login/group/");

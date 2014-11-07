@@ -23,7 +23,7 @@ public class BlockModListFile {
     {
         try
         {
-            File modListFile = new File(ForgeEssentials.FEDIR, ForgeEssentials.modlistLocation);
+            File modListFile = new File(ForgeEssentials.getFEDirectory(), ForgeEssentials.modlistLocation);
             if (modListFile.exists())
             {
                 modListFile.delete();
@@ -31,11 +31,11 @@ public class BlockModListFile {
             try (PrintWriter out = new PrintWriter(new FileWriter(modListFile)))
             {
                 out.println("# --- ModList ---");
-                out.println(
-                        "# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR) + " (Server time)");
-                out.println("# Change the location of this file in " + CoreConfig.mainconfig);
+                out.println("# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR)
+                        + " (Server time)");
+                out.println("# Change the location of this file in " + ForgeEssentials.getConfigManager().getMainConfigName() + ".cfg");
                 out.println();
-    
+
                 for (ModContainer mod : Loader.instance().getModList())
                 {
                     String url = "";
@@ -61,7 +61,7 @@ public class BlockModListFile {
     {
         try
         {
-            File modListFile = new File(ForgeEssentials.FEDIR, "ItemList.txt");
+            File modListFile = new File(ForgeEssentials.getFEDirectory(), "ItemList.txt");
             if (modListFile.exists())
             {
                 modListFile.delete();
@@ -69,10 +69,10 @@ public class BlockModListFile {
             try (PrintWriter out = new PrintWriter(new FileWriter(modListFile)))
             {
                 out.println("# --- Block/Item List ---");
-                out.println(
-                        "# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR) + " (Server time)");
+                out.println("# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR)
+                        + " (Server time)");
                 out.println();
-    
+
                 for (Item i : GameData.getItemRegistry().typeSafeIterable())
                 {
                     out.println(i.getUnlocalizedName());
@@ -88,4 +88,5 @@ public class BlockModListFile {
 
         }
     }
+
 }

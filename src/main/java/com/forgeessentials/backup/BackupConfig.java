@@ -4,12 +4,13 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.command.ICommandSender;
+import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.ModuleConfigBase;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.google.common.primitives.Ints;
 
-public class BackupConfig extends ModuleConfigBase {
+public class BackupConfig extends ConfigLoaderBase {
+
     private static final String MAIN = "Backup";
     private static final String AUTOBACKUP = MAIN + ".autoBackup";
     private static final String AUTOREMOVE = MAIN + ".autoRemove";
@@ -33,11 +34,11 @@ public class BackupConfig extends ModuleConfigBase {
     public static Integer maxBackupLifespan;
 
     @Override
-    public void init()
+    public void load(Configuration config, boolean isReload)
     {
-		/*
+        /*
          * Main cat
-		 */
+         */
         config.addCustomCategoryComment(MAIN, "Configure the backup system.");
         backupName = config.get(MAIN, "name", "%name_%year-%month-%day_%hour-%min",
                 "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").getString();
@@ -46,9 +47,9 @@ public class BackupConfig extends ModuleConfigBase {
         backupIfUnloaded = config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").getBoolean(true);
         enableMsg = config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").getBoolean(true);
 
-		/*
+        /*
          * Lang
-		 */
+         */
 
         String sub = MAIN + ".lang";
         config.addCustomCategoryComment(sub, "Configure messages here.");
@@ -59,41 +60,38 @@ public class BackupConfig extends ModuleConfigBase {
 
         ModuleBackup.baseFolder = new File(backupDir);
 
-		/*
+        /*
          * Subcat autoBackup
-		 */
+         */
         config.addCustomCategoryComment(AUTOBACKUP, "Settings for the scheduled backup system");
 
         autoInterval = config.get(AUTOBACKUP, "interval", 30, "Interval in minutes. 0 to disable").getInt();
         worldSaveInterval = config.get(AUTOBACKUP, "worldSaveInterval", 10, "Does a save-all every X minutes. 0 to disable").getInt();
-        whitelist = Ints.asList(config.get(AUTOBACKUP, "whitelist", new int[] { }, "Always make a backup of these dims. Even when empty.").getIntList());
-        blacklist = Ints.asList(config.get(AUTOBACKUP, "blacklist", new int[] { }, "Don't make automatic backups of these dims. Can still be done via command.")
+        whitelist = Ints.asList(config.get(AUTOBACKUP, "whitelist", new int[] {}, "Always make a backup of these dims. Even when empty.").getIntList());
+        blacklist = Ints.asList(config.get(AUTOBACKUP, "blacklist", new int[] {}, "Don't make automatic backups of these dims. Can still be done via command.")
                 .getIntList());
-        extraFolders = Arrays
-                .asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar")
-                        .getStringList());
+        extraFolders = Arrays.asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" },
+                "Make a backup of these folders every autoBackup. Relative to server.jar").getStringList());
 
-		/*
-		 * Subcat autoRemove
-		 */
+        /*
+         * Subcat autoRemove
+         */
         config.addCustomCategoryComment(AUTOREMOVE, "Settings for the autoremoval of old backups");
 
         enableAutoRemove = config.get(AUTOREMOVE, "enable", true, "Automaticly remove old backups").getBoolean(true);
         minimunFreeSpace = config.get(AUTOREMOVE, "minimunFreeSpace", -1,
                 "Minimum of free space that needs to remain on the HDD the server is on. Value in GB. -1 disables this criteria.").getInt();
-        maxfilesperbackupfolder = config
-                .get(AUTOREMOVE, "maxfilesperbackupfolder", -1, "Maximum amout of backups per folder or world. -1 to disable this criteria.").getInt();
+        maxfilesperbackupfolder = config.get(AUTOREMOVE, "maxfilesperbackupfolder", -1,
+                "Maximum amout of backups per folder or world. -1 to disable this criteria.").getInt();
         maxBackupLifespan = config.get(AUTOREMOVE, "maxBackupLifespan", 168, "Time in hours a backup may last. -1 to disable this criteria.").getInt();
-
-        config.save();
     }
 
     @Override
-    public void forceSave()
+    public void save(Configuration config)
     {
-		/*
-		 * Main cat
-		 */
+        /*
+         * Main cat
+         */
         config.addCustomCategoryComment(MAIN, "Configure the backup system.");
         config.get(MAIN, "name", "%name_%year-%month-%day_%hour-%min",
                 "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").set(backupName);
@@ -104,82 +102,30 @@ public class BackupConfig extends ModuleConfigBase {
 
         ModuleBackup.baseFolder = new File(backupDir);
 
-		/*
-		 * Subcat autoBackup
-		 */
+        /*
+         * Subcat autoBackup
+         */
         config.addCustomCategoryComment(AUTOBACKUP, "Settings for the scheduled backup system");
 
         config.get(AUTOBACKUP, "interval", 30, "Interval in minutes. 0 to disable").set(autoInterval);
         config.get(AUTOBACKUP, "worldSaveInterval", 10, "Does a save-all every X minutes. 0 to disable").set(worldSaveInterval);
-        config.get(AUTOBACKUP, "whitelist", new int[] { }, "Always make a backup of these dims. Even when empty.").set(whitelist.toArray(new String[0]));
-        config.get(AUTOBACKUP, "blacklist", new int[] { }, "Don't make automatic backups of these dims. Can still be done via command.")
-                .set(blacklist.toArray(new String[0]));
-        config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar")
-                .set(extraFolders.toArray(new String[0]));
+        config.get(AUTOBACKUP, "whitelist", new int[] {}, "Always make a backup of these dims. Even when empty.").set(whitelist.toArray(new String[0]));
+        config.get(AUTOBACKUP, "blacklist", new int[] {}, "Don't make automatic backups of these dims. Can still be done via command.").set(
+                blacklist.toArray(new String[0]));
+        config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar").set(
+                extraFolders.toArray(new String[0]));
 
-		/*
-		 * Subcat autoRemove
-		 */
+        /*
+         * Subcat autoRemove
+         */
         config.addCustomCategoryComment(AUTOREMOVE, "Settings for the autoremoval of old backups");
 
         config.get(AUTOREMOVE, "enable", true, "Automaticly remove old backups").set(enableAutoRemove);
         config.get(AUTOREMOVE, "minimunFreeSpace", -1,
                 "Minimum of free space that needs to remain on the HDD the server is on. Value in GB. -1 disables this criteria.").set(minimunFreeSpace);
-        config.get(AUTOREMOVE, "maxfilesperbackupfolder", -1, "Maximum amout of backups per folder or world. -1 to disable this criteria.")
-                .set(maxfilesperbackupfolder);
+        config.get(AUTOREMOVE, "maxfilesperbackupfolder", -1, "Maximum amout of backups per folder or world. -1 to disable this criteria.").set(
+                maxfilesperbackupfolder);
         config.get(AUTOREMOVE, "maxBackupLifespan", 168, "Time in hours a backup may last. -1 to disable this criteria.").set(maxBackupLifespan);
-
-        config.save();
     }
 
-    @Override
-    public void forceLoad(ICommandSender sender)
-    {
-		/*
-		 * Main cat
-		 */
-        config.addCustomCategoryComment(MAIN, "Configure the backup system.");
-        backupName = config.get(MAIN, "name", "%name_%year-%month-%day_%hour-%min",
-                "The name config for the backup zip. You can use the following variables: %day, %month, %year, %hour, %min, %name").getString();
-        backupDir = config.get(MAIN, "backupsDir", "ForgeEssentials/Backups", "The path to the backup folder.").getString();
-        backupOnWorldUnload = config.get(MAIN, "backupOnWorldUnload", true, "Make a backup when a dim unloads.").getBoolean(true);
-        backupIfUnloaded = config.get(MAIN, "backupIfUnloaded", true, "Make backups if world is not loaded.").getBoolean(true);
-        enableMsg = config.get(MAIN, "enableMsg", true, "Send a message to eveyone with Permission: \"ForgeEssentials.backup.msg\"").getBoolean(true);
-
-        ModuleBackup.baseFolder = new File(backupDir);
-
-		/*
-		 * Subcat autoBackup
-		 */
-        config.addCustomCategoryComment(AUTOBACKUP, "Settings for the scheduled backup system");
-
-        autoInterval = config.get(AUTOBACKUP, "interval", 30, "Interval in minutes. 0 to disable").getInt();
-        worldSaveInterval = config.get(AUTOBACKUP, "worldSaveInterval", 10, "Does a save-all every X minutes. 0 to disable").getInt();
-        whitelist = Ints.asList(config.get(AUTOBACKUP, "whitelist", new int[] { }, "Always make a backup of these dims. Even when empty.").getIntList());
-        blacklist = Ints.asList(config.get(AUTOBACKUP, "blacklist", new int[] { }, "Don't make automatic backups of these dims. Can still be done via command.")
-                .getIntList());
-        extraFolders = Arrays
-                .asList(config.get(AUTOBACKUP, "extraFolders", new String[] { "" }, "Make a backup of these folders every autoBackup. Relative to server.jar")
-                        .getStringList());
-
-		/*
-		 * Subcat autoRemove
-		 */
-        config.addCustomCategoryComment(AUTOREMOVE, "Settings for the autoremoval of old backups");
-
-        enableAutoRemove = config.get(AUTOREMOVE, "enable", true, "Automaticly remove old backups").getBoolean(true);
-        minimunFreeSpace = config.get(AUTOREMOVE, "minimunFreeSpace", -1,
-                "Minimum of free space that needs to remain on the HDD the server is on. Value in GB. -1 disables this criteria.").getInt();
-        maxfilesperbackupfolder = config
-                .get(AUTOREMOVE, "maxfilesperbackupfolder", -1, "Maximum amout of backups per folder or world. -1 to disable this criteria.").getInt();
-        maxBackupLifespan = config.get(AUTOREMOVE, "maxBackupLifespan", 168, "Time in hours a backup may last. -1 to disable this criteria.").getInt();
-
-        config.save();
-    }
-
-    @Override
-    public boolean universalConfigAllowed()
-    {
-        return true;
-    }
 }

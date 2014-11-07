@@ -16,6 +16,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
  * Call these methods to modify a target's Wallet.
  */
 public class WalletHandler implements IEconManager {
+    
     private static ClassContainer con = new ClassContainer(Wallet.class);
     private static HashMap<UUID, Wallet> wallets = new HashMap<UUID, Wallet>();
 
@@ -51,11 +52,11 @@ public class WalletHandler implements IEconManager {
     {
         if (amount == 1)
         {
-            return ConfigEconomy.currencySingular;
+            return ModuleEconomy.currencySingular;
         }
         else
         {
-            return ConfigEconomy.currencyPlural;
+            return ModuleEconomy.currencyPlural;
         }
     }
 

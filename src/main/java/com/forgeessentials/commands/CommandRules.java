@@ -37,12 +37,12 @@ public class CommandRules extends FEcmdModuleCommands {
     public static final String[] autocomargs =
             { "add", "remove", "move", "change", "book" };
     public static ArrayList<String> rules;
-    public static File rulesFile = new File(ForgeEssentials.FEDIR, "rules.txt");
+    public static File rulesFile = new File(ForgeEssentials.getFEDirectory(), "rules.txt");
 
     @Override
     public void loadConfig(Configuration config, String category)
     {
-        rulesFile = new File(ForgeEssentials.FEDIR, config.get(category, "filename", "rules.txt").getString());
+        rulesFile = new File(ForgeEssentials.getFEDirectory(), config.get(category, "filename", "rules.txt").getString());
         rules = loadRules();
     }
 

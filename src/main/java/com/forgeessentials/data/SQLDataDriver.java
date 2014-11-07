@@ -46,7 +46,7 @@ public class SQLDataDriver extends AbstractDataDriver {
     // Default constructor is good enough for us.
     public SQLDataDriver()
     {
-        connector = new DBConnector("CoreData", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.FEDIR.getPath() + "/FEData", false);
+        connector = new DBConnector("CoreData", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath() + "/FEData", false);
     }
 
     @Override

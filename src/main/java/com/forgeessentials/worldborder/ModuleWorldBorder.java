@@ -33,12 +33,10 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
  *
  * @author Dries007
  */
-@FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class, configClass = ConfigWorldBorder.class)
+@FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class)
 public class ModuleWorldBorder {
 	static final ClassContainer con = new ClassContainer(WorldBorder.class);
 	public static boolean logToConsole = true;
-	@FEModule.Config
-	public static ConfigWorldBorder config;
 	public static HashMap<String, WorldBorder> borderMap = new HashMap<String, WorldBorder>();
 	public static HashMap<Integer, IEffect[]> effectsList = new HashMap<Integer, IEffect[]>();
 	public static int overGenerate = 345;
@@ -117,6 +115,7 @@ public class ModuleWorldBorder {
 	public void load(FEModuleInitEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
+        ForgeEssentials.getConfigManager().registerLoader("WorldBorder", new ConfigWorldBorder());
 	}
 
 	@SubscribeEvent
