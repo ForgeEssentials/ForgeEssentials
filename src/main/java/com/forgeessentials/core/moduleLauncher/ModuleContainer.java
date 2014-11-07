@@ -29,10 +29,10 @@ public class ModuleContainer implements Comparable {
     public Object module, mod;
 
     // methods..
-    private String reloadMethodName;
+    private String reload;
 
     // fields
-    private String instanceFieldName, containerFieldName, parentModFieldName, moduleDirFieldName;
+    private String instance, container, parentMod, moduleDir;
 
     // other vars..
     public final String className;
@@ -94,7 +94,7 @@ public class ModuleContainer implements Comparable {
         {
             if (m.isAnnotationPresent(Reload.class))
             {
-                if (reloadMethodName != null)
+                if (reload != null)
                 {
                     throw new RuntimeException("Only one class may be marked as Reload");
                 }
@@ -108,7 +108,7 @@ public class ModuleContainer implements Comparable {
                     throw new RuntimeException(m + " must take " + ICommandSender.class.getSimpleName() + " as a param!");
                 }
                 m.setAccessible(true);
-                reloadMethodName = m.getName();
+                reload = m.getName();
             }
         }
 
@@ -117,16 +117,16 @@ public class ModuleContainer implements Comparable {
         {
             if (f.isAnnotationPresent(Instance.class))
             {
-                if (instanceFieldName != null)
+                if (instance != null)
                 {
                     throw new RuntimeException("Only one field may be marked as Instance");
                 }
                 f.setAccessible(true);
-                instanceFieldName = f.getName();
+                instance = f.getName();
             }
             else if (f.isAnnotationPresent(Container.class))
             {
-                if (containerFieldName != null)
+                if (container != null)
                 {
                     throw new RuntimeException("Only one field may be marked as Container");
                 }
@@ -135,20 +135,20 @@ public class ModuleContainer implements Comparable {
                     throw new RuntimeException("This field must have the type ModuleContainer!");
                 }
                 f.setAccessible(true);
-                containerFieldName = f.getName();
+                container = f.getName();
             }
             else if (f.isAnnotationPresent(ParentMod.class))
             {
-                if (parentModFieldName != null)
+                if (parentMod != null)
                 {
                     throw new RuntimeException("Only one field may be marked as ParentMod");
                 }
                 f.setAccessible(true);
-                parentModFieldName = f.getName();
+                parentMod = f.getName();
             }
             else if (f.isAnnotationPresent(ModuleDir.class))
             {
-                if (moduleDirFieldName != null)
+                if (moduleDir != null)
                 {
                     throw new RuntimeException("Only one field may be marked as ModuleDir");
                 }
@@ -157,7 +157,7 @@ public class ModuleContainer implements Comparable {
                     throw new RuntimeException("This field must be the type File!");
                 }
                 f.setAccessible(true);
-                moduleDirFieldName = f.getName();
+                moduleDir = f.getName();
             }
         }
     }
@@ -185,33 +185,33 @@ public class ModuleContainer implements Comparable {
         // now for the fields...
         try
         {
-            if (instanceFieldName != null)
+            if (instance != null)
             {
-                f = c.getDeclaredField(instanceFieldName);
+                f = c.getDeclaredField(instance);
                 f.setAccessible(true);
                 f.set(module, module);
             }
 
-            if (containerFieldName != null)
+            if (container != null)
             {
-                f = c.getDeclaredField(containerFieldName);
+                f = c.getDeclaredField(container);
                 f.setAccessible(true);
                 f.set(module, this);
             }
 
-            if (parentModFieldName != null)
+            if (parentMod != null)
             {
-                f = c.getDeclaredField(parentModFieldName);
+                f = c.getDeclaredField(parentMod);
                 f.setAccessible(true);
                 f.set(module, mod);
             }
 
-            if (moduleDirFieldName != null)
+            if (moduleDir != null)
             {
                 File file = new File(ForgeEssentials.getFEDirectory(), name);
                 file.mkdirs();
 
-                f = c.getDeclaredField(moduleDirFieldName);
+                f = c.getDeclaredField(moduleDir);
                 f.setAccessible(true);
                 f.set(module, file);
             }
@@ -225,7 +225,7 @@ public class ModuleContainer implements Comparable {
 
     public void runReload(ICommandSender user)
     {
-        if (!isLoadable || reloadMethodName == null)
+        if (!isLoadable || reload == null)
         {
             return;
         }
@@ -233,7 +233,7 @@ public class ModuleContainer implements Comparable {
         try
         {
             Class<?> c = Class.forName(className);
-            Method m = c.getDeclaredMethod(reloadMethodName, new Class<?>[] { ICommandSender.class });
+            Method m = c.getDeclaredMethod(reload, new Class<?>[] { ICommandSender.class });
             m.invoke(module, user);
         }
         catch (Throwable e)

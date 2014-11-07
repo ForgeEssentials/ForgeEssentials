@@ -68,7 +68,7 @@ public class ModuleLauncher {
             }
         }
 
-        CallableMap callableMap = new CallableMap();
+        CallableMap map = new CallableMap();
 
         data = e.getAsmData().getAll(ForgeEssentialsRegistrar.class.getName());
         Class<?> c;
@@ -83,7 +83,7 @@ public class ModuleLauncher {
                 try
                 {
                     obj = c.newInstance();
-                    callableMap.scanObject(obj);
+                    map.scanObject(obj);
                     // this works?? skip everything else and go on to the next one.
                     continue;
                 }
@@ -93,7 +93,7 @@ public class ModuleLauncher {
                 }
 
                 // if this isn't skipped.. it grabs the class, and all static methods.
-                callableMap.scanClass(c);
+                map.scanClass(c);
 
             }
             catch (ClassNotFoundException e1)
@@ -104,11 +104,11 @@ public class ModuleLauncher {
 
         for (ModContainer container : Loader.instance().getModList())
             if (container.getMod() != null)
-                callableMap.scanObject(container);
+                map.scanObject(container);
 
         // Check modules for callables
         for (ModuleContainer module : containerMap.values())
-            callableMap.scanObject(module);
+            map.scanObject(module);
 
         // Register modules with configuration manager
         for (ModuleContainer module : containerMap.values())
