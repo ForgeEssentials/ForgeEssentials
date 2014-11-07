@@ -8,7 +8,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -22,7 +21,7 @@ import com.forgeessentials.core.commands.selections.SelectionEventHandler;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.core.config.ConfigManager;
-import com.forgeessentials.core.config.IConfigLoader;
+import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.misc.RespawnHandler;
@@ -74,11 +73,11 @@ import cpw.mods.fml.relauncher.Side;
  */
 
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.1.1219,)")
-public class ForgeEssentials implements IConfigLoader {
+public class ForgeEssentials extends ConfigLoaderBase {
 
     public static final String CONFIG_CAT = "Core";
-    public static final String CONFIG_CAT_OUT = "Core.Output";
     public static final String CONFIG_CAT_MISC = "Core.Misc";
+    public static final String CONFIG_CAT_MODULES = "Core.Modules";
 
     @Instance(value = "ForgeEssentials")
     public static ForgeEssentials instance;
@@ -86,6 +85,8 @@ public class ForgeEssentials implements IConfigLoader {
     private File FEDIR;
 
     private ConfigManager configManager;
+
+    private boolean debugMode = false;
 
     public static boolean versionCheck = true;
 
@@ -128,6 +129,7 @@ public class ForgeEssentials implements IConfigLoader {
         // Load configuration
         configManager = new ConfigManager(FEDIR, "main");
         configManager.registerLoader(configManager.getMainConfigName(), this);
+        configManager.registerLoader(configManager.getMainConfigName(), new OutputHandler());
 
         // Initialize data-API
         StorageManager storageManager = new StorageManager(configManager.getConfig("DataStorage"));
@@ -254,81 +256,25 @@ public class ForgeEssentials implements IConfigLoader {
     public void load(Configuration config, boolean isReload)
     {
         config.addCustomCategoryComment(CONFIG_CAT, "Configure ForgeEssentials Core.");
+        config.addCustomCategoryComment(CONFIG_CAT_MODULES, "Enable/disable modules here.");
 
-        Property prop = config.get(CONFIG_CAT, "versionCheck", true);
-        prop.comment = "Check for newer versions of ForgeEssentials on load?";
-        ForgeEssentials.versionCheck = prop.getBoolean(true);
-
-        prop = config.get(CONFIG_CAT, "canonicalConfigs", false);
-        prop.comment = "For modules that support it, place their configs in this file.";
-        configManager.setUseCanonicalConfig(prop.getBoolean(false));
-
-        prop = config.get(CONFIG_CAT, "modlistLocation", "modlist.txt");
-        prop.comment = "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.";
-        ForgeEssentials.modlistLocation = prop.getString();
+        versionCheck = config.get(CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean(true);
+        configManager.setUseCanonicalConfig(config.get(CONFIG_CAT, "canonicalConfigs", false, 
+                "For modules that support it, place their configs in this file.").getBoolean(false));
+        modlistLocation = config.get(CONFIG_CAT, "modlistLocation", "modlist.txt",
+                "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.").getString();
+        debugMode = config.get(CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean(false);
 
         // ----------------------------------------
-
-        config.addCustomCategoryComment("Core.Modules", "Enable/disable modules here.");
-
-        prop = config.get(CONFIG_CAT, "debug", false);
-        prop.comment = "Activates developer debug mode. Spams your FML logs.";
-        OutputHandler.debugmode = prop.getBoolean(false);
-
-        prop = config.get(CONFIG_CAT, "removeDuplicateCommands", true);
-        prop.comment = "Remove commands from the list if they already exist outside of FE.";
-        CommandSetChecker.removeDuplicateCommands = prop.getBoolean(true);
-
-        prop = config.get(CONFIG_CAT, "persistSelections", false);
-        prop.comment = "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.";
-        PlayerInfo.persistSelections = prop.getBoolean(false);
-
-        // ----------------------------------------
-
-        config.addCustomCategoryComment(CONFIG_CAT_OUT, "This controls the colors of the various chats output by ForgeEssentials."
-                + "\nValid output colors are as follows:" + "\naqua, black, blue, dark_aqua, dark_blue, dark_gray, dark_green, dark_purple, dark_red"
-                + "\ngold, gray, green, light_purple, red, white, yellow");
-
-        prop = config.get(CONFIG_CAT_OUT, "confirmationColor", "green");
-        prop.comment = "Defaults to green.";
-        OutputHandler.setConfirmationColor(prop.getString());
-
-        prop = config.get(CONFIG_CAT_OUT, "errorOutputColor", "red");
-        prop.comment = "Defaults to red.";
-        OutputHandler.setErrorColor(prop.getString());
-
-        prop = config.get(CONFIG_CAT_OUT, "notificationOutputColor", "aqua");
-        prop.comment = "Defaults to aqua.";
-        OutputHandler.setNotificationColor(prop.getString());
-
-        prop = config.get(CONFIG_CAT_OUT, "warningOutputColor", "yellow");
-        prop.comment = "Defaults to yellow.";
-        OutputHandler.setWarningColor(prop.getString());
-
-        // ----------------------------------------
-
-        prop = config.get(CONFIG_CAT_MISC, "tpWarmup", 5);
-        prop.comment = "The amount of time you need to stand still to TP.";
-        TeleportCenter.setTeleportWarmup(prop.getInt(3));
-
-        prop = config.get(CONFIG_CAT_MISC, "tpCooldown", 5);
-        prop.comment = "The amount of time you need to wait to TP again.";
-        TeleportCenter.setTeleportCooldown(prop.getInt(5));
-
-        prop = config.get(CONFIG_CAT_MISC, "MajoritySleep", true);
-        prop.comment = "If +50% of players sleep, make it day.";
-        MiscEventHandler.MajoritySleep = prop.getBoolean(true);
-    }
-
-    @Override
-    public void save(Configuration config)
-    {
-    }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
+        // Other global configurations options
+        
+        CommandSetChecker.removeDuplicateCommands = config.get(CONFIG_CAT, "removeDuplicateCommands", true,
+                "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
+        PlayerInfo.persistSelections = config.get(CONFIG_CAT, "persistSelections", false,
+                "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.").getBoolean(false);
+        TeleportCenter.setTeleportWarmup(config.get(CONFIG_CAT_MISC, "tpWarmup", 5, "The amount of time you need to stand still to TP.").getInt(3));
+        TeleportCenter.setTeleportCooldown(config.get(CONFIG_CAT_MISC, "tpCooldown", 5, "The amount of time you need to wait to TP again.").getInt(5));
+        MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If +50% of players sleep, make it day.").getBoolean(true);
     }
 
     public static boolean canLoadModule(String moduleName)
@@ -344,6 +290,16 @@ public class ForgeEssentials implements IConfigLoader {
     public static File getFEDirectory()
     {
         return instance.FEDIR;
+    }
+
+    public static boolean isDebugMode()
+    {
+        return instance.debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode)
+    {
+        this.debugMode = debugMode;
     }
 
 }

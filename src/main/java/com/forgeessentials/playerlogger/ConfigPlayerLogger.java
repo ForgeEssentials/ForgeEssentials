@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.config.ConfigLoaderBase;
+import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
 
 public class ConfigPlayerLogger extends ConfigLoaderBase {
     

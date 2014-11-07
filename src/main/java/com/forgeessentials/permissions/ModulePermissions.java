@@ -13,7 +13,7 @@ import org.apache.commons.io.FileUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.config.ConfigLoaderBase;
+import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.permissions.autoPromote.AutoPromote;
