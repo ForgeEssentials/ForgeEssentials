@@ -57,12 +57,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
     {
         if (sender instanceof EntityPlayer)
         {
-            if (canPlayerUseCommand((EntityPlayer) sender))
+            if (!canPlayerUseCommand((EntityPlayer) sender))
                 return canCommandSenderUseCommandException(FEPermissions.MSG_NO_PLAYER_COMMAND);
         }
         else if (sender instanceof TileEntityCommandBlock)
         {
-            if (canCommandBlockUseCommand((TileEntityCommandBlock) sender))
+            if (!canCommandBlockUseCommand((TileEntityCommandBlock) sender))
                 return canCommandSenderUseCommandException(FEPermissions.MSG_NO_BLOCK_COMMAND);
         }
         else
