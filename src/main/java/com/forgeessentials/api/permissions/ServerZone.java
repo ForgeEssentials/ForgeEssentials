@@ -205,7 +205,7 @@ public class ServerZone extends Zone {
 
         if (ident != null)
         {
-            if (ident.hasPlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
+            if (ident.hasPlayer() && !ident.isFakePlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
             {
                 result.add(IPermissionsHelper.GROUP_OPERATORS);
             }

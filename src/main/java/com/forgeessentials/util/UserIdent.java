@@ -8,6 +8,7 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.util.FakePlayer;
 
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
@@ -308,5 +309,12 @@ public class UserIdent {
 			return null;
 		return player.getGameProfile().getId();
 	}
+
+
+	public boolean isFakePlayer()
+    {
+	    identifyUser();
+        return player instanceof FakePlayer;
+    }
 
 }
