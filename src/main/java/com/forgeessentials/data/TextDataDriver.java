@@ -38,9 +38,9 @@ public abstract class TextDataDriver extends AbstractDataDriver {
     public final void serverStart(FMLServerStartingEvent e)
     {
         if (useFEBase)
-            baseFile = new File(ForgeEssentials.getFEDirectory(), "saves/" + getName() + "/" + e.getServer().getFolderName() + "/");
+            baseFile = new File(ForgeEssentials.getFEDirectory(), "saves/" + e.getServer().getFolderName() + "/" + getName());
         else
-            baseFile = FunctionHelper.getWorldPath();
+            baseFile = new File(FunctionHelper.getWorldPath(), "FEData/" + getName());
     }
 
     protected final File getTypePath(ClassContainer type)
