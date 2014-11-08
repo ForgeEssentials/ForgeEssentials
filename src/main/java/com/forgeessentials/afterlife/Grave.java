@@ -16,6 +16,7 @@ import com.forgeessentials.util.selections.WorldPoint;
 
 @SaveableObject
 public class Grave {
+    
     @UniqueLoadingKey
     @SaveableField
     public String key;
@@ -46,7 +47,8 @@ public class Grave {
     {
         key = point.toString();
         this.point = point;
-        owner = player.getUniqueID().toString();
+        owner = player.getPersistentID().toString();
+        
         if (Deathchest.enableXP)
         {
             xp = player.experienceLevel;

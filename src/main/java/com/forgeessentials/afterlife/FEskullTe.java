@@ -1,12 +1,29 @@
 package com.forgeessentials.afterlife;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntitySkull;
+import net.minecraft.world.World;
 
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldPoint;
 
 public class FEskullTe extends TileEntitySkull {
+
+    public FEskullTe(EntityPlayer player)
+    {
+        // Set player profile
+        func_152106_a(player.getGameProfile());
+    }
+
+    public static FEskullTe createPlayerSkull(EntityPlayer player, World world, int x, int y, int z)
+    {
+        FEskullTe skull = new FEskullTe(player);
+        world.setBlock(x, y, z, Blocks.skull, 1, 1);
+        world.setTileEntity(x, y, z, skull);
+        return skull;
+    }
+
     @Override
     public void invalidate()
     {
@@ -20,10 +37,9 @@ public class FEskullTe extends TileEntitySkull {
         }
         if (grave.protEnable)
         {
-            this.worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.skull, 1, 1);
-            FEskullTe te = new FEskullTe();
-            te.func_152106_a(MinecraftServer.getServer().getConfigurationManager().func_152612_a(grave.owner).getGameProfile());
-            this.worldObj.setTileEntity(point.getX(), point.getY(), point.getZ(), te);
+            UserIdent owner = new UserIdent(grave.owner);
+            if (owner.hasPlayer())
+                createPlayerSkull(owner.getPlayer(), worldObj, point.getX(), point.getY(), point.getZ());
         }
         else
         {

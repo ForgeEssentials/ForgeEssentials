@@ -1,14 +1,11 @@
 package com.forgeessentials.permissions;
 
 import java.io.File;
-import java.io.IOException;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -87,22 +84,7 @@ public class ModulePermissions extends ConfigLoaderBase {
         case "":
         default:
         {
-            File permPath = new File(FunctionHelper.getWorldPath(), "FEPermissions");
-            {
-                File oldPermPath = new File(ForgeEssentials.getFEDirectory(), "Permissions/flat");
-                if (oldPermPath.exists() && !permPath.exists())
-                {
-                    try
-                    {
-                        FileUtils.moveDirectory(oldPermPath, permPath);
-                    }
-                    catch (IOException e1)
-                    {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-            permissionHelper.setPersistenceProvider(new FlatfileProvider(permPath));
+            permissionHelper.setPersistenceProvider(new FlatfileProvider(new File(FunctionHelper.getWorldPath(), "FEData/permissions")));
             break;
         }
         }

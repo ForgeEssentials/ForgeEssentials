@@ -98,11 +98,8 @@ public class Deathchest extends ServerEventHandler {
             point.setY(point.getY() + 1);
         }
 
-        new Grave(point, e.entityPlayer, e.drops, this);
-        world.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.skull, 1, 1);
-        FEskullTe te = new FEskullTe();
-        te.func_152106_a(e.entityPlayer.getGameProfile());
-        world.setTileEntity(point.getX(), point.getY(), point.getZ(), te);
+        gravemap.put(point.toString(), new Grave(point, e.entityPlayer, e.drops, this));
+        FEskullTe.createPlayerSkull(e.entityPlayer, world, point.getX(), point.getY(), point.getZ());
     }
 
     @SubscribeEvent

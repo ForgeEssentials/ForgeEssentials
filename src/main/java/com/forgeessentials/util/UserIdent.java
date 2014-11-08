@@ -269,7 +269,7 @@ public class UserIdent {
 	@SuppressWarnings("unchecked")
     public static EntityPlayerMP getPlayerByUuid(UUID uuid)
 	{
-		for (EntityPlayerMP player : (List<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
+		for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
 		{
 			if (player.getGameProfile().getId().equals(uuid))
 			{
