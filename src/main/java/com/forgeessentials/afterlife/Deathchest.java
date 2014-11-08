@@ -2,6 +2,7 @@ package com.forgeessentials.afterlife;
 
 import java.util.HashMap;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -116,7 +117,8 @@ public class Deathchest extends ServerEventHandler {
             if (gravemap.containsKey(point.toString()))
             {
                 Grave grave = gravemap.get(point.toString());
-                if (e.entity.worldObj.getBlock(e.x, e.y, e.z) == Blocks.skull)
+                Block block = e.entity.worldObj.getBlock(e.x, e.y, e.z);
+                if (block == Blocks.skull || block == Blocks.chest)
                 {
                     if (!grave.canOpen(e.entityPlayer))
                     {

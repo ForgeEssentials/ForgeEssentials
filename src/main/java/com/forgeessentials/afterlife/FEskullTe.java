@@ -39,7 +39,10 @@ public class FEskullTe extends TileEntitySkull {
         {
             UserIdent owner = new UserIdent(grave.owner);
             if (owner.hasPlayer())
-                createPlayerSkull(owner.getPlayer(), worldObj, point.getX(), point.getY(), point.getZ());
+            {
+                //createPlayerSkull(owner.getPlayer(), worldObj, point.getX(), point.getY(), point.getZ());
+                worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.chest);
+            }
         }
         else
         {
