@@ -71,6 +71,7 @@ public class ServerZone extends Zone {
         setGroupPermissionProperty(IPermissionsHelper.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
         setGroupPermissionProperty(IPermissionsHelper.GROUP_GUESTS, FEPermissions.PREFIX, "[GUEST]");
         setGroupPermissionProperty(IPermissionsHelper.GROUP_OPERATORS, FEPermissions.PREFIX, "[OPERATOR]");
+        addZone(this);
     }
 
     public ServerZone(RootZone rootZone)
@@ -79,6 +80,7 @@ public class ServerZone extends Zone {
         this.maxZoneID = 1;
         this.rootZone = rootZone;
         this.rootZone.setServerZone(this);
+        addZone(this.rootZone);
     }
 
     // ------------------------------------------------------------
@@ -156,6 +158,7 @@ public class ServerZone extends Zone {
     void setRootZone(RootZone rootZone)
     {
         this.rootZone = rootZone;
+        addZone(this.rootZone);
     }
 
     // ------------------------------------------------------------

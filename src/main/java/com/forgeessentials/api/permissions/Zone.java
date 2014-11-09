@@ -25,6 +25,16 @@ import com.forgeessentials.util.selections.WorldPoint;
 public abstract class Zone {
 
 	public static class PermissionList extends HashMap<String, String> {
+        private static final long serialVersionUID = 1L;
+
+        public PermissionList()
+        {
+        }
+
+        public PermissionList(Map<? extends String, ? extends String> clone)
+        {
+            super(clone);
+        }
 	}
 
 	public static final Comparator<Object> permissionComparator = new Comparator<Object>()
