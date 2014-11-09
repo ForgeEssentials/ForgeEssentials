@@ -23,6 +23,7 @@ import com.forgeessentials.permissions.core.PermissionEventHandler;
 import com.forgeessentials.permissions.core.PermissionsListWriter;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
+import com.forgeessentials.permissions.persistence.SQLProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.FunctionHelper;
@@ -48,7 +49,7 @@ public class ModulePermissions extends ConfigLoaderBase {
 
     private String persistenceBackend = "flatfile";
 
-    private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath(),
+    private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath() + "/permissions",
             false);
 
     @SubscribeEvent
@@ -80,7 +81,8 @@ public class ModulePermissions extends ConfigLoaderBase {
         switch (persistenceBackend.toLowerCase())
         {
         case "sql":
-            throw new RuntimeException("Not yet implemented");
+            permissionHelper.setPersistenceProvider(new SQLProvider(dbConnector.getChosenConnection(), dbConnector.getActiveType()));
+            break;
         case "":
         default:
         {
@@ -176,6 +178,11 @@ public class ModulePermissions extends ConfigLoaderBase {
         persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile", "Choose a permission persistence backend (flatfile, sql)").getString();
 
         dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
+    }
+
+    public DBConnector getDbConnector()
+    {
+        return dbConnector;
     }
 
 }

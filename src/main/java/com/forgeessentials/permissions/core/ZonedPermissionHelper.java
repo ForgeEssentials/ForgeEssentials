@@ -46,7 +46,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
     protected RootZone rootZone;
 
-    protected IZonePersistenceProvider persistenceProvider;
+    protected ZonePersistenceProvider persistenceProvider;
 
     protected Timer persistenceTimer;
 
@@ -84,16 +84,18 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
     }
 
-    public void setPersistenceProvider(IZonePersistenceProvider persistenceProvider)
+    public void setPersistenceProvider(ZonePersistenceProvider persistenceProvider)
     {
         this.persistenceProvider = persistenceProvider;
     }
 
     public void save()
     {
-        OutputHandler.felog.info("Saving permissions...");
         if (persistenceProvider != null)
+        {
+            OutputHandler.felog.info("Saving permissions...");
             persistenceProvider.save(rootZone.getServerZone());
+        }
         dirty = false;
     }
 

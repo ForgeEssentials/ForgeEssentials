@@ -138,7 +138,7 @@ public class ServerZone extends Zone {
         setDirty();
     }
 
-    public int getNextZoneID()
+    public int getMaxZoneID()
     {
         return maxZoneID;
     }

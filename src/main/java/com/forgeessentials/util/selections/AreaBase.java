@@ -1,5 +1,8 @@
 package com.forgeessentials.util.selections;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 
@@ -207,6 +210,22 @@ public class AreaBase {
     @Override
     public String toString()
     {
-        return " {" + high.toString() + " , " + low.toString() + " }";
+        return "{" + high.toString() + " , " + low.toString() + " }";
+    }
+
+
+
+    private static final Pattern pattern = Pattern.compile("\\s*\\{\\s*(\\[.*\\])\\s*,\\s*(\\[.*\\])\\s*\\}\\s*");
+    
+    public static AreaBase fromString(String value)
+    {
+        Matcher match = pattern.matcher(value);
+        if (!match.matches())
+            return null;
+        Point p1 = Point.fromString(match.group(1));
+        Point p2 = Point.fromString(match.group(2));
+        if (p1 == null || p2 == null)
+            return null;
+        return new AreaBase(p1, p2);
     }
 }

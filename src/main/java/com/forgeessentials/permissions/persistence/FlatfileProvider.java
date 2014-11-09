@@ -11,12 +11,10 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -24,13 +22,13 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
-import com.forgeessentials.permissions.core.IZonePersistenceProvider;
+import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.AreaBase;
 import com.forgeessentials.util.selections.Point;
 
-public class FlatfileProvider implements IZonePersistenceProvider {
+public class FlatfileProvider extends ZonePersistenceProvider {
 
     public static final String PERMISSION_FILE_EXT = ".txt";
 
@@ -81,17 +79,8 @@ public class FlatfileProvider implements IZonePersistenceProvider {
         catch (IOException e)
         {
         }
-
-        // Clear groups from players (leftovers, if player was removed from all groups)
-        for (UserIdent ident : serverZone.getPlayerPermissions().keySet())
-        {
-            serverZone.clearPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
-        }
-        // Add groups to players
-        for (Entry<UserIdent, Set<String>> entry : serverZone.getPlayerGroups().entrySet())
-        {
-            serverZone.setPlayerPermissionProperty(entry.getKey(), FEPermissions.PLAYER_GROUPS, StringUtils.join(entry.getValue(), ","));
-        }
+        
+        writeUserGroupPermissions(serverZone);
 
         saveServerZone(path, serverZone);
         saveZonePermissions(path, serverZone);
@@ -120,7 +109,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
             Properties p = new Properties();
 
             p.setProperty("id", Integer.toString(serverZone.getId()));
-            p.setProperty("maxZoneId", Integer.toString(serverZone.getNextZoneID()));
+            p.setProperty("maxZoneId", Integer.toString(serverZone.getMaxZoneID()));
 
             p.storeToXML(new BufferedOutputStream(new FileOutputStream(new File(path, "server.xml"))), "Data of server");
         }
@@ -244,18 +233,7 @@ public class FlatfileProvider implements IZonePersistenceProvider {
             ServerZone serverZone = new ServerZone();
             loadZonePermissions(path, serverZone);
 
-            for (UserIdent ident : serverZone.getPlayerPermissions().keySet())
-            {
-                String groupList = serverZone.getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
-                serverZone.clearPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
-                if (groupList == null)
-                    continue;
-                String[] groups = groupList.split(",");
-                for (String group : groups)
-                {
-                    serverZone.addPlayerToGroup(ident, group);
-                }
-            }
+            readUserGroupPermissions(serverZone);
 
             int maxId = 2;
 

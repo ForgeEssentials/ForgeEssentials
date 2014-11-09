@@ -1,6 +1,8 @@
 package com.forgeessentials.util.selections;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
@@ -233,11 +235,23 @@ public class Point implements Serializable, Comparable<Point> {
 	@Override
 	public String toString()
 	{
-		return "Point[" + x + ", " + y + ", " + z + "]";
+		return "[" + x + ", " + y + ", " + z + "]";
 	}
+
+    private static final Pattern pattern = Pattern.compile("\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\]\\s*");
+    
+	public static Point fromString(String value)
+    {
+        Matcher match = pattern.matcher(value);
+        if (!match.matches())
+            return null;
+        return new Point(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
+    }
 
 	public Vec3 toVec3()
 	{
 		return Vec3.createVectorHelper(x, y, z);
 	}
+
+	
 }
