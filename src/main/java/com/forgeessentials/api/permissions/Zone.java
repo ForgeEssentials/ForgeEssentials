@@ -1,8 +1,10 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +26,31 @@ import com.forgeessentials.util.selections.WorldPoint;
  */
 public abstract class Zone {
 
-	public static class PermissionList extends HashMap<String, String> {
+	public static class PermissionList extends HashMap<String, String>
+	{
+		public List<String> getPermissionsListFromMap()
+		{
+			List <String> list = new ArrayList<String>();
+			for(String perm : this.keySet())
+			{
+				if(!perm.contains(FEPermissions.FE_INTERNAL))
+				{
+					if(this.get(perm) == IPermissionsHelper.PERMISSION_TRUE)
+					{
+						list.add(perm);
+					}
+					else if(this.get(perm) == IPermissionsHelper.PERMISSION_FALSE)
+					{
+						list.add("-" + perm);
+					}
+					else
+					{
+						list.add(perm + "=" + get(perm));
+					}
+				}
+			}
+			return list;
+		}
 	}
 
 	public static final Comparator<Object> permissionComparator = new Comparator<Object>()
