@@ -8,7 +8,6 @@ import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -93,42 +92,12 @@ public class ProtectionEventHandler extends ServerEventHandler {
 
         if (e.entityLiving == null)
             return;
-
-        if (e.source.getEntity() instanceof EntityPlayer)
+        
+        if (e.entityLiving instanceof EntityPlayer)
         {
-            EntityPlayer source = (EntityPlayer) e.source.getEntity();
-            if (e.entityLiving instanceof EntityPlayer)
+            // living -> player (fall-damage, mob, dispenser, lava)
+            EntityPlayer target = (EntityPlayer) e.entityLiving;
             {
-                // player -> player
-                EntityPlayer target = (EntityPlayer) e.entityLiving;
-                if (!APIRegistry.perms.checkUserPermission(new UserIdent(target), ModuleProtection.PERM_PVP)
-                        || !APIRegistry.perms.checkUserPermission(new UserIdent(source), ModuleProtection.PERM_PVP)
-                        || !APIRegistry.perms.checkUserPermission(new UserIdent(source), new WorldPoint(target), ModuleProtection.PERM_PVP))
-                {
-                    e.setCanceled(true);
-                    return;
-                }
-            }
-            else
-            {
-                // player -> living
-                EntityLivingBase target = e.entityLiving;
-                String permission = ModuleProtection.PERM_DAMAGE_TO + "." + target.getClass().getSimpleName();
-                if (ModuleProtection.isDebugMode(source))
-                    OutputHandler.chatNotification(source, permission);
-                if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), new WorldPoint(target), ModuleProtection.PERM_INTERACT_ENTITY))
-                {
-                    e.setCanceled(true);
-                    return;
-                }
-            }
-        }
-        else
-        {
-            if (e.entityLiving instanceof EntityPlayer)
-            {
-                // non-player -> player (fall-damage, mob, dispenser, lava)
-                EntityPlayer target = (EntityPlayer) e.entityLiving;
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + e.source.damageType;
                 if (ModuleProtection.isDebugMode(target))
                     OutputHandler.chatNotification(target, permission);
@@ -138,16 +107,43 @@ public class ProtectionEventHandler extends ServerEventHandler {
                     return;
                 }
             }
-
-            if (e.entityLiving instanceof EntityPlayer && e.source.getEntity() != null)
+            
+            if (e.source.getEntity() != null)
             {
                 // non-player-entity -> player (mob)
-                EntityPlayer target = (EntityPlayer) e.entityLiving;
                 Entity source = e.source.getEntity();
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + source.getClass().getSimpleName();
                 if (ModuleProtection.isDebugMode(target))
                     OutputHandler.chatNotification(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(new UserIdent(target), permission))
+                {
+                    e.setCanceled(true);
+                    return;
+                }
+            }
+        }
+        
+        if (e.source.getEntity() instanceof EntityPlayer)
+        {
+            // player -> living
+            EntityPlayer source = (EntityPlayer) e.source.getEntity();
+            WorldPoint point = new WorldPoint(e.entityLiving);
+
+//            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + e.entityLiving.getClass().getSimpleName();
+//            if (ModuleProtection.isDebugMode(source))
+//                OutputHandler.chatNotification(source, permission);
+//            if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), point, ModuleProtection.PERM_INTERACT_ENTITY))
+//            {
+//                e.setCanceled(true);
+//                return;
+//            }
+            
+            if (e.entityLiving instanceof EntityPlayer)
+            {
+                // player -> player
+                if (!APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayer) e.entityLiving), ModuleProtection.PERM_PVP)
+                        || !APIRegistry.perms.checkUserPermission(new UserIdent(source), ModuleProtection.PERM_PVP)
+                        || !APIRegistry.perms.checkUserPermission(new UserIdent(source), point, ModuleProtection.PERM_PVP))
                 {
                     e.setCanceled(true);
                     return;
