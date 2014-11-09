@@ -23,6 +23,7 @@ import com.forgeessentials.permissions.core.PermissionEventHandler;
 import com.forgeessentials.permissions.core.PermissionsListWriter;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
+import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SQLProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
@@ -83,6 +84,9 @@ public class ModulePermissions extends ConfigLoaderBase {
         case "sql":
             permissionHelper.setPersistenceProvider(new SQLProvider(dbConnector.getChosenConnection(), dbConnector.getActiveType()));
             break;
+        case "json":
+        	permissionHelper.setPersistenceProvider(new JsonProvider(new File(FunctionHelper.getWorldPath(), "FEData/permissions")));
+        	break;
         case "":
         default:
         {
@@ -175,7 +179,7 @@ public class ModulePermissions extends ConfigLoaderBase {
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile", "Choose a permission persistence backend (flatfile, sql)").getString();
+        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile", "Choose a permission persistence backend (flatfile, sql, json)").getString();
 
         dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
     }
