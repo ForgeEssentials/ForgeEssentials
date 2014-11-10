@@ -3,17 +3,15 @@ package com.forgeessentials.permissions.persistence;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.h2.store.fs.FileUtils;
+import java.util.Map;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
-import com.forgeessentials.permissions.persistence.JsonSerializerHelpers.GroupData;
-import com.forgeessentials.permissions.persistence.JsonSerializerHelpers.GroupsData;
-import com.forgeessentials.permissions.persistence.JsonSerializerHelpers.ZonePerms;
 import com.forgeessentials.util.OutputHandler;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -25,9 +23,7 @@ public class JsonProvider extends ZonePersistenceProvider {
 	
 	public JsonProvider(File path)
 	{
-		this.path = path;
-		if(!path.exists())
-			FileUtils.createDirectory(path.getPath());			
+		this.path = path;		
 	}
 
 	@Override
@@ -66,6 +62,8 @@ public class JsonProvider extends ZonePersistenceProvider {
 		}
 		String json = gson.toJson(groupsData);
 		
+		path.mkdirs();
+		
 		try
 		{
 			FileWriter globalGroups = new FileWriter(new File(path + "/groups.json"));
@@ -75,6 +73,78 @@ public class JsonProvider extends ZonePersistenceProvider {
 		catch(IOException e)
 		{
 			OutputHandler.felog.severe("Failed to save groups.json: " + e.getMessage());
+		}
+	}
+	
+	// helper classes
+	public static class GroupsData
+	{
+		public Map<String, GroupData> groups;
+		
+		public GroupsData()
+		{
+			groups = new HashMap<String, GroupData>();
+		}
+	}
+	public static class GroupData
+	{
+		public String prefix;
+		public String suffix;
+		public boolean Default;
+		public int priority;
+		public List<ZonePerms> zones;
+		
+		public GroupData(String prefix, String suffix, boolean Default, int priority)
+		{
+			this.prefix = prefix;
+			this.suffix = suffix;
+			this.Default = Default;
+			this.priority = priority;
+			zones = new ArrayList<ZonePerms>();
+		}
+	}
+	
+	public static class ZonePerms
+	{
+		public int id;
+		public String name;
+		public String parent;
+		List<String> permissions;
+		
+		public ZonePerms(int id, String name, String parent)
+		{
+			this.id = id;
+			this.name = name;
+			this.parent = parent;
+			permissions = new ArrayList<String>();
+		}
+	}
+	
+	public static class UsersData
+	{
+		public Map<String, UserData> users;
+
+		public UsersData(Map<String, UserData> users)
+		{
+			users = new HashMap<String, UserData>();
+		}
+	}
+	
+	public static class UserData
+	{
+		public String username;
+		public String prefix;
+		public String suffix;
+		public List<String> groups;
+		public List<ZonePerms> zones;
+		
+		public UserData(String username, String prefix, String suffix, List<String> groups, List<ZonePerms> zones)
+		{
+			this.username = username;
+			this.prefix = prefix;
+			this.suffix = suffix;
+			groups = new ArrayList<String>();
+			zones = new ArrayList<ZonePerms>();
 		}
 	}
 }
