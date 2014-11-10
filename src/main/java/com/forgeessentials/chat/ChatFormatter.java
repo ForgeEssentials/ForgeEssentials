@@ -1,16 +1,5 @@
 package com.forgeessentials.chat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.DamageSource;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.permissions.PermissionsManager;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.commands.CommandPm;
 import com.forgeessentials.util.FunctionHelper;
@@ -18,9 +7,18 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.google.common.base.Strings;
-
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.DamageSource;
+import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.permissions.PermissionsManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatFormatter {
     public static List<String> bannedWords = new ArrayList<String>();
@@ -94,7 +92,7 @@ public class ChatFormatter {
 		 */
         if (event.message.contains("&"))
         {
-            if (PermissionsManager.checkPermission(event.player, "ForgeEssentials.Chat.usecolor"))
+            if (PermissionsManager.checkPermission(event.player, "fe.chat.usecolor"))
             {
                 message = FunctionHelper.formatColors(event.message);
             }

@@ -1,9 +1,5 @@
 package com.forgeessentials.commands.util;
 
-import java.util.ArrayList;
-
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.CommandAFK;
 import com.forgeessentials.commands.CommandBind;
@@ -11,7 +7,6 @@ import com.forgeessentials.commands.CommandBurn;
 import com.forgeessentials.commands.CommandButcher;
 import com.forgeessentials.commands.CommandCapabilities;
 import com.forgeessentials.commands.CommandChunkLoaderList;
-import com.forgeessentials.commands.CommandColorize;
 import com.forgeessentials.commands.CommandCraft;
 import com.forgeessentials.commands.CommandDrop;
 import com.forgeessentials.commands.CommandEnchant;
@@ -48,8 +43,10 @@ import com.forgeessentials.commands.admin.CommandServerDo;
 import com.forgeessentials.commands.admin.CommandServerSettings;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.common.config.Configuration;
+
+import java.util.ArrayList;
 
 public class CommandRegistrar {
 	
@@ -80,7 +77,6 @@ public class CommandRegistrar {
         cmdList.add(new CommandSmite());
         cmdList.add(new CommandBurn());
         cmdList.add(new CommandPotion());
-        cmdList.add(new CommandColorize());
         cmdList.add(new CommandRepair());
         cmdList.add(new CommandHeal());
         cmdList.add(new CommandKill());

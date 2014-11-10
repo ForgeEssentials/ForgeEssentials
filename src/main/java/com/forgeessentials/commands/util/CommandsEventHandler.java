@@ -1,16 +1,22 @@
 package com.forgeessentials.commands.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.forgeessentials.commands.CommandNoClip;
+import com.forgeessentials.commands.CommandVanish;
+import com.forgeessentials.core.misc.LoginMessage;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.PlayerInfo;
+import com.google.common.base.Strings;
+import com.google.common.collect.HashMultimap;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
@@ -18,19 +24,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.commands.CommandNoClip;
-import com.forgeessentials.commands.CommandVanish;
-import com.forgeessentials.core.misc.LoginMessage;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.google.common.base.Strings;
-import com.google.common.collect.HashMultimap;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandsEventHandler {
     public static final String BYPASS_KIT_COOLDOWN = "fe.TickHandlerCommands.BypassKitCooldown";
@@ -70,41 +65,6 @@ public class CommandsEventHandler {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
         {
             return;
-        }
-
-		/*
-         * Colorize!
-		 */
-        if (e.entityPlayer.getEntityData().getBoolean("colorize"))
-        {
-            e.setCanceled(true);
-            TileEntity te = e.entityPlayer.worldObj.getTileEntity(e.x, e.y, e.z);
-            if (te != null)
-            {
-                if (te instanceof TileEntitySign)
-                {
-                    String[] signText = ((TileEntitySign) te).signText;
-
-                    signText[0] = FunctionHelper.formatColors(signText[0]);
-                    signText[1] = FunctionHelper.formatColors(signText[1]);
-                    signText[2] = FunctionHelper.formatColors(signText[2]);
-                    signText[3] = FunctionHelper.formatColors(signText[3]);
-
-                    ((TileEntitySign) te).signText = signText;
-                    e.entityPlayer.worldObj.setTileEntity(e.x, e.y, e.z, te);
-                    e.entityPlayer.worldObj.markBlockForUpdate(e.x, e.y, e.z);
-                }
-                else
-                {
-                    OutputHandler.chatError(e.entityPlayer, "That is no sign!");
-                }
-            }
-            else
-            {
-                OutputHandler.chatError(e.entityPlayer, "That is no sign!");
-            }
-
-            e.entityPlayer.getEntityData().setBoolean("colorize", false);
         }
 
 		/*
