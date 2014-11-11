@@ -14,18 +14,17 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 
+import com.forgeessentials.core.data.DataManager.DataType;
 import com.forgeessentials.util.OutputHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 
-public class NBTTagCompoundType implements JsonSerializer<NBTTagCompound>, JsonDeserializer<NBTTagCompound> {
+public class NBTTagCompoundType implements DataType<NBTTagCompound> {
 
     @SuppressWarnings({ "unchecked", "null" })
     @Override
@@ -140,137 +139,152 @@ public class NBTTagCompoundType implements JsonSerializer<NBTTagCompound>, JsonD
     @Override
     public NBTTagCompound deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        JsonObject obj = json.getAsJsonObject();
-        NBTTagCompound result = new NBTTagCompound();
-        for (Entry<String, JsonElement> tagData : obj.entrySet())
+        try
         {
-            char tagType = tagData.getKey().charAt(0);
-            String tagName = tagData.getKey().substring(2, tagData.getKey().length());
-
-            switch (tagType)
+            JsonObject obj = json.getAsJsonObject();
+            NBTTagCompound result = new NBTTagCompound();
+            for (Entry<String, JsonElement> tagData : obj.entrySet())
             {
-            case 'b':
-                result.setByte(tagName, (byte) context.deserialize(tagData.getValue(), Byte.class));
-                break;
-            case 'B':
-                if (tagData.getValue().isJsonArray())
+                char tagType = tagData.getKey().charAt(0);
+                String tagName = tagData.getKey().substring(2, tagData.getKey().length());
+    
+                switch (tagType)
                 {
-                    JsonArray jsonArray = tagData.getValue().getAsJsonArray();
-                    byte[] byteArray = new byte[jsonArray.size()];
-                    int index = 0;
-                    for (JsonElement el : jsonArray)
-                        byteArray[index++] = (byte) context.deserialize(el, Byte.class);
-                    result.setTag(tagName, new NBTTagByteArray(byteArray));
-                }
-                else
-                {
-                    OutputHandler.felog.severe("Error in JSON format");
-                }
-                break;
-            case 's':
-                result.setShort(tagName, (short) context.deserialize(tagData.getValue(), Short.class));
-                break;
-            case 'i':
-                if (tagData.getValue().isJsonArray())
-                {
-                    NBTTagList tagList = new NBTTagList();
-                    JsonArray jsonArray = tagData.getValue().getAsJsonArray();
-                    for (JsonElement el : jsonArray)
+                case 'b':
+                    result.setByte(tagName, (byte) context.deserialize(tagData.getValue(), Byte.class));
+                    break;
+                case 'B':
+                    if (tagData.getValue().isJsonArray())
                     {
-                        tagList.appendTag(new NBTTagInt((int) context.deserialize(el, Integer.class)));
+                        JsonArray jsonArray = tagData.getValue().getAsJsonArray();
+                        byte[] byteArray = new byte[jsonArray.size()];
+                        int index = 0;
+                        for (JsonElement el : jsonArray)
+                            byteArray[index++] = (byte) context.deserialize(el, Byte.class);
+                        result.setTag(tagName, new NBTTagByteArray(byteArray));
                     }
-                    result.setTag(tagName, tagList);
-                }
-                else if (tagData.getValue().isJsonPrimitive())
-                {
-                    result.setInteger(tagName, (int) context.deserialize(tagData.getValue(), Integer.class));
-                }
-                else
-                {
-                    OutputHandler.felog.severe("Error in JSON format");
-                }
-                break;
-            case 'I':
-                if (tagData.getValue().isJsonArray())
-                {
-                    JsonArray jsonArray = tagData.getValue().getAsJsonArray();
-                    int[] byteArray = new int[jsonArray.size()];
-                    int index = 0;
-                    for (JsonElement el : jsonArray)
-                        byteArray[index++] = (int) context.deserialize(el, Integer.class);
-                    result.setTag(tagName, new NBTTagIntArray(byteArray));
-                }
-                else
-                {
-                    OutputHandler.felog.severe("Error in JSON format");
-                }
-                break;
-            case 'f':
-                if (tagData.getValue().isJsonArray())
-                {
-                    NBTTagList tagList = new NBTTagList();
-                    JsonArray jsonArray = tagData.getValue().getAsJsonArray();
-                    for (JsonElement el : jsonArray)
+                    else
                     {
-                        tagList.appendTag(new NBTTagFloat((float) context.deserialize(el, Float.class)));
+                        OutputHandler.felog.severe("Error parsing NBT data: Invalid data type");
                     }
-                    result.setTag(tagName, tagList);
-                }
-                else if (tagData.getValue().isJsonPrimitive())
-                {
-                    result.setFloat(tagName, (float) context.deserialize(tagData.getValue(), Float.class));
-                }
-                else
-                {
-                    OutputHandler.felog.severe("Error in JSON format");
-                }
-                break;
-            case 'd':
-                if (tagData.getValue().isJsonArray())
-                {
-                    NBTTagList tagList = new NBTTagList();
-                    JsonArray jsonArray = tagData.getValue().getAsJsonArray();
-                    for (JsonElement el : jsonArray)
+                    break;
+                case 's':
+                    result.setShort(tagName, (short) context.deserialize(tagData.getValue(), Short.class));
+                    break;
+                case 'i':
+                    if (tagData.getValue().isJsonArray())
                     {
-                        tagList.appendTag(new NBTTagDouble((double) context.deserialize(el, Double.class)));
+                        NBTTagList tagList = new NBTTagList();
+                        JsonArray jsonArray = tagData.getValue().getAsJsonArray();
+                        for (JsonElement el : jsonArray)
+                        {
+                            tagList.appendTag(new NBTTagInt((int) context.deserialize(el, Integer.class)));
+                        }
+                        result.setTag(tagName, tagList);
                     }
-                    result.setTag(tagName, tagList);
-                }
-                else if (tagData.getValue().isJsonPrimitive())
-                {
-                    result.setDouble(tagName, (double) context.deserialize(tagData.getValue(), Double.class));
-                }
-                else
-                {
-                    OutputHandler.felog.severe("Error in JSON format");
-                }
-                break;
-            case 'c':
-                if (tagData.getValue().isJsonArray())
-                {
-                    NBTTagList tagList = new NBTTagList();
-                    JsonArray jsonArray = tagData.getValue().getAsJsonArray();
-                    for (JsonElement el : jsonArray)
+                    else if (tagData.getValue().isJsonPrimitive())
                     {
-                        tagList.appendTag((NBTTagCompound) context.deserialize(el, NBTTagCompound.class));
+                        result.setInteger(tagName, (int) context.deserialize(tagData.getValue(), Integer.class));
                     }
-                    result.setTag(tagName, tagList);
+                    else
+                    {
+                        OutputHandler.felog.severe("Error parsing NBT data: Invalid data type");
+                    }
+                    break;
+                case 'I':
+                    if (tagData.getValue().isJsonArray())
+                    {
+                        JsonArray jsonArray = tagData.getValue().getAsJsonArray();
+                        int[] byteArray = new int[jsonArray.size()];
+                        int index = 0;
+                        for (JsonElement el : jsonArray)
+                            byteArray[index++] = (int) context.deserialize(el, Integer.class);
+                        result.setTag(tagName, new NBTTagIntArray(byteArray));
+                    }
+                    else
+                    {
+                        OutputHandler.felog.severe("Error parsing NBT data: Invalid data type");
+                    }
+                    break;
+                case 'f':
+                    if (tagData.getValue().isJsonArray())
+                    {
+                        NBTTagList tagList = new NBTTagList();
+                        JsonArray jsonArray = tagData.getValue().getAsJsonArray();
+                        for (JsonElement el : jsonArray)
+                        {
+                            tagList.appendTag(new NBTTagFloat((float) context.deserialize(el, Float.class)));
+                        }
+                        result.setTag(tagName, tagList);
+                    }
+                    else if (tagData.getValue().isJsonPrimitive())
+                    {
+                        result.setFloat(tagName, (float) context.deserialize(tagData.getValue(), Float.class));
+                    }
+                    else
+                    {
+                        OutputHandler.felog.severe("Error parsing NBT data: Invalid data type");
+                    }
+                    break;
+                case 'd':
+                    if (tagData.getValue().isJsonArray())
+                    {
+                        NBTTagList tagList = new NBTTagList();
+                        JsonArray jsonArray = tagData.getValue().getAsJsonArray();
+                        for (JsonElement el : jsonArray)
+                        {
+                            tagList.appendTag(new NBTTagDouble((double) context.deserialize(el, Double.class)));
+                        }
+                        result.setTag(tagName, tagList);
+                    }
+                    else if (tagData.getValue().isJsonPrimitive())
+                    {
+                        result.setDouble(tagName, (double) context.deserialize(tagData.getValue(), Double.class));
+                    }
+                    else
+                    {
+                        OutputHandler.felog.severe("Error parsing NBT data: Invalid data type");
+                    }
+                    break;
+                case 'c':
+                    if (tagData.getValue().isJsonArray())
+                    {
+                        NBTTagList tagList = new NBTTagList();
+                        JsonArray jsonArray = tagData.getValue().getAsJsonArray();
+                        for (JsonElement el : jsonArray)
+                        {
+                            tagList.appendTag((NBTTagCompound) context.deserialize(el, NBTTagCompound.class));
+                        }
+                        result.setTag(tagName, tagList);
+                    }
+                    else if (tagData.getValue().isJsonObject())
+                    {
+                        result.setTag(tagName, (NBTTagCompound) context.deserialize(tagData.getValue(), NBTTagCompound.class));
+                    }
+                    else
+                    {
+                        OutputHandler.felog.severe("Error parsing NBT data: Invalid data type");
+                    }
+                    break;
+                default:
+                    OutputHandler.felog.severe("Error parsing NBT data: Invalid data type");
+                    break;
                 }
-                else if (tagData.getValue().isJsonObject())
-                {
-                    result.setTag(tagName, (NBTTagCompound) context.deserialize(tagData.getValue(), NBTTagCompound.class));
-                }
-                else
-                {
-                    OutputHandler.felog.severe("Error in JSON format");
-                }
-                break;
-            default:
-                OutputHandler.felog.severe("Error in JSON format");
-                break;
             }
+            return result;
         }
-        return result;
+        catch (Throwable e)
+        {
+            OutputHandler.felog.severe(String.format("Error parsing data: %s", json.toString()));
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Class<NBTTagCompound> getType()
+    {
+        return NBTTagCompound.class;
     }
 
 }

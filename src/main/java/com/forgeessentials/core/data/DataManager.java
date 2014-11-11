@@ -8,21 +8,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
 import com.forgeessentials.core.data.types.ItemStackType;
 import com.forgeessentials.core.data.types.NBTTagCompoundType;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializer;
+import com.google.gson.annotations.Expose;
 
 public class DataManager implements ExclusionStrategy {
+
+    public static interface DataType<T> extends JsonSerializer<T>, JsonDeserializer<T> {
+        Class<T> getType();
+    }
 
     private static DataManager instance;
 
@@ -30,10 +36,15 @@ public class DataManager implements ExclusionStrategy {
 
     private File basePath;
 
+    private List<DataType> dataTypes = new ArrayList<>();
+
+    private boolean formatsChanged;
+
     public DataManager(File basePath)
     {
         this.basePath = basePath;
-        createGson();
+        addDataType(new ItemStackType());
+        addDataType(new NBTTagCompoundType());
     }
 
     public static DataManager getInstance()
@@ -48,39 +59,17 @@ public class DataManager implements ExclusionStrategy {
         DataManager.instance = instance;
     }
 
-    private void createGson()
+    public void addDataType(DataType type)
     {
-        GsonBuilder builder = new GsonBuilder();
-        builder.setPrettyPrinting();
-        builder.setExclusionStrategies(this);
-
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackType());
-        builder.registerTypeAdapter(NBTTagCompound.class, new NBTTagCompoundType());
-
-        gson = builder.create();
-    }
-
-    public File getTypePath(Class<?> clazz)
-    {
-        File path = new File(basePath, clazz.getSimpleName());
-        path.mkdirs();
-        return path;
-    }
-
-    public File getTypeFile(Class<?> clazz, String key)
-    {
-        return new File(getTypePath(clazz), key + ".json");
+        dataTypes.add(type);
+        formatsChanged = true;
     }
 
     public void save(Object src, String key)
     {
         try (FileWriter out = new FileWriter(getTypeFile(src.getClass(), key)))
         {
-            gson.toJson(src, out);
-        }
-        catch (IOException e)
-        {
-            Throwables.propagate(e);
+            getGson().toJson(src, out);
         }
         catch (Throwable e)
         {
@@ -104,7 +93,9 @@ public class DataManager implements ExclusionStrategy {
                 if (!file.isDirectory() && file.getName().endsWith(".json"))
                 {
                     String key = file.getName().replace(".json", "");
-                    objects.add((T) load(clazz, key));
+                    T o = (T) load(clazz, key);
+                    if (o != null)
+                        objects.add(o);
                 }
         return objects;
     }
@@ -116,15 +107,17 @@ public class DataManager implements ExclusionStrategy {
             return null;
         try (BufferedReader br = new BufferedReader(new FileReader(file)))
         {
-            return gson.fromJson(br, clazz);
+            return getGson().fromJson(br, clazz);
+        }
+        catch (JsonParseException e)
+        {
+            OutputHandler.felog.severe(String.format("Error parsing data file \"%s\"", file.getAbsolutePath()));
+            e.printStackTrace();
         }
         catch (IOException e)
         {
-            Throwables.propagate(e);
-        }
-        catch (Throwable e)
-        {
-            Throwables.propagate(e);
+            OutputHandler.felog.severe(String.format("Error loading data file \"%s\"", file.getAbsolutePath()));
+            e.printStackTrace();
         }
         return null;
     }
@@ -132,14 +125,47 @@ public class DataManager implements ExclusionStrategy {
     @Override
     public boolean shouldSkipField(FieldAttributes f)
     {
-        return f.getDeclaringClass().getAnnotation(SaveableObject.class) != null && f.getAnnotation(SaveableField.class) == null
-                && f.getAnnotation(UniqueLoadingKey.class) == null;
+        if (f.getDeclaringClass().getAnnotation(SaveableObject.class) != null && f.getAnnotation(SaveableField.class) == null
+                && f.getAnnotation(UniqueLoadingKey.class) == null)
+            return true;
+        Expose expose = f.getAnnotation(Expose.class);
+        if (expose != null && (!expose.serialize() || !expose.deserialize()))
+            return true;
+        return false;
     }
 
     @Override
     public boolean shouldSkipClass(Class<?> clazz)
     {
         return false;
+    }
+
+    private Gson getGson()
+    {
+        if (gson == null || formatsChanged)
+        {
+            GsonBuilder builder = new GsonBuilder();
+            builder.setPrettyPrinting();
+            builder.setExclusionStrategies(this);
+
+            for (DataType format : dataTypes)
+                builder.registerTypeAdapter(format.getType(), format);
+
+            gson = builder.create();
+        }
+        return gson;
+    }
+
+    private File getTypePath(Class<?> clazz)
+    {
+        File path = new File(basePath, clazz.getSimpleName());
+        path.mkdirs();
+        return path;
+    }
+
+    private File getTypeFile(Class<?> clazz, String key)
+    {
+        return new File(getTypePath(clazz), key + ".json");
     }
 
 }
