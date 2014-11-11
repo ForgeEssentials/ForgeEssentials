@@ -1,7 +1,9 @@
 package com.forgeessentials.commands.util;
 
 import java.util.HashMap;
+import java.util.List;
 
+import com.forgeessentials.core.data.DataManager;
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -32,24 +34,38 @@ public class CommandDataManager {
      */
     public static void loadKits()
     {
-        Object[] objs = data.loadAllObjects(conKit);
-        for (Object obj : objs)
-        {
-            if (obj != null)
-            {
-                Kit kit = (Kit) obj;
+        List<Kit> loadedKits = DataManager.getInstance().loadAll(Kit.class);
+        if (!loadedKits.isEmpty())
+            for (Kit kit : loadedKits)
                 kits.put(kit.getName(), kit);
+        else
+        {
+            Object[] objs = data.loadAllObjects(conKit);
+            for (Object obj : objs)
+            {
+                if (obj != null)
+                {
+                    Kit kit = (Kit) obj;
+                    kits.put(kit.getName(), kit);
+                }
             }
         }
     }
 
     public static void loadWT()
     {
-        Object[] objs = data.loadAllObjects(conWT);
-        for (Object obj : objs)
+        List<WeatherTimeData> wtData = DataManager.getInstance().loadAll(WeatherTimeData.class);
+        if (!wtData.isEmpty())
+            for (WeatherTimeData wt : wtData)
+                WTmap.put(wt.dimID, wt);
+        else
         {
-            WeatherTimeData wt = (WeatherTimeData) obj;
-            WTmap.put(wt.dimID, wt);
+            Object[] objs = data.loadAllObjects(conWT);
+            for (Object obj : objs)
+            {
+                WeatherTimeData wt = (WeatherTimeData) obj;
+                WTmap.put(wt.dimID, wt);
+            }
         }
     }
 
@@ -61,6 +77,7 @@ public class CommandDataManager {
     {
         for (Kit kit : kits.values())
         {
+            DataManager.getInstance().save(kit, kit.getName());
             data.saveObject(conKit, kit);
         }
     }
@@ -69,6 +86,7 @@ public class CommandDataManager {
     {
         for (WeatherTimeData wt : WTmap.values())
         {
+            DataManager.getInstance().save(wt, Integer.toString(wt.dimID));
             data.saveObject(conWT, wt);
         }
     }
@@ -79,6 +97,7 @@ public class CommandDataManager {
     public static void addKit(Kit kit)
     {
         kits.put(kit.getName(), kit);
+        DataManager.getInstance().save(kit, kit.getName());
         data.saveObject(conKit, kit);
     }
 
@@ -89,6 +108,7 @@ public class CommandDataManager {
     public static void removeKit(Kit kit)
     {
         kits.remove(kit.getName());
+        DataManager.getInstance().delete(Kit.class, kit.getName());
         data.deleteObject(conKit, kit.getName());
     }
 }

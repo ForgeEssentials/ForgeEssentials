@@ -9,6 +9,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.data.DataManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -73,9 +74,16 @@ public class ModuleTickets {
 
     public static void loadAll()
     {
-        for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(ticketContainer))
+        List<Ticket> loadedTickets = DataManager.getInstance().loadAll(Ticket.class);
+        if (!loadedTickets.isEmpty())
+            for (Ticket ticket : loadedTickets)
+                ticketList.add(ticket);
+        else
         {
-            ticketList.add((Ticket) obj);
+            for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(ticketContainer))
+            {
+                ticketList.add((Ticket) obj);
+            }
         }
     }
 
@@ -83,6 +91,7 @@ public class ModuleTickets {
     {
         for (Ticket ticket : ticketList)
         {
+            DataManager.getInstance().save(ticket, Integer.toString(ticket.id));
             DataStorageManager.getReccomendedDriver().saveObject(ticketContainer, ticket);
         }
     }
@@ -98,9 +107,9 @@ public class ModuleTickets {
         }
         return null;
     }
-    
+
     @SubscribeEvent
-     public void loadData(PlayerEvent.PlayerLoggedInEvent e)
+    public void loadData(PlayerEvent.PlayerLoggedInEvent e)
     {
         if (PermissionsManager.checkPermission(e.player, ModuleTickets.PERMBASE + ".admin"))
         {
@@ -110,4 +119,5 @@ public class ModuleTickets {
             }
         }
     }
+    
 }

@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.core.data.DataManager;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
@@ -149,6 +150,7 @@ public class WorldBorder {
 
     public void save()
     {
+        DataManager.getInstance().save(this, zone);
         DataStorageManager.getReccomendedDriver().saveObject(ModuleWorldBorder.con, this);
     }
 

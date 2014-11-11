@@ -1,6 +1,7 @@
 package com.forgeessentials.worldborder;
 
 import java.util.HashMap;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,6 +12,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.data.DataManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -43,11 +45,18 @@ public class ModuleWorldBorder {
 
 	public static void loadAll()
 	{
-		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(con))
-		{
-			WorldBorder wb = (WorldBorder) obj;
-			borderMap.put(wb.zone, wb);
-		}
+        List<WorldBorder> wbs = DataManager.getInstance().loadAll(WorldBorder.class);
+        if (!wbs.isEmpty())
+            for (WorldBorder wb : wbs)
+                borderMap.put(wb.zone, wb);
+        else
+        {
+    		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(con))
+    		{
+    			WorldBorder wb = (WorldBorder) obj;
+    			borderMap.put(wb.zone, wb);
+    		}
+        }
 	}
 
 	public static void saveAll()
@@ -174,7 +183,9 @@ public class ModuleWorldBorder {
 		Zone zone = APIRegistry.perms.getWorldZone(e.world);
 		if (!borderMap.containsKey(zone.getName()))
 		{
-			WorldBorder wb = (WorldBorder) DataStorageManager.getReccomendedDriver().loadObject(con, zone.getName());
+		    WorldBorder wb = DataManager.getInstance().load(WorldBorder.class, zone.getName());
+	        if (wb == null)
+	            wb = (WorldBorder) DataStorageManager.getReccomendedDriver().loadObject(con, zone.getName());
 			if (wb != null)
 			{
 				borderMap.put(zone.getName(), wb);
