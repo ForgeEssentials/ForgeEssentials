@@ -85,9 +85,9 @@ public class ModulePermissions extends ConfigLoaderBase {
             permissionHelper.setPersistenceProvider(new SQLProvider(dbConnector.getChosenConnection(), dbConnector.getActiveType()));
             break;
         case "json":
-        	permissionHelper.setPersistenceProvider(new JsonProvider(new File(FunctionHelper.getWorldPath(), "FEData/permissions")));
+        	permissionHelper.setPersistenceProvider(new JsonProvider(new File(FunctionHelper.getWorldPath(), "FEData/json")));
         	break;
-        case "":
+        case "flatfile":
         default:
         {
             permissionHelper.setPersistenceProvider(new FlatfileProvider(new File(FunctionHelper.getWorldPath(), "FEData/permissions")));

@@ -157,6 +157,7 @@ def list = [
         'worldborder',
         'afterlife',
         'teleport',
+        'signtools',
 ]
 
 list.each { name ->

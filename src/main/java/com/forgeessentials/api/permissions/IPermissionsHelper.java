@@ -1,17 +1,16 @@
 package com.forgeessentials.api.permissions;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
-
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldArea;
+import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.IPermissionsProvider;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
 
 /**
  * {@link IPermissionsHelper} is the primary access-point to the permissions-system.
@@ -238,7 +237,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * Gets a permission-property for a group at a certain position
      * 
      * @param group
-     * @param targetPoint
+     * @param point
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
@@ -248,7 +247,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * Checks a permission for a group at a certain position
      * 
      * @param group
-     * @param targetPoint
+     * @param point
      * @param permissionNode
      */
     boolean checkGroupPermission(String group, WorldPoint point, String permissionNode);

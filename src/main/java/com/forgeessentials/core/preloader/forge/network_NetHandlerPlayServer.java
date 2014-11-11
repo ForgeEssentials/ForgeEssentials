@@ -1,11 +1,9 @@
 package com.forgeessentials.core.preloader.forge;
 
+import com.forgeessentials.util.events.forge.SignEditEvent;
+import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
 import io.netty.buffer.Unpooled;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityMinecartCommandBlock;
@@ -33,8 +31,9 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.util.events.forge.SignEditEvent;
-import com.google.common.base.Charsets;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class network_NetHandlerPlayServer
 {
@@ -59,9 +58,6 @@ public class network_NetHandlerPlayServer
                 }
             }
 
-            String[] text = onSignEditEvent(net, p_147343_1_);
-            if (text == null)return;
-
             int i;
             int j;
 
@@ -69,15 +65,15 @@ public class network_NetHandlerPlayServer
             {
                 boolean flag = true;
 
-                if (text[j].length() > 15)
+                if (p_147343_1_.func_149589_f()[j].length() > 15)
                 {
                     flag = false;
                 }
                 else
                 {
-                    for (i = 0; i < text[j].length(); ++i)
+                    for (i = 0; i < p_147343_1_.func_149589_f()[j].length(); ++i)
                     {
-                        if (!ChatAllowedCharacters.isAllowedCharacter(text[j].charAt(i)))
+                        if (!ChatAllowedCharacters.isAllowedCharacter(p_147343_1_.func_149589_f()[j].charAt(i)))
                         {
                             flag = false;
                         }
@@ -86,7 +82,7 @@ public class network_NetHandlerPlayServer
 
                 if (!flag)
                 {
-                    text[j] = "!?";
+                    p_147343_1_.func_149589_f()[j] = "!?";
                 }
             }
 
@@ -96,7 +92,7 @@ public class network_NetHandlerPlayServer
                 int k = p_147343_1_.func_149586_d();
                 i = p_147343_1_.func_149585_e();
                 TileEntitySign tileentitysign1 = (TileEntitySign)tileentity;
-                System.arraycopy(text, 0, tileentitysign1.signText, 0, 4);
+                System.arraycopy(Preconditions.checkNotNull(onSignEditEvent(net, p_147343_1_)), 0, tileentitysign1.signText, 0, 4);
                 tileentitysign1.markDirty();
                 worldserver.markBlockForUpdate(j, k, i);
             }
