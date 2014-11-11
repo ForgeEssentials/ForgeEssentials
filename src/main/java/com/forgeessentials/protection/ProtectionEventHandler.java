@@ -68,19 +68,17 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 e.setCanceled(true);
             }
         }
-        else
-        {
-            // player -> entity
-            Entity target = e.target;
-            WorldPoint targetPos = new WorldPoint(e.target);
 
-            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + target.getClass().getSimpleName();
-            if (ModuleProtection.isDebugMode(source))
-                OutputHandler.chatNotification(source, permission);
-            if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
-            {
-                e.setCanceled(true);
-            }
+        // player -> entity
+        Entity target = e.target;
+        WorldPoint targetPos = new WorldPoint(e.target);
+
+        String permission = ModuleProtection.PERM_DAMAGE_TO + "." + target.getClass().getSimpleName();
+        if (ModuleProtection.isDebugMode(source))
+            OutputHandler.chatNotification(source, permission);
+        if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
+        {
+            e.setCanceled(true);
         }
     }
 
