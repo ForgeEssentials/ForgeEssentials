@@ -1,6 +1,7 @@
 package com.forgeessentials.api.permissions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,6 +10,8 @@ import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -47,6 +50,32 @@ public abstract class Zone {
 					{
 						list.add(perm + "=" + get(perm));
 					}
+				}
+			}
+			Collections.sort(list);
+			return list;
+		}
+
+		public static PermissionList getPermissionMapFromList(
+				List<String> fromList)
+		{
+			PermissionList list = new PermissionList();
+			for(String permission : fromList)
+			{
+				OutputHandler.felog.info("Processing node " + permission);
+				if(permission.contains("="))
+				{
+					String[] permProp = permission.split("=");
+					OutputHandler.felog.info(permission + " permProp splits into (key)" + permProp[0] + " (value)" + permProp[1]);
+					list.put(permProp[0], permProp[1]);
+				}
+				else if(permission.startsWith("-"))
+				{
+					list.put(permission.substring(1, permission.length()), IPermissionsHelper.PERMISSION_FALSE);
+				}
+				else
+				{
+					list.put(permission, IPermissionsHelper.PERMISSION_TRUE);
 				}
 			}
 			return list;
