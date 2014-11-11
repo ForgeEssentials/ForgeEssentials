@@ -5,7 +5,7 @@ import net.minecraft.world.World;
 
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.BlockSaveable;
-import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.commons.Point;
 import com.forgeessentials.util.tasks.ITickTask;
 
 public class TickTaskPulseHelper implements ITickTask {

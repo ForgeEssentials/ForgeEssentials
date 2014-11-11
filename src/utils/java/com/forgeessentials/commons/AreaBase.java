@@ -1,10 +1,9 @@
-package com.forgeessentials.util.selections;
+package com.forgeessentials.commons;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
+import com.forgeessentials.commons.SaveableObject.SaveableField;
 
 @SaveableObject
 public class AreaBase {

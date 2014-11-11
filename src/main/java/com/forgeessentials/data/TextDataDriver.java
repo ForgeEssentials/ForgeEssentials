@@ -9,7 +9,7 @@ import net.minecraftforge.common.config.Property;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.EnumDriverType;
-import com.forgeessentials.data.api.IReconstructData;
+import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.util.FunctionHelper;
 

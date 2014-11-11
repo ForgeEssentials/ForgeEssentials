@@ -4,11 +4,10 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.commons.Point;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.forgeessentials.util.tasks.TaskRegistry;
 

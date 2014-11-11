@@ -25,8 +25,8 @@ import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.AreaBase;
-import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.commons.AreaBase;
+import com.forgeessentials.commons.Point;
 
 public class FlatfileProvider extends ZonePersistenceProvider {
 

@@ -16,7 +16,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.commons.Point;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

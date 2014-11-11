@@ -1,5 +1,7 @@
 package com.forgeessentials.util.selections;
 
+import com.forgeessentials.commons.Point;
+import com.forgeessentials.commons.Selection;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public interface ISelectionProvider {

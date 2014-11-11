@@ -1,7 +1,7 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.util.selections.AreaBase;
-import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.commons.AreaBase;
+import com.forgeessentials.commons.Point;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
 

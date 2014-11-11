@@ -2,7 +2,7 @@ package com.forgeessentials.client.cui;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.core.PlayerInfoClient;
-import com.forgeessentials.client.util.ClientPoint;
+import com.forgeessentials.commons.Point;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -34,7 +34,7 @@ public class CUIRollback {
         GL11.glLineWidth(1.5F);
         GL11.glBegin(GL11.GL_LINES);
 
-        for (ClientPoint p : ForgeEssentialsClient.info.rbList.keySet())
+        for (Point p : ForgeEssentialsClient.info.rbList.keySet())
         {
             switch (ForgeEssentialsClient.info.rbList.get(p))
             {
@@ -69,7 +69,7 @@ public class CUIRollback {
         GL11.glPopMatrix();
     }
 
-    private void renderBlockBox(ClientPoint p)
+    private void renderBlockBox(Point p)
     {
         double x = p.getX() - RenderManager.renderPosX;
         double z = p.getZ() - RenderManager.renderPosZ + 1;

@@ -21,6 +21,7 @@ buildscript {
 }
 
 apply plugin: 'forge'
+apply plugin: 'maven-publish'
 
 version = "1.4.0-beta2"
 group = "com.forgeessentials"
@@ -43,6 +44,26 @@ minecraft {
 configurations {
     serverLibs
     modules
+
+}
+
+sourceSets {
+
+    utils {
+        compileClasspath = files(project.configurations.compile, project.sourceSets.api.output)
+    }
+
+    main {
+        compileClasspath = files(project.configurations.compile, project.sourceSets.utils.output, project.sourceSets.api.output)
+    }
+
+    client {
+        compileClasspath = files(project.configurations.compile, project.sourceSets.utils.output, project.sourceSets.api.output)
+    }
+
+    weintegration {
+        compileClasspath = files(project.configurations.compile, project.sourceSets.main.output, project.sourceSets.utils.output, project.sourceSets.api.output)
+    }
 }
 
 repositories {
@@ -76,37 +97,27 @@ dependencies {
 
 jar {
     from project.sourceSets.main.output
-    include "com/forgeessentials/core/**"
-    include "com/forgeessentials/util/**"
-    include "com/forgeessentials/data/**"
-    include "com/forgeessentials/api/**"
-    include "com/forgeessentials/permissions/**"
-    include "org/mcstats/**"
-    include "logo.png"
-    include "mcmod.info"
-    include "forgeessentials_at.cfg"
-    classifier = 'servercore'
+    exclude "com/forgeessentials/client/**"
+    exclude "com/forgeessentials/worldedit/**"
+
+    from project.sourceSets.utils.output
+
+    classifier = 'server'
     appendix = project.minecraft.version
     manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader", "FMLCorePluginContainsFMLMod": "true")
+    }
+
+    configurations.serverLibs.each { dep ->
+        from(project.zipTree(dep)) {
+            exclude 'META-INF', 'META-INF/**'
+        }
     }
 }
 
 javadoc {
     include "com/forgeessentials/api/**"
 }
-
-sourceSets {
-    client {
-        compileClasspath = project.sourceSets.main.compileClasspath
-    }
-
-    weintegration {
-        compileClasspath = files(project.configurations.compile, project.tasks.jar.getArchivePath(), project.sourceSets.api.output)
-
-    }
-}
-
 
 processClientResources {
     from(sourceSets.client.resources.srcDirs) {
@@ -122,79 +133,16 @@ processResources {
     }
 }
 
-//server complete
-task completeZip(type: Zip, dependsOn: 'reobf') {
-    classifier = 'server'
-    destinationDir = jar.destinationDir
-    from(project.tasks.jar.getArchivePath()) { into 'mods' }
-
-    from(sourceSets.main.output) { include 'FEReadme.txt' }
-    from(project.configurations.serverLibs) {
-        include '*'
-        into('ForgeEssentials/lib')
-    }
-    appendix = project.minecraft.version
-}
-
-
-task cleanModules(dependsOn: "completeZip", type: Delete) {
-}
-
-
-def list = [
-        'auth',
-        'backup',
-        'chat',
-        'commands',
-        'economy',
-        'playerlogger',
-        'protection',
-        'questioner',
-        'snooper',
-        'servervote',
-        'scripting',
-        'tickets',
-        'worldborder',
-        'afterlife',
-        'teleport',
-        'signtools',
-]
-
-list.each { name ->
-    def taskName = name + "Jar"
-    def newTask = project.tasks.create(name: taskName, dependsOn: "jar", type: Jar) {
-        from sourceSets.main.output
-        classifier = name
-        appendix = project.minecraft.version
-        include "com/forgeessentials/$name/**"
-    }
-
-    reobf {
-        reobf(newTask) { reobfSpec ->
-            reobfSpec.classpath = files(project.configurations.compile, project.tasks.jar.getArchivePath())
-        }
-    }
-
-    artifacts {
-        modules newTask
-    }
-
-    project.tasks.completeZip {
-        from(newTask.getArchivePath()) { into 'ForgeEssentials/modules' }
-        dependsOn newTask
-    }
-
-    project.tasks.cleanModules {
-        delete(newTask.getArchivePath())
-    }
-}
-
 //client
 task clientJar(dependsOn: "jar", type: Jar) {
     from sourceSets.client.output
     classifier = "client"
     appendix = project.minecraft.version
     include "**"
+
+    from project.sourceSets.utils.output
+    include "**"
+
 }
 
 //worldedit
@@ -209,11 +157,14 @@ task weJar(dependsOn: "jar", type: Jar) {
 //core DEOBF use for development
 
 // to use: declare dependency com.forgeessentials:forgeessentials:<version>:deobf
-task devDeobfJar(dependsOn: "jar", type: Jar) {
+task deobfJar(dependsOn: "jar", type: Jar) {
     from project.sourceSets.main.output
     include "**"
 
     from project.sourceSets.api.output
+    include "**"
+
+    from project.sourceSets.utils.output
     include "**"
 
     manifest {
@@ -245,19 +196,11 @@ reobf {
     }
 }
 
-
-
 artifacts {
     archives clientJar
     archives weJar
-    archives devDeobfJar
-    archives javadocJar
-    archives sourceJar
 }
-
-build.dependsOn "cleanModules"
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
-

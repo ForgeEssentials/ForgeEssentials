@@ -11,9 +11,9 @@ import java.util.logging.Level;
 import com.forgeessentials.data.StorageManager;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.data.api.IReconstructData;
+import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.data.api.ITypeInfo;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.util.OutputHandler;
 

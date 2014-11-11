@@ -3,8 +3,8 @@ package com.forgeessentials.worldedit.compat;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.util.selections.ISelectionProvider;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.Selection;
+import com.forgeessentials.commons.Point;
+import com.forgeessentials.commons.Selection;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.Vector;

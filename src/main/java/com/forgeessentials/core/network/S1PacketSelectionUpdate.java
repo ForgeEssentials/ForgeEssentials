@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.commons.Point;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;

@@ -40,7 +40,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.compat.Environment;
-import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.commons.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

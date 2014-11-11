@@ -3,15 +3,16 @@ package com.forgeessentials.util.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.forgeessentials.commons.Point;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.SaveableObject;
+import com.forgeessentials.commons.SaveableObject.Reconstructor;
+import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 
 /**
  * Almost exactly like a Point, except with an additional dimension member so we
@@ -20,7 +21,8 @@ import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
  * @author MysteriousAges
  */
 @SaveableObject(SaveInline = true)
-public class WorldPoint extends Point {
+public class WorldPoint extends Point
+{
     private static final long serialVersionUID = 5462406378573144189L;
     
     @SaveableField

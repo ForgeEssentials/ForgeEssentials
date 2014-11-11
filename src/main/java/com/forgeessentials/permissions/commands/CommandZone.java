@@ -26,7 +26,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.commons.AreaBase;
 
 public class CommandZone extends ForgeEssentialsCommandBase {
 

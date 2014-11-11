@@ -28,7 +28,7 @@ import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.commons.AreaBase;
 import com.google.common.base.Throwables;
 
 public class SQLProvider extends ZonePersistenceProvider {

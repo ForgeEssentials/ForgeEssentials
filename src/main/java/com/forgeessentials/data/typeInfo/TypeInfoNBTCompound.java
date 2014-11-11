@@ -13,7 +13,7 @@ import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 
 import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.IReconstructData;
+import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.data.api.TypeMultiValInfo;
 
