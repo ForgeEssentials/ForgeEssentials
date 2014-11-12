@@ -84,6 +84,7 @@ public class ModuleTickets {
             {
                 ticketList.add((Ticket) obj);
             }
+            saveAll();
         }
     }
 

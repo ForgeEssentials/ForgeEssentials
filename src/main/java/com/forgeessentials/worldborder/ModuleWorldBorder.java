@@ -56,6 +56,7 @@ public class ModuleWorldBorder {
     			WorldBorder wb = (WorldBorder) obj;
     			borderMap.put(wb.zone, wb);
     		}
+    		saveAll();
         }
 	}
 

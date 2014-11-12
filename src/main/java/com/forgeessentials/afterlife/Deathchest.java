@@ -67,6 +67,7 @@ public class Deathchest extends ServerEventHandler {
                 Grave grave = (Grave) obj;
                 gravemap.put(grave.point.toString(), grave);
             }
+            save();
         }
     }
 

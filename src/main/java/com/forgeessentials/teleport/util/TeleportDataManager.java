@@ -43,6 +43,7 @@ public class TeleportDataManager {
                 Warp warp = (Warp) obj;
                 warps.put(warp.getName(), warp);
             }
+            saveWarps();
         }
     }
 
@@ -74,6 +75,7 @@ public class TeleportDataManager {
                 map.put(warp.getName(), warp);
                 pwMap.put(warp.getUsername(), map);
             }
+            savePWarps();
         }
     }
 

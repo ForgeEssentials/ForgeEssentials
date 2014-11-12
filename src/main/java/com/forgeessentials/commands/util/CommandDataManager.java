@@ -49,6 +49,7 @@ public class CommandDataManager {
                     kits.put(kit.getName(), kit);
                 }
             }
+            saveKits();
         }
     }
 
@@ -66,6 +67,7 @@ public class CommandDataManager {
                 WeatherTimeData wt = (WeatherTimeData) obj;
                 WTmap.put(wt.dimID, wt);
             }
+            saveWT();
         }
     }
 

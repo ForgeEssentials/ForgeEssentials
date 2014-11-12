@@ -195,7 +195,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @EventHandler
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
-        DataManager.setInstance(new DataManager(new File(FunctionHelper.getWorldPath(), "FEData")));
+        DataManager.setInstance(new DataManager(new File(FunctionHelper.getWorldPath(), "FEData/json")));
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerPreInitEvent(e));
     }
 

@@ -35,6 +35,7 @@ public class TimedTaskManager extends ForgeEssentialsCommandBase {
             {
                 TimedTask task = (TimedTask) obj;
                 taskList.put(task.getName(), task);
+                DataManager.getInstance().save(task, task.getName());
             }
         }
     }
