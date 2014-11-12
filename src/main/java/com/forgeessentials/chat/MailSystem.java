@@ -1,10 +1,12 @@
 package com.forgeessentials.chat;
 
+import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 
+import com.forgeessentials.core.data.DataManager;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.OutputHandler;
@@ -20,6 +22,7 @@ public class MailSystem {
     public static void AddMail(Mail mail)
     {
         map.put(mail.getReceiver(), mail);
+        DataManager.getInstance().save(Mail.class, mail.getKey());
         DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(Mail.class), mail);
 
         EntityPlayer player = UserIdent.getPlayerByUuid(mail.getReceiver());
@@ -32,10 +35,17 @@ public class MailSystem {
 
     public static void LoadAll()
     {
-        for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(new ClassContainer(Mail.class)))
+        List<Mail> mails = DataManager.getInstance().loadAll(Mail.class);
+        if (!mails.isEmpty())
+            for (Mail mail : mails)
+                map.put(mail.getReceiver(), mail);
+        else
         {
-            Mail mail = (Mail) obj;
-            map.put(mail.getReceiver(), mail);
+            for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(new ClassContainer(Mail.class)))
+            {
+                Mail mail = (Mail) obj;
+                map.put(mail.getReceiver(), mail);
+            }
         }
     }
 
@@ -43,6 +53,7 @@ public class MailSystem {
     {
         for (Mail mail : map.values())
         {
+            DataManager.getInstance().save(Mail.class, mail.getKey());
             DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(Mail.class), mail);
         }
     }
@@ -55,6 +66,7 @@ public class MailSystem {
             for (Mail mail : map.get(receiver.getPersistentID()))
             {
                 OutputHandler.sendMessage(receiver, EnumChatFormatting.GREEN + "{" + mail.getSender() + "} " + EnumChatFormatting.WHITE + mail.getMessage());
+                DataManager.getInstance().delete(Mail.class, mail.getKey());
                 DataStorageManager.getReccomendedDriver().deleteObject(new ClassContainer(Mail.class), mail.getKey());
             }
             OutputHandler.sendMessage(receiver, EnumChatFormatting.GREEN + "--- End of mail ---");

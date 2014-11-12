@@ -13,6 +13,7 @@ import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.data.DataManager;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -88,6 +89,7 @@ public class PlayerInfo
 
     // -------------------------------------------------------------------------------------------
 
+    @SaveableField()
     private UserIdent ident;
 
     @UniqueLoadingKey
@@ -125,45 +127,35 @@ public class PlayerInfo
     protected Point sel2;
 
     @SaveableField()
-    private int timePlayed;
+    private int timePlayed = 0;
 
-    private long loginTime;
+    private long loginTime = System.currentTimeMillis();
 
     @SaveableField()
-    private long firstJoin;
+    private long firstJoin = System.currentTimeMillis();
 
     // undo and redo stuff
-    private Stack<BackupArea> undos;
+    private Stack<BackupArea> undos = new Stack<BackupArea>();
 
-    private Stack<BackupArea> redos;
+    private Stack<BackupArea> redos = new Stack<BackupArea>();
 
     @SaveableField
-    private List<ItemStack> gamemodeInventory;
+    private List<ItemStack> gamemodeInventory = new ArrayList<ItemStack>();
     
     @SaveableField
-    private GameType gamemodeInventoryType;
+    private GameType gamemodeInventoryType = GameType.NOT_SET;
 
-    private boolean hasFEClient;
+    private boolean hasFEClient = false;
 
-    private PlayerInfo(UUID uuid)
+    protected PlayerInfo()
+    {
+        uuid_string = null;
+    }
+    
+    protected PlayerInfo(UUID uuid)
     {
         this.ident = new UserIdent(uuid);
         this.uuid_string = uuid.toString();
-
-        sel1 = null;
-        sel2 = null;
-
-        undos = new Stack<BackupArea>();
-        redos = new Stack<BackupArea>();
-
-        firstJoin = System.currentTimeMillis();
-        loginTime = System.currentTimeMillis();
-
-        timePlayed = 0;
-
-        gamemodeInventory = new ArrayList<ItemStack>();
-        gamemodeInventoryType = GameType.NOT_SET;
-        hasFEClient = false;
     }
 
     @SuppressWarnings("unchecked")
@@ -199,6 +191,7 @@ public class PlayerInfo
     public void save()
     {
         recalcTimePlayed();
+        DataManager.getInstance().save(this, uuid_string);
         DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
     }
 
@@ -212,12 +205,18 @@ public class PlayerInfo
     {
         if (playerInfoMap.containsKey(playerID))
             return true;
-        PlayerInfo info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), playerID.toString());
+        PlayerInfo info = load(playerID.toString());
         if (info != null)
             return true;
-        info = new PlayerInfo(playerID);
-        playerInfoMap.put(playerID, info);
         return false;
+    }
+
+    private static PlayerInfo load(String key)
+    {
+        PlayerInfo info = DataManager.getInstance().load(PlayerInfo.class, key);
+        if (info == null)
+            info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), key);
+        return info;
     }
 
     public static PlayerInfo getPlayerInfo(EntityPlayer player)
@@ -228,24 +227,19 @@ public class PlayerInfo
     public static PlayerInfo getPlayerInfo(UserIdent ident)
     {
         if (!ident.hasUUID())
-        {
             return null;
-        }
         return getPlayerInfo(ident.getUuid());
     }
 
     public static PlayerInfo getPlayerInfo(UUID playerID)
     {
         PlayerInfo info = playerInfoMap.get(playerID);
-        // load or create one
         if (info == null)
         {
             // Attempt to populate this info with some data from our storage.
-            info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), playerID.toString());
+            info = load(playerID.toString());
             if (info == null)
-            {
                 info = new PlayerInfo(playerID);
-            }
             playerInfoMap.put(playerID, info);
         }
         return info;
