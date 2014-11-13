@@ -1,16 +1,5 @@
 package com.forgeessentials.chat;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Map;
-import java.util.Set;
-
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.commands.CommandAutoMessage;
 import com.forgeessentials.chat.commands.CommandMail;
@@ -33,10 +22,19 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Set;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
 public class ModuleChat {

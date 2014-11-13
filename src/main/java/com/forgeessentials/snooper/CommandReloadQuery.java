@@ -1,11 +1,10 @@
 package com.forgeessentials.snooper;
 
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
 
 public class CommandReloadQuery extends ForgeEssentialsCommandBase {
 

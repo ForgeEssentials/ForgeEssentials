@@ -1,13 +1,11 @@
 package com.forgeessentials.util.events;
 
-import net.minecraftforge.common.MinecraftForge;
-
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 public class ServerEventHandler {
 

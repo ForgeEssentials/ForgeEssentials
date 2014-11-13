@@ -1,16 +1,15 @@
 package com.forgeessentials.data;
 
-import java.util.ArrayList;
-import java.util.Map.Entry;
-
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.api.IDataDriver;
 import com.forgeessentials.data.api.ITypeInfo;
 import com.forgeessentials.data.api.TypeData;
 import com.google.common.collect.HashMultimap;
+import net.minecraftforge.common.config.Configuration;
+
+import java.util.ArrayList;
+import java.util.Map.Entry;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class AbstractDataDriver implements IDataDriver {

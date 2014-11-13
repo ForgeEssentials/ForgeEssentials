@@ -1,13 +1,12 @@
 package com.forgeessentials.commands;
 
+import com.forgeessentials.commands.util.ContainerCheatyWorkbench;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.commands.util.ContainerCheatyWorkbench;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
 
 public class CommandCraft extends FEcmdModuleCommands {
     @Override

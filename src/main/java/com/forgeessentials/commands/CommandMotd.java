@@ -1,18 +1,16 @@
 package com.forgeessentials.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.LoginMessage;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.misc.LoginMessage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandMotd extends FEcmdModuleCommands {
 

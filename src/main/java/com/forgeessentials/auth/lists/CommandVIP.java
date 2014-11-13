@@ -1,11 +1,10 @@
 package com.forgeessentials.auth.lists;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.UserIdent;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandVIP extends ForgeEssentialsCommandBase {
 

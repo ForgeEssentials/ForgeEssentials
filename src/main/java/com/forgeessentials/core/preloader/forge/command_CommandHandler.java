@@ -1,14 +1,14 @@
 package com.forgeessentials.core.preloader.forge;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class command_CommandHandler

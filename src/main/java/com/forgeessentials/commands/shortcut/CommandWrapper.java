@@ -1,14 +1,13 @@
 package com.forgeessentials.commands.shortcut;
 
-import java.util.List;
-
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import java.util.List;
 
 public class CommandWrapper extends ForgeEssentialsCommandBase {
 	

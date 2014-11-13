@@ -1,18 +1,15 @@
 package com.forgeessentials.commands.util;
 
-import java.util.ArrayList;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
-
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.forgeessentials.util.tasks.TaskRegistry;
-
 import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+import java.util.ArrayList;
 
 public class TickTaskBlockFinder implements ITickTask {
     World world;

@@ -1,13 +1,12 @@
 package com.forgeessentials.economy.plots;
 
+import com.forgeessentials.core.data.DataManager;
+import net.minecraft.entity.player.EntityPlayer;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import com.forgeessentials.core.data.DataManager;
 
 public class PlotManager {
 

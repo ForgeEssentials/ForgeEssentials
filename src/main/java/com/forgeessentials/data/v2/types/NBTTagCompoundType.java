@@ -1,9 +1,14 @@
 package com.forgeessentials.data.v2.types;
 
-import java.lang.reflect.Type;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.forgeessentials.data.v2.DataManager.DataType;
+import com.forgeessentials.util.OutputHandler;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTBase.NBTPrimitive;
 import net.minecraft.nbt.NBTTagByteArray;
@@ -14,15 +19,9 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 
-import com.forgeessentials.data.v2.DataManager.DataType;
-import com.forgeessentials.util.OutputHandler;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
+import java.lang.reflect.Type;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class NBTTagCompoundType implements DataType<NBTTagCompound> {
 

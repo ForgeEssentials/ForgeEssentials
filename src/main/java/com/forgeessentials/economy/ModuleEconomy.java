@@ -1,11 +1,9 @@
 package com.forgeessentials.economy;
 
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.economy.commands.CommandAddToWallet;
 import com.forgeessentials.economy.commands.CommandGetWallet;
 import com.forgeessentials.economy.commands.CommandMoney;
@@ -25,10 +23,10 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.common.config.Configuration;
 
 /**
  * Call the WalletHandler class when working with Economy

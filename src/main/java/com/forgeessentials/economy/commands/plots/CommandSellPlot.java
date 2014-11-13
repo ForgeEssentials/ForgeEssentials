@@ -1,17 +1,14 @@
 package com.forgeessentials.economy.commands.plots;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.plots.PlotManager.Offer;
 import com.forgeessentials.util.OutputHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 // Sells a plot. There must already be an existing offer made by another player.
 public class CommandSellPlot extends ForgeEssentialsCommandBase

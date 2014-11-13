@@ -1,15 +1,14 @@
 package com.forgeessentials.scripting;
 
-import java.io.File;
-
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+import java.io.File;
 
 @FEModule(name = "Scripting", parentMod = ForgeEssentials.class, isCore = false)
 public class ModuleScripting {

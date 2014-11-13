@@ -1,13 +1,12 @@
 package com.forgeessentials.snooper.response;
 
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.snooper.ResponseRegistry;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.minecraftforge.common.config.Configuration;
 
 public class Responses extends Response {
     @Override

@@ -1,15 +1,5 @@
 package com.forgeessentials.snooper.response;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.util.PlayerInfo;
@@ -18,6 +8,15 @@ import com.forgeessentials.util.selections.WarpPoint;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.config.Configuration;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class PlayerInfoResponse extends Response
 {

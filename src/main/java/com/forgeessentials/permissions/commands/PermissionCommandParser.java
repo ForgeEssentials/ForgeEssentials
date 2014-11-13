@@ -1,5 +1,22 @@
 package com.forgeessentials.permissions.commands;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.permissions.ModulePermissions;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldPoint;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionContext;
+import net.minecraftforge.permissions.PermissionsManager;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -9,25 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
-
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permissions.PermissionContext;
-import net.minecraftforge.permissions.PermissionsManager;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.permissions.ModulePermissions;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldPoint;
 
 @SuppressWarnings("unchecked")
 public class PermissionCommandParser {

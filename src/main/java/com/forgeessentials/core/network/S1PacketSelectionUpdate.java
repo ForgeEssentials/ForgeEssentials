@@ -1,14 +1,12 @@
 package com.forgeessentials.core.network;
 
-import io.netty.buffer.ByteBuf;
-
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.Point;
-
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
 
 public class S1PacketSelectionUpdate implements IMessageHandler<S1PacketSelectionUpdate, IMessage>, IMessage {
 

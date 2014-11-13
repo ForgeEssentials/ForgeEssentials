@@ -1,9 +1,7 @@
 package com.forgeessentials.commands;
 
-import java.util.HashMap;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,8 +14,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import java.util.HashMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class CommandGetCommandBook extends FEcmdModuleCommands {
     public static String joinAliases(Object[] par0ArrayOfObj)

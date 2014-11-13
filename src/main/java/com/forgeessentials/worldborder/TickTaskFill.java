@@ -1,12 +1,5 @@
 package com.forgeessentials.worldborder;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.data.DataManager;
 import com.forgeessentials.data.api.ClassContainer;
@@ -21,6 +14,12 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.forgeessentials.util.tasks.TaskRegistry;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.world.MinecraftException;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
 
 /**
  * Does the actual filling, with limited chuncks per tick.

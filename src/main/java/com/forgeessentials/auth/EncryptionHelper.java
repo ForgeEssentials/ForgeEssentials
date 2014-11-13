@@ -1,11 +1,11 @@
 package com.forgeessentials.auth;
 
+import com.forgeessentials.util.OutputHandler;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.logging.Level;
-
-import com.forgeessentials.util.OutputHandler;
 
 public class EncryptionHelper {
     private static final SecureRandom rand = new SecureRandom();

@@ -1,12 +1,5 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-
-import net.minecraft.command.ICommandSender;
-
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule.Container;
 import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
@@ -16,10 +9,15 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Reload;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
-
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraft.command.ICommandSender;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashSet;
 
 @SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable {

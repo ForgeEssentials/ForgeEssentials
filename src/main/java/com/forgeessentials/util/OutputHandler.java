@@ -1,5 +1,7 @@
 package com.forgeessentials.util;
 
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -8,13 +10,9 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.config.Configuration;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 
 public final class OutputHandler extends ConfigLoaderBase {
 	

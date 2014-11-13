@@ -1,12 +1,11 @@
 package com.forgeessentials.economy;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import net.minecraft.entity.player.EntityPlayer;
 
 @SaveableObject
 public class Wallet {

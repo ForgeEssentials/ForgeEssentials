@@ -1,12 +1,12 @@
 package com.forgeessentials.commands.util;
 
-import java.util.HashMap;
-import java.util.List;
-
 import com.forgeessentials.core.data.DataManager;
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class CommandDataManager {
     public static HashMap<String, Kit> kits = new HashMap<String, Kit>();

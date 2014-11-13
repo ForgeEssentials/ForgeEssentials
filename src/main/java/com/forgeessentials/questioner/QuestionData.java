@@ -1,11 +1,10 @@
 package com.forgeessentials.questioner;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.forgeessentials.api.questioner.AnswerEnum;
 import com.forgeessentials.api.questioner.RunnableAnswer;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.WarpPoint;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class QuestionData {
     private WarpPoint point;

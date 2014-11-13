@@ -1,5 +1,7 @@
 package com.forgeessentials.data.api;
 
+import com.forgeessentials.data.StorageManager;
+
 import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import com.forgeessentials.data.StorageManager;
 
 @SuppressWarnings("rawtypes")
 public abstract class TypeMultiValInfo implements ITypeInfo<Object> {

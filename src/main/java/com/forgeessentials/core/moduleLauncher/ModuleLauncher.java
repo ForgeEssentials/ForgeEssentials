@@ -1,23 +1,21 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import net.minecraft.command.ICommandSender;
-
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.command.ICommandSender;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class ModuleLauncher {
     public ModuleLauncher()

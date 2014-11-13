@@ -1,5 +1,9 @@
 package com.forgeessentials.commands;
 
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
@@ -16,12 +20,6 @@ import net.minecraft.tileentity.TileEntityDropper;
 import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public class CommandDrop extends FEcmdModuleCommands {
 	

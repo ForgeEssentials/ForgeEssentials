@@ -1,13 +1,12 @@
 package com.forgeessentials.auth;
 
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.TimerTask;
-
-import com.forgeessentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class VanillaServiceChecker extends TimerTask {
     private boolean online = true;

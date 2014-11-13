@@ -1,16 +1,14 @@
 package com.forgeessentials.economy.commands;
 
-import java.util.List;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
 
 public class CommandGetWallet extends ForgeEssentialsCommandBase {
     @Override

@@ -1,10 +1,9 @@
 package com.forgeessentials.playerlogger;
 
-import java.util.Arrays;
-
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import java.util.Arrays;
 
 public class ConfigPlayerLogger extends ConfigLoaderBase {
     

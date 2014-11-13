@@ -1,7 +1,11 @@
 package com.forgeessentials.auth;
 
-import java.util.UUID;
-
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.PlayerMoveEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -16,13 +20,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.PlayerMoveEvent;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+import java.util.UUID;
 
 public class AuthEventHandler {
 

@@ -1,18 +1,10 @@
 package com.forgeessentials.data.v2;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.forgeessentials.data.v2.types.ItemStackType;
-import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.data.v2.types.ItemStackType;
+import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.gson.ExclusionStrategy;
@@ -23,6 +15,14 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.Expose;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataManager implements ExclusionStrategy {
 

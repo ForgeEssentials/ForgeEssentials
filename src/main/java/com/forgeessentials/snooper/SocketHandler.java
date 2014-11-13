@@ -1,10 +1,5 @@
 package com.forgeessentials.snooper;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Charsets;
@@ -13,6 +8,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 public class SocketHandler extends Thread
 {

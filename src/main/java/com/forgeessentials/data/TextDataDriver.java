@@ -1,19 +1,17 @@
 package com.forgeessentials.data;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.EnumDriverType;
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.util.FunctionHelper;
-
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public abstract class TextDataDriver extends AbstractDataDriver {
     protected File baseFile;

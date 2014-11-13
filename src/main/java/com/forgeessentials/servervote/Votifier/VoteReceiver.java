@@ -18,6 +18,17 @@
 
 package com.forgeessentials.servervote.Votifier;
 
+import com.forgeessentials.servervote.ConfigServerVote;
+import com.forgeessentials.servervote.ModuleServerVote;
+import com.forgeessentials.servervote.VoteEvent;
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.FMLLog;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,20 +40,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-
-import com.forgeessentials.servervote.ConfigServerVote;
-import com.forgeessentials.servervote.ModuleServerVote;
-import com.forgeessentials.servervote.VoteEvent;
-import com.forgeessentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLLog;
 
 /**
  * Like 90% copied from Votifier github: https://github.com/vexsoftware/votifier

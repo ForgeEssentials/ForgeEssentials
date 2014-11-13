@@ -1,13 +1,12 @@
 package com.forgeessentials.backup;
 
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.google.common.primitives.Ints;
+import net.minecraftforge.common.config.Configuration;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-
-import net.minecraftforge.common.config.Configuration;
-
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
-import com.google.common.primitives.Ints;
 
 public class BackupConfig extends ConfigLoaderBase {
 

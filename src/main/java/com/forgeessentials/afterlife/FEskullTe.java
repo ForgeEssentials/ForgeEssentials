@@ -1,12 +1,11 @@
 package com.forgeessentials.afterlife;
 
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.world.World;
-
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldPoint;
 
 public class FEskullTe extends TileEntitySkull {
 

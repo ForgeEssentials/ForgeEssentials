@@ -1,7 +1,5 @@
 package com.forgeessentials.worldborder;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
@@ -13,6 +11,7 @@ import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.selections.Point;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 @SaveableObject
 public class WorldBorder {

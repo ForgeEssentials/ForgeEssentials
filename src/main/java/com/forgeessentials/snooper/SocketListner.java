@@ -1,15 +1,14 @@
 package com.forgeessentials.snooper;
 
+import com.forgeessentials.util.OutputHandler;
+import net.minecraft.server.MinecraftServer;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.server.MinecraftServer;
-
-import com.forgeessentials.util.OutputHandler;
 
 public class SocketListner implements Runnable {
     private int port;
