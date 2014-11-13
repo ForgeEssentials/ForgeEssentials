@@ -99,4 +99,15 @@ public @interface FEModule {
     public @interface ModuleDir {
     }
 
+    /**
+     * Allows modules to do precondition checking.
+     * Takes no arguments and returns a boolean.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface Preconditions
+    {
+
+    }
+
 }
