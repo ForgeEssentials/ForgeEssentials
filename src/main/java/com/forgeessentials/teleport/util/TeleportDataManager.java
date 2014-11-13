@@ -1,8 +1,8 @@
 package com.forgeessentials.teleport.util;
 
-import com.forgeessentials.core.data.DataManager;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.data.v2.DataManager;
 
 import java.util.HashMap;
 import java.util.List;

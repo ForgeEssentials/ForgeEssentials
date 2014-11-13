@@ -1,6 +1,6 @@
 package com.forgeessentials.economy.plots;
 
-import com.forgeessentials.core.data.DataManager;
+import com.forgeessentials.data.v2.DataManager;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
