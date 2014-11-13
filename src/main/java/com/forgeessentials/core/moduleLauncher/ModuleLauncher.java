@@ -9,7 +9,7 @@ import net.minecraft.command.ICommandSender;
 
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.config.IConfigLoader;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;

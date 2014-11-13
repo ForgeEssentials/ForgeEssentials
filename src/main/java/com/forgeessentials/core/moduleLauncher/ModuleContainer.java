@@ -76,11 +76,14 @@ public class ModuleContainer implements Comparable {
         isCore = annot.isCore();
         doesOverride = annot.doesOverride();
 
-        if (!ForgeEssentials.canLoadModule(name))
+        if (annot.canDisable())
         {
-            OutputHandler.felog.info("Requested to disable module " + name);
-            isLoadable = false;
-            return;
+            if (!ForgeEssentials.canLoadModule(name))
+            {
+                OutputHandler.felog.info("Requested to disable module " + name);
+                isLoadable = false;
+                return;
+            }
         }
 
         // try getting the parent mod.. and register it.

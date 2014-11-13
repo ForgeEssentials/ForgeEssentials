@@ -1,4 +1,4 @@
-package com.forgeessentials.core.config;
+package com.forgeessentials.core.moduleLauncher.config;
 
 import java.io.File;
 import java.util.HashMap;

@@ -3,7 +3,7 @@ package com.forgeessentials.snooper;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.api.snooper.Response;
-import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 
 public class ConfigSnooper extends ConfigLoaderBase {
 

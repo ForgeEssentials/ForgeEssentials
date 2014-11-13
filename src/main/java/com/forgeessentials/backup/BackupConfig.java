@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.google.common.primitives.Ints;
 
 public class BackupConfig extends ConfigLoaderBase {

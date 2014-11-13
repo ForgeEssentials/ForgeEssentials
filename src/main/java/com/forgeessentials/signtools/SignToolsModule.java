@@ -1,7 +1,7 @@
 package com.forgeessentials.signtools;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;

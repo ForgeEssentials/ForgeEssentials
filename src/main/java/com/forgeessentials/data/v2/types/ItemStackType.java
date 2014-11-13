@@ -1,4 +1,4 @@
-package com.forgeessentials.core.data.types;
+package com.forgeessentials.data.v2.types;
 
 import java.lang.reflect.Type;
 
@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.forgeessentials.core.data.DataManager.DataType;
+import com.forgeessentials.data.v2.DataManager.DataType;
 import com.forgeessentials.util.OutputHandler;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;

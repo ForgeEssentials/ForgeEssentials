@@ -1,4 +1,4 @@
-package com.forgeessentials.core.data.types;
+package com.forgeessentials.data.v2.types;
 
 import java.lang.reflect.Type;
 import java.util.Map.Entry;
@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 
-import com.forgeessentials.core.data.DataManager.DataType;
+import com.forgeessentials.data.v2.DataManager.DataType;
 import com.forgeessentials.util.OutputHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;

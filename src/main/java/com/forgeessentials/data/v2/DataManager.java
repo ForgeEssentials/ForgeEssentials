@@ -1,4 +1,4 @@
-package com.forgeessentials.core.data;
+package com.forgeessentials.data.v2;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.forgeessentials.core.data.types.ItemStackType;
-import com.forgeessentials.core.data.types.NBTTagCompoundType;
+import com.forgeessentials.data.v2.types.ItemStackType;
+import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
