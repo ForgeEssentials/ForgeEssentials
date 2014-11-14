@@ -1,18 +1,17 @@
 package com.forgeessentials.util.selections;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.forgeessentials.commons.Point;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-
 import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.Point;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Almost exactly like a Point, except with an additional dimension member so we

@@ -1,13 +1,5 @@
 package com.forgeessentials.commands.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.permissions.PermissionsManager;
-
 import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
@@ -16,6 +8,13 @@ import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.permissions.PermissionsManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SaveableObject
 public class Kit {

@@ -1,15 +1,14 @@
 package com.forgeessentials.commons;
 
-import java.io.Serializable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Vec3;
-
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
+
+import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SaveableObject(SaveInline = true)
 public class Point implements Serializable, Comparable<Point> {

@@ -1,12 +1,5 @@
 package com.forgeessentials.worldedit.compat;
 
-import java.util.EnumMap;
-import java.util.Map;
-
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.sk89q.worldedit.LocalConfiguration;
@@ -18,8 +11,13 @@ import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import com.sk89q.worldedit.util.command.CommandMapping;
 import com.sk89q.worldedit.util.command.Dispatcher;
 import com.sk89q.worldedit.world.World;
-
 import cpw.mods.fml.common.Mod;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class FEPlatform extends AbstractPlatform {
 

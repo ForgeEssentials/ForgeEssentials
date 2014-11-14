@@ -1,5 +1,20 @@
 package com.forgeessentials.permissions.persistence;
 
+import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.api.permissions.WorldZone;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.commons.AreaBase;
+import com.forgeessentials.permissions.core.ZonePersistenceProvider;
+import com.forgeessentials.util.EnumDBType;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.google.common.base.Throwables;
+import org.apache.commons.lang3.StringUtils;
+import scala.actors.threadpool.Arrays;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -13,23 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-
-import scala.actors.threadpool.Arrays;
-
-import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.ServerZone;
-import com.forgeessentials.api.permissions.WorldZone;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.api.permissions.Zone.PermissionList;
-import com.forgeessentials.permissions.core.ZonePersistenceProvider;
-import com.forgeessentials.util.EnumDBType;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.AreaBase;
-import com.google.common.base.Throwables;
 
 public class SQLProvider extends ZonePersistenceProvider {
 

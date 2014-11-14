@@ -1,17 +1,17 @@
 package com.forgeessentials.data.typeInfo;
 
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.TypeData;
+import com.forgeessentials.data.api.TypeMultiValInfo;
+import com.forgeessentials.util.OutputHandler;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
-
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.data.api.TypeData;
-import com.forgeessentials.data.api.TypeMultiValInfo;
-import com.forgeessentials.util.OutputHandler;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class TypeInfoMap extends TypeMultiValInfo {

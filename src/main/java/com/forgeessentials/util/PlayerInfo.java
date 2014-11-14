@@ -1,32 +1,30 @@
 package com.forgeessentials.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
-import java.util.UUID;
-
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.Point;
+import com.forgeessentials.commons.SaveableObject;
+import com.forgeessentials.commons.SaveableObject.Reconstructor;
+import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.commons.Selection;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.network.S1PacketSelectionUpdate;
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.util.selections.ISelectionProvider;
+import com.forgeessentials.util.selections.WarpPoint;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.network.S1PacketSelectionUpdate;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.selections.ISelectionProvider;
-import com.forgeessentials.commons.Point;
-import com.forgeessentials.commons.Selection;
-import com.forgeessentials.util.selections.WarpPoint;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+import java.util.UUID;
 
 @SaveableObject
 public class PlayerInfo

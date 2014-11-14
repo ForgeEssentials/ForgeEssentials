@@ -1,10 +1,10 @@
 package net.minecraftforge.permissions;
 
-import java.util.HashSet;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.HashSet;
 
 public class DefaultPermProvider implements IPermissionsProvider {
 

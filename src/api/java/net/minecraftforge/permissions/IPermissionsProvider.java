@@ -1,10 +1,5 @@
 package net.minecraftforge.permissions;
 
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 

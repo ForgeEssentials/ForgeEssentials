@@ -1,8 +1,8 @@
 package com.forgeessentials.data.typeInfo;
 
+import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.data.api.ITypeInfo;
 import com.forgeessentials.data.api.TypeData;
 import cpw.mods.fml.common.registry.GameData;

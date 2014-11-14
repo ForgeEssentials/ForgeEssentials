@@ -1,5 +1,6 @@
 package com.forgeessentials.core;
 
+import com.forgeessentials.commons.Point;
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
@@ -39,7 +40,6 @@ import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
-import com.forgeessentials.commons.Point;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;

@@ -1,20 +1,18 @@
 package com.forgeessentials.worldedit.compat;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.PlayerInfo;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.PlayerInfo;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 // i said no, but olee is a shithead -.-
 // temporary until i can get around to proper implementation of WECUI protocol

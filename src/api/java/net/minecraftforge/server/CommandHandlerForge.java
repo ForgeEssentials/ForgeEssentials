@@ -1,9 +1,4 @@
 package net.minecraftforge.server;
- 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.command.CommandBase;
@@ -15,7 +10,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.FALSE;
+import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.OP;
+import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.TRUE;
  
 /**
  * Helper class for Forge permissions and command handling.

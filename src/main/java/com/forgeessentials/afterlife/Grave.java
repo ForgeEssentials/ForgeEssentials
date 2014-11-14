@@ -1,18 +1,17 @@
 package com.forgeessentials.afterlife;
 
-import java.util.ArrayList;
-
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.permissions.PermissionsManager;
-
 import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.selections.WorldPoint;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.permissions.PermissionsManager;
+
+import java.util.ArrayList;
 
 @SaveableObject
 public class Grave {

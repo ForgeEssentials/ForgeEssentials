@@ -1,13 +1,12 @@
 package com.forgeessentials.util.selections;
 
-import com.forgeessentials.commons.Point;
-import net.minecraft.entity.Entity;
-
 import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.Point;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
+import net.minecraft.entity.Entity;
 
 @SaveableObject(SaveInline = true)
 public class WarpPoint extends WorldPoint {

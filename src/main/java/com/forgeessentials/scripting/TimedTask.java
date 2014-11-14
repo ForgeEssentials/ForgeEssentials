@@ -1,14 +1,13 @@
 package com.forgeessentials.scripting;
 
-import java.util.TimerTask;
-
-import net.minecraft.server.MinecraftServer;
-
 import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.util.tasks.TaskRegistry;
+import net.minecraft.server.MinecraftServer;
+
+import java.util.TimerTask;
 
 @SaveableObject
 public class TimedTask extends TimerTask {
