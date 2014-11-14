@@ -2,7 +2,7 @@ package com.forgeessentials.util.selections;
 
 public enum AreaShape {
 
-    BOX, ELLIPSOID, Y_CYLINDER;
+    BOX, ELLIPSOID, CYLINDER;
 
     public boolean contains(AreaBase area, Point point)
     {
@@ -19,7 +19,7 @@ public enum AreaShape {
         {
         case ELLIPSOID:
             return dx * dx + dy * dy + dz * dz <= 1;
-        case Y_CYLINDER:
+        case CYLINDER:
             return dx * dx + dz * dz <= 1;
         case BOX:
         default:
