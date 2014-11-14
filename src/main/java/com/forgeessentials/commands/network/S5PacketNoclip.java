@@ -19,7 +19,7 @@ public class S5PacketNoclip implements IMessageHandler<S5PacketNoclip, IMessage>
 
     public S5PacketNoclip(){}
 
-    private S5PacketNoclip(boolean mode)
+    public S5PacketNoclip(boolean mode)
     {
         this.mode = mode;
     }
@@ -30,10 +30,5 @@ public class S5PacketNoclip implements IMessageHandler<S5PacketNoclip, IMessage>
     @Override public void toBytes(ByteBuf buf)
     {
         buf.writeBoolean(mode);
-    }
-
-    public static void setPlayerNoclipStatus(EntityPlayer player, boolean status)
-    {
-        FunctionHelper.netHandler.sendTo(new S5PacketNoclip(status), (EntityPlayerMP) player);
     }
 }

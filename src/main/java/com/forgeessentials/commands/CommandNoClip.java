@@ -2,9 +2,11 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.commands.network.S5PacketNoclip;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -47,7 +49,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 		
 		if(args.length == 0)
 		{
-			player.noClip ^= true;
+			player.noClip = true;
 		}
 		else
 		{
@@ -55,7 +57,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 		}
 		if(!player.noClip)
 			findSafeY(player);
-		S5PacketNoclip.setPlayerNoclipStatus(player, player.noClip);
+		FunctionHelper.netHandler.sendTo(new S5PacketNoclip(player.noClip), (EntityPlayerMP) player);
 		OutputHandler.chatConfirmation(player, "NoClip " + (player.noClip ? "enabled." : "disabled."));
 	}
 	
@@ -69,7 +71,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 				findSafeY(player);
 				if(!player.worldObj.isRemote)
 				{
-					S5PacketNoclip.setPlayerNoclipStatus(player, player.noClip);
+					FunctionHelper.netHandler.sendTo(new S5PacketNoclip(player.noClip), (EntityPlayerMP) player);
 					OutputHandler.chatNotification(player, "NoClip auto-disabled: not flying");
 				}
 			}
