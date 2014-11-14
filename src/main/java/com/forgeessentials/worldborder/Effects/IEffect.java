@@ -1,9 +1,8 @@
 package com.forgeessentials.worldborder.Effects;
 
+import com.forgeessentials.worldborder.WorldBorder;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
-
-import com.forgeessentials.worldborder.WorldBorder;
 
 public interface IEffect {
     void registerConfig(Configuration config, String category);

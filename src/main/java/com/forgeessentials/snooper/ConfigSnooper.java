@@ -1,9 +1,8 @@
 package com.forgeessentials.snooper;
 
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.api.snooper.Response;
-import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import net.minecraftforge.common.config.Configuration;
 
 public class ConfigSnooper extends ConfigLoaderBase {
 

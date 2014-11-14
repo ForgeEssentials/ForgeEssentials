@@ -1,20 +1,18 @@
 package com.forgeessentials.util.teleport;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.WarpPoint;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Use this for all TPs. This system does it all for you: warmup, cooldown, bypass for both, going between dimensions.

@@ -1,14 +1,13 @@
 package com.forgeessentials.chat;
 
-import java.util.Arrays;
-
+import com.forgeessentials.chat.irc.IRCHelper;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import com.forgeessentials.chat.irc.IRCHelper;
-import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
+import java.util.Arrays;
 
 public class ConfigChat extends ConfigLoaderBase {
     

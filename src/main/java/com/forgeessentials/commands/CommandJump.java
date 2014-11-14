@@ -1,11 +1,5 @@
 package com.forgeessentials.commands;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.teleport.CommandBack;
 import com.forgeessentials.util.FunctionHelper;
@@ -13,6 +7,11 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandJump extends FEcmdModuleCommands {
 

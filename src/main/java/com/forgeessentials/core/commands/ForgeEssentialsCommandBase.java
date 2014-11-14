@@ -1,5 +1,6 @@
 package com.forgeessentials.core.commands;
 
+import com.forgeessentials.api.permissions.FEPermissions;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
@@ -12,8 +13,6 @@ import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import net.minecraftforge.server.CommandHandlerForge;
-
-import com.forgeessentials.api.permissions.FEPermissions;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase {
 

@@ -1,17 +1,15 @@
 package com.forgeessentials.playerlogger.types;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import javax.sql.rowset.serial.SerialBlob;
-
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
+import com.forgeessentials.util.OutputHandler;
+import com.google.common.base.Charsets;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.OutputHandler;
-import com.google.common.base.Charsets;
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class BlockChangeType extends LogType {
     public BlockChangeType(blockChangeLogCategory cat, EntityPlayer player, String block, int X, int Y, int Z, TileEntity te)

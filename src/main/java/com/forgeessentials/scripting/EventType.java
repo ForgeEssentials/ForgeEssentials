@@ -1,17 +1,16 @@
 package com.forgeessentials.scripting;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 
 public enum EventType {
     LOGIN("login"),

@@ -37,6 +37,11 @@ public @interface FEModule {
     boolean doesOverride() default false;
 
     /**
+     * Allows a module to be disabled.
+     */
+    boolean canDisable() default true;
+
+    /**
      * For all built in modules, this had better be the ForgeEssentials class.
      * For everyone else, this should be your @mod file.
      *
@@ -92,6 +97,17 @@ public @interface FEModule {
     @Target(
             { ElementType.FIELD })
     public @interface ModuleDir {
+    }
+
+    /**
+     * Allows modules to do precondition checking.
+     * Takes no arguments and returns a boolean.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface Preconditions
+    {
+
     }
 
 }

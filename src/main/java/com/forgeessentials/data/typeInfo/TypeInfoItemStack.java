@@ -1,16 +1,14 @@
 package com.forgeessentials.data.typeInfo;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.data.api.ITypeInfo;
 import com.forgeessentials.data.api.TypeData;
-
 import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class TypeInfoItemStack implements ITypeInfo<ItemStack> {
     private static final String SIZE = "stackSize";

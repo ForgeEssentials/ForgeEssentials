@@ -1,4 +1,4 @@
-package com.forgeessentials.core.config;
+package com.forgeessentials.core.moduleLauncher.config;
 
 import net.minecraftforge.common.config.Configuration;
 

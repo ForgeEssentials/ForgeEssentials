@@ -1,12 +1,11 @@
 package com.forgeessentials.core.commands;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.forgeessentials.util.OutputHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandFEInfo extends ForgeEssentialsCommandBase {
 

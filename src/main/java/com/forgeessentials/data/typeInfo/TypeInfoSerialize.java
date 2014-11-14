@@ -1,13 +1,5 @@
 package com.forgeessentials.data.typeInfo;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.logging.Level;
-
 import com.forgeessentials.data.StorageManager;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -16,6 +8,14 @@ import com.forgeessentials.data.api.ITypeInfo;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.util.OutputHandler;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.logging.Level;
 
 @SuppressWarnings("rawtypes")
 public class TypeInfoSerialize<T> implements ITypeInfo<T> {

@@ -1,5 +1,8 @@
 package com.forgeessentials.backup;
 
+import com.forgeessentials.util.OutputHandler;
+import net.minecraftforge.common.DimensionManager;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -7,10 +10,6 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.TimerTask;
-
-import net.minecraftforge.common.DimensionManager;
-
-import com.forgeessentials.util.OutputHandler;
 
 public class AutoBackup extends TimerTask{
     public static boolean isBackingUp = false;

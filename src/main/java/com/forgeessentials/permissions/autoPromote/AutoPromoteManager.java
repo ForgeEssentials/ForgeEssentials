@@ -1,12 +1,5 @@
 package com.forgeessentials.permissions.autoPromote;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.TimerTask;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.Zone;
@@ -14,8 +7,13 @@ import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
-
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.TimerTask;
 
 public class AutoPromoteManager extends TimerTask {
 	static ClassContainer con = new ClassContainer(AutoPromote.class);

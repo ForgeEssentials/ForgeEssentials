@@ -1,9 +1,9 @@
 package com.forgeessentials.chat.irc.commands;
 
+import org.pircbotx.User;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import org.pircbotx.User;
 
 public abstract class ircCommand {
     // Get functions

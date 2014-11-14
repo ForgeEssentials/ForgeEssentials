@@ -1,9 +1,8 @@
 package com.forgeessentials.commands.util;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
+import com.forgeessentials.api.EnumMobType;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.tasks.ITickTask;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.EntityLiving;
@@ -25,9 +24,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
-import com.forgeessentials.api.EnumMobType;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.ITickTask;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class CommandButcherTickTask implements ITickTask {
     

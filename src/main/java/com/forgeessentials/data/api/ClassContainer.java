@@ -1,7 +1,6 @@
 package com.forgeessentials.data.api;
 
 import java.util.Arrays;
-import java.util.Map;
 
 public class ClassContainer {
 	

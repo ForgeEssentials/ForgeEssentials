@@ -1,12 +1,11 @@
 package com.forgeessentials.worldborder.Effects;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.vector.Vector2;
 import com.forgeessentials.worldborder.ModuleWorldBorder;
 import com.forgeessentials.worldborder.WorldBorder;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.config.Configuration;
 
 public class knockback implements IEffect {
     @Override

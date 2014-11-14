@@ -1,25 +1,25 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-
-import net.minecraft.command.ICommandSender;
-
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule.Container;
 import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
+import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.core.moduleLauncher.FEModule.Reload;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
-
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraft.command.ICommandSender;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashSet;
 
 @SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable {
@@ -76,11 +76,14 @@ public class ModuleContainer implements Comparable {
         isCore = annot.isCore();
         doesOverride = annot.doesOverride();
 
-        if (!ForgeEssentials.canLoadModule(name))
+        if (annot.canDisable())
         {
-            OutputHandler.felog.info("Requested to disable module " + name);
-            isLoadable = false;
-            return;
+            if (!ForgeEssentials.canLoadModule(name))
+            {
+                OutputHandler.felog.info("Requested to disable module " + name);
+                isLoadable = false;
+                return;
+            }
         }
 
         // try getting the parent mod.. and register it.
@@ -96,7 +99,7 @@ public class ModuleContainer implements Comparable {
             {
                 if (reload != null)
                 {
-                    throw new RuntimeException("Only one class may be marked as Reload");
+                    throw new RuntimeException("Only one method may be marked as Reload");
                 }
                 params = m.getParameterTypes();
                 if (params.length != 1)
@@ -109,6 +112,37 @@ public class ModuleContainer implements Comparable {
                 }
                 m.setAccessible(true);
                 reload = m.getName();
+            }
+
+            else if (m.isAnnotationPresent(Preconditions.class))
+            {
+                if (reload != null)
+                {
+                    throw new RuntimeException("Only one method may be marked as Precondition");
+                }
+                params = m.getParameterTypes();
+                if (params.length != 0)
+                {
+                    throw new RuntimeException(m + " must take no arguments!");
+                }
+                if (!m.getReturnType().equals(boolean.class))
+                {
+                    throw new RuntimeException(m + " must return a boolean!");
+                }
+                m.setAccessible(true);
+
+                try
+                {
+                    if (!(boolean) m.invoke(c.newInstance()))
+                    {
+                        OutputHandler.felog.info("Requested to disable module " + name);
+                        isLoadable = false;
+                        return;
+                    }
+                }
+                catch (InstantiationException e){}
+                catch (IllegalAccessException e){}
+                catch (InvocationTargetException e){}
             }
         }
 

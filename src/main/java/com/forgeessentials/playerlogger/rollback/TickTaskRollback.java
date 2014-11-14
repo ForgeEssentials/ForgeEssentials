@@ -1,9 +1,10 @@
 package com.forgeessentials.playerlogger.rollback;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import com.forgeessentials.playerlogger.BlockChange;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.tasks.ITickTask;
+import com.google.common.base.Charsets;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.init.Blocks;
@@ -13,12 +14,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-import com.forgeessentials.playerlogger.BlockChange;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.ITickTask;
-import com.google.common.base.Charsets;
-
-import cpw.mods.fml.common.registry.GameData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TickTaskRollback implements ITickTask {
 	private boolean isComplete = false;
