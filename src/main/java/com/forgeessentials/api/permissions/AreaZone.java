@@ -1,7 +1,7 @@
 package com.forgeessentials.api.permissions;
 
 import com.forgeessentials.util.selections.AreaBase;
-import com.forgeessentials.util.selections.AreaBase.AreaShape;
+import com.forgeessentials.util.selections.AreaShape;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WorldArea;
 import com.forgeessentials.util.selections.WorldPoint;
@@ -120,7 +120,10 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
 
     public void setShape(AreaShape shape)
     {
-        this.shape = shape;
+        if (shape == null)
+            this.shape = AreaShape.BOX;
+        else
+            this.shape = shape;
         setDirty();
     }
 

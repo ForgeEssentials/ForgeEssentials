@@ -26,7 +26,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.AreaBase;
-import com.forgeessentials.util.selections.AreaBase.AreaShape;
+import com.forgeessentials.util.selections.AreaShape;
 
 public class CommandZone extends ForgeEssentialsCommandBase {
 

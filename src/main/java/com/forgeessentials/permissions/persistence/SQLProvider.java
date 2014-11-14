@@ -1,20 +1,5 @@
 package com.forgeessentials.permissions.persistence;
 
-import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.ServerZone;
-import com.forgeessentials.api.permissions.WorldZone;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.api.permissions.Zone.PermissionList;
-import com.forgeessentials.permissions.core.ZonePersistenceProvider;
-import com.forgeessentials.util.EnumDBType;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.AreaBase;
-import com.google.common.base.Throwables;
-import org.apache.commons.lang3.StringUtils;
-import scala.actors.threadpool.Arrays;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -28,6 +13,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+
+import scala.actors.threadpool.Arrays;
+
+import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.api.permissions.WorldZone;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.permissions.core.ZonePersistenceProvider;
+import com.forgeessentials.util.EnumDBType;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.util.selections.AreaShape;
+import com.google.common.base.Throwables;
 
 public class SQLProvider extends ZonePersistenceProvider {
 
@@ -88,7 +91,10 @@ public class SQLProvider extends ZonePersistenceProvider {
 
         public String createSelectStatement()
         {
-            return createSelectStatement(columns.keySet());
+            StringBuilder sb = new StringBuilder("SELECT * FROM `");
+            sb.append(name);
+            sb.append("`");
+            return sb.toString();
         }
 
         public String createInsertOrReplace(Map<String, Object> fieldsAndValues)
@@ -173,7 +179,7 @@ public class SQLProvider extends ZonePersistenceProvider {
 
     private static final String INFO_MAX_ZONE_ID = "max_zone_id";
 
-    private static final String VERSION = "1.0";
+    private static final String VERSION = "1.1";
 
     private final Map<String, TableInfo> TABLES = setupTableData();
 
@@ -206,11 +212,13 @@ public class SQLProvider extends ZonePersistenceProvider {
         tbl.columns.put("name", "VARCHAR(64)");
         tbl.columns.put("dimension", "INT");
         tbl.columns.put("area", "VARCHAR(64)");
+        tbl.columns.put("shape", "VARCHAR(16)");
         tbl.primaryKeys.add("id");
         tbl.nullableKeys.add("parent_id");
         tbl.nullableKeys.add("name");
         tbl.nullableKeys.add("dimension");
         tbl.nullableKeys.add("area");
+        tbl.nullableKeys.add("shape");
         result.put(TABLE_ZONE, tbl);
 
         tbl = new TableInfo(TABLE_PREFIX + "group_permission");
@@ -252,10 +260,7 @@ public class SQLProvider extends ZonePersistenceProvider {
         if (!checkAndCreateTables())
         {
             // Initialize tables
-            Map<String, Object> fieldsAndValues = new HashMap<>();
-            fieldsAndValues.put("key", "version");
-            fieldsAndValues.put("value", VERSION);
-            executeUpdate(TABLES.get(TABLE_INFO).createInsertOrReplace(fieldsAndValues));
+            setVersion(VERSION);
         }
         else
         {
@@ -264,6 +269,13 @@ public class SQLProvider extends ZonePersistenceProvider {
             if (!VERSION.equals(version))
             {
                 OutputHandler.felog.info("Version of permission database incorrect. May not load permissions correctly!");
+            }
+            
+            if (version.equals("1.0"))
+            {
+                TableInfo tbl = TABLES.get(TABLE_ZONE);
+                executeUpdate("ALTER TABLE `" + tbl.name + "` ADD COLUMN `shape` " + tbl.columns.get("shape"));
+                setVersion(VERSION);
             }
         }
     }
@@ -308,7 +320,7 @@ public class SQLProvider extends ZonePersistenceProvider {
         }
         catch (SQLException e)
         {
-            Throwables.propagate(e);
+            e.printStackTrace();
         }
     }
 
@@ -326,6 +338,14 @@ public class SQLProvider extends ZonePersistenceProvider {
         {
             return null;
         }
+    }
+
+    private void setVersion(String version)
+    {
+        Map<String, Object> fieldsAndValues = new HashMap<>();
+        fieldsAndValues.put("key", "version");
+        fieldsAndValues.put("value", version);
+        executeUpdate(TABLES.get(TABLE_INFO).createInsertOrReplace(fieldsAndValues));
     }
 
     @Override
@@ -455,6 +475,7 @@ public class SQLProvider extends ZonePersistenceProvider {
         fieldsAndValues.put("name", zone.getShortName());
         fieldsAndValues.put("dimension", zone.getWorldZone().getDimensionID());
         fieldsAndValues.put("area", zone.getArea().toString());
+        fieldsAndValues.put("shape", zone.getShape().toString());
         db.createStatement().executeUpdate(TABLES.get(TABLE_ZONE).createInsertOrReplace(fieldsAndValues));
     }
 
@@ -508,6 +529,9 @@ public class SQLProvider extends ZonePersistenceProvider {
                         if (area != null)
                         {
                             AreaZone zone = new AreaZone(parentZone, (String) zoneData.get("name"), area, (Integer) zoneData.get("id"));
+                            AreaShape shape = AreaShape.getByName((String) zoneData.get("shape"));
+                            if (shape != null)
+                                zone.setShape(shape);
                             zones.put(zone.getId(), zone);
                         }
                     }

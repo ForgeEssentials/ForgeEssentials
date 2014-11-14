@@ -1,18 +1,5 @@
 package com.forgeessentials.permissions.persistence;
 
-import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.ServerZone;
-import com.forgeessentials.api.permissions.WorldZone;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.api.permissions.Zone.PermissionList;
-import com.forgeessentials.permissions.core.ZonePersistenceProvider;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.AreaBase;
-import com.forgeessentials.util.selections.Point;
-import org.apache.commons.io.FileUtils;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -26,6 +13,21 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeSet;
 import java.util.UUID;
+
+import org.apache.commons.io.FileUtils;
+
+import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.api.permissions.WorldZone;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.permissions.core.ZonePersistenceProvider;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.AreaBase;
+import com.forgeessentials.util.selections.AreaShape;
+import com.forgeessentials.util.selections.Point;
 
 public class FlatfileProvider extends ZonePersistenceProvider {
 
@@ -153,6 +155,7 @@ public class FlatfileProvider extends ZonePersistenceProvider {
             p.setProperty("x2", Integer.toString(areaZone.getArea().getHighPoint().getX()));
             p.setProperty("y2", Integer.toString(areaZone.getArea().getHighPoint().getY()));
             p.setProperty("z2", Integer.toString(areaZone.getArea().getHighPoint().getZ()));
+            p.setProperty("shape", areaZone.getShape().toString());
 
             p.storeToXML(new BufferedOutputStream(new FileOutputStream(new File(path, "area.xml"))), "Data of area " + areaZone.getName());
         }
@@ -283,11 +286,14 @@ public class FlatfileProvider extends ZonePersistenceProvider {
                             int x2 = Integer.parseInt(areaProperties.getProperty("x2"));
                             int y2 = Integer.parseInt(areaProperties.getProperty("y2"));
                             int z2 = Integer.parseInt(areaProperties.getProperty("z2"));
+                            AreaShape shape = AreaShape.getByName(areaProperties.getProperty("shape"));
                             if (name == null)
                                 throw new IllegalArgumentException();
 
                             // Create AreaZone and load permissions
                             AreaZone areaZone = new AreaZone(worldZone, name, new AreaBase(new Point(x1, y1, z1), new Point(x2, y2, z2)), areaId);
+                            if (shape != null)
+                                areaZone.setShape(shape);
                             loadZonePermissions(areaPath, areaZone);
                         }
                         catch (IllegalArgumentException | IOException e)
