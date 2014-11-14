@@ -91,7 +91,7 @@ public class WorldZone extends Zone {
 	{
 		for (AreaZone areaZone : areaZones)
 		{
-			if (areaZone.getShotName().equals(areaName))
+			if (areaZone.getShortName().equals(areaName))
 			{
 				return areaZone;
 			}

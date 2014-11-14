@@ -1,5 +1,21 @@
 package com.forgeessentials.permissions.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionContext;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -10,21 +26,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.AreaBase;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionContext;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import com.forgeessentials.util.selections.AreaShape;
 
 public class CommandZone extends ForgeEssentialsCommandBase {
 
@@ -56,12 +58,11 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         return list;
     }
 
-    @SuppressWarnings("unchecked")
     public void parse(ICommandSender sender, Queue<String> args)
     {
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(args.toArray(new String[args.size()]), parseMainArgs);
+            tabComplete = getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
             return;
         }
         if (args.isEmpty())
@@ -197,7 +198,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         {
             throw new CommandException("Missing arguments!");
         }
-        if (tabCompleteMode)
+        if (tabCompleteMode && args.size() == 1)
         {
             if (!redefine)
                 return;
@@ -222,41 +223,57 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             throw new CommandException(String.format("Area \"%s\" does not exist!", zoneName));
         }
 
-        if (args.isEmpty())
+        if (tabCompleteMode)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (args.size() == 1)
             {
-                throw new CommandException("Command not usable from console. Try /zone set <name> <coords> instead");
+                tabComplete = getListOfStringsMatchingLastWord(args.peek(), AreaShape.valueNames());
             }
-            
-            PlayerInfo info = PlayerInfo.getPlayerInfo((EntityPlayerMP) sender);
-            AreaBase area = info.getSelection();
-            if (area == null)
-                throw new CommandException("No selection available. Please select a region first.");
-
-            PermissionContext context = new PermissionContext();
-            context.setCommandSender(sender);
-            context.setTargetLocationStart(area.getLowPoint().toVec3());
-            context.setTargetLocationEnd(area.getHighPoint().toVec3());
-            if (!PermissionsManager.checkPermission(context, PERM_DEFINE))
-            {
-                throw new CommandException("You don't have the permission to define an area.");
-            }
-
-            if (redefine)
-            {
-                zone.setArea(area);
-                OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been redefined.", zoneName));
-            }
-            else
-            {
-                zone = new AreaZone(worldZone, zoneName, area);
-                OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been defined.", zoneName));
-            }
+            return;
         }
-        else if (args.size() >= 3)
+
+        AreaBase area = null;
+        AreaShape shape = null;
+        
+        if (!args.isEmpty())
         {
-            throw new CommandException("Not yet implemented!");
+            shape = AreaShape.getByName(args.remove());
+            if (shape == null)
+                shape = AreaShape.BOX;
+        }
+        
+        if (!(sender instanceof EntityPlayerMP))
+        {
+            throw new CommandException("Command not usable from console. Try /zone set <name> <coords> instead");
+        }
+        
+        PlayerInfo info = PlayerInfo.getPlayerInfo((EntityPlayerMP) sender);
+        area = info.getSelection();
+        if (area == null)
+            throw new CommandException("No selection available. Please select a region first.");
+
+        PermissionContext context = new PermissionContext();
+        context.setCommandSender(sender);
+        context.setTargetLocationStart(area.getLowPoint().toVec3());
+        context.setTargetLocationEnd(area.getHighPoint().toVec3());
+        if (!PermissionsManager.checkPermission(context, PERM_DEFINE))
+        {
+            throw new CommandException("You don't have the permission to define an area.");
+        }
+
+        if (redefine && zone != null)
+        {
+            zone.setArea(area);
+            if (shape != null)
+                zone.setShape(shape);
+            OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been redefined.", zoneName));
+        }
+        else
+        {
+            zone = new AreaZone(worldZone, zoneName, area);
+            if (shape != null)
+                zone.setShape(shape);
+            OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been defined.", zoneName));
         }
     }
 
@@ -300,6 +317,12 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
     private void parseEntryExitMessage(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean isEntry)
     {
+        if (tabCompleteMode)
+        {
+            if (args.size() == 1 && "clear".startsWith(args.peek().toLowerCase()))
+                tabComplete.add("clear");
+            return;
+        }
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_SETTINGS))
         {
             OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
@@ -327,7 +350,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         }
         else
         {
-            String msg = StringUtils.join(args);
+            String msg = StringUtils.join(args, " ");
             if (msg.equalsIgnoreCase("clear"))
                 msg = null;
             zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
