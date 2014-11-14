@@ -1,18 +1,10 @@
 package com.forgeessentials.protection;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.events.PlayerChangedZone;
-import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.selections.WorldPoint;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
+import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
+import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK;
+import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_AIR;
+import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -37,11 +29,20 @@ import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
-import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
-import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
-import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK;
-import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_AIR;
-import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.events.PlayerChangedZone;
+import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.selections.WorldPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class ProtectionEventHandler extends ServerEventHandler {
 
@@ -160,8 +161,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         if (ModuleProtection.isDebugMode(e.getPlayer()))
             OutputHandler.chatNotification(e.getPlayer(), permission);
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
-        if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_OVERRIDE_BREAK)
-                && !APIRegistry.perms.checkUserPermission(new UserIdent(e.getPlayer()), point, permission))
+        if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.getPlayer()), point, permission))
         {
             e.setCanceled(true);
         }
@@ -179,8 +179,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         if (ModuleProtection.isDebugMode(e.player))
             OutputHandler.chatNotification(e.player, permission);
         WorldPoint point = new WorldPoint(e.player.dimension, e.x, e.y, e.z);
-        if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_OVERRIDE_PLACE)
-                && !APIRegistry.perms.checkUserPermission(ident, point, permission))
+        if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             e.setCanceled(true);
         }
@@ -205,8 +204,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             if (ModuleProtection.isDebugMode(e.player))
                 OutputHandler.chatNotification(e.player, permission);
             WorldPoint point = new WorldPoint(e.player.dimension, b.x, b.y, b.z);
-            if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE_PLACE)
-                    && !APIRegistry.perms.checkUserPermission(new UserIdent(e.player), point, permission))
+            if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.player), point, permission))
             {
                 e.setCanceled(true);
                 return;
@@ -241,8 +239,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             String permission = ModuleProtection.PERM_INTERACT + "." + block.getUnlocalizedName() + "." + block.getDamageValue(e.world, e.x, e.y, e.z);
             if (ModuleProtection.isDebugMode(e.entityPlayer))
                 OutputHandler.chatNotification(e.entityPlayer, permission);
-            boolean allow = APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_OVERRIDE_INTERACT)
-                    || APIRegistry.perms.checkUserPermission(ident, point, permission);
+            boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             e.useBlock = allow ? ALLOW : DENY;
         }
 
@@ -253,8 +250,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             String permission = ModuleProtection.PERM_USE + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
             if (ModuleProtection.isDebugMode(e.entityPlayer))
                 OutputHandler.chatNotification(e.entityPlayer, permission);
-            boolean allow = APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_OVERRIDE_USE)
-                    || APIRegistry.perms.checkUserPermission(ident, point, permission);
+            boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             e.useItem = allow ? ALLOW : DENY;
         }
 
@@ -280,8 +276,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + e.target.getClass().getSimpleName();
         if (ModuleProtection.isDebugMode(e.entityPlayer))
             OutputHandler.chatNotification(e.entityPlayer, permission);
-        if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_OVERRIDE_INTERACT_ENTITY)
-                && !APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_INTERACT_ENTITY))
+        if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_INTERACT_ENTITY))
         {
             e.setCanceled(true);
         }
@@ -395,8 +390,8 @@ public class ProtectionEventHandler extends ServerEventHandler {
         checkPlayerInventory(player);
 
         GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE));
-        if (gm == GameType.NOT_SET)
-            gm = GameType.SURVIVAL;
+//        if (gm == GameType.NOT_SET)
+//            gm = GameType.SURVIVAL;
         if (gm != GameType.NOT_SET)
         {
             GameType lastGm = player.theItemInWorldManager.getGameType();

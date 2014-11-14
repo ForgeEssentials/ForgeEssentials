@@ -111,7 +111,7 @@ public class PermissionCommandParser {
     }
 
     // Variables for auto-complete
-    private static final String[] parseMainArgs = { "test", "user", "group", "global", "list", "reload", "save" }; // "export", "promote", "test" };
+    private static final String[] parseMainArgs = { "test", "testp", "user", "group", "global", "list", "reload", "save" }; // "export", "promote", "test" };
     private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
     private static final String[] parseUserArgs = { "zone", "allow", "deny", "clear", "true", "false", "value", "prefix", "suffix", "spawn", "perms", "group" };
     private static final String[] parseGroupArgs = { "zone", "allow", "deny", "clear", "true", "false", "value", "prefix", "suffix", "spawn", "perms",
@@ -147,6 +147,9 @@ public class PermissionCommandParser {
                 break;
             case "test":
                 parseTest();
+                break;
+            case "testp":
+                parseTestProperty();
                 break;
             case "list":
                 parseList();
@@ -361,10 +364,54 @@ public class PermissionCommandParser {
         }
 
         String permissionNode = args.remove();
+        if (APIRegistry.perms.checkPermission(senderPlayer, permissionNode))
+        {
+            info(permissionNode + " = true");
+        }
+        else
+        {
+            info(permissionNode + " = false");
+        }
+    }
+
+    private void parseTestProperty()
+    {
+        if (args.isEmpty())
+        {
+            error("Missing permission argument!");
+            return;
+        }
+        if (senderPlayer == null)
+        {
+            error(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            return;
+        }
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_TEST))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
+        if (tabCompleteMode)
+        {
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseUserArgs);
+            for (Zone zone : APIRegistry.perms.getZones())
+            {
+                if (CommandBase.doesStringStartWith(args.peek(), zone.getName()))
+                    tabComplete.add(zone.getName());
+            }
+            for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
+            {
+                if (CommandBase.doesStringStartWith(args.peek(), perm))
+                    tabComplete.add(perm);
+            }
+            return;
+        }
+
+        String permissionNode = args.remove();
         String result = APIRegistry.perms.getPermissionProperty(senderPlayer, permissionNode);
         if (result == null)
         {
-            error("Permission does not exist");
+            error("Permission-property does not exist");
         }
         else
         {

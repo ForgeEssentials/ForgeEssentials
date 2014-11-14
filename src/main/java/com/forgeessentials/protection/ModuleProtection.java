@@ -1,16 +1,9 @@
 package com.forgeessentials.protection;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.protection.commands.CommandItemPermission;
-import com.forgeessentials.protection.commands.CommandProtectionDebug;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameData;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -43,9 +36,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.HashSet;
-import java.util.Map.Entry;
-import java.util.Set;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.protection.commands.CommandItemPermission;
+import com.forgeessentials.protection.commands.CommandProtectionDebug;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.registry.GameData;
 
 @FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true)
 public class ModuleProtection {
@@ -64,13 +66,6 @@ public class ModuleProtection {
     public final static String PERM_DAMAGE_TO = BASE_PERM + ".damageto";
     public final static String PERM_DAMAGE_BY = BASE_PERM + ".damageby";
     public final static String PERM_INVENTORY = BASE_PERM + ".inventory";
-
-    private final static String PERM_OVERRIDE = BASE_PERM + ".override";
-    public final static String PERM_OVERRIDE_USE = PERM_OVERRIDE + ".use";
-    public final static String PERM_OVERRIDE_BREAK = PERM_OVERRIDE + ".break";
-    public final static String PERM_OVERRIDE_PLACE = PERM_OVERRIDE + ".place";
-    public final static String PERM_OVERRIDE_INTERACT = PERM_OVERRIDE + ".interact";
-    public final static String PERM_OVERRIDE_INTERACT_ENTITY = PERM_OVERRIDE + ".interact.entity";
 
     public final static String PERM_MOBSPAWN = BASE_PERM + ".mobspawn";
     public final static String PERM_MOBSPAWN_NATURAL = PERM_MOBSPAWN + ".natural";
@@ -147,15 +142,6 @@ public class ModuleProtection {
         {
             APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + dmgType.getDamageType(), RegisteredPermValue.TRUE);
         }
-
-        // ----------------------------------------
-        // Overrides
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.OP, "Override (ignore) protection permissions");
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE_USE, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE_BREAK, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE_PLACE, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE_INTERACT, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE_INTERACT_ENTITY, RegisteredPermValue.OP);
 
         // ----------------------------------------
         // Register mobs
