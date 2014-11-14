@@ -1,19 +1,85 @@
 package com.forgeessentials.util.selections;
 
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.forgeessentials.data.api.SaveableObject;
+import com.forgeessentials.data.api.SaveableObject.SaveableField;
+
 @SaveableObject
 public class AreaBase {
-	
+
+    public static enum AreaShape {
+
+        BOX, ELLIPSOID, Y_CYLINDER;
+
+        public boolean contains(AreaBase area, Point point)
+        {
+            if (!area.contains(point))
+                return false;
+            if (this == BOX)
+                return true;
+
+            float dx = (float) (point.getX() - area.low.getX()) / (area.high.getX() - area.low.getX()) * 2 - 1;
+            float dy = (float) (point.getY() - area.low.getY()) / (area.high.getY() - area.low.getY()) * 2 - 1;
+            float dz = (float) (point.getZ() - area.low.getZ()) / (area.high.getZ() - area.low.getZ()) * 2 - 1;
+
+            switch (this)
+            {
+            case ELLIPSOID:
+                return dx * dx + dy * dy + dz * dz <= 1;
+            case Y_CYLINDER:
+                return dx * dx + dz * dz <= 1;
+            case BOX:
+            default:
+                return true;
+            }
+        }
+
+        public boolean contains(AreaBase area, AreaBase otherArea)
+        {
+            if (this == BOX)
+                return area.contains(otherArea);
+            Point p1 = new Point(otherArea.low.getX(), otherArea.low.getY(), otherArea.low.getZ());
+            Point p2 = new Point(otherArea.low.getX(), otherArea.low.getY(), otherArea.high.getZ());
+            Point p3 = new Point(otherArea.low.getX(), otherArea.high.getY(), otherArea.low.getZ());
+            Point p4 = new Point(otherArea.low.getX(), otherArea.high.getY(), otherArea.high.getZ());
+            Point p5 = new Point(otherArea.high.getX(), otherArea.low.getY(), otherArea.low.getZ());
+            Point p6 = new Point(otherArea.high.getX(), otherArea.low.getY(), otherArea.high.getZ());
+            Point p7 = new Point(otherArea.high.getX(), otherArea.high.getY(), otherArea.low.getZ());
+            Point p8 = new Point(otherArea.high.getX(), otherArea.high.getY(), otherArea.high.getZ());
+            return (contains(area, p1) && contains(area, p2) && contains(area, p3) && contains(area, p4) && contains(area, p5) && contains(area, p6)
+                    && contains(area, p7) && contains(area, p8));
+        }
+
+        public static AreaShape getByName(String name)
+        {
+            try
+            {
+                return valueOf(name.toUpperCase());
+            }
+            catch (IllegalArgumentException e)
+            {
+                return null;
+            }
+        }
+
+        public static String[] valueNames()
+        {
+            AreaShape[] values = values();
+            String[] names = new String[values.length];
+            for (int i = 0; i < values.length; i++)
+                names[i] = values[i].toString();
+            return names;
+        }
+
+    }
+
     @SaveableField
-    private Point high;
-    
+    protected Point high;
+
     @SaveableField
-    private Point low;
+    protected Point low;
 
     /**
      * Points are inclusive.
@@ -62,61 +128,57 @@ public class AreaBase {
      */
     public static Point getMinPoint(Point p1, Point p2)
     {
-    	return new Point(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ()));
+        return new Point(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ()));
     }
-    
+
     /**
      * Get the highest XYZ coordinate in OOBB [p1,p2]
      */
     public static Point getMaxPoint(Point p1, Point p2)
     {
-    	return new Point(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
+        return new Point(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
     }
 
     /**
      * Determines if a given point is within the bounds of an area.
      *
-     * @param p Point to check against the Area
+     * @param p
+     *            Point to check against the Area
      * @return True, if the Point p is inside the area.
      */
     public boolean contains(Point p)
     {
-        return (high.isGreaterThan(p) || high.equals(p)) && (low.isLessThan(p) || low.equals(p));
+        return high.isGreaterEqualThan(p) && low.isLessEqualThan(p);
     }
 
     /**
      * checks if this area contains with another
      *
-     * @param area to check against this area
+     * @param area
+     *            to check against this area
      * @return True, AreaBAse area is completely within this area
      */
     public boolean contains(AreaBase area)
     {
-        if (this.contains(area.high) && this.contains(area.low))
-        {
-            return true;
-        }
-        return false;
+        return this.contains(area.high) && this.contains(area.low);
     }
 
     /**
      * checks if this area is overlapping with another
      *
-     * @param area to check against this area
+     * @param area
+     *            to check against this area
      * @return True, if the given area overlaps with this one.
      */
     public boolean intersectsWith(AreaBase area)
     {
-        if (this.getIntersection(area) == null)
-        {
-            return false;
-        }
-        return true;
+        return this.getIntersection(area) != null;
     }
+
     /**
-     * @param area The area to be checked.
-     * @return NULL if the areas to do not intersect. Argument if this area
-     * completely contains the argument.
+     * @param area
+     *            The area to be checked.
+     * @return NULL if the areas to do not intersect. Argument if this area completely contains the argument.
      */
     public AreaBase getIntersection(AreaBase area)
     {
@@ -126,12 +188,12 @@ public class AreaBase {
         }
 
         boolean hasIntersection = false;
-        Point p    = new Point(0, 0, 0);
+        Point p = new Point(0, 0, 0);
         Point minp = new Point(0, 0, 0);
         Point maxp = new Point(0, 0, 0);
-        int[] xs = {this.low.x, this.high.x, area.low.x, area.high.x};
-        int[] ys = {this.low.y, this.high.y, area.low.y, area.high.y};
-        int[] zs = {this.low.z, this.high.z, area.low.z, area.high.z};
+        int[] xs = { this.low.x, this.high.x, area.low.x, area.high.x };
+        int[] ys = { this.low.y, this.high.y, area.low.y, area.high.y };
+        int[] zs = { this.low.z, this.high.z, area.low.z, area.high.z };
 
         for (int x : xs)
         {
@@ -170,7 +232,6 @@ public class AreaBase {
         }
     }
 
-
     public boolean makesCuboidWith(AreaBase area)
     {
         boolean alignX = low.getX() == area.low.getX() && high.getX() == area.high.getX();
@@ -181,7 +242,8 @@ public class AreaBase {
     }
 
     /**
-     * @param area The area to be checked.
+     * @param area
+     *            The area to be checked.
      * @return NULL if the areas to do not make a cuboid together.
      */
     public AreaBase getUnity(AreaBase area)
@@ -213,10 +275,8 @@ public class AreaBase {
         return "{" + high.toString() + " , " + low.toString() + " }";
     }
 
-
-
     private static final Pattern pattern = Pattern.compile("\\s*\\{\\s*(\\[.*\\])\\s*,\\s*(\\[.*\\])\\s*\\}\\s*");
-    
+
     public static AreaBase fromString(String value)
     {
         Matcher match = pattern.matcher(value);

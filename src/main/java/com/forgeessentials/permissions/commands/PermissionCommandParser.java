@@ -1,22 +1,5 @@
 package com.forgeessentials.permissions.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.permissions.ModulePermissions;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldPoint;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permissions.PermissionContext;
-import net.minecraftforge.permissions.PermissionsManager;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,6 +9,26 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
+
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permissions.PermissionContext;
+import net.minecraftforge.permissions.PermissionsManager;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.permissions.ModulePermissions;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldPoint;
 
 @SuppressWarnings("unchecked")
 public class PermissionCommandParser {
@@ -121,7 +124,7 @@ public class PermissionCommandParser {
     {
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseMainArgs);
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
             return;
         }
         if (args.isEmpty())
@@ -172,7 +175,7 @@ public class PermissionCommandParser {
     {
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseListArgs);
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseListArgs);
             return;
         }
         if (args.isEmpty())
@@ -343,7 +346,7 @@ public class PermissionCommandParser {
         }
         if (tabCompleteMode)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseUserArgs);
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseUserArgs);
             for (Zone zone : APIRegistry.perms.getZones())
             {
                 if (CommandBase.doesStringStartWith(args.peek(), zone.getName()))
@@ -460,7 +463,7 @@ public class PermissionCommandParser {
         // TAB-complete command
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseUserArgs);
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseUserArgs);
             if (zone != null)
                 tabComplete.remove("zone");
             return;
@@ -658,7 +661,7 @@ public class PermissionCommandParser {
         }
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseSpawnArgs);
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseSpawnArgs);
             return;
         }
 
@@ -715,7 +718,7 @@ public class PermissionCommandParser {
     {
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseUserGroupArgs);
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseUserGroupArgs);
             return;
         }
         if (args.isEmpty())
@@ -822,7 +825,7 @@ public class PermissionCommandParser {
         {
             if (tabCompleteMode && args.size() == 1)
             {
-                tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, "create");
+                tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), "create");
                 return;
             }
             if (args.isEmpty())
@@ -898,7 +901,7 @@ public class PermissionCommandParser {
         // TAB-complete command
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseGroupArgs);
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseGroupArgs);
             if (zone != null)
                 tabComplete.remove("zone");
             return;
@@ -1112,7 +1115,7 @@ public class PermissionCommandParser {
         }
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseSpawnArgs);
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseSpawnArgs);
             return;
         }
 
@@ -1198,7 +1201,7 @@ public class PermissionCommandParser {
 
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = CommandBase.getListOfStringsMatchingLastWord(new String[] { args.peek() }, parseGroupIncludeArgs);
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseGroupIncludeArgs);
             return;
         }
 

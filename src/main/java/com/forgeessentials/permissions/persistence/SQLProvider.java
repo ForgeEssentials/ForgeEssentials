@@ -452,7 +452,7 @@ public class SQLProvider extends ZonePersistenceProvider {
         fieldsAndValues.put("id", zone.getId());
         fieldsAndValues.put("type", 2);
         fieldsAndValues.put("parent_id", zone.getParent().getId());
-        fieldsAndValues.put("name", zone.getShotName());
+        fieldsAndValues.put("name", zone.getShortName());
         fieldsAndValues.put("dimension", zone.getWorldZone().getDimensionID());
         fieldsAndValues.put("area", zone.getArea().toString());
         db.createStatement().executeUpdate(TABLES.get(TABLE_ZONE).createInsertOrReplace(fieldsAndValues));
