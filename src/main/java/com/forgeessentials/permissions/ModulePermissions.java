@@ -85,7 +85,7 @@ public class ModulePermissions extends ConfigLoaderBase {
         try
         {
             File path = new File(FunctionHelper.getWorldPath(), "FEData");
-            File backupPath = new File(path, "FEData_backup");
+            File backupPath = new File(FunctionHelper.getWorldPath(), "FEData_backup");
             if (backupPath.exists())
                 FileUtils.deleteDirectory(backupPath);
             FileUtils.copyDirectory(path, backupPath);
