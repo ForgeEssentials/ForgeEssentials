@@ -127,14 +127,14 @@ public class ProtectionEventHandler extends ServerEventHandler {
             EntityPlayer source = (EntityPlayer) e.source.getEntity();
             WorldPoint point = new WorldPoint(e.entityLiving);
 
-//            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + e.entityLiving.getClass().getSimpleName();
-//            if (ModuleProtection.isDebugMode(source))
-//                OutputHandler.chatNotification(source, permission);
-//            if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), point, ModuleProtection.PERM_INTERACT_ENTITY))
-//            {
-//                e.setCanceled(true);
-//                return;
-//            }
+            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + e.entityLiving.getClass().getSimpleName();
+            if (ModuleProtection.isDebugMode(source))
+                OutputHandler.chatNotification(source, permission);
+            if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), point, ModuleProtection.PERM_INTERACT_ENTITY))
+            {
+                e.setCanceled(true);
+                return;
+            }
             
             if (e.entityLiving instanceof EntityPlayer)
             {

@@ -175,14 +175,13 @@ public class FlatfileProvider extends ZonePersistenceProvider {
             // Get filename and info
             String username = entry.getKey().getUsername() == null ? entry.getKey().getUuid().toString() : entry.getKey().getUsername();
             UUID uuid = entry.getKey().getUuid();
-            String userIdentification = username == null ? uuid.toString() : username;
+            String filename = username == null ? uuid.toString() : username;
             String comment = "Permissions for user " + (username != null ? username : "<unknown-username>") + " with UUID "
                     + (uuid != null ? uuid.toString() : "<unknown-uuid>") + COMMENT_INFO;
-            userIdentification = userIdentification.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+            filename = filename.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
             
             // prevent overwriting files with same playername
-            String filename = userIdentification + PERMISSION_FILE_EXT;
-            while (new File(playersPath, filename).exists())
+            while (new File(playersPath, filename + PERMISSION_FILE_EXT).exists())
                 filename = filename + "_";
 
             // Save permissions
@@ -191,7 +190,7 @@ public class FlatfileProvider extends ZonePersistenceProvider {
                 p.setProperty(FEPermissions.PLAYER_NAME, entry.getKey().getUsername());
             if (entry.getKey().getUuid() != null)
                 p.setProperty(FEPermissions.PLAYER_UUID, entry.getKey().getUuid().toString());
-            saveProperties(p, playersPath, filename, comment);
+            saveProperties(p, playersPath, filename + PERMISSION_FILE_EXT, comment);
         }
         for (Entry<String, PermissionList> entry : zone.getGroupPermissions().entrySet())
         {
