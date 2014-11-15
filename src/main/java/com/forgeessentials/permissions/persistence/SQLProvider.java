@@ -106,7 +106,7 @@ public class SQLProvider extends ZonePersistenceProvider {
             if (dbType == EnumDBType.H2_FILE)
                 sb.append("MERGE INTO `");
             else
-                sb.append("INSERT OR REPLACE INTO `");
+                sb.append("REPLACE INTO `");
             sb.append(name);
             sb.append("` (`");
             sb.append(StringUtils.join(fieldsAndValues.keySet(), "`, `"));
