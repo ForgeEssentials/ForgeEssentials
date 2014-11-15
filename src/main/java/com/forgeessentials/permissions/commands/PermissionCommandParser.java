@@ -601,7 +601,7 @@ public class PermissionCommandParser {
             parseUserPermissions(ident, zone, PermissionAction.VALUE);
             break;
         default:
-            break;
+            throw new CommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
     }
 
@@ -1054,7 +1054,7 @@ public class PermissionCommandParser {
             parseGroupPermissions(group, zone, PermissionAction.VALUE);
             break;
         default:
-            break;
+            throw new CommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
     }
 

@@ -65,27 +65,28 @@ public class FlatfileProvider extends ZonePersistenceProvider {
     // -- Saving
     // ------------------------------------------------------------
 
-    @Override
-    public void save(ServerZone serverZone)
+    public static void deleteDirectory(File dir)
     {
-        File path = basePath;
-
         try
         {
-            // TODO: Replace this by a system that only deletes invalid files
-            FileUtils.moveDirectory(path, new File(path.getParentFile(), path.getName() + "_backup"));
-            if (path.exists())
-                FileUtils.cleanDirectory(path);
+            if (dir.exists())
+                FileUtils.deleteDirectory(dir);
         }
         catch (IOException e)
         {
         }
+    }
+    
+    @Override
+    public void save(ServerZone serverZone)
+    {
+        File path = basePath;
+        deleteDirectory(path);
         
         writeUserGroupPermissions(serverZone);
 
         saveServerZone(path, serverZone);
         saveZonePermissions(path, serverZone);
-
         for (WorldZone worldZone : serverZone.getWorldZones().values())
         {
             File worldPath = new File(path, worldZone.getName());
@@ -178,6 +179,11 @@ public class FlatfileProvider extends ZonePersistenceProvider {
             String comment = "Permissions for user " + (username != null ? username : "<unknown-username>") + " with UUID "
                     + (uuid != null ? uuid.toString() : "<unknown-uuid>") + COMMENT_INFO;
             userIdentification = userIdentification.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+            
+            // prevent overwriting files with same playername
+            String filename = userIdentification + PERMISSION_FILE_EXT;
+            while (new File(playersPath, filename).exists())
+                filename = filename + "_";
 
             // Save permissions
             Properties p = permissionListToProperties(entry.getValue());
@@ -185,7 +191,7 @@ public class FlatfileProvider extends ZonePersistenceProvider {
                 p.setProperty(FEPermissions.PLAYER_NAME, entry.getKey().getUsername());
             if (entry.getKey().getUuid() != null)
                 p.setProperty(FEPermissions.PLAYER_UUID, entry.getKey().getUuid().toString());
-            saveProperties(p, playersPath, userIdentification + PERMISSION_FILE_EXT, comment);
+            saveProperties(p, playersPath, filename, comment);
         }
         for (Entry<String, PermissionList> entry : zone.getGroupPermissions().entrySet())
         {
