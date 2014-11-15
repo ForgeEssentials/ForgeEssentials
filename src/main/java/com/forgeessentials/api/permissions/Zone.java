@@ -1,14 +1,15 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import net.minecraft.entity.player.EntityPlayer;
+
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.commons.selections.WorldArea;
+import com.forgeessentials.commons.selections.WorldPoint;
 
 /**
  * Zones are used to store permissions in a tree-like hierarchy. Each zone has it's own set of group- and player-permissions. Zones are stored in a tree
@@ -162,7 +163,7 @@ public abstract class Zone {
 
 	public void setDirty() {
 		if (getServerZone() != null && getServerZone().getRootZone() != null)
-			getServerZone().getRootZone().getPermissionHelper().setDirty();;
+			getServerZone().getRootZone().getPermissionHelper().setDirty();
 	}
 	
 	// ------------------------------------------------------------
@@ -306,9 +307,9 @@ public abstract class Zone {
 		// To do so add a permission by playername of user who is not connected
 		// When he joins an event needs to be fired that triggers this function
 		// It should update the map entry then
-		for (Iterator iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
+		for (Iterator<Map.Entry<UserIdent, PermissionList>> iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
 		{
-			Map.Entry<UserIdent, PermissionList> entry = (Map.Entry<UserIdent, PermissionList>) iterator.next();
+			Map.Entry<UserIdent, PermissionList> entry = iterator.next();
 			if (!entry.getKey().wasValidUUID())
 			{
 				if (entry.getKey().hasUUID())

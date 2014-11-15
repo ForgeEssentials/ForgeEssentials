@@ -1,5 +1,7 @@
-package com.forgeessentials.commons;
+package com.forgeessentials.commons.selections;
 
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
@@ -179,23 +181,13 @@ public class Point implements Serializable, Comparable<Point> {
 		return x == p.x || y == p.y || z == p.z;
 	}
 
-	public boolean isGreaterThan(Point p)
+	public boolean isGreaterEqualThan(Point p)
 	{
-		if (equals(p))
-		{
-			return false;
-		}
-
 		return x >= p.x && y >= p.y && z >= p.z;
 	}
 
-	public boolean isLessThan(Point p)
+	public boolean isLessEqualThan(Point p)
 	{
-		if (equals(p))
-		{
-			return false;
-		}
-
 		return x <= p.x && y <= p.y && z <= p.z;
 	}
 

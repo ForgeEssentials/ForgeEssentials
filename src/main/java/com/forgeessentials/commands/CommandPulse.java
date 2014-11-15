@@ -2,7 +2,7 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskPulseHelper;
-import com.forgeessentials.commons.Point;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.tasks.TaskRegistry;

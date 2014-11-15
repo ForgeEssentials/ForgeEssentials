@@ -6,7 +6,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

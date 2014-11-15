@@ -1,6 +1,6 @@
 package com.forgeessentials.playerlogger.rollback;
 
-import com.forgeessentials.commons.Point;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

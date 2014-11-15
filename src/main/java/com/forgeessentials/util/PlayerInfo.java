@@ -1,18 +1,17 @@
 package com.forgeessentials.util;
 
 import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.Point;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.commons.Selection;
+import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.util.selections.ISelectionProvider;
-import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WarpPoint;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

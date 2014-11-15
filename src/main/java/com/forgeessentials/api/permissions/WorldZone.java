@@ -1,7 +1,7 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldArea;
+import com.forgeessentials.commons.selections.WorldPoint;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
@@ -91,7 +91,7 @@ public class WorldZone extends Zone {
 	{
 		for (AreaZone areaZone : areaZones)
 		{
-			if (areaZone.getShotName().equals(areaName))
+			if (areaZone.getShortName().equals(areaName))
 			{
 				return areaZone;
 			}

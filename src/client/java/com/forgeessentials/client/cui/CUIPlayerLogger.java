@@ -2,7 +2,7 @@ package com.forgeessentials.client.cui;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.core.PlayerInfoClient;
-import com.forgeessentials.commons.Point;
+import com.forgeessentials.commons.selections.Point;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

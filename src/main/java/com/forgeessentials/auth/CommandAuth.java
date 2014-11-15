@@ -1,11 +1,9 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.commands.PermissionDeniedException;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.CommandBase;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
@@ -14,9 +12,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.PermissionDeniedException;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandAuth extends ForgeEssentialsCommandBase {
     private static String[] playerCommands = new String[] { "help", "login", "register", "changepass", "kick", "setpass", "unregister" };
@@ -375,7 +376,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
@@ -385,18 +385,18 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         case 1:
             if (sender instanceof EntityPlayer)
             {
-                list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, playerCommands));
+                list.addAll(getListOfStringsMatchingLastWord(args, playerCommands));
             }
             else
             {
-                list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, serverCommands));
+                list.addAll(getListOfStringsMatchingLastWord(args, serverCommands));
             }
             break;
         case 2:
             if (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("setpass") ||
                     args[0].equalsIgnoreCase("unregister"))
             {
-                list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()));
+                list.addAll(getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()));
             }
         }
         return list;

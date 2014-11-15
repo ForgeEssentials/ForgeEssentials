@@ -1,5 +1,6 @@
 package com.forgeessentials.client.network;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -12,7 +13,7 @@ public class C5PacketNoclip implements IMessageHandler<C5PacketNoclip, IMessage>
     @Override
     public void fromBytes(ByteBuf buf)
     {
-        Minecraft.getMinecraft().thePlayer.noClip = buf.readBoolean();
+        FMLClientHandler.instance().getClientPlayerEntity().noClip = buf.readBoolean();
     }
 
     @Override

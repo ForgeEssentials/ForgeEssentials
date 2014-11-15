@@ -4,7 +4,7 @@ import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;

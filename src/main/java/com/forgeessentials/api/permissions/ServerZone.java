@@ -2,8 +2,8 @@ package com.forgeessentials.api.permissions;
 
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldArea;
+import com.forgeessentials.commons.selections.WorldPoint;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.ArrayList;

@@ -99,8 +99,7 @@ dependencies {
     compile "org.projectlombok:lombok:1.14.6"
 
     // WE integration -
-    compile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.0-SNAPSHOT'// use BOTH
-    //compile files('lib/worldedit-forge-6.0.0-SNAPSHOT-deobf.jar')
+    compile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.0-SNAPSHOT'
 
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'

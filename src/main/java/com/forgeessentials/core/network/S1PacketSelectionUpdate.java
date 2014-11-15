@@ -1,6 +1,6 @@
 package com.forgeessentials.core.network;
 
-import com.forgeessentials.commons.Point;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;

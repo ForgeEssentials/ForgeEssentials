@@ -1,7 +1,7 @@
 package com.forgeessentials.client.core;
 
-import com.forgeessentials.commons.Point;
-import com.forgeessentials.commons.Selection;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.Selection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

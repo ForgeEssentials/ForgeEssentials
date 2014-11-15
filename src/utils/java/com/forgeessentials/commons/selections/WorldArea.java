@@ -1,7 +1,5 @@
-package com.forgeessentials.util.selections;
+package com.forgeessentials.commons.selections;
 
-import com.forgeessentials.commons.AreaBase;
-import com.forgeessentials.commons.Point;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.SaveableObject.SaveableField;
