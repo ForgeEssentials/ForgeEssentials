@@ -389,13 +389,16 @@ public class ProtectionEventHandler extends ServerEventHandler {
 
         checkPlayerInventory(player);
 
+        GameType lastGm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, e.beforePoint, ModuleProtection.PERM_GAMEMODE));
         GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE));
-//        if (gm == GameType.NOT_SET)
-//            gm = GameType.SURVIVAL;
-        if (gm != GameType.NOT_SET)
+        if (gm != GameType.NOT_SET || lastGm != GameType.NOT_SET)
         {
-            GameType lastGm = player.theItemInWorldManager.getGameType();
-            if (lastGm != gm)
+            // If leaving a creative zone and no other gamemode is set, revert to default (survival)
+            if (lastGm != GameType.NOT_SET && gm == GameType.NOT_SET)
+                gm = GameType.SURVIVAL;
+            
+            GameType playerGm = player.theItemInWorldManager.getGameType();
+            if (playerGm != gm)
             {
                 player.setGameType(gm);
                 // OutputHandler.chatNotification(player, "You gamemode has been changed to " + gm.getName());
