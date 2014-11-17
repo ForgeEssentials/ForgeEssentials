@@ -5,6 +5,8 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.CommandEvent;
 
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 
 public class CommandMuter {
     public static ArrayList<String> mutedCommands = new ArrayList<String>();
+
+    public static boolean muteCmdBlocks;
 
     @SubscribeEvent
     public void commandEvent(CommandEvent e)
@@ -88,5 +92,17 @@ public class CommandMuter {
             sb.append(agr + " ");
         }
         return sb.toString();
+    }
+
+    private void handleSayCommand(String print, ICommandSender sender)
+    {
+        if (sender instanceof CommandBlockLogic)
+        {
+            if (!muteCmdBlocks)
+            {
+                IRCHelper.postIRC("[CommandBlock] " + print);
+            }
+        }
+        else IRCHelper.postIRC("[CONSOLE] " + print);
     }
 }

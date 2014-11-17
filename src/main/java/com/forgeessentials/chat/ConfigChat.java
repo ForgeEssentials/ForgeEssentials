@@ -95,6 +95,9 @@ public class ConfigChat extends ConfigLoaderBase {
                 .getBoolean(true);
         IRCHelper.password = config.get("Chat.irc", "nickservPass", "", "Nickserv password for the bot.").getString();
         IRCHelper.serverPass = config.get("Chat.irc", "serverPass", "", "Server password for the bot.").getString();
+        IRCHelper.silentMode = config.get("Chat.irc", "silentMode", false, "If set to true, messages will only be passed from IRC, and no messages will be sent to channels.").getBoolean();
+
+        CommandMuter.muteCmdBlocks = config.get("Chat.irc", "muteCmdBlocks", false, "Mute command block output.").getBoolean();
 
         config.save();
     }
@@ -146,6 +149,9 @@ public class ConfigChat extends ConfigLoaderBase {
         config.get("Chat.irc", "suppressEvents", true, "Suppress all IRC/game notifications. Some channels require this.").set(IRCHelper.suppressEvents);
         config.get("Chat.irc", "nickservPass", "", "Nickserv password for the bot.").set(IRCHelper.password);
         config.get("Chat.irc", "serverPass", "", "Server password for the bot.").set(IRCHelper.serverPass);
+        config.get("Chat.irc", "silentMode", false, "If set to true, messages will only be passed from IRC, and no messages will be sent to channels.").set(IRCHelper.silentMode);
+
+        config.get("Chat.irc", "muteCmdBlocks", false, "Mute command block output.").set(CommandMuter.muteCmdBlocks);
 
         config.save();
     }

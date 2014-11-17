@@ -23,7 +23,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 
     public static int port;
     public static String server, name, channel, password, serverPass;
-    public static boolean suppressEvents;
+    public static boolean suppressEvents, silentMode;
     public static ircCommands ircCmds;
     private static PircBotX bot;
 
@@ -77,7 +77,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 
     public static void postIRC(String message)
     {
-        if (ModuleChat.connectToIRC)
+        if (ModuleChat.connectToIRC && !silentMode)
         {
             bot.sendMessage(channel, message);
         }
