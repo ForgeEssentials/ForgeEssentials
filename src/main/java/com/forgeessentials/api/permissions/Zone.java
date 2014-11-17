@@ -84,7 +84,8 @@ public abstract class Zone {
         }
     }
 
-    public static final Comparator<Object> permissionComparator = new Comparator<Object>() {
+    public static final Comparator<Object> permissionComparator = new Comparator<Object>()
+    {
         @Override
         public int compare(Object o1, Object o2)
         {
@@ -210,7 +211,7 @@ public abstract class Zone {
     public void setDirty()
     {
         if (getServerZone() != null && getServerZone().getRootZone() != null)
-            getServerZone().getRootZone().getPermissionHelper().setDirty();;
+			getServerZone().getRootZone().getPermissionHelper().setDirty();
     }
 
     // ------------------------------------------------------------
@@ -354,9 +355,9 @@ public abstract class Zone {
         // To do so add a permission by playername of user who is not connected
         // When he joins an event needs to be fired that triggers this function
         // It should update the map entry then
-        for (Iterator iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
+		for (Iterator<Map.Entry<UserIdent, PermissionList>> iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
         {
-            Map.Entry<UserIdent, PermissionList> entry = (Map.Entry<UserIdent, PermissionList>) iterator.next();
+			Map.Entry<UserIdent, PermissionList> entry = iterator.next();
             if (!entry.getKey().wasValidUUID())
             {
                 if (entry.getKey().hasUUID())

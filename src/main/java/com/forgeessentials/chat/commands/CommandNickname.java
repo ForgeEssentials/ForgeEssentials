@@ -1,8 +1,7 @@
 package com.forgeessentials.chat.commands;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,8 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
+import java.util.Arrays;
+import java.util.List;
 
 public class CommandNickname extends ForgeEssentialsCommandBase {
 	

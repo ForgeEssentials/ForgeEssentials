@@ -1,17 +1,15 @@
 package com.forgeessentials.servervote;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
-
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Event triggered when the snooper gets a vote from a service.

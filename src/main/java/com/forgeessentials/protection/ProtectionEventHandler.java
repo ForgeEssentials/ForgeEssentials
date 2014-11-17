@@ -127,14 +127,14 @@ public class ProtectionEventHandler extends ServerEventHandler {
             EntityPlayer source = (EntityPlayer) e.source.getEntity();
             WorldPoint point = new WorldPoint(e.entityLiving);
 
-//            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + e.entityLiving.getClass().getSimpleName();
-//            if (ModuleProtection.isDebugMode(source))
-//                OutputHandler.chatNotification(source, permission);
-//            if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), point, ModuleProtection.PERM_INTERACT_ENTITY))
-//            {
-//                e.setCanceled(true);
-//                return;
-//            }
+            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + e.entityLiving.getClass().getSimpleName();
+            if (ModuleProtection.isDebugMode(source))
+                OutputHandler.chatNotification(source, permission);
+            if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), point, ModuleProtection.PERM_INTERACT_ENTITY))
+            {
+                e.setCanceled(true);
+                return;
+            }
             
             if (e.entityLiving instanceof EntityPlayer)
             {
@@ -161,8 +161,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         if (ModuleProtection.isDebugMode(e.getPlayer()))
             OutputHandler.chatNotification(e.getPlayer(), permission);
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
-        if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.getPlayer()), point, ModuleProtection.PERM_OVERRIDE_BREAK)
-                && !APIRegistry.perms.checkUserPermission(new UserIdent(e.getPlayer()), point, permission))
+        if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.getPlayer()), point, permission))
         {
             e.setCanceled(true);
         }
@@ -180,8 +179,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         if (ModuleProtection.isDebugMode(e.player))
             OutputHandler.chatNotification(e.player, permission);
         WorldPoint point = new WorldPoint(e.player.dimension, e.x, e.y, e.z);
-        if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_OVERRIDE_PLACE)
-                && !APIRegistry.perms.checkUserPermission(ident, point, permission))
+        if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             e.setCanceled(true);
         }
@@ -206,8 +204,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             if (ModuleProtection.isDebugMode(e.player))
                 OutputHandler.chatNotification(e.player, permission);
             WorldPoint point = new WorldPoint(e.player.dimension, b.x, b.y, b.z);
-            if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.player), point, ModuleProtection.PERM_OVERRIDE_PLACE)
-                    && !APIRegistry.perms.checkUserPermission(new UserIdent(e.player), point, permission))
+            if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.player), point, permission))
             {
                 e.setCanceled(true);
                 return;
@@ -242,8 +239,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             String permission = ModuleProtection.PERM_INTERACT + "." + block.getUnlocalizedName() + "." + block.getDamageValue(e.world, e.x, e.y, e.z);
             if (ModuleProtection.isDebugMode(e.entityPlayer))
                 OutputHandler.chatNotification(e.entityPlayer, permission);
-            boolean allow = APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_OVERRIDE_INTERACT)
-                    || APIRegistry.perms.checkUserPermission(ident, point, permission);
+            boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             e.useBlock = allow ? ALLOW : DENY;
         }
 
@@ -254,8 +250,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             String permission = ModuleProtection.PERM_USE + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
             if (ModuleProtection.isDebugMode(e.entityPlayer))
                 OutputHandler.chatNotification(e.entityPlayer, permission);
-            boolean allow = APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_OVERRIDE_USE)
-                    || APIRegistry.perms.checkUserPermission(ident, point, permission);
+            boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             e.useItem = allow ? ALLOW : DENY;
         }
 
@@ -281,8 +276,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + e.target.getClass().getSimpleName();
         if (ModuleProtection.isDebugMode(e.entityPlayer))
             OutputHandler.chatNotification(e.entityPlayer, permission);
-        if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_OVERRIDE_INTERACT_ENTITY)
-                && !APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_INTERACT_ENTITY))
+        if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_INTERACT_ENTITY))
         {
             e.setCanceled(true);
         }
@@ -395,13 +389,16 @@ public class ProtectionEventHandler extends ServerEventHandler {
 
         checkPlayerInventory(player);
 
+        GameType lastGm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, e.beforePoint, ModuleProtection.PERM_GAMEMODE));
         GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE));
-        if (gm == GameType.NOT_SET)
-            gm = GameType.SURVIVAL;
-        if (gm != GameType.NOT_SET)
+        if (gm != GameType.NOT_SET || lastGm != GameType.NOT_SET)
         {
-            GameType lastGm = player.theItemInWorldManager.getGameType();
-            if (lastGm != gm)
+            // If leaving a creative zone and no other gamemode is set, revert to default (survival)
+            if (lastGm != GameType.NOT_SET && gm == GameType.NOT_SET)
+                gm = GameType.SURVIVAL;
+            
+            GameType playerGm = player.theItemInWorldManager.getGameType();
+            if (playerGm != gm)
             {
                 player.setGameType(gm);
                 // OutputHandler.chatNotification(player, "You gamemode has been changed to " + gm.getName());

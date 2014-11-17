@@ -1,14 +1,13 @@
 package com.forgeessentials.commands.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase {
 

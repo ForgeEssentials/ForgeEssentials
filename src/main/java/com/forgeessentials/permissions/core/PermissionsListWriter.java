@@ -1,14 +1,14 @@
 package com.forgeessentials.permissions.core;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.util.TreeSet;
-
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.util.FunctionHelper;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.TreeSet;
 
 public final class PermissionsListWriter {
 

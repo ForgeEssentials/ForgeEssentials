@@ -8,12 +8,12 @@ import com.forgeessentials.data.api.SaveableObject.SaveableField;
 
 @SaveableObject
 public class AreaBase {
-	
+
     @SaveableField
-    private Point high;
-    
+    protected Point high;
+
     @SaveableField
-    private Point low;
+    protected Point low;
 
     /**
      * Points are inclusive.
@@ -62,61 +62,57 @@ public class AreaBase {
      */
     public static Point getMinPoint(Point p1, Point p2)
     {
-    	return new Point(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ()));
+        return new Point(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ()));
     }
-    
+
     /**
      * Get the highest XYZ coordinate in OOBB [p1,p2]
      */
     public static Point getMaxPoint(Point p1, Point p2)
     {
-    	return new Point(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
+        return new Point(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
     }
 
     /**
      * Determines if a given point is within the bounds of an area.
      *
-     * @param p Point to check against the Area
+     * @param p
+     *            Point to check against the Area
      * @return True, if the Point p is inside the area.
      */
     public boolean contains(Point p)
     {
-        return (high.isGreaterThan(p) || high.equals(p)) && (low.isLessThan(p) || low.equals(p));
+        return high.isGreaterEqualThan(p) && low.isLessEqualThan(p);
     }
 
     /**
      * checks if this area contains with another
      *
-     * @param area to check against this area
+     * @param area
+     *            to check against this area
      * @return True, AreaBAse area is completely within this area
      */
     public boolean contains(AreaBase area)
     {
-        if (this.contains(area.high) && this.contains(area.low))
-        {
-            return true;
-        }
-        return false;
+        return this.contains(area.high) && this.contains(area.low);
     }
 
     /**
      * checks if this area is overlapping with another
      *
-     * @param area to check against this area
+     * @param area
+     *            to check against this area
      * @return True, if the given area overlaps with this one.
      */
     public boolean intersectsWith(AreaBase area)
     {
-        if (this.getIntersection(area) == null)
-        {
-            return false;
-        }
-        return true;
+        return this.getIntersection(area) != null;
     }
+
     /**
-     * @param area The area to be checked.
-     * @return NULL if the areas to do not intersect. Argument if this area
-     * completely contains the argument.
+     * @param area
+     *            The area to be checked.
+     * @return NULL if the areas to do not intersect. Argument if this area completely contains the argument.
      */
     public AreaBase getIntersection(AreaBase area)
     {
@@ -126,12 +122,12 @@ public class AreaBase {
         }
 
         boolean hasIntersection = false;
-        Point p    = new Point(0, 0, 0);
+        Point p = new Point(0, 0, 0);
         Point minp = new Point(0, 0, 0);
         Point maxp = new Point(0, 0, 0);
-        int[] xs = {this.low.x, this.high.x, area.low.x, area.high.x};
-        int[] ys = {this.low.y, this.high.y, area.low.y, area.high.y};
-        int[] zs = {this.low.z, this.high.z, area.low.z, area.high.z};
+        int[] xs = { this.low.x, this.high.x, area.low.x, area.high.x };
+        int[] ys = { this.low.y, this.high.y, area.low.y, area.high.y };
+        int[] zs = { this.low.z, this.high.z, area.low.z, area.high.z };
 
         for (int x : xs)
         {
@@ -170,7 +166,6 @@ public class AreaBase {
         }
     }
 
-
     public boolean makesCuboidWith(AreaBase area)
     {
         boolean alignX = low.getX() == area.low.getX() && high.getX() == area.high.getX();
@@ -181,7 +176,8 @@ public class AreaBase {
     }
 
     /**
-     * @param area The area to be checked.
+     * @param area
+     *            The area to be checked.
      * @return NULL if the areas to do not make a cuboid together.
      */
     public AreaBase getUnity(AreaBase area)
@@ -213,10 +209,8 @@ public class AreaBase {
         return "{" + high.toString() + " , " + low.toString() + " }";
     }
 
-
-
     private static final Pattern pattern = Pattern.compile("\\s*\\{\\s*(\\[.*\\])\\s*,\\s*(\\[.*\\])\\s*\\}\\s*");
-    
+
     public static AreaBase fromString(String value)
     {
         Matcher match = pattern.matcher(value);

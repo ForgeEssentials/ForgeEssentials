@@ -1,13 +1,9 @@
 package com.forgeessentials.chat.irc.commands;
 
-import java.util.HashMap;
-
 import net.minecraft.server.MinecraftServer;
-
 import org.pircbotx.User;
 
-import com.forgeessentials.util.FunctionHelper;
-import com.google.common.collect.HashMultimap;
+import java.util.HashMap;
 
 public class ircCommandList extends ircCommand {
 

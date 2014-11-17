@@ -1,12 +1,11 @@
 package com.forgeessentials.chat;
 
-import java.util.ArrayList;
-import java.util.Random;
-
-import net.minecraft.server.MinecraftServer;
-
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.TaskRegistry;
+import net.minecraft.server.MinecraftServer;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class AutoMessage implements Runnable {
     public static int waittime;

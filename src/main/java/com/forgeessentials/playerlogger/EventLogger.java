@@ -1,8 +1,17 @@
 package com.forgeessentials.playerlogger;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.playerlogger.types.BlockChangeType;
+import com.forgeessentials.playerlogger.types.BlockChangeType.blockChangeLogCategory;
+import com.forgeessentials.playerlogger.types.CommandType;
+import com.forgeessentials.playerlogger.types.PlayerTrackerType;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.events.ServerEventHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.common.MinecraftForge;
@@ -13,19 +22,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.playerlogger.types.BlockChangeType;
-import com.forgeessentials.playerlogger.types.BlockChangeType.blockChangeLogCategory;
-import com.forgeessentials.playerlogger.types.CommandType;
-import com.forgeessentials.playerlogger.types.PlayerTrackerType;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.events.ServerEventHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.relauncher.Side;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventLogger extends ServerEventHandler {
 	public static boolean logPlayerChangedDimension = true;

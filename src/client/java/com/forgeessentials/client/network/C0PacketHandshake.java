@@ -8,7 +8,6 @@ import io.netty.buffer.ByteBuf;
 public class C0PacketHandshake implements IMessageHandler<C0PacketHandshake, IMessage>, IMessage
 {
     public C0PacketHandshake(){
-        System.out.println("Sending handshake packet");
     }
 
     @Override

@@ -1,7 +1,14 @@
 package com.forgeessentials.afterlife;
 
-import java.util.HashMap;
-
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.selections.WorldPoint;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,15 +24,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.selections.WorldPoint;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import java.util.HashMap;
+import java.util.List;
 
 public class Deathchest extends ServerEventHandler {
     /**
@@ -54,10 +54,18 @@ public class Deathchest extends ServerEventHandler {
 
     public void load()
     {
-        for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(graveType))
+        List<Grave> graves = DataManager.getInstance().loadAll(Grave.class);
+        if (!graves.isEmpty())
+            for (Grave grave : graves)
+                gravemap.put(grave.point.toString(), grave);
+        else
         {
-            Grave grave = (Grave) obj;
-            gravemap.put(grave.point.toString(), grave);
+            for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(graveType))
+            {
+                Grave grave = (Grave) obj;
+                gravemap.put(grave.point.toString(), grave);
+            }
+            save();
         }
     }
 
@@ -66,6 +74,7 @@ public class Deathchest extends ServerEventHandler {
         for (Grave grave : gravemap.values())
         {
             grave.setSaveProtTime();
+            DataManager.getInstance().save(grave, grave.key);
             DataStorageManager.getReccomendedDriver().saveObject(graveType, grave);
         }
     }
@@ -204,6 +213,7 @@ public class Deathchest extends ServerEventHandler {
         {
             return;
         }
+        DataManager.getInstance().delete(Grave.class, grave.point.toString());
         DataStorageManager.getReccomendedDriver().deleteObject(graveType, grave.point.toString());
 
         gravemap.remove(grave.point.toString());

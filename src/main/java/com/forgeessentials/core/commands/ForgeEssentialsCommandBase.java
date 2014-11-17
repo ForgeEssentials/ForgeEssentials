@@ -1,5 +1,8 @@
 package com.forgeessentials.core.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
@@ -138,7 +141,27 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
     // ------------------------------------------------------------
     // Utilities
-
+    
+    public static List<String> getListOfStringsMatchingLastWord(String arg, String ... possibleMatches)
+    {
+        List<String> arraylist = new ArrayList<>();
+        int i = possibleMatches.length;
+        for (int j = 0; j < i; ++j)
+        {
+            String s2 = possibleMatches[j];
+            if (doesStringStartWith(arg, s2))
+            {
+                arraylist.add(s2);
+            }
+        }
+        return arraylist;
+    }
+    
+    public static List<String> getListOfStringsMatchingLastWord(String[] args, String ... possibleMatches)
+    {
+        return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
+    }
+    
     /**
      * Simply prints a usage message to the sender of the command.
      */

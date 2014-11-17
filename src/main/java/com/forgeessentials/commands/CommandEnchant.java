@@ -1,9 +1,7 @@
 package com.forgeessentials.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -21,8 +19,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class CommandEnchant extends FEcmdModuleCommands {
 	@Override

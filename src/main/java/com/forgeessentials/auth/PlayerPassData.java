@@ -1,8 +1,5 @@
 package com.forgeessentials.auth;
 
-import java.util.HashMap;
-import java.util.UUID;
-
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.api.IReconstructData;
@@ -10,6 +7,10 @@ import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.data.v2.DataManager;
+
+import java.util.HashMap;
+import java.util.UUID;
 
 @SaveableObject
 public class PlayerPassData {
@@ -36,12 +37,12 @@ public class PlayerPassData {
     public static PlayerPassData getData(UUID username)
     {
         PlayerPassData data = datas.get(username);
-
         if (data == null)
         {
-            data = (PlayerPassData) DataStorageManager.getReccomendedDriver().loadObject(container, username.toString());
+            data = DataManager.getInstance().load(PlayerPassData.class, username.toString());
+            if (data == null)
+                data = (PlayerPassData) DataStorageManager.getReccomendedDriver().loadObject(container, username.toString());
         }
-
         return data;
     }
 
@@ -86,6 +87,7 @@ public class PlayerPassData {
     public static void deleteData(UUID username)
     {
         PlayerPassData data = datas.remove(username);
+        DataManager.getInstance().delete(PlayerPassData.class, username.toString());
         DataStorageManager.getReccomendedDriver().deleteObject(container, username.toString());
     }
 
@@ -100,6 +102,7 @@ public class PlayerPassData {
 
     public void save()
     {
+        DataManager.getInstance().save(this, username);
         DataStorageManager.getReccomendedDriver().saveObject(container, this);
     }
 

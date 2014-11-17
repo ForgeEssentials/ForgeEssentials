@@ -1,26 +1,25 @@
 package com.forgeessentials.tickets;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @FEModule(name = "Tickets", parentMod = ForgeEssentials.class)
 public class ModuleTickets {
@@ -73,9 +72,17 @@ public class ModuleTickets {
 
     public static void loadAll()
     {
-        for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(ticketContainer))
+        List<Ticket> loadedTickets = DataManager.getInstance().loadAll(Ticket.class);
+        if (!loadedTickets.isEmpty())
+            for (Ticket ticket : loadedTickets)
+                ticketList.add(ticket);
+        else
         {
-            ticketList.add((Ticket) obj);
+            for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(ticketContainer))
+            {
+                ticketList.add((Ticket) obj);
+            }
+            saveAll();
         }
     }
 
@@ -83,6 +90,7 @@ public class ModuleTickets {
     {
         for (Ticket ticket : ticketList)
         {
+            DataManager.getInstance().save(ticket, Integer.toString(ticket.id));
             DataStorageManager.getReccomendedDriver().saveObject(ticketContainer, ticket);
         }
     }
@@ -98,9 +106,9 @@ public class ModuleTickets {
         }
         return null;
     }
-    
+
     @SubscribeEvent
-     public void loadData(PlayerEvent.PlayerLoggedInEvent e)
+    public void loadData(PlayerEvent.PlayerLoggedInEvent e)
     {
         if (PermissionsManager.checkPermission(e.player, ModuleTickets.PERMBASE + ".admin"))
         {
@@ -110,4 +118,5 @@ public class ModuleTickets {
             }
         }
     }
+    
 }

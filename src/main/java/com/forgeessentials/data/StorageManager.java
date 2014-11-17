@@ -1,20 +1,5 @@
 package com.forgeessentials.data;
 
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.api.EnumDriverType;
@@ -32,8 +17,20 @@ import com.forgeessentials.data.typeInfo.TypeInfoStandard;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
-
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class StorageManager implements IStorageManager {

@@ -1,19 +1,17 @@
 package com.forgeessentials.chat.commands;
 
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.chat.AutoMessage;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CommandAutoMessage extends ForgeEssentialsCommandBase {
     @Override

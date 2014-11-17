@@ -1,12 +1,12 @@
 package com.forgeessentials.core.preloader.classloading;
 
+import net.minecraft.launchwrapper.LaunchClassLoader;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.launchwrapper.LaunchClassLoader;
 
 public class FEClassLoader {
 

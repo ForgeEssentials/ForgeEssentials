@@ -1,21 +1,17 @@
 package com.forgeessentials.playerlogger.rollback;
 
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraft.command.CommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.playerlogger.network.S2PacketPlayerLogger;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.playerlogger.network.S2PacketPlayerLogger;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Main playerlogger command. Still WIP

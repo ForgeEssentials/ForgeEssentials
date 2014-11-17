@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
@@ -377,7 +376,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
@@ -387,18 +385,18 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         case 1:
             if (sender instanceof EntityPlayer)
             {
-                list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, playerCommands));
+                list.addAll(getListOfStringsMatchingLastWord(args, playerCommands));
             }
             else
             {
-                list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, serverCommands));
+                list.addAll(getListOfStringsMatchingLastWord(args, serverCommands));
             }
             break;
         case 2:
             if (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("setpass") ||
                     args[0].equalsIgnoreCase("unregister"))
             {
-                list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()));
+                list.addAll(getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()));
             }
         }
         return list;

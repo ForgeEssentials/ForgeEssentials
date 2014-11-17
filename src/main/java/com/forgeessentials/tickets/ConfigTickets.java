@@ -1,11 +1,10 @@
 package com.forgeessentials.tickets;
 
-import java.util.Arrays;
-
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.OutputHandler;
+import java.util.Arrays;
 
 public class ConfigTickets extends ConfigLoaderBase {
 

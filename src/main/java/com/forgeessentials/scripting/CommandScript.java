@@ -1,11 +1,10 @@
 package com.forgeessentials.scripting;
 
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.UserIdent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.UserIdent;
 
 public class CommandScript extends ForgeEssentialsCommandBase {
 

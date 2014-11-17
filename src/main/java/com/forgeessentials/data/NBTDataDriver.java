@@ -1,14 +1,11 @@
 package com.forgeessentials.data;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.data.api.IReconstructData;
+import com.forgeessentials.data.api.ITypeInfo;
+import com.forgeessentials.data.api.TypeData;
+import com.forgeessentials.util.OutputHandler;
 import joptsimple.internal.Strings;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagByte;
@@ -19,12 +16,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagString;
 
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.ITypeInfo;
-import com.forgeessentials.data.api.TypeData;
-import com.forgeessentials.util.OutputHandler;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.logging.Level;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class NBTDataDriver extends BinaryDataDriver {

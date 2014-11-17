@@ -1,17 +1,20 @@
 package com.forgeessentials.permissions;
 
 import java.io.File;
+import java.io.IOException;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import org.apache.commons.io.FileUtils;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.permissions.autoPromote.AutoPromote;
 import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
@@ -28,6 +31,7 @@ import com.forgeessentials.permissions.persistence.SQLProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -37,7 +41,7 @@ import com.forgeessentials.util.teleport.TeleportCenter;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@FEModule(name = "Permissions", parentMod = ForgeEssentials.class)
+@FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
 public class ModulePermissions extends ConfigLoaderBase {
 
     private static final String CONFIG_CAT = "Permissions";
@@ -78,6 +82,20 @@ public class ModulePermissions extends ConfigLoaderBase {
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
+        // Backup FEData directory
+        try
+        {
+            File path = new File(FunctionHelper.getWorldPath(), "FEData");
+            File backupPath = new File(FunctionHelper.getWorldPath(), "FEData_backup");
+            if (backupPath.exists())
+                FileUtils.deleteDirectory(backupPath);
+            FileUtils.copyDirectory(path, backupPath);
+        }
+        catch (IOException ex)
+        {
+            OutputHandler.felog.warning("Unable to create FEData backup");
+        }
+        
         // Load permissions
         switch (persistenceBackend.toLowerCase())
         {

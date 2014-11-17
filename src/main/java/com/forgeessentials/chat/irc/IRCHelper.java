@@ -1,11 +1,11 @@
 package com.forgeessentials.chat.irc;
 
-import java.io.IOException;
-
+import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.chat.irc.commands.ircCommands;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
-
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
@@ -17,15 +17,13 @@ import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
-import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.chat.irc.commands.ircCommands;
-import com.forgeessentials.util.OutputHandler;
+import java.io.IOException;
 
 public class IRCHelper extends ListenerAdapter implements Listener {
 
     public static int port;
     public static String server, name, channel, password, serverPass;
-    public static boolean suppressEvents;
+    public static boolean suppressEvents, silentMode;
     public static ircCommands ircCmds;
     private static PircBotX bot;
 
@@ -79,7 +77,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 
     public static void postIRC(String message)
     {
-        if (ModuleChat.connectToIRC)
+        if (ModuleChat.connectToIRC && !silentMode)
         {
             bot.sendMessage(channel, message);
         }

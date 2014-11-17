@@ -1,19 +1,17 @@
 package com.forgeessentials.core.misc;
 
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.OutputHandler;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.GameData;
 
 public class BlockModListFile {
 

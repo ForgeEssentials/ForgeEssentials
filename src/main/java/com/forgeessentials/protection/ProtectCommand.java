@@ -1,10 +1,9 @@
 package com.forgeessentials.protection;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class ProtectCommand extends ForgeEssentialsCommandBase{
     @Override public void processCommand(ICommandSender var1, String[] var2)

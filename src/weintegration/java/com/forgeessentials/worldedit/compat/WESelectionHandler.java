@@ -8,8 +8,11 @@ import com.forgeessentials.util.selections.Selection;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.Vector2D;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.CylinderRegion;
+import com.sk89q.worldedit.regions.EllipsoidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
@@ -79,10 +82,26 @@ public class WESelectionHandler implements ISelectionProvider {
             else if (region instanceof Polygonal2DRegion)
             {
                 Polygonal2DRegion polygon = (Polygonal2DRegion) region;
-                Point fepos1 = new Point(polygon.getMinimumPoint().getBlockX(), polygon.getMinimumPoint().getBlockY(), polygon.getMinimumPoint().getBlockZ());
-                Point fepos2 = new Point(polygon.getMaximumPoint().getBlockX(), polygon.getMaximumPoint().getBlockY(), polygon.getMaximumPoint().getBlockZ());
-                points[0] = fepos1;
-                points[1] = fepos2;
+                points[0] = new Point(polygon.getMinimumPoint().getBlockX(), polygon.getMinimumPoint().getBlockY(), polygon.getMinimumPoint().getBlockZ());
+                points[1] = new Point(polygon.getMaximumPoint().getBlockX(), polygon.getMaximumPoint().getBlockY(), polygon.getMaximumPoint().getBlockZ());
+                return points;
+            }
+            else if (region instanceof EllipsoidRegion)
+            {
+                EllipsoidRegion ellipsoid = (EllipsoidRegion) region;
+                Vector c = ellipsoid.getCenter();
+                Vector r = ellipsoid.getRadius();
+                points[0] = new Point(c.getBlockX() - r.getBlockX(), c.getBlockY() - r.getBlockY(), c.getBlockZ() - r.getBlockZ());
+                points[1] = new Point(c.getBlockX() + r.getBlockX(), c.getBlockY() + r.getBlockY(), c.getBlockZ() + r.getBlockZ());
+                return points;
+            }
+            else if (region instanceof CylinderRegion)
+            {
+                CylinderRegion cyl = (CylinderRegion) region;
+                Vector c = cyl.getCenter();
+                Vector2D r = cyl.getRadius();
+                points[0] = new Point(c.getBlockX() - r.getBlockX(), cyl.getMinimumY(), c.getBlockZ() - r.getBlockZ());
+                points[1] = new Point(c.getBlockX() + r.getBlockX(), cyl.getMaximumY(), c.getBlockZ() + r.getBlockZ());
                 return points;
             }
             else

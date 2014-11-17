@@ -1,13 +1,13 @@
 package com.forgeessentials.afterlife;
 
-import java.util.ArrayList;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.permissions.PermissionsManager;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.PotionEffect;
+import net.minecraftforge.permissions.PermissionsManager;
+
+import java.util.ArrayList;
 
 public class RespawnDebuffHandler {
     public static final String BYPASSPOTION = ModuleAfterlife.BASEPERM + ".bypassPotions";

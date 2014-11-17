@@ -1,12 +1,11 @@
 package com.forgeessentials.snooper;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
+import org.apache.commons.codec.binary.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Security {
     public static String encrypt(String input, String key)

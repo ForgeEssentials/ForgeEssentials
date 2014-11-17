@@ -1,8 +1,8 @@
 package com.forgeessentials.api;
 
-import java.util.UUID;
-
 import net.minecraft.entity.player.EntityPlayer;
+
+import java.util.UUID;
 
 public interface IEconManager {
 

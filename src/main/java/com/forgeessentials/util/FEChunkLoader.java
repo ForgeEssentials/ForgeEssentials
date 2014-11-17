@@ -1,15 +1,14 @@
 package com.forgeessentials.util;
 
-import java.util.HashMap;
-import java.util.List;
-
+import com.forgeessentials.core.ForgeEssentials;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
-import com.forgeessentials.core.ForgeEssentials;
+import java.util.HashMap;
+import java.util.List;
 
 public class FEChunkLoader implements LoadingCallback {
     static FEChunkLoader instance;

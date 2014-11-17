@@ -67,13 +67,6 @@ public class ModuleProtection {
     public final static String PERM_DAMAGE_BY = BASE_PERM + ".damageby";
     public final static String PERM_INVENTORY = BASE_PERM + ".inventory";
 
-    private final static String PERM_OVERRIDE = BASE_PERM + ".override";
-    public final static String PERM_OVERRIDE_USE = PERM_OVERRIDE + ".use";
-    public final static String PERM_OVERRIDE_BREAK = PERM_OVERRIDE + ".break";
-    public final static String PERM_OVERRIDE_PLACE = PERM_OVERRIDE + ".place";
-    public final static String PERM_OVERRIDE_INTERACT = PERM_OVERRIDE + ".interact";
-    public final static String PERM_OVERRIDE_INTERACT_ENTITY = PERM_OVERRIDE + ".interact.entity";
-
     public final static String PERM_MOBSPAWN = BASE_PERM + ".mobspawn";
     public final static String PERM_MOBSPAWN_NATURAL = PERM_MOBSPAWN + ".natural";
     public final static String PERM_MOBSPAWN_FORCED = PERM_MOBSPAWN + ".forced";
@@ -149,15 +142,6 @@ public class ModuleProtection {
         {
             APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + dmgType.getDamageType(), RegisteredPermValue.TRUE);
         }
-
-        // ----------------------------------------
-        // Overrides
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.OP, "Override (ignore) protection permissions");
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE_USE, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE_BREAK, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE_PLACE, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE_INTERACT, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_OVERRIDE_INTERACT_ENTITY, RegisteredPermValue.OP);
 
         // ----------------------------------------
         // Register mobs

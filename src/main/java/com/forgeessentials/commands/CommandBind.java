@@ -1,7 +1,7 @@
 package com.forgeessentials.commands;
 
-import java.util.List;
-
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -11,8 +11,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
+import java.util.List;
 
 public class CommandBind extends FEcmdModuleCommands {
     public static final String color = EnumChatFormatting.RESET + "" + EnumChatFormatting.AQUA;

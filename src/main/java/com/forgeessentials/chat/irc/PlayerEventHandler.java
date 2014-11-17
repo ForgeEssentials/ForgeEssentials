@@ -24,7 +24,7 @@ public class PlayerEventHandler {
     {
         if (e.entityLiving instanceof EntityPlayer)
         {
-            IRCHelper.postIRC(e.source.func_151519_b(e.entityLiving).toString());
+            IRCHelper.postIRC(e.source.func_151519_b(e.entityLiving).getUnformattedTextForChat());
         }
     }
 
