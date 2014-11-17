@@ -61,9 +61,9 @@ public class SQLProvider extends ZonePersistenceProvider {
                 sb.append("` ");
                 sb.append(col.getValue());
                 if (nullableKeys.contains(col.getKey()))
-                    sb.append(" NOT NULL, ");
-                else
                     sb.append(", ");
+                else
+                    sb.append(" NOT NULL, ");
             }
             sb.append("PRIMARY KEY (`");
             sb.append(StringUtils.join(primaryKeys, "`, `"));
