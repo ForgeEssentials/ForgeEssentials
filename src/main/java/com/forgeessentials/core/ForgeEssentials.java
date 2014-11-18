@@ -1,5 +1,13 @@
 package com.forgeessentials.core;
 
+import java.io.File;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
@@ -45,7 +53,7 @@ import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
 import com.forgeessentials.util.teleport.TeleportCenter;
-import cpw.mods.fml.common.FMLCommonHandler;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -59,14 +67,6 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-
-import java.io.File;
 
 /**
  * Main mod class
@@ -108,6 +108,12 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
     @SuppressWarnings("unused")
     private MiscEventHandler miscEventHandler;
+
+    @SuppressWarnings("unused")
+    private ForgeEssentialsEventFactory factory;
+
+    @SuppressWarnings("unused")
+    private WorldEditNotifier worldEditNotifier;
 
     // static FE-module flags / variables
     public static boolean worldEditCompatilityPresent = false;
@@ -175,10 +181,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
         // FMLCommonHandler.instance().bus().register(this);
 
         // other stuff
-        ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
-        FMLCommonHandler.instance().bus().register(factory);
-        MinecraftForge.EVENT_BUS.register(factory);
-
+        factory = new ForgeEssentialsEventFactory();
         respawnHandler = new RespawnHandler();
         wandHandler = new SelectionEventHandler();
 
@@ -222,7 +225,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
             new CommandExpandY().register();
         }
 
-        new WorldEditNotifier();
+        worldEditNotifier = new WorldEditNotifier();
 
         tasks.onServerStart();
 

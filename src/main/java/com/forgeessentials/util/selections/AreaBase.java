@@ -222,4 +222,9 @@ public class AreaBase {
             return null;
         return new AreaBase(p1, p2);
     }
+
+    public Point getCenter()
+    {
+        return new Point((high.x + low.x) / 2, (high.y + low.y) / 2, (high.z + low.z) / 2);
+    }
 }

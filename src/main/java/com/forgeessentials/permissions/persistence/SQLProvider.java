@@ -356,7 +356,7 @@ public class SQLProvider extends ZonePersistenceProvider {
             writeUserGroupPermissions(serverZone);
 
             // Use a transaction to be able to rollback, if there is an error
-            db.setAutoCommit(false);
+            //db.setAutoCommit(false);
 
             // Truncate old data
             db.createStatement().executeUpdate(TABLES.get(TABLE_ZONE).createTruncate());
@@ -377,8 +377,8 @@ public class SQLProvider extends ZonePersistenceProvider {
                     saveZonePermissions(areaZone);
                 }
             }
-            db.commit();
-            db.setAutoCommit(true);
+            //db.commit();
+            //db.setAutoCommit(true);
         }
         catch (SQLException se)
         {
