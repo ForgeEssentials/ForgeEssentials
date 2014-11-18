@@ -70,6 +70,17 @@ public class ModuleProtection {
     public final static String PERM_MOBSPAWN = BASE_PERM + ".mobspawn";
     public final static String PERM_MOBSPAWN_NATURAL = PERM_MOBSPAWN + ".natural";
     public final static String PERM_MOBSPAWN_FORCED = PERM_MOBSPAWN + ".forced";
+    
+    public static final String ZONE = BASE_PERM + ".wzone";
+    public static final String ZONE_KNOCKBACK = ZONE + ".knockback";
+    public static final String ZONE_DAMAGE = ZONE + ".damage";
+    public static final String ZONE_DAMAGE_INTERVAL = ZONE_DAMAGE + ".interval";
+    public static final String ZONE_COMMAND = ZONE + ".command";
+    public static final String ZONE_COMMAND_INTERVAL = ZONE_COMMAND + ".interval";
+    public static final String ZONE_POTION = ZONE + ".potion";
+    public static final String ZONE_POTION_INTERVAL = ZONE_POTION + ".interval";
+
+    public static final String MSG_ZONE_DENIED = "You are not allowed to enter this area!";
 
     private static final Class<?>[] damageEntityClasses = new Class<?>[] {
             // EntityAgeable
@@ -179,6 +190,17 @@ public class ModuleProtection {
             APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, RegisteredPermValue.TRUE, "PLACE " + block.getLocalizedName());
             APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, RegisteredPermValue.TRUE, "INTERACT " + block.getLocalizedName());
         }
+
+        // ----------------------------------------
+        // Register zone permissions
+        APIRegistry.perms.registerPermissionDescription(ZONE, "Worldborder permissions");
+        APIRegistry.perms.registerPermission(ZONE_KNOCKBACK, RegisteredPermValue.FALSE, "Deny players from entering this area");
+        APIRegistry.perms.registerPermissionProperty(ZONE_DAMAGE, null, "Apply this amount of damage to players, if they are in this area");
+        APIRegistry.perms.registerPermissionProperty(ZONE_DAMAGE_INTERVAL, "1000", "Time interval in milliseconds for applying damage-effect. Zero = once only.");
+        APIRegistry.perms.registerPermissionProperty(ZONE_COMMAND, null, "Execute this command if a player enters the area");
+        APIRegistry.perms.registerPermissionProperty(ZONE_COMMAND_INTERVAL, "0", "Time interval in milliseconds for executing command. Zero = once only.");
+        APIRegistry.perms.registerPermissionProperty(ZONE_POTION, null, "Apply potion effects to players who enter this area. Comma separated list of \"ID:duration:amplifier\" pairs. See http://www.minecraftwiki.net/wiki/Potion_effects#Parameters");
+        APIRegistry.perms.registerPermissionProperty(ZONE_POTION_INTERVAL, "2000", "Time interval in milliseconds for applying potion-effects. Zero = once only.");
     }
 
     public static void enableDebugMode(EntityPlayer player)

@@ -5,6 +5,9 @@ import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
 import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK;
 import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_AIR;
 import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK;
+
+import java.util.HashMap;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -13,7 +16,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -22,7 +29,6 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
@@ -30,19 +36,25 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.util.selections.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public class ProtectionEventHandler extends ServerEventHandler {
 
@@ -90,7 +102,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
 
         if (e.entityLiving == null)
             return;
-        
+
         if (e.entityLiving instanceof EntityPlayer)
         {
             // living -> player (fall-damage, mob, dispenser, lava)
@@ -105,7 +117,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
                     return;
                 }
             }
-            
+
             if (e.source.getEntity() != null)
             {
                 // non-player-entity -> player (mob)
@@ -120,7 +132,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 }
             }
         }
-        
+
         if (e.source.getEntity() instanceof EntityPlayer)
         {
             // player -> living
@@ -135,7 +147,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 e.setCanceled(true);
                 return;
             }
-            
+
             if (e.entityLiving instanceof EntityPlayer)
             {
                 // player -> player
@@ -347,22 +359,6 @@ public class ProtectionEventHandler extends ServerEventHandler {
     }
 
     @SubscribeEvent
-    public void debugEvents(PlayerEvent e)
-    {
-        // try
-        // {
-        // if (e instanceof PlayerOpenContainerEvent)
-        // return;
-        // if (e instanceof ItemTooltipEvent)
-        // return;
-        // OutputHandler.chatNotification(e.entityPlayer, e.getClass().getSimpleName());
-        // }
-        // catch (Exception ex)
-        // {
-        // }
-    }
-
-    @SubscribeEvent
     public void playerOpenContainerEvent(PlayerOpenContainerEvent e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -396,7 +392,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             // If leaving a creative zone and no other gamemode is set, revert to default (survival)
             if (lastGm != GameType.NOT_SET && gm == GameType.NOT_SET)
                 gm = GameType.SURVIVAL;
-            
+
             GameType playerGm = player.theItemInWorldManager.getGameType();
             if (playerGm != gm)
             {
@@ -410,6 +406,164 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 pi.setGamemodeInventoryType(gm);
             }
         }
+    }
+
+    // ----------------------------------------
+
+    static class WorldBorderPlayerInfo {
+
+        public final UserIdent ident;
+
+        public long lastEntryDeniedMessage;
+
+        public int damage;
+
+        public int damageInterval;
+
+        private long lastDamage;
+
+        public String potion;
+
+        public int potionInterval;
+
+        private long lastPotion;
+
+        public String command;
+
+        public int commandInterval;
+
+        private long lastCommand;
+
+        public WorldBorderPlayerInfo(UserIdent ident)
+        {
+            this.ident = ident;
+        }
+
+        public void showEntryDeniesMessage()
+        {
+            if (System.currentTimeMillis() - lastEntryDeniedMessage > 3000)
+            {
+                OutputHandler.chatError(ident.getPlayer(), ModuleProtection.MSG_ZONE_DENIED);
+                lastEntryDeniedMessage = System.currentTimeMillis();
+            }
+        }
+
+        public void update()
+        {
+            if (damage > 0 && damageInterval >= 0 && System.currentTimeMillis() - lastDamage >= damageInterval)
+            {
+                // Save last activation time and disable, if interval = 0 (once-only)
+                lastDamage = System.currentTimeMillis();
+                if (damageInterval == 0)
+                    damageInterval = -1;
+
+                // Execute effect
+                ident.getPlayer().attackEntityFrom(DamageSource.generic, damage);
+                showEntryDeniesMessage();
+            }
+
+            if (command != null && !command.isEmpty() && commandInterval >= 0 && System.currentTimeMillis() - lastCommand >= commandInterval)
+            {
+                // Save last activation time and disable, if interval = 0 (once-only)
+                lastCommand = System.currentTimeMillis();
+                if (commandInterval == 0)
+                    commandInterval = -1;
+                
+                // Execute effect
+                MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), command);
+            }
+
+            if (potion != null && !potion.isEmpty() && potionInterval >= 0 && System.currentTimeMillis() - lastPotion >= potionInterval)
+            {
+                // Save last activation time and disable, if interval = 0 (once-only)
+                lastPotion = System.currentTimeMillis();
+                if (potionInterval == 0)
+                    potionInterval = -1;
+
+                // Execute effect
+                String[] effects = potion.split(","); // example = 9:5:0
+                for (String poisonEffect : effects)
+                {
+                    String[] effectValues = poisonEffect.split(":");
+                    ident.getPlayer().addPotionEffect(
+                            new PotionEffect(Integer.parseInt(effectValues[0]), Integer.parseInt(effectValues[1]) * 20, Integer.parseInt(effectValues[2])));
+                }
+            }
+        }
+
+    }
+
+    private HashMap<UserIdent, WorldBorderPlayerInfo> wbInfo = new HashMap<>();
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void playerChangedZoneEventHigh(PlayerChangedZone event)
+    {
+        UserIdent ident = new UserIdent(event.entityPlayer);
+        WorldBorderPlayerInfo info = wbInfo.get(ident);
+        if (info == null)
+        {
+            info = new WorldBorderPlayerInfo(ident);
+            wbInfo.put(ident, info);
+        }
+
+        // Check knockback
+        if (!APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_KNOCKBACK).equals(IPermissionsHelper.PERMISSION_FALSE))
+        {
+            info.showEntryDeniesMessage();
+
+            Vec3 center = event.afterPoint.toVec3();
+            if (event.afterZone instanceof AreaZone)
+            {
+                center = ((AreaZone) event.afterZone).getArea().getCenter().toVec3();
+                center.yCoord = event.beforePoint.getY();
+            }
+            Vec3 delta = event.beforePoint.toVec3().subtract(center).normalize();
+            WarpPoint target = new WarpPoint(event.beforePoint.getDimension(), event.beforePoint.getX() - delta.xCoord,
+                    event.beforePoint.getY() - delta.yCoord, event.beforePoint.getZ() - delta.zCoord, event.afterPoint.getPitch(), event.afterPoint.getYaw());
+
+            FunctionHelper.teleportPlayer((EntityPlayerMP) event.entityPlayer, target);
+        }
+
+        // Check command effect
+        info.command = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND);
+        if (info.command != null && !info.command.isEmpty())
+        {
+            info.command = info.command.replaceAll("%p", ident.getPlayer().getCommandSenderName());
+            info.command = info.command.replaceAll("%u", ident.getPlayer().getPersistentID().toString());
+            info.commandInterval = FunctionHelper.parseIntDefault(
+                    APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND_INTERVAL), 0);
+        }
+
+        // Check damage effect
+        info.damage = FunctionHelper.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE), 0);
+        if (info.damage > 0)
+        {
+            info.damageInterval = FunctionHelper.parseIntDefault(
+                    APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE_INTERVAL), 0);
+        }
+
+        // Check potion effect
+        info.potion = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION);
+        if (info.potion != null && !info.potion.isEmpty())
+        {
+            info.potionInterval = FunctionHelper.parseIntDefault(
+                    APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION_INTERVAL), 0);
+        }
+    }
+
+    @SubscribeEvent
+    public void serverTickEvent(TickEvent.ServerTickEvent e)
+    {
+        if (e.side != Side.SERVER || e.phase == TickEvent.Phase.END)
+            return;
+        for (WorldBorderPlayerInfo info : wbInfo.values())
+            info.update();
+    }
+
+    @SubscribeEvent
+    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
+    {
+        wbInfo.remove(new UserIdent(e.player));
     }
 
     // ----------------------------------------

@@ -19,8 +19,9 @@ public final class FEPermissions {
 	public static final String FE_INTERNAL = "fe.internal";
     public static final String DESCRIPTION_PROPERTY = ".$desc";
 
-	public static final String ZONE_ENTRY_MESSAGE = FE_INTERNAL + ".zone.entry";
-	public static final String ZONE_EXIT_MESSAGE = FE_INTERNAL + ".zone.exit";
+    public static final String ZONE = FE_INTERNAL + ".zone";
+	public static final String ZONE_ENTRY_MESSAGE = ZONE + ".entry";
+	public static final String ZONE_EXIT_MESSAGE = ZONE + ".exit";
 
 	public static final String PREFIX = FE_INTERNAL + ".prefix";
 	public static final String SUFFIX = FE_INTERNAL + ".suffix";

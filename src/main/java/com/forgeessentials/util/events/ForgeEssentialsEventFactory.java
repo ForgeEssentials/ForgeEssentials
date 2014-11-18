@@ -21,7 +21,7 @@ public class ForgeEssentialsEventFactory extends ServerEventHandler {
     @SubscribeEvent
     public void playerTickEvent(TickEvent.PlayerTickEvent e)
     {
-        if (e.side != Side.SERVER)
+        if (e.side != Side.SERVER || e.phase == TickEvent.Phase.START)
             return;
         EntityPlayerMP player = (EntityPlayerMP) e.player;
         WarpPoint before = lastPlayerPosition.get(player.getPersistentID());

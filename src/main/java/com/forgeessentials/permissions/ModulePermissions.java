@@ -139,6 +139,7 @@ public class ModulePermissions extends ConfigLoaderBase {
 
     private static void registerPermissions()
     {
+        // Permission settings command
         APIRegistry.perms.registerPermissionDescription(FEPermissions.FE_INTERNAL,
                 "Internal permissions - DO NOT TOUCH THESE UNLESS YOU KNOW WHAT YOU DO (WHICH YOU DON'T!)");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP,
@@ -183,9 +184,11 @@ public class ModulePermissions extends ConfigLoaderBase {
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_RELOAD, RegisteredPermValue.TRUE, "Allow reloading changed permission files");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_SAVE, RegisteredPermValue.TRUE, "Allow force-saving permission files");
 
+        // Other
         APIRegistry.perms.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
         APIRegistry.perms.registerPermission("fe.core.info", RegisteredPermValue.OP);
-
+        
+        // Teleport
         APIRegistry.perms.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP, "Allow bypassing teleport cooldown");
         APIRegistry.perms.registerPermission(TeleportCenter.BYPASS_WARMUP, RegisteredPermValue.OP, "Allow bypassing teleport warmup");
     }
