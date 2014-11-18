@@ -460,6 +460,8 @@ public class ProtectionEventHandler extends ServerEventHandler {
                     event.beforePoint.getY() - delta.yCoord, event.beforePoint.getZ() - delta.zCoord, event.afterPoint.getPitch(), event.afterPoint.getYaw());
 
             FunctionHelper.teleportPlayer((EntityPlayerMP) event.entityPlayer, target);
+            event.setCanceled(true);
+            return;
         }
 
         // Check command effect

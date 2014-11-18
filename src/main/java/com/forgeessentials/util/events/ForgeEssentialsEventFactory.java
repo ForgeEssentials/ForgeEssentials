@@ -33,7 +33,10 @@ public class ForgeEssentialsEventFactory extends ServerEventHandler {
             MinecraftForge.EVENT_BUS.post(event);
             if (event.isCanceled())
             {
-                FunctionHelper.teleportPlayer(player, before);
+                // Check, if the position was not changed by one of the event handlers
+                if (current.equals(new WarpPoint(e.player)))
+                    // Move the player to his last position
+                    FunctionHelper.teleportPlayer(player, before);
             }
         }
         lastPlayerPosition.put(player.getPersistentID(), new WarpPoint(e.player));
