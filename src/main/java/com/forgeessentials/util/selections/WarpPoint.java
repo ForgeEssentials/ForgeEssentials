@@ -10,62 +10,52 @@ import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 
 @SaveableObject(SaveInline = true)
-public class WarpPoint extends WorldPoint {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -1534182424702360150L;
+public class WarpPoint {
+    
+    @SaveableField
+    protected int dim;
 
     @SaveableField
-    public float pitch;
+    protected float pitch;
 
     @SaveableField
-    public float yaw;
+    protected float yaw;
 
-    // stops the coords from Point to be saved.
-    @SaveableField(overrideParent = "x")
-    public double xd;
+    @SaveableField
+    protected double x;
 
-    // stops the coords from Point to be saved.
-    @SaveableField(overrideParent = "y")
-    public double yd;
+    @SaveableField
+    protected double y;
 
-    // stops the coords from Point to be saved.
-    @SaveableField(overrideParent = "z")
-    public double zd;
+    @SaveableField
+    protected double z;
 
     public WarpPoint(int dimension, double x, double y, double z, float playerPitch, float playerYaw)
     {
-        super(dimension, (int) Math.round(x), (int) Math.round(y), (int) Math.round(z));
-        xd = x;
-        yd = y;
-        zd = z;
-        pitch = playerPitch;
-        yaw = playerYaw;
+        this.dim = dimension;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.pitch = playerPitch;
+        this.yaw = playerYaw;
     }
 
     public WarpPoint(Point p, int dimension, float playerPitch, float playerYaw)
     {
         this(dimension, p.getX(), p.getY(), p.getZ(), playerPitch, playerYaw);
-        xd = x;
-        yd = y;
-        zd = z;
     }
 
     public WarpPoint(WorldPoint p, float playerPitch, float playerYaw)
     {
         this(p.dim, p.getX(), p.getY(), p.getZ(), playerPitch, playerYaw);
-        xd = x;
-        yd = y;
-        zd = z;
     }
 
     public WarpPoint(Entity sender)
     {
-        super(sender);
-        xd = sender.posX;
-        yd = sender.posY;
-        zd = sender.posZ;
+        dim = sender.dimension;
+        x = sender.posX;
+        y = sender.posY;
+        z = sender.posZ;
         pitch = sender.rotationPitch;
         yaw = sender.rotationYaw;
     }
@@ -86,7 +76,7 @@ public class WarpPoint extends WorldPoint {
         int positives = 0;
         int negatives = 0;
 
-        if (xd > point.xd)
+        if (x > point.x)
         {
             positives++;
         }
@@ -95,7 +85,7 @@ public class WarpPoint extends WorldPoint {
             negatives++;
         }
 
-        if (yd > point.yd)
+        if (y > point.y)
         {
             positives++;
         }
@@ -104,7 +94,7 @@ public class WarpPoint extends WorldPoint {
             negatives++;
         }
 
-        if (zd > point.zd)
+        if (z > point.z)
         {
             positives++;
         }
@@ -123,7 +113,7 @@ public class WarpPoint extends WorldPoint {
         }
         else
         {
-            return (int) (xd - point.xd + (yd - point.yd) + (zd - point.zd));
+            return (int) (x - point.x + (y - point.y) + (z - point.z));
         }
     }
 
@@ -135,22 +125,19 @@ public class WarpPoint extends WorldPoint {
      */
     public static WarpPoint copy(WarpPoint point)
     {
-        return new WarpPoint(point.dim, point.xd, point.yd, point.zd, point.pitch, point.yaw);
+        return new WarpPoint(point.dim, point.x, point.y, point.z, point.pitch, point.yaw);
     }
 
     /**
      * ensures the Point is valid. Just floors the Y axis to 0. Y can't be
      * negative.
      */
-    @Override
     public void validate()
     {
-        if (yd < 0)
+        if (y < 0)
         {
-            yd = 0;
+            y = 0;
         }
-
-        super.validate();
     }
 
     /**
@@ -159,7 +146,7 @@ public class WarpPoint extends WorldPoint {
      */
     public double getDistanceTo(WarpPoint point)
     {
-        return Math.sqrt((xd - point.xd) * (xd - point.xd) + (yd - point.yd) * (yd - point.yd) + (zd - point.zd) * (zd - point.zd));
+        return Math.sqrt((x - point.x) * (x - point.x) + (y - point.y) * (y - point.y) + (z - point.z) * (z - point.z));
     }
 
     /**
@@ -168,15 +155,26 @@ public class WarpPoint extends WorldPoint {
      */
     public double getDistanceTo(Entity e)
     {
-        return Math.sqrt((xd - e.posX) * (xd - e.posX) + (yd - e.posY) * (yd - e.posY) + (zd - e.posZ) * (zd - e.posZ));
+        return Math.sqrt((x - e.posX) * (x - e.posX) + (y - e.posY) * (y - e.posY) + (z - e.posZ) * (z - e.posZ));
     }
 
     @Reconstructor()
     public static WarpPoint reconstruct(IReconstructData tag)
     {
-        double x = (Double) tag.getFieldValue("xd");
-        double y = (Double) tag.getFieldValue("yd");
-        double z = (Double) tag.getFieldValue("zd");
+        if (tag.getFieldValue("xd") != null)
+        {
+            // Temporary old data-loading
+            double x = (Double) tag.getFieldValue("xd");
+            double y = (Double) tag.getFieldValue("yd");
+            double z = (Double) tag.getFieldValue("zd");
+            int dim = (Integer) tag.getFieldValue("dim");
+            float pitch = (Float) tag.getFieldValue("pitch");
+            float yaw = (Float) tag.getFieldValue("yaw");
+            return new WarpPoint(dim, x, y, z, pitch, yaw);
+        }
+        double x = (Double) tag.getFieldValue("x");
+        double y = (Double) tag.getFieldValue("y");
+        double z = (Double) tag.getFieldValue("z");
         int dim = (Integer) tag.getFieldValue("dim");
         float pitch = (Float) tag.getFieldValue("pitch");
         float yaw = (Float) tag.getFieldValue("yaw");
@@ -192,13 +190,88 @@ public class WarpPoint extends WorldPoint {
     @Override
     public String toString()
     {
-        return "WarpPoint[" + dim + "," + xd + "," + yd + "," + zd + "," + pitch + "," + yaw + "]";
+        return "WarpPoint[" + dim + "," + x + "," + y + "," + z + "," + pitch + "," + yaw + "]";
     }
 
-    @Override
     public Vec3 toVec3()
     {
-        return Vec3.createVectorHelper(xd, yd, zd);
+        return Vec3.createVectorHelper(x, y, z);
+    }
+
+    
+    public int getDimension()
+    {
+        return dim;
+    }
+
+    public double getX()
+    {
+        return x;
+    }
+
+    public double getY()
+    {
+        return y;
+    }
+
+    public double getZ()
+    {
+        return z;
+    }
+
+    public void setX(double value)
+    {
+        x = value;
+    }
+
+    public void setY(double value)
+    {
+        y = value;
+    }
+
+    public void setZ(double value)
+    {
+        z = value;
+    }
+
+    public float getPitch()
+    {
+        return pitch;
+    }
+
+    public float getYaw()
+    {
+        return yaw;
+    }
+
+    public void setPitch(float value)
+    {
+        pitch = value;
+    }
+
+    public void setYaw(float value)
+    {
+        yaw = value;
+    }
+
+    public int getBlockX()
+    {
+        return (int) x;
+    }
+
+    public int getBlockY()
+    {
+        return (int) y;
+    }
+
+    public int getBlockZ()
+    {
+        return (int) z;
+    }
+
+    public WorldPoint toWorldPoint()
+    {
+        return new WorldPoint(dim, (int) x, (int) y, (int) z);
     }
 
 }
