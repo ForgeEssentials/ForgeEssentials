@@ -624,7 +624,7 @@ public class PermissionCommandParser {
         }
         else
         {
-            String fix = args.remove();
+            String fix = StringUtils.join(args, " ");
             if (fix.equalsIgnoreCase("clear"))
             {
                 info(String.format("%s's %s cleared", ident.getUsernameOrUUID(), fixName));
@@ -1077,7 +1077,7 @@ public class PermissionCommandParser {
         }
         else
         {
-            String fix = args.remove();
+            String fix = StringUtils.join(args, " ");
             if (fix.equalsIgnoreCase("clear"))
             {
                 info(String.format("%s's %s cleared", group, fixName));
