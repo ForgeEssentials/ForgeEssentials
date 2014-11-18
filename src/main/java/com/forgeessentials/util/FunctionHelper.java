@@ -235,10 +235,10 @@ public final class FunctionHelper {
 
 		if (minutes != 0)
 		{
-			uptime += (minutes < 10 ? "0" : "") + minutes + " min ";
+			uptime += (minutes < 10 ? "0" : "") + minutes + " minutes ";
 		}
 
-		uptime += (seconds < 10 ? "0" : "") + seconds + " sec.";
+		uptime += (seconds < 10 ? "0" : "") + seconds + " seconds";
 
 		return uptime;
 	}

@@ -9,10 +9,10 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.teleport.TeleportCenter;
 
 public class CommandHome extends ForgeEssentialsCommandBase {
     @Override
@@ -37,7 +37,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
                 PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                 CommandBack.justDied.remove(player.getPersistentID());
-                TeleportCenter.teleport(home, player);
+                TeleportHelper.teleport(player, home);
             }
         }
         else if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_SET))

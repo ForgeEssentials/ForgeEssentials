@@ -1,11 +1,9 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.teleport.TeleportCenter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,9 +11,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.teleport.util.TPAdata;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WarpPoint;
 
 public class CommandTPAhere extends ForgeEssentialsCommandBase {
     @Override
@@ -44,7 +45,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
                         OutputHandler.chatNotification(data.sender, "Teleport request accepted.");
                         OutputHandler.chatConfirmation(data.receiver, "Teleport request accepted by other party. Teleporting..");
                         TeleportModule.tpaListToRemove.add(data);
-                        TeleportCenter.teleport(new WarpPoint(data.sender), data.receiver);
+                        TeleportHelper.teleport(data.receiver, new WarpPoint(data.sender));
                         return;
                     }
                 }

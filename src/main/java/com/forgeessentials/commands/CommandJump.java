@@ -1,17 +1,18 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.teleport.CommandBack;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.teleport.TeleportCenter;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.teleport.CommandBack;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.WarpPoint;
 
 public class CommandJump extends FEcmdModuleCommands {
 
@@ -43,7 +44,7 @@ public class CommandJump extends FEcmdModuleCommands {
 			PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 			playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 			CommandBack.justDied.remove(player.getPersistentID());
-        	TeleportCenter.teleport(new WarpPoint(sender.getEntityWorld().provider.dimensionId, mo.blockX, mo.blockY, mo.blockZ, sender.rotationPitch, sender.rotationYaw), player);
+        	TeleportHelper.teleport(player, new WarpPoint(sender.getEntityWorld().provider.dimensionId, mo.blockX, mo.blockY + 1, mo.blockZ, sender.rotationPitch, sender.rotationYaw));
         }
     }
 

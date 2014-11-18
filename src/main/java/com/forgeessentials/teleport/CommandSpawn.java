@@ -13,11 +13,11 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.RespawnHandler;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.teleport.TeleportCenter;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -52,7 +52,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 
 			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
 			OutputHandler.chatNotification(player, "Teleporting to spawn.");
-			TeleportCenter.teleport(point, player);
+			TeleportHelper.teleport(player, point);
 		}
 		else if (args.length == 0)
 		{
@@ -66,7 +66,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 
 			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
 			OutputHandler.chatConfirmation(player, "Teleporting to spawn.");
-			TeleportCenter.teleport(point, player);
+			TeleportHelper.teleport(player, point);
 		}
 	}
 
@@ -96,7 +96,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 
 		PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
 		OutputHandler.chatNotification(player, "Teleporting to spawn.");
-		TeleportCenter.teleport(point, player);
+		TeleportHelper.teleport(player, point);
 	}
 
 	@Override

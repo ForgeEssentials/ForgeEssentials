@@ -11,13 +11,13 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.teleport.TeleportCenter;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -50,7 +50,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 				CommandBack.justDied.remove(player.getPersistentID());
-				TeleportCenter.teleport(new WarpPoint(target), player);
+				TeleportHelper.teleport(player, new WarpPoint(target));
 			}
 			else
 			{
@@ -92,7 +92,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				double x = parseDouble(sender, args[0]), y = parseDouble(sender, args[1]), z = parseDouble(sender, args[2]);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-				TeleportCenter.teleport(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
+				TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
 			}
 			else if (args.length == 4)
 			{
@@ -102,7 +102,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 					double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-					TeleportCenter.teleport(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
+					TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
 				}
 				else
 				{
@@ -137,7 +137,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				{
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-					TeleportCenter.teleport(new WarpPoint(target), player);
+					TeleportHelper.teleport(player, new WarpPoint(target));
 				}
 				else
 				{
@@ -159,7 +159,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-				TeleportCenter.teleport(new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw), player);
+				TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
 			}
 			else
 			{
