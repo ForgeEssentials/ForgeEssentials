@@ -22,20 +22,20 @@ public class WarpPoint {
     protected float yaw;
 
     @SaveableField
-    protected double x;
+    protected double xd;
 
     @SaveableField
-    protected double y;
+    protected double yd;
 
     @SaveableField
-    protected double z;
+    protected double zd;
 
     public WarpPoint(int dimension, double x, double y, double z, float playerPitch, float playerYaw)
     {
         this.dim = dimension;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.xd = x;
+        this.yd = y;
+        this.zd = z;
         this.pitch = playerPitch;
         this.yaw = playerYaw;
     }
@@ -53,9 +53,9 @@ public class WarpPoint {
     public WarpPoint(Entity sender)
     {
         dim = sender.dimension;
-        x = sender.posX;
-        y = sender.posY;
-        z = sender.posZ;
+        xd = sender.posX;
+        yd = sender.posY;
+        zd = sender.posZ;
         pitch = sender.rotationPitch;
         yaw = sender.rotationYaw;
     }
@@ -76,7 +76,7 @@ public class WarpPoint {
         int positives = 0;
         int negatives = 0;
 
-        if (x > point.x)
+        if (xd > point.xd)
         {
             positives++;
         }
@@ -85,7 +85,7 @@ public class WarpPoint {
             negatives++;
         }
 
-        if (y > point.y)
+        if (yd > point.yd)
         {
             positives++;
         }
@@ -94,7 +94,7 @@ public class WarpPoint {
             negatives++;
         }
 
-        if (z > point.z)
+        if (zd > point.zd)
         {
             positives++;
         }
@@ -113,7 +113,7 @@ public class WarpPoint {
         }
         else
         {
-            return (int) (x - point.x + (y - point.y) + (z - point.z));
+            return (int) (xd - point.xd + (yd - point.yd) + (zd - point.zd));
         }
     }
 
@@ -125,7 +125,7 @@ public class WarpPoint {
      */
     public static WarpPoint copy(WarpPoint point)
     {
-        return new WarpPoint(point.dim, point.x, point.y, point.z, point.pitch, point.yaw);
+        return new WarpPoint(point.dim, point.xd, point.yd, point.zd, point.pitch, point.yaw);
     }
 
     /**
@@ -134,9 +134,9 @@ public class WarpPoint {
      */
     public void validate()
     {
-        if (y < 0)
+        if (yd < 0)
         {
-            y = 0;
+            yd = 0;
         }
     }
 
@@ -146,7 +146,7 @@ public class WarpPoint {
      */
     public double getDistanceTo(WarpPoint point)
     {
-        return Math.sqrt((x - point.x) * (x - point.x) + (y - point.y) * (y - point.y) + (z - point.z) * (z - point.z));
+        return Math.sqrt((xd - point.xd) * (xd - point.xd) + (yd - point.yd) * (yd - point.yd) + (zd - point.zd) * (zd - point.zd));
     }
 
     /**
@@ -155,26 +155,15 @@ public class WarpPoint {
      */
     public double getDistanceTo(Entity e)
     {
-        return Math.sqrt((x - e.posX) * (x - e.posX) + (y - e.posY) * (y - e.posY) + (z - e.posZ) * (z - e.posZ));
+        return Math.sqrt((xd - e.posX) * (xd - e.posX) + (yd - e.posY) * (yd - e.posY) + (zd - e.posZ) * (zd - e.posZ));
     }
 
     @Reconstructor()
     public static WarpPoint reconstruct(IReconstructData tag)
     {
-        if (tag.getFieldValue("xd") != null)
-        {
-            // Temporary old data-loading
-            double x = (Double) tag.getFieldValue("xd");
-            double y = (Double) tag.getFieldValue("yd");
-            double z = (Double) tag.getFieldValue("zd");
-            int dim = (Integer) tag.getFieldValue("dim");
-            float pitch = (Float) tag.getFieldValue("pitch");
-            float yaw = (Float) tag.getFieldValue("yaw");
-            return new WarpPoint(dim, x, y, z, pitch, yaw);
-        }
-        double x = (Double) tag.getFieldValue("x");
-        double y = (Double) tag.getFieldValue("y");
-        double z = (Double) tag.getFieldValue("z");
+        double x = (Double) tag.getFieldValue("xd");
+        double y = (Double) tag.getFieldValue("yd");
+        double z = (Double) tag.getFieldValue("zd");
         int dim = (Integer) tag.getFieldValue("dim");
         float pitch = (Float) tag.getFieldValue("pitch");
         float yaw = (Float) tag.getFieldValue("yaw");
@@ -190,12 +179,12 @@ public class WarpPoint {
     @Override
     public String toString()
     {
-        return "WarpPoint[" + dim + "," + x + "," + y + "," + z + "," + pitch + "," + yaw + "]";
+        return "WarpPoint[" + dim + "," + xd + "," + yd + "," + zd + "," + pitch + "," + yaw + "]";
     }
 
     public Vec3 toVec3()
     {
-        return Vec3.createVectorHelper(x, y, z);
+        return Vec3.createVectorHelper(xd, yd, zd);
     }
 
     
@@ -206,32 +195,32 @@ public class WarpPoint {
 
     public double getX()
     {
-        return x;
+        return xd;
     }
 
     public double getY()
     {
-        return y;
+        return yd;
     }
 
     public double getZ()
     {
-        return z;
+        return zd;
     }
 
     public void setX(double value)
     {
-        x = value;
+        xd = value;
     }
 
     public void setY(double value)
     {
-        y = value;
+        yd = value;
     }
 
     public void setZ(double value)
     {
-        z = value;
+        zd = value;
     }
 
     public float getPitch()
@@ -256,22 +245,22 @@ public class WarpPoint {
 
     public int getBlockX()
     {
-        return (int) x;
+        return (int) xd;
     }
 
     public int getBlockY()
     {
-        return (int) y;
+        return (int) yd;
     }
 
     public int getBlockZ()
     {
-        return (int) z;
+        return (int) zd;
     }
 
     public WorldPoint toWorldPoint()
     {
-        return new WorldPoint(dim, (int) x, (int) y, (int) z);
+        return new WorldPoint(dim, (int) xd, (int) yd, (int) zd);
     }
 
 }
