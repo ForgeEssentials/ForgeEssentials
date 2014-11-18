@@ -71,7 +71,7 @@ public class ModuleProtection {
     public final static String PERM_MOBSPAWN_NATURAL = PERM_MOBSPAWN + ".natural";
     public final static String PERM_MOBSPAWN_FORCED = PERM_MOBSPAWN + ".forced";
     
-    public static final String ZONE = BASE_PERM + ".wzone";
+    public static final String ZONE = BASE_PERM + ".zone";
     public static final String ZONE_KNOCKBACK = ZONE + ".knockback";
     public static final String ZONE_DAMAGE = ZONE + ".damage";
     public static final String ZONE_DAMAGE_INTERVAL = ZONE_DAMAGE + ".interval";
