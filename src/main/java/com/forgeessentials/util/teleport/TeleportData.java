@@ -1,11 +1,12 @@
 package com.forgeessentials.util.teleport;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.selections.WorldPoint;
+
 import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
  * Uses by TeleportCenter.
@@ -17,8 +18,7 @@ public class TeleportData {
 
 	private WarpPoint point;
 	private EntityPlayerMP player;
-	private WorldPoint lastPos;
-	private WorldPoint currentPos;
+	private WarpPoint lastPos;
 	private long startTime;
 
 	public TeleportData(WarpPoint point, EntityPlayerMP player)
@@ -31,8 +31,7 @@ public class TeleportData {
 
 	public boolean checkTeleport()
 	{
-		currentPos = new WarpPoint(player);
-		if (!lastPos.equals(currentPos))
+		if (!lastPos.equals(new WarpPoint(player)))
 		{
 			OutputHandler.chatWarning(player, "Teleport cancelled.");
 			return true;
@@ -60,7 +59,7 @@ public class TeleportData {
 			FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager()
 					.transferPlayerToDimension(player, point.getDimension());
 		}
-		player.playerNetServerHandler.setPlayerLocation(point.xd, point.yd + 0.1, point.zd, point.yaw, point.pitch);
+		player.playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 0.1, point.getZ(), point.getYaw(), point.getPitch());
 		OutputHandler.chatConfirmation(player, "Teleported.");
 	}
 

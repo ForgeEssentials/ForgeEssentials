@@ -1,10 +1,7 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WarpPoint;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,7 +9,12 @@ import net.minecraft.init.Blocks;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WarpPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandTop extends ForgeEssentialsCommandBase {
 
@@ -72,11 +74,11 @@ public class CommandTop extends ForgeEssentialsCommandBase {
     {
         WarpPoint point = new WarpPoint(player);
         point.setY(player.worldObj.getActualHeight());
-        while (player.worldObj.getBlock(point.getX(), point.getY(), point.getZ()) == Blocks.air)
+        while (player.worldObj.getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ()) == Blocks.air)
         {
             point.setY(point.getY() - 1);
         }
-        ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 1, point.getZ(), point.yaw, point.pitch);
+        ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 1, point.getZ(), point.getYaw(), point.getPitch());
         OutputHandler.chatConfirmation(player, "Teleported.");
     }
 
@@ -92,7 +94,6 @@ public class CommandTop extends ForgeEssentialsCommandBase {
         return TeleportModule.PERM_TOP;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
