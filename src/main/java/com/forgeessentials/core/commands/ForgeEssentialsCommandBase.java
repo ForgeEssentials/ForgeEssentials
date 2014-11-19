@@ -1,6 +1,7 @@
 package com.forgeessentials.core.commands;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.command.CommandBase;
@@ -141,6 +142,19 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
     // ------------------------------------------------------------
     // Utilities
+    
+    public static List<String> getListOfStringsMatchingLastWord(String arg, Collection<String> possibleMatches)
+    {
+        List<String> arraylist = new ArrayList<>();
+        for (String s2 : possibleMatches)
+        {
+            if (doesStringStartWith(arg, s2))
+            {
+                arraylist.add(s2);
+            }
+        }
+        return arraylist;
+    }
     
     public static List<String> getListOfStringsMatchingLastWord(String arg, String ... possibleMatches)
     {

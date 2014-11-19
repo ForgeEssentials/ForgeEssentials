@@ -1,11 +1,5 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
-import net.minecraft.server.MinecraftServer;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -16,6 +10,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import net.minecraft.server.MinecraftServer;
+
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldArea;
+import com.forgeessentials.util.selections.WorldPoint;
 
 /**
  * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being {@link RootZone}.
@@ -183,6 +184,7 @@ public class ServerZone extends Zone {
 
     public void addPlayerToGroup(UserIdent ident, String group)
     {
+        registerPlayer(ident);
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
@@ -195,6 +197,7 @@ public class ServerZone extends Zone {
 
     public void removePlayerFromGroup(UserIdent ident, String group)
     {
+        registerPlayer(ident);
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet != null)
             groupSet.remove(group);
@@ -243,6 +246,7 @@ public class ServerZone extends Zone {
 
     public SortedSet<String> getStoredPlayerGroups(UserIdent ident)
     {
+        registerPlayer(ident);
         Set<String> pgs = playerGroups.get(ident);
         SortedSet<String> result = new TreeSet<String>(new GroupComparator());
         if (pgs != null)

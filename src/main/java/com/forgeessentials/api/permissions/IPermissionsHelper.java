@@ -1,16 +1,17 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.IPermissionsProvider;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WorldArea;
+import com.forgeessentials.util.selections.WorldPoint;
 
 /**
  * {@link IPermissionsHelper} is the primary access-point to the permissions-system.
@@ -105,6 +106,23 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param description
      */
     void registerPermissionProperty(String permissionNode, String defaultValue, String description);
+
+    /**
+     * Registers a permission property
+     * 
+     * @param permissionNode
+     * @param defaultValue
+     */
+    void registerPermissionPropertyOp(String permissionNode, String defaultValue);
+
+    /**
+     * Registers a permission property
+     * 
+     * @param permissionNode
+     * @param defaultValue
+     * @param description
+     */
+    void registerPermissionPropertyOp(String permissionNode, String defaultValue, String description);
 
     // ---------------------------------------------------------------------------
 

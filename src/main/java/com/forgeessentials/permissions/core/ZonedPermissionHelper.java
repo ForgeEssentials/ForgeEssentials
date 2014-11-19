@@ -1,27 +1,5 @@
 package com.forgeessentials.permissions.core;
 
-import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.permissions.RootZone;
-import com.forgeessentials.api.permissions.ServerZone;
-import com.forgeessentials.api.permissions.WorldZone;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.api.permissions.Zone.PermissionList;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-import net.minecraftforge.permissions.IContext;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +13,30 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraftforge.permissions.IContext;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.RootZone;
+import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.api.permissions.WorldZone;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WorldArea;
+import com.forgeessentials.util.selections.WorldPoint;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 /**
  * 
@@ -353,6 +355,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     }
 
     @Override
+    public void registerPermissionPropertyOp(String permissionNode, String defaultValue)
+    {
+        rootZone.setGroupPermissionProperty(GROUP_OPERATORS, permissionNode, defaultValue);
+    }
+
+    @Override
     public void registerPermission(String permissionNode, PermissionsManager.RegisteredPermValue permLevel)
     {
         if (permLevel == RegisteredPermValue.FALSE)
@@ -383,6 +391,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     public void registerPermissionProperty(String permissionNode, String defaultValue, String description)
     {
         registerPermissionProperty(permissionNode, defaultValue);
+        registerPermissionDescription(permissionNode, description);
+    }
+
+    @Override
+    public void registerPermissionPropertyOp(String permissionNode, String defaultValue, String description)
+    {
+        registerPermissionPropertyOp(permissionNode, defaultValue);
         registerPermissionDescription(permissionNode, description);
     }
 
