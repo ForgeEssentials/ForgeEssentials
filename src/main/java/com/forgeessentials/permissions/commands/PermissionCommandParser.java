@@ -601,7 +601,7 @@ public class PermissionCommandParser {
             parseUserPermissions(ident, zone, PermissionAction.VALUE);
             break;
         default:
-            break;
+            throw new CommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
     }
 
@@ -624,7 +624,7 @@ public class PermissionCommandParser {
         }
         else
         {
-            String fix = args.remove();
+            String fix = StringUtils.join(args, " ");
             if (fix.equalsIgnoreCase("clear"))
             {
                 info(String.format("%s's %s cleared", ident.getUsernameOrUUID(), fixName));
@@ -1054,7 +1054,7 @@ public class PermissionCommandParser {
             parseGroupPermissions(group, zone, PermissionAction.VALUE);
             break;
         default:
-            break;
+            throw new CommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
     }
 
@@ -1077,7 +1077,7 @@ public class PermissionCommandParser {
         }
         else
         {
-            String fix = args.remove();
+            String fix = StringUtils.join(args, " ");
             if (fix.equalsIgnoreCase("clear"))
             {
                 info(String.format("%s's %s cleared", group, fixName));

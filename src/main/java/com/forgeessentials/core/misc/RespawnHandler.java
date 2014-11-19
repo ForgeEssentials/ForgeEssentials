@@ -1,5 +1,12 @@
 package com.forgeessentials.core.misc;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.util.FunctionHelper;
@@ -11,12 +18,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 public class RespawnHandler {
 
@@ -26,12 +27,12 @@ public class RespawnHandler {
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    public static WarpPoint getPlayerSpawn(EntityPlayer player, WorldPoint location)
+    public static WarpPoint getPlayerSpawn(EntityPlayer player, WarpPoint location)
     {
         UserIdent ident = new UserIdent(player);
         if (location == null)
-            location = new WorldPoint(player);
-        String spawnProperty = APIRegistry.perms.getPermission(ident, location, null, APIRegistry.perms.getPlayerGroups(ident), FEPermissions.SPAWN, true);
+            location = new WarpPoint(player);
+        String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null, APIRegistry.perms.getPlayerGroups(ident), FEPermissions.SPAWN, true);
         WorldPoint point = null;
         if (spawnProperty == null)
             return null;
@@ -75,9 +76,9 @@ public class RespawnHandler {
                 if (p != null)
                 {
                     FunctionHelper.teleportPlayer(player, p);
-                    player.posX = p.xd;
-                    player.posY = p.yd;
-                    player.posZ = p.zd;
+                    player.posX = p.getX();
+                    player.posY = p.getY();
+                    player.posZ = p.getZ();
                 }
             }
         }
@@ -94,9 +95,9 @@ public class RespawnHandler {
         if (p != null)
         {
             FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
-            e.player.posX = p.xd;
-            e.player.posY = p.yd;
-            e.player.posZ = p.zd;
+            e.player.posX = p.getX();
+            e.player.posY = p.getY();
+            e.player.posZ = p.getZ();
         }
     }
 

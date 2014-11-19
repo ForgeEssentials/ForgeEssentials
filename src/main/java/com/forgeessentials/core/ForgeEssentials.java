@@ -1,5 +1,13 @@
 package com.forgeessentials.core;
 
+import java.io.File;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -16,6 +24,7 @@ import com.forgeessentials.core.compat.WorldEditNotifier;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.misc.RespawnHandler;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
@@ -44,8 +53,7 @@ import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
-import com.forgeessentials.util.teleport.TeleportCenter;
-import cpw.mods.fml.common.FMLCommonHandler;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -59,14 +67,6 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-
-import java.io.File;
 
 /**
  * Main mod class
@@ -109,6 +109,15 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @SuppressWarnings("unused")
     private MiscEventHandler miscEventHandler;
 
+    @SuppressWarnings("unused")
+    private ForgeEssentialsEventFactory factory;
+
+    @SuppressWarnings("unused")
+    private WorldEditNotifier worldEditNotifier;
+
+    @SuppressWarnings("unused")
+    private TeleportHelper teleportHelper;
+    
     // static FE-module flags / variables
     public static boolean worldEditCompatilityPresent = false;
 
@@ -175,12 +184,10 @@ public class ForgeEssentials extends ConfigLoaderBase {
         // FMLCommonHandler.instance().bus().register(this);
 
         // other stuff
-        ForgeEssentialsEventFactory factory = new ForgeEssentialsEventFactory();
-        FMLCommonHandler.instance().bus().register(factory);
-        MinecraftForge.EVENT_BUS.register(factory);
-
+        factory = new ForgeEssentialsEventFactory();
         respawnHandler = new RespawnHandler();
         wandHandler = new SelectionEventHandler();
+        teleportHelper = new TeleportHelper();
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
     }
@@ -222,7 +229,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
             new CommandExpandY().register();
         }
 
-        new WorldEditNotifier();
+        worldEditNotifier = new WorldEditNotifier();
 
         tasks.onServerStart();
 
@@ -275,8 +282,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
                 "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
         PlayerInfo.persistSelections = config.get(CONFIG_CAT, "persistSelections", false,
                 "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.").getBoolean(false);
-        TeleportCenter.setTeleportWarmup(config.get(CONFIG_CAT_MISC, "tpWarmup", 5, "The amount of time you need to stand still to TP.").getInt(3));
-        TeleportCenter.setTeleportCooldown(config.get(CONFIG_CAT_MISC, "tpCooldown", 5, "The amount of time you need to wait to TP again.").getInt(5));
         MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If +50% of players sleep, make it day.").getBoolean(true);
     }
 

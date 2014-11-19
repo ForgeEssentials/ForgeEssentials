@@ -1,5 +1,7 @@
 package com.forgeessentials.commands.util;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import com.forgeessentials.commands.CommandAFK;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -10,8 +12,7 @@ public class AFKdata {
     public boolean needstowait;
     private int waittime;
     private long startTime;
-    private WorldPoint lastPos;
-    private WorldPoint currentPos;
+    private WarpPoint lastPos;
 
     public AFKdata(EntityPlayerMP player)
     {
@@ -30,8 +31,7 @@ public class AFKdata {
             return;
         }
 
-        currentPos = new WarpPoint(player);
-        if (!lastPos.equals(currentPos))
+        if (!lastPos.equals(new WarpPoint(player)))
         {
             CommandAFK.instance.abort(this);
         }

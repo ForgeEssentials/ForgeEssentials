@@ -28,7 +28,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.4.0-beta2"
+version = "1.4.0-beta3"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
@@ -99,7 +99,7 @@ dependencies {
     compile "org.projectlombok:lombok:1.14.6"
 
     // WE integration -
-    compile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.0-SNAPSHOT'
+    compile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.0-SNAPSHOT:dev'
 
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'

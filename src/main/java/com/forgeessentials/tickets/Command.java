@@ -1,9 +1,9 @@
 package com.forgeessentials.tickets;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.teleport.TeleportCenter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,9 +11,10 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 
 public class Command extends ForgeEssentialsCommandBase {
     @Override
@@ -127,7 +128,7 @@ public class Command extends ForgeEssentialsCommandBase {
                 return;
             }
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
-            TeleportCenter.teleport(ModuleTickets.getID(id).point, (EntityPlayerMP) sender);
+            TeleportHelper.teleport((EntityPlayerMP) sender, ModuleTickets.getID(id).point);
         }
 
         if (args[0].equalsIgnoreCase("del") && permcheck(sender, "admin"))

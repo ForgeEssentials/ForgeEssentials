@@ -1,5 +1,13 @@
 package com.forgeessentials.teleport;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
@@ -8,13 +16,6 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 
@@ -68,8 +69,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 		return "fe.teleport." + getCommandName();
 	}
 
-    @SuppressWarnings("unchecked")
-	@Override
+    @Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		ArrayList<String> completes = new ArrayList<String>();

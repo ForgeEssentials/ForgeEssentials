@@ -13,6 +13,21 @@ import com.google.gson.JsonPrimitive;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventBus;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -30,23 +45,24 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.server.CommandHandlerForge;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.compat.Environment;
+import com.forgeessentials.util.selections.Point;
+import com.forgeessentials.util.selections.WarpPoint;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventBus;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 public final class FunctionHelper {
 
@@ -232,10 +248,10 @@ public final class FunctionHelper {
 
 		if (minutes != 0)
 		{
-			uptime += (minutes < 10 ? "0" : "") + minutes + " min ";
+			uptime += (minutes < 10 ? "0" : "") + minutes + " minutes ";
 		}
 
-		uptime += (seconds < 10 ? "0" : "") + seconds + " sec.";
+		uptime += (seconds < 10 ? "0" : "") + seconds + " seconds";
 
 		return uptime;
 	}
@@ -508,10 +524,10 @@ public final class FunctionHelper {
 		{
 			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, p.getDimension());
 		}
-		player.playerNetServerHandler.setPlayerLocation(p.xd, p.yd, p.zd, p.yaw, p.pitch);
-		player.prevPosX = player.posX = p.xd;
-		player.prevPosY = player.posY = p.yd;
-		player.prevPosZ = player.posZ = p.zd;
+		player.playerNetServerHandler.setPlayerLocation(p.getX(), p.getY(), p.getZ(), p.getYaw(), p.getPitch());
+		player.prevPosX = player.posX = p.getX();
+		player.prevPosY = player.posY = p.getY();
+		player.prevPosZ = player.posZ = p.getZ();
 	}
 
 	/**

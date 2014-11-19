@@ -61,9 +61,9 @@ public class SQLProvider extends ZonePersistenceProvider {
                 sb.append("` ");
                 sb.append(col.getValue());
                 if (nullableKeys.contains(col.getKey()))
-                    sb.append(" NOT NULL, ");
-                else
                     sb.append(", ");
+                else
+                    sb.append(" NOT NULL, ");
             }
             sb.append("PRIMARY KEY (`");
             sb.append(StringUtils.join(primaryKeys, "`, `"));
@@ -106,7 +106,7 @@ public class SQLProvider extends ZonePersistenceProvider {
             if (dbType == EnumDBType.H2_FILE)
                 sb.append("MERGE INTO `");
             else
-                sb.append("INSERT OR REPLACE INTO `");
+                sb.append("REPLACE INTO `");
             sb.append(name);
             sb.append("` (`");
             sb.append(StringUtils.join(fieldsAndValues.keySet(), "`, `"));
@@ -356,7 +356,7 @@ public class SQLProvider extends ZonePersistenceProvider {
             writeUserGroupPermissions(serverZone);
 
             // Use a transaction to be able to rollback, if there is an error
-            db.setAutoCommit(false);
+            //db.setAutoCommit(false);
 
             // Truncate old data
             db.createStatement().executeUpdate(TABLES.get(TABLE_ZONE).createTruncate());
@@ -377,8 +377,8 @@ public class SQLProvider extends ZonePersistenceProvider {
                     saveZonePermissions(areaZone);
                 }
             }
-            db.commit();
-            db.setAutoCommit(true);
+            //db.commit();
+            //db.setAutoCommit(true);
         }
         catch (SQLException se)
         {

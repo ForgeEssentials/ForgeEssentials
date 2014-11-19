@@ -1,7 +1,20 @@
 package com.forgeessentials.teleport;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.teleport.util.PWarp;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.OutputHandler;
@@ -15,10 +28,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
     
@@ -71,7 +80,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
 					CommandBack.justDied.remove(sender.getPersistentID());
-					TeleportCenter.teleport(warp.getPoint(), (EntityPlayerMP) sender);
+					TeleportHelper.teleport((EntityPlayerMP) sender, warp.getPoint());
 				}
 				else
 				{

@@ -1,11 +1,22 @@
 package com.forgeessentials.teleport;
 
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.teleport.util.Warp;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.util.teleport.TeleportCenter;
 import net.minecraft.command.ICommandSender;
@@ -14,8 +25,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.List;
 
 /**
  * Now uses TeleportCenter.
@@ -52,7 +61,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                     PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
                     CommandBack.justDied.remove(sender.getPersistentID());
-                    TeleportCenter.teleport(warp.getPoint(), (EntityPlayerMP) sender);
+                    TeleportHelper.teleport((EntityPlayerMP) sender, warp.getPoint());
                 }
                 else
                 {
@@ -123,7 +132,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                 {
                     Warp warp = TeleportDataManager.warps.get(args[1].toLowerCase());
                     PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-                    TeleportCenter.teleport(warp.getPoint(), player);
+                    TeleportHelper.teleport(player, warp.getPoint());
                 }
                 else
                 {

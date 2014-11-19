@@ -1,8 +1,20 @@
 package com.forgeessentials.permissions;
 
+import java.io.File;
+import java.io.IOException;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import org.apache.commons.io.FileUtils;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -20,19 +32,14 @@ import com.forgeessentials.permissions.persistence.SQLProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import com.forgeessentials.util.teleport.TeleportCenter;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.io.File;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
 public class ModulePermissions extends ConfigLoaderBase {
@@ -75,6 +82,20 @@ public class ModulePermissions extends ConfigLoaderBase {
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
+        // Backup FEData directory
+        try
+        {
+            File path = new File(FunctionHelper.getWorldPath(), "FEData");
+            File backupPath = new File(FunctionHelper.getWorldPath(), "FEData_backup");
+            if (backupPath.exists())
+                FileUtils.deleteDirectory(backupPath);
+            FileUtils.copyDirectory(path, backupPath);
+        }
+        catch (IOException ex)
+        {
+            OutputHandler.felog.warning("Unable to create FEData backup");
+        }
+        
         // Load permissions
         switch (persistenceBackend.toLowerCase())
         {
@@ -119,6 +140,7 @@ public class ModulePermissions extends ConfigLoaderBase {
 
     private static void registerPermissions()
     {
+        // Permission settings command
         APIRegistry.perms.registerPermissionDescription(FEPermissions.FE_INTERNAL,
                 "Internal permissions - DO NOT TOUCH THESE UNLESS YOU KNOW WHAT YOU DO (WHICH YOU DON'T!)");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP,
@@ -163,11 +185,15 @@ public class ModulePermissions extends ConfigLoaderBase {
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_RELOAD, RegisteredPermValue.TRUE, "Allow reloading changed permission files");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_SAVE, RegisteredPermValue.TRUE, "Allow force-saving permission files");
 
+        // Other
         APIRegistry.perms.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
         APIRegistry.perms.registerPermission("fe.core.info", RegisteredPermValue.OP);
-
-        APIRegistry.perms.registerPermission(TeleportCenter.BYPASS_COOLDOWN, RegisteredPermValue.OP, "Allow bypassing teleport cooldown");
-        APIRegistry.perms.registerPermission(TeleportCenter.BYPASS_WARMUP, RegisteredPermValue.OP, "Allow bypassing teleport warmup");
+        
+        // Teleport
+        APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5", "Allow bypassing teleport cooldown");
+        APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
+        APIRegistry.perms.setGroupPermissionProperty(IPermissionsHelper.GROUP_OPERATORS, TeleportHelper.TELEPORT_COOLDOWN, "0");
+        APIRegistry.perms.setGroupPermissionProperty(IPermissionsHelper.GROUP_OPERATORS, TeleportHelper.TELEPORT_WARMUP, "0");
     }
 
     @Override

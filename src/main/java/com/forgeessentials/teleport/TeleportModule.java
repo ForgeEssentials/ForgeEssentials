@@ -1,5 +1,14 @@
 package com.forgeessentials.teleport;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -17,14 +26,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
 public class TeleportModule {
@@ -36,6 +37,7 @@ public class TeleportModule {
 
     public static final String PERM_TPA = "fe.teleport.tpa";
     public static final String PERM_TPA_SENDREQUEST = "fe.teleport.tpa.sendrequest";
+    public static final String PERM_TPA_TIMEOUT = "fe.teleport.tpa.timeout";
 
     public static final String PERM_TOP = "fe.teleport.top";
     public static final String PERM_TOP_OTHERS = "fe.teleport.top.others";
@@ -58,8 +60,6 @@ public class TeleportModule {
 
     public static final String PERM_WARP = "fe.teleport.warp";
     public static final String PERM_WARP_ADMIN = "fe.teleport.warp.admin";
-    
-    public static final String PERM_TIMEOUT = "fe.teleport.timeout";
     
     public static List<TPAdata> tpaList = new ArrayList<TPAdata>();
     public static List<TPAdata> tpaListToAdd = new ArrayList<TPAdata>();
@@ -98,7 +98,7 @@ public class TeleportModule {
             FunctionHelper.registerServerCommand(cmd);
         }
 
-        APIRegistry.perms.registerPermissionProperty(PERM_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
+        APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
         APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, RegisteredPermValue.TRUE, "Allow returning to the last death location with back-command");
         APIRegistry.perms.registerPermission(PERM_BACK_ONTP, RegisteredPermValue.TRUE, "Allow returning to the last location before teleport with back-command");
