@@ -1,19 +1,20 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.teleport.TeleportCenter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.WarpPoint;
 
 public class CommandBack extends ForgeEssentialsCommandBase {
     
@@ -38,7 +39,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
                     WarpPoint death = info.getLastTeleportOrigin();
                     info.setLastTeleportOrigin(new WarpPoint(sender));
                     EntityPlayerMP player = (EntityPlayerMP) sender;
-                    TeleportCenter.teleport(death, player);
+                    TeleportHelper.teleport(player, death);
                 }
                 else
                 {
@@ -60,7 +61,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
                 WarpPoint back = info.getLastTeleportOrigin();
                 info.setLastTeleportOrigin(new WarpPoint(sender));
                 EntityPlayerMP player = (EntityPlayerMP) sender;
-                TeleportCenter.teleport(back, player);
+                TeleportHelper.teleport(player, back);
             }
             else
             {

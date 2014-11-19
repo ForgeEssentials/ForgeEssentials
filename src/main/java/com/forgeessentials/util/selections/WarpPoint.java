@@ -1,66 +1,58 @@
 package com.forgeessentials.util.selections;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
+
 import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.SaveableObject.Reconstructor;
 import com.forgeessentials.data.api.SaveableObject.SaveableField;
 import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import net.minecraft.entity.Entity;
 
 @SaveableObject(SaveInline = true)
-public class WarpPoint extends WorldPoint {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -1534182424702360150L;
+public class WarpPoint {
+    
+    @SaveableField
+    protected int dim;
 
     @SaveableField
-    public float pitch;
+    protected float pitch;
 
     @SaveableField
-    public float yaw;
+    protected float yaw;
 
-    // stops the coords from Point to be saved.
-    @SaveableField(overrideParent = "x")
-    public double xd;
+    @SaveableField
+    protected double xd;
 
-    // stops the coords from Point to be saved.
-    @SaveableField(overrideParent = "y")
-    public double yd;
+    @SaveableField
+    protected double yd;
 
-    // stops the coords from Point to be saved.
-    @SaveableField(overrideParent = "z")
-    public double zd;
+    @SaveableField
+    protected double zd;
 
     public WarpPoint(int dimension, double x, double y, double z, float playerPitch, float playerYaw)
     {
-        super(dimension, (int) Math.round(x), (int) Math.round(y), (int) Math.round(z));
-        xd = x;
-        yd = y;
-        zd = z;
-        pitch = playerPitch;
-        yaw = playerYaw;
+        this.dim = dimension;
+        this.xd = x;
+        this.yd = y;
+        this.zd = z;
+        this.pitch = playerPitch;
+        this.yaw = playerYaw;
     }
 
     public WarpPoint(Point p, int dimension, float playerPitch, float playerYaw)
     {
         this(dimension, p.getX(), p.getY(), p.getZ(), playerPitch, playerYaw);
-        xd = x;
-        yd = y;
-        zd = z;
     }
 
     public WarpPoint(WorldPoint p, float playerPitch, float playerYaw)
     {
         this(p.dim, p.getX(), p.getY(), p.getZ(), playerPitch, playerYaw);
-        xd = x;
-        yd = y;
-        zd = z;
     }
 
     public WarpPoint(Entity sender)
     {
-        super(sender);
+        dim = sender.dimension;
         xd = sender.posX;
         yd = sender.posY;
         zd = sender.posZ;
@@ -140,15 +132,12 @@ public class WarpPoint extends WorldPoint {
      * ensures the Point is valid. Just floors the Y axis to 0. Y can't be
      * negative.
      */
-    @Override
     public void validate()
     {
         if (yd < 0)
         {
             yd = 0;
         }
-
-        super.validate();
     }
 
     /**
@@ -191,6 +180,87 @@ public class WarpPoint extends WorldPoint {
     public String toString()
     {
         return "WarpPoint[" + dim + "," + xd + "," + yd + "," + zd + "," + pitch + "," + yaw + "]";
+    }
+
+    public Vec3 toVec3()
+    {
+        return Vec3.createVectorHelper(xd, yd, zd);
+    }
+
+    
+    public int getDimension()
+    {
+        return dim;
+    }
+
+    public double getX()
+    {
+        return xd;
+    }
+
+    public double getY()
+    {
+        return yd;
+    }
+
+    public double getZ()
+    {
+        return zd;
+    }
+
+    public void setX(double value)
+    {
+        xd = value;
+    }
+
+    public void setY(double value)
+    {
+        yd = value;
+    }
+
+    public void setZ(double value)
+    {
+        zd = value;
+    }
+
+    public float getPitch()
+    {
+        return pitch;
+    }
+
+    public float getYaw()
+    {
+        return yaw;
+    }
+
+    public void setPitch(float value)
+    {
+        pitch = value;
+    }
+
+    public void setYaw(float value)
+    {
+        yaw = value;
+    }
+
+    public int getBlockX()
+    {
+        return (int) xd;
+    }
+
+    public int getBlockY()
+    {
+        return (int) yd;
+    }
+
+    public int getBlockZ()
+    {
+        return (int) zd;
+    }
+
+    public WorldPoint toWorldPoint()
+    {
+        return new WorldPoint(dim, (int) xd, (int) yd, (int) zd);
     }
 
 }

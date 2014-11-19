@@ -3,6 +3,7 @@ package com.forgeessentials.worldedit.compat;
 import java.util.EnumMap;
 import java.util.Map;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -50,7 +51,12 @@ public class FEPlatform extends AbstractPlatform {
     @Override
     public Player matchPlayer(Player player)
     {
-        return null;
+        if (player instanceof FEPlayer) {
+            return player;
+        } else {
+            EntityPlayerMP entity = MinecraftServer.getServer().getConfigurationManager().func_152612_a(player.getName());
+            return entity != null ? new FEPlayer(entity, player) : null;
+        }
     }
 
     @Override

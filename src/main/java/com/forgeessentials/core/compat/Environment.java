@@ -2,6 +2,7 @@ package com.forgeessentials.core.compat;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
+
 import cpw.mods.fml.common.Loader;
 
 public class Environment {
@@ -23,7 +24,7 @@ public class Environment {
             isClient = false;
         }
 
-        if (Loader.isModLoaded("WorldEdit"))
+        if (Loader.isModLoaded("worldedit"))
         {
             hasWorldEdit = true;
             try
