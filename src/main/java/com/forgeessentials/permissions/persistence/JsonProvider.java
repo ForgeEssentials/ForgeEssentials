@@ -168,7 +168,7 @@ public class JsonProvider extends ZonePersistenceProvider
                 username = null;
             }
             List<String> list = permList.toList();
-            UserData userData = new UserData(uuid, username, prefix, suffix);
+            UserData userData = new UserData(username, prefix, suffix);
             userData.permissions.addAll(list);
             userData.groups.addAll(serverZone.getPlayerGroups(user));
             usersData.users.put(uuid, userData);
@@ -269,16 +269,14 @@ public class JsonProvider extends ZonePersistenceProvider
     
     public static class UserData
     {
-        public String uuid;
         public String username;
         public String prefix;
         public String suffix;
         public List<String> groups;
         public List<String> permissions;
         
-        public UserData(String uuid, String username, String prefix, String suffix)
+        public UserData(String username, String prefix, String suffix)
         {
-            this.uuid = uuid;
             this.username = username;
             this.prefix = prefix;
             this.suffix = suffix;
