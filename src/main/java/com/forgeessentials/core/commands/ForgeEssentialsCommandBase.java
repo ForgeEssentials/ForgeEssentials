@@ -12,6 +12,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -120,7 +121,14 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
      */
     public void register()
     {
-        CommandHandlerForge.registerCommand(this, getPermissionNode(), getDefaultPermission());
+        if (getPermissionNode() != null && getDefaultPermission() != null)
+        {
+            CommandHandlerForge.registerCommand(this, getPermissionNode(), getDefaultPermission());
+        }
+        else
+        {
+            ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(this);
+        }
     }
 
     /**

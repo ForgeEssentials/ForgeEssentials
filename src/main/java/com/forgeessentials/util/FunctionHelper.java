@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.CommandHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -1116,6 +1117,10 @@ public final class FunctionHelper {
         if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
         {
             CommandHandlerForge.registerCommand(command, command.getPermissionNode(), command.getDefaultPermission());
+        }
+        else
+        {
+            ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(command);
         }
     }
 
