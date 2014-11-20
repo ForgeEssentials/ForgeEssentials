@@ -141,6 +141,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
      */
     public boolean checkCommandPermission(ICommandSender sender)
     {
+        if (getPermissionNode() == null || getPermissionNode().isEmpty())
+            return true;
         return PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(this), getPermissionNode());
     }
 
