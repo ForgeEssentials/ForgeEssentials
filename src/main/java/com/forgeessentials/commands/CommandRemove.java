@@ -12,10 +12,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.WorldPoint;
-
 public class CommandRemove extends FEcmdModuleCommands {
     @Override
     public String getCommandName()

@@ -16,12 +16,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.Point;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
 public class EventHandler {
     @SubscribeEvent()
     public void playerInteractEvent(PlayerInteractEvent e)
