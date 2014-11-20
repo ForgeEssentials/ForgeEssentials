@@ -55,14 +55,13 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
     public void injectData(Map<String, Object> data)
     {
 
-        if (data.containsKey("mcLocation"))
+        if (data.containsKey("mcLocation") && data.get("mcLocation") != null)
         {
             mcLocation = (File) data.get("mcLocation");
         }
         if (data.containsKey("classLoader") && data.get("classLoader") != null)
         {
             classLoader = (LaunchClassLoader) data.get("classLoader");
-
         }
         if (data.containsKey("runtimeDeobfuscationEnabled") && data.get("runtimeDeobfuscationEnabled") != null)
         {

@@ -231,3 +231,9 @@ artifacts {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
+
+task cleanLibFiles(dependsOn: "check", type: Delete) {
+    delete(completeZip.archivePath)
+}
+
+project.tasks.build.dependsOn "cleanLibFiles"
