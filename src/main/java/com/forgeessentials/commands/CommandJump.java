@@ -30,7 +30,7 @@ public class CommandJump extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(sender, 500);
         if (mo == null)

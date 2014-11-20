@@ -1,11 +1,12 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandRename extends FEcmdModuleCommands {
     @Override
@@ -21,7 +22,7 @@ public class CommandRename extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 0)
         {

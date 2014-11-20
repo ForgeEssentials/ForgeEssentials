@@ -358,7 +358,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         LinkedList<String> argsList = new LinkedList<String>(Arrays.asList(args));
         tabCompleteMode = false;

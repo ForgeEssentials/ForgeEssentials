@@ -7,7 +7,7 @@ import java.util.Queue;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -52,7 +52,7 @@ public class CommandButcher extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         int radius = -1;
         double x = sender.posX;

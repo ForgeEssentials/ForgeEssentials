@@ -1,17 +1,18 @@
 package com.forgeessentials.economy.commands.plots;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.PlayerInfo;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permissions.PermissionsManager;
 
 public class CommandSetPlot extends ForgeEssentialsCommandBase{
 
     @Override
-    public void processCommandPlayer(EntityPlayer player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
         PlayerInfo info = PlayerInfo.getPlayerInfo(player);
         Plot plot = new Plot(player.getEntityWorld(), info.getPoint1(), info.getPoint2(), Integer.parseInt(args[1]), args[0], player.getUniqueID());

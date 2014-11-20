@@ -1,11 +1,13 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemAxe;
@@ -19,9 +21,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandEnchant extends FEcmdModuleCommands {
 	@Override
@@ -31,7 +32,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 	{
 		ItemStack var6 = sender.getCurrentEquippedItem();
 		if (var6 == null)

@@ -2,19 +2,23 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+
 import cpw.mods.fml.common.registry.GameData;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class CommandWand extends ForgeEssentialsCommandBase {
 
@@ -25,7 +29,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
 		// Get the wand item (or hands)
 		Item wandItem;

@@ -30,7 +30,7 @@ public class CommandInventorySee extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
         {

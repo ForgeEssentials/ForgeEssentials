@@ -23,7 +23,7 @@ public class CommandKill extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length >= 1 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {

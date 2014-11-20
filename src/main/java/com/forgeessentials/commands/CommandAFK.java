@@ -48,7 +48,7 @@ public class CommandAFK extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         CommandsEventHandler.afkListToAdd.add(new AFKdata((EntityPlayerMP) sender));
         OutputHandler.chatConfirmation(sender, String.format("Stand still for %d seconds.", warmup));

@@ -54,7 +54,7 @@ public class CommandPotion extends FEcmdModuleCommands {
 	 */
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         int ID = 0;
         int dur = 0;

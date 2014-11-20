@@ -40,7 +40,7 @@ public class CommandVirtualchest extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         EntityPlayerMP player = (EntityPlayerMP) sender;
         if (player.openContainer != player.inventoryContainer)

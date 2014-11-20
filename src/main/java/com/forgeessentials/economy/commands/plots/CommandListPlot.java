@@ -1,13 +1,14 @@
 package com.forgeessentials.economy.commands.plots;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandListPlot extends ForgeEssentialsCommandBase
 {
@@ -22,7 +23,7 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
         if (args[0].equals("sale"))
         {

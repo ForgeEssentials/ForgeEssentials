@@ -43,7 +43,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 	{
 		HashMap<String, PWarp> map = TeleportDataManager.pwMap.get(sender.getPersistentID().toString());
 

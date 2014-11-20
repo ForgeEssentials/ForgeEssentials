@@ -2,6 +2,11 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
@@ -10,11 +15,6 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.selections.WorldPoint;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandPos extends ForgeEssentialsCommandBase {
     private int type;
@@ -31,7 +31,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
         int x, y, z;
 
@@ -45,11 +45,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
                 if (type == 1)
                 {
-                    PlayerInfo.selectionProvider.setPoint1((EntityPlayerMP)player,new Point(x, y, z));
+                    PlayerInfo.selectionProvider.setPoint1(player,new Point(x, y, z));
                 }
                 else
                 {
-                    PlayerInfo.selectionProvider.setPoint2((EntityPlayerMP)player,new Point(x, y, z));
+                    PlayerInfo.selectionProvider.setPoint2(player,new Point(x, y, z));
                 }
 
                 OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -85,11 +85,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
             if (type == 1)
             {
-                PlayerInfo.selectionProvider.setPoint1((EntityPlayerMP)player,new Point(x, y, z));
+                PlayerInfo.selectionProvider.setPoint1(player,new Point(x, y, z));
             }
             else
             {
-                PlayerInfo.selectionProvider.setPoint2((EntityPlayerMP)player,new Point(x, y, z));
+                PlayerInfo.selectionProvider.setPoint2(player,new Point(x, y, z));
             }
 
             OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -117,11 +117,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
         if (type == 1)
         {
-            PlayerInfo.selectionProvider.setPoint1((EntityPlayerMP)player, point);
+            PlayerInfo.selectionProvider.setPoint1(player, point);
         }
         else
         {
-            PlayerInfo.selectionProvider.setPoint2((EntityPlayerMP)player, point);
+            PlayerInfo.selectionProvider.setPoint2(player, point);
         }
 
         OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);

@@ -16,7 +16,7 @@ public class CommandCraft extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         EntityPlayerMP player = (EntityPlayerMP) sender;
         player.getNextWindowId();

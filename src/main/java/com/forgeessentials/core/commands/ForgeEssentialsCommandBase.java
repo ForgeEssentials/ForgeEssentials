@@ -11,6 +11,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -24,9 +25,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        if (sender instanceof EntityPlayer)
+        if (sender instanceof EntityPlayerMP)
         {
-            processCommandPlayer((EntityPlayer) sender, args);
+            processCommandPlayer((EntityPlayerMP) sender, args);
         }
         else if (sender instanceof TileEntityCommandBlock)
         {
@@ -38,7 +39,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         }
     }
 
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         throw new CommandException(String.format("Command %s is not implemented for players", getCommandName()));
     }

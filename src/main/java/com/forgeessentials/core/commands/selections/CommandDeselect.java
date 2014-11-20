@@ -1,14 +1,15 @@
 package com.forgeessentials.core.commands.selections;
 
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class CommandDeselect extends ForgeEssentialsCommandBase {
 
@@ -25,7 +26,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
         info.clearSelection();

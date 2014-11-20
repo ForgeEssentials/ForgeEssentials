@@ -1,16 +1,17 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.WorldPoint;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.WorldPoint;
 
 public class CommandRemove extends FEcmdModuleCommands {
     @Override
@@ -21,7 +22,7 @@ public class CommandRemove extends FEcmdModuleCommands {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         int radius = 10;
         double centerX = sender.posX;
