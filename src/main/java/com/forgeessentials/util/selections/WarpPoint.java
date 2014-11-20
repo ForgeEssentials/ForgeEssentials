@@ -186,7 +186,6 @@ public class WarpPoint {
     {
         return Vec3.createVectorHelper(xd, yd, zd);
     }
-
     
     public int getDimension()
     {
@@ -260,7 +259,7 @@ public class WarpPoint {
 
     public WorldPoint toWorldPoint()
     {
-        return new WorldPoint(dim, (int) xd, (int) yd, (int) zd);
+        return new WorldPoint(dim, (int) Math.floor(xd), (int) Math.floor(yd), (int) Math.floor(zd));
     }
 
 }

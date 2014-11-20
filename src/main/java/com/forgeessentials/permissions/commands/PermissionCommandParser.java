@@ -966,10 +966,17 @@ public class PermissionCommandParser {
                 listGroupPermissions(group);
                 return;
             }
-            info("Group " + group + " permissions in zone " + zone.getName() + ":");
-            for (Entry<String, String> perm : zone.getGroupPermissions(group).entrySet())
+            if (zone.getGroupPermissions(group) == null)
             {
-                info("  " + perm.getKey() + " = " + perm.getValue());
+                info("Group " + group + " has no permissions in zone " + zone.getName() + ".");
+            }
+            else
+            {
+                info("Group " + group + " permissions in zone " + zone.getName() + ":");
+                for (Entry<String, String> perm : zone.getGroupPermissions(group).entrySet())
+                {
+                    info("  " + perm.getKey() + " = " + perm.getValue());
+                }
             }
             return;
         }
