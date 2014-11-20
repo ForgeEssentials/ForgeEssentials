@@ -1,7 +1,6 @@
 package com.forgeessentials.commands;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -40,7 +39,7 @@ public class CommandJump extends FEcmdModuleCommands {
         }
         else
         {
-        	EntityPlayerMP player = (EntityPlayerMP) sender;
+        	EntityPlayerMP player = sender;
 			PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 			playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 			CommandBack.justDied.remove(player.getPersistentID());

@@ -73,7 +73,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
 					CommandBack.justDied.remove(sender.getPersistentID());
-					TeleportHelper.teleport((EntityPlayerMP) sender, warp.getPoint());
+					TeleportHelper.teleport(sender, warp.getPoint());
 				}
 				else
 				{

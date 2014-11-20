@@ -56,7 +56,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 		}
 		else if (args.length == 0)
 		{
-			EntityPlayerMP player = (EntityPlayerMP) sender;
+			EntityPlayerMP player = sender;
 
 			WarpPoint point = RespawnHandler.getPlayerSpawn(player, null);
 			if (point == null)

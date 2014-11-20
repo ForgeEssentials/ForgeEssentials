@@ -3,7 +3,6 @@ package com.forgeessentials.teleport;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -53,7 +52,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                     PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
                     CommandBack.justDied.remove(sender.getPersistentID());
-                    TeleportHelper.teleport((EntityPlayerMP) sender, warp.getPoint());
+                    TeleportHelper.teleport(sender, warp.getPoint());
                 }
                 else
                 {

@@ -145,8 +145,6 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
             int amount, x, y, z;
             int dimension = 0;
             
-            String name;
-            
             amount = parseInt(sender, args[1]);
             x = parseInt(sender, args[2]);
             y = parseInt(sender, args[3]);

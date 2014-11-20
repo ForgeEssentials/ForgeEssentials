@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -37,7 +36,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
             double x = parseDouble(sender, args[0], sender.posX);
             double y = parseDouble(sender, args[1], sender.posY);
             double z = parseDouble(sender, args[2], sender.posZ);
-            EntityPlayerMP player = (EntityPlayerMP) sender;
+            EntityPlayerMP player = sender;
             PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
             CommandBack.justDied.remove(player.getPersistentID());

@@ -1,14 +1,14 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandPing extends FEcmdModuleCommands {
     String response = "Pong! %time";
@@ -34,7 +34,7 @@ public class CommandPing extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        OutputHandler.chatNotification(sender, response.replaceAll("%time", ((EntityPlayerMP) sender).ping + "ms."));
+        OutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
     }
 
     @Override

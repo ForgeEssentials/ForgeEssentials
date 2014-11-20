@@ -33,7 +33,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
             }
             else
             {
-                EntityPlayerMP player = (EntityPlayerMP) sender;
+                EntityPlayerMP player = sender;
                 PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                 CommandBack.justDied.remove(player.getPersistentID());

@@ -1,22 +1,22 @@
 package com.forgeessentials.playerlogger.rollback;
 
-import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.Point;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.Date;
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.Point;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EventHandler {
     @SubscribeEvent()
@@ -32,8 +32,6 @@ public class EventHandler {
             try
             {
                 int limit = e.entityPlayer.getEntityData().getInteger("lb_limit");
-                Date date = new Date();
-                new Timestamp(date.getTime());
                 Connection connection = DriverManager.getConnection(ModulePlayerLogger.url, ModulePlayerLogger.username, ModulePlayerLogger.password);
                 Statement st = connection.createStatement();
                 Point p = getPoint(e.entityPlayer);
@@ -61,7 +59,7 @@ public class EventHandler {
         }
     }
 
-    private Point getPoint(EntityPlayer player)
+    private static Point getPoint(EntityPlayer player)
     {
         float var4 = 1.0F;
         float var5 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * var4;

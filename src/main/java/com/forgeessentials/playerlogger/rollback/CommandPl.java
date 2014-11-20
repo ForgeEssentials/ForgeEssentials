@@ -1,17 +1,18 @@
 package com.forgeessentials.playerlogger.rollback;
 
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.playerlogger.network.S2PacketPlayerLogger;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.Arrays;
-import java.util.List;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Main playerlogger command. Still WIP
@@ -61,7 +62,7 @@ public class CommandPl extends ForgeEssentialsCommandBase {
             sender.getEntityData().setBoolean("lb", false);
         }
 
-        FunctionHelper.netHandler.sendTo(new S2PacketPlayerLogger(sender), (EntityPlayerMP)sender);
+        FunctionHelper.netHandler.sendTo(new S2PacketPlayerLogger(sender), sender);
     }
 
     @Override

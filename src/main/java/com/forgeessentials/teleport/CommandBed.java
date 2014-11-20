@@ -54,7 +54,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
         }
         else
         {
-            tp((EntityPlayerMP) sender);
+            tp(sender);
         }
     }
 

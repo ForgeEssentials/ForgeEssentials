@@ -1,7 +1,6 @@
 package com.forgeessentials.client.network;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 
@@ -20,15 +19,8 @@ public class C2PacketPlayerLogger implements IMessageHandler<C2PacketPlayerLogge
         return null;
     }
 
-    private EntityPlayer player;
-
     public C2PacketPlayerLogger()
     {
-    }
-
-    public C2PacketPlayerLogger(EntityPlayer player)
-    {
-        this.player = player;
     }
 
     @Override

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -38,7 +37,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
                 {
                     WarpPoint death = info.getLastTeleportOrigin();
                     info.setLastTeleportOrigin(new WarpPoint(sender));
-                    EntityPlayerMP player = (EntityPlayerMP) sender;
+                    EntityPlayerMP player = sender;
                     TeleportHelper.teleport(player, death);
                 }
                 else
@@ -60,7 +59,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
             {
                 WarpPoint back = info.getLastTeleportOrigin();
                 info.setLastTeleportOrigin(new WarpPoint(sender));
-                EntityPlayerMP player = (EntityPlayerMP) sender;
+                EntityPlayerMP player = sender;
                 TeleportHelper.teleport(player, back);
             }
             else

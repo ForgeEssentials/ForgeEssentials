@@ -46,7 +46,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 			}
 			if (target != null)
 			{
-				EntityPlayerMP player = (EntityPlayerMP) sender;
+				EntityPlayerMP player = sender;
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 				CommandBack.justDied.remove(player.getPersistentID());
@@ -88,7 +88,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 		{
 			if (args.length == 3)
 			{
-				EntityPlayerMP player = (EntityPlayerMP) sender;
+				EntityPlayerMP player = sender;
 				double x = parseDouble(sender, args[0]), y = parseDouble(sender, args[1]), z = parseDouble(sender, args[2]);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
