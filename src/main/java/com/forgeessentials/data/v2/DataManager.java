@@ -6,9 +6,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
@@ -36,7 +37,9 @@ public class DataManager implements ExclusionStrategy {
 
     private static Gson gson;
 
-    private static Set<DataType> dataTypes = new HashSet<>();
+    private static Map<Class<?>, JsonSerializer<?>> serializers = new HashMap<>();
+
+    private static Map<Class<?>, JsonDeserializer<?>> deserializers = new HashMap<>();
 
     private static boolean formatsChanged;
 
@@ -67,7 +70,20 @@ public class DataManager implements ExclusionStrategy {
 
     public static void addDataType(DataType type)
     {
-        dataTypes.add(type);
+        serializers.put(type.getType(), type);
+        deserializers.put(type.getType(), type);
+        formatsChanged = true;
+    }
+
+    public static <T> void addSerializer(Class<T> clazz, JsonSerializer<T> type)
+    {
+        serializers.put(clazz, type);
+        formatsChanged = true;
+    }
+
+    public static <T> void addDeserializer(Class<T> clazz, JsonDeserializer<T> type)
+    {
+        deserializers.put(clazz, type);
         formatsChanged = true;
     }
 
@@ -154,8 +170,10 @@ public class DataManager implements ExclusionStrategy {
             builder.setPrettyPrinting();
             builder.setExclusionStrategies(this);
 
-            for (DataType format : dataTypes)
-                builder.registerTypeAdapter(format.getType(), format);
+            for (Entry<Class<?>, JsonSerializer<?>> format : serializers.entrySet())
+                builder.registerTypeAdapter(format.getKey(), format.getValue());
+            for (Entry<Class<?>, JsonDeserializer<?>> format : deserializers.entrySet())
+                builder.registerTypeAdapter(format.getKey(), format.getValue());
 
             gson = builder.create();
         }
