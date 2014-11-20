@@ -21,7 +21,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 0)
         {
@@ -32,7 +32,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
             }
             else
             {
-                EntityPlayerMP player = (EntityPlayerMP) sender;
+                EntityPlayerMP player = sender;
                 PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                 CommandBack.justDied.remove(player.getPersistentID());

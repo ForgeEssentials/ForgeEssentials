@@ -183,6 +183,7 @@ public class ServerZone extends Zone {
 
     public void addPlayerToGroup(UserIdent ident, String group)
     {
+        registerPlayer(ident);
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
@@ -195,6 +196,7 @@ public class ServerZone extends Zone {
 
     public void removePlayerFromGroup(UserIdent ident, String group)
     {
+        registerPlayer(ident);
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet != null)
             groupSet.remove(group);
@@ -243,6 +245,7 @@ public class ServerZone extends Zone {
 
     public SortedSet<String> getStoredPlayerGroups(UserIdent ident)
     {
+        registerPlayer(ident);
         Set<String> pgs = playerGroups.get(ident);
         SortedSet<String> result = new TreeSet<String>(new GroupComparator());
         if (pgs != null)

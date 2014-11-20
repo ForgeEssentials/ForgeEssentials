@@ -9,7 +9,6 @@ import java.util.Queue;
 import com.forgeessentials.commons.selections.AreaShape;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -358,7 +357,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         LinkedList<String> argsList = new LinkedList<String>(Arrays.asList(args));
         tabCompleteMode = false;

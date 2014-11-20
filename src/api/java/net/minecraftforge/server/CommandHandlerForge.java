@@ -1,6 +1,5 @@
 package net.minecraftforge.server;
 
-import cpw.mods.fml.common.FMLLog;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
@@ -16,6 +15,7 @@ import java.util.Map;
 import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.FALSE;
 import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.OP;
 import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.TRUE;
+import cpw.mods.fml.common.FMLLog;
  
 /**
  * Helper class for Forge permissions and command handling.

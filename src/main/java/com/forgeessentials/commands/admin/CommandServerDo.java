@@ -1,15 +1,18 @@
 package com.forgeessentials.commands.admin;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 
 public class CommandServerDo extends FEcmdModuleCommands {
 
@@ -20,7 +23,7 @@ public class CommandServerDo extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER && args.length >= 1)
         {

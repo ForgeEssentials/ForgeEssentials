@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -32,7 +31,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 0)
         {
@@ -53,7 +52,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                     PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
                     CommandBack.justDied.remove(sender.getPersistentID());
-                    TeleportHelper.teleport((EntityPlayerMP) sender, warp.getPoint());
+                    TeleportHelper.teleport(sender, warp.getPoint());
                 }
                 else
                 {

@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -25,7 +24,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 0)
         {
@@ -84,7 +83,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
         }
         else
         {
-            TeleportModule.tpaListToAdd.add(new TPAdata((EntityPlayerMP) sender, receiver, true));
+            TeleportModule.tpaListToAdd.add(new TPAdata(sender, receiver, true));
 
             OutputHandler.chatNotification(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
             OutputHandler.chatNotification(receiver,

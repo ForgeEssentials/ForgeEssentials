@@ -36,7 +36,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length >= 1 && PermissionsManager.checkPermission(sender, TeleportModule.PERM_BED_OTHERS))
         {
@@ -52,7 +52,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
         }
         else
         {
-            tp((EntityPlayerMP) sender);
+            tp(sender);
         }
     }
 

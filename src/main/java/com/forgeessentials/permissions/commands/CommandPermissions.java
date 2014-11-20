@@ -1,13 +1,15 @@
 package com.forgeessentials.permissions.commands;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandPermissions extends ForgeEssentialsCommandBase {
 
@@ -48,7 +50,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
     	new PermissionCommandParser(sender, args, false);
     }

@@ -1,7 +1,8 @@
 package com.forgeessentials.chat.commands;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -9,8 +10,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandNickname extends ForgeEssentialsCommandBase {
 	
@@ -30,7 +31,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
     // Syntax: /nick [nickname|del]
     // Syntax: /nick <username> [nickname|del]
     @Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 1)
         {
@@ -80,9 +81,9 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        if (sender instanceof EntityPlayer)
+        if (sender instanceof EntityPlayerMP)
         {
-            processCommandPlayer((EntityPlayer) sender, args);
+            processCommandPlayer((EntityPlayerMP) sender, args);
         }
         if (args.length >= 1)
         {

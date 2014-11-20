@@ -1,17 +1,19 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.TickTaskBlockFinder;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.registry.GameData;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.util.TickTaskBlockFinder;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.registry.GameData;
 
 public class CommandFindblock extends FEcmdModuleCommands {
 	
@@ -42,7 +44,7 @@ public class CommandFindblock extends FEcmdModuleCommands {
      * syntax: /fb <block> [max distance, def = 20 * 16] [amount of blocks, def = 1] [speed, def = 10]
      */
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length < 2)
         {

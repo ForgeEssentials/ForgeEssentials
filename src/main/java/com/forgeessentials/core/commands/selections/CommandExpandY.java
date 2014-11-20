@@ -1,11 +1,12 @@
 package com.forgeessentials.core.commands.selections;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandExpandY extends ForgeEssentialsCommandBase {
 
@@ -21,7 +22,7 @@ public class CommandExpandY extends ForgeEssentialsCommandBase {
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args)
+	public void processCommandPlayer(EntityPlayerMP player, String[] args)
 	{
 		PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
 		if (info.getPoint1() == null || info.getPoint2() == null)

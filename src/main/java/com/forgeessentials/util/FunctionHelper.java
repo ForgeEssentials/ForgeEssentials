@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.CommandHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -166,6 +167,22 @@ public final class FunctionHelper {
 			y = world.getHeight() - h;
 		return y;
 	}
+	
+    /**
+     * Returns a free spot of height 2 in the world at the coordinates [x,z] near y.
+     * If the blocks at [x,y,z] are free, it returns the next location that is on the ground.
+     * If the blocks at [x,y,z] are not free, it goes up until it finds a free spot.
+     * 
+     * @param world
+     * @param x
+     * @param y
+     * @param z
+     * @return y value
+     */
+    public static int placeInWorld(World world, int x, int y, int z)
+    {
+        return placeInWorld(world, x, y, z, 2);
+    }
 
     /**
      * Get player's looking-at spot.
@@ -1098,6 +1115,10 @@ public final class FunctionHelper {
         if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
         {
             CommandHandlerForge.registerCommand(command, command.getPermissionNode(), command.getDefaultPermission());
+        }
+        else
+        {
+            ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(command);
         }
     }
 

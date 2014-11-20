@@ -69,7 +69,7 @@ public class CommandWrapper extends ForgeEssentialsCommandBase {
 	}
 
 //    @Override
-//    public void processCommandPlayer(EntityPlayer sender, String[] args)
+//    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 //    {
 //    	getCommand().processCommandPlayer(sender, args);
 //    }

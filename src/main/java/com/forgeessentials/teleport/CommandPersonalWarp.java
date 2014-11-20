@@ -42,7 +42,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 	{
 		HashMap<String, PWarp> map = TeleportDataManager.pwMap.get(sender.getPersistentID().toString());
 
@@ -72,7 +72,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
 					CommandBack.justDied.remove(sender.getPersistentID());
-					TeleportHelper.teleport((EntityPlayerMP) sender, warp.getPoint());
+					TeleportHelper.teleport(sender, warp.getPoint());
 				}
 				else
 				{
