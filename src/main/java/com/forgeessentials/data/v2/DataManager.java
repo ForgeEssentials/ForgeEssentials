@@ -1,5 +1,15 @@
 package com.forgeessentials.data.v2;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
@@ -16,14 +26,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.Expose;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 public class DataManager implements ExclusionStrategy {
 
     public static interface DataType<T> extends JsonSerializer<T>, JsonDeserializer<T> {
@@ -32,19 +34,23 @@ public class DataManager implements ExclusionStrategy {
 
     private static DataManager instance;
 
-    private Gson gson;
+    private static Gson gson;
+
+    private static Set<DataType> dataTypes = new HashSet<>();
+
+    private static boolean formatsChanged;
 
     private File basePath;
 
-    private List<DataType> dataTypes = new ArrayList<>();
-
-    private boolean formatsChanged;
-
+    static
+    {
+        addDataType(new ItemStackType());
+        addDataType(new NBTTagCompoundType());
+    }
+ 
     public DataManager(File basePath)
     {
         this.basePath = basePath;
-        addDataType(new ItemStackType());
-        addDataType(new NBTTagCompoundType());
     }
 
     public static DataManager getInstance()
@@ -59,7 +65,7 @@ public class DataManager implements ExclusionStrategy {
         DataManager.instance = instance;
     }
 
-    public void addDataType(DataType type)
+    public static void addDataType(DataType type)
     {
         dataTypes.add(type);
         formatsChanged = true;
