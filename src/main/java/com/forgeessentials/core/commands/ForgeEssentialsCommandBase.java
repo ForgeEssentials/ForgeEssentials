@@ -156,6 +156,11 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         return arraylist;
     }
     
+    public static List<String> getListOfStringsMatchingLastWord(String[] args, Collection<String> possibleMatches)
+    {
+        return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
+    }
+    
     public static List<String> getListOfStringsMatchingLastWord(String arg, String ... possibleMatches)
     {
         List<String> arraylist = new ArrayList<>();

@@ -24,6 +24,7 @@ import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TickTaskHandler;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
@@ -118,6 +119,9 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @SuppressWarnings("unused")
     private TeleportHelper teleportHelper;
     
+    @SuppressWarnings("unused")
+    private TickTaskHandler tickTaskHandler;
+    
     // static FE-module flags / variables
     public static boolean worldEditCompatilityPresent = false;
 
@@ -188,6 +192,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
         respawnHandler = new RespawnHandler();
         wandHandler = new SelectionEventHandler();
         teleportHelper = new TeleportHelper();
+        tickTaskHandler = new TickTaskHandler();
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
     }
