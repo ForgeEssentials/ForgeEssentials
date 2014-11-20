@@ -33,16 +33,14 @@ group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-project.ext.gitCommitHash = ""
+project.ext.build = '0'
+if (System.getenv('BUILD_NUMBER') != null)
+project.ext.build = System.getenv('BUILD_NUMBER')
 
-if (!project.hasProperty("gitCommitHash")) {
-    try {
-        def repo = Grgit.open(project.file('.'))
-        project.ext.gitCommitHash = repo.head().abbreviatedId
-    } catch (Exception e) {
-        project.ext.gitCommitHash = "no_git_id"
-    }
-}
+import org.ajoberstar.grgit.Grgit
+
+def repo = Grgit.open(project.file('.'))
+project.ext.gitCommitHash = repo.log().find().abbreviatedId
 
 minecraft {
     version = "1.7.10-10.13.1.1225"
@@ -58,6 +56,7 @@ minecraft {
 
 configurations {
     serverLibs
+    includeMod
 }
 
 sourceSets {
@@ -73,10 +72,6 @@ sourceSets {
     client {
         compileClasspath = files(project.configurations.compile, project.sourceSets.utils.output, project.sourceSets.api.output)
     }
-
-    weintegration {
-        compileClasspath = files(project.configurations.compile, project.sourceSets.main.output, project.sourceSets.utils.output, project.sourceSets.api.output)
-    }
 }
 
 repositories {
@@ -84,6 +79,11 @@ repositories {
     maven {
         name = "sk89q"
         url = "http://maven.sk89q.com/repo/"
+    }
+    ivy {
+        name "worldedit-dist"
+        // has to be updated when we update worldedit
+        artifactPattern "http://addons.curse.cursecdn.com/files/2219/60/[module]-[revision].[ext]"
     }
 }
 
@@ -99,32 +99,45 @@ dependencies {
     compile "org.projectlombok:lombok:1.14.6"
 
     // WE integration -
-    compile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.0-SNAPSHOT:dev'
+    compile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0-beta-01:dev'
 
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
     serverLibs 'mysql:mysql-connector-java:5.1.22'
+    includeMod name: 'worldedit-forge', version: 'mc1.7.10-6.0-beta-01', ext: 'jar'
     serverLibs files('lib/minecraftforge-10.13.0.0-permsAPIonly.jar')
 }
 
+//libraries
+task completeZip(type: Zip) {
+    archiveName = "libraries.zip"
+    destinationDir = jar.destinationDir
+
+    from(project.configurations.serverLibs) {
+        include '*'
+        into('ForgeEssentials/lib')
+    }
+    from(project.configurations.includeMod) {
+        include '*'
+        into('mods')
+    }
+}
+
 jar {
+    dependsOn 'completeZip'
     from project.sourceSets.main.output
     exclude "com/forgeessentials/client/**"
 
     from project.sourceSets.utils.output
+    from fileTree(completeZip.archivePath)
 
     classifier = 'server'
     appendix = project.minecraft.version
     manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader",
                 "FMLCorePluginContainsFMLMod": "true",
-                "BuildID": project.ext.gitCommitHash)
-    }
-
-    configurations.serverLibs.each { dep ->
-        from(project.zipTree(dep)) {
-            exclude 'META-INF', 'META-INF/**'
-        }
+                "BuildID": project.ext.gitCommitHash,
+        "Build-Number": project.ext.build)
     }
 
 }
@@ -157,7 +170,7 @@ task clientJar(dependsOn: "jar", type: Jar) {
     from project.sourceSets.utils.output
     include "**"
     manifest {
-        attributes("BuildID": project.ext.gitCommitHash)
+        attributes("BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
     }
 
 }
@@ -178,7 +191,7 @@ task deobfJar(dependsOn: "jar", type: Jar) {
     manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader",
                 "FMLCorePluginContainsFMLMod": "true",
-                "BuildID": project.ext.gitCommitHash)
+                "BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
     }
     classifier = 'deobf'
     appendix = project.minecraft.version
@@ -190,7 +203,7 @@ task sourceJar(type: Jar) {
     classifier = 'sources'
     appendix = project.minecraft.version
     manifest {
-        attributes("BuildID": project.ext.gitCommitHash)
+        attributes("BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
     }
 }
 
@@ -199,7 +212,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     appendix = project.minecraft.version
     manifest {
-        attributes("BuildID": project.ext.gitCommitHash)
+        attributes("BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
     }
 }
 

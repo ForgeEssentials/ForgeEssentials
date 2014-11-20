@@ -1,10 +1,10 @@
 package com.forgeessentials.teleport;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.util.teleport.TeleportCenter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,12 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.selections.WarpPoint;
 
 public class CommandBack extends ForgeEssentialsCommandBase {
     

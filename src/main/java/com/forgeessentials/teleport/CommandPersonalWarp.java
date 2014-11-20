@@ -21,14 +21,6 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.util.teleport.TeleportCenter;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-import org.apache.commons.lang3.StringUtils;
-
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
     
 	public final String PERM_SET_LIMIT = getPermissionNode() + ".setLimit";

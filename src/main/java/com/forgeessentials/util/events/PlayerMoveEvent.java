@@ -5,10 +5,6 @@ import cpw.mods.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import com.forgeessentials.util.selections.WarpPoint;
-
-import cpw.mods.fml.common.eventhandler.Cancelable;
-
 @Cancelable
 public class PlayerMoveEvent extends PlayerEvent {
     public final WarpPoint before;

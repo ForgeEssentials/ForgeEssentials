@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import com.forgeessentials.commons.selections.WarpPoint;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.api.APIRegistry;
@@ -12,7 +13,6 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.selections.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

@@ -49,21 +49,6 @@ import net.minecraftforge.server.CommandHandlerForge;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.compat.Environment;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventBus;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-
 public final class FunctionHelper {
 
 	public static SimpleNetworkWrapper netHandler;
@@ -200,7 +185,7 @@ public final class FunctionHelper {
      * Get player's looking spot.
      *
      * @param player
-     * @param restrict
+     * @param maxDistance
      *            Keep max distance to 5.
      * @return The position as a MovingObjectPosition Null if not existent.
      */
