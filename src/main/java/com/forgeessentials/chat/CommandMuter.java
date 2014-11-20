@@ -1,16 +1,20 @@
 package com.forgeessentials.chat;
 
-import com.forgeessentials.chat.irc.IRCHelper;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.ArrayList;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.CommandEvent;
 
-import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
+
+import com.forgeessentials.chat.irc.IRCHelper;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class CommandMuter {
     public static ArrayList<String> mutedCommands = new ArrayList<String>();
@@ -58,9 +62,8 @@ public class CommandMuter {
 
         if (ConfigChat.logcmd && ModuleChat.cmdLog != null)
         {
-            ModuleChat.cmdLog
-                    .printf(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + e.sender.getCommandSenderName() + "] /"
-                            + e.command.getCommandName() + " " + join(e.parameters));
+            ModuleChat.cmdLog.printf("%s %s [%s] /%s %s", FunctionHelper.getCurrentDateString(), FunctionHelper.getCurrentTimeString(),
+                    e.sender.getCommandSenderName(), e.command.getCommandName(), StringUtils.join(e.parameters, " "));
         }
 
         StringBuilder unpacked = new StringBuilder();
@@ -82,16 +85,6 @@ public class CommandMuter {
             IRCHelper.postIRC("[CONSOLE] " + unpacked.toString());
         }
 
-    }
-
-    public String join(String[] args)
-    {
-        StringBuilder sb = new StringBuilder();
-        for (String agr : args)
-        {
-            sb.append(agr + " ");
-        }
-        return sb.toString();
     }
 
     private void handleSayCommand(String print, ICommandSender sender)
