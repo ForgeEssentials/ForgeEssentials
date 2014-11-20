@@ -2,6 +2,7 @@ package com.forgeessentials.worldborder;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.api.ClassContainer;
@@ -14,7 +15,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
-import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.vector.Vector2;
 import com.forgeessentials.worldborder.Effects.IEffect;
 import cpw.mods.fml.common.FMLCommonHandler;

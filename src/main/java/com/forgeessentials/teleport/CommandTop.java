@@ -1,5 +1,10 @@
 package com.forgeessentials.teleport;
 
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.commons.selections.WarpPoint;
+import cpw.mods.fml.common.FMLCommonHandler;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -8,14 +13,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WarpPoint;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public class CommandTop extends ForgeEssentialsCommandBase {
 
     @Override

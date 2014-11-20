@@ -1,5 +1,6 @@
 package com.forgeessentials.teleport;
 
+import com.forgeessentials.commons.selections.Point;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,8 +17,7 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 

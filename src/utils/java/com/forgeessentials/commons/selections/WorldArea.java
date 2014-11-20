@@ -1,10 +1,12 @@
-package com.forgeessentials.util.selections;
+package com.forgeessentials.commons.selections;
 
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 import net.minecraft.world.World;
 
-public class WorldArea extends AreaBase {
+import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
+
+public class WorldArea extends AreaBase
+{
 	
     @SaveableField
     protected int dim;

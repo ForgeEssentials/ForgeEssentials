@@ -1,14 +1,13 @@
 package com.forgeessentials.worldborder;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.SaveableObject;
+import com.forgeessentials.commons.SaveableObject.Reconstructor;
+import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -103,9 +102,7 @@ public class TickTaskFill implements ITickTask {
 
         if (restart)
         {
-            TickTaskFill saved = DataManager.getInstance().load(TickTaskFill.class, Integer.toString(worldToFill.provider.dimensionId));
-            if (saved == null)
-                saved = (TickTaskFill) DataStorageManager.getReccomendedDriver().loadObject(con, Integer.toString(worldToFill.provider.dimensionId));
+            TickTaskFill saved = (TickTaskFill) DataStorageManager.getReccomendedDriver().loadObject(con, worldToFill.provider.dimensionId + "");
             if (saved != null)
             {
                 OutputHandler.chatWarning(source, "Found a stopped filler. Will resume that one.");
@@ -248,7 +245,6 @@ public class TickTaskFill implements ITickTask {
         if (!stopped)
         {
             OutputHandler.chatWarning(source, "Filler finished after " + ticks + " ticks.");
-            System.out.print("Removed filler? :" + DataManager.getInstance().delete(TickTaskFill.class, dimID));
             System.out.print("Removed filler? :" + DataStorageManager.getReccomendedDriver().deleteObject(con, dimID));
         }
         CommandFiller.map.remove(Integer.parseInt(dimID));
@@ -272,7 +268,6 @@ public class TickTaskFill implements ITickTask {
     {
         stopped = true;
         isComplete = true;
-        DataManager.getInstance().save(this, dimID);
         DataStorageManager.getReccomendedDriver().saveObject(con, this);
         OutputHandler.chatWarning(source, "Filler stopped after " + ticks + " ticks. Still to do: " + todo + " chuncks.");
         System.gc();

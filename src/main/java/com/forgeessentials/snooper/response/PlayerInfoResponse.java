@@ -4,7 +4,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.snooper.Response;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;

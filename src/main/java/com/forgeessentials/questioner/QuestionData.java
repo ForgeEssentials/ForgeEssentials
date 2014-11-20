@@ -3,7 +3,7 @@ package com.forgeessentials.questioner;
 import com.forgeessentials.api.questioner.AnswerEnum;
 import com.forgeessentials.api.questioner.RunnableAnswer;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WarpPoint;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class QuestionData {

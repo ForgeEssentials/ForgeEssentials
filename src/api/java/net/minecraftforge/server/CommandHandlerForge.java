@@ -1,11 +1,4 @@
 package net.minecraftforge.server;
- 
-import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.FALSE;
-import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.OP;
-import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.TRUE;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
@@ -15,6 +8,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.FALSE;
+import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.OP;
+import static net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue.TRUE;
 import cpw.mods.fml.common.FMLLog;
  
 /**

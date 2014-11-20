@@ -1,4 +1,4 @@
-package com.forgeessentials.util.selections;
+package com.forgeessentials.commons.selections;
 
 public enum AreaShape {
 

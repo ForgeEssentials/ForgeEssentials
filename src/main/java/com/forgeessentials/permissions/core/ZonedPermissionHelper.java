@@ -28,12 +28,11 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
-
+import com.forgeessentials.commons.selections.WorldArea;
+import com.forgeessentials.commons.selections.WorldPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;

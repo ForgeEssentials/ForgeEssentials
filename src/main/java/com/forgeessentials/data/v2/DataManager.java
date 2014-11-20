@@ -1,8 +1,8 @@
 package com.forgeessentials.data.v2;
 
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.commons.SaveableObject;
+import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.util.OutputHandler;

@@ -1,9 +1,5 @@
 package com.forgeessentials.client.core;
 
-import static com.forgeessentials.client.ForgeEssentialsClient.netHandler;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.cui.CUIPlayerLogger;
 import com.forgeessentials.client.cui.CUIRenderrer;
@@ -15,12 +11,15 @@ import com.forgeessentials.client.network.C3PacketRollback;
 import com.forgeessentials.client.network.C4PacketEconomy;
 import com.forgeessentials.client.network.C5PacketNoclip;
 import com.forgeessentials.client.util.DummyProxy;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+
+import static com.forgeessentials.client.ForgeEssentialsClient.netHandler;
 
 public class ClientProxy extends DummyProxy
 {

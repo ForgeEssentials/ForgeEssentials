@@ -1,7 +1,7 @@
 package net.minecraftforge.permissions;
 
-import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.FMLLog;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * The main entry point for the Permissions API.

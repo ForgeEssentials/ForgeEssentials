@@ -16,17 +16,15 @@ import java.util.Map;
 
 @MCVersion("1.7.10")
 @SortingIndex(1001)
-public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
-
-    public static File location;
-    private LaunchClassLoader classLoader;
+public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
+{
 
     public static boolean runtimeDeobfEnabled;
-    private File FEfolder;
 
-    private String[] transformers = {
-            "com.forgeessentials.core.preloader.asm.EventInjector"
-    };
+    public static File mcLocation;
+    public static LaunchClassLoader classLoader;
+
+    private String[] transformers = { "com.forgeessentials.core.preloader.asm.EventInjector" };
 
     @Override
     public String[] getASMTransformerClass()
@@ -57,9 +55,9 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
     public void injectData(Map<String, Object> data)
     {
 
-        if (data.containsKey("mcLocation"))
+        if (data.containsKey("mcLocation") && data.get("mcLocation") != null)
         {
-            FEfolder = new File((File) data.get("mcLocation"), "ForgeEssentials");
+            mcLocation = (File) data.get("mcLocation");
         }
         if (data.containsKey("classLoader") && data.get("classLoader") != null)
         {
@@ -71,12 +69,10 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook {
         }
     }
 
-    // leave this here, somehow mc crashes without it.
     @Override
     public Void call() throws Exception
     {
-        new FEClassLoader().runClassLoad(classLoader, FEfolder);
+        new FEClassLoader().extractLibs(mcLocation);
         return null;
     }
-
 }

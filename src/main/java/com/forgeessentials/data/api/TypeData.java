@@ -1,5 +1,7 @@
 package com.forgeessentials.data.api;
 
+import com.forgeessentials.commons.IReconstructData;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;

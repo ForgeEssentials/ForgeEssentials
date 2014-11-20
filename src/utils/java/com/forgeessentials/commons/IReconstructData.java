@@ -1,4 +1,4 @@
-package com.forgeessentials.client.util;
+package com.forgeessentials.commons;
 
 import java.util.Collection;
 

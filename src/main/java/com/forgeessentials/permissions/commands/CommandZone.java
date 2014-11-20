@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import com.forgeessentials.commons.selections.AreaShape;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,11 +22,10 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.selections.AreaBase;
-import com.forgeessentials.util.selections.AreaShape;
 
 public class CommandZone extends ForgeEssentialsCommandBase {
 

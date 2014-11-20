@@ -1,5 +1,9 @@
 package com.forgeessentials.data.typeInfo;
 
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.TypeData;
+import com.forgeessentials.data.api.TypeMultiValInfo;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,11 +19,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
-
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.TypeData;
-import com.forgeessentials.data.api.TypeMultiValInfo;
 
 public class TypeInfoNBTTagList extends TypeMultiValInfo {
     public static final String KEY = "name";

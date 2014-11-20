@@ -1,17 +1,16 @@
-package com.forgeessentials.util.selections;
+package com.forgeessentials.commons.selections;
+
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.SaveableObject;
+import com.forgeessentials.commons.SaveableObject.Reconstructor;
+import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
 
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Vec3;
-
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
 
 @SaveableObject(SaveInline = true)
 public class Point implements Serializable, Comparable<Point> {
@@ -21,19 +20,26 @@ public class Point implements Serializable, Comparable<Point> {
 	private static final long serialVersionUID = 9058731447466825626L;
 
 	@SaveableField
-	protected int x;
+	public int x;
 
 	@SaveableField
-	protected int y;
+	public int y;
 
 	@SaveableField
-	protected int z;
+	public int z;
 
 	public Point(int x, int y, int z)
 	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	public Point (double x, double y, double z)
+	{
+		this.x = ((int) x);
+		this.y = ((int) y);
+		this.z = ((int) z);
 	}
 
 	public Point(Entity player)

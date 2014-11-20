@@ -1,5 +1,8 @@
 package com.forgeessentials.commands;
 
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.commons.selections.WorldPoint;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -8,10 +11,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.WorldPoint;
 
 public class CommandRemove extends FEcmdModuleCommands {
     @Override

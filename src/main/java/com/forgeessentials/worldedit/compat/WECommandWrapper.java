@@ -1,13 +1,12 @@
 package com.forgeessentials.worldedit.compat;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.sk89q.worldedit.util.command.CommandMapping;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.sk89q.worldedit.util.command.CommandMapping;
+import java.util.Arrays;
+import java.util.List;
 
 public class WECommandWrapper extends ForgeEssentialsCommandBase {
     

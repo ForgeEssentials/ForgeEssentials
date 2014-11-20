@@ -1,7 +1,7 @@
 package com.forgeessentials.commands.util;
 
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.tasks.ITickTask;
 import com.forgeessentials.util.tasks.TaskRegistry;
 import cpw.mods.fml.common.registry.GameData;

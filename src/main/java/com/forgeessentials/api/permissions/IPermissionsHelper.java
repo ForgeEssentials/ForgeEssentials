@@ -4,14 +4,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.commons.selections.WorldArea;
+import com.forgeessentials.commons.selections.WorldPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.IPermissionsProvider;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
 
 /**
  * {@link IPermissionsHelper} is the primary access-point to the permissions-system.

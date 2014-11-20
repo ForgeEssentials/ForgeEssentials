@@ -2,14 +2,14 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.selections.Point;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandExpand extends ForgeEssentialsCommandBase {
 
