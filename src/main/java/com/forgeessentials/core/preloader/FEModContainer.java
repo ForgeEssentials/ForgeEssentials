@@ -5,11 +5,7 @@ import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.ModMetadata;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 
 // Kindly do not reference any FE classes outside the coremod package in this class.
 
@@ -23,8 +19,7 @@ public class FEModContainer extends DummyModContainer {
         super(new ModMetadata());
         /* ModMetadata is the same as mcmod.info */
         ModMetadata myMeta = super.getMetadata();
-        myMeta.authorList = Arrays.asList(new String[]
-                { "See the ForgeEssentials author list." });
+        myMeta.authorList = Arrays.asList(new String[] { "See the ForgeEssentials author list." });
         myMeta.description = "Does needed setup for ForgeEssentials.";
         myMeta.modId = "FEPreLoader";
         myMeta.version = version;
