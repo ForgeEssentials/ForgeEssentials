@@ -1,16 +1,18 @@
 package com.forgeessentials.worldborder;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.data.api.DataStorageManager;
-import net.minecraft.entity.player.EntityPlayerMP;
+import com.forgeessentials.data.v2.DataManager;
 
 @SaveableObject
 public class WorldBorder {
@@ -148,6 +150,7 @@ public class WorldBorder {
 
     public void save()
     {
+        DataManager.getInstance().save(this, zone);
         DataStorageManager.getReccomendedDriver().saveObject(ModuleWorldBorder.con, this);
     }
 

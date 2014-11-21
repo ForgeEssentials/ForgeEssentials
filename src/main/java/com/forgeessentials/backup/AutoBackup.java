@@ -8,13 +8,17 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.TimerTask;
 
-public class AutoBackup extends TimerTask{
+public class AutoBackup extends TimerTask
+{
     public static boolean isBackingUp = false;
 
-    public AutoBackup(){}
+    public AutoBackup()
+    {
+    }
 
     @Override
     public void run()
@@ -57,7 +61,8 @@ public class AutoBackup extends TimerTask{
 
         for (String folder : BackupConfig.extraFolders)
         {
-            if (!folder.equals("")) {
+            if (!folder.equals(""))
+            {
                 Backup backup = new Backup(new File(folder));
                 backup.startThread();
                 while (!backup.isDone())
@@ -99,25 +104,37 @@ public class AutoBackup extends TimerTask{
     {
         File[] folders = getFolderList(ModuleBackup.baseFolder);
 
-        Long time = System.currentTimeMillis();
-
         for (File folder : folders)
         {
-            for (File file : folder.listFiles())
+            if (folder.isDirectory())
             {
-                if (time > file.lastModified() + BackupConfig.maxBackupLifespan * 3600000)
+                for (File folder1 : folders)
                 {
-                    OutputHandler.debug("Removed file: " + file.getAbsolutePath());
-                    try
-                    {
-                        Files.delete(file.toPath());
-                    }
-                    catch (IOException e)
-                    {
-                        OutputHandler.felog.severe("Why you no delete file? " + file);
-                        e.printStackTrace();
-                    }
+                    loopThroughFolder(folder1);
                 }
+            }
+            loopThroughFolder(folder);
+        }
+    }
+
+    private static void loopThroughFolder(File folder)
+    {
+        File[] files = folder.listFiles();
+
+        Arrays.sort(files, new Comparator<File>()
+        {
+            public int compare(File f1, File f2)
+            {
+                return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+            }
+        });
+
+        for (File file : files)
+        {
+            if (System.currentTimeMillis() > file.lastModified() + BackupConfig.maxBackupLifespan * 3600000)
+            {
+                file.delete();
+                OutputHandler.debug("Removed file: " + file.getAbsolutePath());
             }
         }
     }
@@ -182,7 +199,8 @@ public class AutoBackup extends TimerTask{
 
     public static File[] getFolderList(File baseFolder)
     {
-        return baseFolder.listFiles(new FileFilter() {
+        return baseFolder.listFiles(new FileFilter()
+        {
             @Override
             public boolean accept(File file)
             {
@@ -193,7 +211,8 @@ public class AutoBackup extends TimerTask{
 
     public static File lastFileModified(File folder)
     {
-        File[] files = folder.listFiles(new FileFilter() {
+        File[] files = folder.listFiles(new FileFilter()
+        {
             @Override
             public boolean accept(File file)
             {
