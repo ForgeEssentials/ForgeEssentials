@@ -9,6 +9,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.multiworld.ModuleMultiworld;
+import com.forgeessentials.multiworld.core.Multiworld;
 import com.forgeessentials.multiworld.core.MultiworldTeleporter;
 
 /**
@@ -31,29 +32,27 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
-        try
+        int dimId = 0;
+        if (args.length > 0)
         {
-            int dimId = Integer.parseInt(args[0]);
-            if (player.dimension == dimId)
-                dimId = 0;
-            if (DimensionManager.isDimensionRegistered(dimId))
+            Multiworld multiworld = ModuleMultiworld.getMultiworldManager().getWorld(args[0]);
+            if (multiworld == null)
+                throw new CommandException("Multiworld " + args[0] + " does not exist.");
+            dimId = multiworld.getDimensionId();
+        }
+        if (DimensionManager.isDimensionRegistered(dimId))
+        {
+            if (dimId < 0 || dimId == 1)
+                throw new CommandException("You are not allowed to teleport to that dimension");
+            WorldServer world = player.mcServer.worldServerForDimension(dimId);
+            if (world != null)
             {
-                if (dimId < 0 || dimId == 1)
-                    throw new CommandException("You are not allowed to teleport to that dimension");
-                WorldServer world = player.mcServer.worldServerForDimension(dimId);
-                if (world != null)
-                {
-                    new MultiworldTeleporter(world).teleport(player);
-                }
-            }
-            else
-            {
-                throw new CommandException("Dimension #" + args[0] + " does not exist.");
+                new MultiworldTeleporter(world).teleport(player);
             }
         }
-        catch (NumberFormatException e)
+        else
         {
-            throw new CommandException("\"" + args[0] + "\" is not a valid number.");
+            throw new CommandException("Dimension #" + args[0] + " does not exist.");
         }
     }
 
