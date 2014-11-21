@@ -249,7 +249,7 @@ public class MultiworldManager extends ServerEventHandler {
                     if (DimensionManager.isDimensionRegistered(world.provider.dimensionId))
                         DimensionManager.unregisterDimension(world.provider.dimensionId);
 
-                    File path = new File(world.getSaveHandler().getWorldDirectory(), world.provider.getSaveFolder());
+                    File path = world.getChunkSaveLocation(); // new File(world.getSaveHandler().getWorldDirectory(), world.provider.getSaveFolder());
                     FileUtils.deleteDirectory(path);
 
                     it.remove();

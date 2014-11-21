@@ -10,6 +10,7 @@ import net.minecraft.world.WorldManager;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldSettings.GameType;
+import net.minecraft.world.WorldType;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -20,29 +21,6 @@ import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.google.gson.annotations.Expose;
 
 public class Multiworld {
-
-//    public static class MultiworldDeserializer implements JsonDeserializer<Multiworld> {
-//
-//        @Override
-//        public Multiworld deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-//        {
-//            Multiworld multiworld = context.deserialize(json, typeOfT);
-//            multiworld.worldLoaded = false;
-//            multiworld.error = false;
-//            try
-//            {
-//                multiworld.providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(multiworld.providerClass);
-//            }
-//            catch (ProviderNotFoundException e)
-//            {
-//                OutputHandler.felog.severe("Provider with name \"" + multiworld.providerClass + "\" not found!");
-//                multiworld.providerClass = null;
-//                multiworld.error = true;
-//            }
-//            return multiworld;
-//        }
-//
-//    }
 
     protected String name;
 
@@ -69,9 +47,7 @@ public class Multiworld {
 
     protected boolean allowPeacefulCreatures = true;
 
-    Multiworld()
-    {
-    }
+    protected boolean mapFeaturesEnabled = true;
 
     public Multiworld(String name, String providerClass, long seed) throws ProviderNotFoundException
     {
@@ -102,15 +78,14 @@ public class Multiworld {
         if (DimensionManager.isDimensionRegistered(dimensionId))
             dimensionId = DimensionManager.getNextFreeDimId();
         DimensionManager.registerDimension(dimensionId, providerId);
-        DimensionManager.initDimension(dimensionId);
 
         MinecraftServer server = MinecraftServer.getServer();
         WorldServer overworld = DimensionManager.getWorld(0);
         if (overworld == null)
             throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
 
-        ISaveHandler savehandler = overworld.getSaveHandler();
-        WorldSettings worldSettings = new WorldSettings(overworld.getWorldInfo());
+        ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), this);
+        WorldSettings worldSettings = new WorldSettings(getSeed(), getGameType(), mapFeaturesEnabled, false, WorldType.DEFAULT);
 
         // Create WorldServer with settings
         WorldServer world = new WorldServerMultiworld(server, savehandler, //
@@ -242,5 +217,5 @@ public class Multiworld {
     {
         DataManager.getInstance().delete(this.getClass(), name);
     }
-    
+
 }
