@@ -1,17 +1,18 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandBurn extends FEcmdModuleCommands {
     @Override
@@ -21,7 +22,7 @@ public class CommandBurn extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 1)
         {

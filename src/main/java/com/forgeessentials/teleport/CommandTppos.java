@@ -1,21 +1,17 @@
 package com.forgeessentials.teleport;
 
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.commons.selections.WarpPoint;
+import cpw.mods.fml.common.FMLCommonHandler;
 import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WarpPoint;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public class CommandTppos extends ForgeEssentialsCommandBase {
 
     /**
@@ -30,14 +26,14 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 3)
         {
             double x = parseDouble(sender, args[0], sender.posX);
             double y = parseDouble(sender, args[1], sender.posY);
             double z = parseDouble(sender, args[2], sender.posZ);
-            EntityPlayerMP player = (EntityPlayerMP) sender;
+            EntityPlayerMP player = sender;
             PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
             CommandBack.justDied.remove(player.getPersistentID());

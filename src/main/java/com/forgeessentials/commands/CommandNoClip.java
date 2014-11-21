@@ -1,15 +1,16 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.network.S5PacketNoclip;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.network.S5PacketNoclip;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandNoClip extends FEcmdModuleCommands
 {
@@ -39,7 +40,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 	}
 	
 	@Override
-	public void processCommandPlayer(EntityPlayer player, String[] args)
+	public void processCommandPlayer(EntityPlayerMP player, String[] args)
 	{
         if(!player.capabilities.isFlying && !player.noClip)
 		{
@@ -57,7 +58,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 		}
 		if(!player.noClip)
 			findSafeY(player);
-		FunctionHelper.netHandler.sendTo(new S5PacketNoclip(player.noClip), (EntityPlayerMP) player);
+		FunctionHelper.netHandler.sendTo(new S5PacketNoclip(player.noClip), player);
 		OutputHandler.chatConfirmation(player, "NoClip " + (player.noClip ? "enabled." : "disabled."));
 	}
 	

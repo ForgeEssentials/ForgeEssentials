@@ -1,22 +1,23 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
+import java.util.HashMap;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.HashMap;
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandSpawnMob extends FEcmdModuleCommands {
 
@@ -74,7 +75,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length >= 1)
         {
@@ -143,8 +144,6 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
         {
             int amount, x, y, z;
             int dimension = 0;
-            
-            String name;
             
             amount = parseInt(sender, args[1]);
             x = parseInt(sender, args[2]);

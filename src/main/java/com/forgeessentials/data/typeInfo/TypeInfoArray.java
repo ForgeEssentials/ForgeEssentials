@@ -1,7 +1,7 @@
 package com.forgeessentials.data.typeInfo;
 
+import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.data.api.TypeMultiValInfo;
 

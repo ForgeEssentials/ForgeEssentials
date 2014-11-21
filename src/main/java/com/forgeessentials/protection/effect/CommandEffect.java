@@ -12,6 +12,9 @@ public class CommandEffect extends ZoneEffect {
         super(player, interval, false);
         command = command.replaceAll("%p", player.getCommandSenderName());
         command = command.replaceAll("%u", player.getPersistentID().toString());
+        command = command.replaceAll("%x", Integer.toString((int) Math.floor(player.posX)));
+        command = command.replaceAll("%y", Integer.toString((int) Math.floor(player.posY)));
+        command = command.replaceAll("%z", Integer.toString((int) Math.floor(player.posZ)));
         this.command = command;
     }
 

@@ -2,7 +2,7 @@ package com.forgeessentials.client.cui;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.core.PlayerInfoClient;
-import com.forgeessentials.client.util.ClientPoint;
+import com.forgeessentials.commons.selections.Point;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -30,7 +30,7 @@ public class CUIPlayerLogger {
             return;
         }
 
-        ClientPoint p = getPoint(player);
+        Point p = getPoint(player);
 
         if (p == null)
         {
@@ -55,7 +55,7 @@ public class CUIPlayerLogger {
         GL11.glPopMatrix();
     }
 
-    private ClientPoint getPoint(EntityPlayer player)
+    private Point getPoint(EntityPlayer player)
     {
         float var4 = 1.0F;
         float var5 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * var4;
@@ -80,7 +80,7 @@ public class CUIPlayerLogger {
             return null;
         }
 
-        ClientPoint p = new ClientPoint(mo.blockX, mo.blockY, mo.blockZ);
+        Point p = new Point(mo.blockX, mo.blockY, mo.blockZ);
 
         if (!player.isSneaking())
         {

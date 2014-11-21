@@ -2,8 +2,8 @@ package com.forgeessentials.client.cui;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.core.PlayerInfoClient;
-import com.forgeessentials.client.util.ClientPoint;
-import com.forgeessentials.client.util.ClientSelection;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.Selection;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -45,7 +45,7 @@ public class CUIRenderrer {
         // render p1
         if (info.getPoint1() != null)
         {
-            ClientPoint p1 = info.getPoint1();
+            Point p1 = info.getPoint1();
             GL11.glTranslated(p1.x - RenderManager.renderPosX, p1.y + 1 - RenderManager.renderPosY, p1.z - RenderManager.renderPosZ);
             GL11.glScalef(1.0F, -1.0F, -1.0F);
             GL11.glColor3f(255, 0, 0);
@@ -56,8 +56,8 @@ public class CUIRenderrer {
         // render p2
         if (info.getPoint2() != null)
         {
-            ClientPoint p1 = info.getPoint1();
-            ClientPoint p2 = info.getPoint2();
+            Point p1 = info.getPoint1();
+            Point p2 = info.getPoint2();
 
             if (render1)
             {
@@ -79,7 +79,7 @@ public class CUIRenderrer {
 
         if (info.getSelection() != null)
         {
-            ClientSelection sel = info.getSelection();
+            Selection sel = info.getSelection();
 
             float x = sel.getLowPoint().getX() - sel.getEnd().getX();
             float y = sel.getLowPoint().getY() - sel.getEnd().getY();
@@ -91,7 +91,7 @@ public class CUIRenderrer {
             GL11.glScalef(1.0F, -1.0F, -1.0F);
             GL11.glColor3f(0, 5, 100);
             // renderBlockBox(tess);
-            renderBlockBoxTo(tess, new ClientPoint(sel.getXLength(), -sel.getYLength(), -sel.getZLength()));
+            renderBlockBoxTo(tess, new Point(sel.getXLength(), -sel.getYLength(), -sel.getZLength()));
         }
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
@@ -147,7 +147,7 @@ public class CUIRenderrer {
         tess.draw();
     }
 
-    private void renderBlockBoxTo(Tessellator tess, ClientPoint p2)
+    private void renderBlockBoxTo(Tessellator tess, Point p2)
     {
         tess.startDrawing(GL11.GL_LINES);
 

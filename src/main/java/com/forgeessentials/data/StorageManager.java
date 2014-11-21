@@ -1,12 +1,12 @@
 package com.forgeessentials.data;
 
+import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.api.EnumDriverType;
 import com.forgeessentials.data.api.IDataDriver;
 import com.forgeessentials.data.api.IStorageManager;
 import com.forgeessentials.data.api.ITypeInfo;
-import com.forgeessentials.data.api.SaveableObject;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.data.typeInfo.TypeInfoArray;
 import com.forgeessentials.data.typeInfo.TypeInfoList;

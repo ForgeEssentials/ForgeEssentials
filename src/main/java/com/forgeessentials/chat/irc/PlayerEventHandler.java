@@ -1,9 +1,9 @@
 package com.forgeessentials.chat.irc;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 public class PlayerEventHandler {
 

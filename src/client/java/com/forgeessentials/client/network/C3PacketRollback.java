@@ -1,7 +1,7 @@
 package com.forgeessentials.client.network;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.util.ClientPoint;
+import com.forgeessentials.commons.selections.Point;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -36,7 +36,7 @@ public class C3PacketRollback implements IMessageHandler<C3PacketRollback, IMess
             {
                 try
                 {
-                    ClientPoint p = new ClientPoint(buf.readInt(), buf.readInt(), buf.readInt());
+                    Point p = new Point(buf.readInt(), buf.readInt(), buf.readInt());
                     System.out.println(p.x + "; " + p.y + "; " + p.z);
                     ForgeEssentialsClient.info.rbList.put(p, buf.readInt());
                 }

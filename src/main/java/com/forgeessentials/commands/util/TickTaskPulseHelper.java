@@ -1,8 +1,8 @@
 package com.forgeessentials.commands.util;
 
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.util.BackupArea;
 import com.forgeessentials.util.BlockSaveable;
-import com.forgeessentials.util.selections.Point;
 import com.forgeessentials.util.tasks.ITickTask;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;

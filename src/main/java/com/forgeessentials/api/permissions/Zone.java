@@ -12,8 +12,8 @@ import java.util.Map.Entry;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldArea;
+import com.forgeessentials.commons.selections.WorldPoint;
 
 /**
  * Zones are used to store permissions in a tree-like hierarchy. Each zone has it's own set of group- and player-permissions. Zones are stored in a tree

@@ -1,9 +1,8 @@
 package com.forgeessentials.chat.irc.commands;
 
 import net.minecraft.server.MinecraftServer;
-import org.pircbotx.User;
 
-import java.util.HashMap;
+import org.pircbotx.User;
 
 public class ircCommandList extends ircCommand {
 
@@ -28,7 +27,6 @@ public class ircCommandList extends ircCommand {
     @Override
     public void execute(String[] args, User user)
     {
-        HashMap<String, String> map = new HashMap<String, String>();
         user.sendMessage("Players online: ");
         for (String username : MinecraftServer.getServer().getConfigurationManager().getAllUsernames())
         {

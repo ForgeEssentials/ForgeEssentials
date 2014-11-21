@@ -1,10 +1,10 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.util.selections.AreaBase;
-import com.forgeessentials.util.selections.AreaShape;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.AreaBase;
+import com.forgeessentials.commons.selections.AreaShape;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldArea;
+import com.forgeessentials.commons.selections.WorldPoint;
 
 /**
  * {@link AreaZone} covers just a specific area in one world. It has higher priority than all other {@link Zone} types. Area zones can overlap. Priority is then

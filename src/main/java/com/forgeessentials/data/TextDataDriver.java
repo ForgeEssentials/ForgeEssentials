@@ -1,9 +1,9 @@
 package com.forgeessentials.data;
 
+import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.EnumDriverType;
-import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.util.FunctionHelper;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;

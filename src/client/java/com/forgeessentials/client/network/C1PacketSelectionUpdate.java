@@ -1,7 +1,7 @@
 package com.forgeessentials.client.network;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.util.ClientPoint;
+import com.forgeessentials.commons.selections.Point;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -28,7 +28,7 @@ public class C1PacketSelectionUpdate implements IMessageHandler<C1PacketSelectio
             double y = byteBuf.readDouble();
             double z = byteBuf.readDouble();
 
-            ForgeEssentialsClient.info.setPoint1(new ClientPoint(x, y, z));
+            ForgeEssentialsClient.info.setPoint1(new Point(x, y, z));
         }
         else
         {
@@ -42,7 +42,7 @@ public class C1PacketSelectionUpdate implements IMessageHandler<C1PacketSelectio
             double y = byteBuf.readDouble();
             double z = byteBuf.readDouble();
 
-            ForgeEssentialsClient.info.setPoint2(new ClientPoint(x, y, z));
+            ForgeEssentialsClient.info.setPoint2(new Point(x, y, z));
         }
         else
         {

@@ -1,5 +1,7 @@
 package com.forgeessentials.data.api;
 
+import com.forgeessentials.commons.IReconstructData;
+
 /**
  * The constructor for a class that implements this should take either the class, ClassContainer or nothing.
  * The class taken in the constructor should be compatible with the parameter.

@@ -1,10 +1,10 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.SaveableObject;
+import com.forgeessentials.commons.SaveableObject.Reconstructor;
+import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -37,21 +37,21 @@ public class Kit {
 		this.cooldown = cooldown;
 		this.name = name;
 
-		List<ItemStack> items = new ArrayList<ItemStack>();
+		List<ItemStack> inventory = new ArrayList<ItemStack>();
 
 		for (int i = 0; i < player.inventory.mainInventory.length; i++)
 		{
 			if (player.inventory.mainInventory[i] != null)
 			{
-				items.add(player.inventory.mainInventory[i]);
+				inventory.add(player.inventory.mainInventory[i]);
 			}
 		}
 
-		this.items = new ItemStack[items.size()];
+		this.items = new ItemStack[inventory.size()];
 
-		for (int i = 0; i < items.size(); i++)
+		for (int i = 0; i < inventory.size(); i++)
 		{
-			this.items[i] = items.get(i);
+			this.items[i] = inventory.get(i);
 		}
 
         armor = new ItemStack[player.inventory.armorInventory.length];

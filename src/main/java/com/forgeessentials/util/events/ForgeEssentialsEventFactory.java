@@ -7,8 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.selections.WarpPoint;
-
+import com.forgeessentials.commons.selections.WarpPoint;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;

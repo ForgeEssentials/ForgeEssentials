@@ -1,8 +1,8 @@
 package com.forgeessentials.data;
 
+import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.data.api.IReconstructData;
 import com.forgeessentials.data.api.ITypeInfo;
 import com.forgeessentials.data.api.TypeData;
 import com.forgeessentials.util.OutputHandler;

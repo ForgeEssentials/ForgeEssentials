@@ -1,16 +1,17 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.PlayerInvChest;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.util.PlayerInvChest;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Opens other player inventory.
@@ -30,13 +31,13 @@ public class CommandInventorySee extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
             return;
         }
-        EntityPlayerMP player = (EntityPlayerMP) sender;
+        EntityPlayerMP player = sender;
         EntityPlayerMP victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(args[0]);
 
         if (player.openContainer != player.inventoryContainer)
@@ -45,7 +46,7 @@ public class CommandInventorySee extends FEcmdModuleCommands {
         }
         player.getNextWindowId();
 
-        PlayerInvChest chest = new PlayerInvChest(victim, (EntityPlayerMP) sender);
+        PlayerInvChest chest = new PlayerInvChest(victim, sender);
         player.playerNetServerHandler
                 .sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, chest.getInventoryName(), chest.getSizeInventory(), true));
         player.openContainer = new ContainerChest(player.inventory, chest);

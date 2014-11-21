@@ -1,5 +1,14 @@
 package com.forgeessentials.teleport;
 
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.RespawnHandler;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.commons.selections.WarpPoint;
+import cpw.mods.fml.common.FMLCommonHandler;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
@@ -10,17 +19,6 @@ import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.RespawnHandler;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WarpPoint;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public class CommandSpawn extends ForgeEssentialsCommandBase {
 
 	@Override
@@ -30,7 +28,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 	{
 		if (args.length >= 1)
 		{
@@ -56,7 +54,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 		}
 		else if (args.length == 0)
 		{
-			EntityPlayerMP player = (EntityPlayerMP) sender;
+			EntityPlayerMP player = sender;
 
 			WarpPoint point = RespawnHandler.getPlayerSpawn(player, null);
 			if (point == null)

@@ -5,7 +5,7 @@ import com.forgeessentials.chat.commands.CommandPm;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.google.common.base.Strings;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

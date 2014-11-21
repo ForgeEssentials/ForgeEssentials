@@ -2,8 +2,8 @@ package com.forgeessentials.api.permissions;
 
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.WorldArea;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldArea;
+import com.forgeessentials.commons.selections.WorldPoint;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.ArrayList;
@@ -183,6 +183,7 @@ public class ServerZone extends Zone {
 
     public void addPlayerToGroup(UserIdent ident, String group)
     {
+        registerPlayer(ident);
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
@@ -195,6 +196,7 @@ public class ServerZone extends Zone {
 
     public void removePlayerFromGroup(UserIdent ident, String group)
     {
+        registerPlayer(ident);
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet != null)
             groupSet.remove(group);
@@ -243,6 +245,7 @@ public class ServerZone extends Zone {
 
     public SortedSet<String> getStoredPlayerGroups(UserIdent ident)
     {
+        registerPlayer(ident);
         Set<String> pgs = playerGroups.get(ident);
         SortedSet<String> result = new TreeSet<String>(new GroupComparator());
         if (pgs != null)

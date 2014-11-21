@@ -5,7 +5,7 @@ import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayerMP;

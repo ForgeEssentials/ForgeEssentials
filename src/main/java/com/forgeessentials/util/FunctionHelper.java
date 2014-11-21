@@ -1,5 +1,18 @@
 package com.forgeessentials.util;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.compat.Environment;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventBus;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,6 +31,7 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.CommandHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -35,21 +49,6 @@ import net.minecraftforge.server.CommandHandlerForge;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.compat.Environment;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventBus;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 public final class FunctionHelper {
 
@@ -168,6 +167,22 @@ public final class FunctionHelper {
 			y = world.getHeight() - h;
 		return y;
 	}
+	
+    /**
+     * Returns a free spot of height 2 in the world at the coordinates [x,z] near y.
+     * If the blocks at [x,y,z] are free, it returns the next location that is on the ground.
+     * If the blocks at [x,y,z] are not free, it goes up until it finds a free spot.
+     * 
+     * @param world
+     * @param x
+     * @param y
+     * @param z
+     * @return y value
+     */
+    public static int placeInWorld(World world, int x, int y, int z)
+    {
+        return placeInWorld(world, x, y, z, 2);
+    }
 
     /**
      * Get player's looking-at spot.
@@ -187,7 +202,7 @@ public final class FunctionHelper {
      * Get player's looking spot.
      *
      * @param player
-     * @param restrict
+     * @param maxDistance
      *            Keep max distance to 5.
      * @return The position as a MovingObjectPosition Null if not existent.
      */
@@ -1100,6 +1115,10 @@ public final class FunctionHelper {
         if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
         {
             CommandHandlerForge.registerCommand(command, command.getPermissionNode(), command.getDefaultPermission());
+        }
+        else
+        {
+            ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(command);
         }
     }
 

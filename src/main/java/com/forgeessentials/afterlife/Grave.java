@@ -1,11 +1,11 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.SaveableObject;
+import com.forgeessentials.commons.SaveableObject.Reconstructor;
+import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.commons.selections.WorldPoint;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

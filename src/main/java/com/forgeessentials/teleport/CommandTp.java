@@ -1,5 +1,6 @@
 package com.forgeessentials.teleport;
 
+import com.forgeessentials.commons.selections.Point;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,8 +17,7 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -35,7 +35,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 	{
 		if (args.length == 1)
 		{
@@ -46,7 +46,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 			}
 			if (target != null)
 			{
-				EntityPlayerMP player = (EntityPlayerMP) sender;
+				EntityPlayerMP player = sender;
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 				CommandBack.justDied.remove(player.getPersistentID());
@@ -88,7 +88,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 		{
 			if (args.length == 3)
 			{
-				EntityPlayerMP player = (EntityPlayerMP) sender;
+				EntityPlayerMP player = sender;
 				double x = parseDouble(sender, args[0]), y = parseDouble(sender, args[1]), z = parseDouble(sender, args[2]);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));

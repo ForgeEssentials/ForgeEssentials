@@ -2,10 +2,10 @@ package com.forgeessentials.worldborder;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.Point;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;

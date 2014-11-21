@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import com.forgeessentials.commons.selections.WarpPoint;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -49,14 +51,12 @@ import com.forgeessentials.util.TimeoutHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -391,7 +391,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         checkPlayerInventory(player);
 
         GameType lastGm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, e.beforePoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
-        GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE));
+        GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, e.afterPoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
         if (gm != GameType.NOT_SET || lastGm != GameType.NOT_SET)
         {
             // If leaving a creative zone and no other gamemode is set, revert to default (survival)

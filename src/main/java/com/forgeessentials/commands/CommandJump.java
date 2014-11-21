@@ -1,7 +1,6 @@
 package com.forgeessentials.commands;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -12,7 +11,7 @@ import com.forgeessentials.teleport.CommandBack;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WarpPoint;
 
 public class CommandJump extends FEcmdModuleCommands {
 
@@ -30,7 +29,7 @@ public class CommandJump extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(sender, 500);
         if (mo == null)
@@ -40,7 +39,7 @@ public class CommandJump extends FEcmdModuleCommands {
         }
         else
         {
-        	EntityPlayerMP player = (EntityPlayerMP) sender;
+        	EntityPlayerMP player = sender;
 			PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 			playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 			CommandBack.justDied.remove(player.getPersistentID());

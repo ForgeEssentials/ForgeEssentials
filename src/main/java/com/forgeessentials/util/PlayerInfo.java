@@ -1,31 +1,32 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.network.S1PacketSelectionUpdate;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.data.api.IReconstructData;
-import com.forgeessentials.data.api.SaveableObject;
-import com.forgeessentials.data.api.SaveableObject.Reconstructor;
-import com.forgeessentials.data.api.SaveableObject.SaveableField;
-import com.forgeessentials.data.api.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.selections.ISelectionProvider;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.Selection;
-import com.forgeessentials.util.selections.WarpPoint;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+import java.util.UUID;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
-import java.util.UUID;
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.SaveableObject;
+import com.forgeessentials.commons.SaveableObject.Reconstructor;
+import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.Selection;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.network.S1PacketSelectionUpdate;
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.data.v2.DataManager;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @SaveableObject
 public class PlayerInfo

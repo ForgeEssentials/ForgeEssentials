@@ -1,10 +1,10 @@
 package com.forgeessentials.teleport;
 
+import com.forgeessentials.commons.selections.Point;
 import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -13,9 +13,7 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WarpPoint;
-
+import com.forgeessentials.commons.selections.WarpPoint;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandTphere extends ForgeEssentialsCommandBase {
@@ -32,14 +30,14 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 1)
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                EntityPlayerMP target = (EntityPlayerMP) sender;
+                EntityPlayerMP target = sender;
                 PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                 TeleportHelper.teleport(player, new WarpPoint(target));

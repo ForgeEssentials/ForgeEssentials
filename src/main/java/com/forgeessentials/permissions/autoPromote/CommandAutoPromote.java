@@ -1,21 +1,27 @@
 package com.forgeessentials.permissions.autoPromote;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 	@Override
@@ -31,7 +37,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 	{
 		/*
 		 * Get the right zone. If nothing valid is given, defaults to the senders position.

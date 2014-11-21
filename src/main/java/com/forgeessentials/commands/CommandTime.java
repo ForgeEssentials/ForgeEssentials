@@ -1,19 +1,20 @@
 package com.forgeessentials.commands;
 
+import java.util.List;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.WeatherTimeData;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.List;
 
 public class CommandTime extends FEcmdModuleCommands {
 	@Override
@@ -29,7 +30,7 @@ public class CommandTime extends FEcmdModuleCommands {
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 	{
 		if (args.length != 0 && FunctionHelper.isNumeric(args[0]))
 		{

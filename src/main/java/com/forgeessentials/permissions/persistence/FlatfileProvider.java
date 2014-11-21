@@ -22,12 +22,12 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.commons.selections.AreaBase;
+import com.forgeessentials.commons.selections.AreaShape;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.AreaBase;
-import com.forgeessentials.util.selections.AreaShape;
-import com.forgeessentials.util.selections.Point;
 
 public class FlatfileProvider extends ZonePersistenceProvider {
 

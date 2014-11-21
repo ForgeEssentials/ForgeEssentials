@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
@@ -24,6 +25,7 @@ import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TickTaskHandler;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
@@ -49,9 +51,8 @@ import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
-import com.forgeessentials.util.selections.Point;
-import com.forgeessentials.util.selections.WarpPoint;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.Mod;
@@ -117,6 +118,9 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
     @SuppressWarnings("unused")
     private TeleportHelper teleportHelper;
+    
+    @SuppressWarnings("unused")
+    private TickTaskHandler tickTaskHandler;
     
     // static FE-module flags / variables
     public static boolean worldEditCompatilityPresent = false;
@@ -188,6 +192,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
         respawnHandler = new RespawnHandler();
         wandHandler = new SelectionEventHandler();
         teleportHelper = new TeleportHelper();
+        tickTaskHandler = new TickTaskHandler();
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
     }

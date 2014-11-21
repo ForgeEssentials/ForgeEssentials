@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.forgeessentials.commons.selections.AreaBase;
 import org.apache.commons.lang3.StringUtils;
 
 import scala.actors.threadpool.Arrays;
@@ -28,8 +29,7 @@ import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.selections.AreaBase;
-import com.forgeessentials.util.selections.AreaShape;
+import com.forgeessentials.commons.selections.AreaShape;
 import com.google.common.base.Throwables;
 
 public class SQLProvider extends ZonePersistenceProvider {

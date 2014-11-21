@@ -1,12 +1,14 @@
 package com.forgeessentials.questioner;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandAffirmative extends ForgeEssentialsCommandBase {
 
@@ -27,7 +29,7 @@ public class CommandAffirmative extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         QuestionCenter.processAnswer(sender, true);
     }

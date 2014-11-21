@@ -1,6 +1,7 @@
 package com.forgeessentials.core.commands;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.command.CommandBase;
@@ -10,6 +11,8 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -23,9 +26,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        if (sender instanceof EntityPlayer)
+        if (sender instanceof EntityPlayerMP)
         {
-            processCommandPlayer((EntityPlayer) sender, args);
+            processCommandPlayer((EntityPlayerMP) sender, args);
         }
         else if (sender instanceof TileEntityCommandBlock)
         {
@@ -37,7 +40,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         }
     }
 
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         throw new CommandException(String.format("Command %s is not implemented for players", getCommandName()));
     }
@@ -118,7 +121,14 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
      */
     public void register()
     {
-        CommandHandlerForge.registerCommand(this, getPermissionNode(), getDefaultPermission());
+        if (getPermissionNode() != null && getDefaultPermission() != null)
+        {
+            CommandHandlerForge.registerCommand(this, getPermissionNode(), getDefaultPermission());
+        }
+        else
+        {
+            ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(this);
+        }
     }
 
     /**
@@ -131,6 +141,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
      */
     public boolean checkCommandPermission(ICommandSender sender)
     {
+        if (getPermissionNode() == null || getPermissionNode().isEmpty())
+            return true;
         return PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(this), getPermissionNode());
     }
 
@@ -141,6 +153,24 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
     // ------------------------------------------------------------
     // Utilities
+    
+    public static List<String> getListOfStringsMatchingLastWord(String arg, Collection<String> possibleMatches)
+    {
+        List<String> arraylist = new ArrayList<>();
+        for (String s2 : possibleMatches)
+        {
+            if (doesStringStartWith(arg, s2))
+            {
+                arraylist.add(s2);
+            }
+        }
+        return arraylist;
+    }
+    
+    public static List<String> getListOfStringsMatchingLastWord(String[] args, Collection<String> possibleMatches)
+    {
+        return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
+    }
     
     public static List<String> getListOfStringsMatchingLastWord(String arg, String ... possibleMatches)
     {

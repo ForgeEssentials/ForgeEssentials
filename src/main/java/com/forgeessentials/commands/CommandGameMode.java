@@ -1,18 +1,21 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandGameMode extends FEcmdModuleCommands {
 	@Override
@@ -28,7 +31,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
 	}
 
 	@Override
-	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 	{
 		WorldSettings.GameType gm;
 		switch (args.length)

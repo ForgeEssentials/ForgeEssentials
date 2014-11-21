@@ -4,39 +4,40 @@ import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.selections.WorldPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.commands.util.CommandButcherTickTask;
+import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
 
 public class CommandButcher extends FEcmdModuleCommands {
-    public static List<String> typeList = new ArrayList<String>();
-
-    static
-    {
-        for (EnumMobType type : EnumMobType.values())
-        {
-            typeList.add(type.name());
-        }
-    }
+    
+    public static List<String> typeList = ButcherMobType.getNames();
 
     @Override
     public String getCommandName()
     {
-        return "butcher";
+        return "febutcher";
     }
-    
+
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[] { "febutcher" };
+        return new String[] { "butcher" };
     }
 
     @Override
@@ -48,7 +49,7 @@ public class CommandButcher extends FEcmdModuleCommands {
         }
         else if (args.length == 2)
         {
-            return getListOfStringsFromIterableMatchingLastWord(args, typeList);
+            return getListOfStringsMatchingLastWord(args, typeList);
         }
         else
         {
@@ -57,139 +58,102 @@ public class CommandButcher extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         int radius = -1;
-        double X = sender.posX;
-        double Y = sender.posY;
-        double Z = sender.posZ;
-        String mobType = EnumMobType.HOSTILE.toString();
+        double x = sender.posX;
+        double y = sender.posY;
+        double z = sender.posZ;
+        World world = sender.worldObj;
+        String mobType = ButcherMobType.HOSTILE.toString();
 
-        if (args.length > 0)
+        Queue<String> argsStack = new LinkedList<String>(Arrays.asList(args));
+        if (!argsStack.isEmpty())
         {
-            radius = args[0].equalsIgnoreCase("world") ? -1 : parseIntWithMin(sender, args[0], 0);
-        }
-        if (args.length > 1)
-        {
-            if (typeList.contains(args[1]))
-            {
-                mobType = args[1];
-            }
+            String radiusValue = argsStack.remove();
+            if (radiusValue.equalsIgnoreCase("world"))
+                radius = -1;
             else
-            {
-                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [radius|-1|world] [type] [x, y, z]");
-                return;
-            }
+                radius = parseIntWithMin(sender, radiusValue, 0);
         }
-        if (args.length > 2)
-        {
-            String splitter = "";
-            if (args[2].contains(", "))
-            {
-                splitter = ", ";
-            }
-            else if (args[2].contains(","))
-            {
-                splitter = ",";
-            }
-            else if (args[2].contains(" "))
-            {
-                splitter = " ";
-            }
+        
+        if (!argsStack.isEmpty())
+            mobType = argsStack.remove();
 
-            String[] split = args[2].split(splitter);
-            if (split.length != 3)
-            {
-                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + "x, y, z");
-                return;
-            }
-            else
-            {
-                X = parseDouble(sender, split[0], sender.posX);
-                Y = parseDouble(sender, split[1], sender.posY);
-                Z = parseDouble(sender, split[2], sender.posZ);
-            }
+        if (!argsStack.isEmpty())
+        {
+            if (argsStack.size() < 3)
+                throw new CommandException("Improper syntax: <radius> [type] [x y z] [world]");
+            x = parseDouble(sender, argsStack.remove(), sender.posX);
+            y = parseDouble(sender, argsStack.remove(), sender.posY);
+            z = parseDouble(sender, argsStack.remove(), sender.posZ);
         }
-        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(X - radius, Y - radius, Z - radius, X + radius + 1, Y + radius + 1, Z + radius + 1);
-        TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, pool, radius, sender.dimension));
+        
+        if (!argsStack.isEmpty())
+        {
+            world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
+            if (world == null)
+                throw new CommandException("This dimension does not exist");
+        }
+        
+        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
+        CommandButcherTickTask.schedule(sender, world, mobType, pool, radius);
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
         int radius = -1;
-        int worldID = 0;
-        int x = 0, y = 0, z = 0;
+        double x = 0;
+        double y = 0;
+        double z = 0;
+        World world = DimensionManager.getWorld(0);
+        String mobType = ButcherMobType.HOSTILE.toString();
 
-        if (sender instanceof TileEntityCommandBlock)
+        Queue<String> argsStack = new LinkedList<String>(Arrays.asList(args));
+        
+        if (!argsStack.isEmpty())
         {
-            TileEntityCommandBlock cb = (TileEntityCommandBlock) sender;
-            worldID = cb.getWorldObj().provider.dimensionId;
-            x = cb.xCoord;
-            y = cb.yCoord;
-            z = cb.zCoord;
+            String radiusValue = argsStack.remove();
+            if (radiusValue.equalsIgnoreCase("world"))
+                radius = -1;
+            else
+                radius = parseIntWithMin(sender, radiusValue, 0);
         }
+        
+        if (!argsStack.isEmpty())
+            mobType = argsStack.remove();
 
-        String mobType = "hostile";
-
-        if (args.length != 4 && !(sender instanceof TileEntityCommandBlock))
+        if (!argsStack.isEmpty())
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: &lt;radius|-1|world> &lt;type> &lt;x, y, z> &lt;dimID>");
-            return;
+            if (argsStack.size() < 3)
+                throw new CommandException("Improper syntax: <radius> <type> <x> <y> <z> [world]");
+            x = parseInt(sender, argsStack.remove());
+            y = parseInt(sender, argsStack.remove());
+            z = parseInt(sender, argsStack.remove());
         }
-        if (args.length > 0)
+        else
         {
-            radius = args[0].equalsIgnoreCase("world") ? -1 : parseIntWithMin(sender, args[0], 0);
-        }
-        if (args.length > 1)
-        {
-            if (typeList.contains(args[1]))
+            if (sender instanceof TileEntityCommandBlock)
             {
-                mobType = args[1];
+                TileEntityCommandBlock cb = (TileEntityCommandBlock) sender;
+                world = cb.getWorldObj();
+                x = cb.xCoord;
+                y = cb.yCoord;
+                z = cb.zCoord;
             }
             else
-            {
-                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + StringUtils.join(typeList.toArray(), ", "));
-                return;
-            }
+                throw new CommandException("Improper syntax: <radius> <type> <x> <y> <z> [world]");
         }
-        if (args.length > 2)
-        {
-            String splitter = "";
-            if (args[2].contains(", "))
-            {
-                splitter = ", ";
-            }
-            else if (args[2].contains(","))
-            {
-                splitter = ",";
-            }
-            else if (args[2].contains(" "))
-            {
-                splitter = " ";
-            }
 
-            String[] split = args[2].split(splitter);
-            if (split.length != 3)
-            {
-                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + "x, y, z");
-                return;
-            }
-            else
-            {
-                x = parseInt(sender, split[0]);
-                y = parseInt(sender, split[1]);
-                z = parseInt(sender, split[2]);
-            }
+        if (!argsStack.isEmpty())
+        {
+            world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
+            if (world == null)
+                throw new CommandException("This dimension does not exist");
         }
-		if (args.length == 4) 
-		{
-			worldID = parseInt(sender, args[3]);
-		}
-        WorldPoint center = new WorldPoint(worldID, x, y, z);
-        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY() + radius + 1,
-                center.getZ() + radius + 1);
-        TaskRegistry.registerTask(new CommandButcherTickTask(sender, mobType, pool, radius, worldID));
+        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
+        CommandButcherTickTask.schedule(sender, world, mobType, pool, radius);
     }
 
     @Override

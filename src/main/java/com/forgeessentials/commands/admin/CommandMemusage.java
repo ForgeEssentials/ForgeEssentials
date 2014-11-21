@@ -1,10 +1,11 @@
 package com.forgeessentials.commands.admin;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandMemusage extends FEcmdModuleCommands {
 
@@ -15,7 +16,7 @@ public class CommandMemusage extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         OutputHandler.chatNotification(sender, "Memory usage:");
         OutputHandler.chatNotification(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");

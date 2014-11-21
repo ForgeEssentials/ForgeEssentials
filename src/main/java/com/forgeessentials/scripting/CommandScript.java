@@ -1,10 +1,12 @@
 package com.forgeessentials.scripting;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.UserIdent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandScript extends ForgeEssentialsCommandBase {
 
@@ -15,7 +17,7 @@ public class CommandScript extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayer sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args[0].equalsIgnoreCase("run"))
         {
