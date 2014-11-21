@@ -9,6 +9,7 @@ import com.forgeessentials.multiworld.command.CommandGetDimension;
 import com.forgeessentials.multiworld.command.CommandMultiworldCreate;
 import com.forgeessentials.multiworld.command.CommandMultiworldDelete;
 import com.forgeessentials.multiworld.command.CommandMultiworldList;
+import com.forgeessentials.multiworld.command.CommandMultiworldProviders;
 import com.forgeessentials.multiworld.command.CommandMultiworldTeleport;
 import com.forgeessentials.multiworld.core.MultiworldManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -62,6 +63,7 @@ public class ModuleMultiworld extends ConfigLoaderBase {
         new CommandMultiworldDelete().register();
         new CommandMultiworldList().register();
         new CommandMultiworldTeleport().register();
+        new CommandMultiworldProviders().register();
     }
 
     @SubscribeEvent

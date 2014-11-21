@@ -37,8 +37,8 @@ public class MultiworldTeleporter extends Teleporter {
                 displayDepartMessage(player);
 
             // ChunkCoordinates spawn = world.getSpawnPoint();
-            int x = (int) player.posX;
-            int z = (int) player.posZ;
+            int x = (int) Math.floor(player.posX);
+            int z = (int) Math.floor(player.posZ);
             int y = FunctionHelper.placeInWorld(world, x, (int) player.posY, z);
 
             // Set position and velocity before teleporting

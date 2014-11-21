@@ -36,19 +36,9 @@ public class MultiworldManager extends ServerEventHandler {
     private Map<String, Multiworld> worldByName = new HashMap<String, Multiworld>();
 
     /**
-     * NBT stored collection of all multiworlds
-     */
-    protected MultiworldCollection multiworlds = new MultiworldCollection();
-
-    /**
      * Mapping from provider classnames to IDs
      */
-    protected Map<String, Integer> providerClasses = new HashMap<String, Integer>();
-
-    /**
-     * Mapping from provider IDs to classnames
-     */
-    protected Map<Integer, String> providerIds = new HashMap<Integer, String>();
+    protected Map<String, Integer> worldProviderClasses = new HashMap<String, Integer>();
 
     /**
      * List of worlds that have been marked for deletion
@@ -270,21 +260,10 @@ public class MultiworldManager extends ServerEventHandler {
      */
     public int getProviderIDByClass(String providerClass) throws ProviderNotFoundException
     {
-        Integer providerId = providerClasses.get(providerClass);
+        Integer providerId = worldProviderClasses.get(providerClass);
         if (providerId == null)
             throw new ProviderNotFoundException();
         return providerId;
-    }
-
-    /**
-     * Returns the classname for a given providerId
-     */
-    public String getProviderClassById(int providerId) throws ProviderNotFoundException
-    {
-        String providerClass = providerIds.get(providerId);
-        if (providerClass == null)
-            throw new ProviderNotFoundException();
-        return providerClass;
     }
 
     /**
@@ -299,33 +278,22 @@ public class MultiworldManager extends ServerEventHandler {
             @SuppressWarnings("unchecked")
             Hashtable<Integer, Class<? extends WorldProvider>> loadedProviders = (Hashtable<Integer, Class<? extends WorldProvider>>) f_providers.get(null);
             for (Entry<Integer, Class<? extends WorldProvider>> provider : loadedProviders.entrySet())
-            {
-                providerClasses.put(provider.getValue().getName(), provider.getKey());
-                providerIds.put(provider.getKey(), provider.getValue().getName());
-            }
+                worldProviderClasses.put(provider.getValue().getName(), provider.getKey());
         }
-        catch (NoSuchFieldException e)
+        catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
         {
             e.printStackTrace();
         }
-        catch (SecurityException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IllegalArgumentException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-
-        OutputHandler.felog.info("Available map generators:");
-        for (Entry<String, Integer> provider : providerClasses.entrySet())
+        OutputHandler.felog.info("[Multiworld] Available world providers:");
+        for (Entry<String, Integer> provider : worldProviderClasses.entrySet())
         {
             OutputHandler.felog.info("#" + provider.getValue() + ":" + provider.getKey());
         }
+    }
+
+    public Map<String, Integer> getWorldProviders()
+    {
+        return worldProviderClasses;
     }
 
 }
