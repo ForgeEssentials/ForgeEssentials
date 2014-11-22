@@ -14,7 +14,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.WorldEvent;
@@ -22,7 +21,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.multiworld.ModuleMultiworld;
+import com.forgeessentials.multiworld.core.exception.MultiworldAlreadyExistsException;
+import com.forgeessentials.multiworld.core.exception.ProviderNotFoundException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
 
@@ -31,9 +31,9 @@ import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class MultiworldManager extends ServerEventHandler {
 
-    private Map<Integer, Multiworld> worldByDim = new HashMap<Integer, Multiworld>();
+    protected Map<Integer, Multiworld> worldByDim = new HashMap<Integer, Multiworld>();
 
-    private Map<String, Multiworld> worldByName = new HashMap<String, Multiworld>();
+    protected Map<String, Multiworld> worlds = new HashMap<String, Multiworld>();
 
     /**
      * Mapping from provider classnames to IDs
@@ -66,23 +66,23 @@ public class MultiworldManager extends ServerEventHandler {
         List<Multiworld> loadedWorlds = DataManager.getInstance().loadAll(Multiworld.class);
         for (Multiworld world : loadedWorlds)
         {
+            worlds.put(world.getName(), world);
             try
             {
-                world.providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(world.providerClass);
+                world.loadWorld();
             }
             catch (ProviderNotFoundException e)
             {
-                OutputHandler.felog.severe("Provider with name \"" + world.providerClass + "\" not found!");
-                world.providerClass = null;
+                OutputHandler.felog.severe("Provider with name \"" + world.provider + "\" not found!");
+                world.provider = null;
                 world.error = true;
             }
-            addWorld(world);
         }
     }
 
     public Collection<Multiworld> getWorlds()
     {
-        return worldByName.values();
+        return worlds.values();
     }
 
     public Set<Integer> getDimensions()
@@ -97,16 +97,15 @@ public class MultiworldManager extends ServerEventHandler {
 
     public Multiworld getWorld(String name)
     {
-        return worldByName.get(name);
+        return worlds.get(name);
     }
 
-    public void addWorld(Multiworld world)
+    public void addWorld(Multiworld world) throws ProviderNotFoundException, MultiworldAlreadyExistsException
     {
-        if (worldByName.containsKey(world.getName()))
-            throw new RuntimeException("World already added");
-        worldByDim.put(world.getDimensionId(), world);
-        worldByName.put(world.getName(), world);
+        if (worlds.containsKey(world.getName()))
+            throw new MultiworldAlreadyExistsException();
         world.loadWorld();
+        worlds.put(world.getName(), world);
         world.save();
     }
 
@@ -124,7 +123,7 @@ public class MultiworldManager extends ServerEventHandler {
         DimensionManager.unloadWorld(world.getDimensionId());
         worldsToRemove.add(DimensionManager.getWorld(world.getDimensionId()));
         worldByDim.remove(world.getDimensionId());
-        worldByName.remove(world.getName());
+        worlds.remove(world.getName());
     }
 
     /**
@@ -147,32 +146,16 @@ public class MultiworldManager extends ServerEventHandler {
     public void serverStopped()
     {
         saveAll();
-        for (Multiworld world : worldByName.values())
+        for (Multiworld world : worlds.values())
         {
             world.worldLoaded = false;
             DimensionManager.unregisterDimension(world.getDimensionId());
         }
         worldByDim.clear();
-        worldByName.clear();
+        worlds.clear();
     }
 
     // ============================================================
-
-    public WorldServer generateWorld(String name)
-    {
-        try
-        {
-            // Multiworld world = new Multiworld(WorldProviderHeightmap.class.getName());
-            Multiworld world = new Multiworld(name, WorldProviderSurface.class.getName());
-            addWorld(world);
-            return world.getWorld();
-        }
-        catch (ProviderNotFoundException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     /**
      * Forge DimensionManager stores used dimension IDs and does not assign them again, unless they are cleared manually.

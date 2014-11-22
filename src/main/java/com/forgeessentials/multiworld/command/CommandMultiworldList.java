@@ -31,7 +31,7 @@ public class CommandMultiworldList extends ForgeEssentialsCommandBase {
         commandSender.addChatMessage(new ChatComponentText("Available worlds:"));
         for (Multiworld world : ModuleMultiworld.getMultiworldManager().getWorlds())
         {
-            commandSender.addChatMessage(new ChatComponentText("#" + world.getDimensionId() + " " + world.getName() + ": " + world.getProviderClass()));
+            commandSender.addChatMessage(new ChatComponentText("#" + world.getDimensionId() + " " + world.getName() + ": " + world.getProvider()));
         }
     }
 

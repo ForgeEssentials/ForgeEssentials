@@ -3,12 +3,14 @@ package com.forgeessentials.multiworld.command;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.multiworld.ModuleMultiworld;
+import com.forgeessentials.multiworld.core.Multiworld;
 import com.forgeessentials.multiworld.core.MultiworldTeleporter;
+import com.forgeessentials.multiworld.core.exception.MultiworldAlreadyExistsException;
+import com.forgeessentials.multiworld.core.exception.ProviderNotFoundException;
 
 /**
  * @author Björn Zeutzheim
@@ -32,10 +34,24 @@ public class CommandMultiworldCreate extends ForgeEssentialsCommandBase {
     {
         if (args.length < 1)
             throw new CommandException("Missing name argument");
-        WorldServer world = ModuleMultiworld.getMultiworldManager().generateWorld(args[0]);
-        if (commandSender instanceof EntityPlayerMP)
+        if (args.length < 2)
+            throw new CommandException("Missing provider argument");
+        Multiworld world = new Multiworld(args[0], args[1]); // Multiworld.PROVIDER_CUSTOM
+        try
         {
-            new MultiworldTeleporter(world).teleport((EntityPlayerMP) commandSender);
+            ModuleMultiworld.getMultiworldManager().addWorld(world);
+            if (commandSender instanceof EntityPlayerMP)
+            {
+                new MultiworldTeleporter(world.getWorld()).teleport((EntityPlayerMP) commandSender);
+            }
+        }
+        catch (ProviderNotFoundException e)
+        {
+            throw new CommandException("World-provider not found!");
+        }
+        catch (MultiworldAlreadyExistsException e)
+        {
+            throw new CommandException("A world with that name already exists!");
         }
     }
 

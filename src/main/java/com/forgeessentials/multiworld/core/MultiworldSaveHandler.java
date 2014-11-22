@@ -45,16 +45,13 @@ public class MultiworldSaveHandler implements ISaveHandler {
     @Override
     public WorldInfo loadWorldInfo()
     {
-        NBTTagCompound nbttagcompound;
-        NBTTagCompound nbttagcompound1;
-        
         File file1 = new File(getDimensionDirectory(), "level.dat");
         if (file1.exists())
         {
             try
             {
-                nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
-                nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
+                NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
+                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
                 WorldInfo worldInfo = new WorldInfo(nbttagcompound1);
                 // TODO: Check if this call should really stay here or needs to be removed!!
                 FMLCommonHandler.instance().handleWorldDataLoad(parent, worldInfo, nbttagcompound);
@@ -75,8 +72,8 @@ public class MultiworldSaveHandler implements ISaveHandler {
         {
             try
             {
-                nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
-                nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
+                NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
+                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
                 WorldInfo worldInfo = new WorldInfo(nbttagcompound1);
                 // TODO: Check if this call should really stay here or needs to be removed!!
                 FMLCommonHandler.instance().handleWorldDataLoad(parent, worldInfo, nbttagcompound);
