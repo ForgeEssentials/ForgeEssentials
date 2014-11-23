@@ -46,8 +46,8 @@ public class CommandHome extends ForgeEssentialsCommandBase {
                 WarpPoint p = new WarpPoint(sender);
                 PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
                 info.setHome(p);
-                info.save();                
-                OutputHandler.chatConfirmation(sender, String.format("Home set to: %1$d, %2$d, %3$d", p.getX(), p.getY(), p.getZ()));
+                info.save();
+                OutputHandler.chatConfirmation(sender, String.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
             }
         }
     }
