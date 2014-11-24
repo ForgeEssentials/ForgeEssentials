@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import com.forgeessentials.commons.selections.AreaShape;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,6 +22,7 @@ import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
+import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -147,6 +147,8 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             {
                 for (AreaZone areaZone : wz.getAreaZones())
                 {
+                    if (areaZone.isHidden())
+                        continue;
                     if (limit >= 0)
                     {
                         if (limit <= PAGE_SIZE)
@@ -164,6 +166,8 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         {
             for (AreaZone areaZone : worldZone.getAreaZones())
             {
+                if (areaZone.isHidden())
+                    continue;
                 if (limit >= 0)
                 {
                     if (limit <= PAGE_SIZE)

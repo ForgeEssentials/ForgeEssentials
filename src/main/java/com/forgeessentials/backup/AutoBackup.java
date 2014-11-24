@@ -1,8 +1,5 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.util.OutputHandler;
-import net.minecraftforge.common.DimensionManager;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -11,6 +8,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.TimerTask;
+
+import net.minecraftforge.common.DimensionManager;
+
+import com.forgeessentials.util.OutputHandler;
 
 public class AutoBackup extends TimerTask
 {
@@ -123,6 +124,7 @@ public class AutoBackup extends TimerTask
 
         Arrays.sort(files, new Comparator<File>()
         {
+            @Override
             public int compare(File f1, File f2)
             {
                 return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
