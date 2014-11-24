@@ -7,54 +7,23 @@ import java.util.Random;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.EnumDifficulty;
-import net.minecraft.world.WorldManager;
-import net.minecraft.world.WorldProviderEnd;
-import net.minecraft.world.WorldProviderHell;
-import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldSettings.GameType;
 import net.minecraft.world.WorldType;
-import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
 
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.multiworld.ModuleMultiworld;
-import com.forgeessentials.multiworld.core.exception.ProviderNotFoundException;
 import com.google.gson.annotations.Expose;
 
 public class Multiworld {
-
-    public static final String PROVIDER_DEFAULT = "default";
-    public static final String PROVIDER_FLAT = "flat";
-    public static final String PROVIDER_AMPLIFIED = "amp";
-    public static final String PROVIDER_LARGE_BIOMES = "large";
-    public static final String PROVIDER_HELL = "nether";
-    public static final String PROVIDER_END = "end";
-    public static final String PROVIDER_CUSTOM = "custom";
-    public static final String PROVIDER_CUSTOM_HELL = "custom_nether";
-    public static final String PROVIDER_CUSTOM_END = "custom_end";
-
-    public static final WorldTypeMultiworld WORLD_TYPE_MULTIWORLD = new WorldTypeMultiworld();
     
     protected String name;
-
-    @Expose(serialize = false)
-    protected boolean worldLoaded;
-
-    @Expose(serialize = false)
-    protected boolean error;
 
     protected int dimensionId;
 
     protected String provider;
 
     protected List<String> biomes = new ArrayList<String>();
-
-    @Expose(serialize = false)
-    protected int providerId;
 
     protected long seed;
 
@@ -67,6 +36,18 @@ public class Multiworld {
     protected boolean allowPeacefulCreatures = true;
 
     protected boolean mapFeaturesEnabled = true;
+
+    @Expose(serialize = false)
+    protected boolean worldLoaded;
+
+    @Expose(serialize = false)
+    protected boolean error;
+
+    @Expose(serialize = false)
+    protected int providerId;
+
+    @Expose(serialize = false)
+    protected WorldType worldType;
 
     public Multiworld(String name, String provider, long seed)
     {
@@ -83,84 +64,6 @@ public class Multiworld {
     public Multiworld(String name, String provider)
     {
         this(name, provider, new Random().nextLong());
-    }
-
-    boolean loadWorld() throws ProviderNotFoundException
-    {
-        if (worldLoaded)
-            return true;
-
-        WorldType worldType = WorldType.DEFAULT;
-        switch (provider.toLowerCase())
-        {
-        case PROVIDER_DEFAULT:
-            providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(WorldProviderSurface.class.getName());
-            break;
-        case PROVIDER_FLAT:
-            providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(WorldProviderSurface.class.getName());
-            worldType = WorldType.FLAT;
-            break;
-        case PROVIDER_AMPLIFIED:
-            providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(WorldProviderSurface.class.getName());
-            worldType = WorldType.AMPLIFIED;
-            break;
-        case PROVIDER_LARGE_BIOMES:
-            providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(WorldProviderSurface.class.getName());
-            worldType = WorldType.LARGE_BIOMES;
-            break;
-        case PROVIDER_HELL:
-            providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(WorldProviderHell.class.getName());
-            break;
-        case PROVIDER_END:
-            providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(WorldProviderEnd.class.getName());
-            break;
-        case PROVIDER_CUSTOM:
-            providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(WorldProviderSurface.class.getName());
-            worldType = WORLD_TYPE_MULTIWORLD;
-            break;
-        case PROVIDER_CUSTOM_HELL:
-            providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(WorldProviderHell.class.getName());
-            worldType = WORLD_TYPE_MULTIWORLD;
-            break;
-        case PROVIDER_CUSTOM_END:
-            providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(WorldProviderEnd.class.getName());
-            worldType = WORLD_TYPE_MULTIWORLD;
-            break;
-        default:
-            providerId = ModuleMultiworld.getMultiworldManager().getProviderIDByClass(provider);
-            break;
-        }
-        
-        // Register dimension with last used id if possible
-        if (DimensionManager.isDimensionRegistered(dimensionId))
-        {
-            dimensionId = DimensionManager.getNextFreeDimId();
-        }
-        DimensionManager.registerDimension(dimensionId, providerId);
-        ModuleMultiworld.getMultiworldManager().worldByDim.put(dimensionId, this);
-
-        // Initialize world settings
-        MinecraftServer server = MinecraftServer.getServer();
-        WorldServer overworld = DimensionManager.getWorld(0);
-        if (overworld == null)
-            throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
-        ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), this);
-        WorldSettings worldSettings = new WorldSettings(getSeed(), getGameType(), mapFeaturesEnabled, false, worldType);
-
-        // Create WorldServer with settings
-        WorldServer world = new WorldServerMultiworld(server, savehandler, //
-                overworld.getWorldInfo().getWorldName(), dimensionId, worldSettings, //
-                overworld, server.theProfiler, this);
-        world.addWorldAccess(new WorldManager(server, world));
-        
-        // Configure world
-        world.difficultySetting = difficulty;
-        world.setAllowedSpawnTypes(allowHostileCreatures, allowPeacefulCreatures);
-
-        // Post WorldEvent.Load
-        MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(world));
-        worldLoaded = true;
-        return true;
     }
 
     public void removeAllPlayersFromWorld()
@@ -193,6 +96,8 @@ public class Multiworld {
 
     public WorldServer getWorld()
     {
+        if (!worldLoaded)
+            return null;
         return DimensionManager.getWorld(dimensionId);
     }
 

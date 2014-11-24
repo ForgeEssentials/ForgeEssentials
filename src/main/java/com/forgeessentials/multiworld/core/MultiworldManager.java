@@ -13,9 +13,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldManager;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.WorldProviderEnd;
+import net.minecraft.world.WorldProviderHell;
+import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.WorldSettings;
+import net.minecraft.world.WorldType;
+import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
 import org.apache.commons.io.FileUtils;
@@ -31,9 +40,40 @@ import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class MultiworldManager extends ServerEventHandler {
 
-    protected Map<Integer, Multiworld> worldByDim = new HashMap<Integer, Multiworld>();
+    public static final String PROVIDER_DEFAULT = "default";
+    public static final String PROVIDER_FLAT = "flat";
+    public static final String PROVIDER_AMPLIFIED = "amp";
+    public static final String PROVIDER_LARGE_BIOMES = "large";
+    public static final String PROVIDER_HELL = "nether";
+    public static final String PROVIDER_END = "end";
+    public static final String PROVIDER_CUSTOM = "custom";
+    public static final String PROVIDER_CUSTOM_HELL = "custom_nether";
+    public static final String PROVIDER_CUSTOM_END = "custom_end";
+    
+    public static final String[] PROVIDERS = new String[] {
+        PROVIDER_DEFAULT,
+        PROVIDER_FLAT,
+        PROVIDER_AMPLIFIED,
+        PROVIDER_LARGE_BIOMES,
+        PROVIDER_HELL,
+        PROVIDER_END,
+    };
 
+    // ============================================================
+
+    public static final WorldTypeMultiworld WORLD_TYPE_MULTIWORLD = new WorldTypeMultiworld();
+
+    // ============================================================
+
+    /**
+     * Registered multiworlds
+     */
     protected Map<String, Multiworld> worlds = new HashMap<String, Multiworld>();
+
+    /**
+     * Registered multiworlds by dimension
+     */
+    protected Map<Integer, Multiworld> worldsByDim = new HashMap<Integer, Multiworld>();
 
     /**
      * Mapping from provider classnames to IDs
@@ -69,13 +109,11 @@ public class MultiworldManager extends ServerEventHandler {
             worlds.put(world.getName(), world);
             try
             {
-                world.loadWorld();
+                loadWorld(world);
             }
             catch (ProviderNotFoundException e)
             {
                 OutputHandler.felog.severe("Provider with name \"" + world.provider + "\" not found!");
-                world.provider = null;
-                world.error = true;
             }
         }
     }
@@ -87,12 +125,12 @@ public class MultiworldManager extends ServerEventHandler {
 
     public Set<Integer> getDimensions()
     {
-        return worldByDim.keySet();
+        return worldsByDim.keySet();
     }
 
     public Multiworld getWorld(int dimensionId)
     {
-        return worldByDim.get(dimensionId);
+        return worldsByDim.get(dimensionId);
     }
 
     public Multiworld getWorld(String name)
@@ -104,9 +142,95 @@ public class MultiworldManager extends ServerEventHandler {
     {
         if (worlds.containsKey(world.getName()))
             throw new MultiworldAlreadyExistsException();
-        world.loadWorld();
+        loadWorld(world);
         worlds.put(world.getName(), world);
         world.save();
+    }
+
+    protected void loadWorld(Multiworld world) throws ProviderNotFoundException
+    {
+        if (world.worldLoaded)
+            return;
+        try {
+            initializeMultiworldProvider(world);
+            
+            // Register dimension with last used id if possible
+            if (DimensionManager.isDimensionRegistered(world.dimensionId))
+            {
+                world.dimensionId = DimensionManager.getNextFreeDimId();
+            }
+            DimensionManager.registerDimension(world.dimensionId, world.providerId);
+            worldsByDim.put(world.dimensionId, world);
+    
+            // Initialize world settings
+            MinecraftServer server = MinecraftServer.getServer();
+            WorldServer overworld = DimensionManager.getWorld(0);
+            if (overworld == null)
+                throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
+            ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
+            WorldSettings worldSettings = new WorldSettings(world.seed, world.gameType, world.mapFeaturesEnabled, false, world.worldType);
+    
+            // Create WorldServer with settings
+            WorldServer worldServer = new WorldServerMultiworld(server, savehandler, //
+                    overworld.getWorldInfo().getWorldName(), world.dimensionId, worldSettings, //
+                    overworld, server.theProfiler, world);
+            worldServer.addWorldAccess(new WorldManager(server, worldServer));
+            world.updateWorldSettings();
+            world.worldLoaded = true;
+            world.error = false;
+    
+            // Post WorldEvent.Load
+            MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(worldServer));
+        }
+        catch (Exception e)
+        {
+            world.error = true;
+            throw e;
+        }
+    }
+
+    public void initializeMultiworldProvider(Multiworld world) throws ProviderNotFoundException
+    {
+        world.worldType = WorldType.DEFAULT;
+        switch (world.provider.toLowerCase())
+        {
+        case PROVIDER_DEFAULT:
+            world.providerId = getProviderIDByClass(WorldProviderSurface.class.getName());
+            break;
+        case PROVIDER_FLAT:
+            world.providerId = getProviderIDByClass(WorldProviderSurface.class.getName());
+            world.worldType = WorldType.FLAT;
+            break;
+        case PROVIDER_AMPLIFIED:
+            world.providerId = getProviderIDByClass(WorldProviderSurface.class.getName());
+            world.worldType = WorldType.AMPLIFIED;
+            break;
+        case PROVIDER_LARGE_BIOMES:
+            world.providerId = getProviderIDByClass(WorldProviderSurface.class.getName());
+            world.worldType = WorldType.LARGE_BIOMES;
+            break;
+        case PROVIDER_HELL:
+            world.providerId = getProviderIDByClass(WorldProviderHell.class.getName());
+            break;
+        case PROVIDER_END:
+            world.providerId = getProviderIDByClass(WorldProviderEnd.class.getName());
+            break;
+        case PROVIDER_CUSTOM:
+            world.providerId = getProviderIDByClass(WorldProviderSurface.class.getName());
+            world.worldType = WORLD_TYPE_MULTIWORLD;
+            throw new ProviderNotFoundException();
+        case PROVIDER_CUSTOM_HELL:
+            world.providerId = getProviderIDByClass(WorldProviderHell.class.getName());
+            world.worldType = WORLD_TYPE_MULTIWORLD;
+            throw new ProviderNotFoundException();
+        case PROVIDER_CUSTOM_END:
+            world.providerId = getProviderIDByClass(WorldProviderEnd.class.getName());
+            world.worldType = WORLD_TYPE_MULTIWORLD;
+            throw new ProviderNotFoundException();
+        default:
+            world.providerId = getProviderIDByClass(world.provider);
+            break;
+        }
     }
 
     // ============================================================
@@ -122,7 +246,7 @@ public class MultiworldManager extends ServerEventHandler {
         world.removeAllPlayersFromWorld();
         DimensionManager.unloadWorld(world.getDimensionId());
         worldsToRemove.add(DimensionManager.getWorld(world.getDimensionId()));
-        worldByDim.remove(world.getDimensionId());
+        worldsByDim.remove(world.getDimensionId());
         worlds.remove(world.getName());
     }
 
@@ -151,7 +275,7 @@ public class MultiworldManager extends ServerEventHandler {
             world.worldLoaded = false;
             DimensionManager.unregisterDimension(world.getDimensionId());
         }
-        worldByDim.clear();
+        worldsByDim.clear();
         worlds.clear();
     }
 

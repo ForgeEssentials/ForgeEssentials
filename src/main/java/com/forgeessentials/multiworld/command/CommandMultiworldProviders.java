@@ -7,6 +7,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.multiworld.ModuleMultiworld;
+import com.forgeessentials.multiworld.core.MultiworldManager;
 import com.forgeessentials.util.OutputHandler;
 
 /**
@@ -30,9 +31,13 @@ public class CommandMultiworldProviders extends ForgeEssentialsCommandBase {
     public void processCommand(ICommandSender commandSender, String[] args)
     {
         OutputHandler.chatNotification(commandSender, "Available world providers:");
+        for (String provider : MultiworldManager.PROVIDERS)
+        {
+            OutputHandler.chatNotification(commandSender, "  " + provider);
+        }
         for (Entry<String, Integer> provider : ModuleMultiworld.getMultiworldManager().getWorldProviders().entrySet())
         {
-            OutputHandler.chatNotification(commandSender, "#" + provider.getValue() + ":" + provider.getKey());
+            OutputHandler.chatNotification(commandSender, "  " + provider.getKey());
         }
     }
 
