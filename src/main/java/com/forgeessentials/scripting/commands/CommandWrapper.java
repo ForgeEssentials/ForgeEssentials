@@ -1,4 +1,4 @@
-package com.forgeessentials.commands.shortcut;
+package com.forgeessentials.scripting.commands;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.CommandException;
@@ -67,18 +67,6 @@ public class CommandWrapper extends ForgeEssentialsCommandBase {
 	{
 		getCommand().processCommand(sender, ShortcutCommands.parseArgs(sender, this.args, args));
 	}
-
-//    @Override
-//    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
-//    {
-//    	getCommand().processCommandPlayer(sender, args);
-//    }
-//
-//    @Override
-//    public void processCommandConsole(ICommandSender sender, String[] args)
-//    {
-//    	getCommand().processCommandConsole(sender, args);
-//    }
 
     @Override
     public boolean canConsoleUseCommand()

@@ -2,11 +2,14 @@ package com.forgeessentials.scripting;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.scripting.commands.ShortcutCommands;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.command.ICommandSender;
 
 import java.io.File;
 
@@ -46,9 +49,23 @@ public class ModuleScripting {
     }
 
     @SubscribeEvent
+    public void load(FEModuleInitEvent e)
+    {
+        ShortcutCommands.loadConfig(ForgeEssentials.getFEDirectory());
+    }
+
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         FunctionHelper.registerServerCommand(new CommandScript());
         FunctionHelper.registerServerCommand(new TimedTaskManager());
+        ShortcutCommands.load();
+    }
+
+    @FEModule.Reload
+    public void reload(ICommandSender sender)
+    {
+        ShortcutCommands.parseConfig();
+        ShortcutCommands.load();
     }
 }

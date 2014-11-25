@@ -1,6 +1,7 @@
 package com.forgeessentials.scripting;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.scripting.macros.MacroReader;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,39 +35,15 @@ public enum EventType {
 
     public static void run(EntityPlayer player, EventType event)
     {
-        ArrayList<String> scripts = new ArrayList<String>();
         OutputHandler.felog.info("Running command scripts for player " + player.getCommandSenderName());
 
         //  run player scripts
         try
         {
-            File pscript = new File(event.player, player.getPersistentID() + ".txt");
-
+            File pscript = new File(event.player, player.getCommandSenderName() + ".txt");
             OutputHandler.felog.info("Reading command script file " + pscript.getAbsolutePath());
-            FileInputStream stream = new FileInputStream(pscript);
-            InputStreamReader streamReader = new InputStreamReader(stream);
-            BufferedReader reader = new BufferedReader(streamReader);
-            String read = reader.readLine();
-            while (read != null)
-            {
-                // ignore the comment things...
-                if (read.startsWith("#"))
-                {
-                    read = reader.readLine();
-                    continue;
-                }
+            MacroReader.run(pscript, player);
 
-                // add to the rules list.
-                scripts.add(read);
-
-                // read the next string
-                read = reader.readLine();
-
-                reader.close();
-                streamReader.close();
-                stream.close();
-
-            }
         }
         catch (Exception e)
         {
@@ -77,43 +54,11 @@ public enum EventType {
         {
             File gscript = new File(event.group, APIRegistry.perms.getPrimaryGroup(new UserIdent(player)) + ".txt");
             OutputHandler.felog.info("Reading command script file " + gscript.getAbsolutePath());
-            FileInputStream stream = new FileInputStream(gscript);
-            InputStreamReader streamReader = new InputStreamReader(stream);
-            BufferedReader reader = new BufferedReader(streamReader);
-            String read = reader.readLine();
-            while (read != null)
-            {
-                // ignore the comment things...
-                if (read.startsWith("#"))
-                {
-                    read = reader.readLine();
-                    continue;
-                }
-
-                // add to the rules list.
-                scripts.add(read);
-
-                // read the next string
-                read = reader.readLine();
-
-                reader.close();
-                streamReader.close();
-                stream.close();
-
-            }
+            MacroReader.run(gscript, player);
         }
         catch (Exception e)
         {
             OutputHandler.felog.warning("Could not find command script for group " + APIRegistry.perms.getPrimaryGroup(new UserIdent(player)).toString() + ", ignoring!");
-        }
-        finally
-        {
-            for (Object s : scripts.toArray())
-            {
-                String s1 = s.toString();
-                MinecraftServer.getServer().getCommandManager().executeCommand(player, s1);
-                OutputHandler.felog.info("Successfully run command scripts for player " + player.getCommandSenderName());
-            }
         }
     }
 
