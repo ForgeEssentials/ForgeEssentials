@@ -2,7 +2,6 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.network.S5PacketNoclip;
-import com.forgeessentials.commands.shortcut.ShortcutCommands;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandRegistrar;
 import com.forgeessentials.commands.util.CommandsEventHandler;
@@ -19,7 +18,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -41,24 +39,15 @@ public class ModuleCommands {
     public void load(FEModuleInitEvent e)
     {
         ForgeEssentials.getConfigManager().registerLoader("Commands", new ConfigCmd());
-        ShortcutCommands.loadConfig(ForgeEssentials.getFEDirectory());
     }
 
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
     	CommandRegistrar.registerCommands(e);
-        ShortcutCommands.load();
         CommandDataManager.load();
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
         APIRegistry.perms.registerPermission("fe.commands.*", RegisteredPermValue.OP);
-    }
-
-    @FEModule.Reload
-    public void reload(ICommandSender sender)
-    {
-        ShortcutCommands.parseConfig();
-        ShortcutCommands.load();
     }
 
     @SubscribeEvent

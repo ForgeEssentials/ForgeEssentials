@@ -1,4 +1,4 @@
-package com.forgeessentials.commands.shortcut;
+package com.forgeessentials.scripting.commands;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
@@ -36,8 +36,6 @@ public class ShortcutCommands {
 
     /**
      * Registers all commands
-     *
-     * @param e
      */
     public static void load()
     {
