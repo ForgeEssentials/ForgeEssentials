@@ -42,7 +42,7 @@ public enum EventType {
         {
             File pscript = new File(event.player, player.getCommandSenderName() + ".txt");
             OutputHandler.felog.info("Reading command script file " + pscript.getAbsolutePath());
-            MacroReader.run(pscript, player);
+            MacroReader.run(pscript, player, new String[]{});
 
         }
         catch (Exception e)
@@ -54,7 +54,7 @@ public enum EventType {
         {
             File gscript = new File(event.group, APIRegistry.perms.getPrimaryGroup(new UserIdent(player)) + ".txt");
             OutputHandler.felog.info("Reading command script file " + gscript.getAbsolutePath());
-            MacroReader.run(gscript, player);
+            MacroReader.run(gscript, player, new String[]{});
         }
         catch (Exception e)
         {

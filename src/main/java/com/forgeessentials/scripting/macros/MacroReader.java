@@ -2,6 +2,7 @@ package com.forgeessentials.scripting.macros;
 
 import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
 import java.io.BufferedReader;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class MacroReader
 {
-    public static void run(File macroFile, ICommandSender sender) throws IOException
+    public static void run(File macroFile, ICommandSender sender, String[] args) throws IOException
     {
         ArrayList<String> scripts = new ArrayList<String>();
 
@@ -31,7 +32,24 @@ public class MacroReader
                 continue;
             }
 
-            // add to the rules list.
+            read = read.replaceAll("%p", sender.getCommandSenderName());
+            if (args.length > 0)
+            {
+                for (int i =0; i < args.length; i++)
+                {
+                    read = read.replaceAll("%a" + i, args[i]);
+                }
+            }
+
+            if (sender instanceof EntityPlayerMP)
+            {
+                EntityPlayerMP player = (EntityPlayerMP) sender;
+
+                read = read.replaceAll("%px", Integer.toString(player.getPlayerCoordinates().posX));
+                read = read.replaceAll("%py", Integer.toString(player.getPlayerCoordinates().posY));
+                read = read.replaceAll("%pz", Integer.toString(player.getPlayerCoordinates().posZ));
+            }
+
             scripts.add(read);
 
             // read the next string
@@ -46,7 +64,7 @@ public class MacroReader
         {
             String s1 = s.toString();
             MinecraftServer.getServer().getCommandManager().executeCommand(sender, s1);
-            OutputHandler.felog.info("Successfully run command scripts for " + sender.getCommandSenderName());
+            OutputHandler.chatNotification(sender, "Successfully run command scripts for " + sender.getCommandSenderName());
         }
 
     }

@@ -3,6 +3,7 @@ package com.forgeessentials.scripting;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.commands.ShortcutCommands;
+import com.forgeessentials.scripting.macros.MacroCommand;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -18,11 +19,6 @@ public class ModuleScripting {
 
     @FEModule.ModuleDir
     public static File moduleDir = new File(ForgeEssentials.getFEDirectory(), "scripting/");
-
-    static File loginplayer = new File(moduleDir, "login/player/");
-    static File logingroup = new File(moduleDir, "login/group/");
-    static File respawngroup = new File(moduleDir, "respawn/group/");
-    static File respawnplayer = new File(moduleDir, "respawn/player/");
 
     public static void startup()
     {
@@ -59,6 +55,7 @@ public class ModuleScripting {
     {
         FunctionHelper.registerServerCommand(new CommandScript());
         FunctionHelper.registerServerCommand(new TimedTaskManager());
+        FunctionHelper.registerServerCommand(new MacroCommand());
         ShortcutCommands.load();
     }
 
