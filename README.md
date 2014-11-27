@@ -47,26 +47,26 @@ FE Team Members:
 
 <a href="https://github.com/olee">olee</a>
 
-<a href="https://github.com/RlonRyan">RlonRyan</a>
-
 <a href="https://github.com/helinus">Helinus</a>
 
 <a href="https://github.com/Malkierian">Malkierian</a>
 
 Retired:
 
-<a href="https://github.com/AbrarSyed">AbrarSyed</a>  (inactive)
+<a href="https://github.com/AbrarSyed">AbrarSyed</a>
 
-<a href="https://github.com/Bob-A-Red-Dino">Bob A Red Dino</a>  (inactive)
+<a href="https://github.com/Bob-A-Red-Dino">Bob A Red Dino</a>
 
-<a href="https://github.com/bspkrs">bspkrs</a> (inactive)
+<a href="https://github.com/bspkrs">bspkrs</a>
 
-<a href="https://github.com/MysteriousAges">MysteriousAges</a> (inactive)
+<a href="https://github.com/MysteriousAges">MysteriousAges</a>
 
-<a href="https://github.com/dries007">Dries007</a> (inactive)
+<a href="https://github.com/dries007">Dries007</a>
 
-<a href="https://github.com/Weneg">Weneg</a> (inactive)
+<a href="https://github.com/Weneg">Weneg</a>
 
-<a href="https://github.com/Jgdovin">Jgdovin</a>  (inactive)
+<a href="https://github.com/Jgdovin">Jgdovin</a>
 
-<a href="https://github.com/jovino">Jovino</a> (inactive)
+<a href="https://github.com/RlonRyan">RlonRyan</a>
+
+<a href="https://github.com/jovino">Jovino</a>
