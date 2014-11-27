@@ -55,7 +55,7 @@ public class CommandScript extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return "fe.script";
+        return "fe.script.event";
     }
 
     @Override

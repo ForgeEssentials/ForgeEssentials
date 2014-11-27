@@ -1,11 +1,19 @@
 package com.forgeessentials.commands.admin;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import java.util.List;
@@ -20,6 +28,24 @@ public class CommandDoAs extends FEcmdModuleCommands {
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
+        if ((sender instanceof EntityPlayerMP) && args[0].equals("[CONSOLE]"))
+        {
+            EntityPlayerMP player = (EntityPlayerMP)sender;
+
+            if (PermissionsManager.checkPermission(player, "fe.commands.doas.console"))
+            {
+                if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER && args.length >= 2)
+                {
+                    String cmd = args[0];
+                    for (int i = 1; i < args.length; ++i)
+                    {
+                        cmd = cmd + " " + args[i];
+                    }
+                    MinecraftServer.getServer().getCommandManager().executeCommand(new DummyCommandSender(player), cmd);
+                }
+            }
+        }
+
         StringBuilder cmd = new StringBuilder(args.toString().length());
         for (int i = 1; i < args.length; i++)
         {
@@ -69,5 +95,52 @@ public class CommandDoAs extends FEcmdModuleCommands {
     {
 
         return "/doas <player> <command> Run a command as another player.";
+    }
+
+    @Override
+    public void registerExtraPermissions()
+    {
+        PermissionsManager.registerPermission("fe.commands.doas.console", RegisteredPermValue.OP);
+    }
+
+    public class DummyCommandSender implements ICommandSender {
+
+        private EntityPlayer player;
+
+        public DummyCommandSender(EntityPlayer player)
+        {
+            this.player = player;
+        }
+
+        @Override public String getCommandSenderName()
+        {
+            return "FEServerDo";
+        }
+
+        @Override public IChatComponent func_145748_c_()
+        {
+            return null;
+        }
+
+        @Override public void addChatMessage(IChatComponent iChatComponent)
+        {
+            player.addChatMessage(iChatComponent);
+
+        }
+
+        @Override public boolean canCommandSenderUseCommand(int i, String s)
+        {
+            return true;
+        }
+
+        @Override public ChunkCoordinates getPlayerCoordinates()
+        {
+            return null;
+        }
+
+        @Override public World getEntityWorld()
+        {
+            return null;
+        }
     }
 }

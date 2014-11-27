@@ -7,9 +7,9 @@ import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.UserIdent;
 
 /**
  * Zones are used to store permissions in a tree-like hierarchy. Each zone has it's own set of group- and player-permissions. Zones are stored in a tree
@@ -165,7 +165,16 @@ public abstract class Zone {
 		if (getServerZone() != null && getServerZone().getRootZone() != null)
 			getServerZone().getRootZone().getPermissionHelper().setDirty();
 	}
-	
+
+    /**
+     * Checks, if the zone is hidden.
+     * Returns false for all zones except {@link AreaZone}s
+     */
+    public boolean isHidden()
+    {
+        return false;
+    }
+
 	// ------------------------------------------------------------
 	// -- Player permissions
 	// ------------------------------------------------------------

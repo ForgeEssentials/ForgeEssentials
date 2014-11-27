@@ -39,7 +39,6 @@ import com.forgeessentials.commands.CommandVirtualchest;
 import com.forgeessentials.commands.CommandWeather;
 import com.forgeessentials.commands.admin.CommandDoAs;
 import com.forgeessentials.commands.admin.CommandMemusage;
-import com.forgeessentials.commands.admin.CommandServerDo;
 import com.forgeessentials.commands.admin.CommandServerSettings;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -72,7 +71,6 @@ public class CommandRegistrar {
         cmdList.add(new CommandJump());
         cmdList.add(new CommandCraft());
         cmdList.add(new CommandPing());
-        cmdList.add(new CommandServerDo());
         cmdList.add(new CommandInventorySee());
         cmdList.add(new CommandSmite());
         cmdList.add(new CommandBurn());
@@ -122,14 +120,6 @@ public class CommandRegistrar {
 		}
 
         config.save();
-    }
-
-    public static void load(FMLServerStartingEvent e)
-    {
-        for (FEcmdModuleCommands cmd : cmdList)
-        {
-            e.registerServerCommand(cmd);
-        }
     }
 
 	public static void registerCommands(FEModuleServerInitEvent e)

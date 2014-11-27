@@ -1,14 +1,9 @@
 package com.forgeessentials.data.v2.types;
 
-import com.forgeessentials.data.v2.DataManager.DataType;
-import com.forgeessentials.util.OutputHandler;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
+import java.lang.reflect.Type;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTBase.NBTPrimitive;
 import net.minecraft.nbt.NBTTagByteArray;
@@ -18,10 +13,17 @@ import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 
-import java.lang.reflect.Type;
-import java.util.Map.Entry;
-import java.util.Set;
+import com.forgeessentials.data.v2.DataManager.DataType;
+import com.forgeessentials.util.OutputHandler;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
 
 public class NBTTagCompoundType implements DataType<NBTTagCompound> {
 
@@ -73,7 +75,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound> {
             }
             case 8:
                 // NBTTagString
-                result.add("S:" + tagName, new JsonPrimitive(tagPrimitive.func_150286_g()));
+                result.add("S:" + tagName, new JsonPrimitive(((NBTTagString) tag).func_150285_a_()));
                 break;
             case 9:
             {
