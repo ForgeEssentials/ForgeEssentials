@@ -4,6 +4,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.Loader;
+import org.apache.logging.log4j.Level;
 
 public class Environment {
     
@@ -63,7 +64,7 @@ public class Environment {
         // Check for Cauldron or LavaBukkit
         try
         {
-            Class.forName("org.bukkit.craftbukkit.Main");
+            Class.forName("net.minecraftforge.cauldron.VersionInfo");
             OutputHandler.felog.severe("Sanity check failed: Detected a ForgeBukkit server implementation, bad things may happen, proceed at your own risk.");
         }
         catch (ClassNotFoundException e)
