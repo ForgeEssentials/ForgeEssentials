@@ -1,0 +1,10 @@
+language: java
+notifications:
+  email: false
+  irc: "irc.esper.net#forgeessentials"
+before_install: chmod +x gradlew
+install: ./gradlew setupCIWorkspace -S
+matrix:
+  include:
+  - jdk: oraclejdk7
+    script: ./gradlew build -S
