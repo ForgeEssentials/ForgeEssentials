@@ -50,6 +50,7 @@ public class ModuleMultiworld extends ConfigLoaderBase {
     public void postLoad(FEModulePostInitEvent e)
     {
         multiworldManager.loadWorldProviders();
+        multiworldManager.loadWorldTypes();
     }
 
     @SubscribeEvent

@@ -11,6 +11,7 @@ import com.forgeessentials.multiworld.core.Multiworld;
 import com.forgeessentials.multiworld.core.MultiworldTeleporter;
 import com.forgeessentials.multiworld.core.exception.MultiworldAlreadyExistsException;
 import com.forgeessentials.multiworld.core.exception.ProviderNotFoundException;
+import com.forgeessentials.multiworld.core.exception.WorldTypeNotFoundException;
 
 /**
  * @author Björn Zeutzheim
@@ -32,11 +33,21 @@ public class CommandMultiworldCreate extends ForgeEssentialsCommandBase {
     @Override
     public void processCommand(ICommandSender commandSender, String[] args)
     {
+        String name;
+        String provider  = "normal";
+        String worldType = "default";
+
         if (args.length < 1)
             throw new CommandException("Missing name argument");
-        if (args.length < 2)
-            throw new CommandException("Missing provider argument");
-        Multiworld world = new Multiworld(args[0], args[1]); // Multiworld.PROVIDER_CUSTOM
+
+        name = args[0];
+        if (args.length > 1) provider  = args[1];
+        if (args.length > 2) worldType = args[2];
+        if (args.length > 3)
+            throw new CommandException("Too many arguments");
+
+        Multiworld world = new Multiworld(name, provider, worldType);
+      
         try
         {
             ModuleMultiworld.getMultiworldManager().addWorld(world);
@@ -48,6 +59,10 @@ public class CommandMultiworldCreate extends ForgeEssentialsCommandBase {
         catch (ProviderNotFoundException e)
         {
             throw new CommandException("World-provider not found!");
+        }
+        catch (WorldTypeNotFoundException e)
+        {
+            throw new CommandException("World-type not found!");
         }
         catch (MultiworldAlreadyExistsException e)
         {

@@ -23,6 +23,8 @@ public class Multiworld {
 
     protected String provider;
 
+    protected String worldType;
+
     protected List<String> biomes = new ArrayList<String>();
 
     protected long seed;
@@ -47,12 +49,13 @@ public class Multiworld {
     protected int providerId;
 
     @Expose(serialize = false)
-    protected WorldType worldType;
+    protected WorldType worldTypeObj;
 
-    public Multiworld(String name, String provider, long seed)
+    public Multiworld(String name, String provider, String worldType, long seed)
     {
         this.name = name;
         this.provider = provider;
+        this.worldType = worldType;
 
         this.seed = seed;
         this.gameType = MinecraftServer.getServer().getGameType();
@@ -61,9 +64,9 @@ public class Multiworld {
         this.allowPeacefulCreatures = true;
     }
 
-    public Multiworld(String name, String provider)
+    public Multiworld(String name, String provider, String worldType)
     {
-        this(name, provider, new Random().nextLong());
+        this(name, provider, worldType, new Random().nextLong());
     }
 
     public void removeAllPlayersFromWorld()
