@@ -57,8 +57,10 @@ public class MultiworldSaveHandler implements ISaveHandler {
                 NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
                 NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
                 WorldInfo worldInfo = new WorldInfo(nbttagcompound1);
-                // TODO: Check if this call should really stay here or needs to be removed!!
+
+                // Load the list of mods the world was created with
                 FMLCommonHandler.instance().handleWorldDataLoad(parent, worldInfo, nbttagcompound);
+
                 return worldInfo;
             }
             catch (StartupQuery.AbortedException e)
@@ -107,7 +109,7 @@ public class MultiworldSaveHandler implements ISaveHandler {
         NBTTagCompound dataTag = new NBTTagCompound();
         dataTag.setTag("Data", data);
         
-        // TODO: Check if this call should really stay here or needs to be removed!!
+        // Save the list of mods the world was created with
         FMLCommonHandler.instance().handleWorldDataSave(parent, p_75755_1_, dataTag);
 
         try
