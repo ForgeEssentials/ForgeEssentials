@@ -1,10 +1,13 @@
 package com.forgeessentials.core.compat;
 
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CompatReiMinimap {
-    private static final String base = "ForgeEssentials.compat";
+    private static final String base = "fe.reimm.compat";
 
     public static final String cavemap = base + ".cavemap";
     public static final String radarPlayer = base + ".radarPlayer";
@@ -13,6 +16,18 @@ public class CompatReiMinimap {
     public static final String radarSlime = base + ".radarSlime";
     public static final String radarSquid = base + ".radarSquid";
     public static final String radarOther = base + ".radarOther";
+
+    @SubscribeEvent
+    public void registerPerms(FEModuleServerInitEvent e)
+    {
+        PermissionsManager.registerPermission(cavemap, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(radarAnimal, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(radarMod, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(radarOther, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(radarPlayer, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(radarSlime, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(radarOther, RegisteredPermValue.TRUE);
+    }
 
     public static String reimotd(EntityPlayer username)
     {
