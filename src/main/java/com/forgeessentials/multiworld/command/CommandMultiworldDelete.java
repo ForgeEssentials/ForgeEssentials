@@ -9,7 +9,7 @@ import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.core.Multiworld;
 
 /**
- * @author Björn Zeutzheim
+ * @author Olee
  */
 public class CommandMultiworldDelete extends ForgeEssentialsCommandBase {
 

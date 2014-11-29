@@ -10,6 +10,10 @@ import net.minecraft.world.gen.layer.IntCache;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeManager.BiomeEntry;
 
+/**
+ * 
+ * @author Olee
+ */
 public class GenLayerMultiworldBiome extends GenLayer {
     
     protected List<BiomeEntry>[] biomes = new ArrayList[BiomeManager.BiomeType.values().length];

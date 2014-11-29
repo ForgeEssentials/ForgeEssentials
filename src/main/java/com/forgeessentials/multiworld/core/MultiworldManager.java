@@ -42,6 +42,11 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 
+/**
+ * 
+ * @author Olee
+ * @author gnif
+ */
 public class MultiworldManager extends ServerEventHandler {
 
     public static final String PROVIDER_NORMAL = "normal";

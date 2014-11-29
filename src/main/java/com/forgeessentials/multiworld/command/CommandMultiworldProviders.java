@@ -11,7 +11,7 @@ import com.forgeessentials.multiworld.core.MultiworldManager;
 import com.forgeessentials.util.OutputHandler;
 
 /**
- * @author Björn Zeutzheim
+ * @author Olee
  */
 public class CommandMultiworldProviders extends ForgeEssentialsCommandBase {
 

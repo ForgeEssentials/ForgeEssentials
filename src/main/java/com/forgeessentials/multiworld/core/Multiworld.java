@@ -15,6 +15,10 @@ import net.minecraftforge.common.DimensionManager;
 import com.forgeessentials.data.v2.DataManager;
 import com.google.gson.annotations.Expose;
 
+/**
+ * 
+ * @author Olee
+ */
 public class Multiworld {
     
     protected String name;

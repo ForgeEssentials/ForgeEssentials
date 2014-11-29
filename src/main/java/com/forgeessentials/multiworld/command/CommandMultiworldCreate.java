@@ -14,7 +14,7 @@ import com.forgeessentials.multiworld.core.exception.ProviderNotFoundException;
 import com.forgeessentials.multiworld.core.exception.WorldTypeNotFoundException;
 
 /**
- * @author Björn Zeutzheim
+ * @author Olee
  */
 public class CommandMultiworldCreate extends ForgeEssentialsCommandBase {
 

@@ -8,7 +8,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 
 /**
- * @author Björn Zeutzheim
+ * @author Olee
  */
 public class CommandGetDimension extends ForgeEssentialsCommandBase {
 

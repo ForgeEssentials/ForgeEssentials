@@ -17,6 +17,10 @@ import net.minecraft.world.storage.WorldInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.StartupQuery;
 
+/**
+ * 
+ * @author Olee
+ */
 public class MultiworldSaveHandler implements ISaveHandler {
 
     private SaveHandler parent;

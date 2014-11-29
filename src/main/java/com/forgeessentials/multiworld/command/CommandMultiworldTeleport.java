@@ -13,7 +13,7 @@ import com.forgeessentials.multiworld.core.Multiworld;
 import com.forgeessentials.multiworld.core.MultiworldTeleporter;
 
 /**
- * @author Björn Zeutzheim
+ * @author Olee
  */
 public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
 

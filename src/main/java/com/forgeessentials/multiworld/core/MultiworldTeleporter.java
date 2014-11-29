@@ -8,6 +8,10 @@ import net.minecraft.world.WorldServer;
 
 import com.forgeessentials.util.FunctionHelper;
 
+/**
+ * 
+ * @author Olee
+ */
 public class MultiworldTeleporter extends Teleporter {
 
     protected final WorldServer world;

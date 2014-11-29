@@ -16,6 +16,10 @@ import net.minecraft.world.gen.layer.GenLayerBiome;
 import net.minecraft.world.gen.layer.GenLayerBiomeEdge;
 import net.minecraft.world.gen.layer.GenLayerZoom;
 
+/**
+ * 
+ * @author Olee
+ */
 public class WorldTypeMultiworld extends WorldType {
 
     private WorldServerMultiworld currentMultiworld;

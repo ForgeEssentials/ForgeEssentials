@@ -9,6 +9,10 @@ import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.DerivedWorldInfo;
 import net.minecraft.world.storage.ISaveHandler;
 
+/**
+ * 
+ * @author Olee
+ */
 public class WorldServerMultiworld extends WorldServer {
     
     private Multiworld world;

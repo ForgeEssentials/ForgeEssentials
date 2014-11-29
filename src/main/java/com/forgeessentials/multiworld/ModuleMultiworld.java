@@ -22,6 +22,10 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
+/**
+ * 
+ * @author Olee
+ */
 @FEModule(name = "Multiworld", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleMultiworld extends ConfigLoaderBase {
 

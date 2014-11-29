@@ -12,6 +12,10 @@ import cpw.mods.fml.common.network.handshake.NetworkDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
 
+/**
+ * 
+ * @author gnif
+ */
 public class MultiworldEventHandler extends ChannelInboundHandlerAdapter {
 
     private MultiworldManager manager;
