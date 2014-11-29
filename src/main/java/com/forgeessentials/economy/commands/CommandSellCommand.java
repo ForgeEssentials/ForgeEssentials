@@ -59,7 +59,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                 // parse meta
                 if (itemName.contains(":"))
                 {
-                    String[] split = itemName.split("x");
+                    String[] split = itemName.split(":");
                     meta = parseInt(sender, split[1]);
                     itemName = split[0];
                 }
