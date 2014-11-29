@@ -174,7 +174,7 @@ public class MultiworldManager extends ServerEventHandler {
             worldsByDim.put(world.dimensionId, world);
     
             // Initialize world settings
-            MinecraftServer server = MinecraftServer.getServer();
+            MinecraftServer mcServer = MinecraftServer.getServer();
             WorldServer overworld = DimensionManager.getWorld(0);
             if (overworld == null)
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
@@ -182,10 +182,14 @@ public class MultiworldManager extends ServerEventHandler {
             WorldSettings worldSettings = new WorldSettings(world.seed, world.gameType, world.mapFeaturesEnabled, false, world.worldTypeObj);
     
             // Create WorldServer with settings
-            WorldServer worldServer = new WorldServerMultiworld(server, savehandler, //
+            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, //
                     overworld.getWorldInfo().getWorldName(), world.dimensionId, worldSettings, //
-                    overworld, server.theProfiler, world);
-            worldServer.addWorldAccess(new WorldManager(server, worldServer));
+                    overworld, mcServer.theProfiler, world);
+            worldServer.addWorldAccess(new WorldManager(mcServer, worldServer));
+            if (!mcServer.isSinglePlayer())
+            	worldServer.getWorldInfo().setGameType(mcServer.getGameType());
+            mcServer.func_147139_a(mcServer.func_147135_j());
+            
             world.updateWorldSettings();
             world.worldLoaded = true;
             world.error = false;
@@ -195,7 +199,7 @@ public class MultiworldManager extends ServerEventHandler {
 
             // This is required otherwise the S01PacketJoinGame.worldinfo may not be initialized
             worldServer.getWorldInfo().setGameType(world.gameType);
-            server.func_147139_a(server.func_147135_j());
+            mcServer.func_147139_a(mcServer.func_147135_j());
 
             // Tell everyone about the new dim
             FMLEmbeddedChannel channel = NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);

@@ -53,7 +53,7 @@ public class CommandMultiworldCreate extends ForgeEssentialsCommandBase {
             ModuleMultiworld.getMultiworldManager().addWorld(world);
             if (commandSender instanceof EntityPlayerMP)
             {
-                new MultiworldTeleporter(world.getWorld()).teleport((EntityPlayerMP) commandSender);
+                new MultiworldTeleporter(world.getWorldServer()).teleport((EntityPlayerMP) commandSender);
             }
         }
         catch (ProviderNotFoundException e)

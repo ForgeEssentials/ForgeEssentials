@@ -87,9 +87,9 @@ public class Multiworld {
     {
         if (!worldLoaded)
             return;
-        WorldServer world = getWorld();
-        world.difficultySetting = difficulty;
-        world.setAllowedSpawnTypes(allowHostileCreatures, allowPeacefulCreatures);
+        WorldServer worldServer = getWorldServer();
+        worldServer.difficultySetting = difficulty;
+        worldServer.setAllowedSpawnTypes(allowHostileCreatures, allowPeacefulCreatures);
     }
 
     public String getName()
@@ -97,7 +97,7 @@ public class Multiworld {
         return name;
     }
 
-    public WorldServer getWorld()
+    public WorldServer getWorldServer()
     {
         if (!worldLoaded)
             return null;
