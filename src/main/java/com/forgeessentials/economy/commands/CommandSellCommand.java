@@ -3,6 +3,8 @@ package com.forgeessentials.economy.commands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.api.APIRegistry;
+
 import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,70 +36,93 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        System.out.print(sender);
+        // System.out.print(sender);
         if (args.length >= 3)
         {
+            String playerName = args[0];
 
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, playerName);
             if (player != null)
             {
-
                 boolean found = false;
-                // Set needed parm
                 int amount = 1, meta = -1;
-                String item = null;
-                ItemStack target = new ItemStack((Item)GameData.getItemRegistry().getObject(item), amount, meta);
+                String itemName = args[1];
 
-                if (args[1].contains("x"))
+                // parse amount
+                if (itemName.contains("x"))
                 {
-                    String[] split = args[1].split("x");
-                    target.stackSize = amount = parseIntBounded(sender, split[0], 0, 64);
-                    args[1] = split[1];
+                    String[] split = itemName.split("x");
+                    amount = parseIntBounded(sender, split[0], 0, 64);
+                    itemName = split[1];
                 }
-                if (args[1].contains(":"))
+
+                // parse meta
+                if (itemName.contains(":"))
                 {
-                    String[] split = args[1].split(":");
-                    target.setItemDamage(meta = parseInt(sender, split[1]));
-                    args[1] = split[0];
+                    String[] split = itemName.split(":");
+                    meta = parseInt(sender, split[1]);
+                    itemName = split[0];
                 }
-                item = args[1];
-                // Loop though inv and find a stack big enough to support the sell cmd
-                for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+
+                // get item
+                Item offeredItem = null;
+                try {
+                    int itemId = Integer.parseInt(itemName);
+                    offeredItem = Item.getItemById(itemId);
+                }
+                catch(NumberFormatException e) {
+                    offeredItem = (Item)GameData.getItemRegistry().getObject(itemName);
+                }
+
+                if (offeredItem != null)
                 {
-                    ItemStack is = player.inventory.mainInventory[slot];
-                    if (is != null)
+                    ItemStack target = new ItemStack(offeredItem, amount, meta);
+                    String targetName = target.getUnlocalizedName();
+
+                    // Loop though inventory and find a stack big enough to support the sell command
+                    for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
                     {
-                        if (is.getUnlocalizedName() == item)
+                        ItemStack is = player.inventory.mainInventory[slot];
+                        if (is != null)
                         {
-                            if (meta == -1 || meta == is.getItemDamage())
+                            if (is.getUnlocalizedName().equalsIgnoreCase(targetName))
                             {
-                                if (is.stackSize >= amount)
+                                if (meta == -1 || meta == is.getItemDamage())
                                 {
-                                    player.inventory.decrStackSize(slot, amount);
-                                    found = true;
-                                    break;
+                                    if (is.stackSize >= amount)
+                                    {
+                                        player.inventory.decrStackSize(slot, amount);
+                                        found = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                if (found)
-                {
-                    // Do command
 
-                    StringBuilder cmd = new StringBuilder(args.toString().length());
-                    for (int i = 2; i < args.length; i++)
+                    if (found)
                     {
-                        cmd.append(args[i]);
-                        cmd.append(" ");
+                        // Do command
+
+                        StringBuilder cmd = new StringBuilder(args.toString().length());
+                        for (int i = 2; i < args.length; i++)
+                        {
+                            cmd.append(args[i]);
+                            cmd.append(" ");
+                        }
+                        MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
+                        OutputHandler.chatConfirmation(player, String.format("That cost you %d x %s. Your balance is %s.",
+                                amount, target.getDisplayName(), APIRegistry.wallet.getMoneyString(player.getPersistentID())));
                     }
-                    MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
-                    OutputHandler.chatConfirmation(player, "That cost you " + amount + " x " + target.getDisplayName());
+                    else
+                    {
+                        //this should be removed
+                        OutputHandler.chatError(player, "You don't have the requested item in your inventory!");
+                    }
                 }
                 else
                 {
-                    //this should be removed
-                    OutputHandler.chatError(player, "You can't afford that!!");
+                    OutputHandler.chatError(sender, String.format("Item %s was not found.", itemName));
                 }
             }
             else
