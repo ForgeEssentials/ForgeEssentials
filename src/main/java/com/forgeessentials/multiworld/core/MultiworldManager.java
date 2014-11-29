@@ -166,10 +166,9 @@ public class MultiworldManager extends ServerEventHandler {
         if (world.worldLoaded)
             return;
         try {
-            OutputHandler.felog.info("WorldType: " + world.worldType);
             initializeMultiworldProvider(world);
             world.worldTypeObj = getWorldTypeByName(world.worldType);
-            
+
             // Register dimension with last used id if possible
             if (DimensionManager.isDimensionRegistered(world.dimensionId))
                 world.dimensionId = DimensionManager.getNextFreeDimId();
@@ -437,12 +436,23 @@ public class MultiworldManager extends ServerEventHandler {
     public void loadWorldTypes()
     {
         for (int i = 0; i < WorldType.worldTypes.length; ++i)
-            if (WorldType.worldTypes[i] != null)
-                worldTypes.put(WorldType.worldTypes[i].getWorldTypeName().toUpperCase(), WorldType.worldTypes[i]);
+        {
+            WorldType type = WorldType.worldTypes[i];
+            if (type == null)
+                continue;
+
+            String name = type.getWorldTypeName().toUpperCase();
+
+            /* MC does not allow creation of this worldType, so we should not either */            
+            if (name.equals("DEFAULT_1_1"))
+                continue;
+
+            worldTypes.put(name, type);
+        }
 
         OutputHandler.felog.info("[Multiworld] Available world types:");
-        for (Entry<String, WorldType> worldType: worldTypes.entrySet())
-            OutputHandler.felog.info("# " + worldType.getKey());
+        for (String worldType: worldTypes.keySet())
+            OutputHandler.felog.info("# " + worldType);
     }
 
     public Map<String, WorldType> getWorldTypes()
