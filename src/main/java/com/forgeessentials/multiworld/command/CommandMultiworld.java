@@ -102,8 +102,8 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
     private static String[] parseMainArgs = new String[] { "create", "delete", "regen", "providers", "types" };
 
     /**
-	 * Parse subcommands
-	 */
+     * Parse subcommands
+     */
     private void parseMain()
     {
         if (args.isEmpty())
@@ -137,18 +137,29 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         String name = args.remove().toLowerCase();
 
         String provider = MultiworldManager.PROVIDER_NORMAL;
+        if (tabCompleteMode && args.size() == 1)
+        {
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), ModuleMultiworld.getMultiworldManager().getWorldProviders().keySet());
+            return;
+        }
         if (!args.isEmpty())
             provider = args.remove();
 
         String worldType = WorldType.DEFAULT.getWorldTypeName();
+        if (tabCompleteMode && args.size() == 1)
+        {
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), ModuleMultiworld.getMultiworldManager().getWorldTypes().keySet());
+            return;
+        }
         if (!args.isEmpty())
             worldType = args.remove();
 
         if (!args.isEmpty())
             throw new CommandException("Too many arguments");
+        if (tabCompleteMode)
+            return;
 
         Multiworld world = new Multiworld(name, provider, worldType);
-
         try
         {
             ModuleMultiworld.getMultiworldManager().addWorld(world);

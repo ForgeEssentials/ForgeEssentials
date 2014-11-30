@@ -22,13 +22,8 @@ import net.minecraft.world.WorldType;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
-
-import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.FMLOutboundHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
+import net.minecraftforge.event.world.WorldEvent;
 
 import org.apache.commons.io.FileUtils;
 
@@ -41,6 +36,10 @@ import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
+import cpw.mods.fml.common.network.FMLEmbeddedChannel;
+import cpw.mods.fml.common.network.FMLOutboundHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * 
@@ -386,6 +385,9 @@ public class MultiworldManager extends ServerEventHandler {
 
                 worldProviderClasses.put(provider.getValue().getName(), provider.getKey());
             }
+            worldProviderClasses.put(PROVIDER_NORMAL, 0);
+            worldProviderClasses.put(PROVIDER_HELL, 1);
+            worldProviderClasses.put(PROVIDER_END, -1);
         }
         catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
         {
