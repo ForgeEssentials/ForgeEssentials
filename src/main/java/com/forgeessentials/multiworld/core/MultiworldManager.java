@@ -166,7 +166,7 @@ public class MultiworldManager extends ServerEventHandler {
         if (world.worldLoaded)
             return;
         try {
-            initializeMultiworldProvider(world);
+        	world.providerId = getWorldProviderId(world.provider);
             world.worldTypeObj = getWorldTypeByName(world.worldType);
 
             // Register dimension with last used id if possible
@@ -218,25 +218,23 @@ public class MultiworldManager extends ServerEventHandler {
         }
     }
 
-    public void initializeMultiworldProvider(Multiworld world) throws ProviderNotFoundException
+    public int getWorldProviderId(String providerName) throws ProviderNotFoundException
     {
-        switch (world.provider.toLowerCase())
+        switch (providerName.toLowerCase())
         {
-        // We use the hardcoded values as some mods outright replace the class (BiomesOPlenty)
+        // We use the hardcoded values as some mods just replace the class (BiomesOPlenty)
         case PROVIDER_NORMAL:        
-            world.providerId = 0;
-            break;
+        	return 0;
         case PROVIDER_HELL:
-            world.providerId = -1;
-            break;
+        	return -1;
         case PROVIDER_END:
-            world.providerId = 1;
-            break;
-
-        // Otherwise we try to use the provider classname that was supplied
+            return 1;
         default:
-            world.providerId = getProviderIDByClass(world.provider);
-            break;
+            // Otherwise we try to use the provider classname that was supplied
+            Integer providerId = worldProviderClasses.get(providerName);
+            if (providerId == null)
+                throw new ProviderNotFoundException();
+            return providerId;
         }
     }
 
@@ -368,17 +366,6 @@ public class MultiworldManager extends ServerEventHandler {
 
     // ============================================================
     // WorldProvider management
-
-    /**
-     * Returns the providerId for a given classname
-     */
-    public int getProviderIDByClass(String providerClass) throws ProviderNotFoundException
-    {
-        Integer providerId = worldProviderClasses.get(providerClass);
-        if (providerId == null)
-            throw new ProviderNotFoundException();
-        return providerId;
-    }
 
     /**
      * Use reflection to load the registered WorldProviders

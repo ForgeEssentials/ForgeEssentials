@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -294,7 +295,7 @@ public class CommandRules extends FEcmdModuleCommands {
         }
         else
         {
-            error(sender);
+            throw new CommandException(getCommandUsage(sender));
         }
         saveRules();
     }
@@ -380,7 +381,7 @@ public class CommandRules extends FEcmdModuleCommands {
         }
         else
         {
-            error(sender);
+            throw new CommandException(getCommandUsage(sender));
         }
         saveRules();
     }

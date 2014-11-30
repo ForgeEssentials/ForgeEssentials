@@ -16,6 +16,7 @@ import java.util.TreeSet;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.permissions.IContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -33,6 +34,7 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -221,6 +223,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         {
             zone.updatePlayerIdents();
         }
+    }
+
+    @SubscribeEvent
+    public void worldLoad(WorldEvent.Load e)
+    {
+    	getWorldZone(e.world.provider.dimensionId);
     }
 
     // ------------------------------------------------------------
