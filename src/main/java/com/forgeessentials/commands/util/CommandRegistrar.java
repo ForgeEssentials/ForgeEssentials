@@ -1,8 +1,13 @@
 package com.forgeessentials.commands.util;
 
+import java.util.ArrayList;
+
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.CommandAFK;
 import com.forgeessentials.commands.CommandBind;
+import com.forgeessentials.commands.CommandBubble;
 import com.forgeessentials.commands.CommandBurn;
 import com.forgeessentials.commands.CommandButcher;
 import com.forgeessentials.commands.CommandCapabilities;
@@ -42,10 +47,6 @@ import com.forgeessentials.commands.admin.CommandMemusage;
 import com.forgeessentials.commands.admin.CommandServerSettings;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.common.config.Configuration;
-
-import java.util.ArrayList;
 
 public class CommandRegistrar {
 	
@@ -93,6 +94,7 @@ public class CommandRegistrar {
         cmdList.add(new CommandFindblock());
         cmdList.add(new CommandMemusage());
         cmdList.add(new CommandNoClip());
+        cmdList.add(new CommandBubble());
     }
 
     public static void commandConfigs(Configuration config)

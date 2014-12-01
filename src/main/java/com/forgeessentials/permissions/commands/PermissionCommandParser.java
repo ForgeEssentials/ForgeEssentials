@@ -2,7 +2,6 @@ package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +79,7 @@ public class PermissionCommandParser {
             }
             catch (Exception e)
             {
+                error("Exception: " + e.getMessage());
             }
         }
         else
@@ -1298,12 +1298,7 @@ public class PermissionCommandParser {
         }
 
         // Get included groups
-        String includedGroupsStr = APIRegistry.perms.getGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES);
-        Set<String> includedGroups = new HashSet<String>();
-        if (includedGroupsStr != null)
-            for (String includedGroup : includedGroupsStr.split(","))
-                if (!includedGroup.isEmpty())
-                    includedGroups.add(includedGroup);
+        Set<String> includedGroups = APIRegistry.perms.getServerZone().getIncludedGroups(group);
 
         if (args.isEmpty())
         {

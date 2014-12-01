@@ -14,6 +14,9 @@ import java.util.TreeSet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.FunctionHelper;
@@ -186,6 +189,31 @@ public class ServerZone extends Zone {
         return true;
     }
 
+    public Set<String> getIncludedGroups(String group) 
+    {
+        Set<String> includedGroups = new HashSet<>();
+        String includedGroupsStr = getGroupPermission(group, FEPermissions.GROUP_INCLUDES);
+        if (includedGroupsStr != null && !includedGroupsStr.isEmpty())
+            for (String g : includedGroupsStr.split(","))
+                if (!g.isEmpty())
+                    includedGroups.add(g);
+        return includedGroups;
+    }
+
+    public void groupIncludeAdd(String group, String otherGroup) 
+    {
+        Set<String> includedGroups = getIncludedGroups(group);
+        includedGroups.add(otherGroup);
+        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(includedGroups, ","));
+    }
+
+    public void groupIncludeRemove(String group, String otherGroup) 
+    {
+        Set<String> includedGroups = getIncludedGroups(group);
+        includedGroups.remove(otherGroup);
+        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(includedGroups, ","));
+    }
+
     // ------------------------------------------------------------
 
     public boolean addPlayerToGroup(UserIdent ident, String group)
@@ -322,7 +350,8 @@ public class ServerZone extends Zone {
 
     public void registerPlayer(UserIdent ident)
     {
-        knownPlayers.add(ident);
+        if (ident != null)
+            knownPlayers.add(ident);
     }
 
     public Set<UserIdent> getKnownPlayers()

@@ -203,6 +203,7 @@ public class SQLProvider extends ZonePersistenceProvider {
         tbl.columns.put("uuid", "VARCHAR(36)");
         tbl.columns.put("name", "VARCHAR(128)");
         tbl.primaryKeys.add("uuid");
+        tbl.nullableKeys.add("name");
         result.put(TABLE_USER, tbl);
 
         tbl = new TableInfo(TABLE_PREFIX + "zone");
@@ -367,9 +368,12 @@ public class SQLProvider extends ZonePersistenceProvider {
 
             for (UserIdent ident : serverZone.getKnownPlayers())
             {
+                if (!ident.hasUUID())
+                    continue;
                 Map<String, Object> fieldsAndValues = new HashMap<>();
                 fieldsAndValues.put("uuid", ident.getUuid().toString());
-                fieldsAndValues.put("name", ident.getUsername());
+                if (ident.hasUsername())
+                    fieldsAndValues.put("name", ident.getUsername());
                 db.createStatement().executeUpdate(TABLES.get(TABLE_USER).createInsertOrReplace(fieldsAndValues));
             }
             
