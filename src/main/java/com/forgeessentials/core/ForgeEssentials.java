@@ -2,6 +2,7 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
+import com.forgeessentials.core.compat.CompatReiMinimap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -193,6 +194,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
         wandHandler = new SelectionEventHandler();
         teleportHelper = new TeleportHelper();
         tickTaskHandler = new TickTaskHandler();
+        FunctionHelper.FE_INTERNAL_EVENTBUS.register(new CompatReiMinimap());
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
     }

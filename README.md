@@ -3,6 +3,8 @@ ForgeEssentialsMain
 
 The code on this branch is for Minecraft 1.7.10. File issues at the issue tracker.
 
+[![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain)
+
 *******************
 ####Join us on our IRC channel: [#forgeessentials](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on EsperNet.####
 
