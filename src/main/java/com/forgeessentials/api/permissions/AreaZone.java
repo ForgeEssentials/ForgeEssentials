@@ -159,8 +159,8 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
     @Override
     public boolean isHidden()
     {
-        Boolean hidden = checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, FEPermissions.ZONE_HIDDEN);
-        return hidden != null && hidden;
+        String hiddenValue = getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, FEPermissions.ZONE_HIDDEN);
+        return hiddenValue != null && !hiddenValue.equals(IPermissionsHelper.PERMISSION_FALSE);
     }
 
     public void setHidden(boolean hidden)

@@ -5,13 +5,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import com.forgeessentials.commons.selections.WarpPoint;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -60,11 +61,25 @@ public class TeleportHelper extends ServerEventHandler {
 
     public static final String TELEPORT_COOLDOWN = "fe.teleport.cooldown";
     public static final String TELEPORT_WARMUP = "fe.teleport.warmup";
+    public static final String TELEPORT_FROM = "fe.teleport.from";
+    public static final String TELEPORT_TO = "fe.teleport.to";
 
     private static Map<UUID, TeleportInfo> tpInfos = new HashMap<>();
 
     public static void teleport(EntityPlayerMP player, WarpPoint point)
     {
+        // Check permissions
+        if (!APIRegistry.perms.checkPermission(player, TELEPORT_FROM))
+        {
+            OutputHandler.chatError(player, "You are not allowed to teleport from here.");
+            return;
+        }
+        if (!APIRegistry.perms.checkUserPermission(new UserIdent(player), point.toWorldPoint(), TELEPORT_TO))
+        {
+            OutputHandler.chatError(player, "You are not allowed to teleport to that location.");
+            return;
+        }
+        
         // Get and check teleport cooldown
         int teleportCooldown = FunctionHelper.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_COOLDOWN), 0) * 1000;
         if (teleportCooldown > 0)

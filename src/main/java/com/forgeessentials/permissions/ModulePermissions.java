@@ -13,7 +13,6 @@ import org.apache.commons.io.FileUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -187,12 +186,6 @@ public class ModulePermissions extends ConfigLoaderBase {
         // Other
         APIRegistry.perms.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
         APIRegistry.perms.registerPermission("fe.core.info", RegisteredPermValue.OP);
-        
-        // Teleport
-        APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5", "Allow bypassing teleport cooldown");
-        APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
-        APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_COOLDOWN, "0");
-        APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_WARMUP, "0");
     }
 
     @Override

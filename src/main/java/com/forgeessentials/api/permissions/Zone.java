@@ -259,7 +259,8 @@ public abstract class Zone {
         PermissionList map = getPlayerPermissions(ident);
         if (map != null)
         {
-            return !map.get(permissionNode).equals(IPermissionsHelper.PERMISSION_FALSE);
+            String permValue = map.get(permissionNode);
+            return !IPermissionsHelper.PERMISSION_FALSE.equalsIgnoreCase(permValue);
         }
         return null;
     }
@@ -414,7 +415,8 @@ public abstract class Zone {
         PermissionList map = getGroupPermissions(group);
         if (map != null)
         {
-            return !map.get(permissionNode).equals(IPermissionsHelper.PERMISSION_FALSE);
+            String permValue = map.get(permissionNode);
+            return !IPermissionsHelper.PERMISSION_FALSE.equalsIgnoreCase(permValue);
         }
         return null;
     }
