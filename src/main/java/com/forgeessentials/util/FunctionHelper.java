@@ -1,18 +1,5 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.compat.Environment;
-import com.forgeessentials.commons.selections.WarpPoint;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventBus;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -49,6 +36,21 @@ import net.minecraftforge.server.CommandHandlerForge;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.compat.Environment;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventBus;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 public final class FunctionHelper {
 
@@ -115,6 +117,8 @@ public final class FunctionHelper {
             oldItems.add(player.inventory.getStackInSlot(slotIdx));
             if (newItems != null && slotIdx < newItems.size())
                 player.inventory.setInventorySlotContents(slotIdx, newItems.get(slotIdx));
+            else
+                player.inventory.setInventorySlotContents(slotIdx, null);
         }
         return oldItems;
     }
