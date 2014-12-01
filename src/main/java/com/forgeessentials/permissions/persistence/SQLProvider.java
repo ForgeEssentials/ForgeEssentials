@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.forgeessentials.commons.selections.AreaBase;
 import org.apache.commons.lang3.StringUtils;
 
 import scala.actors.threadpool.Arrays;
@@ -25,11 +24,12 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.commons.selections.AreaBase;
+import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.AreaShape;
 import com.google.common.base.Throwables;
 
 public class SQLProvider extends ZonePersistenceProvider {
@@ -174,12 +174,12 @@ public class SQLProvider extends ZonePersistenceProvider {
     private static final String TABLE_ZONE = "ZONE";
     private static final String TABLE_GROUP_PERMISSIONS = "GROUP_PERMISSION";
     private static final String TABLE_USER_PERMISSIONS = "USER_PERMISSION";
-    // private static final String TABLE_USER = "USER";
+    private static final String TABLE_USER = "USER";
     // private static final String TABLE_GROUP = "GROUP";
 
     private static final String INFO_MAX_ZONE_ID = "max_zone_id";
 
-    private static final String VERSION = "1.1";
+    private static final String VERSION = "1.2";
 
     private final Map<String, TableInfo> TABLES = setupTableData();
 
@@ -198,12 +198,12 @@ public class SQLProvider extends ZonePersistenceProvider {
         // tbl.columns.put("name", "VARCHAR(64)");
         // tbl.primaryKeys.add("name");
         // result.put(TABLE_GROUP, tbl);
-        //
-        // tbl = new TableInfo(TABLE_PREFIX + "user");
-        // tbl.columns.put("uuid", "VARCHAR(36)");
-        // tbl.columns.put("name", "VARCHAR(128)");
-        // tbl.primaryKeys.add("uuid");
-        // result.put(TABLE_USER, tbl);
+
+        tbl = new TableInfo(TABLE_PREFIX + "user");
+        tbl.columns.put("uuid", "VARCHAR(36)");
+        tbl.columns.put("name", "VARCHAR(128)");
+        tbl.primaryKeys.add("uuid");
+        result.put(TABLE_USER, tbl);
 
         tbl = new TableInfo(TABLE_PREFIX + "zone");
         tbl.columns.put("id", "INT");
@@ -257,15 +257,15 @@ public class SQLProvider extends ZonePersistenceProvider {
         this.db = connection;
         this.dbType = dbType;
 
-        if (!checkAndCreateTables())
+        checkAndCreateTables();
+        String version = getVersion();
+        if (version == null)
         {
-            // Initialize tables
             setVersion(VERSION);
         }
         else
         {
-            // Read data
-            String version = getVersion();
+            // check versions
             if (!VERSION.equals(version))
             {
                 OutputHandler.felog.info("Version of permission database incorrect. May not load permissions correctly!");
@@ -365,6 +365,14 @@ public class SQLProvider extends ZonePersistenceProvider {
             db.createStatement().executeUpdate(TABLES.get(TABLE_GROUP_PERMISSIONS).createTruncate());
             db.createStatement().executeUpdate(TABLES.get(TABLE_USER_PERMISSIONS).createTruncate());
 
+            for (UserIdent ident : serverZone.getKnownPlayers())
+            {
+                Map<String, Object> fieldsAndValues = new HashMap<>();
+                fieldsAndValues.put("uuid", ident.getUuid().toString());
+                fieldsAndValues.put("name", ident.getUsername());
+                db.createStatement().executeUpdate(TABLES.get(TABLE_USER).createInsertOrReplace(fieldsAndValues));
+            }
+            
             saveServerZone(serverZone);
             saveZonePermissions(serverZone);
             for (WorldZone worldZone : serverZone.getWorldZones().values())
@@ -388,6 +396,7 @@ public class SQLProvider extends ZonePersistenceProvider {
             }
             catch (SQLException se2)
             {
+                // Ignore rollback-error
             }
             Throwables.propagate(se);
         }
