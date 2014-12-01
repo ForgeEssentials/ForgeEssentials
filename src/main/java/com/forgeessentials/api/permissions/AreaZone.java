@@ -5,6 +5,7 @@ import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.events.EventCancelledException;
 
 /**
  * {@link AreaZone} covers just a specific area in one world. It has higher priority than all other {@link Zone} types. Area zones can overlap. Priority is then
@@ -38,9 +39,10 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
         this.worldZone.addAreaZone(this);
     }
 
-    public AreaZone(WorldZone worldZone, String name, AreaBase area)
+    public AreaZone(WorldZone worldZone, String name, AreaBase area) throws EventCancelledException
     {
         this(worldZone, name, area, worldZone.getServerZone().nextZoneID());
+        EventCancelledException.checkedPost(new PermissionEvent.Zone.Create(worldZone.getServerZone(), this));
     }
 
     @Override

@@ -16,6 +16,7 @@ import java.util.TreeSet;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.IContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -23,16 +24,18 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -93,6 +96,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         if (persistenceProvider != null)
         {
             OutputHandler.felog.info("Saving permissions...");
+            MinecraftForge.EVENT_BUS.post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
         }
         dirty = false;
@@ -109,6 +113,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
                 rootZone.setServerZone(serverZone);
                 serverZone.rebuildZonesMap();
                 dirty = false;
+                MinecraftForge.EVENT_BUS.post(new PermissionEvent.AfterLoad(serverZone));
                 return true;
             }
         }
@@ -635,9 +640,9 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     }
 
     @Override
-    public void createGroup(String name)
+    public boolean createGroup(String name)
     {
-        getServerZone().createGroup(name);
+        return getServerZone().createGroup(name);
     }
 
     @Override

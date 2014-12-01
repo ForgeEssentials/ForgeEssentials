@@ -921,8 +921,10 @@ public class PermissionCommandParser {
                 String groupArg = args.remove();
                 if (groupArg.equalsIgnoreCase("create"))
                 {
-                    APIRegistry.perms.createGroup(group);
-                    info(String.format("Created group %s", group));
+                    if (APIRegistry.perms.createGroup(group))
+                        info(String.format("Created group %s", group));
+                    else
+                        info(String.format("Could not create group %s. Cancelled.", group));
                 }
                 else
                 {
