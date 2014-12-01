@@ -52,4 +52,10 @@ public interface IEconManager {
      * @return returns 'amount' 'currency'
      */
     public String getMoneyString(UUID username);
+    
+    /**
+     * Saves all wallets to disk 
+     * (for users still on the server when it's stopping)
+     */
+    public void save();
 }

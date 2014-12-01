@@ -15,7 +15,7 @@ import java.util.UUID;
  * Call these methods to modify a target's Wallet.
  */
 public class WalletHandler implements IEconManager {
-    
+
     private static ClassContainer con = new ClassContainer(Wallet.class);
     private static HashMap<UUID, Wallet> wallets = new HashMap<UUID, Wallet>();
 
@@ -66,6 +66,20 @@ public class WalletHandler implements IEconManager {
         return am + " " + currency(am);
     }
 
+    private void saveWallet(Wallet wallet)
+    {
+        DataManager.getInstance().save(wallet, wallet.getUsername());
+        DataStorageManager.getReccomendedDriver().saveObject(con, wallet);
+    }
+
+    @Override
+    public void save()
+    {
+        for (Wallet wallet : wallets.values()) {
+            saveWallet(wallet);
+        }
+    }
+
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
@@ -85,8 +99,7 @@ public class WalletHandler implements IEconManager {
         if (wallets.containsKey(event.player.getUniqueID()))
         {
             Wallet wallet = wallets.remove(event.player.getUniqueID());
-            DataManager.getInstance().save(wallet, wallet.getUsername());
-            DataStorageManager.getReccomendedDriver().saveObject(con, wallet);
+            saveWallet(wallet);
         }
     }
 }
