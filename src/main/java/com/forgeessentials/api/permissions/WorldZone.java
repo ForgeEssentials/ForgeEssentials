@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 
@@ -103,7 +103,7 @@ public class WorldZone extends Zone {
 
 	public boolean removeAreaZone(AreaZone zone)
 	{
-        if (!MinecraftForge.EVENT_BUS.post(new PermissionEvent.Zone.Delete(getServerZone(), zone)))
+        if (!APIRegistry.getFEEventBus().post(new PermissionEvent.Zone.Delete(getServerZone(), zone)))
             return false;
 		return serverZone.removeZone(zone) | areaZones.remove(zone);
 	}

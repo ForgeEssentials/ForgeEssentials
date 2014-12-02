@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.UserIdent;
@@ -274,7 +274,7 @@ public abstract class Zone {
      */
     public boolean setPlayerPermissionProperty(UserIdent ident, String permissionNode, String value)
     {
-        if (ident != null && !MinecraftForge.EVENT_BUS.post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, permissionNode, value)))
+        if (ident != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, permissionNode, value)))
         {
             getServerZone().registerPlayer(ident);
             PermissionList map = getOrCreatePlayerPermissions(ident);
@@ -308,7 +308,7 @@ public abstract class Zone {
         if (ident != null)
         {
             PermissionList map = getPlayerPermissions(ident);
-            if (map != null && !MinecraftForge.EVENT_BUS.post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, permissionNode, null)))
+            if (map != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, permissionNode, null)))
             {
                 map.remove(permissionNode);
                 return true;
@@ -430,7 +430,7 @@ public abstract class Zone {
      */
     public boolean setGroupPermissionProperty(String group, String permissionNode, String value)
     {
-        if (group != null && !MinecraftForge.EVENT_BUS.post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, value)))
+        if (group != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, value)))
         {
             PermissionList map = getOrCreateGroupPermissions(group);
             map.put(permissionNode, value);
@@ -463,7 +463,7 @@ public abstract class Zone {
         if (group != null)
         {
             PermissionList map = getGroupPermissions(group);
-            if (map != null && !MinecraftForge.EVENT_BUS.post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
+            if (map != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
             {
                 map.remove(permissionNode);
                 return true;

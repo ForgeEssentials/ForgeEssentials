@@ -18,11 +18,11 @@ import java.util.TreeSet;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.IContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
@@ -107,7 +107,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         if (persistenceProvider != null)
         {
             OutputHandler.felog.info("Saving permissions...");
-            MinecraftForge.EVENT_BUS.post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
+            APIRegistry.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
         }
         dirty = false;
@@ -124,7 +124,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
                 rootZone.setServerZone(serverZone);
                 serverZone.rebuildZonesMap();
                 dirty = false;
-                MinecraftForge.EVENT_BUS.post(new PermissionEvent.AfterLoad(serverZone));
+                APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
                 return true;
             }
         }

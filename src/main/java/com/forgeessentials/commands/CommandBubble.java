@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
@@ -22,7 +21,7 @@ public class CommandBubble extends FEcmdModuleCommands {
     public static String BUBBLE_GROUP = "command_bubble";
     
     public CommandBubble() {
-        MinecraftForge.EVENT_BUS.register(this);
+        APIRegistry.getFEEventBus().register(this);
     }
     
     @SubscribeEvent
