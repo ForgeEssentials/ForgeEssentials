@@ -56,7 +56,7 @@ public final class FunctionHelper {
 
 	public static SimpleNetworkWrapper netHandler;
 
-    public static final EventBus FE_INTERNAL_EVENTBUS = new EventBus();
+    public static final EventBus FE_INTERNAL_EVENTBUS = APIRegistry.getFEEventBus();
 
 	/**
 	 * Try to parse integer or return defaultValue on failure
