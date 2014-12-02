@@ -18,7 +18,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-@FEModule(name = "signtools", parentMod = ForgeEssentials.class)
+@FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
 public class SignToolsModule extends ConfigLoaderBase
 {
 
@@ -40,6 +40,8 @@ public class SignToolsModule extends ConfigLoaderBase
 
     /**
      * works the same as the old /colourize command
+     * 
+     * Note: Colour is the UK variant of Color
      * @param e
      */
     @SubscribeEvent
