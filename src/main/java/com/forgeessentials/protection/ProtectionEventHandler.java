@@ -147,7 +147,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             String permission = ModuleProtection.PERM_DAMAGE_TO + "." + e.entityLiving.getClass().getSimpleName();
             if (ModuleProtection.isDebugMode(source))
                 OutputHandler.chatNotification(source, permission);
-            if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), point, ModuleProtection.PERM_INTERACT_ENTITY))
+            if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), point, permission))
             {
                 e.setCanceled(true);
                 return;

@@ -182,6 +182,7 @@ public class ModulePermissions extends ConfigLoaderBase {
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_TEST, RegisteredPermValue.TRUE, "Allow testing permission nodes");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_RELOAD, RegisteredPermValue.TRUE, "Allow reloading changed permission files");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_SAVE, RegisteredPermValue.TRUE, "Allow force-saving permission files");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_DEBUG, RegisteredPermValue.OP, "Allow using permission-debug command");
 
         // Other
         APIRegistry.perms.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
