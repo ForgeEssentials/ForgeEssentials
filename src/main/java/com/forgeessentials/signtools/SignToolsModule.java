@@ -18,7 +18,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-@FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
+// Naming convention off. Don't use as a model. Should be @FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
+@FEModule(name = "signtools", parentMod = ForgeEssentials.class)
 public class SignToolsModule extends ConfigLoaderBase
 {
 
