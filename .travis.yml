@@ -1,9 +1,13 @@
 language: java
 notifications:
   email: false
+branches:
+  except:
+    - develop
+    - master
 before_install: chmod +x gradlew
 install: ./gradlew setupCIWorkspace -S
 matrix:
   include:
   - jdk: oraclejdk7
-    script: ./gradlew build -S
+script: ./gradlew build -S
