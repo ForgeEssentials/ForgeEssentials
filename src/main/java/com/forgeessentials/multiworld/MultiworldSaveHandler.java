@@ -58,9 +58,6 @@ public class MultiworldSaveHandler implements ISaveHandler {
                 NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
                 WorldInfo worldInfo = new WorldInfo(nbttagcompound1);
 
-                // Load the list of mods the world was created with
-                FMLCommonHandler.instance().handleWorldDataLoad(parent, worldInfo, nbttagcompound);
-
                 return worldInfo;
             }
             catch (StartupQuery.AbortedException e)
