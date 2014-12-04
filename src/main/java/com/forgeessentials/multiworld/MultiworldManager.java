@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld.core;
+package com.forgeessentials.multiworld;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.forgeessentials.multiworld.MultiworldException.Type;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldManager;
 import net.minecraft.world.WorldProvider;
@@ -28,9 +29,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.multiworld.core.exception.MultiworldAlreadyExistsException;
-import com.forgeessentials.multiworld.core.exception.ProviderNotFoundException;
-import com.forgeessentials.multiworld.core.exception.WorldTypeNotFoundException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
 
@@ -120,13 +118,18 @@ public class MultiworldManager extends ServerEventHandler {
             {
                 loadWorld(world);
             }
-            catch (ProviderNotFoundException e)
+            catch (MultiworldException e)
             {
-                OutputHandler.felog.severe("Provider with name \"" + world.provider + "\" not found!");
-            }
-            catch (WorldTypeNotFoundException e)
-            {
-                OutputHandler.felog.severe("WorldType with name \"" + world.worldType + "\" not found!");
+                switch (e.type)
+                {
+                case NO_PROVIDER:
+                    OutputHandler.felog.severe(String.format(e.type.error, world.provider));
+                    break;
+                case NO_WORLDTYPE:
+                    OutputHandler.felog.severe(String.format(e.type.error, world.worldType));
+                    break;
+                }
+
             }
         }
     }
@@ -151,16 +154,16 @@ public class MultiworldManager extends ServerEventHandler {
         return worlds.get(name);
     }
 
-    public void addWorld(Multiworld world) throws ProviderNotFoundException, WorldTypeNotFoundException, MultiworldAlreadyExistsException
+    public void addWorld(Multiworld world) throws MultiworldException
     {
         if (worlds.containsKey(world.getName()))
-            throw new MultiworldAlreadyExistsException();
+            throw new MultiworldException(Type.ALREADY_EXISTS);
         loadWorld(world);
         worlds.put(world.getName(), world);
         world.save();
     }
 
-    protected void loadWorld(Multiworld world) throws ProviderNotFoundException, WorldTypeNotFoundException
+    protected void loadWorld(Multiworld world) throws MultiworldException
     {
         if (world.worldLoaded)
             return;
@@ -217,7 +220,7 @@ public class MultiworldManager extends ServerEventHandler {
         }
     }
 
-    public int getWorldProviderId(String providerName) throws ProviderNotFoundException
+    public int getWorldProviderId(String providerName) throws MultiworldException
     {
         switch (providerName.toLowerCase())
         {
@@ -232,7 +235,7 @@ public class MultiworldManager extends ServerEventHandler {
             // Otherwise we try to use the provider classname that was supplied
             Integer providerId = worldProviderClasses.get(providerName);
             if (providerId == null)
-                throw new ProviderNotFoundException();
+                throw new MultiworldException(Type.NO_PROVIDER);
             return providerId;
         }
     }
@@ -411,11 +414,11 @@ public class MultiworldManager extends ServerEventHandler {
     /**
      * Returns the WorldType for a given worldType string
      */
-    public WorldType getWorldTypeByName(String worldType) throws WorldTypeNotFoundException
+    public WorldType getWorldTypeByName(String worldType) throws MultiworldException
     {
         WorldType type = worldTypes.get(worldType.toUpperCase());
         if (type == null)
-            throw new WorldTypeNotFoundException();
+            throw new MultiworldException(Type.NO_WORLDTYPE);
         return type;
     }
 

@@ -1,9 +1,8 @@
-package com.forgeessentials.multiworld.core;
+package com.forgeessentials.multiworld;
 
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.MinecraftException;
-import net.minecraft.world.WorldServerMulti;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.DerivedWorldInfo;

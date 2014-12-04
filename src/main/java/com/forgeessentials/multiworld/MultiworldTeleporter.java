@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld.core;
+package com.forgeessentials.multiworld;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;

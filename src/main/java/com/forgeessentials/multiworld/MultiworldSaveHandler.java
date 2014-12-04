@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld.core;
+package com.forgeessentials.multiworld;
 
 import java.io.File;
 import java.io.FileInputStream;

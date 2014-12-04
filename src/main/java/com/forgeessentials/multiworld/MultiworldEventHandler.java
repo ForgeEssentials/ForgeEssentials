@@ -1,6 +1,5 @@
-package com.forgeessentials.multiworld.core;
+package com.forgeessentials.multiworld;
 
-import com.forgeessentials.util.OutputHandler;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -8,7 +7,6 @@ import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.NetworkHandshakeEstablished;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.handshake.NetworkDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
 

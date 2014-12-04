@@ -5,14 +5,6 @@ import net.minecraftforge.common.config.Configuration;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.multiworld.command.CommandGetDimension;
-import com.forgeessentials.multiworld.command.CommandMultiworld;
-import com.forgeessentials.multiworld.command.CommandMultiworldDelete;
-import com.forgeessentials.multiworld.command.CommandMultiworldList;
-import com.forgeessentials.multiworld.command.CommandMultiworldProviders;
-import com.forgeessentials.multiworld.command.CommandMultiworldTeleport;
-import com.forgeessentials.multiworld.command.CommandMultiworldWorldTypes;
-import com.forgeessentials.multiworld.core.MultiworldManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -22,6 +14,8 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 /**
  * 
@@ -37,12 +31,6 @@ public class ModuleMultiworld extends ConfigLoaderBase {
     public static final String PERM_TELEPORT = PERM_BASE + ".teleport";
 
     private static MultiworldManager multiworldManager;
-
-    @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
-    {
-
-    }
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
@@ -65,25 +53,11 @@ public class ModuleMultiworld extends ConfigLoaderBase {
         
         // Register commands
         new CommandMultiworld().register();
-        
-        new CommandGetDimension().register();
-        new CommandMultiworldDelete().register();
-        new CommandMultiworldList().register();
         new CommandMultiworldTeleport().register();
-        new CommandMultiworldProviders().register();
-        new CommandMultiworldWorldTypes().register();
-    }
 
-    @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent e)
-    {
-
-    }
-
-    @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
-    {
-
+        PermissionsManager.registerPermission(PERM_CREATE, RegisteredPermValue.OP);
+        PermissionsManager.registerPermission(PERM_DELETE, RegisteredPermValue.OP);
+        PermissionsManager.registerPermission(PERM_LIST, RegisteredPermValue.TRUE);
     }
 
     @SubscribeEvent
