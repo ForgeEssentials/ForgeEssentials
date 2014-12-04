@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -93,7 +94,7 @@ public class CommandTime extends FEcmdModuleCommands {
 	{
 		if (args.length == 0)
 		{
-			throw new CommandException("Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
+			throw new WrongUsageException(getCommandUsage(sender));
 		}
 
 		switch (args[0]) {
@@ -147,7 +148,7 @@ public class CommandTime extends FEcmdModuleCommands {
 		}
 		default:
 		{
-			throw new CommandException("Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
+			throw new WrongUsageException(getCommandUsage(sender));
 		}
 		}
 	}
@@ -176,7 +177,6 @@ public class CommandTime extends FEcmdModuleCommands {
 	@Override
 	public String getCommandUsage(ICommandSender sender)
 	{
-
 		return "/time [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night> Manipulate time.";
 	}
 }

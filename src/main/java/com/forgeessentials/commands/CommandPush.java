@@ -32,11 +32,11 @@ public class CommandPush extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandConsole(ICommandSender var1, String[] var2)
+    public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        if (var2.length != 3)
+        if (args.length != 3)
         {
-            throw new WrongUsageException("/push <X> <Y> <Z>", new Object[0]);
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
         else
         {
@@ -45,26 +45,26 @@ public class CommandPush extends FEcmdModuleCommands {
             int var5 = 0;
             World var7 = null;
 
-            if (var1 instanceof TileEntity)
+            if (sender instanceof TileEntity)
             {
-                var3 = (int) this.func_82368_a(var1, ((TileEntity) var1).xCoord, var2[0]);
-                var4 = (int) this.func_82367_a(var1, ((TileEntity) var1).yCoord, var2[1], 0, 0);
-                var5 = (int) this.func_82368_a(var1, ((TileEntity) var1).zCoord, var2[2]);
-                var7 = ((TileEntity) var1).getWorldObj();
+                var3 = (int) this.func_82368_a(sender, ((TileEntity) sender).xCoord, args[0]);
+                var4 = (int) this.func_82367_a(sender, ((TileEntity) sender).yCoord, args[1], 0, 0);
+                var5 = (int) this.func_82368_a(sender, ((TileEntity) sender).zCoord, args[2]);
+                var7 = ((TileEntity) sender).getWorldObj();
             }
-            else if (var1 instanceof EntityPlayerMP)
+            else if (sender instanceof EntityPlayerMP)
             {
-                var3 = (int) this.func_82368_a(var1, ((EntityPlayerMP) var1).posX, var2[0]);
-                var4 = (int) this.func_82367_a(var1, ((EntityPlayerMP) var1).posY, var2[1], 0, 0);
-                var5 = (int) this.func_82368_a(var1, ((EntityPlayerMP) var1).posZ, var2[2]);
-                var7 = ((EntityPlayerMP) var1).worldObj;
+                var3 = (int) this.func_82368_a(sender, ((EntityPlayerMP) sender).posX, args[0]);
+                var4 = (int) this.func_82367_a(sender, ((EntityPlayerMP) sender).posY, args[1], 0, 0);
+                var5 = (int) this.func_82368_a(sender, ((EntityPlayerMP) sender).posZ, args[2]);
+                var7 = ((EntityPlayerMP) sender).worldObj;
             }
-            else if (var1 instanceof DedicatedServer)
+            else if (sender instanceof DedicatedServer)
             {
-                var3 = (int) this.func_82368_a(var1, 0.0D, var2[0]);
-                var4 = (int) this.func_82367_a(var1, 0.0D, var2[1], 0, 0);
-                var5 = (int) this.func_82368_a(var1, 0.0D, var2[2]);
-                var7 = ((DedicatedServer) var1).worldServerForDimension(0);
+                var3 = (int) this.func_82368_a(sender, 0.0D, args[0]);
+                var4 = (int) this.func_82367_a(sender, 0.0D, args[1], 0, 0);
+                var5 = (int) this.func_82368_a(sender, 0.0D, args[2]);
+                var7 = ((DedicatedServer) sender).worldServerForDimension(0);
             }
 
             if ((var7.getBlock(var3, var4, var5) == Blocks.air || !((var7.getBlock(var3, var4, var5)) instanceof BlockButton))
@@ -75,7 +75,7 @@ public class CommandPush extends FEcmdModuleCommands {
             else
             {
                 var7.getBlock(var3, var4, var5).onBlockActivated(var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
-                OutputHandler.chatConfirmation(var1, "Button/Lever Pushed");
+                OutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }
     }

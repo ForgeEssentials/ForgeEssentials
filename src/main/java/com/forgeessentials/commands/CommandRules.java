@@ -437,7 +437,7 @@ public class CommandRules extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
+    	// Needs elaboration.
         return "/rules [#] help Gets or sets the rules of the server.";
     }
 
