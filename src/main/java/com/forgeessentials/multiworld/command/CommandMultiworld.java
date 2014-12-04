@@ -102,7 +102,10 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
     {
         if (args.isEmpty())
         {
-            info("subcommands: " + StringUtils.join(parseMainArgs, ", "));
+            info("Multiworld Usage:");
+            info("/mw create (world) : Create a new world (? for usage)");
+            info("/mw delete (world) : Delete a world");
+            info("/mw list [worlds|providers|worldtypes]");
             return;
         }
         if (tabCompleteMode && args.size() == 1)
