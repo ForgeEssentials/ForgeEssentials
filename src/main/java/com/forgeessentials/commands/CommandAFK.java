@@ -113,7 +113,6 @@ public class CommandAFK extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/afk Mark yourself as away.";
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -127,7 +128,13 @@ public class CommandBurn extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
-        return "/burn <player> Set a player on fire.";
+    	if (sender instanceof EntityPlayer)
+        {
+    		return "/burn <me|player> Set a player on fire.";
+        }
+        else
+        {
+        	return "/burn <player> Set a player on fire.";
+        }
     }
 }

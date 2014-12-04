@@ -109,7 +109,6 @@ public class CommandBind extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/bind <left|right|clear> <command[args]> Bind a command to an object.";
     }
 }

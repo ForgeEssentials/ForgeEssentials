@@ -111,8 +111,14 @@ public class CommandHeal extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-    	//Needs sender specialization
-        return "/heal <player> Heal yourself. You can also heal other players if you have permissions.";
+    	if (sender instanceof EntityPlayer)
+        {
+    		return "/heal <player> Heal yourself or other players (if you have permission).";
+        }
+        else
+        {
+        	return "/heal <player> Heal a player.";
+        }
     }
 
 }

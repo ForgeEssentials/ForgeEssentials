@@ -46,7 +46,6 @@ public class CommandCraft extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/craft Open a crafting window.";
     }
 }

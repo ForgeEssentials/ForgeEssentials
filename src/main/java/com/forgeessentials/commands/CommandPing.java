@@ -46,7 +46,7 @@ public class CommandPing extends FEcmdModuleCommands {
     @Override
     public boolean canConsoleUseCommand()
     {
-        return true;
+        return false;
     }
 
     @Override
