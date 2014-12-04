@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,6 +15,7 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
@@ -21,23 +23,27 @@ import net.minecraftforge.permissions.IContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 
 /**
  * 
@@ -52,6 +58,10 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     protected Timer persistenceTimer;
 
     protected boolean dirty;
+    
+    public Set<ICommandSender> permissionDebugUsers = new HashSet<>();
+    
+    public List<String> permissionDebugFilters = new ArrayList<>();
 
     // ------------------------------------------------------------
 
@@ -60,6 +70,10 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         FMLCommonHandler.instance().bus().register(this);
         rootZone = new RootZone(this);
         rootZone.setServerZone(new ServerZone(rootZone));
+
+        permissionDebugFilters.add("fe.protection.mobspawn");
+        permissionDebugFilters.add("fe.protection.gamemode");
+        permissionDebugFilters.add("worldedit.limit.unrestricted");
     }
 
     // ------------------------------------------------------------
@@ -95,6 +109,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         if (persistenceProvider != null)
         {
             OutputHandler.felog.info("Saving permissions...");
+            APIRegistry.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
         }
         dirty = false;
@@ -111,6 +126,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
                 rootZone.setServerZone(serverZone);
                 serverZone.rebuildZonesMap();
                 dirty = false;
+                APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
                 return true;
             }
         }
@@ -212,6 +228,28 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         return result;
     }
 
+    protected void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value)
+    {
+        for (String filter : permissionDebugFilters)
+        {
+            if (node.startsWith(filter))
+                return;
+        }
+        String msg1 = String.format("§b%s§f = §%s%s", permissionNode, PERMISSION_FALSE.equals(value) ? "4" : "2", value);
+        String msg2;
+        if (zone == null)
+            msg2 = "§4  permission not set";
+        else if (ident == null)
+            msg2 = String.format("§f  zone [§5%s§f] group [§5%s§f]", zone.getName(), group);
+        else
+            msg2 = String.format("§f  zone [§5%s§f] user [§5%s§f]", zone.getName(), ident.getUsernameOrUUID());
+        for (ICommandSender sender : permissionDebugUsers)
+        {
+            OutputHandler.chatNotification(sender, msg1);
+            OutputHandler.chatNotification(sender, msg2);
+        }
+    }
+    
     // ------------------------------------------------------------
     // -- Events
     // ------------------------------------------------------------
@@ -223,6 +261,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         {
             zone.updatePlayerIdents();
         }
+    }
+
+    @SubscribeEvent
+    public void playerLoggedOut(PlayerLoggedOutEvent e)
+    {
+        permissionDebugUsers.remove(e.player);
     }
 
     @SubscribeEvent
@@ -304,6 +348,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
                     String result = zone.getPlayerPermission(ident, node);
                     if (result != null)
                     {
+                        debugPermission(zone, ident, null, permissionNode, node, result);
                         return result;
                     }
                 }
@@ -329,6 +374,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
                         String result = zone.getGroupPermission(group, node);
                         if (result != null)
                         {
+                            debugPermission(zone, null, group, permissionNode, node, result);
                             return result;
                         }
                     }
@@ -345,11 +391,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
                 String result = zone.getGroupPermission(GROUP_DEFAULT, node);
                 if (result != null)
                 {
+                    debugPermission(zone, null, GROUP_DEFAULT, permissionNode, node, result);
                     return result;
                 }
             }
         }
 
+        debugPermission(null, null, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE);
         return null;
     }
 
@@ -643,9 +691,9 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     }
 
     @Override
-    public void createGroup(String name)
+    public boolean createGroup(String name)
     {
-        getServerZone().createGroup(name);
+        return getServerZone().createGroup(name);
     }
 
     @Override

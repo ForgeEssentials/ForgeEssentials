@@ -3,13 +3,13 @@ package com.forgeessentials.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.forgeessentials.commons.IReconstructData;
@@ -29,8 +29,7 @@ import com.forgeessentials.data.v2.DataManager;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @SaveableObject
-public class PlayerInfo
-{
+public class PlayerInfo {
 
     private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
 
@@ -40,8 +39,7 @@ public class PlayerInfo
 
     public static boolean persistSelections;
 
-    public static class FESelectionProvider implements ISelectionProvider
-    {
+    public static class FESelectionProvider implements ISelectionProvider {
 
         @Override
         public Point getPoint1(EntityPlayerMP player)
@@ -139,10 +137,10 @@ public class PlayerInfo
     private Stack<BackupArea> redos = new Stack<BackupArea>();
 
     @SaveableField
-    private List<ItemStack> gamemodeInventory = new ArrayList<ItemStack>();
-    
+    private Map<String, List<ItemStack>> inventoryGroups = new HashMap<>();
+
     @SaveableField
-    private GameType gamemodeInventoryType = GameType.NOT_SET;
+    private String activeInventoryGroup = "default";
 
     private boolean hasFEClient = false;
 
@@ -150,7 +148,7 @@ public class PlayerInfo
     {
         uuid_string = null;
     }
-    
+
     protected PlayerInfo(UUID uuid)
     {
         this.ident = new UserIdent(uuid);
@@ -177,10 +175,7 @@ public class PlayerInfo
         info.spawnType = (Integer) tag.getFieldValue("spawnType");
         info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
         info.firstJoin = (Long) tag.getFieldValue("firstJoin");
-        
-        info.gamemodeInventory = (List<ItemStack>) tag.getFieldValue("gamemodeInventory");
-        info.gamemodeInventoryType = (GameType) tag.getFieldValue("gamemodeInventoryType");
-        
+
         return info;
     }
 
@@ -377,29 +372,42 @@ public class PlayerInfo
     {
         FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(this), ident.getPlayer());
     }
-    
+
     // ----------------------------------------------
     // ---------- protection gamemode ---------------
     // ----------------------------------------------
 
-    public List<ItemStack> getGamemodeInventory()
+    public Map<String, List<ItemStack>> getInventoryGroups()
     {
-        return gamemodeInventory;
+        return inventoryGroups;
     }
 
-    public void setGamemodeInventory(List<ItemStack> stacks)
+    public List<ItemStack> getInventoryGroupItems(String name)
     {
-        gamemodeInventory = stacks;
+        return inventoryGroups.get(name);
     }
 
-    public GameType getGamemodeInventoryType()
+    public String getInventoryGroup()
     {
-        return gamemodeInventoryType;
+        return activeInventoryGroup;
     }
 
-    public void setGamemodeInventoryType(GameType gamemodeInventoryType)
+    public void setInventoryGroup(String name)
     {
-        this.gamemodeInventoryType = gamemodeInventoryType;
+        if (!activeInventoryGroup.equals(name))
+        {
+            // Get the new inventory
+            List<ItemStack> newInventory = inventoryGroups.get(name);
+            // Create empty inventory if it did not exist yet
+            if (newInventory == null)
+                newInventory = new ArrayList<>();
+            // Swap player inventory and store the old one
+            inventoryGroups.put(activeInventoryGroup, FunctionHelper.swapInventory(this.ident.getPlayer(), newInventory));
+            // Clear the inventory-group that was assigned to the player (optional)
+            inventoryGroups.put(name, null);
+            // Save the new active inventory-group
+            activeInventoryGroup = name;
+        }
     }
 
     // ----------------------------------------------

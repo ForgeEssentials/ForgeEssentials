@@ -2,7 +2,6 @@ package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +38,7 @@ public class PermissionCommandParser {
     public static final String PERM_TEST = PERM + ".test";
     public static final String PERM_RELOAD = PERM + ".reload";
     public static final String PERM_SAVE = PERM + ".save";
+    public static final String PERM_DEBUG = PERM + ".debug";
 
     public static final String PERM_USER = PERM + ".user";
     public static final String PERM_USER_PERMS = PERM_USER + ".perms";
@@ -80,6 +80,7 @@ public class PermissionCommandParser {
             }
             catch (Exception e)
             {
+                error("Exception: " + e.getMessage());
             }
         }
         else
@@ -112,7 +113,7 @@ public class PermissionCommandParser {
     }
 
     // Variables for auto-complete
-    private static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "testp", "reload", "save" }; // "export", "promote", "test" };
+    private static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "testp", "reload", "save", "debug" }; // "export", "promote", "test" };
     private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
     private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms" };
     private static final String[] parseGroupArgs = { "zone", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
@@ -163,6 +164,25 @@ public class PermissionCommandParser {
                 break;
             case "global":
                 parseGlobal();
+                break;
+            case "debug":
+                if (tabCompleteMode)
+                    return;
+                if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_DEBUG))
+                {
+                    error(FEPermissions.MSG_NO_COMMAND_PERM);
+                    return;
+                }
+                if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(sender))
+                {
+                    ModulePermissions.permissionHelper.permissionDebugUsers.remove(sender);
+                    info("Permission debug mode off");
+                }
+                else
+                {
+                    ModulePermissions.permissionHelper.permissionDebugUsers.add(sender);
+                    info("Permission debug mode on");
+                }
                 break;
             default:
                 error("Unknown command argument");
@@ -921,8 +941,10 @@ public class PermissionCommandParser {
                 String groupArg = args.remove();
                 if (groupArg.equalsIgnoreCase("create"))
                 {
-                    APIRegistry.perms.createGroup(group);
-                    info(String.format("Created group %s", group));
+                    if (APIRegistry.perms.createGroup(group))
+                        info(String.format("Created group %s", group));
+                    else
+                        info(String.format("Could not create group %s. Cancelled.", group));
                 }
                 else
                 {
@@ -1296,12 +1318,7 @@ public class PermissionCommandParser {
         }
 
         // Get included groups
-        String includedGroupsStr = APIRegistry.perms.getGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES);
-        Set<String> includedGroups = new HashSet<String>();
-        if (includedGroupsStr != null)
-            for (String includedGroup : includedGroupsStr.split(","))
-                if (!includedGroup.isEmpty())
-                    includedGroups.add(includedGroup);
+        Set<String> includedGroups = APIRegistry.perms.getServerZone().getIncludedGroups(group);
 
         if (args.isEmpty())
         {

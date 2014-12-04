@@ -3,6 +3,7 @@ package com.forgeessentials.api;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.snooper.Response;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.eventhandler.EventBus;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,6 +25,8 @@ public class APIRegistry {
     public static IPermissionsHelper perms;
 
     private static Method ResponseRegistry_regsisterResponce;
+
+    private static final EventBus FE_EVENTBUS = new EventBus();
 
     /**
      * Snooper method to register your responses.
@@ -47,6 +50,11 @@ public class APIRegistry {
             FMLLog.warning("[FE API] Unable to register " + response.getName() + " with ID: " + ID);
             e.printStackTrace();
         }
+    }
+
+    public static EventBus getFEEventBus()
+    {
+        return FE_EVENTBUS;
     }
 
     /**

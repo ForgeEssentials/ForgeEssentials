@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import com.forgeessentials.commons.selections.WarpPoint;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -40,6 +38,8 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
 import com.forgeessentials.protection.effect.PotionEffect;
@@ -51,12 +51,12 @@ import com.forgeessentials.util.TimeoutHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.commons.selections.WorldPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -147,7 +147,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             String permission = ModuleProtection.PERM_DAMAGE_TO + "." + e.entityLiving.getClass().getSimpleName();
             if (ModuleProtection.isDebugMode(source))
                 OutputHandler.chatNotification(source, permission);
-            if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), point, ModuleProtection.PERM_INTERACT_ENTITY))
+            if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), point, permission))
             {
                 e.setCanceled(true);
                 return;
@@ -387,8 +387,8 @@ public class ProtectionEventHandler extends ServerEventHandler {
             return;
         EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
         UserIdent ident = new UserIdent(player);
-
-        checkPlayerInventory(player);
+        
+        String inventoryGroup = APIRegistry.perms.getUserPermissionProperty(ident, e.afterPoint.toWorldPoint(), ModuleProtection.PERM_INVENTORY_GROUP);
 
         GameType lastGm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, e.beforePoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
         GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, e.afterPoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
@@ -401,16 +401,21 @@ public class ProtectionEventHandler extends ServerEventHandler {
             GameType playerGm = player.theItemInWorldManager.getGameType();
             if (playerGm != gm)
             {
+                if (gm != GameType.CREATIVE)
+                {
+                    // TODO: Teleport player slightly above ground to prevent fall-death
+                }
                 player.setGameType(gm);
-                // OutputHandler.chatNotification(player, "You gamemode has been changed to " + gm.getName());
             }
-            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-            if (gm != pi.getGamemodeInventoryType() && (gm == GameType.CREATIVE || pi.getGamemodeInventoryType() == GameType.CREATIVE))
-            {
-                pi.setGamemodeInventory(FunctionHelper.swapInventory(player, pi.getGamemodeInventory()));
-                pi.setGamemodeInventoryType(gm);
-            }
+            if (gm == GameType.CREATIVE) 
+                inventoryGroup = "creative";
         }
+
+        // Apply inventory-group
+        PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+        pi.setInventoryGroup(inventoryGroup);
+
+        checkPlayerInventory(player);
     }
 
     // ----------------------------------------
@@ -579,8 +584,6 @@ public class ProtectionEventHandler extends ServerEventHandler {
 
     public static void checkPlayerInventory(EntityPlayer player)
     {
-        // if (ModuleProtection.isDebugMode(player))
-        // OutputHandler.chatNotification(player, "PDBG: Checking inventory");
         for (int slotIdx = 0; slotIdx < player.inventory.getSizeInventory(); slotIdx++)
         {
             ItemStack stack = player.inventory.getStackInSlot(slotIdx);

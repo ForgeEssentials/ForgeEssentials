@@ -55,7 +55,7 @@ public final class FunctionHelper {
 
 	public static SimpleNetworkWrapper netHandler;
 
-    public static final EventBus FE_INTERNAL_EVENTBUS = new EventBus();
+    public static final EventBus FE_INTERNAL_EVENTBUS = APIRegistry.getFEEventBus();
 
 	/**
 	 * Try to parse integer or return defaultValue on failure
@@ -116,6 +116,8 @@ public final class FunctionHelper {
             oldItems.add(player.inventory.getStackInSlot(slotIdx));
             if (newItems != null && slotIdx < newItems.size())
                 player.inventory.setInventorySlotContents(slotIdx, newItems.get(slotIdx));
+            else
+                player.inventory.setInventorySlotContents(slotIdx, null);
         }
         return oldItems;
     }

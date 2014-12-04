@@ -26,6 +26,7 @@ import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.events.EventCancelledException;
 
 public class CommandZone extends ForgeEssentialsCommandBase {
 
@@ -115,6 +116,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         }
         catch (NumberFormatException e)
         {
+            /* none */
         }
         return worldZone.getAreaZone(arg);
     }
@@ -137,6 +139,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             }
             catch (NumberFormatException e)
             {
+                limit = 1;
             }
         }
         OutputHandler.chatConfirmation(sender, "List of areas (page #" + limit + "):");
@@ -273,10 +276,17 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         }
         else
         {
-            zone = new AreaZone(worldZone, zoneName, area);
-            if (shape != null)
-                zone.setShape(shape);
-            OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been defined.", zoneName));
+            try
+            {
+                zone = new AreaZone(worldZone, zoneName, area);
+                if (shape != null)
+                    zone.setShape(shape);
+                OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been defined.", zoneName));
+            }
+            catch (EventCancelledException e)
+            {
+                OutputHandler.chatError(sender, String.format("Defining area \"%s\" has been cancelled.", zoneName));
+            }
         }
     }
 
