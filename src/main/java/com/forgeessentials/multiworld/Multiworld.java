@@ -12,7 +12,10 @@ import net.minecraft.world.WorldSettings.GameType;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.common.DimensionManager;
 
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.FunctionHelper;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -76,13 +79,12 @@ public class Multiworld {
     public void removeAllPlayersFromWorld()
     {
         WorldServer overworld = MinecraftServer.getServer().worldServerForDimension(0);
-        MultiworldTeleporter teleporter = new MultiworldTeleporter(overworld);
         List<EntityPlayerMP> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
         for (EntityPlayerMP player : players)
         {
             if (player.dimension == dimensionId)
             {
-                teleporter.teleport(player);
+                teleport(player, overworld);
             }
         }
     }
@@ -194,6 +196,55 @@ public class Multiworld {
     protected void delete()
     {
         DataManager.getInstance().delete(this.getClass(), name);
+    }
+
+    /**
+     * Teleport the player to the multiworld
+     */
+    public void teleport(EntityPlayerMP player)
+    {
+        teleport(player, getWorldServer());
+    }
+
+    /**
+     * Teleport the player to the multiworld
+     */
+    public static void teleport(EntityPlayerMP player, WorldServer world)
+    {
+        if (player.worldObj.provider.dimensionId != world.provider.dimensionId)
+        {
+            displayDepartMessage(player);
+            
+            // ChunkCoordinates spawn = world.getSpawnPoint();
+            int x = (int) Math.floor(player.posX);
+            int z = (int) Math.floor(player.posZ);
+            int y = FunctionHelper.placeInWorld(world, x, (int) player.posY, z);
+            
+            WarpPoint target = new WarpPoint(world.provider.dimensionId, x + 0.5, y + 0.5, z + 0.5, player.cameraPitch, player.cameraYaw);
+            TeleportHelper.teleport(player, target);
+
+            displayWelcomeMessage(player);
+        }
+    }
+
+    public static void displayDepartMessage(EntityPlayerMP player)
+    {
+//        String msg = player.worldObj.provider.getDepartMessage();
+//        if (msg == null)
+//            msg = "Leaving the Overworld.";
+//        if (player.dimension > 1 || player.dimension < -1)
+//            msg += " (#" + player.dimension + ")";
+//        player.addChatMessage(new ChatComponentText(msg));
+    }
+
+    public static void displayWelcomeMessage(EntityPlayerMP player)
+    {
+//        String msg = player.worldObj.provider.getWelcomeMessage();
+//        if (msg == null)
+//            msg = "Entering the Overworld.";
+//        if (player.dimension > 1 || player.dimension < -1)
+//            msg += " (#" + player.dimension + ")";
+//        player.addChatMessage(new ChatComponentText(msg));
     }
 
 }

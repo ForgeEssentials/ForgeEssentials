@@ -21,7 +21,6 @@ import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.multiworld.MultiworldException;
 import com.forgeessentials.multiworld.MultiworldManager;
-import com.forgeessentials.multiworld.MultiworldTeleporter;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandMultiworld extends ForgeEssentialsCommandBase {
@@ -88,6 +87,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
         this.tabCompleteMode = true;
         this.tabComplete = null;
+        this.permissionContext = new PermissionContext().setCommandSender(sender).setCommand(this);
         parseMain();
         return tabComplete;
     }
@@ -206,7 +206,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             ModuleMultiworld.getMultiworldManager().addWorld(world);
             if (senderPlayer != null)
             {
-                new MultiworldTeleporter(world.getWorldServer()).teleport(senderPlayer);
+                world.teleport(senderPlayer);
             }
         }
         catch (MultiworldException e)

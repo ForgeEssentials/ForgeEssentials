@@ -156,6 +156,10 @@ public class MultiworldManager extends ServerEventHandler {
         return worlds.get(name);
     }
 
+    /**
+     * Register and load a multiworld.
+     * If the world fails to load, it won't be registered
+     */
     public void addWorld(Multiworld world) throws MultiworldException
     {
         if (worlds.containsKey(world.getName()))
@@ -165,6 +169,9 @@ public class MultiworldManager extends ServerEventHandler {
         world.save();
     }
 
+    /**
+     * Get a free dimensionID for a new multiworld - minimum dim-id is 10
+     */
     public static int getFreeDimensionId()
     {
         int id = 10;
@@ -173,6 +180,9 @@ public class MultiworldManager extends ServerEventHandler {
         return id;
     }
 
+    /**
+     * Loads a multiworld
+     */
     protected void loadWorld(Multiworld world) throws MultiworldException
     {
         if (world.worldLoaded)

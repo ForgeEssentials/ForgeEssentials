@@ -10,7 +10,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
-import com.forgeessentials.multiworld.MultiworldTeleporter;
+import com.forgeessentials.util.OutputHandler;
 
 /**
  * @author Olee
@@ -33,27 +33,51 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
     public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
         int dimId = 0;
+
+        Multiworld multiworld = null;
         if (args.length > 0)
         {
-            Multiworld multiworld = ModuleMultiworld.getMultiworldManager().getWorld(args[0]);
+            multiworld = ModuleMultiworld.getMultiworldManager().getWorld(args[0]);
             if (multiworld == null)
                 throw new CommandException("Multiworld " + args[0] + " does not exist.");
             dimId = multiworld.getDimensionId();
         }
-        if (DimensionManager.isDimensionRegistered(dimId))
+
+        if (!DimensionManager.isDimensionRegistered(dimId))
+            throw new CommandException("Dimension #" + args[0] + " does not exist.");
+
+        if (dimId == player.dimension)
+            throw new CommandException("You are already in that dimension");
+        if (dimId < 0 || dimId == 1)
+            throw new CommandException("You are not allowed to teleport to that dimension");
+
+        WorldServer world = player.mcServer.worldServerForDimension(dimId);
+
+        String msg = "Teleporting to ";
+        if (multiworld == null)
         {
-            if (dimId < 0 || dimId == 1)
-                throw new CommandException("You are not allowed to teleport to that dimension");
-            WorldServer world = player.mcServer.worldServerForDimension(dimId);
-            if (world != null)
+            switch (dimId)
             {
-                new MultiworldTeleporter(world).teleport(player);
+            case 0:
+                msg += "the overworld";
+                break;
+            case 1:
+                msg += "the nether";
+                break;
+            case -1:
+                msg += "the end";
+                break;
+            default:
+                msg += " dimension #" + dimId;
+                break;
             }
         }
         else
         {
-            throw new CommandException("Dimension #" + args[0] + " does not exist.");
+            msg += multiworld.getName();
         }
+        OutputHandler.chatConfirmation(player, msg);
+        Multiworld.teleport(player, world);
     }
 
     @Override

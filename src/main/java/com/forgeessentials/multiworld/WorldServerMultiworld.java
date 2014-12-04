@@ -3,9 +3,9 @@ package com.forgeessentials.multiworld;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.MinecraftException;
+import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
-import net.minecraft.world.storage.DerivedWorldInfo;
 import net.minecraft.world.storage.ISaveHandler;
 
 /**
@@ -15,6 +15,7 @@ import net.minecraft.world.storage.ISaveHandler;
 public class WorldServerMultiworld extends WorldServer {
     
     private Multiworld world;
+    private MultiworldTeleporter worldTeleporter;
 
     public WorldServerMultiworld(MinecraftServer mcServer, ISaveHandler saveHandler, String worldname, int dimensionId, WorldSettings worldSettings,
             WorldServer worldServer, Profiler profiler, Multiworld world)
@@ -22,8 +23,14 @@ public class WorldServerMultiworld extends WorldServer {
         super(mcServer, saveHandler, worldname, dimensionId, worldSettings, profiler);
         this.mapStorage = worldServer.mapStorage;
         this.worldScoreboard = worldServer.getScoreboard();
-        this.worldInfo = new DerivedWorldInfo(worldInfo);
+        this.worldTeleporter = new MultiworldTeleporter(this);
         this.world = world;
+    }
+
+    @Override
+    public Teleporter getDefaultTeleporter()
+    {
+        return this.worldTeleporter;
     }
 
     @Override
