@@ -836,29 +836,34 @@ public class PermissionCommandParser {
             }
             else
             {
-                String group = args.remove();
-                if (!APIRegistry.perms.groupExists(group))
-                {
-                    error(String.format("Group %s not found.", group));
-                    return;
-                }
+                String groups[] = args.remove().split(",");
+                for (String group : groups)
+                    if (!APIRegistry.perms.groupExists(group))
+                    {
+                        error(String.format("Group %s not found.", group));
+                        return;
+                    }
+
                 switch (mode)
                 {
                 case "add":
-                    APIRegistry.perms.addPlayerToGroup(ident, group);
-                    info(String.format("Player %s added to group %s", ident.getUsernameOrUUID(), group));
+                    for (String group : groups)
+                        APIRegistry.perms.addPlayerToGroup(ident, group);
+                    info(String.format("Player %s added to group(s) %s", ident.getUsernameOrUUID(), StringUtils.join(groups, ", ")));
                     break;
                 case "remove":
-                    APIRegistry.perms.removePlayerFromGroup(ident, group);
-                    info(String.format("Player %s removed from group %s", ident.getUsernameOrUUID(), group));
+                    for (String group : groups)
+                        APIRegistry.perms.removePlayerFromGroup(ident, group);
+                    info(String.format("Player %s removed from group(s) %s", ident.getUsernameOrUUID(), StringUtils.join(groups, ", ")));
                     break;
                 case "set":
                     for (String g : APIRegistry.perms.getStoredPlayerGroups(ident))
                     {
                         APIRegistry.perms.removePlayerFromGroup(ident, g);
                     }
-                    APIRegistry.perms.addPlayerToGroup(ident, group);
-                    info(String.format("Set %s's group to %s", ident.getUsernameOrUUID(), group));
+                    for (String group : groups)
+                        APIRegistry.perms.addPlayerToGroup(ident, group);
+                    info(String.format("Set %s's group(s) to %s", ident.getUsernameOrUUID(), StringUtils.join(groups, ", ")));
                     break;
                 }
             }
