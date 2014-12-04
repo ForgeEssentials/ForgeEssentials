@@ -99,7 +99,7 @@ public class CommandBubble extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/bubble on|off";
+        return "/bubble [on|off]";
     }
 
 }

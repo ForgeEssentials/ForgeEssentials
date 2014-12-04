@@ -1,14 +1,18 @@
 package com.forgeessentials.core.commands;
 
+import java.util.List;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.FEModContainer;
 import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandFEInfo extends ForgeEssentialsCommandBase {
 
+	public static final String[] options = {"debug", "reload", "modules", "about"};
+			
     @Override
     public String getCommandName()
     {
@@ -73,6 +77,19 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     public RegisteredPermValue getDefaultPermission()
     {
         return RegisteredPermValue.OP;
+    }
+    
+    @Override
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    {
+        if (args.length == 1)
+        {
+            return getListOfStringsMatchingLastWord(args, options);
+        }
+        else
+        {
+            return null;
+        }
     }
 
 }

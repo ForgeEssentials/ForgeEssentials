@@ -67,7 +67,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         }
         else if (args.length != 3)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <effect> <duration> [ampl]");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /potion <player> <effect> <duration> [ampl]");
             return;
         }
 
@@ -116,7 +116,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         }
         else if (args.length != 3)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <effect> <duration> [ampl]");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /potion <player> <effect> <duration> [ampl]");
             return;
         }
 
@@ -173,7 +173,6 @@ public class CommandPotion extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/potion <player> <effect> <duration> [ampl] Give the specified player a potion effect.";
     }
 

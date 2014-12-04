@@ -93,7 +93,7 @@ public class CommandButcher extends FEcmdModuleCommands {
         {
             world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
             if (world == null)
-                throw new CommandException("This dimension does not exist");
+                throw new CommandException("The specified dimension does not exist");
         }
         
         AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
