@@ -2,7 +2,9 @@ package com.forgeessentials.commands;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +36,7 @@ public class CommandBind extends FEcmdModuleCommands {
     {
         if (args.length == 0 || !(args[0].equalsIgnoreCase("left") || args[0].equalsIgnoreCase("right") || args[0].equalsIgnoreCase("clear")))
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <left|right|clear> <command [args]>");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
         else if (sender.inventory.getCurrentItem() == null)
         {

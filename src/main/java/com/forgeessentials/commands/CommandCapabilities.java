@@ -4,12 +4,15 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -45,8 +48,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
     {
         if (args.length > 3)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [player] [capability] [value|default]");
-            return;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
 
         if (args.length == 0)
@@ -206,7 +208,6 @@ public class CommandCapabilities extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/capabilities [player] [capability] [value|default] Allows you to modify player capabilities.";
     }
 

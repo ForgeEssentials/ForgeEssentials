@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
@@ -48,8 +49,7 @@ public class CommandFindblock extends FEcmdModuleCommands {
     {
         if (args.length < 2)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <block> <meta> [max distance] [amount of blocks] [speed]");
-            return;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
         String id = args[0];
         int meta = parseInt(sender, args[1]);
@@ -93,7 +93,7 @@ public class CommandFindblock extends FEcmdModuleCommands {
         }
         else
         {
-            return null;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 

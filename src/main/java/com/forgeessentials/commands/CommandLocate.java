@@ -3,8 +3,10 @@ package com.forgeessentials.commands;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -29,7 +31,7 @@ public class CommandLocate extends FEcmdModuleCommands {
     {
         if (args.length != 1)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please specify a player name.");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
         else
         {
@@ -63,7 +65,7 @@ public class CommandLocate extends FEcmdModuleCommands {
         }
         else
         {
-            return null;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
@@ -76,7 +78,6 @@ public class CommandLocate extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/locate <player> Locates a player.";
     }
 }

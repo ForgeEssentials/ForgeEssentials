@@ -161,7 +161,6 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/getcommandbook Get a command book listing all commands.";
     }
 }

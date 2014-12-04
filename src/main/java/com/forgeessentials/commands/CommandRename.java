@@ -1,6 +1,7 @@
 package com.forgeessentials.commands;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -26,7 +27,7 @@ public class CommandRename extends FEcmdModuleCommands {
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /rename <name>");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
         else
         {
@@ -56,7 +57,6 @@ public class CommandRename extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/rename <new name> Renames the item you are currently holding.";
     }
 }
