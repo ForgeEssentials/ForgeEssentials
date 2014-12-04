@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -139,10 +140,20 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             if (!PermissionsManager.checkPermission(senderPlayer, ModuleMultiworld.PERM_CREATE))
                 return;
         }
+
+        // Get the world name
         if (args.isEmpty())
             throw new CommandException("Missing name argument");
         String name = args.remove().toLowerCase();
 
+        // Display usage if requested
+        if (name.equals("?"))
+        {
+            info("Usage: /mw create (name) [provider] [worldType] [seed]");
+            return;
+        }
+
+        // Get the provider
         String provider = MultiworldManager.PROVIDER_NORMAL;
         if (tabCompleteMode && args.size() == 1)
         {
@@ -153,6 +164,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         if (!args.isEmpty())
             provider = args.remove();
 
+        // Get the World Type
         String worldType = WorldType.DEFAULT.getWorldTypeName();
         if (tabCompleteMode && args.size() == 1)
         {
@@ -163,12 +175,28 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         if (!args.isEmpty())
             worldType = args.remove();
 
+        // Get the World Seed
+        long seed = new Random().nextLong();
+        if (!args.isEmpty())
+        {
+            String arg = args.remove();
+            try
+            {
+                seed = Long.parseLong(arg, 10);
+            }
+            catch (NumberFormatException e)
+            {
+                seed = (long)arg.hashCode();
+            }
+        }
+
         if (!args.isEmpty())
             throw new CommandException("Too many arguments");
+
         if (tabCompleteMode)
             return;
 
-        Multiworld world = new Multiworld(name, provider, worldType);
+        Multiworld world = new Multiworld(name, provider, worldType, seed);
         try
         {
             ModuleMultiworld.getMultiworldManager().addWorld(world);
