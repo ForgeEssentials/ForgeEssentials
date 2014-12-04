@@ -146,6 +146,13 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             throw new CommandException("Missing name argument");
         String name = args.remove().toLowerCase();
 
+        // Display usage if requested
+        if (name.equals("?"))
+        {
+            info("Usage: /mw create (name) [provider] [worldType] [seed]");
+            return;
+        }
+
         // Get the provider
         String provider = MultiworldManager.PROVIDER_NORMAL;
         if (tabCompleteMode && args.size() == 1)
