@@ -3,6 +3,7 @@ package com.forgeessentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -59,7 +60,7 @@ public class CommandRepair extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /repair [player]");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
@@ -88,7 +89,7 @@ public class CommandRepair extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /repair <player>");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 

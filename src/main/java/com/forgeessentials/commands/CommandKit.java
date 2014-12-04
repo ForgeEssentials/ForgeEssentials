@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -117,7 +118,7 @@ public class CommandKit extends FEcmdModuleCommands {
 		/*
 		 * You're doing it wrong!
 		 */
-        OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [name] OR [name] [set|del] <cooldown>");
+        throw new WrongUsageException(getCommandUsage(sender));
     }
 
     @Override
@@ -147,7 +148,7 @@ public class CommandKit extends FEcmdModuleCommands {
         }
         else
         {
-            return null;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
@@ -160,7 +161,6 @@ public class CommandKit extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/kit [name] OR [name] [set|del] <cooldown> Allows you to receive free kits which are pre-defined by the server owner.";
     }
 

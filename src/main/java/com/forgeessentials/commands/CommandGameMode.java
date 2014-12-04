@@ -192,7 +192,6 @@ public class CommandGameMode extends FEcmdModuleCommands {
 	@Override
 	public String getCommandUsage(ICommandSender sender)
 	{
-
 		return "/gamemode [gamemode] <player(s)> Change a player's gamemode.";
 	}
 }

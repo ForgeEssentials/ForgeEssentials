@@ -7,6 +7,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -46,8 +47,7 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /remove <radius> [x, y, z]");
-            return;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
 
         List<EntityItem> entityList = sender.worldObj.getEntitiesWithinAABB(EntityItem.class,
@@ -84,8 +84,7 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /remove <radius> <x, y, z>");
-            return;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
 
         List<EntityItem> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(EntityItem.class,

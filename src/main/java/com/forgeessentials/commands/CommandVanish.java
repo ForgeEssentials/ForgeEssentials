@@ -53,7 +53,6 @@ public class CommandVanish extends FEcmdModuleCommands {
                 {
                     EntityPlayer player = (EntityPlayer) fakePlayer;
                     player.setInvisible(false);
-
                 }
             }
         }
@@ -68,7 +67,6 @@ public class CommandVanish extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/vanish Toggles invisibility.";
     }
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -133,7 +134,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax.");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
@@ -178,7 +179,7 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax.");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
@@ -210,7 +211,6 @@ public class CommandSpawnMob extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/spawnmob <mob type> <amount> [<x> <y> <z>] [dimension] Spawns a mob at a location.";
     }
 
