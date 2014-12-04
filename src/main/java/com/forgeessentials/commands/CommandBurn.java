@@ -2,6 +2,9 @@ package com.forgeessentials.commands;
 
 import java.util.List;
 
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,10 +16,13 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+import com.sk89q.minecraft.util.commands.CommandPermissionsException;
+import com.sk89q.minecraft.util.commands.CommandUsageException;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandBurn extends FEcmdModuleCommands {
+	
     @Override
     public String getCommandName()
     {
@@ -26,72 +32,77 @@ public class CommandBurn extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        if (args.length == 1)
+    	OptionParser parser = new OptionParser();
+    	parser.accepts("p").withRequiredArg();
+    	parser.accepts("t").withRequiredArg().ofType(Integer.class);
+    	parser.accepts("?");
+    	
+    	OptionSet options = parser.parse(args);
+
+    	EntityPlayerMP target = sender;
+    	int time = 15;
+    	
+    	if (options.has("?")) {
+    		OutputHandler.chatNotification(sender, "Options: " + options.toString());
+    		return;
+    	}
+    	
+    	if (options.has("p") && !options.valueOf("p").toString().equalsIgnoreCase("me")) {
+    		if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others")) {
+    			target = UserIdent.getPlayerByUsername(options.valueOf("p").toString());
+    			if (target == null) {
+    				throw new CommandException(String.format("Player %s does not exist, or is not online.", options.valueOf("p").toString()));
+    			}
+    		}
+    		else {
+    			throw new CommandException("You lack the permission to burn other players.");
+    		}
+    	}
+    	
+    	if (options.has("t"))
         {
-            if (args[0].toLowerCase().equals("me"))
-            {
-                sender.setFire(15);
-                OutputHandler.chatError(sender, "Ouch! Hot!");
-            }
-            else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
-            {
-                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-                if (player != null)
-                {
-                    OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
-                    player.setFire(15);
-                }
-                else
-                {
-                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                }
-            }
+            time = parseIntWithMin(sender, options.valueOf("t").toString(), 0);
         }
-        else if (args.length == 2)
-        {
-            if (args[0].toLowerCase().equals("me"))
-            {
-                sender.setFire(parseInt(sender, args[1]));
-                OutputHandler.chatError(sender, "Ouch! Hot!");
-            }
-            else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
-            {
-                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-                if (player != null)
-                {
-                    player.setFire(parseIntWithMin(sender, args[1], 0));
-                    OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
-                }
-                else
-                {
-                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                }
-            }
-        }
-        else
-        {
-        	throw new WrongUsageException(getCommandUsage(sender));
-        }
+    	
+    	OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
+    	target.setFire(time);
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        int time = 15;
-        if (args.length == 2)
+    	OptionParser parser = new OptionParser();
+    	parser.accepts("p").withRequiredArg();
+    	parser.accepts("t").withRequiredArg().ofType(Integer.class);
+    	parser.accepts("?");
+    	
+    	OptionSet options = parser.parse(args);
+
+    	EntityPlayerMP target;
+    	int time = 15;
+    	
+    	if (options.has("?")) {
+    		OutputHandler.chatNotification(sender, "Options: " + options.toString());
+    		return;
+    	}
+    	
+    	if (options.has("p")) {
+    		target = UserIdent.getPlayerByUsername(options.valueOf("p").toString());
+    		if (target == null) {
+    			throw new CommandException(String.format("Player %s does not exist, or is not online.", options.valueOf("p").toString()));
+    		}
+    	}
+    	else {
+    		throw new WrongUsageException(getCommandUsage(sender));
+    	}
+    	
+    	if (options.has("t"))
         {
-            time = parseIntWithMin(sender, args[1], 0);
+            time = parseIntWithMin(sender, options.valueOf("t").toString(), 0);
         }
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-        if (player != null)
-        {
-            player.setFire(time);
-            OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
-        }
-        else
-        {
-            OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-        }
+    	
+    	OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
+    	target.setFire(time);
     }
 
     @Override
@@ -130,11 +141,11 @@ public class CommandBurn extends FEcmdModuleCommands {
     {
     	if (sender instanceof EntityPlayer)
         {
-    		return "/burn <me|player> Set a player on fire.";
+    		return "/burn [-p <me|player>] [-t <time>] Set a player on fire.";
         }
         else
         {
-        	return "/burn <player> Set a player on fire.";
+        	return "/burn <-p player> [-t <time>] Set a player on fire.";
         }
     }
 }
