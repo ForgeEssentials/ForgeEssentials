@@ -72,7 +72,7 @@ public class CommandHeal extends FEcmdModuleCommands {
         target.heal(20);
         target.extinguish();
         target.getFoodStats().addStats(20, 1.0F);
-        OutputHandler.chatConfirmation(target, "You were healed");
+        OutputHandler.chatConfirmation(target, "You were healed.");
     }
 
     @Override
@@ -109,7 +109,6 @@ public class CommandHeal extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/heal <player> Heal yourself. You can also heal other players if you have permissions.";
     }
 

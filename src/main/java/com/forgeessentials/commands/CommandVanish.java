@@ -39,12 +39,12 @@ public class CommandVanish extends FEcmdModuleCommands {
 
         if (tag.getBoolean(TAGNAME))
         {
-            OutputHandler.chatConfirmation(sender, "You are vanished now.");
+            OutputHandler.chatConfirmation(sender, "You have vanished.");
             vanishedPlayers.add(sender.getPersistentID());
         }
         else
         {
-            OutputHandler.chatConfirmation(sender, "You are un vanished now.");
+            OutputHandler.chatConfirmation(sender, "You have reappeared.");
             vanishedPlayers.remove(sender.getPersistentID());
 
             for (Object fakePlayer : MinecraftServer.getServer().worldServers[sender.dimension].playerEntities)
@@ -69,6 +69,6 @@ public class CommandVanish extends FEcmdModuleCommands {
     public String getCommandUsage(ICommandSender sender)
     {
 
-        return "/vanish Makes yourself invisible";
+        return "/vanish Toggles invisibility.";
     }
 }

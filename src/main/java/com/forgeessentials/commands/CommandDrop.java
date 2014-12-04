@@ -186,13 +186,13 @@ public class CommandDrop extends FEcmdModuleCommands {
         }
         else
         {
-            throw new CommandException("No viable Container found to put item in");
+            throw new CommandException("No viable container found to put item in.");
         }
         if (var9 > 0)
         {
-            throw new CommandException("Not enough Room for Items");
+            throw new CommandException("Not enough room for items.");
         }
-        OutputHandler.chatConfirmation(var1, "Items Droped into container");
+        OutputHandler.chatConfirmation(var1, "Items dropped into container.");
     }
 
     private double func_82368_a(ICommandSender par1ICommandSender, double par2, String par4Str)

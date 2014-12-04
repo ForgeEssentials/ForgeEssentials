@@ -175,6 +175,6 @@ public class CommandEnchant extends FEcmdModuleCommands {
 	public String getCommandUsage(ICommandSender sender)
 	{
 
-		return "/enchant [ench name] [lvl] Enchants the item you are currently holding.";
+		return "/enchant [enchantment name] [lvl] Enchants the item you are currently holding.";
 	}
 }

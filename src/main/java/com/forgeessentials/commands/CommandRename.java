@@ -26,7 +26,7 @@ public class CommandRename extends FEcmdModuleCommands {
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <name>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /rename <name>");
         }
         else
         {

@@ -118,7 +118,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 		{
 			wt.weatherSpecified = false;
 			CommandDataManager.WTmap.put(wt.dimID, wt);
-			return "Wheather reset to default";
+			return "Weather reset to default";
 		}
 		else
 		{

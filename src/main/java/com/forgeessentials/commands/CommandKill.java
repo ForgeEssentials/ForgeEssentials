@@ -103,7 +103,7 @@ public class CommandKill extends FEcmdModuleCommands {
     public String getCommandUsage(ICommandSender sender)
     {
 
-        return "/kill <player> Commit suicide, or kill other players (with permissions)";
+        return "/kill <player> Commit suicide or kill other players (with special permission).";
     }
 
 }
