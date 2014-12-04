@@ -3,7 +3,6 @@ notifications:
   email: false
 branches:
   except:
-    - develop
     - master
 before_install: chmod +x gradlew
 install: ./gradlew setupCIWorkspace -S
