@@ -16,7 +16,6 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.enchantment.Enchantment;
@@ -139,7 +138,7 @@ public final class FunctionHelper {
 	{
 		for (int i = 0; i < h; i++) {
 			Block block = world.getBlock(x, y + i, z);
-			if (block.getMaterial() != Material.air && !block.getMaterial().isReplaceable())
+			if (block.getMaterial().isSolid() || block.getMaterial().isLiquid())
 				return false;
 		}
 		return true;

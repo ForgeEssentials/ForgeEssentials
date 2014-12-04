@@ -37,6 +37,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
@@ -77,7 +78,7 @@ public class ModulePermissions extends ConfigLoaderBase {
         permissionEventHandler = new PermissionEventHandler();
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void serverStarting(FEModuleServerInitEvent e)
     {
         // Backup FEData directory

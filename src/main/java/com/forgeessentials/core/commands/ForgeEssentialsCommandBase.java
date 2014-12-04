@@ -191,22 +191,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
     {
         return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
     }
-    
-    /**
-     * Simply prints a usage message to the sender of the command.
-     */
-    public void error(ICommandSender sender)
-    {
-        error(getCommandUsage(sender));
-    }
-
-    /**
-     * Prints an error message to the sender of the command.
-     */
-    public void error(String message)
-    {
-        throw new CommandException(message);
-    }
 
     @Override
     public int compareTo(Object o)

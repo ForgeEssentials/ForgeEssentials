@@ -2,6 +2,7 @@ package com.forgeessentials.core.commands.selections;
 
 //Depreciated
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
@@ -15,6 +16,7 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -63,8 +65,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
             }
             else
             {
-                error(player);
-                return;
+                throw new CommandException(getCommandUsage(player));
             }
         }
 
@@ -72,8 +73,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         {
             if (args.length < 3)
             {
-                error(player);
-                return;
+                throw new CommandException(getCommandUsage(player));
             }
 
             try
@@ -84,8 +84,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
             }
             catch (NumberFormatException e)
             {
-                error(player);
-                return;
+                throw new CommandException(getCommandUsage(player));
             }
 
             if (type == 1)

@@ -6,6 +6,8 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -207,7 +209,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
         }
         else
         {
-            error(player);
+            throw new CommandException(getCommandUsage(player));
         }
     }
 

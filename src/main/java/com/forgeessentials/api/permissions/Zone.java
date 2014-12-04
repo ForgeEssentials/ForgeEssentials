@@ -472,4 +472,19 @@ public abstract class Zone {
         return false;
     }
 
+
+    /**
+     * Swaps the permissions of one zone with another one
+     */
+    public void swapPermissions(Zone zone)
+    {
+        Map<String, PermissionList> swapGroupPerms = zone.groupPermissions;
+        zone.groupPermissions = groupPermissions;
+        groupPermissions = swapGroupPerms;
+
+        Map<UserIdent, PermissionList> swapPlayerPermissions = zone.playerPermissions;
+        zone.playerPermissions = playerPermissions;
+        playerPermissions = swapPlayerPermissions;
+    }
+
 }
