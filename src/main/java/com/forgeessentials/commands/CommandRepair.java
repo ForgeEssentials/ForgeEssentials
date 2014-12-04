@@ -3,6 +3,7 @@ package com.forgeessentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -31,7 +32,7 @@ public class CommandRepair extends FEcmdModuleCommands {
 
             if (item == null)
             {
-                OutputHandler.chatError(sender, "You are not holding a valid item.");
+                OutputHandler.chatError(sender, "You are not holding a reparable item.");
             }
 
             item.setItemDamage(0);
@@ -58,7 +59,7 @@ public class CommandRepair extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /repair [player]");
         }
     }
 
@@ -87,7 +88,7 @@ public class CommandRepair extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /repair <player>");
         }
     }
 
@@ -125,8 +126,15 @@ public class CommandRepair extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
-        return "/repair [player] Repair the item you or another player is holding.";
+    	if (sender instanceof EntityPlayer)
+        {
+    		return "/repair [player] Repairs the item you or another player is holding.";
+        }
+        else
+        {
+        	return "/repair <player> Repairs the item the player is holding.";
+        }
+        
     }
 
 }

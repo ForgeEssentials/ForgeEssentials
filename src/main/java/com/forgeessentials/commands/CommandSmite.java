@@ -79,7 +79,7 @@ public class CommandSmite extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
+            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /smite <player>");
         }
     }
 
@@ -113,7 +113,7 @@ public class CommandSmite extends FEcmdModuleCommands {
     {
         if (sender instanceof EntityPlayer)
         {
-            return "/smite [me] <player> Smite yourself or another player.";
+            return "/smite [me|player] Smite yourself, another player, or the spot you are looking at.";
         }
         else
         {
