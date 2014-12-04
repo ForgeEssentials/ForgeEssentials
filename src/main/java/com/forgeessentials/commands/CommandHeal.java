@@ -4,8 +4,10 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -42,7 +44,7 @@ public class CommandHeal extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
@@ -63,7 +65,7 @@ public class CommandHeal extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
@@ -109,6 +111,7 @@ public class CommandHeal extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
+    	//Needs sender specialization
         return "/heal <player> Heal yourself. You can also heal other players if you have permissions.";
     }
 

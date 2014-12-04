@@ -87,7 +87,6 @@ public class CommandInventorySee extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/invsee See a player's inventory.";
     }
 

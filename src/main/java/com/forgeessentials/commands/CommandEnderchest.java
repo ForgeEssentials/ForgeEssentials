@@ -24,8 +24,7 @@ public class CommandEnderchest extends FEcmdModuleCommands {
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[]
-                { "echest" };
+        return new String[] { "echest" };
     }
 
     @Override
@@ -61,7 +60,6 @@ public class CommandEnderchest extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/enderchest Opens your enderchest.";
     }
 

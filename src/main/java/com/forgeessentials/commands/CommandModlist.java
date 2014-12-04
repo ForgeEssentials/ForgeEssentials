@@ -52,7 +52,6 @@ public class CommandModlist extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/modlist Get a list of all mods running on this server.";
     }
 
