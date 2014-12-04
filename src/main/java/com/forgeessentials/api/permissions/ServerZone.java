@@ -12,7 +12,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -181,7 +180,7 @@ public class ServerZone extends Zone {
 
     public boolean createGroup(String name)
     {
-        if (!APIRegistry.getFEEventBus().post(new PermissionEvent.Group.Create(this, name)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.Group.Create(this, name)))
             return false;
         setGroupPermission(name, FEPermissions.GROUP, true);
         setGroupPermissionProperty(name, FEPermissions.GROUP_PRIORITY, Integer.toString(FEPermissions.GROUP_PRIORITY_DEFAULT));
