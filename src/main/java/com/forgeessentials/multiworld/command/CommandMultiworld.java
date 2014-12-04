@@ -11,10 +11,9 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldType;
+import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -30,6 +29,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
     private ICommandSender sender;
     private EntityPlayerMP senderPlayer;
     private Queue<String> args;
+    private PermissionContext permissionContext;
     private boolean tabCompleteMode;
     private List<String> tabComplete;
 
@@ -76,6 +76,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         this.sender = sender;
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
         this.tabCompleteMode = false;
+        this.permissionContext = new PermissionContext().setCommandSender(sender).setCommand(this);
         parseMain();
     }
 
@@ -140,7 +141,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
     {
         if (senderPlayer != null)
         {
-            if (!PermissionsManager.checkPermission(senderPlayer, ModuleMultiworld.PERM_CREATE))
+            if (!PermissionsManager.checkPermission(permissionContext, ModuleMultiworld.PERM_CREATE))
                 return;
         }
 
@@ -189,7 +190,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             }
             catch (NumberFormatException e)
             {
-                seed = (long)arg.hashCode();
+                seed = arg.hashCode();
             }
         }
 
@@ -234,7 +235,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         if (args.isEmpty())
             throw new CommandException("Too few arguments!");
 
-        if (!tabCompleteMode && !PermissionsManager.checkPermission(senderPlayer, ModuleMultiworld.PERM_DELETE))
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(permissionContext, ModuleMultiworld.PERM_DELETE))
         {
             OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
@@ -261,7 +262,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             return;
         }
 
-        if (!tabCompleteMode && !PermissionsManager.checkPermission(senderPlayer, ModuleMultiworld.PERM_LIST))
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(permissionContext, ModuleMultiworld.PERM_LIST))
         {
             OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
