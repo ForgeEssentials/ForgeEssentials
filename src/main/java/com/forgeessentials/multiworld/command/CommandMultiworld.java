@@ -1,22 +1,27 @@
-package com.forgeessentials.multiworld;
+package com.forgeessentials.multiworld.command;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Queue;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.multiworld.ModuleMultiworld;
+import com.forgeessentials.multiworld.Multiworld;
+import com.forgeessentials.multiworld.MultiworldException;
+import com.forgeessentials.multiworld.MultiworldManager;
+import com.forgeessentials.multiworld.MultiworldTeleporter;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandMultiworld extends ForgeEssentialsCommandBase {
@@ -63,12 +68,6 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             OutputHandler.chatConfirmation(sender, message);
     }
 
-    private void warn(String message)
-    {
-        if (!tabCompleteMode)
-            OutputHandler.chatWarning(sender, message);
-    }
-
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
@@ -82,17 +81,18 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
     @Override
     public List addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        if (args.length == 1)
-        {
-            return getListOfStringsMatchingLastWord(args, parseMainArgs);
-        }
-        else
-        {
-            return null;
-        }
+        this.args = new LinkedList<String>(Arrays.asList(args));
+        this.sender = sender;
+        this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
+        this.tabCompleteMode = true;
+        this.tabComplete = null;
+        parseMain();
+        return tabComplete;
     }
 
     private static String[] parseMainArgs = new String[] { "create", "delete", "list" };
+
+    private static String[] parseListArgs = new String[] { "worlds", "providers", "worldtypes" };
 
     /**
      * Parse subcommands
@@ -104,7 +104,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             info("subcommands: " + StringUtils.join(parseMainArgs, ", "));
             return;
         }
-        if (tabCompleteMode)
+        if (tabCompleteMode && args.size() == 1)
         {
             tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
             return;
@@ -146,7 +146,8 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         String provider = MultiworldManager.PROVIDER_NORMAL;
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), ModuleMultiworld.getMultiworldManager().getWorldProviders().keySet());
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), ModuleMultiworld.getMultiworldManager().getWorldProviders()
+                    .keySet());
             return;
         }
         if (!args.isEmpty())
@@ -155,7 +156,8 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         String worldType = WorldType.DEFAULT.getWorldTypeName();
         if (tabCompleteMode && args.size() == 1)
         {
-            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), ModuleMultiworld.getMultiworldManager().getWorldTypes().keySet());
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), ModuleMultiworld.getMultiworldManager().getWorldTypes()
+                    .keySet());
             return;
         }
         if (!args.isEmpty())
@@ -181,62 +183,82 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         }
     }
 
+    /**
+     * Delete a multiworld
+     */
     private void parseDelete()
     {
-        if (senderPlayer != null)
+        if (tabCompleteMode)
         {
-            if (!PermissionsManager.checkPermission(senderPlayer, ModuleMultiworld.PERM_DELETE))
+            if (args.size() > 1)
                 return;
+            tabComplete = new ArrayList<>();
+            for (Multiworld world : ModuleMultiworld.getMultiworldManager().getWorlds())
+            {
+                if (world.getName().toLowerCase().startsWith(args.peek().toLowerCase()))
+                    tabComplete.add(world.getName());
+            }
+            return;
         }
         if (args.isEmpty())
-        {
             throw new CommandException("Too few arguments!");
+
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(senderPlayer, ModuleMultiworld.PERM_DELETE))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
         }
+
         Multiworld world = ModuleMultiworld.getMultiworldManager().getWorld(args.peek());
-        if (world != null)
-        {
-            ModuleMultiworld.getMultiworldManager().deleteWorld(world);
-            sender.addChatMessage(new ChatComponentText("Deleted Multiworld #" + args.peek()));
-        }
-        else
-        {
-            sender.addChatMessage(new ChatComponentText("Dimension #" + args.peek() + " does not exist!"));
-        }
+        if (world == null)
+            throw new CommandException("Dimension #" + args.peek() + " does not exist!");
+
+        ModuleMultiworld.getMultiworldManager().deleteWorld(world);
+        info("Deleted Multiworld #" + args.peek());
     }
 
+    /**
+     * Print lists of multiworlds, available providers and available world-types
+     */
     private void parseList()
     {
-        if (senderPlayer != null)
+        if (tabCompleteMode)
         {
-            if (!PermissionsManager.checkPermission(senderPlayer, ModuleMultiworld.PERM_LIST))
+            if (args.size() > 1)
                 return;
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseListArgs);
+            return;
         }
-        String subArg = args.remove().toLowerCase();
+
+        if (!tabCompleteMode && !PermissionsManager.checkPermission(senderPlayer, ModuleMultiworld.PERM_LIST))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
+
+        String subArg = args.isEmpty() ? "worlds" : args.remove().toLowerCase();
         switch (subArg)
         {
         case "providers":
-            OutputHandler.chatNotification(sender, "Available world providers:");
-            for (String provider : MultiworldManager.PROVIDERS)
+            info("Available world providers:");
+            for (String provider : ModuleMultiworld.getMultiworldManager().getWorldProviders().keySet())
             {
-                OutputHandler.chatNotification(sender, "  " + provider);
-            }
-            for (Entry<String, Integer> provider : ModuleMultiworld.getMultiworldManager().getWorldProviders().entrySet())
-            {
-                OutputHandler.chatNotification(sender, "  " + provider.getKey());
+                info("  " + provider);
             }
             break;
         case "worldtypes":
-            OutputHandler.chatNotification(sender, "Available world types:");
+            info("Available world types:");
             for (String worldType : ModuleMultiworld.getMultiworldManager().getWorldTypes().keySet())
             {
-                OutputHandler.chatNotification(sender, "  " + worldType);
+                info("  " + worldType);
             }
             break;
+        case "worlds":
         default:
-            sender.addChatMessage(new ChatComponentText("Available worlds:"));
+            info("Available worlds:");
             for (Multiworld world : ModuleMultiworld.getMultiworldManager().getWorlds())
             {
-                sender.addChatMessage(new ChatComponentText("#" + world.getDimensionId() + " " + world.getName() + ": " + world.getProvider()));
+                info("#" + world.getDimensionId() + " " + world.getName() + ": " + world.getProvider());
             }
             break;
         }

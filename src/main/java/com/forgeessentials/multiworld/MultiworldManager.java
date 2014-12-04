@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.forgeessentials.multiworld.MultiworldException.Type;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldManager;
 import net.minecraft.world.WorldProvider;
@@ -28,7 +27,13 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import org.apache.commons.io.FileUtils;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.multiworld.MultiworldException.Type;
+import com.forgeessentials.multiworld.gen.WorldTypeMultiworld;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
 
@@ -46,17 +51,11 @@ import cpw.mods.fml.relauncher.Side;
  */
 public class MultiworldManager extends ServerEventHandler {
 
-    public static final String PROVIDER_NORMAL = "normal";
-    public static final String PROVIDER_HELL   = "nether";
-    public static final String PROVIDER_END    = "end";
-    
-    public static final String[] PROVIDERS = new String[] {
-        PROVIDER_NORMAL,
-        PROVIDER_HELL,
-        PROVIDER_END
-    };
+    public static final String PERM_PROP_MULTIWORLD = FEPermissions.FE_INTERNAL + ".multiworld";
 
-    // ============================================================
+    public static final String PROVIDER_NORMAL = "normal";
+    public static final String PROVIDER_HELL = "nether";
+    public static final String PROVIDER_END = "end";
 
     public static final WorldTypeMultiworld WORLD_TYPE_MULTIWORLD = new WorldTypeMultiworld();
 
@@ -128,6 +127,9 @@ public class MultiworldManager extends ServerEventHandler {
                 case NO_WORLDTYPE:
                     OutputHandler.felog.severe(String.format(e.type.error, world.worldType));
                     break;
+                default:
+                    OutputHandler.felog.severe(e.type.error);
+                    break;
                 }
 
             }
@@ -163,22 +165,35 @@ public class MultiworldManager extends ServerEventHandler {
         world.save();
     }
 
+    public static int getFreeDimensionId()
+    {
+        int id = 10;
+        while (DimensionManager.isDimensionRegistered(id))
+            id++;
+        return id;
+    }
+
     protected void loadWorld(Multiworld world) throws MultiworldException
     {
         if (world.worldLoaded)
             return;
-        try {
-        	world.providerId = getWorldProviderId(world.provider);
+        try
+        {
+            world.providerId = getWorldProviderId(world.provider);
             world.worldTypeObj = getWorldTypeByName(world.worldType);
 
             // Register dimension with last used id if possible
             if (DimensionManager.isDimensionRegistered(world.dimensionId))
-                world.dimensionId = DimensionManager.getNextFreeDimId();
+                world.dimensionId = getFreeDimensionId();
+
+            // Handle permission-dim changes
+            checkMultiworldPermissions(world);
+            APIRegistry.perms.getWorldZone(world.dimensionId).setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
 
             // Register the dimension
             DimensionManager.registerDimension(world.dimensionId, world.providerId);
             worldsByDim.put(world.dimensionId, world);
-    
+
             // Initialize world settings
             MinecraftServer mcServer = MinecraftServer.getServer();
             WorldServer overworld = DimensionManager.getWorld(0);
@@ -186,24 +201,25 @@ public class MultiworldManager extends ServerEventHandler {
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
             WorldSettings worldSettings = new WorldSettings(world.seed, world.gameType, world.mapFeaturesEnabled, false, world.worldTypeObj);
-    
+
             // Create WorldServer with settings
             WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, //
                     overworld.getWorldInfo().getWorldName(), world.dimensionId, worldSettings, //
                     overworld, mcServer.theProfiler, world);
             worldServer.addWorldAccess(new WorldManager(mcServer, worldServer));
             if (!mcServer.isSinglePlayer())
-            	worldServer.getWorldInfo().setGameType(mcServer.getGameType());
+                worldServer.getWorldInfo().setGameType(mcServer.getGameType());
             mcServer.func_147139_a(mcServer.func_147135_j());
-            
+
             world.updateWorldSettings();
             world.worldLoaded = true;
             world.error = false;
-    
+
             // Post WorldEvent.Load
             MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(worldServer));
 
-            // This is required otherwise the S01PacketJoinGame.worldinfo may not be initialized
+            // This is required otherwise the S01PacketJoinGame.worldinfo may
+            // not be initialized
             worldServer.getWorldInfo().setGameType(world.gameType);
             mcServer.func_147139_a(mcServer.func_147135_j());
 
@@ -224,11 +240,12 @@ public class MultiworldManager extends ServerEventHandler {
     {
         switch (providerName.toLowerCase())
         {
-        // We use the hardcoded values as some mods just replace the class (BiomesOPlenty)
-        case PROVIDER_NORMAL:        
-        	return 0;
+        // We use the hardcoded values as some mods just replace the class
+        // (BiomesOPlenty)
+        case PROVIDER_NORMAL:
+            return 0;
         case PROVIDER_HELL:
-        	return -1;
+            return -1;
         case PROVIDER_END:
             return 1;
         default:
@@ -237,6 +254,29 @@ public class MultiworldManager extends ServerEventHandler {
             if (providerId == null)
                 throw new MultiworldException(Type.NO_PROVIDER);
             return providerId;
+        }
+    }
+
+    /**
+     * Checks the WorldZone permissions for multiworlds and moves them to the
+     * correct dimension if it changed
+     */
+    private static void checkMultiworldPermissions(Multiworld world)
+    {
+        for (WorldZone zone : APIRegistry.perms.getServerZone().getWorldZones().values())
+        {
+            String wn = zone.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PERM_PROP_MULTIWORLD);
+            if (wn != null && wn.equals(world.getName()))
+            {
+                if (zone.getDimensionID() != world.dimensionId)
+                {
+                    WorldZone newZone = APIRegistry.perms.getWorldZone(world.dimensionId);
+                    // Swap the permissions of the multiworld with the one
+                    // that's currently taking up it's dimID
+                    zone.swapPermissions(newZone);
+                }
+                return;
+            }
         }
     }
 
@@ -289,7 +329,8 @@ public class MultiworldManager extends ServerEventHandler {
     // ============================================================
 
     /**
-     * Forge DimensionManager stores used dimension IDs and does not assign them again, unless they are cleared manually.
+     * Forge DimensionManager stores used dimension IDs and does not assign them
+     * again, unless they are cleared manually.
      */
     public void clearDimensionMap()
     {
@@ -300,7 +341,8 @@ public class MultiworldManager extends ServerEventHandler {
     // Unloading and deleting of worlds
 
     /**
-     * When a world is unloaded and marked as to-be-unregistered, remove it now when it is not needed any more
+     * When a world is unloaded and marked as to-be-unregistered, remove it now
+     * when it is not needed any more
      */
     @SubscribeEvent
     public void serverTickEvent(ServerTickEvent event)
@@ -353,7 +395,9 @@ public class MultiworldManager extends ServerEventHandler {
                     if (DimensionManager.isDimensionRegistered(world.provider.dimensionId))
                         DimensionManager.unregisterDimension(world.provider.dimensionId);
 
-                    File path = world.getChunkSaveLocation(); // new File(world.getSaveHandler().getWorldDirectory(), world.provider.getSaveFolder());
+                    File path = world.getChunkSaveLocation(); // new
+                                                              // File(world.getSaveHandler().getWorldDirectory(),
+                                                              // world.provider.getSaveFolder());
                     FileUtils.deleteDirectory(path);
 
                     it.remove();
@@ -382,7 +426,8 @@ public class MultiworldManager extends ServerEventHandler {
             Hashtable<Integer, Class<? extends WorldProvider>> loadedProviders = (Hashtable<Integer, Class<? extends WorldProvider>>) f_providers.get(null);
             for (Entry<Integer, Class<? extends WorldProvider>> provider : loadedProviders.entrySet())
             {
-                // skip the default providers as these are aliased as 'normal', 'nether' and 'end'
+                // skip the default providers as these are aliased as 'normal',
+                // 'nether' and 'end'
                 if (provider.getKey() >= -1 && provider.getKey() <= 1)
                     continue;
 
@@ -435,7 +480,10 @@ public class MultiworldManager extends ServerEventHandler {
 
             String name = type.getWorldTypeName().toUpperCase();
 
-            /* MC does not allow creation of this worldType, so we should not either */            
+            /*
+             * MC does not allow creation of this worldType, so we should not
+             * either
+             */
             if (name.equals("DEFAULT_1_1"))
                 continue;
 
@@ -443,7 +491,7 @@ public class MultiworldManager extends ServerEventHandler {
         }
 
         OutputHandler.felog.info("[Multiworld] Available world types:");
-        for (String worldType: worldTypes.keySet())
+        for (String worldType : worldTypes.keySet())
             OutputHandler.felog.info("# " + worldType);
     }
 

@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld;
+package com.forgeessentials.multiworld.gen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,8 @@ import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.IntCache;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeManager.BiomeEntry;
+
+import com.forgeessentials.multiworld.WorldServerMultiworld;
 
 /**
  * 

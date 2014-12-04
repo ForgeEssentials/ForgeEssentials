@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld;
+package com.forgeessentials.multiworld.gen;
 
 import java.util.Random;
 
@@ -15,6 +15,8 @@ import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.GenLayerBiome;
 import net.minecraft.world.gen.layer.GenLayerBiomeEdge;
 import net.minecraft.world.gen.layer.GenLayerZoom;
+
+import com.forgeessentials.multiworld.WorldServerMultiworld;
 
 /**
  * 

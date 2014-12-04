@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -113,7 +114,10 @@ public class PermissionCommandParser {
     }
 
     // Variables for auto-complete
-    private static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "testp", "reload", "save", "debug" }; // "export", "promote", "test" };
+    private static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "testp", "reload", "save", "debug" }; // "export",
+                                                                                                                                     // "promote",
+                                                                                                                                     // "test"
+                                                                                                                                     // };
     private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
     private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms" };
     private static final String[] parseGroupArgs = { "zone", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
@@ -583,36 +587,9 @@ public class PermissionCommandParser {
                 error(String.format("Expected zone identifier."));
                 return;
             }
-            String zoneId = args.remove();
-            try
-            {
-                int intId = Integer.parseInt(zoneId);
-                if (intId < 1)
-                {
-                    error(String.format("Zone ID must be greater than 0!"));
-                    return;
-                }
-                zone = APIRegistry.perms.getZoneById(intId);
-                if (zone == null)
-                {
-                    error(String.format("No zone by the ID %s exists!", zoneId));
-                    return;
-                }
-            }
-            catch (NumberFormatException e)
-            {
-                if (senderPlayer == null)
-                {
-                    error("Cannot identify zones by name from console!");
-                    return;
-                }
-                zone = APIRegistry.perms.getWorldZone(senderPlayer.dimension).getAreaZone(zoneId);
-                if (zone == null)
-                {
-                    error(String.format("No zone by the name %s exists!", zoneId));
-                    return;
-                }
-            }
+            zone = getZoneByName(args.remove());
+            if (zone == null)
+                return;
             parseUserInner(ident, zone);
             return;
         }
@@ -1038,36 +1015,9 @@ public class PermissionCommandParser {
                 }
                 return;
             }
-            String zoneId = args.remove();
-            try
-            {
-                int intId = Integer.parseInt(zoneId);
-                if (intId < 1)
-                {
-                    error(String.format("Zone ID must be greater than 0!"));
-                    return;
-                }
-                zone = APIRegistry.perms.getZoneById(intId);
-                if (zone == null)
-                {
-                    error(String.format("No zone by the ID %s exists!", zoneId));
-                    return;
-                }
-            }
-            catch (NumberFormatException e)
-            {
-                if (senderPlayer == null)
-                {
-                    error("Cannot identify zones by name from console!");
-                    return;
-                }
-                zone = APIRegistry.perms.getWorldZone(senderPlayer.dimension).getAreaZone(zoneId);
-                if (zone == null)
-                {
-                    error(String.format("No zone by the name %s exists!", zoneId));
-                    return;
-                }
-            }
+            zone = getZoneByName(args.remove());
+            if (zone == null)
+                return;
             parseGroupInner(group, zone);
             return;
         }
@@ -1393,6 +1343,45 @@ public class PermissionCommandParser {
         }
 
         return new ArrayList<String>(perms);
+    }
+
+    private Zone getZoneByName(String zoneId)
+    {
+        try
+        {
+            int intId = Integer.parseInt(zoneId);
+            if (intId < 1)
+            {
+                error(String.format("Zone ID must be greater than 0!"));
+                return null;
+            }
+            
+            Zone zone = APIRegistry.perms.getZoneById(intId);
+            if (zone != null)
+                return zone;
+            
+            error(String.format("No zone by the ID %s exists!", zoneId));
+            return null;
+        }
+        catch (NumberFormatException e)
+        {
+            for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
+                if (wz.getName().equals(zoneId))
+                    return wz;
+            
+            if (senderPlayer == null)
+            {
+                error("Cannot identify zones by name from console!");
+                return null;
+            }
+            
+            Zone zone = APIRegistry.perms.getWorldZone(senderPlayer.dimension).getAreaZone(zoneId);
+            if (zone != null)
+                return zone;
+
+            error(String.format("No zone by the name %s exists!", zoneId));
+            return null;
+        }
     }
 
 }

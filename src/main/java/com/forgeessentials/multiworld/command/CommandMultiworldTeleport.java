@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld;
+package com.forgeessentials.multiworld.command;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -8,6 +8,9 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.multiworld.ModuleMultiworld;
+import com.forgeessentials.multiworld.Multiworld;
+import com.forgeessentials.multiworld.MultiworldTeleporter;
 
 /**
  * @author Olee
