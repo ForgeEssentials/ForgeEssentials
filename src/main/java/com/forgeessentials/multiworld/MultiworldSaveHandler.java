@@ -57,7 +57,6 @@ public class MultiworldSaveHandler implements ISaveHandler {
                 NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
                 NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
                 WorldInfo worldInfo = new WorldInfo(nbttagcompound1);
-
                 return worldInfo;
             }
             catch (StartupQuery.AbortedException e)
@@ -78,8 +77,6 @@ public class MultiworldSaveHandler implements ISaveHandler {
                 NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
                 NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
                 WorldInfo worldInfo = new WorldInfo(nbttagcompound1);
-                // TODO: Check if this call should really stay here or needs to be removed!!
-                FMLCommonHandler.instance().handleWorldDataLoad(parent, worldInfo, nbttagcompound);
                 return worldInfo;
             }
             catch (StartupQuery.AbortedException e)
