@@ -218,7 +218,7 @@ public class ServerZone extends Zone {
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
-        if (!APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
             return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
@@ -234,7 +234,7 @@ public class ServerZone extends Zone {
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
-        if (!APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
             return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet != null)
