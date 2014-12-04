@@ -49,8 +49,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameData;
 
-//Naming convention off. Don't use as a model. Should be @FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true)
-@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true)
+@FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true)
 public class ModuleProtection {
 
     public final static String BASE_PERM = "fe.protection";
