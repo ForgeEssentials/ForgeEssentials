@@ -1,12 +1,13 @@
 package com.forgeessentials.economy.plots;
 
-import com.forgeessentials.data.v2.DataManager;
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.minecraft.entity.player.EntityPlayer;
+
+import com.forgeessentials.data.v2.DataManager;
 
 public class PlotManager {
 
@@ -20,8 +21,8 @@ public class PlotManager {
 
     public static void load()
     {
-        List<Plot> plots = DataManager.getInstance().loadAll(Plot.class);
-        for (Plot plot : plots)
+        Map<String, Plot> plots = DataManager.getInstance().loadAll(Plot.class);
+        for (Plot plot : plots.values())
             plotList.put(plot.getName(), plot);
     }
 

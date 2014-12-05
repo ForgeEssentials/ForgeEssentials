@@ -1,11 +1,11 @@
 package com.forgeessentials.teleport.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.v2.DataManager;
-
-import java.util.HashMap;
-import java.util.List;
 
 public class TeleportDataManager {
     private static ClassContainer conWarp = new ClassContainer(Warp.class);
@@ -31,9 +31,9 @@ public class TeleportDataManager {
      */
     public static void loadWarps()
     {
-        List<Warp> loadedWarps = DataManager.getInstance().loadAll(Warp.class);
+        Map<String, Warp> loadedWarps = DataManager.getInstance().loadAll(Warp.class);
         if (!loadedWarps.isEmpty())
-            for (Warp warp : loadedWarps)
+            for (Warp warp : loadedWarps.values())
                 warps.put(warp.getName(), warp);
         else
         {
@@ -49,9 +49,9 @@ public class TeleportDataManager {
 
     public static void loadPWarps()
     {
-        List<PWarp> loadedWarps = DataManager.getInstance().loadAll(PWarp.class);
+        Map<String, PWarp> loadedWarps = DataManager.getInstance().loadAll(PWarp.class);
         if (!loadedWarps.isEmpty())
-            for (PWarp warp : loadedWarps)
+            for (PWarp warp : loadedWarps.values())
             {
                 HashMap<String, PWarp> map = pwMap.get(warp.getUsername());
                 if (map == null)

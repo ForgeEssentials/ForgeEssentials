@@ -1,18 +1,20 @@
 package com.forgeessentials.chat;
 
+import java.util.Map;
+import java.util.UUID;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
+
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.google.common.collect.HashMultimap;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumChatFormatting;
-
-import java.util.List;
-import java.util.UUID;
 
 public class MailSystem {
     private static HashMultimap<UUID, Mail> map = HashMultimap.create();
@@ -33,9 +35,9 @@ public class MailSystem {
 
     public static void LoadAll()
     {
-        List<Mail> mails = DataManager.getInstance().loadAll(Mail.class);
+        Map<String, Mail> mails = DataManager.getInstance().loadAll(Mail.class);
         if (!mails.isEmpty())
-            for (Mail mail : mails)
+            for (Mail mail : mails.values())
                 map.put(mail.getReceiver(), mail);
         else
         {

@@ -1,12 +1,12 @@
 package com.forgeessentials.commands.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.forgeessentials.data.AbstractDataDriver;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.v2.DataManager;
-
-import java.util.HashMap;
-import java.util.List;
 
 public class CommandDataManager {
     public static HashMap<String, Kit> kits = new HashMap<String, Kit>();
@@ -34,9 +34,9 @@ public class CommandDataManager {
      */
     public static void loadKits()
     {
-        List<Kit> loadedKits = DataManager.getInstance().loadAll(Kit.class);
+        Map<String, Kit> loadedKits = DataManager.getInstance().loadAll(Kit.class);
         if (!loadedKits.isEmpty())
-            for (Kit kit : loadedKits)
+            for (Kit kit : loadedKits.values())
                 kits.put(kit.getName(), kit);
         else
         {
@@ -55,9 +55,9 @@ public class CommandDataManager {
 
     public static void loadWT()
     {
-        List<WeatherTimeData> wtData = DataManager.getInstance().loadAll(WeatherTimeData.class);
+        Map<String, WeatherTimeData> wtData = DataManager.getInstance().loadAll(WeatherTimeData.class);
         if (!wtData.isEmpty())
-            for (WeatherTimeData wt : wtData)
+            for (WeatherTimeData wt : wtData.values())
                 WTmap.put(wt.dimID, wt);
         else
         {
