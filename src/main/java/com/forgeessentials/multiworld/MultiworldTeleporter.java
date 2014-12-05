@@ -27,11 +27,13 @@ public class MultiworldTeleporter extends Teleporter {
     @Override
     public void removeStalePortalLocations(long totalWorldTime)
     {
+        /* do nothing */
     }
 
     @Override
     public void placeInPortal(Entity entity, double x, double y, double z, float rotationYaw)
     {
+        /* do nothing */
     }
 
 }

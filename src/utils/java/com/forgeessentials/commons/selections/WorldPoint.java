@@ -43,10 +43,10 @@ public class WorldPoint extends Point
         dim = world.provider.dimensionId;
     }
 
-    public WorldPoint(Entity player)
+    public WorldPoint(Entity entity)
     {
-        super(player);
-        dim = player.dimension;
+        super(entity);
+        dim = entity.dimension;
     }
 
 	public WorldPoint(int dim, Vec3 vector)

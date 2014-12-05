@@ -222,7 +222,7 @@ public class Multiworld {
             displayDepartMessage(player);
 
         y = FunctionHelper.placeInWorld(world, (int) x, (int) y, (int) z);
-        WarpPoint target = new WarpPoint(world.provider.dimensionId, x, y, z, player.cameraPitch, player.cameraYaw);
+        WarpPoint target = new WarpPoint(world.provider.dimensionId, x, y, z, player.rotationPitch, player.rotationYaw);
         if (instant)
             TeleportHelper.doTeleport(player, target);
         else

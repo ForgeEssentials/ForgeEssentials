@@ -153,19 +153,42 @@ public class MultiworldManager extends ServerEventHandler {
         return worldsByDim.keySet();
     }
 
-    public Multiworld getWorld(int dimensionId)
+    public Multiworld getMultiworld(int dimensionId)
     {
         return worldsByDim.get(dimensionId);
     }
 
-    public Multiworld getWorld(String name)
+    public Multiworld getMultiworld(String name)
     {
         return worlds.get(name);
     }
 
+    public WorldServer getWorld(String name)
+    {
+        switch (name)
+        {
+        case "0":
+        case "surface":
+            return DimensionManager.getWorld(0);
+        case "-1":
+        case "nether":
+            return DimensionManager.getWorld(-1);
+        case "1":
+        case "end":
+            return DimensionManager.getWorld(1);
+        default:
+        {
+            Multiworld world = getMultiworld(name);
+            if (world == null)
+                return null;
+            return world.getWorldServer();
+        }
+        }
+    }
+
     /**
-     * Register and load a multiworld.
-     * If the world fails to load, it won't be registered
+     * Register and load a multiworld. If the world fails to load, it won't be
+     * registered
      */
     public void addWorld(Multiworld world) throws MultiworldException
     {
@@ -205,7 +228,8 @@ public class MultiworldManager extends ServerEventHandler {
 
             // Handle permission-dim changes
             checkMultiworldPermissions(world);
-            APIRegistry.perms.getWorldZone(world.dimensionId).setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
+            APIRegistry.perms.getWorldZone(world.dimensionId).setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PERM_PROP_MULTIWORLD,
+                    world.getName());
 
             // Register the dimension
             DimensionManager.registerDimension(world.dimensionId, world.providerId);

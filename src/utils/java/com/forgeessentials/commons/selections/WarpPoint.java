@@ -47,7 +47,7 @@ public class WarpPoint {
 
     public WarpPoint(WorldPoint p, float playerPitch, float playerYaw)
     {
-        this(p.dim, p.getX(), p.getY(), p.getZ(), playerPitch, playerYaw);
+        this(p.getDimension(), p.getX(), p.getY(), p.getZ(), playerPitch, playerYaw);
     }
 
     public WarpPoint(Entity sender)
