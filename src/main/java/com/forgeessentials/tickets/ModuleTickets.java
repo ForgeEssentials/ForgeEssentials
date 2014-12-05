@@ -1,5 +1,13 @@
 package com.forgeessentials.tickets;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -11,15 +19,10 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @FEModule(name = "Tickets", parentMod = ForgeEssentials.class)
 public class ModuleTickets {
@@ -72,9 +75,9 @@ public class ModuleTickets {
 
     public static void loadAll()
     {
-        List<Ticket> loadedTickets = DataManager.getInstance().loadAll(Ticket.class);
+        Map<String, Ticket> loadedTickets = DataManager.getInstance().loadAll(Ticket.class);
         if (!loadedTickets.isEmpty())
-            for (Ticket ticket : loadedTickets)
+            for (Ticket ticket : loadedTickets.values())
                 ticketList.add(ticket);
         else
         {

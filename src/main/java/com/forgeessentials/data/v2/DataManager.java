@@ -5,9 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -106,10 +104,10 @@ public class DataManager implements ExclusionStrategy {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> List<T> loadAll(Class<?> clazz)
+    public <T> Map<String, T> loadAll(Class<?> clazz)
     {
         File[] files = getTypePath(clazz).listFiles();
-        List<T> objects = new ArrayList<>();
+        Map<String, T> objects = new HashMap<>();
         if (files != null)
             for (File file : files)
                 if (!file.isDirectory() && file.getName().endsWith(".json"))
@@ -117,7 +115,7 @@ public class DataManager implements ExclusionStrategy {
                     String key = file.getName().replace(".json", "");
                     T o = (T) load(clazz, key);
                     if (o != null)
-                        objects.add(o);
+                        objects.put(key, o);
                 }
         return objects;
     }
