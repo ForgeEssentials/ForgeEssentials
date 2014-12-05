@@ -4,11 +4,13 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.multiworld.command.CommandMultiworld;
 import com.forgeessentials.multiworld.command.CommandMultiworldTeleport;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -19,7 +21,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
  * 
  * @author Olee
  */
-@FEModule(name = "Multiworld", parentMod = ForgeEssentials.class, canDisable = false)
+@FEModule(name = "Multiworld", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleMultiworld extends ConfigLoaderBase {
 
     public static final String PERM_BASE = "fe.multiworld";
@@ -29,6 +31,12 @@ public class ModuleMultiworld extends ConfigLoaderBase {
     public static final String PERM_TELEPORT = PERM_BASE + ".teleport";
 
     private static MultiworldManager multiworldManager = new MultiworldManager();
+    
+    @SubscribeEvent
+    public void load(FEModuleInitEvent e)
+    {
+        APIRegistry.namedWorldHandler = multiworldManager;
+    }
 
     @SubscribeEvent
     public void postLoad(FEModulePostInitEvent e)

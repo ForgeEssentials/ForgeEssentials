@@ -29,6 +29,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.APIRegistry.NamedWorldHandler;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
@@ -51,7 +52,7 @@ import cpw.mods.fml.relauncher.Side;
  * @author Olee
  * @author gnif
  */
-public class MultiworldManager extends ServerEventHandler {
+public class MultiworldManager extends ServerEventHandler implements NamedWorldHandler {
 
     public static final String PERM_PROP_MULTIWORLD = FEPermissions.FE_INTERNAL + ".multiworld";
 
@@ -163,25 +164,30 @@ public class MultiworldManager extends ServerEventHandler {
         return worlds.get(name);
     }
 
+    @Override
     public WorldServer getWorld(String name)
     {
         switch (name)
         {
-        case "0":
         case "surface":
             return DimensionManager.getWorld(0);
-        case "-1":
         case "nether":
             return DimensionManager.getWorld(-1);
-        case "1":
         case "end":
             return DimensionManager.getWorld(1);
         default:
         {
             Multiworld world = getMultiworld(name);
-            if (world == null)
+            if (world != null)
+                return world.getWorldServer();
+            try
+            {
+                return DimensionManager.getWorld(Integer.parseInt(name));
+            }
+            catch (NumberFormatException e)
+            {
                 return null;
-            return world.getWorldServer();
+            }
         }
         }
     }

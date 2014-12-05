@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld;
+package com.forgeessentials.util;
 
 import net.minecraft.world.WorldServer;
 
@@ -6,14 +6,14 @@ import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.multiworld.ModuleMultiworld;
+import com.forgeessentials.multiworld.Multiworld;
 import com.google.gson.annotations.Expose;
 
 /**
  * Keeps a WorldArea linked to a particular multiworld, even if the dim-id changes
- * 
- * @author Olee
  */
-public class MultiworldArea extends WorldArea {
+public class NamedWorldArea extends WorldArea {
 
     protected String worldName;
 
@@ -23,24 +23,24 @@ public class MultiworldArea extends WorldArea {
     @Expose(serialize = false)
     protected boolean isValid = true;
 
-    public MultiworldArea(int dimension, String worldName, Point start, Point end)
+    public NamedWorldArea(int dimension, String worldName, Point start, Point end)
     {
         super(dimension, start, end);
         this.worldName = worldName;
         isLinked();
     }
 
-    public MultiworldArea(String worldName, Point start, Point end)
+    public NamedWorldArea(String worldName, Point start, Point end)
     {
         this(0, worldName, start, end);
     }
 
-    public MultiworldArea(String worldName, AreaBase area)
+    public NamedWorldArea(String worldName, AreaBase area)
     {
         this(0, worldName, area.getLowPoint(), area.getHighPoint());
     }
 
-    public MultiworldArea(int dimension, Point start, Point end)
+    public NamedWorldArea(int dimension, Point start, Point end)
     {
         super(dimension, start, end);
         Multiworld world = ModuleMultiworld.getMultiworldManager().getMultiworld(dim);
@@ -57,7 +57,7 @@ public class MultiworldArea extends WorldArea {
         }
     }
 
-    public MultiworldArea(WorldArea area)
+    public NamedWorldArea(WorldArea area)
     {
         this(area.getDimension(), area.getLowPoint(), area.getHighPoint());
     }

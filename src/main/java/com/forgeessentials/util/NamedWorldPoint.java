@@ -1,17 +1,17 @@
-package com.forgeessentials.multiworld;
+package com.forgeessentials.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.WorldServer;
 
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.multiworld.ModuleMultiworld;
+import com.forgeessentials.multiworld.Multiworld;
 import com.google.gson.annotations.Expose;
 
 /**
  * Keeps a WorldPoint linked to a particular multiworld, even if the dim-id changes
- * 
- * @author Olee
  */
-public class MultiworldPoint extends WorldPoint {
+public class NamedWorldPoint extends WorldPoint {
 
     protected String worldName;
 
@@ -21,19 +21,19 @@ public class MultiworldPoint extends WorldPoint {
     @Expose(serialize = false)
     protected boolean isValid = true;
 
-    public MultiworldPoint(int dimension, String worldName, int x, int y, int z)
+    public NamedWorldPoint(int dimension, String worldName, int x, int y, int z)
     {
         super(dimension, x, y, z);
         this.worldName = worldName;
         isLinked();
     }
 
-    public MultiworldPoint(String worldName, int x, int y, int z)
+    public NamedWorldPoint(String worldName, int x, int y, int z)
     {
         this(0, worldName, x, y, z);
     }
 
-    public MultiworldPoint(int dimension, int x, int y, int z)
+    public NamedWorldPoint(int dimension, int x, int y, int z)
     {
         super(0, x, y, z);
         Multiworld world = ModuleMultiworld.getMultiworldManager().getMultiworld(dim);
@@ -50,12 +50,12 @@ public class MultiworldPoint extends WorldPoint {
         }
     }
 
-    public MultiworldPoint(WorldPoint point)
+    public NamedWorldPoint(WorldPoint point)
     {
         this(point.getDimension(), point.getX(), point.getY(), point.getZ());
     }
 
-    public MultiworldPoint(Entity entity)
+    public NamedWorldPoint(Entity entity)
     {
         super(entity);
         Multiworld world = ModuleMultiworld.getMultiworldManager().getMultiworld(dim);
