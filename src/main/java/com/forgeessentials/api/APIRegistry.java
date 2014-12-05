@@ -76,20 +76,29 @@ public class APIRegistry {
     }
 
     public static interface NamedWorldHandler {
-        public WorldServer getWorld(String name);
+        
+        static final String WORLD_NAME_END = "end";
+        static final String WORLD_NAME_NETHER = "nether";
+        static final String WORLD_NAME_SURFACE = "surface";
+        
+        WorldServer getWorld(String name);
+
+        String getWorldName(int dimId);
+        
     }
 
     public static class DefaultNamedWorldHandler implements NamedWorldHandler {
+
         @Override
         public WorldServer getWorld(String name)
         {
             switch (name)
             {
-            case "surface":
+            case WORLD_NAME_SURFACE:
                 return DimensionManager.getWorld(0);
-            case "nether":
+            case WORLD_NAME_NETHER:
                 return DimensionManager.getWorld(-1);
-            case "end":
+            case WORLD_NAME_END:
                 return DimensionManager.getWorld(1);
             default:
             {
@@ -104,6 +113,23 @@ public class APIRegistry {
             }
             }
         }
+
+        @Override
+        public String getWorldName(int dimId)
+        {
+            switch (dimId)
+            {
+            case 0:
+                return WORLD_NAME_SURFACE;
+            case -1:
+                return WORLD_NAME_NETHER;
+            case 1:
+                return WORLD_NAME_END;
+            default:
+                return Integer.toString(dimId);
+            }
+        }
+        
     }
 
 }
