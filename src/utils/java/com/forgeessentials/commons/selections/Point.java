@@ -42,11 +42,11 @@ public class Point implements Serializable, Comparable<Point> {
 		this.z = ((int) z);
 	}
 
-	public Point(Entity player)
+	public Point(Entity entity)
 	{
-		x = (int) Math.floor(player.posX);
-		y = (int) Math.floor(player.posY);
-		z = (int) Math.floor(player.posZ);
+		x = (int) Math.floor(entity.posX);
+		y = (int) Math.floor(entity.posY);
+		z = (int) Math.floor(entity.posZ);
 	}
 
 	public Point(Vec3 vector)

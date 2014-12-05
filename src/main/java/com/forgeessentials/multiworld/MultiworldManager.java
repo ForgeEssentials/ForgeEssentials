@@ -29,6 +29,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.APIRegistry.NamedWorldHandler;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
@@ -51,7 +52,7 @@ import cpw.mods.fml.relauncher.Side;
  * @author Olee
  * @author gnif
  */
-public class MultiworldManager extends ServerEventHandler {
+public class MultiworldManager extends ServerEventHandler implements NamedWorldHandler {
 
     public static final String PERM_PROP_MULTIWORLD = FEPermissions.FE_INTERNAL + ".multiworld";
 
@@ -98,7 +99,15 @@ public class MultiworldManager extends ServerEventHandler {
      */
     protected MultiworldEventHandler eventHandler = new MultiworldEventHandler(this);
 
+    private NamedWorldHandler parentNamedWorldHandler;
+
     // ============================================================
+
+    public MultiworldManager()
+    {
+        parentNamedWorldHandler = APIRegistry.namedWorldHandler;
+        APIRegistry.namedWorldHandler = this;
+    }
 
     public void saveAll()
     {
@@ -153,19 +162,42 @@ public class MultiworldManager extends ServerEventHandler {
         return worldsByDim.keySet();
     }
 
-    public Multiworld getWorld(int dimensionId)
+    public Multiworld getMultiworld(int dimensionId)
     {
         return worldsByDim.get(dimensionId);
     }
 
-    public Multiworld getWorld(String name)
+    public Multiworld getMultiworld(String name)
     {
         return worlds.get(name);
     }
 
+    @Override
+    public WorldServer getWorld(String name)
+    {
+        WorldServer world = parentNamedWorldHandler.getWorld(name);
+        if (world != null)
+            return world;
+
+        Multiworld mw = getMultiworld(name);
+        if (mw != null)
+            return mw.getWorldServer();
+
+        return null;
+    }
+
+    @Override
+    public String getWorldName(int dimId)
+    {
+        Multiworld mw = getMultiworld(dimId);
+        if (mw != null)
+            return mw.getName();
+        return parentNamedWorldHandler.getWorldName(dimId);
+    }
+
     /**
-     * Register and load a multiworld.
-     * If the world fails to load, it won't be registered
+     * Register and load a multiworld. If the world fails to load, it won't be
+     * registered
      */
     public void addWorld(Multiworld world) throws MultiworldException
     {
@@ -205,7 +237,8 @@ public class MultiworldManager extends ServerEventHandler {
 
             // Handle permission-dim changes
             checkMultiworldPermissions(world);
-            APIRegistry.perms.getWorldZone(world.dimensionId).setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
+            APIRegistry.perms.getWorldZone(world.dimensionId).setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PERM_PROP_MULTIWORLD,
+                    world.getName());
 
             // Register the dimension
             DimensionManager.registerDimension(world.dimensionId, world.providerId);
@@ -510,4 +543,5 @@ public class MultiworldManager extends ServerEventHandler {
     {
         return worldTypes;
     }
+
 }

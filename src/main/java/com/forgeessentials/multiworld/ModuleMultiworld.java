@@ -9,7 +9,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.multiworld.command.CommandMultiworld;
 import com.forgeessentials.multiworld.command.CommandMultiworldTeleport;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -29,15 +28,8 @@ public class ModuleMultiworld extends ConfigLoaderBase {
     public static final String PERM_LIST = PERM_BASE + ".list";
     public static final String PERM_TELEPORT = PERM_BASE + ".teleport";
 
-    private static MultiworldManager multiworldManager;
-
-    @SubscribeEvent
-    public void load(FEModuleInitEvent e)
-    {
-        multiworldManager = new MultiworldManager();
-        // DataManager.addDeserializer(Multiworld.class, new Multiworld.MultiworldDeserializer());
-    }
-
+    private static MultiworldManager multiworldManager = new MultiworldManager();
+    
     @SubscribeEvent
     public void postLoad(FEModulePostInitEvent e)
     {

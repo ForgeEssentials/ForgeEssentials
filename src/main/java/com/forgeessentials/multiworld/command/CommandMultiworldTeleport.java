@@ -63,7 +63,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
         Multiworld multiworld = null;
         if (!worldName.equals("0"))
         {
-            multiworld = ModuleMultiworld.getMultiworldManager().getWorld(worldName);
+            multiworld = ModuleMultiworld.getMultiworldManager().getMultiworld(worldName);
             if (multiworld == null)
                 throw new CommandException("Multiworld " + worldName + " does not exist.");
         }

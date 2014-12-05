@@ -40,11 +40,16 @@ public class WorldArea extends AreaBase
 		return dim;
 	}
 
-	public boolean contains(WorldPoint p)
+    public void setDimension(int dimensionId)
     {
-        if (p.dim == dim)
+        this.dim = dimensionId;
+    }
+
+	public boolean contains(WorldPoint point)
+    {
+        if (point.dim == dim)
         {
-            return super.contains(p);
+            return super.contains(point);
         }
         else
         {
