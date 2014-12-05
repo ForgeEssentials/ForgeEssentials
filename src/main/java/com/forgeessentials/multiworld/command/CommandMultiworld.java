@@ -1,6 +1,5 @@
 package com.forgeessentials.multiworld.command;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +20,6 @@ import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.multiworld.MultiworldException;
 import com.forgeessentials.multiworld.MultiworldManager;
-import com.forgeessentials.multiworld.MultiworldTeleporter;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandMultiworld extends ForgeEssentialsCommandBase {
@@ -88,6 +86,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
         this.tabCompleteMode = true;
         this.tabComplete = null;
+        this.permissionContext = new PermissionContext().setCommandSender(sender).setCommand(this);
         parseMain();
         return tabComplete;
     }
@@ -206,7 +205,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             ModuleMultiworld.getMultiworldManager().addWorld(world);
             if (senderPlayer != null)
             {
-                new MultiworldTeleporter(world.getWorldServer()).teleport(senderPlayer);
+                world.teleport(senderPlayer, true);
             }
         }
         catch (MultiworldException e)
@@ -224,12 +223,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         {
             if (args.size() > 1)
                 return;
-            tabComplete = new ArrayList<>();
-            for (Multiworld world : ModuleMultiworld.getMultiworldManager().getWorlds())
-            {
-                if (world.getName().toLowerCase().startsWith(args.peek().toLowerCase()))
-                    tabComplete.add(world.getName());
-            }
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), ModuleMultiworld.getMultiworldManager().getWorldMap().keySet());
             return;
         }
         if (args.isEmpty())
@@ -243,7 +237,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
 
         Multiworld world = ModuleMultiworld.getMultiworldManager().getWorld(args.peek());
         if (world == null)
-            throw new CommandException("Dimension #" + args.peek() + " does not exist!");
+            throw new CommandException("Multiworld " + args.peek() + " does not exist!");
 
         ModuleMultiworld.getMultiworldManager().deleteWorld(world);
         info("Deleted Multiworld #" + args.peek());

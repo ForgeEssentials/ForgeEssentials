@@ -12,7 +12,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -181,7 +180,7 @@ public class ServerZone extends Zone {
 
     public boolean createGroup(String name)
     {
-        if (!APIRegistry.getFEEventBus().post(new PermissionEvent.Group.Create(this, name)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.Group.Create(this, name)))
             return false;
         setGroupPermission(name, FEPermissions.GROUP, true);
         setGroupPermissionProperty(name, FEPermissions.GROUP_PRIORITY, Integer.toString(FEPermissions.GROUP_PRIORITY_DEFAULT));
@@ -219,7 +218,7 @@ public class ServerZone extends Zone {
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
-        if (!APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
             return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
@@ -235,7 +234,7 @@ public class ServerZone extends Zone {
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
-        if (!APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
             return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet != null)

@@ -103,7 +103,7 @@ public class WorldZone extends Zone {
 
 	public boolean removeAreaZone(AreaZone zone)
 	{
-        if (!APIRegistry.getFEEventBus().post(new PermissionEvent.Zone.Delete(getServerZone(), zone)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.Zone.Delete(getServerZone(), zone)))
             return false;
 		return serverZone.removeZone(zone) | areaZones.remove(zone);
 	}

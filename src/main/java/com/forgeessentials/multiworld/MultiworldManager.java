@@ -18,6 +18,7 @@ import net.minecraft.world.WorldManager;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
+import net.minecraft.world.WorldSettings.GameType;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.common.DimensionManager;
@@ -36,6 +37,7 @@ import com.forgeessentials.multiworld.MultiworldException.Type;
 import com.forgeessentials.multiworld.gen.WorldTypeMultiworld;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.google.common.collect.ImmutableMap;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -141,6 +143,11 @@ public class MultiworldManager extends ServerEventHandler {
         return worlds.values();
     }
 
+    public ImmutableMap<String, Multiworld> getWorldMap()
+    {
+        return ImmutableMap.copyOf(worlds);
+    }
+
     public Set<Integer> getDimensions()
     {
         return worldsByDim.keySet();
@@ -156,6 +163,10 @@ public class MultiworldManager extends ServerEventHandler {
         return worlds.get(name);
     }
 
+    /**
+     * Register and load a multiworld.
+     * If the world fails to load, it won't be registered
+     */
     public void addWorld(Multiworld world) throws MultiworldException
     {
         if (worlds.containsKey(world.getName()))
@@ -165,6 +176,9 @@ public class MultiworldManager extends ServerEventHandler {
         world.save();
     }
 
+    /**
+     * Get a free dimensionID for a new multiworld - minimum dim-id is 10
+     */
     public static int getFreeDimensionId()
     {
         int id = 10;
@@ -173,6 +187,9 @@ public class MultiworldManager extends ServerEventHandler {
         return id;
     }
 
+    /**
+     * Loads a multiworld
+     */
     protected void loadWorld(Multiworld world) throws MultiworldException
     {
         if (world.worldLoaded)
@@ -200,7 +217,7 @@ public class MultiworldManager extends ServerEventHandler {
             if (overworld == null)
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
-            WorldSettings worldSettings = new WorldSettings(world.seed, world.gameType, world.mapFeaturesEnabled, false, world.worldTypeObj);
+            WorldSettings worldSettings = new WorldSettings(world.seed, GameType.SURVIVAL, world.mapFeaturesEnabled, false, world.worldTypeObj);
 
             // Create WorldServer with settings
             WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, //
@@ -210,18 +227,12 @@ public class MultiworldManager extends ServerEventHandler {
             if (!mcServer.isSinglePlayer())
                 worldServer.getWorldInfo().setGameType(mcServer.getGameType());
             mcServer.func_147139_a(mcServer.func_147135_j());
-
             world.updateWorldSettings();
             world.worldLoaded = true;
             world.error = false;
 
             // Post WorldEvent.Load
             MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(worldServer));
-
-            // This is required otherwise the S01PacketJoinGame.worldinfo may
-            // not be initialized
-            worldServer.getWorldInfo().setGameType(world.gameType);
-            mcServer.func_147139_a(mcServer.func_147135_j());
 
             // Tell everyone about the new dim
             FMLEmbeddedChannel channel = NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);
