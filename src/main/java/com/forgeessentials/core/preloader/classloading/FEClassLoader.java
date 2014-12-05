@@ -94,7 +94,8 @@ public class FEClassLoader
         File lib = new File(root, "lib/");
         if (!lib.exists())
         {
-            throw new RuntimeException("[ForgeEssentials] Something happened that shouldn't have happened.");
+            lib.mkdirs();
+            System.err.println("[ForgeEssentials] Something happened that shouldn't have happened. Trying to recover.");
         }
         for (File f : lib.listFiles(jarFilter))
         {
