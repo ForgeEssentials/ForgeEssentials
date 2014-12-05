@@ -5,12 +5,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -50,6 +56,7 @@ public class JsonProvider extends ZonePersistenceProvider
         ServerZone serverZone = new ServerZone();
         loadGroups(serverZone);
         loadUsers(serverZone);
+        loadWorlds(serverZone);
         return serverZone;
     }
 
@@ -106,6 +113,61 @@ public class JsonProvider extends ZonePersistenceProvider
             for(String group : userData.groups)
             {
                 serverZone.addPlayerToGroup(ident, group);
+            }
+        }
+    }
+    
+    private void loadWorlds(ServerZone serverZone)
+    {
+        List<File> files = new ArrayList<File>();
+        Path p = FileSystems.getDefault().getPath(path.getAbsolutePath());
+        try (DirectoryStream<Path> ds = Files.newDirectoryStream(p, "world_*.json"))
+        {
+            for(Path p2 : ds)
+            {
+                files.add(p2.toFile());
+            }
+        }
+        catch (IOException e)
+        {
+            OutputHandler.felog.severe("Failed to get list of world files: " + e.getMessage());
+        }
+        for(File file : files)
+        {
+            WorldZoneData wzd = null;
+            try
+            {
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                wzd = gson.fromJson(reader, WorldZoneData.class);
+            }
+            catch (IOException e)
+            {
+                OutputHandler.felog.severe(String.format("Failed to load world file &s: &s", file.getName(), e.getMessage()));
+                return;
+            }
+            WorldZone wz = new WorldZone(serverZone, wzd.dimId, wzd.id);
+            for(String group : wzd.groups.keySet())
+            {
+                wz.getGroupPermissions().put(group, PermissionList.fromList(wzd.groups.get(group).permissions));
+            }
+            for(String uuid : wzd.players.keySet())
+            {
+                wz.getPlayerPermissions().put(new UserIdent(uuid, wzd.players.get(uuid).username), PermissionList.fromList(wzd.players.get(uuid).permissions));
+            }
+            for(AreaZoneData azd : wzd.zones)
+            {
+                AreaZone az = new AreaZone(wz, azd.name, azd.area, azd.id);
+                az.setHidden(azd.hidden);
+                az.setShape(azd.shape);
+                az.setPriority(azd.priority);
+                for(String group : azd.groups.keySet())
+                {
+                    az.getGroupPermissions().put(group, PermissionList.fromList(azd.groups.get(group).permissions));
+                }
+                for(String uuid : azd.players.keySet())
+                {
+                    az.getPlayerPermissions().put(new UserIdent(uuid, azd.players.get(uuid).username), PermissionList.fromList(azd.players.get(uuid).permissions));
+                }
             }
         }
     }
@@ -170,8 +232,8 @@ public class JsonProvider extends ZonePersistenceProvider
             for(AreaZone az : wz.getAreaZones())
             {
                 AreaZoneData areaZoneData = new AreaZoneData(az.getId(), az.getPriority(), az.isHidden(), az.getName(), az.getArea(), az.getShape());
-                areaZoneData.groups.putAll(getGroupDataMap(wz, wz.getGroupPermissions().keySet()));
-                areaZoneData.players.putAll(getUserDataMap(wz, wz.getPlayerPermissions().keySet()));
+                areaZoneData.groups.putAll(getGroupDataMap(az, az.getGroupPermissions().keySet()));
+                areaZoneData.players.putAll(getUserDataMap(az, az.getPlayerPermissions().keySet()));
                 worldZoneData.zones.add(areaZoneData);
             }
             String json = gson.toJson(worldZoneData);
@@ -214,7 +276,13 @@ public class JsonProvider extends ZonePersistenceProvider
                 suffix = "";
             
             Boolean Default = Boolean.getBoolean(groupList.remove("fe.internal.group.default"));
-            Integer priority = Integer.parseInt(groupList.remove(FEPermissions.GROUP_PRIORITY));
+            Integer priority = null;
+            String prioNode = groupList.remove(FEPermissions.GROUP_PRIORITY);
+            if(prioNode != null)
+            {
+                priority = Integer.parseInt(groupList.remove(FEPermissions.GROUP_PRIORITY));
+            }
+            
             groupList.remove(FEPermissions.GROUP);
             if(!global)
             {
@@ -237,7 +305,7 @@ public class JsonProvider extends ZonePersistenceProvider
         Map<String, UserData> userDataMap = new HashMap<String, UserData>();
         for(UserIdent user : users)
         {
-            String uuid = user.getUuid().toString();
+            String uuid = (user.getUuid() == null ? null : user.getUuid().toString());
             String username = user.getUsername();
             PermissionList permList = new PermissionList(zone.getPlayerPermissions(user));
             String prefix = permList.remove(FEPermissions.PREFIX);
@@ -259,9 +327,9 @@ public class JsonProvider extends ZonePersistenceProvider
             }
             List<String> list = permList.toList();
             UserData userData = new UserData(username, prefix, suffix);
+            userData.permissions.addAll(list);
             if(global)
             {
-                userData.permissions.addAll(list);
                 userData.groups.addAll(((ServerZone)zone).getPlayerGroups(user));
             }
             else
