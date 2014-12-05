@@ -237,7 +237,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
 
         Multiworld world = ModuleMultiworld.getMultiworldManager().getWorld(args.peek());
         if (world == null)
-            throw new CommandException("Dimension #" + args.peek() + " does not exist!");
+            throw new CommandException("Multiworld " + args.peek() + " does not exist!");
 
         ModuleMultiworld.getMultiworldManager().deleteWorld(world);
         info("Deleted Multiworld #" + args.peek());

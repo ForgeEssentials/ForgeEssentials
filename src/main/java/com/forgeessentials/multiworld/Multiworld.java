@@ -6,9 +6,7 @@ import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldSettings.GameType;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.common.DimensionManager;
 
@@ -36,13 +34,13 @@ public class Multiworld {
 
     protected long seed;
 
-    protected GameType gameType = GameType.SURVIVAL;
-
-    protected EnumDifficulty difficulty = EnumDifficulty.NORMAL;
-
-    protected boolean allowHostileCreatures = true;
-
-    protected boolean allowPeacefulCreatures = true;
+//    protected GameType gameType = GameType.CREATIVE;
+//
+//    protected EnumDifficulty difficulty = EnumDifficulty.PEACEFUL;
+//
+//    protected boolean allowHostileCreatures = true;
+//
+//    protected boolean allowPeacefulCreatures = true;
 
     protected boolean mapFeaturesEnabled = true;
 
@@ -65,10 +63,10 @@ public class Multiworld {
         this.worldType = worldType;
 
         this.seed = seed;
-        this.gameType = MinecraftServer.getServer().getGameType();
-        this.difficulty = MinecraftServer.getServer().func_147135_j();
-        this.allowHostileCreatures = true;
-        this.allowPeacefulCreatures = true;
+//        this.gameType = MinecraftServer.getServer().getGameType();
+//        this.difficulty = MinecraftServer.getServer().func_147135_j();
+//        this.allowHostileCreatures = true;
+//        this.allowPeacefulCreatures = true;
     }
 
     public Multiworld(String name, String provider, String worldType)
@@ -94,8 +92,8 @@ public class Multiworld {
         if (!worldLoaded)
             return;
         WorldServer worldServer = getWorldServer();
-        worldServer.difficultySetting = difficulty;
-        worldServer.setAllowedSpawnTypes(allowHostileCreatures, allowPeacefulCreatures);
+//        worldServer.difficultySetting = difficulty;
+//        worldServer.setAllowedSpawnTypes(allowHostileCreatures, allowPeacefulCreatures);
     }
 
     public String getName()
@@ -145,48 +143,48 @@ public class Multiworld {
         return seed;
     }
 
-    public GameType getGameType()
-    {
-        return gameType;
-    }
-
-    public void setGameType(GameType gameType)
-    {
-        this.gameType = gameType;
-    }
-
-    public EnumDifficulty getDifficulty()
-    {
-        return difficulty;
-    }
-
-    public void setDifficulty(EnumDifficulty difficulty)
-    {
-        this.difficulty = difficulty;
-        updateWorldSettings();
-    }
-
-    public boolean isAllowHostileCreatures()
-    {
-        return allowHostileCreatures;
-    }
-
-    public void setAllowHostileCreatures(boolean allowHostileCreatures)
-    {
-        this.allowHostileCreatures = allowHostileCreatures;
-        updateWorldSettings();
-    }
-
-    public boolean isAllowPeacefulCreatures()
-    {
-        return allowPeacefulCreatures;
-    }
-
-    public void setAllowPeacefulCreatures(boolean allowPeacefulCreatures)
-    {
-        this.allowPeacefulCreatures = allowPeacefulCreatures;
-        updateWorldSettings();
-    }
+//    public GameType getGameType()
+//    {
+//        return gameType;
+//    }
+//
+//    public void setGameType(GameType gameType)
+//    {
+//        this.gameType = gameType;
+//    }
+//
+//    public EnumDifficulty getDifficulty()
+//    {
+//        return difficulty;
+//    }
+//
+//    public void setDifficulty(EnumDifficulty difficulty)
+//    {
+//        this.difficulty = difficulty;
+//        updateWorldSettings();
+//    }
+//
+//    public boolean isAllowHostileCreatures()
+//    {
+//        return allowHostileCreatures;
+//    }
+//
+//    public void setAllowHostileCreatures(boolean allowHostileCreatures)
+//    {
+//        this.allowHostileCreatures = allowHostileCreatures;
+//        updateWorldSettings();
+//    }
+//
+//    public boolean isAllowPeacefulCreatures()
+//    {
+//        return allowPeacefulCreatures;
+//    }
+//
+//    public void setAllowPeacefulCreatures(boolean allowPeacefulCreatures)
+//    {
+//        this.allowPeacefulCreatures = allowPeacefulCreatures;
+//        updateWorldSettings();
+//    }
 
     protected void save()
     {
