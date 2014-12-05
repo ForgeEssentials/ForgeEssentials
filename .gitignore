@@ -17,8 +17,7 @@
 /.settings/*
 /.idea/*
 
-/eclipse/.metadata/
-/eclipse/Minecraft/bin/
+/eclipse/*
 
 /src/minecraft/
 

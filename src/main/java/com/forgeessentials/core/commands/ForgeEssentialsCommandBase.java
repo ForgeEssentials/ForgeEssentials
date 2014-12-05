@@ -19,7 +19,9 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import net.minecraftforge.server.CommandHandlerForge;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.util.UserIdent;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
@@ -191,23 +193,20 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
     {
         return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
     }
+
+    public static List<String> completePlayername(String arg)
+    {
+        List<String> arraylist = new ArrayList<>();
+        for (UserIdent s2 : APIRegistry.perms.getServerZone().getKnownPlayers())
+        {
+            if (doesStringStartWith(arg, s2.getUsernameOrUUID()))
+            {
+                arraylist.add(s2.getUsernameOrUUID());
+            }
+        }
+        return arraylist;
+    }
     
-    /**
-     * Simply prints a usage message to the sender of the command.
-     */
-    public void error(ICommandSender sender)
-    {
-        error(getCommandUsage(sender));
-    }
-
-    /**
-     * Prints an error message to the sender of the command.
-     */
-    public void error(String message)
-    {
-        throw new CommandException(message);
-    }
-
     @Override
     public int compareTo(Object o)
     {

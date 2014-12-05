@@ -1,11 +1,5 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WorldArea;
-import com.forgeessentials.commons.selections.WorldPoint;
-import net.minecraft.server.MinecraftServer;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -17,8 +11,19 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.minecraft.server.MinecraftServer;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.selections.WorldArea;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
+
 /**
- * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being {@link RootZone}.
+ * {@link ServerZone} contains every player on the whole server. Has second
+ * lowest priority with next being {@link RootZone}.
  * 
  * @author Olee
  */
@@ -70,6 +75,7 @@ public class ServerZone extends Zone {
         setGroupPermissionProperty(IPermissionsHelper.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
         setGroupPermissionProperty(IPermissionsHelper.GROUP_GUESTS, FEPermissions.PREFIX, "[GUEST]");
         setGroupPermissionProperty(IPermissionsHelper.GROUP_OPERATORS, FEPermissions.PREFIX, "[OPERATOR]");
+        APIRegistry.getFEEventBus().post(new PermissionEvent.Initialize(this));
         addZone(this);
     }
 
@@ -172,18 +178,48 @@ public class ServerZone extends Zone {
         return getGroupPermissions().containsKey(name);
     }
 
-    public void createGroup(String name)
+    public boolean createGroup(String name)
     {
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.Group.Create(this, name)))
+            return false;
         setGroupPermission(name, FEPermissions.GROUP, true);
         setGroupPermissionProperty(name, FEPermissions.GROUP_PRIORITY, Integer.toString(FEPermissions.GROUP_PRIORITY_DEFAULT));
         setDirty();
+        return true;
+    }
+
+    public Set<String> getIncludedGroups(String group) 
+    {
+        Set<String> includedGroups = new HashSet<>();
+        String includedGroupsStr = getGroupPermission(group, FEPermissions.GROUP_INCLUDES);
+        if (includedGroupsStr != null && !includedGroupsStr.isEmpty())
+            for (String g : includedGroupsStr.split(","))
+                if (!g.isEmpty())
+                    includedGroups.add(g);
+        return includedGroups;
+    }
+
+    public void groupIncludeAdd(String group, String otherGroup) 
+    {
+        Set<String> includedGroups = getIncludedGroups(group);
+        includedGroups.add(otherGroup);
+        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(includedGroups, ","));
+    }
+
+    public void groupIncludeRemove(String group, String otherGroup) 
+    {
+        Set<String> includedGroups = getIncludedGroups(group);
+        includedGroups.remove(otherGroup);
+        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(includedGroups, ","));
     }
 
     // ------------------------------------------------------------
 
-    public void addPlayerToGroup(UserIdent ident, String group)
+    public boolean addPlayerToGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+            return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
@@ -192,15 +228,19 @@ public class ServerZone extends Zone {
         }
         groupSet.add(group);
         setDirty();
+        return true;
     }
 
-    public void removePlayerFromGroup(UserIdent ident, String group)
+    public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+            return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet != null)
             groupSet.remove(group);
         setDirty();
+        return true;
     }
 
     public SortedSet<String> getPlayerGroups(UserIdent ident)
@@ -209,7 +249,8 @@ public class ServerZone extends Zone {
 
         if (ident != null)
         {
-            if (ident.hasPlayer() && !ident.isFakePlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
+            if (ident.hasPlayer() && !ident.isFakePlayer()
+                    && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
             {
                 result.add(IPermissionsHelper.GROUP_OPERATORS);
             }
@@ -308,7 +349,8 @@ public class ServerZone extends Zone {
 
     public void registerPlayer(UserIdent ident)
     {
-        knownPlayers.add(ident);
+        if (ident != null)
+            knownPlayers.add(ident);
     }
 
     public Set<UserIdent> getKnownPlayers()

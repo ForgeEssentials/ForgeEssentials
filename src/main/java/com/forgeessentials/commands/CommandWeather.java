@@ -5,8 +5,10 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.WeatherTimeData;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -59,7 +61,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 	{
 		if (args.length == 0)
 		{
-			throw new CommandException("Improper syntax. Please try this instead: /weather <rain|storm|default> [on|off]");
+			throw new WrongUsageException(getCommandUsage(sender));
 		}
 		WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
 		wt.weatherSpecified = true;
@@ -83,7 +85,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 				}
 				else
 				{
-					throw new CommandException("Improper syntax. Please try this instead: [DimID, none for all] <rain|storm> [on|off]");
+					throw new WrongUsageException(getCommandUsage(sender));
 				}
 			}
 			CommandDataManager.WTmap.put(wt.dimID, wt);
@@ -108,7 +110,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 				}
 				else
 				{
-					throw new CommandException("Improper syntax. Please try this instead:[DimID, none for all] <rain|storm> [on|off]");
+					throw new WrongUsageException(getCommandUsage(sender));
 				}
 			}
 			CommandDataManager.WTmap.put(wt.dimID, wt);
@@ -118,11 +120,11 @@ public class CommandWeather extends FEcmdModuleCommands {
 		{
 			wt.weatherSpecified = false;
 			CommandDataManager.WTmap.put(wt.dimID, wt);
-			return "Wheather reset to default";
+			return "Weather reset to default";
 		}
 		else
 		{
-			throw new CommandException("Improper syntax. Please try this instead: /weather <rain|storm|default> [on|off]");
+			throw new WrongUsageException(getCommandUsage(sender));
 		}
 	}
 
@@ -135,7 +137,6 @@ public class CommandWeather extends FEcmdModuleCommands {
 	@Override
 	public String getCommandUsage(ICommandSender sender)
 	{
-
 		return "/weather <rain|storm|default> [on|off] Allows for permanent manipulation of the weather.";
 	}
 }

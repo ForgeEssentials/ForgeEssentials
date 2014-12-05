@@ -43,38 +43,38 @@ public class CommandDrop extends FEcmdModuleCommands {
     }
 
     @Override
-	public void processCommand(ICommandSender var1, String[] var2)
+	public void processCommand(ICommandSender sender, String[] args)
     {
-        if (var2.length != 6)
+        if (args.length != 6)
         {
-            throw new WrongUsageException("/drop <X> <Y> <Z> <ItemID> <Meta> <Qty>", new Object[0]);
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
         Object var3 = null;
-        int var4 = (int) this.func_82368_a(var1, 0.0D, var2[0]);
-        int var5 = (int) this.func_82367_a(var1, 0.0D, var2[1], 0, 0);
-        int var6 = (int) this.func_82368_a(var1, 0.0D, var2[2]);
+        int var4 = (int) this.func_82368_a(sender, 0.0D, args[0]);
+        int var5 = (int) this.func_82367_a(sender, 0.0D, args[1], 0, 0);
+        int var6 = (int) this.func_82368_a(sender, 0.0D, args[2]);
 
-        if (var1 instanceof DedicatedServer)
+        if (sender instanceof DedicatedServer)
         {
-            var3 = ((DedicatedServer) var1).worldServerForDimension(0);
+            var3 = ((DedicatedServer) sender).worldServerForDimension(0);
         }
-        else if (var1 instanceof EntityPlayerMP)
+        else if (sender instanceof EntityPlayerMP)
         {
-            var3 = ((Entity) var1).worldObj;
-            var4 = (int) this.func_82368_a(var1, ((Entity) var1).posX, var2[0]);
-            var5 = (int) this.func_82367_a(var1, ((Entity) var1).posY, var2[1], 0, 0);
-            var6 = (int) this.func_82368_a(var1, ((Entity) var1).posZ, var2[2]);
+            var3 = ((Entity) sender).worldObj;
+            var4 = (int) this.func_82368_a(sender, ((Entity) sender).posX, args[0]);
+            var5 = (int) this.func_82367_a(sender, ((Entity) sender).posY, args[1], 0, 0);
+            var6 = (int) this.func_82368_a(sender, ((Entity) sender).posZ, args[2]);
         }
-        else if (var1 instanceof TileEntity)
+        else if (sender instanceof TileEntity)
         {
-            var3 = ((TileEntity) var1).getWorldObj();
-            var4 = (int) this.func_82368_a(var1, ((TileEntity) var1).xCoord, var2[0]);
-            var5 = (int) this.func_82367_a(var1, ((TileEntity) var1).yCoord, var2[1], 0, 0);
-            var6 = (int) this.func_82368_a(var1, ((TileEntity) var1).zCoord, var2[2]);
+            var3 = ((TileEntity) sender).getWorldObj();
+            var4 = (int) this.func_82368_a(sender, ((TileEntity) sender).xCoord, args[0]);
+            var5 = (int) this.func_82367_a(sender, ((TileEntity) sender).yCoord, args[1], 0, 0);
+            var6 = (int) this.func_82368_a(sender, ((TileEntity) sender).zCoord, args[2]);
         }
-        String var7 = var2[3];
-        int var8 = parseIntWithMin(var1, var2[4], 0);
-        int var9 = parseIntBounded(var1, var2[5], 1, GameData.getItemRegistry().getObject(var7).getItemStackLimit());
+        String var7 = args[3];
+        int var8 = parseIntWithMin(sender, args[4], 0);
+        int var9 = parseIntBounded(sender, args[5], 1, GameData.getItemRegistry().getObject(var7).getItemStackLimit());
         int var11;
         ItemStack var10000;
 
@@ -186,13 +186,13 @@ public class CommandDrop extends FEcmdModuleCommands {
         }
         else
         {
-            throw new CommandException("No viable Container found to put item in");
+            throw new CommandException("No viable container found to put item in.");
         }
         if (var9 > 0)
         {
-            throw new CommandException("Not enough Room for Items");
+            throw new CommandException("Not enough room for items.");
         }
-        OutputHandler.chatConfirmation(var1, "Items Droped into container");
+        OutputHandler.chatConfirmation(sender, "Items dropped into container.");
     }
 
     private double func_82368_a(ICommandSender par1ICommandSender, double par2, String par4Str)

@@ -6,6 +6,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Queue;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
@@ -93,7 +95,7 @@ public class CommandButcher extends FEcmdModuleCommands {
         {
             world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
             if (world == null)
-                throw new CommandException("This dimension does not exist");
+                throw new CommandException("The specified dimension does not exist");
         }
         
         AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
@@ -127,7 +129,7 @@ public class CommandButcher extends FEcmdModuleCommands {
         if (!argsStack.isEmpty())
         {
             if (argsStack.size() < 3)
-                throw new CommandException("Improper syntax: <radius> <type> <x> <y> <z> [world]");
+            	throw new WrongUsageException(getCommandUsage(sender));
             x = parseInt(sender, argsStack.remove());
             y = parseInt(sender, argsStack.remove());
             z = parseInt(sender, argsStack.remove());
@@ -143,7 +145,7 @@ public class CommandButcher extends FEcmdModuleCommands {
                 z = cb.zCoord;
             }
             else
-                throw new CommandException("Improper syntax: <radius> <type> <x> <y> <z> [world]");
+            	throw new WrongUsageException(getCommandUsage(sender));
         }
 
         if (!argsStack.isEmpty())
@@ -171,7 +173,6 @@ public class CommandButcher extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/butcher [radius|-1|world] [type] [x, y, z] Kills the type of mobs within the specified radius around the specified point in the specified world.";
     }
 

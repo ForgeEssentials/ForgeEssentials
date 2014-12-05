@@ -34,7 +34,7 @@ public class CommandJump extends FEcmdModuleCommands {
         MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(sender, 500);
         if (mo == null)
         {
-            OutputHandler.chatError(sender, "Even jumpman couldn't make that jump!");
+            OutputHandler.chatError(sender, "The spot you are looking at is too far away to teleport.");
             return;
         }
         else
@@ -62,7 +62,6 @@ public class CommandJump extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
-        return "/jump Jump.";
+        return "/jump Teleport to the location you are looking at.";
     }
 }

@@ -4,6 +4,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.playerlogger.network.S2PacketPlayerLogger;
 import com.forgeessentials.playerlogger.network.S3PacketRollback;
 import com.forgeessentials.playerlogger.rollback.CommandPl;
@@ -147,6 +148,7 @@ public class ModulePlayerLogger {
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
+        ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new ConfigPlayerLogger());
         if (!enable)
         {
             ModuleLauncher.instance.unregister("PlayerLogger");

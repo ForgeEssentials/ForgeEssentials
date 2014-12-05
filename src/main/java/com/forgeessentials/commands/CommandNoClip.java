@@ -44,7 +44,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 	{
         if(!player.capabilities.isFlying && !player.noClip)
 		{
-			OutputHandler.chatError(player, "Must be flying.");
+			OutputHandler.chatError(player, "You must be flying.");
 			return;
 		}
 		
@@ -73,7 +73,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 				if(!player.worldObj.isRemote)
 				{
 					FunctionHelper.netHandler.sendTo(new S5PacketNoclip(player.noClip), (EntityPlayerMP) player);
-					OutputHandler.chatNotification(player, "NoClip auto-disabled: not flying");
+					OutputHandler.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");
 				}
 			}
 		}

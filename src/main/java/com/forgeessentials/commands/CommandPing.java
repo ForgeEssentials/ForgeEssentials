@@ -46,7 +46,7 @@ public class CommandPing extends FEcmdModuleCommands {
     @Override
     public boolean canConsoleUseCommand()
     {
-        return true;
+        return false;
     }
 
     @Override
@@ -58,7 +58,6 @@ public class CommandPing extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/ping Ping the server.";
     }
 }

@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -187,7 +189,7 @@ public class CommandRules extends FEcmdModuleCommands {
             }
             return;
         }
-        if (args[0].equalsIgnoreCase("book"))
+        else if (args[0].equalsIgnoreCase("book"))
         {
             NBTTagCompound tag = new NBTTagCompound();
             NBTTagList pages = new NBTTagList();
@@ -214,9 +216,10 @@ public class CommandRules extends FEcmdModuleCommands {
             sender.inventory.addItemStackToInventory(is);
             return;
         }
-        if (args.length == 1)
+        else if (args.length == 1)
         {
-            if (args[0].equalsIgnoreCase("help"))
+        	
+        	if (args[0].equalsIgnoreCase("help"))
             {
                 OutputHandler.chatNotification(sender, " - /rules [#]");
                 if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
@@ -294,7 +297,7 @@ public class CommandRules extends FEcmdModuleCommands {
         }
         else
         {
-            error(sender);
+            throw new CommandException(getCommandUsage(sender));
         }
         saveRules();
     }
@@ -380,7 +383,7 @@ public class CommandRules extends FEcmdModuleCommands {
         }
         else
         {
-            error(sender);
+            throw new CommandException(getCommandUsage(sender));
         }
         saveRules();
     }
@@ -437,8 +440,15 @@ public class CommandRules extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
-        return "/rules [#] help Gets or sets the rules of the server.";
+    	// Needs elaboration.
+    	if (sender instanceof EntityPlayer)
+        {
+    		return "/rules [#|add|remove|move|change|help|book] Gets or sets the rules of the server.";
+        }
+        else
+        {
+        	return "/rules [#|add|remove|move|change|help] Gets or sets the rules of the server.";
+        }
     }
 
 }

@@ -3,10 +3,13 @@ package com.forgeessentials.commands;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
+
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.DimensionManager;
@@ -24,13 +27,16 @@ public class CommandRemove extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         int radius = 10;
-        double centerX = sender.posX;
-        double centerY = sender.posY;
-        double centerZ = sender.posZ;
+        double centerX;
+        double centerY;
+        double centerZ;
 
         if (args.length == 1)
         {
             radius = parseIntWithMin(sender, args[0], 0);
+            centerX = sender.posX;
+            centerY = sender.posY;
+            centerZ = sender.posZ;
         }
         else if (args.length == 4)
         {
@@ -41,8 +47,7 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
-            return;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
 
         List<EntityItem> entityList = sender.worldObj.getEntitiesWithinAABB(EntityItem.class,
@@ -79,8 +84,7 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <radius> <x, y, z>");
-            return;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
 
         List<EntityItem> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(EntityItem.class,
@@ -112,8 +116,14 @@ public class CommandRemove extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
-        return "/remove <radius> <x, y, z> Remove all items within a specified radius from the given coordinates.";
+    	if (sender instanceof EntityPlayer)
+        {
+    		return "/remove <radius> [x, y, z] Removes all items within a specified radius from yourself or the given coordinates.";
+        }
+        else
+        {
+        	return "/remove <radius> <x, y, z> Removes all items within a specified radius from the given coordinates.";
+        }
     }
 
 }

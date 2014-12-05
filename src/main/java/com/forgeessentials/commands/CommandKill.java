@@ -3,6 +3,7 @@ package com.forgeessentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -64,7 +65,7 @@ public class CommandKill extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
@@ -102,8 +103,7 @@ public class CommandKill extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
-        return "/kill <player> Commit suicide, or kill other players (with permissions)";
+        return "/kill <player> Commit suicide or kill other players (with special permission).";
     }
 
 }

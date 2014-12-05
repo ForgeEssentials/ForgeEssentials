@@ -71,7 +71,6 @@ public class CommandVirtualchest extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/vchest Open a virtual chest";
     }
 

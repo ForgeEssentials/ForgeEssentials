@@ -49,7 +49,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameData;
 
-@FEModule(name = "protection", parentMod = ForgeEssentials.class, isCore = true)
+@FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true)
 public class ModuleProtection {
 
     public final static String BASE_PERM = "fe.protection";
@@ -57,6 +57,7 @@ public class ModuleProtection {
     public final static String PERM_PVP = BASE_PERM + ".pvp";
 
     public final static String PERM_GAMEMODE = BASE_PERM + ".gamemode";
+    public final static String PERM_INVENTORY_GROUP = BASE_PERM + ".inventorygroup";
 
     public final static String PERM_USE = BASE_PERM + ".use";
     public final static String PERM_BREAK = BASE_PERM + ".break";
@@ -138,6 +139,7 @@ public class ModuleProtection {
         // Other
         APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE, "Allow PvP");
         APIRegistry.perms.registerPermissionProperty(PERM_GAMEMODE, "-1", "Force gamemode (-1 = none, 0 = survival, 1 = creative, 2 = adventure)");
+        APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default", "Inventory group property - can be set to any identifier to separate inventories for certain regions");
         APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE, "Allow interacting with entities (villagers, dogs, horses)");
 
         // ----------------------------------------

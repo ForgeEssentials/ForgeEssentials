@@ -2,14 +2,17 @@ package com.forgeessentials.core.compat;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
-
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 
-public class Environment {
-    
+public class Environment
+{
+
     private static boolean hasWorldEdit = false;
-    
+
     private static boolean isClient = false;
+
+    private static final String ALLOW_CAULDRON = "forgeessentials.allowCauldron";
 
     public static void check()
     {
@@ -44,36 +47,33 @@ public class Environment {
             ForgeEssentials.worldEditCompatilityPresent = false;
             return;
         }
-        
+
         // ============================================================
         // Some additional checks
-        
-        // Check for BukkitForge
-        if (Loader.isModLoaded("BukkitForge"))
-        {
-            OutputHandler.felog.severe("Sanity check failed: Detected BukkitForge, bad things may happen, proceed at your own risk.");
-        }
-
-        // Check for Fihgu's mods
-        if (Loader.isModLoaded("fihgu's Core Mod"))
-        {
-            OutputHandler.felog.severe("Sanity check failed: Detected Fihgu's mods, bad things may happen, proceed at your own risk.");
-        }
 
         // Check for Cauldron or LavaBukkit
-        try
+        String modName = FMLCommonHandler.instance().getModName();
+        if (modName.contains("cauldron"))
         {
-            Class.forName("org.bukkit.craftbukkit.Main");
-            OutputHandler.felog.severe("Sanity check failed: Detected a ForgeBukkit server implementation, bad things may happen, proceed at your own risk.");
-        }
-        catch (ClassNotFoundException e)
-        {
-            // class not found
+            OutputHandler.felog.severe("You are attempting to run FE on Cauldron. This is completely unsupported.");
+
+            // good luck setting this - i had a very hard time doing so during debugging
+            if (System.getProperty(ALLOW_CAULDRON) != null && Boolean.parseBoolean(System.getProperty(ALLOW_CAULDRON)))
+            {
+                OutputHandler.felog.severe("Bad things may happen. By setting the environment variable you are proceeding at your own risk.");
+                OutputHandler.felog.severe("DO NOT BOTHER ANYONE IF YOU RUN INTO ISSUES.");
+                OutputHandler.felog.severe("You are highly recommended to uninstall FE and use bukkit plugins instead.");
+                return;
+            }
+
+            OutputHandler.felog.severe("Bad things may happen. DO NOT BOTHER ANYONE ABOUT THIS CRASH - YOU WILL BE IGNORED");
+            OutputHandler.felog.severe("Please uninstall FE from this Cauldron server installation. We recommend to use bukkit plugins instead.");
+            OutputHandler.felog.severe("The server will now shut down as a precaution against data loss.");
+            throw new RuntimeException("Sanity check failed: Detected Cauldron, bad things may happen to your server. Shutting down as a precaution.");
         }
 
         OutputHandler.felog.fine("Check passed, it's all good to go!");
     }
-
 
     public static boolean isClient()
     {

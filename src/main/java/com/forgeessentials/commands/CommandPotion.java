@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -67,8 +68,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         }
         else if (args.length != 3)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <effect> <duration> [ampl]");
-            return;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
 
         if (names.containsKey(args[1]))
@@ -116,8 +116,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         }
         else if (args.length != 3)
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <effect> <duration> [ampl]");
-            return;
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
 
         dur = parseIntWithMin(sender, args[2], 0) * 20;
@@ -173,7 +172,6 @@ public class CommandPotion extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/potion <player> <effect> <duration> [ampl] Give the specified player a potion effect.";
     }
 

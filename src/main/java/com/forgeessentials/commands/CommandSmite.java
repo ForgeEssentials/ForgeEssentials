@@ -4,8 +4,10 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -79,7 +81,7 @@ public class CommandSmite extends FEcmdModuleCommands {
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
+        	throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
@@ -113,7 +115,7 @@ public class CommandSmite extends FEcmdModuleCommands {
     {
         if (sender instanceof EntityPlayer)
         {
-            return "/smite [me] <player> Smite yourself or another player.";
+            return "/smite [me|player] Smite yourself, another player, or the spot you are looking at.";
         }
         else
         {

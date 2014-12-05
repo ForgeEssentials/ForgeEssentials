@@ -77,6 +77,7 @@ public class ModuleEconomy extends ConfigLoaderBase {
     @SubscribeEvent
     public void serverStop(FEModuleServerStopEvent e)
     {
+        APIRegistry.wallet.save();
         PlotManager.save();
     }
 

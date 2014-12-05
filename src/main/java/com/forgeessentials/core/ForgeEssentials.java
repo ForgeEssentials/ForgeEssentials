@@ -7,8 +7,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
@@ -19,6 +23,7 @@ import com.forgeessentials.core.commands.selections.CommandPos;
 import com.forgeessentials.core.commands.selections.CommandWand;
 import com.forgeessentials.core.commands.selections.SelectionEventHandler;
 import com.forgeessentials.core.compat.CommandSetChecker;
+import com.forgeessentials.core.compat.CompatReiMinimap;
 import com.forgeessentials.core.compat.Environment;
 import com.forgeessentials.core.compat.WorldEditNotifier;
 import com.forgeessentials.core.misc.BlockModListFile;
@@ -51,8 +56,6 @@ import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
-import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.Mod;
@@ -193,6 +196,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
         wandHandler = new SelectionEventHandler();
         teleportHelper = new TeleportHelper();
         tickTaskHandler = new TickTaskHandler();
+        FunctionHelper.FE_INTERNAL_EVENTBUS.register(new CompatReiMinimap());
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
     }
@@ -241,6 +245,19 @@ public class ForgeEssentials extends ConfigLoaderBase {
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerInitEvent(e));
+
+        registerPermissions();
+    }
+    
+    protected void registerPermissions()
+    {
+        // Teleport
+        APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5", "Allow bypassing teleport cooldown");
+        APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
+        APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_COOLDOWN, "0");
+        APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_WARMUP, "0");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, RegisteredPermValue.TRUE, "Allow bypassing teleport cooldown");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, RegisteredPermValue.TRUE, "Allow bypassing teleport warmup");
     }
 
     @EventHandler
