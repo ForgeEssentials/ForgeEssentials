@@ -1,6 +1,5 @@
 package com.forgeessentials.multiworld.command;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -206,7 +205,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             ModuleMultiworld.getMultiworldManager().addWorld(world);
             if (senderPlayer != null)
             {
-                world.teleport(senderPlayer);
+                world.teleport(senderPlayer, true);
             }
         }
         catch (MultiworldException e)
@@ -224,12 +223,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         {
             if (args.size() > 1)
                 return;
-            tabComplete = new ArrayList<>();
-            for (Multiworld world : ModuleMultiworld.getMultiworldManager().getWorlds())
-            {
-                if (world.getName().toLowerCase().startsWith(args.peek().toLowerCase()))
-                    tabComplete.add(world.getName());
-            }
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), ModuleMultiworld.getMultiworldManager().getWorldMap().keySet());
             return;
         }
         if (args.isEmpty())

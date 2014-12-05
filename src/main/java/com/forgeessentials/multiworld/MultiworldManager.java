@@ -36,6 +36,7 @@ import com.forgeessentials.multiworld.MultiworldException.Type;
 import com.forgeessentials.multiworld.gen.WorldTypeMultiworld;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.google.common.collect.ImmutableMap;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -139,6 +140,11 @@ public class MultiworldManager extends ServerEventHandler {
     public Collection<Multiworld> getWorlds()
     {
         return worlds.values();
+    }
+
+    public ImmutableMap<String, Multiworld> getWorldMap()
+    {
+        return ImmutableMap.copyOf(worlds);
     }
 
     public Set<Integer> getDimensions()
