@@ -14,6 +14,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.FEOptionParser;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.sk89q.minecraft.util.commands.CommandPermissionsException;
@@ -32,9 +33,9 @@ public class CommandBurn extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-    	OptionParser parser = new OptionParser();
-    	parser.accepts("p").withRequiredArg();
-    	parser.accepts("t").withRequiredArg().ofType(Integer.class);
+    	FEOptionParser parser = new FEOptionParser("burn");
+    	parser.accepts("p").withRequiredArg().defaultsTo("me").describedAs("Target Player.");
+    	parser.accepts("t").withRequiredArg().defaultsTo("15").ofType(Integer.class).describedAs("Time to burn.");
     	parser.accepts("?");
     	
     	OptionSet options = parser.parse(args);
@@ -43,7 +44,7 @@ public class CommandBurn extends FEcmdModuleCommands {
     	int time = 15;
     	
     	if (options.has("?")) {
-    		OutputHandler.chatNotification(sender, "Options: " + options.toString());
+    		parser.printHelpOn(sender);
     		return;
     	}
     	
@@ -71,9 +72,9 @@ public class CommandBurn extends FEcmdModuleCommands {
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-    	OptionParser parser = new OptionParser();
-    	parser.accepts("p").withRequiredArg();
-    	parser.accepts("t").withRequiredArg().ofType(Integer.class);
+    	FEOptionParser parser = new FEOptionParser("burn");
+    	parser.accepts("p").withRequiredArg().defaultsTo("me").describedAs("Target Player.");
+    	parser.accepts("t").withRequiredArg().defaultsTo("15").ofType(Integer.class).describedAs("Time to burn.");
     	parser.accepts("?");
     	
     	OptionSet options = parser.parse(args);
@@ -82,7 +83,7 @@ public class CommandBurn extends FEcmdModuleCommands {
     	int time = 15;
     	
     	if (options.has("?")) {
-    		OutputHandler.chatNotification(sender, "Options: " + options.toString());
+    		parser.printHelpOn(sender);
     		return;
     	}
     	
