@@ -4,13 +4,11 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.multiworld.command.CommandMultiworld;
 import com.forgeessentials.multiworld.command.CommandMultiworldTeleport;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -32,12 +30,6 @@ public class ModuleMultiworld extends ConfigLoaderBase {
 
     private static MultiworldManager multiworldManager = new MultiworldManager();
     
-    @SubscribeEvent
-    public void load(FEModuleInitEvent e)
-    {
-        APIRegistry.namedWorldHandler = multiworldManager;
-    }
-
     @SubscribeEvent
     public void postLoad(FEModulePostInitEvent e)
     {

@@ -99,7 +99,15 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      */
     protected MultiworldEventHandler eventHandler = new MultiworldEventHandler(this);
 
+    private NamedWorldHandler parentNamedWorldHandler;
+
     // ============================================================
+
+    public MultiworldManager()
+    {
+        parentNamedWorldHandler = APIRegistry.namedWorldHandler;
+        APIRegistry.namedWorldHandler = this;
+    }
 
     public void saveAll()
     {
@@ -167,29 +175,24 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     @Override
     public WorldServer getWorld(String name)
     {
-        switch (name)
-        {
-        case "surface":
-            return DimensionManager.getWorld(0);
-        case "nether":
-            return DimensionManager.getWorld(-1);
-        case "end":
-            return DimensionManager.getWorld(1);
-        default:
-        {
-            Multiworld world = getMultiworld(name);
-            if (world != null)
-                return world.getWorldServer();
-            try
-            {
-                return DimensionManager.getWorld(Integer.parseInt(name));
-            }
-            catch (NumberFormatException e)
-            {
-                return null;
-            }
-        }
-        }
+        WorldServer world = parentNamedWorldHandler.getWorld(name);
+        if (world != null)
+            return world;
+
+        Multiworld mw = getMultiworld(name);
+        if (mw != null)
+            return mw.getWorldServer();
+
+        return null;
+    }
+
+    @Override
+    public String getWorldName(int dimId)
+    {
+        Multiworld mw = getMultiworld(dimId);
+        if (mw != null)
+            return mw.getName();
+        return parentNamedWorldHandler.getWorldName(dimId);
     }
 
     /**
@@ -540,4 +543,5 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     {
         return worldTypes;
     }
+
 }

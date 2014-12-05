@@ -2,12 +2,11 @@ package com.forgeessentials.util;
 
 import net.minecraft.world.WorldServer;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.multiworld.ModuleMultiworld;
-import com.forgeessentials.multiworld.Multiworld;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -43,18 +42,8 @@ public class NamedWorldArea extends WorldArea {
     public NamedWorldArea(int dimension, Point start, Point end)
     {
         super(dimension, start, end);
-        Multiworld world = ModuleMultiworld.getMultiworldManager().getMultiworld(dim);
-        if (world != null)
-        {
-            this.worldName = world.getName();
-            isLinked();
-        }
-        else
-        {
-            this.worldName = null;
-            this.isLinked = false;
-            this.isValid = true;
-        }
+        this.worldName = APIRegistry.namedWorldHandler.getWorldName(dimension);
+        isLinked();
     }
 
     public NamedWorldArea(WorldArea area)
@@ -76,7 +65,7 @@ public class NamedWorldArea extends WorldArea {
             if (worldName != null)
             {
                 // If there is a name for the dimension, use it
-                WorldServer world = ModuleMultiworld.getMultiworldManager().getWorld(worldName);
+                WorldServer world = APIRegistry.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
                     this.dim = world.provider.dimensionId;
