@@ -2,18 +2,18 @@ package com.forgeessentials.teleport.portal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
-import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.NamedWorldArea;
-import com.forgeessentials.util.NamedWorldPoint;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
@@ -23,16 +23,41 @@ import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 /**
  * 
- * 
- * @author Olee
  */
 public class PortalManager extends ServerEventHandler {
 
-    protected Map<Integer, Portal> portals = new HashMap<>();
+    private static PortalManager instance;
+
+    protected Map<String, Portal> portals = new HashMap<>();
 
     public PortalManager()
     {
-        portals.put(0, new Portal(new NamedWorldArea(0, new Point(0, 74, 0), new Point(4, 77, 0)), new NamedWorldPoint(0, 3, 74, 5)));
+        super();
+        instance = this;
+    }
+
+    public static PortalManager getInstance()
+    {
+        return instance;
+    }
+    
+    @Override
+    @SubscribeEvent
+    public void serverStopped(FEModuleServerStoppedEvent e)
+    {
+        super.serverStopped(e);
+        save();
+    }
+
+    public void load()
+    {
+        portals = DataManager.getInstance().loadAll(Portal.class);
+    }
+
+    public void save()
+    {
+        for (Entry<String, Portal> portal : portals.entrySet())
+            DataManager.getInstance().save(portal.getValue(), portal.getKey());
     }
 
     @SubscribeEvent
@@ -44,7 +69,8 @@ public class PortalManager extends ServerEventHandler {
         {
             if (portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
             {
-                TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, new WarpPoint(portal.target, e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw));
+                TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, new WarpPoint(portal.target, e.entityPlayer.rotationPitch,
+                        e.entityPlayer.rotationYaw));
             }
         }
     }
@@ -58,11 +84,11 @@ public class PortalManager extends ServerEventHandler {
         {
             if (!portal.getPortalArea().isValid())
                 continue;
-            
+
             World world = DimensionManager.getWorld(portal.getPortalArea().getDimension());
             if (world == null)
                 continue;
-            
+
             // TODO: This is highly unefficient! Use some events instead!
             for (int ix = portal.getPortalArea().getLowPoint().getX(); ix <= portal.getPortalArea().getHighPoint().getX(); ix++)
             {
@@ -70,27 +96,41 @@ public class PortalManager extends ServerEventHandler {
                 {
                     for (int iz = portal.getPortalArea().getLowPoint().getZ(); iz <= portal.getPortalArea().getHighPoint().getZ(); iz++)
                     {
-                        if (world.getBlock(ix, iy, iz) != Blocks.glass_pane)
+                        if (world.getBlock(ix, iy, iz) != Blocks.portal)
                         {
-                            world.setBlock(ix, iy, iz, Blocks.glass_pane);
+                            world.setBlock(ix, iy, iz, Blocks.portal);
                         }
                     }
                 }
             }
 
-//            world = Minecraft.getMinecraft().theWorld;
-//            if (new Random().nextInt(100) < 100)
-//            {
-//                NamedWorldArea area = portal.getPortalArea();
-//                Point start = area.getLowPoint();
-//                Point size = area.getSize();
-//                size.x++;
-//                size.y++;
-//                size.z++;
-//                Random rnd = new Random();
-//                world.spawnParticle("flame", start.getX() + rnd.nextFloat() * size.getX(), start.getY() + rnd.nextFloat() * size.getY(), start.getZ() + rnd.nextFloat() * size.getZ(), 0, 0, 0);
-//            }
+            // world = Minecraft.getMinecraft().theWorld;
+            // if (new Random().nextInt(100) < 100)
+            // {
+            // NamedWorldArea area = portal.getPortalArea();
+            // Point start = area.getLowPoint();
+            // Point size = area.getSize();
+            // size.x++;
+            // size.y++;
+            // size.z++;
+            // Random rnd = new Random();
+            // world.spawnParticle("flame", start.getX() + rnd.nextFloat() *
+            // size.getX(), start.getY() + rnd.nextFloat() * size.getY(),
+            // start.getZ() + rnd.nextFloat() * size.getZ(), 0, 0, 0);
+            // }
         }
+    }
+
+    public void remove(String name)
+    {
+        portals.remove(name);
+        DataManager.getInstance().delete(Portal.class, name);
+    }
+
+    public void add(String name, Portal portal)
+    {
+        portals.put(name, portal);
+        DataManager.getInstance().save(portal, name);
     }
 
 }

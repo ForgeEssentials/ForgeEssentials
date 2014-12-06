@@ -46,6 +46,11 @@ public class NamedWorldArea extends WorldArea {
         isLinked();
     }
 
+    public NamedWorldArea(int dimension, AreaBase area)
+    {
+        this(dimension, area.getLowPoint(), area.getHighPoint());
+    }
+
     public NamedWorldArea(WorldArea area)
     {
         this(area.getDimension(), area.getLowPoint(), area.getHighPoint());

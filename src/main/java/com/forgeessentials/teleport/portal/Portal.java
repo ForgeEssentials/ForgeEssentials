@@ -7,8 +7,6 @@ import com.forgeessentials.util.NamedWorldPoint;
 
 /**
  * 
- * 
- * @author Olee
  */
 public class Portal {
 
