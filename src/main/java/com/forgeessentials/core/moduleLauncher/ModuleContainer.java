@@ -78,7 +78,7 @@ public class ModuleContainer implements Comparable {
 
         if (annot.canDisable())
         {
-            if (!ForgeEssentials.canLoadModule(name))
+            if (!ForgeEssentials.getConfigManager().getMainConfig().get("Core.Modules", name, true).getBoolean(true))
             {
                 OutputHandler.felog.info("Requested to disable module " + name);
                 isLoadable = false;

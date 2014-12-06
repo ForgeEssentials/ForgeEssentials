@@ -3,6 +3,7 @@ package com.forgeessentials.playerlogger;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.playerlogger.network.S2PacketPlayerLogger;
@@ -43,9 +44,12 @@ public class ModulePlayerLogger {
     public static String username;
     public static String password;
     public static boolean ragequitOn;
-    public static boolean enable = false;
     public static EventLogger eLogger;
     public static HashSet<LogType> logTypes = new HashSet<LogType>();
+
+    public static final String DEFAULT_URL = "jdbc:mysql://localhost:3306/testdb";
+    public static final String DEFAULT_USER = "root";
+    public static final String DEFAULT_PASS = "root";
 
     static
     {
@@ -56,9 +60,11 @@ public class ModulePlayerLogger {
 
     private static Connection connection;
 
-    public ModulePlayerLogger()
+    @Preconditions
+    public boolean checkSQLCredentials()
     {
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new ConfigPlayerLogger());
+        return !(url.equals(DEFAULT_URL) && password.equals(DEFAULT_PASS) && username.equals(DEFAULT_USER));
     }
 
     public static Connection getConnection()
@@ -148,11 +154,6 @@ public class ModulePlayerLogger {
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
-        ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new ConfigPlayerLogger());
-        if (!enable)
-        {
-            ModuleLauncher.instance.unregister("PlayerLogger");
-        }
         OutputHandler.felog.info("PlayerLogger module is enabled. Loading...");
         FunctionHelper.netHandler.registerMessage(S2PacketPlayerLogger.class, S2PacketPlayerLogger.class, 2, Side.CLIENT);
         FunctionHelper.netHandler.registerMessage(S3PacketRollback.class, S3PacketRollback.class, 3, Side.CLIENT);
@@ -176,6 +177,7 @@ public class ModulePlayerLogger {
         {
             throw new RuntimeException("Could not find MySQL JDBC Driver.");
         }
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     @SubscribeEvent
@@ -202,9 +204,10 @@ public class ModulePlayerLogger {
         }
         catch (SQLException e1)
         {
-            OutputHandler.felog.info("Could not connect to database! Wrong credentials?");
+            OutputHandler.felog.info("Could not connect to database! Wrong credentials or no credentials!");
             OutputHandler.felog.info(e1.getMessage());
             e1.printStackTrace();
+            ModuleLauncher.instance.unregister("PlayerLogger");
         }
     }
 

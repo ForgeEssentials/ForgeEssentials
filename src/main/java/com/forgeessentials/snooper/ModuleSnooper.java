@@ -3,6 +3,7 @@ package com.forgeessentials.snooper;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.snooper.response.PlayerInfoResponse;
 import com.forgeessentials.snooper.response.PlayerInv;
 import com.forgeessentials.snooper.response.Responses;
@@ -60,10 +61,11 @@ public class ModuleSnooper {
         return id++;
     }
 
-    @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    @Preconditions
+    public boolean checkData()
     {
         ForgeEssentials.getConfigManager().registerLoader("Snooper", new ConfigSnooper());
+        return !hostname.equals("");
     }
 
     @SubscribeEvent
