@@ -104,6 +104,8 @@ public class TeleportModule {
         for (ForgeEssentialsCommandBase cmd : commands)
             cmd.register();
         
+        portalManager.load();
+        
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
         APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, RegisteredPermValue.TRUE, "Allow returning to the last death location with back-command");
