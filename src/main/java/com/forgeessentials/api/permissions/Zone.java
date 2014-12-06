@@ -1,9 +1,13 @@
 package com.forgeessentials.api.permissions;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -30,6 +34,49 @@ public abstract class Zone {
 
     public static class PermissionList extends HashMap<String, String> {
         private static final long serialVersionUID = 1L;
+
+        public List<String> toList()
+        {
+            List<String> list = new ArrayList<String>();
+            for (Entry<String, String> perm : this.entrySet())
+            {
+                if (perm.getValue() == null)
+                    continue;
+                if (perm.getValue().equals(IPermissionsHelper.PERMISSION_TRUE))
+                {
+                    list.add(perm.getKey());
+                }
+                else if (perm.getValue().equals(IPermissionsHelper.PERMISSION_FALSE))
+                {
+                    list.add("-" + perm.getKey());
+                }
+                else
+                {
+                    list.add(perm.getKey() + "=" + perm.getValue());
+                }
+            }
+            Collections.sort(list);
+            return list;
+        }
+
+        public static PermissionList fromList(List<String> fromList)
+        {
+            PermissionList list = new PermissionList();
+            for (String permission : fromList)
+            {
+                String[] permParts = permission.split("=");
+                if (permParts.length == 2)
+                    list.put(permParts[0], permParts[1]);
+                else if (permParts.length == 1)
+                {
+                    if (permission.startsWith("-"))
+                        list.put(permission.substring(1, permission.length()), IPermissionsHelper.PERMISSION_FALSE);
+                    else
+                        list.put(permission, IPermissionsHelper.PERMISSION_TRUE);
+                }
+            }
+            return list;
+        }
 
         public PermissionList()
         {
