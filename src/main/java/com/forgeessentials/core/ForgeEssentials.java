@@ -307,11 +307,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
         MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If +50% of players sleep, make it day.").getBoolean(true);
     }
 
-    public static boolean canLoadModule(String moduleName)
-    {
-        return getConfigManager().getMainConfig().get("Core.Modules", moduleName, true).getBoolean(true);
-    }
-
     public static ConfigManager getConfigManager()
     {
         return instance.configManager;

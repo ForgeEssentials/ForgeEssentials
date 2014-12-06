@@ -13,15 +13,13 @@ public class ConfigPlayerLogger extends ConfigLoaderBase {
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        config.addCustomCategoryComment("playerLogger", "Configure the player logger here.");
-        ModulePlayerLogger.enable = config.get("playerLogger", "enable", false).getBoolean(false);
 
         String subcat = cat + ".DB";
-        config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke.");
+        config.addCustomCategoryComment(subcat, "Database settings. Look here if something broke. This MUST be changed to load the PlayerLogger module.");
 
-        ModulePlayerLogger.url = config.get(subcat, "url", "jdbc:mysql://localhost:3306/testdb", "jdbc url").getString();
-        ModulePlayerLogger.username = config.get(subcat, "username", "root").getString();
-        ModulePlayerLogger.password = config.get(subcat, "password", "root").getString();
+        ModulePlayerLogger.url = config.get(subcat, "url", ModulePlayerLogger.DEFAULT_URL, "jdbc url").getString();
+        ModulePlayerLogger.username = config.get(subcat, "username", ModulePlayerLogger.DEFAULT_USER).getString();
+        ModulePlayerLogger.password = config.get(subcat, "password", ModulePlayerLogger.DEFAULT_PASS).getString();
         ModulePlayerLogger.ragequitOn = config.get(subcat, "ragequit", false, "Stop the server when the logging fails").getBoolean(false);
 
         subcat = cat + ".exempt";
