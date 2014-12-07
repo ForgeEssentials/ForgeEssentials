@@ -34,7 +34,7 @@ public class CommandBurn extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
     	FEOptionParser parser = new FEOptionParser("burn");
-    	parser.accepts("p").withRequiredArg().defaultsTo("me").describedAs("Target Player.");
+    	parser.accepts("p").withRequiredArg().defaultsTo("me").ofType(String.class).describedAs("Target Player.");
     	parser.accepts("t").withRequiredArg().defaultsTo("15").ofType(Integer.class).describedAs("Time to burn.");
     	parser.accepts("?");
     	
@@ -73,7 +73,7 @@ public class CommandBurn extends FEcmdModuleCommands {
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
     	FEOptionParser parser = new FEOptionParser("burn");
-    	parser.accepts("p").withRequiredArg().defaultsTo("me").describedAs("Target Player.");
+    	parser.accepts("p").withRequiredArg().defaultsTo("Olee").ofType(String.class).describedAs("Target Player.");
     	parser.accepts("t").withRequiredArg().defaultsTo("15").ofType(Integer.class).describedAs("Time to burn.");
     	parser.accepts("?");
     	
