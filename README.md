@@ -53,6 +53,7 @@ Set up for ForgeEssentials development is similar to any other [ForgeGradle][for
 Downloads
 =========
 If you would like the latest stable release, [go here][build-stable].
+
 If you would like test builds, [go here][build-beta]. Please know they are untested and probably buggy!
 
 FE Team Members:
@@ -74,10 +75,10 @@ FE Team Members:
 - <a href="https://github.com/Jgdovin">Jgdovin</a>
 - <a href="https://github.com/jovino">Jovino</a>
 
-Links:
+Links
 ================
 - [Espernet][irc]
-- [Builds][build]
+- [Builds][build-beta]
 - [Travis][travis]
 - [Issues][issues]
 - [Wiki][wiki]
