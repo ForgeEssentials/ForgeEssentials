@@ -36,18 +36,16 @@ public class CommandBurn extends FEcmdModuleCommands {
     	FEOptionParser parser = new FEOptionParser("burn");
     	parser.accepts("p").withRequiredArg().defaultsTo("me").ofType(String.class).describedAs("Target Player.");
     	parser.accepts("t").withRequiredArg().defaultsTo("15").ofType(Integer.class).describedAs("Time to burn.");
-    	parser.accepts("?");
     	
-    	OptionSet options = parser.parse(args);
-
-    	EntityPlayerMP target = sender;
-    	int time = 15;
+    	OptionSet options = parser.parse(sender, args);
     	
-    	if (options.has("?")) {
-    		parser.printHelpOn(sender);
+    	if (options == null)
     		return;
-    	}
     	
+    	EntityPlayerMP target = sender;
+    	int time = (int)options.valueOf("t");
+    		time = time < 0 ? 0 : time;
+    		
     	if (options.has("p") && !options.valueOf("p").toString().equalsIgnoreCase("me")) {
     		if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others")) {
     			target = UserIdent.getPlayerByUsername(options.valueOf("p").toString());
@@ -60,11 +58,6 @@ public class CommandBurn extends FEcmdModuleCommands {
     		}
     	}
     	
-    	if (options.has("t"))
-        {
-            time = parseIntWithMin(sender, options.valueOf("t").toString(), 0);
-        }
-    	
     	OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
     	target.setFire(time);
     }
@@ -73,14 +66,18 @@ public class CommandBurn extends FEcmdModuleCommands {
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
     	FEOptionParser parser = new FEOptionParser("burn");
-    	parser.accepts("p").withRequiredArg().defaultsTo("Olee").ofType(String.class).describedAs("Target Player.");
-    	parser.accepts("t").withRequiredArg().defaultsTo("15").ofType(Integer.class).describedAs("Time to burn.");
+    	parser.accepts("p").withRequiredArg().defaultsTo("Olee").ofType(String.class).describedAs("Target Player");
+    	parser.accepts("t").withRequiredArg().defaultsTo("15").ofType(Integer.class).describedAs("Burn Time");
     	parser.accepts("?");
     	
-    	OptionSet options = parser.parse(args);
+    	OptionSet options = parser.parse(sender, args);
 
+    	if (options == null)
+    		return;
+    	
     	EntityPlayerMP target;
-    	int time = 15;
+    	int time = (int)options.valueOf("t");
+			time = time < 0 ? 0 : time;
     	
     	if (options.has("?")) {
     		parser.printHelpOn(sender);
@@ -96,11 +93,6 @@ public class CommandBurn extends FEcmdModuleCommands {
     	else {
     		throw new WrongUsageException(getCommandUsage(sender));
     	}
-    	
-    	if (options.has("t"))
-        {
-            time = parseIntWithMin(sender, options.valueOf("t").toString(), 0);
-        }
     	
     	OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
     	target.setFire(time);

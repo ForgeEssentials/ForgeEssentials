@@ -6,11 +6,16 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandUsageException;
+
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.EnumChatFormatting;
 import joptsimple.HelpFormatter;
 import joptsimple.OptionDescriptor;
 import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 
 public class FEOptionParser extends OptionParser {
 	
@@ -19,10 +24,10 @@ public class FEOptionParser extends OptionParser {
 	public FEOptionParser (String commandname) {
 		super();
 		name = commandname;
+		accepts("?").forHelp();
 	}
 	
 	public void printHelpOn(ICommandSender sender){
-		String help = new String();
 		OutputHandler.chatColored(sender, "========================================", EnumChatFormatting.GREEN);
 		OutputHandler.chatColored(sender, "Help for command: /" + name, EnumChatFormatting.GREEN);
 		OutputHandler.chatColored(sender, "========================================", EnumChatFormatting.GREEN);
@@ -36,5 +41,22 @@ public class FEOptionParser extends OptionParser {
 			OutputHandler.chatColored(sender, "No help available.", EnumChatFormatting.GREEN);
 		}
 		OutputHandler.chatColored(sender, "========================================", EnumChatFormatting.GREEN);
+	}
+
+	public OptionSet parse(ICommandSender sender, String... arguments) {
+		try {
+			OptionSet options = super.parse(arguments);
+			
+			if (options.has("?")) {
+				printHelpOn(sender);
+				return null;
+			}
+			else {
+				return options;
+			}
+		}
+		catch (joptsimple.OptionException e){
+			throw new WrongUsageException(e.getLocalizedMessage());
+		}
 	}
 }

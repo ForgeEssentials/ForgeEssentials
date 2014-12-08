@@ -3,6 +3,7 @@ package com.forgeessentials.commands;
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.FEOptionParser;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.tasks.TaskRegistry;
@@ -12,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import joptsimple.OptionSet;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -62,40 +64,43 @@ public class CommandButcher extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        int radius = -1;
-        double x = sender.posX;
-        double y = sender.posY;
-        double z = sender.posZ;
-        World world = sender.worldObj;
-        String mobType = ButcherMobType.HOSTILE.toString();
+    	FEOptionParser parser = new FEOptionParser("butcher");
+    	parser.accepts("x")
+    		.withRequiredArg()
+    		.ofType(Integer.class)
+    		.defaultsTo((int)sender.posX, (int)sender.posY, (int)sender.posZ)
+    		.describedAs("Target Point")
+    		.withValuesSeparatedBy(",");
+    	parser.accepts("r")
+    		.withRequiredArg()
+    		.ofType(Integer.class)
+    		.defaultsTo(0)
+    		.describedAs("Radius: -1 for World.");
+    	parser.accepts("w")
+    		.withRequiredArg()
+    		.ofType(Integer.class)
+    		.defaultsTo(sender.worldObj.provider.dimensionId)
+    		.describedAs("World");
+    	parser.accepts("m")
+    		.withRequiredArg()
+    		.ofType(String.class)
+    		.defaultsTo(ButcherMobType.HOSTILE.toString())
+    		.describedAs("Mob Type: " + ButcherMobType.getNames());
+    	
+    	OptionSet options = parser.parse(sender, args);
 
-        Queue<String> argsStack = new LinkedList<String>(Arrays.asList(args));
-        if (!argsStack.isEmpty())
-        {
-            String radiusValue = argsStack.remove();
-            if (radiusValue.equalsIgnoreCase("world"))
-                radius = -1;
-            else
-                radius = parseIntWithMin(sender, radiusValue, 0);
-        }
+    	if (options == null)
+    		return;
+    	
+        int radius = (int)options.valueOf("r");
+        int x = (int)options.valuesOf("x").get(0);
+        int y = (int)options.valuesOf("x").get(1);
+        int z = (int)options.valuesOf("x").get(2);
+        String mobType = (String)options.valueOf("m");
+        World world = DimensionManager.getWorld((int)options.valueOf("w"));
         
-        if (!argsStack.isEmpty())
-            mobType = argsStack.remove();
-
-        if (!argsStack.isEmpty())
-        {
-            if (argsStack.size() < 3)
-                throw new CommandException("Improper syntax: <radius> [type] [x y z] [world]");
-            x = parseDouble(sender, argsStack.remove(), sender.posX);
-            y = parseDouble(sender, argsStack.remove(), sender.posY);
-            z = parseDouble(sender, argsStack.remove(), sender.posZ);
-        }
-        
-        if (!argsStack.isEmpty())
-        {
-            world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
-            if (world == null)
-                throw new CommandException("The specified dimension does not exist");
+        if (world == null) {
+            throw new CommandException("The specified dimension does not exist.");
         }
         
         AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
@@ -105,55 +110,45 @@ public class CommandButcher extends FEcmdModuleCommands {
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        int radius = -1;
-        double x = 0;
-        double y = 0;
-        double z = 0;
-        World world = DimensionManager.getWorld(0);
-        String mobType = ButcherMobType.HOSTILE.toString();
-
-        Queue<String> argsStack = new LinkedList<String>(Arrays.asList(args));
+    	FEOptionParser parser = new FEOptionParser("butcher");
+    	parser.accepts("x")
+    		.withRequiredArg()
+    		.ofType(Integer.class)
+    		.defaultsTo(0, 0, 0)
+    		.describedAs("Target Point")
+    		.withValuesSeparatedBy(",");
+    	parser.accepts("r")
+    		.withRequiredArg()
+    		.ofType(Integer.class)
+    		.defaultsTo(-1)
+    		.describedAs("Radius: -1 for World.");
+    	parser.accepts("w")
+    		.withRequiredArg()
+    		.ofType(Integer.class)
+    		.defaultsTo(0)
+    		.describedAs("World");
+    	parser.accepts("m")
+    		.withRequiredArg()
+    		.ofType(String.class)
+    		.defaultsTo(ButcherMobType.HOSTILE.toString())
+    		.describedAs("Mob Type: " + ButcherMobType.getNames());
+    	
+    	OptionSet options = parser.parse(sender, args);
+    	
+    	if (options == null)
+    		return;
+    	
+        int radius = (int)options.valueOf("r");
+        int x = (int)options.valuesOf("x").get(0);
+        int y = (int)options.valuesOf("x").get(1);
+        int z = (int)options.valuesOf("x").get(2);
+        String mobType = (String)options.valueOf("m");
+        World world = DimensionManager.getWorld((int)options.valueOf("w"));
         
-        if (!argsStack.isEmpty())
-        {
-            String radiusValue = argsStack.remove();
-            if (radiusValue.equalsIgnoreCase("world"))
-                radius = -1;
-            else
-                radius = parseIntWithMin(sender, radiusValue, 0);
+        if (world == null) {
+            throw new CommandException("The specified dimension does not exist.");
         }
         
-        if (!argsStack.isEmpty())
-            mobType = argsStack.remove();
-
-        if (!argsStack.isEmpty())
-        {
-            if (argsStack.size() < 3)
-            	throw new WrongUsageException(getCommandUsage(sender));
-            x = parseInt(sender, argsStack.remove());
-            y = parseInt(sender, argsStack.remove());
-            z = parseInt(sender, argsStack.remove());
-        }
-        else
-        {
-            if (sender instanceof TileEntityCommandBlock)
-            {
-                TileEntityCommandBlock cb = (TileEntityCommandBlock) sender;
-                world = cb.getWorldObj();
-                x = cb.xCoord;
-                y = cb.yCoord;
-                z = cb.zCoord;
-            }
-            else
-            	throw new WrongUsageException(getCommandUsage(sender));
-        }
-
-        if (!argsStack.isEmpty())
-        {
-            world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
-            if (world == null)
-                throw new CommandException("This dimension does not exist");
-        }
         AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
         CommandButcherTickTask.schedule(sender, world, mobType, pool, radius);
     }
@@ -173,7 +168,7 @@ public class CommandButcher extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/butcher [radius|-1|world] [type] [x, y, z] Kills the type of mobs within the specified radius around the specified point in the specified world.";
+        return "/butcher [-x <x,y,z>][-r <radius>] [-m <mob type>] : Kills the type of mobs within the specified radius around the specified point in the specified world.";
     }
 
 }
