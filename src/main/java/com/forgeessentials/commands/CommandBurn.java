@@ -34,8 +34,16 @@ public class CommandBurn extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
     	FEOptionParser parser = new FEOptionParser("burn");
-    	parser.accepts("p").withRequiredArg().defaultsTo("me").ofType(String.class).describedAs("Target Player.");
-    	parser.accepts("t").withRequiredArg().defaultsTo("15").ofType(Integer.class).describedAs("Time to burn.");
+    	parser.accepts("p")
+    		.withRequiredArg()
+    		.ofType(String.class)
+    		.defaultsTo("me")
+    		.describedAs("Target Player.");
+    	parser.accepts("t")
+    		.withRequiredArg()
+    		.ofType(Integer.class)
+    		.defaultsTo(15)
+    		.describedAs("Time to burn.");
     	
     	OptionSet options = parser.parse(sender, args);
     	
@@ -66,8 +74,16 @@ public class CommandBurn extends FEcmdModuleCommands {
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
     	FEOptionParser parser = new FEOptionParser("burn");
-    	parser.accepts("p").withRequiredArg().defaultsTo("Olee").ofType(String.class).describedAs("Target Player");
-    	parser.accepts("t").withRequiredArg().defaultsTo("15").ofType(Integer.class).describedAs("Burn Time");
+    	parser.accepts("p")
+    		.withRequiredArg()
+    		.ofType(String.class)
+    		.defaultsTo("Olee")
+    		.describedAs("Target Player");
+    	parser.accepts("t")
+    		.withRequiredArg()
+    		.ofType(Integer.class)
+    		.defaultsTo(15)
+    		.describedAs("Burn Time");
     	parser.accepts("?");
     	
     	OptionSet options = parser.parse(sender, args);
@@ -78,11 +94,6 @@ public class CommandBurn extends FEcmdModuleCommands {
     	EntityPlayerMP target;
     	int time = (int)options.valueOf("t");
 			time = time < 0 ? 0 : time;
-    	
-    	if (options.has("?")) {
-    		parser.printHelpOn(sender);
-    		return;
-    	}
     	
     	if (options.has("p")) {
     		target = UserIdent.getPlayerByUsername(options.valueOf("p").toString());
@@ -113,14 +124,15 @@ public class CommandBurn extends FEcmdModuleCommands {
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        if (args.length == 1)
-        {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+        if (args.length >= 2) {
+        	switch ( args[args.length - 2] ) {
+        		case "-p" :
+        			getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+        			break;
+        	}
         }
-        else
-        {
-            return null;
-        }
+        
+        return null;
     }
 
     @Override

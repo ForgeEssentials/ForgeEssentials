@@ -46,19 +46,16 @@ public class CommandButcher extends FEcmdModuleCommands {
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
-    {
-        if (args.length == 1)
-        {
-            return getListOfStringsMatchingLastWord(args, "-1");
+    {      
+        if (args.length >= 2) {
+        	switch ( args[args.length - 2] ) {
+        		case "-m" :
+        			getListOfStringsMatchingLastWord(args, typeList);
+        			break;
+        	}
         }
-        else if (args.length == 2)
-        {
-            return getListOfStringsMatchingLastWord(args, typeList);
-        }
-        else
-        {
-            return null;
-        }
+        
+        return null;
     }
 
     @Override
