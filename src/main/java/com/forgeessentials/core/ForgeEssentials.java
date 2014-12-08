@@ -76,7 +76,7 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.1.1219,)")
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,)")
 public class ForgeEssentials extends ConfigLoaderBase {
 
     public static final String CONFIG_CAT = "Core";

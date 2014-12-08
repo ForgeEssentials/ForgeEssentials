@@ -50,9 +50,9 @@ if (JavaVersion.current().isJava8Compatible()) {
 }
 
 minecraft {
-    version = "1.7.10-10.13.1.1225"
+    version = "1.7.10-10.13.2.1258"
     runDir = "rundir"
-    ext.forgeVersion = "10.13.1.1225"
+    ext.forgeVersion = "10.13.2.1258"
 
     replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
     replace "%VERSION%", project.version
