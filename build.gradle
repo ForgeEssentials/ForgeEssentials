@@ -92,7 +92,7 @@ repositories {
     ivy {
         name "worldedit-dist"
         // has to be updated when we update worldedit
-        artifactPattern "http://addons.curse.cursecdn.com/files/2219/60/[module]-[revision].[ext]"
+        artifactPattern "http://addons.curse.cursecdn.com/files/2221/680/[module]-[revision].[ext]"
     }
 }
 
@@ -105,12 +105,12 @@ dependencies {
     myCompile 'mysql:mysql-connector-java:5.1.22'
 
     // WE integration -
-    myCompile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0-beta-01:dev'
+    myCompile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.1:dev'
 
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
     serverLibs 'mysql:mysql-connector-java:5.1.22'
-    includeMod name: 'worldedit-forge', version: 'mc1.7.10-6.0-beta-01', ext: 'jar'
+    includeMod name: 'worldedit-forge', version: 'mc1.7.10-6.0.1', ext: 'jar'
     serverLibs files('lib/minecraftforge-10.13.0.0-permsAPIonly.jar')
 }
 

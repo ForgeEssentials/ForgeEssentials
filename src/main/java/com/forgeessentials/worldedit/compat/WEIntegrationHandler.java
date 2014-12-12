@@ -11,13 +11,12 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.event.platform.PlatformReadyEvent;
+import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class WEIntegrationHandler
 {
-    
-    private FEPlatform platform;
 
     @SuppressWarnings("unused")
     private CUIComms cuiComms;
@@ -45,23 +44,8 @@ public class WEIntegrationHandler
     @SubscribeEvent
     public void serverStart(FEModuleServerInitEvent e)
     {
-        this.platform = new FEPlatform();
-        WorldEdit.getInstance().getPlatformManager().register(platform);
-        WorldEdit.getInstance().getEventBus().post(new PlatformReadyEvent());
-        
         cuiComms = new CUIComms();
-    }
-
-    @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent e)
-    {
-        WorldEdit.getInstance().getEventBus().post(new PlatformReadyEvent());
-    }
-
-    @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
-    {
-        WorldEdit.getInstance().getPlatformManager().unregister(platform);
+        ForgeWorldEdit.inst.setPermissionsProvider(new PermissionsHandler());
     }
 
 }
