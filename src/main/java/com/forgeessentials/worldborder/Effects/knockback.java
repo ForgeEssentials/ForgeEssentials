@@ -34,11 +34,10 @@ public class knockback implements IEffect {
 
             while (player.worldObj.blockExists((int)vecp.getX(), (int)y, (int)vecp.getY()))
             {
-                y--;
+                y++;
                 if (player.isRiding())
-                    rideY--;
+                    rideY++;
             }
-            y = y + 1;
             OutputHandler.chatNotification(player, "Teleported.");
         }
 
