@@ -3,13 +3,14 @@ package com.forgeessentials.permissions.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandPermissions extends ForgeEssentialsCommandBase {
 
@@ -50,17 +51,11 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args)
     {
-    	new PermissionCommandParser(sender, args, false);
+        PermissionCommandParser.parseMain(new CommandParserArgs(this.getCommandName(), args, sender));
     }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-    	new PermissionCommandParser(sender, args, false);
-    }
-
+    
     @Override
     public String getPermissionNode()
     {
@@ -70,7 +65,16 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-    	return new PermissionCommandParser(sender, args, true).getTabCompleteList();
+        try
+        {
+            CommandParserArgs arguments = new CommandParserArgs(this.getCommandName(), args, sender, true);
+            PermissionCommandParser.parseMain(arguments);
+            return arguments.tabCompletion;
+        }
+        catch (CommandException e)
+        {
+            return null;
+        }
     }
 
     @Override
