@@ -18,6 +18,10 @@ public class PermissionsHandler implements ForgePermissionsProvider
     @Override
     public void registerPermission(ICommand command, String permission)
     {
-        CommandHandlerForge.registerCommand(command, permission, RegisteredPermValue.OP);
+        if (command != null)
+        {
+            CommandHandlerForge.registerCommand(command, permission, RegisteredPermValue.OP);
+        }
+        else PermissionsManager.registerPermission(permission, RegisteredPermValue.OP);
     }
 }

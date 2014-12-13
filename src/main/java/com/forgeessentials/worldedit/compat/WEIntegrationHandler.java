@@ -4,13 +4,9 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.event.platform.PlatformReadyEvent;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -22,9 +18,8 @@ public class WEIntegrationHandler
     private CUIComms cuiComms;
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModulePreInitEvent e)
     {
-
         ForgeEssentials.worldEditCompatilityPresent = true;
         PlayerInfo.selectionProvider = new WESelectionHandler();
     }

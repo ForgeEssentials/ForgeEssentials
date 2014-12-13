@@ -18,8 +18,12 @@ public class WorldEditNotifier
 
     public WorldEditNotifier()
     {
-        FMLCommonHandler.instance().bus().register(this);
-        FunctionHelper.FE_INTERNAL_EVENTBUS.register(this);
+        if (!ForgeEssentials.worldEditCompatilityPresent && !Environment.hasWorldEdit())
+        {
+            FMLCommonHandler.instance().bus().register(this);
+            FunctionHelper.FE_INTERNAL_EVENTBUS.register(this);
+        }
+
     }
 
     @SubscribeEvent
@@ -30,15 +34,6 @@ public class WorldEditNotifier
 
     public void notify(PlayerLoggedInEvent e)
     {
-        if (Environment.hasWorldEdit())
-        {
-            return;
-        }
-        if (!ForgeEssentials.worldEditCompatilityPresent)
-        {
-            return;
-        }
-
         if (PermissionsManager.checkPermission(e.player, NO_WORLDEDIT_NOTIFY_PERM))
         {
             OutputHandler.chatNotification(e.player, "You seem to have installed WEIntegrationTools without installing WorldEdit.");
