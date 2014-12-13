@@ -25,7 +25,6 @@ import com.forgeessentials.core.commands.selections.SelectionEventHandler;
 import com.forgeessentials.core.compat.CommandSetChecker;
 import com.forgeessentials.core.compat.CompatReiMinimap;
 import com.forgeessentials.core.compat.Environment;
-import com.forgeessentials.core.compat.WorldEditNotifier;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.misc.RespawnHandler;
@@ -115,9 +114,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
     @SuppressWarnings("unused")
     private ForgeEssentialsEventFactory factory;
-
-    @SuppressWarnings("unused")
-    private WorldEditNotifier worldEditNotifier;
 
     @SuppressWarnings("unused")
     private TeleportHelper teleportHelper;
@@ -237,8 +233,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
             new CommandExpand().register();
             new CommandExpandY().register();
         }
-
-        worldEditNotifier = new WorldEditNotifier();
 
         tasks.onServerStart();
 
