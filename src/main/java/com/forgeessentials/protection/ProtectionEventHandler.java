@@ -232,6 +232,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent e)
     {
+        e.useItem = ALLOW;
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 

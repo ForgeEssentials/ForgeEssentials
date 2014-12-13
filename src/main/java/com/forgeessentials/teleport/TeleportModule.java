@@ -10,18 +10,20 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.teleport.portal.CommandPortal;
+import com.forgeessentials.teleport.portal.PortalManager;
 import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.teleport.util.TeleportDataManager;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import com.forgeessentials.commons.selections.WarpPoint;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -66,6 +68,9 @@ public class TeleportModule {
     public static List<TPAdata> tpaListToRemove = new ArrayList<TPAdata>();
     private static List<ForgeEssentialsCommandBase> commands = new ArrayList<ForgeEssentialsCommandBase>();
 
+    @SuppressWarnings("unused")
+    private PortalManager portalManager;
+    
     static
     {
         commands.add(new CommandBack());
@@ -81,23 +86,26 @@ public class TeleportModule {
         commands.add(new CommandTPAhere());
         commands.add(new CommandPersonalWarp());
         commands.add(new CommandTop());
+        commands.add(new CommandPortal());
     }
-
+    
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
+
+        portalManager = new PortalManager();
     }
 
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         for (ForgeEssentialsCommandBase cmd : commands)
-        {
-            FunctionHelper.registerServerCommand(cmd);
-        }
-
+            cmd.register();
+        
+        portalManager.load();
+        
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
         APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, RegisteredPermValue.TRUE, "Allow returning to the last death location with back-command");
