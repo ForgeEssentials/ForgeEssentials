@@ -81,7 +81,6 @@ public class TeleportModule {
         commands.add(new CommandTphere());
         commands.add(new CommandTppos());
         commands.add(new CommandWarp());
-        commands.add(new CommandSetSpawn());
         commands.add(new CommandTPA());
         commands.add(new CommandTPAhere());
         commands.add(new CommandPersonalWarp());
