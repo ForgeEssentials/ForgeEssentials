@@ -15,7 +15,7 @@ public class PotionEffect extends ZoneEffect {
     @Override
     public void execute()
     {
-        String[] effects = potionEffects.split(","); // example = 9:5:0
+        String[] effects = potionEffects.replaceAll("\\s","").split(","); // example = 9:5:0
         for (String poisonEffect : effects)
         {
             String[] effectValues = poisonEffect.split(":");
