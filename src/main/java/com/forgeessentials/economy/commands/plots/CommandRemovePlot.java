@@ -1,5 +1,7 @@
 package com.forgeessentials.economy.commands.plots;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.economy.plots.PlotManager;
 import net.minecraft.command.ICommandSender;
@@ -10,7 +12,8 @@ public class CommandRemovePlot extends ForgeEssentialsCommandBase{
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        PlotManager.removePlot(args[0]);
+        Zone zone = APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
+        zone.getServerZone().removeZone(zone);
     }
 
     @Override

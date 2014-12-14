@@ -71,14 +71,12 @@ public class ModuleEconomy extends ConfigLoaderBase {
         FunctionHelper.registerServerCommand(new CommandSellPlot());
         FunctionHelper.registerServerCommand(new CommandSetPlot());
         FunctionHelper.registerServerCommand(new CommandListPlot());
-        PlotManager.load();
     }
 
     @SubscribeEvent
     public void serverStop(FEModuleServerStopEvent e)
     {
         APIRegistry.wallet.save();
-        PlotManager.save();
     }
 
     @Override
