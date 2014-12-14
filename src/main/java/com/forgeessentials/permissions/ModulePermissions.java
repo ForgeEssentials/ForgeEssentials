@@ -20,7 +20,7 @@ import com.forgeessentials.permissions.autoPromote.AutoPromote;
 import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
 import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
-import com.forgeessentials.permissions.commands.CommandSetSpawn;
+import com.forgeessentials.teleport.CommandSetSpawn;
 import com.forgeessentials.permissions.commands.CommandZone;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.permissions.core.PermissionEventHandler;
@@ -119,7 +119,6 @@ public class ModulePermissions extends ConfigLoaderBase {
         new CommandZone().register();
         new CommandPermissions().register();
         new CommandAutoPromote().register();
-        new CommandSetSpawn().register();
 
         // Register permissions
         registerPermissions();
@@ -194,7 +193,6 @@ public class ModulePermissions extends ConfigLoaderBase {
         // Other
         APIRegistry.perms.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
         APIRegistry.perms.registerPermission("fe.core.info", RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(CommandSetSpawn.PERM_SETSPAWN, RegisteredPermValue.TRUE);
     }
 
     @Override

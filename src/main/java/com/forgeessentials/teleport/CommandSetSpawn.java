@@ -1,4 +1,4 @@
-package com.forgeessentials.permissions.commands;
+package com.forgeessentials.teleport;
 
 import java.util.List;
 
