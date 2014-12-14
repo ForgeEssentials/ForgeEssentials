@@ -3,7 +3,6 @@ package com.forgeessentials.core;
 import java.io.File;
 
 import com.forgeessentials.util.VersionUtils;
-import jdk.nashorn.internal.runtime.Version;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
