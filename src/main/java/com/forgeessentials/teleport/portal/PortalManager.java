@@ -35,7 +35,6 @@ public class PortalManager extends ServerEventHandler {
     {
         super();
         instance = this;
-        load();
     }
 
     public static PortalManager getInstance()
