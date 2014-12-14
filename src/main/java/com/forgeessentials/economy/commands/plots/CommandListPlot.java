@@ -1,14 +1,22 @@
 package com.forgeessentials.economy.commands.plots;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.economy.plots.PlotManager.Offer;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class CommandListPlot extends ForgeEssentialsCommandBase
 {
@@ -16,7 +24,7 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
         OutputHandler.chatNotification(sender, "Listing ALL plots:");
-        for (Plot plot : PlotManager.plotList.values())
+        for (AreaZone plot : getPlotList())
         {
             printPlotDetails(sender, plot);
         }
@@ -29,26 +37,29 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
         {
             if (args[1].equals("add"))
             {
-                PlotManager.forSale.add(PlotManager.plotList.get(args[2]).getName());
+                Zone zone = APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[2]);
+                PlotManager.pendingOffers.put(args[2], new Offer(zone, null, player, Integer.parseInt(args[3])));
             }
             else if (args[1].equals("remove"))
             {
-                PlotManager.forSale.remove(PlotManager.plotList.get(args[2]).getName());
+                PlotManager.pendingOffers.remove(args[2]);
             }
             else
             {
                 OutputHandler.chatNotification(player, "Listing all plots for sale:");
-                for (String s : PlotManager.forSale)
+                for (Entry<String, Offer> offer : PlotManager.pendingOffers.entrySet())
                 {
-                    Plot plot = PlotManager.plotList.get(s);
-                    printPlotDetails(player, plot);
+                    if (offer.getValue().buyer == null)
+                    {
+                        printPlotDetails(player, (AreaZone)offer.getValue().plot);
+                    }
                 }
             }
         }
         else
         {
             OutputHandler.chatNotification(player, "Listing ALL plots:");
-            for (Plot plot : PlotManager.plotList.values())
+            for (AreaZone plot : getPlotList())
             {
                 printPlotDetails(player, plot);
             }
@@ -86,11 +97,23 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
         return "/plotlist [sale] [add|remove] [plotName]";
     }
 
-    private void printPlotDetails(ICommandSender sender, Plot plot)
+    private void printPlotDetails(ICommandSender sender, AreaZone plot)
     {
-        OutputHandler.chatNotification(sender, "Name: " + plot.getName()
-                + " Owner: " + UserIdent.getUsernameByUuid(plot.getOwner())
-                + "Location: between " + plot.getHighPoint().toString() + " and " + plot.getLowPoint().toString());
+        if (!plot.checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM)) return;
+        OutputHandler.chatNotification(sender, "Name: " + plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_NAME_PERM)
+                + " Owner: " + UserIdent.getUsernameByUuid(plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER))
+                + "Location: between " + plot.getArea().getHighPoint().toString() + " and " + plot.getArea().getLowPoint().toString());
+    }
+
+    private AreaZone[] getPlotList()
+    {
+        List<AreaZone> zones = new ArrayList<AreaZone>();
+        for (Zone zone : APIRegistry.perms.getZones())
+        {
+            if (zone.checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM) && zone instanceof AreaZone)
+                zones.add((AreaZone)zone);
+        }
+        return zones.toArray(new AreaZone[]{});
     }
 
 

@@ -1,12 +1,13 @@
 package com.forgeessentials.economy.commands.plots;
 
+import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.Zone;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.plots.PlotManager.Offer;
 import com.forgeessentials.util.OutputHandler;
@@ -40,9 +41,8 @@ public class CommandSellPlot extends ForgeEssentialsCommandBase
                 OutputHandler.chatNotification(offer.buyer, "The seller agreed to sell plot " + offer.plot.getName() + " to you. " + offer.amount + " will be deducted from your wallet.");
                 APIRegistry.wallet.removeFromWallet(offer.amount, offer.buyer.getPersistentID());
                 APIRegistry.wallet.addToWallet(offer.amount, seller.getPersistentID());
-                Plot plot = offer.plot;
-                plot.changeOwner(offer.buyer.getPersistentID());
-                PlotManager.addPlot(plot);
+                Zone plot = offer.plot;
+                plot.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER, offer.buyer.getPersistentID().toString());
                 OutputHandler.chatNotification(seller, "Transaction complete. " + offer.amount + "added to your wallet.");
                 OutputHandler.chatNotification(offer.buyer, "Transaction complete. You are now owner of " + plot.getName());
                 PlotManager.pendingOffers.remove(args[0]);
