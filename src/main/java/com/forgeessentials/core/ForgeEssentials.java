@@ -2,6 +2,8 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
+import com.forgeessentials.util.VersionUtils;
+import jdk.nashorn.internal.runtime.Version;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -134,6 +136,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
     {
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
         OutputHandler.felog.info("Initializing ForgeEssentials version " + FEModContainer.version + " (configDir = " + FEDIR.getAbsolutePath() + ")");
+        OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber() + ", build hash is: " + VersionUtils.getBuildHash());
 
         // Check environment
         Environment.check();

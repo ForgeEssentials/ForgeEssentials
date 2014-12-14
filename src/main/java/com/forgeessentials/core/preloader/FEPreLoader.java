@@ -21,7 +21,7 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 
     public static boolean runtimeDeobfEnabled;
 
-    public static File mcLocation;
+    public static File mcLocation, jarLocation;
     public static LaunchClassLoader classLoader;
 
     private String[] transformers = { "com.forgeessentials.core.preloader.asm.EventInjector" };
@@ -66,6 +66,10 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
         if (data.containsKey("runtimeDeobfuscationEnabled") && data.get("runtimeDeobfuscationEnabled") != null)
         {
             runtimeDeobfEnabled = (boolean) data.get("runtimeDeobfuscationEnabled");
+        }
+        if (data.containsKey("coremodLocation") && data.get("coremodLocation") != null)
+        {
+            jarLocation = (File) data.get("coremodLocation");
         }
     }
 
