@@ -1,10 +1,10 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.core.preloader.FEPreLoader;
-
 import java.io.IOException;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
+import com.forgeessentials.core.preloader.FEPreLoader;
 
 public class VersionUtils
 {
@@ -12,9 +12,12 @@ public class VersionUtils
     {
         try
         {
-            JarFile jar = new JarFile(FEPreLoader.jarLocation);
-            Manifest manifest = jar.getManifest();
-            return manifest.getMainAttributes().getValue("Build-Number");
+            if (FEPreLoader.jarLocation != null)
+            {
+                JarFile jar = new JarFile(FEPreLoader.jarLocation);
+                Manifest manifest = jar.getManifest();
+                return manifest.getMainAttributes().getValue("Build-Number");
+            }
         }
         catch (IOException e1)
         {
@@ -27,9 +30,12 @@ public class VersionUtils
     {
         try
         {
-            JarFile jar = new JarFile(FEPreLoader.jarLocation);
-            Manifest manifest = jar.getManifest();
-            return manifest.getMainAttributes().getValue("BuildID");
+            if (FEPreLoader.jarLocation != null)
+            {
+                JarFile jar = new JarFile(FEPreLoader.jarLocation);
+                Manifest manifest = jar.getManifest();
+                return manifest.getMainAttributes().getValue("BuildID");
+            }
         }
         catch (IOException e1)
         {
