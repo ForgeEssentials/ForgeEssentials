@@ -1,4 +1,4 @@
-package com.forgeessentials.worldedit.compat;
+package com.forgeessentials.compat.worldedit;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;

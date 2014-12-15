@@ -41,7 +41,7 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.compat.Environment;
+import com.forgeessentials.core.environment.Environment;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;

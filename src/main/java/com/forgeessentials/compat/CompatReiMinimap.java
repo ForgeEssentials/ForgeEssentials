@@ -1,4 +1,4 @@
-package com.forgeessentials.core.compat;
+package com.forgeessentials.compat;
 
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

@@ -1,6 +1,7 @@
-package com.forgeessentials.worldedit.compat;
+package com.forgeessentials.compat.worldedit;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.PlayerInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -60,7 +61,7 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (ForgeEssentials.worldEditCompatilityPresent && FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
+        if (ModuleLauncher.getModuleList().contains("WEIntegration") && FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
         {
             updatedSelectionPlayers.add(PlayerInfo.getPlayerInfo(event.entityPlayer));
         }

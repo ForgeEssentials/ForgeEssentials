@@ -1,4 +1,4 @@
-package com.forgeessentials.core.compat;
+package com.forgeessentials.core.environment;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
@@ -44,7 +44,6 @@ public class Environment
         {
             OutputHandler.felog.warning("WorldEdit integration tools force disabled.");
             hasWorldEdit = false;
-            ForgeEssentials.worldEditCompatilityPresent = false;
             return;
         }
 

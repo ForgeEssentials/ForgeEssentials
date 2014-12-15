@@ -1,6 +1,5 @@
-package com.forgeessentials.worldedit.compat;
+package com.forgeessentials.compat.worldedit;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -20,7 +19,6 @@ public class WEIntegrationHandler
     @SubscribeEvent
     public void load(FEModulePreInitEvent e)
     {
-        ForgeEssentials.worldEditCompatilityPresent = true;
         PlayerInfo.selectionProvider = new WESelectionHandler();
     }
 

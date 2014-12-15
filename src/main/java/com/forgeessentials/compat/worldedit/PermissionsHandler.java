@@ -1,4 +1,4 @@
-package com.forgeessentials.worldedit.compat;
+package com.forgeessentials.compat.worldedit;
 
 import com.sk89q.worldedit.forge.ForgePermissionsProvider;
 import net.minecraft.command.ICommand;

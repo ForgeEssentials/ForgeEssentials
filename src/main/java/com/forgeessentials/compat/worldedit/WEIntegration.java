@@ -1,7 +1,7 @@
-package com.forgeessentials.worldedit.compat;
+package com.forgeessentials.compat.worldedit;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.Environment;
+import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.FunctionHelper;

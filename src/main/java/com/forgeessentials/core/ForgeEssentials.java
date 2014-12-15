@@ -23,9 +23,9 @@ import com.forgeessentials.core.commands.selections.CommandExpandY;
 import com.forgeessentials.core.commands.selections.CommandPos;
 import com.forgeessentials.core.commands.selections.CommandWand;
 import com.forgeessentials.core.commands.selections.SelectionEventHandler;
-import com.forgeessentials.core.compat.CommandSetChecker;
-import com.forgeessentials.core.compat.CompatReiMinimap;
-import com.forgeessentials.core.compat.Environment;
+import com.forgeessentials.core.environment.CommandSetChecker;
+import com.forgeessentials.compat.CompatReiMinimap;
+import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.misc.RespawnHandler;
@@ -121,9 +121,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
     
     @SuppressWarnings("unused")
     private TickTaskHandler tickTaskHandler;
-    
-    // static FE-module flags / variables
-    public static boolean worldEditCompatilityPresent = false;
 
     public ForgeEssentials()
     {
@@ -226,7 +223,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
         new CommandFEInfo().register();
         new CommandFEDebug().register();
 
-        if (!worldEditCompatilityPresent)
+        if (!ModuleLauncher.getModuleList().contains("WEIntegration"))
         {
             new CommandPos(1).register();
             new CommandPos(2).register();

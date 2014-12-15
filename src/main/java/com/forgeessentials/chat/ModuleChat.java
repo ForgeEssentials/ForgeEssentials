@@ -13,7 +13,7 @@ import com.forgeessentials.chat.irc.IRCChatFormatter;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.chat.irc.PlayerEventHandler;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.CommandSetChecker;
+import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;

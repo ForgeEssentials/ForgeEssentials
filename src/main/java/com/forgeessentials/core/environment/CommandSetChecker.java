@@ -1,4 +1,4 @@
-package com.forgeessentials.core.compat;
+package com.forgeessentials.core.environment;
 
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;

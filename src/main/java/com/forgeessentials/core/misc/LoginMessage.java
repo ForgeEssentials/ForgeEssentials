@@ -1,7 +1,7 @@
 package com.forgeessentials.core.misc;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.compat.CompatReiMinimap;
+import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
@@ -126,7 +126,7 @@ public class LoginMessage {
     /**
      * Formats the chat, replacing given strings by their values
      *
-     * @param String to parse the amount to add to the WalletHandler
+     * @param line to parse the amount to add to the WalletHandler
      */
     private static String Format(String line, String playerName)
     {
