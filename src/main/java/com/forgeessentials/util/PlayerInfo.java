@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -360,7 +361,7 @@ public class PlayerInfo {
 
     public void clearSelection()
     {
-        if (!ForgeEssentials.worldEditCompatilityPresent)
+        if (!ModuleLauncher.getModuleList().contains("WEIntegration"))
         {
             sel1 = null;
             sel2 = null;
