@@ -1,11 +1,8 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.mojang.authlib.GameProfile;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+import java.util.UUID;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,8 +10,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.util.FakePlayer;
 
-import java.util.List;
-import java.util.UUID;
+import com.forgeessentials.commons.IReconstructData;
+import com.forgeessentials.commons.SaveableObject;
+import com.forgeessentials.commons.SaveableObject.Reconstructor;
+import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.mojang.authlib.GameProfile;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 @SaveableObject(SaveInline = true)
 public class UserIdent {
@@ -91,9 +93,32 @@ public class UserIdent {
 		}
 	}
 
+    public UserIdent(String ident, ICommandSender sender)
+    {
+        if (ident == null)
+        {
+            throw new IllegalArgumentException();
+        }
+        try
+        {
+            this.uuid = UUID.fromString(ident);
+        }
+        catch (IllegalArgumentException e)
+        {
+            this.player = getPlayerByMatchOrUsername(sender, ident);
+            if (this.player == null)
+                this.username = ident;
+            else
+            {
+                this.username = player.getCommandSenderName();
+                this.uuid = player.getPersistentID();
+            }
+        }
+    }
+
 	// ------------------------------------------------------------
 
-	public void identifyUser()
+    public void identifyUser()
 	{
 		if (uuid == null)
 		{

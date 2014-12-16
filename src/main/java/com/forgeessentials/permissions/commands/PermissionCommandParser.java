@@ -297,7 +297,7 @@ public class PermissionCommandParser {
         }
         else
         {
-            ident = new UserIdent(playerName);
+            ident = new UserIdent(playerName, arguments.sender);
             if (!ident.hasUUID())
             {
                 arguments.error(String.format("Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername()));
