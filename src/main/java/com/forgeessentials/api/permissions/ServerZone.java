@@ -263,8 +263,9 @@ public class ServerZone extends Zone {
 
         // Get included groups
         Set<String> checkedGroups = new HashSet<>();
-        for (boolean addedGroup = true; addedGroup; addedGroup = false)
-        {
+        boolean addedGroup;
+        do {
+            addedGroup = false;
             for (String existingGroup : new ArrayList<String>(result))
             {
                 // Check if group was already checked for inclusion
@@ -279,7 +280,7 @@ public class ServerZone extends Zone {
                             addedGroup |= result.add(includedGroup);
                 }
             }
-        }
+        } while (addedGroup);
 
         return result;
     }

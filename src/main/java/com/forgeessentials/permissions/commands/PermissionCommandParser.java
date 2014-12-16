@@ -65,7 +65,7 @@ public class PermissionCommandParser {
     private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms" };
     private static final String[] parseGroupArgs = { "zone", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
             "priority", "include" };
-    private static final String[] parseUserGroupArgs = { "add", "remove" };
+    private static final String[] parseUserGroupArgs = { "add", "remove", "set" };
     private static final String[] parseGroupIncludeArgs = { "add", "remove", "clear" };
     private static final String[] parseSpawnArgs = { "here", "clear", "bed" };
 
@@ -980,7 +980,8 @@ public class PermissionCommandParser {
             throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         if (arguments.args.isEmpty())
         {
-            arguments.info("/feperm group " + group + " priority <prio> : Set group priority");
+            arguments.info("Priority for group " + group + ": " + APIRegistry.perms.getGroupPermissionProperty(group, FEPermissions.GROUP_PRIORITY));
+            return;
         }
         String priorityValue = arguments.args.remove();
         try
