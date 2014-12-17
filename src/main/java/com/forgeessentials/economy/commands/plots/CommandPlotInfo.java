@@ -1,19 +1,15 @@
 package com.forgeessentials.economy.commands.plots;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.PlotManager;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-public class CommandRemovePlot extends ForgeEssentialsCommandBase{
-
+public class CommandPlotInfo extends ForgeEssentialsCommandBase
+{
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        Zone zone = APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
-        zone.getServerZone().removeZone(zone);
     }
 
     @Override
@@ -25,24 +21,24 @@ public class CommandRemovePlot extends ForgeEssentialsCommandBase{
     @Override
     public String getPermissionNode()
     {
-        return "fe.economy.plots.remove";
+        return "fe.commands.plot.info";
     }
 
     @Override
-    public PermissionsManager.RegisteredPermValue getDefaultPermission()
+    public RegisteredPermValue getDefaultPermission()
     {
-        return PermissionsManager.RegisteredPermValue.OP;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override
     public String getCommandName()
     {
-        return "removeplot";
+        return "plotinfo";
     }
 
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/removeplot <name> Removes a plot.";
+        return "/plotinfo <name> List details of a plot.";
     }
 }

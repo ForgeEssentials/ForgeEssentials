@@ -8,8 +8,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.plots.PlotManager;
-import com.forgeessentials.economy.plots.PlotManager.Offer;
+import com.forgeessentials.economy.PlotManager;
+import com.forgeessentials.economy.PlotManager.Offer;
 import com.forgeessentials.util.OutputHandler;
 
 // Sells a plot. There must already be an existing offer made by another player.

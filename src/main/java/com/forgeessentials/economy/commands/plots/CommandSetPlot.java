@@ -4,8 +4,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.plots.PlotManager;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.economy.ModuleEconomy;
+import com.forgeessentials.economy.PlotManager;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.EventCancelledException;
@@ -27,6 +27,17 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
             zone.setGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM, true);
             zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
             zone.setHidden(true);
+
+            if (args[1] != null)
+            {
+                int price = Integer.parseInt(args[1]); // checks if it's a valid number
+                zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
+            }
+            else
+            {
+                int price = zone.getArea().getXLength() * zone.getArea().getZLength() * ModuleEconomy.psfPrice;
+                zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
+            }
         }
         catch (EventCancelledException e)
         {
@@ -61,6 +72,6 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/setplot <name> <value> Set the current selection as a tradeable plot";
+        return "/setplot <name> [value] Set the current selection as a tradeable plot";
     }
 }

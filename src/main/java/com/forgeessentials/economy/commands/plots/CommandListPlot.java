@@ -2,20 +2,15 @@ package com.forgeessentials.economy.commands.plots;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.economy.plots.PlotManager.Offer;
+import com.forgeessentials.economy.PlotManager.Offer;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.plots.PlotManager;
+import com.forgeessentials.economy.PlotManager;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map.Entry;
 
 public class CommandListPlot extends ForgeEssentialsCommandBase
@@ -24,9 +19,9 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
         OutputHandler.chatNotification(sender, "Listing ALL plots:");
-        for (AreaZone plot : getPlotList())
+        for (AreaZone plot : PlotManager.getPlotList())
         {
-            printPlotDetails(sender, plot);
+            PlotManager.printPlotDetails(sender, plot);
         }
     }
 
@@ -51,7 +46,7 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
                 {
                     if (offer.getValue().buyer == null)
                     {
-                        printPlotDetails(player, (AreaZone)offer.getValue().plot);
+                        PlotManager.printPlotDetails(player, (AreaZone) offer.getValue().plot);
                     }
                 }
             }
@@ -59,9 +54,9 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
         else
         {
             OutputHandler.chatNotification(player, "Listing ALL plots:");
-            for (AreaZone plot : getPlotList())
+            for (AreaZone plot : PlotManager.getPlotList())
             {
-                printPlotDetails(player, plot);
+                PlotManager.printPlotDetails(player, plot);
             }
         }
 
@@ -97,24 +92,7 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
         return "/plotlist [sale] [add|remove] [plotName]";
     }
 
-    private void printPlotDetails(ICommandSender sender, AreaZone plot)
-    {
-        if (!plot.checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM)) return;
-        OutputHandler.chatNotification(sender, "Name: " + plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_NAME_PERM)
-                + " Owner: " + UserIdent.getUsernameByUuid(plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER))
-                + "Location: between " + plot.getArea().getHighPoint().toString() + " and " + plot.getArea().getLowPoint().toString());
-    }
 
-    private AreaZone[] getPlotList()
-    {
-        List<AreaZone> zones = new ArrayList<AreaZone>();
-        for (Zone zone : APIRegistry.perms.getZones())
-        {
-            if (zone.checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM) && zone instanceof AreaZone)
-                zones.add((AreaZone)zone);
-        }
-        return zones.toArray(new AreaZone[]{});
-    }
 
 
 }

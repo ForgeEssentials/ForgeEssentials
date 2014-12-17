@@ -10,8 +10,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.plots.PlotManager;
-import com.forgeessentials.economy.plots.PlotManager.Offer;
+import com.forgeessentials.economy.PlotManager;
+import com.forgeessentials.economy.PlotManager.Offer;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -23,17 +23,34 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
     @Override
     public void processCommandPlayer(EntityPlayerMP buyer, String[] args)
     {
-        if (args.length == 3)
+        if (args.length >= 1)
         {
+            int value;
             Zone plot = APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
             if (!plot.checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM))
             {
                 throw new CommandException("No such plot!");
             }
             EntityPlayer seller = UserIdent.getPlayerByUuid(UUID.fromString(plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER)));
-            OutputHandler.chatNotification(seller, "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + args[1]
+            if (args[1] != null)
+            {
+                value = Integer.parseInt(args[1]);
+            }
+            else
+            {
+                value = Integer.parseInt(plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_VALUE));
+                OutputHandler.chatNotification(buyer, "No value specified. Will use current valuation of plot, which is " + value);
+            }
+
+            // check if the player can afford it...
+            if (!(APIRegistry.wallet.getWallet(new UserIdent(buyer).getUuid()) < value))
+            {
+                throw new CommandException("You can't afford that!");
+            }
+
+            OutputHandler.chatNotification(seller, "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + value
                     + ". Type /sellplot <plotName> yes to accept, /sellplot <plotName> no to deny. This offer will expire in " + PlotManager.timeout + " seconds.");
-            PlotManager.pendingOffers.put(plot.getName(), new Offer(plot, buyer, seller, Integer.parseInt(args[1])));
+            PlotManager.pendingOffers.put(plot.getName(), new Offer(plot, buyer, seller, value));
         }
         else{
             OutputHandler.chatError(buyer, "Incorrect syntax. Try this instead: <plotName> <amount>");

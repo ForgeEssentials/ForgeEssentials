@@ -17,7 +17,6 @@ import com.forgeessentials.economy.commands.plots.CommandListPlot;
 import com.forgeessentials.economy.commands.plots.CommandRemovePlot;
 import com.forgeessentials.economy.commands.plots.CommandSellPlot;
 import com.forgeessentials.economy.commands.plots.CommandSetPlot;
-import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -82,9 +81,10 @@ public class ModuleEconomy extends ConfigLoaderBase {
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        currencySingular = config.get(CONFIG_CAT, "currencySingular", "gold").getString();
-        currencyPlural = config.get(CONFIG_CAT, "currencyPlural", "gold").getString();
-        startbudget = config.get(CONFIG_CAT, "startbuget", 100).getInt();
+        currencySingular = config.get(CONFIG_CAT, "currencySingular", "gold", "Name of singular currency unit").getString();
+        currencyPlural = config.get(CONFIG_CAT, "currencyPlural", "gold", "Name of plural currency unit").getString();
+        startbudget = config.get(CONFIG_CAT, "startbudget", 100, "Starting amount of money for players.").getInt();
+        psfPrice = config.get(CONFIG_CAT, "multiplier", 1, "Multiplier for automatic plot valuation.").getInt();
     }
 
     @Override
@@ -93,6 +93,7 @@ public class ModuleEconomy extends ConfigLoaderBase {
         config.get(CONFIG_CAT, "currencySingular", "gold").set(currencySingular);
         config.get(CONFIG_CAT, "currencyPlural", "gold").set(currencyPlural);
         config.get(CONFIG_CAT, "startbudget", 100).set(startbudget);
+        config.get(CONFIG_CAT, "multiplier", 1).set(psfPrice);
     }
 
 }
