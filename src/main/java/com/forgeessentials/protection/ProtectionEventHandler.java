@@ -188,7 +188,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void explosionEvent(ExplosionEvent e)
+    public void explosionEvent(ExplosionEvent.Start e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
