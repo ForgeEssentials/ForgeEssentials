@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import com.forgeessentials.remote.data.RemoteRequest;
 import com.forgeessentials.util.OutputHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 /**
@@ -30,7 +30,7 @@ public class RemoteSession implements Runnable {
         thread = new Thread(this);
         thread.start();
     }
-    
+
     /*
      * Main session loop
      */
@@ -52,11 +52,6 @@ public class RemoteSession implements Runnable {
                     }
                     processMessage(msg);
                 }
-                catch (JsonSyntaxException e)
-                {
-                    OutputHandler.felog.warning("[remote] Message error: " + e.getMessage());
-                    break;
-                }
                 catch (IOException e)
                 {
                     OutputHandler.felog.warning("[remote] Socket error: " + e.getMessage());
@@ -70,7 +65,7 @@ public class RemoteSession implements Runnable {
         }
         close();
     }
-    
+
     /**
      * All received messages start being processed here
      * 
@@ -78,8 +73,21 @@ public class RemoteSession implements Runnable {
      */
     protected void processMessage(String message)
     {
-        JsonObject data = gson.fromJson(message, JsonObject.class);
-        OutputHandler.felog.info("[remote] Message: " + data.toString());
+        try
+        {
+            RemoteRequest request = gson.fromJson(message, RemoteRequest.class);
+            OutputHandler.felog.info(String.format("[remote] Request [%s]: %s", request.id, request.data.toString()));
+            
+            // TODO: process `request.data` with the manager for `request.id` 
+        }
+        catch (IllegalArgumentException e)
+        {
+            OutputHandler.felog.warning("[remote] Message error: " + e.getMessage());
+        }
+        catch (JsonSyntaxException e)
+        {
+            OutputHandler.felog.warning("[remote] Message error: " + e.getMessage());
+        }
     }
 
     public void close()
