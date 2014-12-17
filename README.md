@@ -54,7 +54,7 @@ FE Team Members:
 ================
 <a href="https://github.com/luacs1998">luacs1998</a> (lead developer)
 
-<a href="https://github.com/olee">olee</a>
+<a href="https://github.com/olee">olee</a> (permissions-guru, protection, multiworld)
 
 <a href="https://github.com/helinus">Helinus</a>
 
