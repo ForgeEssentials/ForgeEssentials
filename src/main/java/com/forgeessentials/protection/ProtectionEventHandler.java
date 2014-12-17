@@ -34,11 +34,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
@@ -179,6 +182,24 @@ public class ProtectionEventHandler extends ServerEventHandler {
             OutputHandler.chatNotification(e.getPlayer(), permission);
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
         if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.getPlayer()), point, permission))
+        {
+            e.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void explosionEvent(ExplosionEvent e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+
+        int cx = (int) Math.floor(e.explosion.explosionX);
+        int cy = (int) Math.floor(e.explosion.explosionY);
+        int cz = (int) Math.floor(e.explosion.explosionZ);
+        WorldArea area = new WorldArea(e.world, 
+                new Point(cx - e.explosion.explosionSize, cy - e.explosion.explosionSize, cz - e.explosion.explosionSize), 
+                new Point(cx + e.explosion.explosionSize, cy + e.explosion.explosionSize, cz + e.explosion.explosionSize));
+        if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
         {
             e.setCanceled(true);
         }

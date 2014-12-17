@@ -67,6 +67,7 @@ public class ModuleProtection {
     public final static String PERM_DAMAGE_TO = BASE_PERM + ".damageto";
     public final static String PERM_DAMAGE_BY = BASE_PERM + ".damageby";
     public final static String PERM_INVENTORY = BASE_PERM + ".inventory";
+    public final static String PERM_EXPLOSION = BASE_PERM + ".explosion";
 
     public final static String PERM_MOBSPAWN = BASE_PERM + ".mobspawn";
     public final static String PERM_MOBSPAWN_NATURAL = PERM_MOBSPAWN + ".natural";
@@ -141,6 +142,7 @@ public class ModuleProtection {
         APIRegistry.perms.registerPermissionProperty(PERM_GAMEMODE, "-1", "Force gamemode (-1 = none, 0 = survival, 1 = creative, 2 = adventure)");
         APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default", "Inventory group property - can be set to any identifier to separate inventories for certain regions");
         APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE, "Allow interacting with entities (villagers, dogs, horses)");
+        APIRegistry.perms.registerPermission(PERM_EXPLOSION, RegisteredPermValue.TRUE, "(global) Allows explosions.");
 
         // ----------------------------------------
         // Damage
@@ -158,9 +160,9 @@ public class ModuleProtection {
 
         // ----------------------------------------
         // Register mobs
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "Allow spawning of mobs");
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "Allow natural spawning of mobs (random spawn in the dark)");
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "Allow forced spawning of mobs (spawners, spawn-eggs)");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "(global) Allow spawning of mobs");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow natural spawning of mobs (random spawn in the dark)");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow forced spawning of mobs (spawners, spawn-eggs)");
         for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
             {
