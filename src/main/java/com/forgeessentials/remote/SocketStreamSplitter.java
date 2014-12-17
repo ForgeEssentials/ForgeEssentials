@@ -33,11 +33,13 @@ public class SocketStreamSplitter {
             final int available = is.available();
             final int count = available > 0 ? available : 1;
             final char[] buf = new char[count];
-            reader.read(buf, 0, count);
+            final int read = reader.read(buf, 0, count);
             buffer.append(buf);
 
             // Check if new data contained separator
             separatorPos = buffer.toString().indexOf(separator);
+            if (separatorPos < 0 && read < 0)
+                return null;
         }
 
         // Cut out the data that will be processed

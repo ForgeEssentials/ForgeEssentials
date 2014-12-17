@@ -1,6 +1,7 @@
 package com.forgeessentials.remote;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import com.forgeessentials.util.OutputHandler;
@@ -43,7 +44,13 @@ public class RemoteSession implements Runnable {
             {
                 try
                 {
-                    processMessage(sss.readNext());
+                    final String msg = sss.readNext();
+                    if (msg == null)
+                    {
+                        OutputHandler.felog.warning("[remote] Connection closed: " + ((InetSocketAddress) socket.getRemoteSocketAddress()).getHostName());
+                        break;
+                    }
+                    processMessage(msg);
                 }
                 catch (JsonSyntaxException e)
                 {
