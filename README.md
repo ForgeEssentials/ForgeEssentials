@@ -10,7 +10,7 @@ The code on this branch is for Minecraft 1.7.10. File issues at the issue tracke
 
 *******************
 
-The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality. Development by the team has officially stalled, though PRs are welcome, be it to fix bugs, or add modules, or whatever.
+The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality.
 
 *More information can be found at the (wip - rewrite in progress) [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki).*
 
