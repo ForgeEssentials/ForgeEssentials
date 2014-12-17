@@ -3,6 +3,12 @@ package com.forgeessentials.remote;
 import java.io.IOException;
 import java.net.Socket;
 
+import com.forgeessentials.util.OutputHandler;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+
 /**
  *
  */
@@ -11,6 +17,8 @@ public class RemoteSession implements Runnable {
     private final Socket socket;
 
     private final Thread thread;
+
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     /**
      * @param socket
@@ -21,18 +29,54 @@ public class RemoteSession implements Runnable {
         thread = new Thread(this);
         thread.start();
     }
-
+    
     /*
      * Main session loop
      */
     @Override
     public void run()
     {
-        while (true)
+        try
         {
-            /* do some stuff */
-            break;
+            final SocketStreamSplitter sss = new SocketStreamSplitter(socket.getInputStream(), "\n\n\n");
+            while (true)
+            {
+                try
+                {
+                    processMessage(sss.readNext());
+                }
+                catch (JsonSyntaxException e)
+                {
+                    OutputHandler.felog.warning("[remote] Message error: " + e.getMessage());
+                    break;
+                }
+                catch (IOException e)
+                {
+                    OutputHandler.felog.warning("[remote] Socket error: " + e.getMessage());
+                    break;
+                }
+            }
         }
+        catch (IOException e)
+        {
+            OutputHandler.felog.warning("[remote] Error opening input stream.");
+        }
+        close();
+    }
+    
+    /**
+     * All received messages start being processed here
+     * 
+     * @param message
+     */
+    protected void processMessage(String message)
+    {
+        JsonObject data = gson.fromJson(message, JsonObject.class);
+        OutputHandler.felog.info("[remote] Message: " + data.toString());
+    }
+
+    public void close()
+    {
         try
         {
             socket.close();
