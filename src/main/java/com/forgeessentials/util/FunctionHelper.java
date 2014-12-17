@@ -574,18 +574,17 @@ public final class FunctionHelper {
 		return fix;
 	}
 
-	public static String getPlayerGroupPrefixSuffix(UserIdent player, boolean isSuffix)
-	{
-		String fix = "";
-		Set<String> groups = APIRegistry.perms.getPlayerGroups(player);
-		for (String group : groups)
-		{
-			String s = APIRegistry.perms.getServerZone().getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
-			if (s != null)
-				fix += s;
-		}
-		return fix;
-	}
+    public static String getPlayerGroupPrefixSuffix(UserIdent player, boolean isSuffix)
+    {
+        Set<String> groups = APIRegistry.perms.getPlayerGroups(player);
+        for (String group : groups)
+        {
+            String s = APIRegistry.perms.getServerZone().getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
+            if (s != null)
+                return s;
+        }
+        return "";
+    }
 
 	public static String getFormattedPlayersOnline()
 	{
