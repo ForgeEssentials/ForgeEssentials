@@ -97,8 +97,8 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
         if (!DimensionManager.isDimensionRegistered(dimId))
             throw new CommandException("Dimension #" + dimId + " does not exist.");
 
-        if (dimId < 0 || dimId == 1)
-            throw new CommandException("You are not allowed to teleport to that dimension");
+        //if (dimId < 0 || dimId == 1)
+        //    throw new CommandException("You are not allowed to teleport to that dimension");
 
         WorldServer world = player.mcServer.worldServerForDimension(dimId);
 
