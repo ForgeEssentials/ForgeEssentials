@@ -9,9 +9,9 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
@@ -60,14 +60,6 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
             throw new CommandException("Missing world argument.");
 
         String worldName = args.remove();
-        Multiworld multiworld = null;
-        if (!worldName.equals("0"))
-        {
-            multiworld = ModuleMultiworld.getMultiworldManager().getMultiworld(worldName);
-            if (multiworld == null)
-                throw new CommandException("Multiworld " + worldName + " does not exist.");
-        }
-
         if (args.isEmpty())
         {
             if (player == null)
@@ -93,14 +85,14 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
             z = parseDouble(sender, args.remove());
         }
 
-        int dimId = multiworld == null ? 0 : multiworld.getDimensionId();
-        if (!DimensionManager.isDimensionRegistered(dimId))
-            throw new CommandException("Dimension #" + dimId + " does not exist.");
+        Multiworld multiworld = ModuleMultiworld.getMultiworldManager().getMultiworld(worldName);
+        WorldServer world = multiworld != null ? multiworld.getWorldServer() : APIRegistry.namedWorldHandler.getWorld(worldName);
+        if (world == null)
+            throw new CommandException("Could not find world " + worldName);
+        int dimId = world.provider.dimensionId;
 
         //if (dimId < 0 || dimId == 1)
         //    throw new CommandException("You are not allowed to teleport to that dimension");
-
-        WorldServer world = player.mcServer.worldServerForDimension(dimId);
 
         String msg = "Teleporting to ";
         if (multiworld == null)
@@ -117,7 +109,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
                 msg += "the end";
                 break;
             default:
-                msg += " dimension #" + dimId;
+                msg += "dimension #" + dimId;
                 break;
             }
         }
