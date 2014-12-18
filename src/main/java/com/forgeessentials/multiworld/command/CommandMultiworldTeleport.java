@@ -36,7 +36,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] argsArray)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] argsArray)
     {
         switch (argsArray.length)
         {

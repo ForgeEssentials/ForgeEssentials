@@ -2,7 +2,9 @@ package com.forgeessentials.multiworld;
 
 public class MultiworldException extends Exception
 {
-    public static enum Type
+	private static final long serialVersionUID = 1L;
+	
+	public static enum Type
     {
         ALREADY_EXISTS("A world with that name already exists"),
         NO_PROVIDER("No world provider %s found!"),
