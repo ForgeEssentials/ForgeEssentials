@@ -16,12 +16,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
@@ -330,7 +329,7 @@ public class JsonProvider extends ZonePersistenceProvider
             userData.permissions.addAll(list);
             if(global)
             {
-                userData.groups.addAll(((ServerZone)zone).getPlayerGroups(user));
+                userData.groups.addAll(GroupEntry.toList(((ServerZone)zone).getPlayerGroups(user)));
             }
             else
             {

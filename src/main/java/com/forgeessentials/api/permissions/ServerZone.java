@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -22,12 +23,80 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.UserIdent;
 
 /**
- * {@link ServerZone} contains every player on the whole server. Has second
- * lowest priority with next being {@link RootZone}.
+ * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being
+ * {@link RootZone}.
  * 
  * @author Olee
  */
 public class ServerZone extends Zone {
+
+    public static class GroupEntry implements Comparable<GroupEntry> {
+
+        private final String group;
+
+        private final int priority;
+
+        private final int originalPriority;
+
+        public GroupEntry(String group, int priority, int originalPriority)
+        {
+            this.group = group;
+            this.priority = priority;
+            this.originalPriority = originalPriority;
+        }
+
+        public GroupEntry(String group, int priority)
+        {
+            this(group, priority, priority);
+        }
+
+        public GroupEntry(ServerZone zone, String group)
+        {
+            this(group, FunctionHelper.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY), FEPermissions.GROUP_PRIORITY_DEFAULT));
+        }
+
+        public GroupEntry(ServerZone zone, String group, int priority)
+        {
+            this(group, priority, FunctionHelper.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY), FEPermissions.GROUP_PRIORITY_DEFAULT));
+        }
+
+        public String getGroup()
+        {
+            return group;
+        }
+
+        public int getPriority()
+        {
+            return priority;
+        }
+
+        @Override
+        public String toString()
+        {
+            return group;
+        }
+
+        @Override
+        public int compareTo(GroupEntry o)
+        {
+            int c = -Integer.compare(priority, o.priority);
+            if (c != 0)
+                return c;
+            c = -Integer.compare(originalPriority, o.originalPriority);
+            if (c != 0)
+                return c;
+            return group.compareTo(o.group);
+        }
+
+        public static List<String> toList(Collection<GroupEntry> entries)
+        {
+            final List<String> result = new ArrayList<>(entries.size());
+            for (GroupEntry entry : entries)
+                result.add(entry.group);
+            return result;
+        }
+
+    }
 
     /**
      * Compares groups by priority
@@ -188,29 +257,60 @@ public class ServerZone extends Zone {
         return true;
     }
 
-    public Set<String> getIncludedGroups(String group) 
+    public Set<String> getIncludedGroups(String group)
     {
-        Set<String> includedGroups = new HashSet<>();
-        String includedGroupsStr = getGroupPermission(group, FEPermissions.GROUP_INCLUDES);
-        if (includedGroupsStr != null && !includedGroupsStr.isEmpty())
-            for (String g : includedGroupsStr.split(","))
+        Set<String> result = new HashSet<>();
+        String groupsStr = getGroupPermission(group, FEPermissions.GROUP_INCLUDES);
+        if (groupsStr != null && !groupsStr.isEmpty())
+        {
+            groupsStr = groupsStr.replaceAll(" ", "");
+            for (String g : groupsStr.split(","))
                 if (!g.isEmpty())
-                    includedGroups.add(g);
-        return includedGroups;
+                    result.add(g);
+        }
+        return result;
     }
 
-    public void groupIncludeAdd(String group, String otherGroup) 
+    public void groupIncludeAdd(String group, String otherGroup)
     {
-        Set<String> includedGroups = getIncludedGroups(group);
-        includedGroups.add(otherGroup);
-        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(includedGroups, ","));
+        Set<String> groups = getIncludedGroups(group);
+        groups.add(otherGroup);
+        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(groups, ","));
     }
 
-    public void groupIncludeRemove(String group, String otherGroup) 
+    public void groupIncludeRemove(String group, String otherGroup)
     {
-        Set<String> includedGroups = getIncludedGroups(group);
-        includedGroups.remove(otherGroup);
-        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(includedGroups, ","));
+        Set<String> groups = getIncludedGroups(group);
+        groups.remove(otherGroup);
+        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(groups, ","));
+    }
+
+    public Set<String> getParentedGroups(String group)
+    {
+        Set<String> result = new HashSet<>();
+        String groupsStr = getGroupPermission(group, FEPermissions.GROUP_PARENTS);
+        if (groupsStr != null && !groupsStr.isEmpty())
+        {
+            groupsStr = groupsStr.replaceAll(" ", "");
+            for (String g : groupsStr.split(","))
+                if (!g.isEmpty())
+                    result.add(g);
+        }
+        return result;
+    }
+
+    public void groupParentAdd(String group, String otherGroup)
+    {
+        Set<String> groups = getIncludedGroups(group);
+        groups.add(otherGroup);
+        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_PARENTS, StringUtils.join(groups, ","));
+    }
+
+    public void groupParentRemove(String group, String otherGroup)
+    {
+        Set<String> groups = getIncludedGroups(group);
+        groups.remove(otherGroup);
+        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_PARENTS, StringUtils.join(groups, ","));
     }
 
     // ------------------------------------------------------------
@@ -243,55 +343,69 @@ public class ServerZone extends Zone {
         return true;
     }
 
-    public SortedSet<String> getPlayerGroups(UserIdent ident)
+    public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)
     {
-        SortedSet<String> result = getStoredPlayerGroups(ident);
+        SortedSet<GroupEntry> result = getStoredPlayerGroups(ident);
 
         if (ident != null)
         {
             if (ident.hasPlayer() && !ident.isFakePlayer()
                     && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
             {
-                result.add(IPermissionsHelper.GROUP_OPERATORS);
+                result.add(new GroupEntry(this, IPermissionsHelper.GROUP_OPERATORS));
             }
             if (result.isEmpty())
             {
-                result.add(IPermissionsHelper.GROUP_GUESTS);
+                result.add(new GroupEntry(this, IPermissionsHelper.GROUP_GUESTS));
             }
         }
-        result.add(IPermissionsHelper.GROUP_DEFAULT);
+        result.add(new GroupEntry(IPermissionsHelper.GROUP_DEFAULT, 0, 0));
 
         // Get included groups
         Set<String> checkedGroups = new HashSet<>();
         boolean addedGroup;
-        do {
+        do
+        {
             addedGroup = false;
-            for (String existingGroup : new ArrayList<String>(result))
+            for (GroupEntry existingGroup : new ArrayList<GroupEntry>(result))
             {
                 // Check if group was already checked for inclusion
-                if (!checkedGroups.add(existingGroup))
+                if (!checkedGroups.add(existingGroup.getGroup()))
                     continue;
-                String includedGroupsStr = getGroupPermission(existingGroup, FEPermissions.GROUP_INCLUDES);
-                if (includedGroupsStr != null)
+                String p = getGroupPermission(existingGroup.getGroup(), FEPermissions.GROUP_INCLUDES);
+                if (p != null)
                 {
-                    String[] includedGroups = includedGroupsStr.split(",");
-                    for (String includedGroup : includedGroups)
-                        if (!includedGroup.isEmpty())
-                            addedGroup |= result.add(includedGroup);
+                    p = p.replaceAll(" ", "");
+                    String[] groups = p.split(",");
+                    for (String group : groups)
+                        if (!group.isEmpty())
+                            addedGroup |= result.add(new GroupEntry(this, group));
+                }
+
+                p = getGroupPermission(existingGroup.getGroup(), FEPermissions.GROUP_PARENTS);
+                if (p != null)
+                {
+                    p = p.replaceAll(" ", "");
+                    String[] groups = p.split(",");
+                    for (String group : groups)
+                        if (!group.isEmpty())
+                            addedGroup |= result.add(new GroupEntry(this, group, existingGroup.getPriority()));
                 }
             }
-        } while (addedGroup);
+        }
+        while (addedGroup);
 
         return result;
     }
 
-    public SortedSet<String> getStoredPlayerGroups(UserIdent ident)
+    public SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident)
     {
         registerPlayer(ident);
         Set<String> pgs = playerGroups.get(ident);
-        SortedSet<String> result = new TreeSet<String>(new GroupComparator());
+        SortedSet<GroupEntry> result = new TreeSet<GroupEntry>();
         if (pgs != null)
-            result.addAll(pgs);
+            for (String group : pgs)
+                result.add(new GroupEntry(this, group));
         return result;
     }
 
@@ -302,9 +416,9 @@ public class ServerZone extends Zone {
 
     public String getPrimaryPlayerGroup(UserIdent ident)
     {
-        Iterator<String> it = getPlayerGroups(ident).iterator();
+        Iterator<GroupEntry> it = getPlayerGroups(ident).iterator();
         if (it.hasNext())
-            return it.next();
+            return it.next().getGroup();
         else
             return null;
     }

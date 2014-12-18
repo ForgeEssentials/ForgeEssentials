@@ -9,11 +9,13 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.commons.selections.WorldPoint;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -32,7 +34,7 @@ public class RespawnHandler {
         UserIdent ident = new UserIdent(player);
         if (location == null)
             location = new WarpPoint(player);
-        String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null, APIRegistry.perms.getPlayerGroups(ident), FEPermissions.SPAWN, true);
+        String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null, GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN, true);
         WorldPoint point = null;
         if (spawnProperty == null)
             return null;
