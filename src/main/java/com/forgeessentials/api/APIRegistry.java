@@ -104,6 +104,12 @@ public class APIRegistry {
             {
                 try
                 {
+                    final int dimId = Integer.parseInt(name);
+                    if (DimensionManager.isDimensionRegistered(dimId))
+                    {
+                        if (DimensionManager.getWorld(dimId) == null)
+                            DimensionManager.initDimension(dimId);
+                    }
                     return DimensionManager.getWorld(Integer.parseInt(name));
                 }
                 catch (NumberFormatException e)
