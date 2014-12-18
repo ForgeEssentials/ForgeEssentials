@@ -14,19 +14,19 @@ import javax.net.ssl.SSLContext;
 /**
  *
  */
-public class RemoteServer implements Runnable {
+public class Server implements Runnable {
 
     private final ServerSocket serverSocket;
 
     private Thread serverThread;
 
-    private Set<RemoteSession> sessions = new HashSet<>();
+    private Set<Session> sessions = new HashSet<>();
 
     /**
      * @param port
      * @param hostname
      */
-    public RemoteServer(ServerSocket socket)
+    public Server(ServerSocket socket)
     {
         serverSocket = socket;
         serverThread = new Thread(this);
@@ -38,7 +38,7 @@ public class RemoteServer implements Runnable {
      * @param hostname
      * @throws IOException
      */
-    public RemoteServer(int port, String hostname) throws IOException
+    public Server(int port, String hostname) throws IOException
     {
         this(new ServerSocket(port, 0, InetAddress.getByName(hostname)));
     }
@@ -49,7 +49,7 @@ public class RemoteServer implements Runnable {
      * @throws IOException
      * @throws GeneralSecurityException
      */
-    public RemoteServer(int port, String hostname, SSLContext sslCtx) throws IOException, GeneralSecurityException
+    public Server(int port, String hostname, SSLContext sslCtx) throws IOException, GeneralSecurityException
     {
         this(sslCtx.getServerSocketFactory().createServerSocket(port, 0, InetAddress.getByName(hostname)));
     }
@@ -80,7 +80,7 @@ public class RemoteServer implements Runnable {
             try
             {
                 Socket s = serverSocket.accept();
-                RemoteSession session = new RemoteSession(s);
+                Session session = new Session(s);
                 sessions.add(session);
             }
             catch (SocketException e)

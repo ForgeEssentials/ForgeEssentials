@@ -41,12 +41,6 @@ public class SelectionEventHandler extends ServerEventHandler {
         }
 
         WorldPoint point = new WorldPoint(player.dimension, event.x, event.y, event.z);
-        if (!APIRegistry.perms.checkUserPermission(new UserIdent(player), point, "fe.core.pos"))
-        {
-            OutputHandler.chatError(player,
-                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-            return;
-        }
 
         // left Click
         if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))

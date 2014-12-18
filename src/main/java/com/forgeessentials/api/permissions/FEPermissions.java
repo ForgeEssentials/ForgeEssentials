@@ -32,6 +32,7 @@ public final class FEPermissions {
     public static final String GROUP_ID = GROUP + ".id";
 	public static final String GROUP_PRIORITY = GROUP + ".priority";
     public static final String GROUP_INCLUDES = GROUP + ".includes";
+    public static final String GROUP_PARENTS = GROUP + ".parents";
 
 	public static final int GROUP_PRIORITY_DEFAULT = 20;
 

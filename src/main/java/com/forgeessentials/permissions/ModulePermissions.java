@@ -150,6 +150,8 @@ public class ModulePermissions extends ConfigLoaderBase {
                 "(optional) Permission to keep groups saved, even if they have no permissions set.");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_ID, "Group ID");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PRIORITY, "Group priority");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_INCLUDES, "Groups that are included using the included group's priority");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PARENTS, "Groups that are included using the including group's priority");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER, "Player information");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_GROUPS, "Comma separated list of player groups");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_NAME, "Player name");

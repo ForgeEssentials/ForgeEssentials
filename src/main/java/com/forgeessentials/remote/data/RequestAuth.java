@@ -5,8 +5,8 @@ package com.forgeessentials.remote.data;
  */
 public class RequestAuth {
 
-    public String id;
+    public String username;
     
-    public String pass;
+    public String password;
     
 }
