@@ -28,7 +28,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.APIRegistry.NamedWorldHandler;
+import com.forgeessentials.api.NamedWorldHandler;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;

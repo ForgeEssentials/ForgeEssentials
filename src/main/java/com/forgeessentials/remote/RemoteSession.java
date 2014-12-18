@@ -90,6 +90,9 @@ public class RemoteSession implements Runnable {
         }
     }
 
+    /**
+     * Terminates the session
+     */
     public void close()
     {
         try
