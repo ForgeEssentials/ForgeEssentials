@@ -235,14 +235,14 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
             if (node.startsWith(filter))
                 return;
         }
-        String msg1 = String.format("§b%s§f = §%s%s", permissionNode, PERMISSION_FALSE.equals(value) ? "4" : "2", value);
+        String msg1 = String.format("\u00a7b%s\u00a7f = \u00a7%s%s", permissionNode, PERMISSION_FALSE.equals(value) ? "4" : "2", value);
         String msg2;
         if (zone == null)
-            msg2 = "§4  permission not set";
+            msg2 = "\u00a74  permission not set";
         else if (ident == null)
-            msg2 = String.format("§f  zone [§5%s§f] group [§5%s§f]", zone.getName(), group);
+            msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] group [\u00a75%s\u00a7f]", zone.getName(), group);
         else
-            msg2 = String.format("§f  zone [§5%s§f] user [§5%s§f]", zone.getName(), ident.getUsernameOrUUID());
+            msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] user [\u00a75%s\u00a7f]", zone.getName(), ident.getUsernameOrUUID());
         for (ICommandSender sender : permissionDebugUsers)
         {
             OutputHandler.chatNotification(sender, msg1);
