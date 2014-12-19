@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.permissions.IPermissionsProvider;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.UserIdent;
@@ -469,7 +470,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * 
      * @param ident
      */
-    SortedSet<String> getPlayerGroups(UserIdent ident);
+    SortedSet<GroupEntry> getPlayerGroups(UserIdent ident);
 
     /**
      * Get all groups the player belongs to.
@@ -477,7 +478,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * 
      * @param ident
      */
-    SortedSet<String> getStoredPlayerGroups(UserIdent ident);
+    SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident);
 
     // ---------------------------------------------------------------------------
 

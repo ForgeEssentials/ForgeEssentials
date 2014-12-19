@@ -30,6 +30,7 @@ import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
@@ -38,7 +39,6 @@ import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -58,9 +58,9 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     protected Timer persistenceTimer;
 
     protected boolean dirty;
-    
+
     public Set<ICommandSender> permissionDebugUsers = new HashSet<>();
-    
+
     public List<String> permissionDebugFilters = new ArrayList<>();
 
     // ------------------------------------------------------------
@@ -235,21 +235,21 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
             if (node.startsWith(filter))
                 return;
         }
-        String msg1 = String.format("§b%s§f = §%s%s", permissionNode, PERMISSION_FALSE.equals(value) ? "4" : "2", value);
+        String msg1 = String.format("\u00a7b%s\u00a7f = \u00a7%s%s", permissionNode, PERMISSION_FALSE.equals(value) ? "4" : "2", value);
         String msg2;
         if (zone == null)
-            msg2 = "§4  permission not set";
+            msg2 = "\u00a74  permission not set";
         else if (ident == null)
-            msg2 = String.format("§f  zone [§5%s§f] group [§5%s§f]", zone.getName(), group);
+            msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] group [\u00a75%s\u00a7f]", zone.getName(), group);
         else
-            msg2 = String.format("§f  zone [§5%s§f] user [§5%s§f]", zone.getName(), ident.getUsernameOrUUID());
+            msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] user [\u00a75%s\u00a7f]", zone.getName(), ident.getUsernameOrUUID());
         for (ICommandSender sender : permissionDebugUsers)
         {
             OutputHandler.chatNotification(sender, msg1);
             OutputHandler.chatNotification(sender, msg2);
         }
     }
-    
+
     // ------------------------------------------------------------
     // -- Events
     // ------------------------------------------------------------
@@ -272,7 +272,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
-    	getWorldZone(e.world.provider.dimensionId);
+        getWorldZone(e.world.provider.dimensionId);
     }
 
     // ------------------------------------------------------------
@@ -557,7 +557,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
             }
         }
 
-        return checkBooleanPermission(getPermission(ident, loc, area, getPlayerGroups(ident), permissionNode, false));
+        return checkBooleanPermission(getPermission(ident, loc, area, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
         // return checkPermission(player, node);
     }
 
@@ -715,13 +715,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     }
 
     @Override
-    public SortedSet<String> getPlayerGroups(UserIdent ident)
+    public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)
     {
         return getServerZone().getPlayerGroups(ident);
     }
 
     @Override
-    public SortedSet<String> getStoredPlayerGroups(UserIdent ident)
+    public SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident)
     {
         return getServerZone().getStoredPlayerGroups(ident);
     }
@@ -748,14 +748,14 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     public boolean checkPermission(EntityPlayer player, String permissionNode)
     {
         UserIdent ident = new UserIdent(player);
-        return checkBooleanPermission(getPermission(ident, new WorldPoint(player), null, getPlayerGroups(ident), permissionNode, false));
+        return checkBooleanPermission(getPermission(ident, new WorldPoint(player), null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
     @Override
     public String getPermissionProperty(EntityPlayer player, String permissionNode)
     {
         UserIdent ident = new UserIdent(player);
-        return getPermission(ident, new WorldPoint(player), null, getPlayerGroups(ident), permissionNode, true);
+        return getPermission(ident, new WorldPoint(player), null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
     }
 
     // ------------------------------------------------------------
@@ -763,14 +763,15 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public boolean checkUserPermission(UserIdent ident, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null, getPlayerGroups(ident),
-                permissionNode, false));
+        return checkBooleanPermission(getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null,
+                GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
     @Override
     public String getUserPermissionProperty(UserIdent ident, String permissionNode)
     {
-        return getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null, getPlayerGroups(ident), permissionNode, true);
+        return getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null, GroupEntry.toList(getPlayerGroups(ident)),
+                permissionNode, true);
     }
 
     @Override
@@ -792,13 +793,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public boolean checkUserPermission(UserIdent ident, WorldPoint targetPoint, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(ident, targetPoint, null, getPlayerGroups(ident), permissionNode, false));
+        return checkBooleanPermission(getPermission(ident, targetPoint, null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
     @Override
     public String getUserPermissionProperty(UserIdent ident, WorldPoint targetPoint, String permissionNode)
     {
-        return getPermission(ident, targetPoint, null, getPlayerGroups(ident), permissionNode, true);
+        return getPermission(ident, targetPoint, null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
     }
 
     // ------------------------------------------------------------
@@ -806,13 +807,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public boolean checkUserPermission(UserIdent ident, WorldArea targetArea, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(ident, null, targetArea, getPlayerGroups(ident), permissionNode, false));
+        return checkBooleanPermission(getPermission(ident, null, targetArea, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
     @Override
     public String getUserPermissionProperty(UserIdent ident, WorldArea targetArea, String permissionNode)
     {
-        return getPermission(ident, null, targetArea, getPlayerGroups(ident), permissionNode, true);
+        return getPermission(ident, null, targetArea, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
     }
 
     // ------------------------------------------------------------
@@ -820,13 +821,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public boolean checkUserPermission(UserIdent ident, Zone zone, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(getGlobalZones(zone), ident, getPlayerGroups(ident), permissionNode, false));
+        return checkBooleanPermission(getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
     @Override
     public String getUserPermissionProperty(UserIdent ident, Zone zone, String permissionNode)
     {
-        return getPermission(getGlobalZones(zone), ident, getPlayerGroups(ident), permissionNode, true);
+        return getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
     }
 
     // ------------------------------------------------------------

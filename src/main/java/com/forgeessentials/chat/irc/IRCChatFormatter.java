@@ -145,4 +145,14 @@ public class IRCChatFormatter {
         IRCHelper.postIRC("<" + event.username + "> " + event.message);
     }
 
+    public static String ircHeader;
+
+    public static String formatIRCHeader(String channel, String ircUser)
+    {
+        String format = ircHeader;
+        format = FunctionHelper.replaceAllIgnoreCase(format, "%channel", channel);
+        format = FunctionHelper.replaceAllIgnoreCase(format, "%ircUser", ircUser);
+        return FunctionHelper.formatColors(format);
+    }
+
 }

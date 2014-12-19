@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -38,6 +37,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -574,18 +574,16 @@ public final class FunctionHelper {
 		return fix;
 	}
 
-	public static String getPlayerGroupPrefixSuffix(UserIdent player, boolean isSuffix)
-	{
-		String fix = "";
-		Set<String> groups = APIRegistry.perms.getPlayerGroups(player);
-		for (String group : groups)
-		{
-			String s = APIRegistry.perms.getServerZone().getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
-			if (s != null)
-				fix += s;
-		}
-		return fix;
-	}
+    public static String getPlayerGroupPrefixSuffix(UserIdent player, boolean isSuffix)
+    {
+        for (GroupEntry group : APIRegistry.perms.getPlayerGroups(player))
+        {
+            String s = APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
+            if (s != null)
+                return s;
+        }
+        return "";
+    }
 
 	public static String getFormattedPlayersOnline()
 	{
