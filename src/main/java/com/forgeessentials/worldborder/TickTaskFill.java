@@ -6,6 +6,8 @@ import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.RegionFileCache;
+import net.minecraft.world.gen.ChunkProviderServer;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.IReconstructData;
@@ -153,30 +155,33 @@ public class TickTaskFill implements ITickTask {
 
         for (int i = 0; i < speed; i++)
         {
-            try
-            {
-                Chunk chunk = world.theChunkProviderServer.loadChunk(X, Z);
-                chunk.setChunkModified();
-                world.theChunkProviderServer.safeSaveChunk(chunk);
-                world.theChunkProviderServer.unloadQueuedChunks();
-                world.theChunkProviderServer.unloadChunksIfNotNearSpawn(X, Z);
-
-                todo--;
-
-                next();
-                if (isComplete())
-                {
-                    break;
-                }
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+			/* skip over chunks that already exist (we use the region cache so
+			 * as to not load them) */
+			while(!RegionFileCache.createOrLoadRegionFile(
+					world.getChunkSaveLocation(), X >> 5, Z >> 5)
+					.chunkExists(X & 0x1F, Z & 0x1F))
+			{
+				--todo;
+				if (next())
+					return;
+			}
+			
+			/* get and populate the chunk manually so that it does not get
+			 * fully loaded in, this saves ram and increases performance */
+			ChunkProviderServer provider =
+					(ChunkProviderServer)world.getChunkProvider();
+			
+			Chunk chunk = provider.currentChunkProvider.loadChunk(X, Z);
+			chunk.populateChunk(provider, provider, X, Z);
+			provider.safeSaveChunk(chunk);
+			
+			--todo;
+            if (next())
+                return;
         }
     }
 
-    private void next()
+    private boolean next()
     {
         // 1 = square
         if (border.shapeByte == 1)
@@ -195,6 +200,7 @@ public class TickTaskFill implements ITickTask {
                 else
                 {
                     isComplete = true;
+                    return true;
                 }
             }
         }
@@ -217,6 +223,7 @@ public class TickTaskFill implements ITickTask {
                     else
                     {
                         isComplete = true;
+                        return true;
                     }
                 }
 
@@ -231,6 +238,8 @@ public class TickTaskFill implements ITickTask {
             isComplete = true;
             throw new RuntimeException("WTF?" + border.shapeByte);
         }
+        
+        return false;
     }
 
     @Override
