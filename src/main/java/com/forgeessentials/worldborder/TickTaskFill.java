@@ -1,11 +1,20 @@
 package com.forgeessentials.worldborder;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import net.minecraft.command.ICommandSender;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.MinecraftException;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
 import net.minecraft.world.gen.ChunkProviderServer;
 
@@ -61,6 +70,8 @@ public class TickTaskFill implements ITickTask
 	private int X;
 	@SaveableField
 	private int Z;
+
+	Method writeChunkToNBT = null;
 
 	private TickTaskFill(IReconstructData tag)
 	{
@@ -133,6 +144,7 @@ public class TickTaskFill implements ITickTask
 			}
 		}
 
+		setupWriteChunkToNBT();
 		TaskRegistry.registerTask(this);
 
 		OutputHandler.chatWarning(source, "This filler will take about "
@@ -192,7 +204,7 @@ public class TickTaskFill implements ITickTask
 
 			Chunk chunk = provider.currentChunkProvider.loadChunk(X, Z);
 			chunk.populateChunk(provider, provider, X, Z);
-			provider.safeSaveChunk(chunk);
+			saveChunk(provider, chunk);
 
 			--todo;
 			if (next())
@@ -318,5 +330,86 @@ public class TickTaskFill implements ITickTask
 		this.speed = speed;
 		OutputHandler.chatWarning(source, "Changed speed of filler " + dimID
 				+ " to " + speed);
+	}
+
+	/**
+	 * Save the provided chunk without involving the provider directly or
+	 * generating events.
+	 * 
+	 * @param provider
+	 *            The WorldServer chunk provider
+	 * @param chunk
+	 *            The chunk to save
+	 */
+	private void saveChunk(ChunkProviderServer provider, Chunk chunk)
+	{
+		AnvilChunkLoader loader = (AnvilChunkLoader) provider.currentChunkLoader;
+		try
+		{
+			NBTTagCompound nbttagcompound = new NBTTagCompound();
+			NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+			nbttagcompound.setTag("Level", nbttagcompound1);
+			this.writeChunkToNBT(loader, chunk, world, nbttagcompound1);
+			this.writeChunkNBTTags(loader, chunk, nbttagcompound);
+		} catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+	}
+
+	/*
+	 * obtain the method call for AnvilChunkLoader.writeChunkToNBT and make it
+	 * accessible
+	 */
+	private void setupWriteChunkToNBT()
+	{
+		@SuppressWarnings("rawtypes")
+		Class[] cArg = new Class[] { Chunk.class, World.class,
+				NBTTagCompound.class };
+		try
+		{
+			writeChunkToNBT = AnvilChunkLoader.class.getDeclaredMethod(
+					"func_75820_a", cArg); // writeChunkToNBT
+		} catch (NoSuchMethodException e)
+		{
+			try
+			{
+				writeChunkToNBT = AnvilChunkLoader.class.getDeclaredMethod(
+						"writeChunkToNBT", cArg);
+			} catch (NoSuchMethodException e1)
+			{
+				throw new RuntimeException(
+						"TickTaskFill: Unable to obtain access to private method AnvilChunkLoader.writeChunkToNBT");
+			}
+		}
+
+		writeChunkToNBT.setAccessible(true);
+	}
+
+	/* wrapper for AnvilChunkLoader.writeChunkToNBT */
+	private void writeChunkToNBT(AnvilChunkLoader loader, Chunk chunk,
+			World world, NBTTagCompound tag)
+	{
+		Object[] args = new Object[] { chunk, world, tag };
+		try
+		{
+			writeChunkToNBT.invoke(loader, args);
+		} catch (IllegalAccessException | IllegalArgumentException e)
+		{
+			e.printStackTrace();
+		} catch (InvocationTargetException e)
+		{
+			e.getCause().printStackTrace();
+		}
+	}
+
+	private void writeChunkNBTTags(AnvilChunkLoader loader, Chunk chunk,
+			NBTTagCompound tag) throws IOException
+	{
+		DataOutputStream dataoutputstream = RegionFileCache
+				.getChunkOutputStream(world.getChunkSaveLocation(),
+						chunk.xPosition, chunk.zPosition);
+		CompressedStreamTools.write(tag, dataoutputstream);
+		dataoutputstream.close();
 	}
 }
