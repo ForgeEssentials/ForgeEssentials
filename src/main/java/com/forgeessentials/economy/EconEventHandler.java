@@ -5,6 +5,7 @@ import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
+import net.minecraftforge.permissions.PermissionsManager;
 
 public class EconEventHandler extends ServerEventHandler
 {
@@ -14,7 +15,7 @@ public class EconEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void onXPPickup(PlayerPickupXpEvent e)
     {
-        if (!convertXPDrops)
+        if (!convertXPDrops || !PermissionsManager.checkPermission(e.entityPlayer, ModuleEconomy.PICKUP_XP_PERM))
         {
             return;
         }

@@ -26,6 +26,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 /**
  * Call the WalletHandler class when working with Economy
@@ -34,6 +36,7 @@ import net.minecraftforge.common.config.Configuration;
 public class ModuleEconomy extends ConfigLoaderBase {
 
     public static final String CONFIG_CAT = "Economy";
+    public static final String PICKUP_XP_PERM = "fe.economy.convertXP";
     public static String currencySingular;
     public static String currencyPlural;
     
@@ -71,6 +74,8 @@ public class ModuleEconomy extends ConfigLoaderBase {
         FunctionHelper.registerServerCommand(new CommandSellPlot());
         FunctionHelper.registerServerCommand(new CommandSetPlot());
         FunctionHelper.registerServerCommand(new CommandListPlot());
+
+        PermissionsManager.registerPermission(PICKUP_XP_PERM, RegisteredPermValue.TRUE);
     }
 
     @SubscribeEvent
