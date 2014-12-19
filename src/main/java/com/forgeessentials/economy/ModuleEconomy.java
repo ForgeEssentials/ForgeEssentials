@@ -52,6 +52,7 @@ public class ModuleEconomy extends ConfigLoaderBase {
     {
         APIRegistry.wallet = new WalletHandler();
         FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
+        new EconEventHandler();
     }
 
     @SubscribeEvent
@@ -85,6 +86,9 @@ public class ModuleEconomy extends ConfigLoaderBase {
         currencyPlural = config.get(CONFIG_CAT, "currencyPlural", "gold", "Name of plural currency unit").getString();
         startbudget = config.get(CONFIG_CAT, "startbudget", 100, "Starting amount of money for players.").getInt();
         psfPrice = config.get(CONFIG_CAT, "multiplier", 1, "Multiplier for automatic plot valuation.").getInt();
+        EconEventHandler.convertXPDrops = config.get(CONFIG_CAT, "convertXPDrops", "Allow players picking up XP orbs to gain currency as well.").getBoolean(true);
+        EconEventHandler.threshold = config.get(CONFIG_CAT, "threshold", "Amount of XP that can be converted to 1 currency").getInt(10);
+
     }
 
     @Override
