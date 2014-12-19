@@ -7,6 +7,10 @@ import com.forgeessentials.worldborder.WorldBorder;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 
+/**
+ * @author UNKNOWN (Dries007?)
+ * @author gnif
+ */
 public class knockback implements IEffect {
     @Override
     public void registerConfig(Configuration config, String category)
