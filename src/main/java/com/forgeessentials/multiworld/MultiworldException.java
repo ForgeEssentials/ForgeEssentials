@@ -7,8 +7,8 @@ public class MultiworldException extends Exception
 	public static enum Type
     {
         ALREADY_EXISTS("A world with that name already exists"),
-        NO_PROVIDER("No world provider %s found!"),
-        NO_WORLDTYPE("No world type %s found!");
+        NO_PROVIDER("There is no provider by that name"),
+        NO_WORLDTYPE("There is no world type by that name");
 
         public String error;
         private Type(String error)
