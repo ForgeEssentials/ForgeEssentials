@@ -16,7 +16,7 @@ public interface RemoteSession {
      * @throws SessionClosedException
      * @throws IOException 
      */
-    void sendMessage(Object obj) throws IOException;
+    void sendMessage(RemoteResponse obj) throws IOException;
 
     /**
      * Returns the hostname of the remote client

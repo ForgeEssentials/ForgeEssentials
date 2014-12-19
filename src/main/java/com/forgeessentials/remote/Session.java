@@ -2,18 +2,20 @@ package com.forgeessentials.remote;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import com.forgeessentials.api.remote.RemoteHandler;
+import com.forgeessentials.api.remote.RemoteRequest;
+import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
-import com.forgeessentials.remote.data.RemoteRequest;
-import com.forgeessentials.remote.data.Response;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 /**
  *
@@ -25,8 +27,6 @@ public class Session implements Runnable, RemoteSession {
     private final Socket socket;
 
     private final Thread thread;
-
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     private UserIdent userIdent;
 
@@ -85,7 +85,10 @@ public class Session implements Runnable, RemoteSession {
     {
         try
         {
-            RemoteRequest request = gson.fromJson(message, RemoteRequest.class);
+            Type type = new TypeToken<RemoteRequest<JsonElement>>() {/**/
+            }.getType();
+            RemoteRequest<JsonElement> request = getGson().fromJson(message, type);
+
             OutputHandler.felog.info(String.format("[remote] Request [%s]: %s", request.id, request.data.toString()));
 
             if (request.auth != null)
@@ -98,7 +101,7 @@ public class Session implements Runnable, RemoteSession {
                     String password = "password";
                     if (!request.auth.password.equals(password))
                     {
-                        close("authentication failed");
+                        close("authentication failed", request.rid);
                         return;
                     }
                 }
@@ -106,17 +109,19 @@ public class Session implements Runnable, RemoteSession {
 
             if (userIdent == null && !ModuleRemote.getInstance().allowUnauthenticatedAccess())
             {
-                close("need authentication");
+                close("need authentication", request.rid);
                 return;
             }
 
             RemoteHandler handler = ModuleRemote.getInstance().getHandler(request.id);
             if (handler == null)
             {
-                sendMessage(new Response.Failure("unknown message identifie"));
-                return;
+                sendMessage(new RemoteResponse.Error(request.rid, "unknown message identifie"));
             }
-            sendMessage(handler.handle(this, request.data));
+            else
+            {
+                sendMessage(handler.handle(this, request));
+            }
         }
         catch (IllegalArgumentException e)
         {
@@ -134,10 +139,10 @@ public class Session implements Runnable, RemoteSession {
      * @see com.forgeessentials.api.remote.RemoteSession#sendMessage(java.lang.Object)
      */
     @Override
-    public void sendMessage(Object obj) throws IOException
+    public void sendMessage(RemoteResponse obj) throws IOException
     {
         OutputStreamWriter ow = new OutputStreamWriter(socket.getOutputStream());
-        ow.write(gson.toJson(obj) + SEPARATOR);
+        ow.write(getGson().toJson(obj) + SEPARATOR);
         ow.flush();
     }
 
@@ -194,10 +199,10 @@ public class Session implements Runnable, RemoteSession {
      * 
      * @throws IOException
      */
-    public void close(String error) throws IOException
+    public void close(String error, int rid) throws IOException
     {
         OutputHandler.felog.warning(String.format("[remote] Error: %s. Terminating session to %s", error, getRemoteAddress()));
-        sendMessage(new Response.Failure(error));
+        sendMessage(new RemoteResponse.Error(rid, error));
         close();
     }
 
@@ -210,6 +215,14 @@ public class Session implements Runnable, RemoteSession {
     public boolean isClosed()
     {
         return socket.isClosed();
+    }
+
+    /**
+     * Get the Gson instance from ModuleRemote
+     */
+    public Gson getGson()
+    {
+        return ModuleRemote.getInstance().getGson();
     }
 
 }

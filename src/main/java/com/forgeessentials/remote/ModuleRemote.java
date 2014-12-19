@@ -7,17 +7,19 @@ import java.util.Map;
 
 import net.minecraftforge.common.config.Configuration;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
-import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.remote.handler.GetPlayerHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import com.google.gson.JsonObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -25,6 +27,9 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     private static final String CONFIG_CAT = "Remote";
+
+    @FEModule.Instance
+    private static ModuleRemote instance;
 
     private int port;
 
@@ -34,12 +39,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     private boolean allowUnauthenticatedAccess;
 
-    @FEModule.Instance
-    private static ModuleRemote instance;
-
     private Server server;
 
     private Map<String, RemoteHandler> handlers = new HashMap<>();
+
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     /**
      * Get the instance of ModuleRemote
@@ -52,24 +56,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        registerHandler(new RemoteHandler() {
-            @Override
-            public Object handle(RemoteSession session, JsonObject data)
-            {
-                OutputHandler.felog.info("[remote] test message = " + data.toString());
-
-                JsonObject result = new JsonObject();
-                result.addProperty("success", true);
-                result.addProperty("state", "happy");
-                return result;
-            }
-
-            @Override
-            public String getID()
-            {
-                return "test";
-            }
-        });
+        APIRegistry.remoteManager = this;
+        
+        new GetPlayerHandler().register();
     }
 
     @SubscribeEvent
@@ -144,6 +133,15 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     public boolean allowUnauthenticatedAccess()
     {
         return allowUnauthenticatedAccess;
+    }
+
+    /**
+     * Get Gson instance used for remote module
+     */
+    @Override
+    public Gson getGson()
+    {
+        return gson;
     }
 
 }

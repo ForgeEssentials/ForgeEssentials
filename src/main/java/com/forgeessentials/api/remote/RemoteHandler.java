@@ -1,6 +1,6 @@
 package com.forgeessentials.api.remote;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 
 /**
  *
@@ -9,6 +9,6 @@ public interface RemoteHandler {
 
     String getID();
 
-    Object handle(RemoteSession session, JsonObject data);
+    RemoteResponse handle(RemoteSession session, RemoteRequest<JsonElement> data);
 
 }

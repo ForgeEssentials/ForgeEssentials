@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.remote.RemoteHandler;
+import com.forgeessentials.api.remote.AbstractRemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 
 import cpw.mods.fml.common.eventhandler.EventBus;
@@ -33,8 +33,8 @@ public class APIRegistry {
     public static NamedWorldHandler namedWorldHandler = new NamedWorldHandler.DefaultNamedWorldHandler();
 
     /**
-     * This manager allows registering custom {@link RemoteHandler}s for remote-module. Please be careful to use unique
-     * names in your handlers for {@link RemoteHandler#getID()}
+     * This manager allows registering custom {@link AbstractRemoteHandler}s for remote-module. Please be careful to use unique
+     * names in your handlers for {@link AbstractRemoteHandler#getID()}
      */
     public static RemoteManager remoteManager = new RemoteManager.DefaultRemoteHandlerManager();
 

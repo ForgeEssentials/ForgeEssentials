@@ -1,4 +1,4 @@
-package com.forgeessentials.remote.data;
+package com.forgeessentials.api.remote;
 
 /**
  * Represents an authentication token for remote sessions
