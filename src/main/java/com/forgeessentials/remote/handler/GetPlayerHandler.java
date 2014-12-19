@@ -9,6 +9,8 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
+import com.forgeessentials.remote.handler.GetPlayerHandler.Request;
+import com.forgeessentials.remote.handler.GetPlayerHandler.Response;
 import com.forgeessentials.util.UserIdent;
 
 public class GetPlayerHandler extends GenericRemoteHandler<Request> {
@@ -24,7 +26,7 @@ public class GetPlayerHandler extends GenericRemoteHandler<Request> {
         UserIdent ident = new UserIdent(request.data.username);
         if (!ident.hasPlayer())
             return new RemoteResponse.Error(request.rid, "player not found");
-        
+
         Response response = new Response(ident.getUuid().toString(), ident.getUsername());
         for (String flag : request.data.flags)
         {
@@ -41,32 +43,32 @@ public class GetPlayerHandler extends GenericRemoteHandler<Request> {
                 break;
             }
         }
-        
-        return new RemoteResponse<Response>(request.rid, response);
+
+        return new RemoteResponse<Response>(response);
     }
 
-}
+    public static class Request {
 
-class Request {
+        public String username;
 
-    public String username;
+        public Set<String> flags;
 
-    public Set<String> flags;
-
-}
-
-class Response {
-
-    public String uuid;
-
-    public String username;
-    
-    public Map<String, Object> data = new HashMap<>();
-    
-    public Response(String uuid, String username)
-    {
-        this.uuid = uuid;
-        this.username = username;
     }
-    
+
+    public static class Response {
+
+        public String uuid;
+
+        public String username;
+
+        public Map<String, Object> data = new HashMap<>();
+
+        public Response(String uuid, String username)
+        {
+            this.uuid = uuid;
+            this.username = username;
+        }
+
+    }
+
 }

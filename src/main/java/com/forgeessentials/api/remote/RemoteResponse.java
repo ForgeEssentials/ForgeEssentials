@@ -5,11 +5,18 @@ package com.forgeessentials.api.remote;
  */
 public class RemoteResponse<T> {
 
-    public final int rid;
+    public int rid;
 
     public final boolean success;
 
     public final T data;
+
+    public RemoteResponse(T data)
+    {
+        this.rid = 0;
+        this.success = true;
+        this.data = data;
+    }
 
     public RemoteResponse(int rid, T data)
     {

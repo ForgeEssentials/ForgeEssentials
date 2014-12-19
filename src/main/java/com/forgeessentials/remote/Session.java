@@ -81,6 +81,7 @@ public class Session implements Runnable, RemoteSession {
      * @param message
      * @throws IOException
      */
+    @SuppressWarnings("unchecked")
     protected void processMessage(String message) throws IOException
     {
         try
@@ -120,7 +121,12 @@ public class Session implements Runnable, RemoteSession {
             }
             else
             {
-                sendMessage(handler.handle(this, request));
+                RemoteResponse response = handler.handle(this, request);
+                if (response != null)
+                {
+                    response.rid = request.rid;
+                    sendMessage(response);
+                }
             }
         }
         catch (IllegalArgumentException e)

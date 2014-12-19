@@ -5,13 +5,13 @@ package com.forgeessentials.api.remote;
  */
 public class RemoteRequest<T> {
 
-    public final String id;
+    public String id;
 
-    public final int rid;
+    public int rid;
 
-    public final RequestAuth auth;
+    public RequestAuth auth;
 
-    public final T data;
+    public T data;
 
     public RemoteRequest(String id, int rid, RequestAuth auth, T data)
     {
