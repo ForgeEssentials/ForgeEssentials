@@ -1,17 +1,17 @@
 package com.forgeessentials.api.remote;
 
-import com.forgeessentials.api.APIRegistry;
 import com.google.gson.JsonElement;
 
 /**
  *
- * @param <T> Type of the payload
+ * @param <T>
+ *            Type of the payload
  */
 public abstract class GenericRemoteHandler<T> extends AbstractRemoteHandler {
 
     private final Class<T> dataClass;
 
-    public GenericRemoteHandler(Class<T> dataClass, String id)
+    public GenericRemoteHandler(String id, Class<T> dataClass)
     {
         super(id);
         this.dataClass = dataClass;
@@ -32,16 +32,15 @@ public abstract class GenericRemoteHandler<T> extends AbstractRemoteHandler {
     @SuppressWarnings("unchecked")
     public RemoteResponse handle(RemoteSession session, RemoteRequest<JsonElement> request)
     {
-
         if (request.data == null || dataClass.equals(JsonElement.class))
             return handleData(session, (RemoteRequest) request);
         else
-            return handleData(session, new RemoteRequest(request.id, request.rid, request.auth, APIRegistry.remoteManager.getGson().fromJson(request.data, dataClass)));
+            return handleData(session, session.transformRemoteRequest(request, dataClass));
     }
 
     /**
      * Handle request with deserialized payload
      */
-    protected abstract RemoteResponse handleData(RemoteSession session, RemoteRequest<T> data);
+    protected abstract RemoteResponse handleData(RemoteSession session, RemoteRequest<T> request);
 
 }

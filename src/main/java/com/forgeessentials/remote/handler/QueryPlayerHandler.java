@@ -9,22 +9,23 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
-import com.forgeessentials.remote.handler.GetPlayerHandler.Request;
 import com.forgeessentials.util.UserIdent;
 
-public class GetPlayerHandler extends GenericRemoteHandler<Request> {
+public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.Request> {
 
-    public GetPlayerHandler()
+    public static final String ID = "query_player";
+
+    public QueryPlayerHandler()
     {
-        super(Request.class, "get_player");
+        super(ID, QueryPlayerHandler.Request.class);
     }
 
     @Override
-    protected RemoteResponse handleData(RemoteSession session, RemoteRequest<Request> request)
+    protected RemoteResponse handleData(RemoteSession session, RemoteRequest<QueryPlayerHandler.Request> request)
     {
         UserIdent ident = new UserIdent(request.data.username);
         if (!ident.hasPlayer())
-            return new RemoteResponse(request.rid, "player not found");
+            return RemoteResponse.error(request, "player not found");
 
         Response response = new Response(ident.getUuid().toString(), ident.getUsername());
         for (String flag : request.data.flags)
@@ -43,7 +44,7 @@ public class GetPlayerHandler extends GenericRemoteHandler<Request> {
             }
         }
 
-        return new RemoteResponse<Response>(response);
+        return new RemoteResponse<QueryPlayerHandler.Response>(request, response);
     }
 
     public static class Request {

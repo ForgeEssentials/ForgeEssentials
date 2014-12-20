@@ -13,7 +13,8 @@ import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.remote.handler.GetPlayerHandler;
+import com.forgeessentials.remote.handler.PushChatHandler;
+import com.forgeessentials.remote.handler.QueryPlayerHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -57,8 +58,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     public void load(FEModuleInitEvent e)
     {
         APIRegistry.remoteManager = this;
-        
-        new GetPlayerHandler().register();
+
+        new QueryPlayerHandler().register();
+        new PushChatHandler().register();
     }
 
     @SubscribeEvent

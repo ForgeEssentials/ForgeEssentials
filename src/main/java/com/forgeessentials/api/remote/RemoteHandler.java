@@ -9,6 +9,6 @@ public interface RemoteHandler {
 
     String getID();
 
-    RemoteResponse handle(RemoteSession session, RemoteRequest<JsonElement> data);
+    RemoteResponse handle(RemoteSession session, RemoteRequest<JsonElement> request);
 
 }

@@ -102,7 +102,7 @@ public class Session implements Runnable, RemoteSession {
                     String password = "password";
                     if (!request.auth.password.equals(password))
                     {
-                        close("authentication failed", request.rid);
+                        close("authentication failed", request);
                         return;
                     }
                 }
@@ -110,14 +110,14 @@ public class Session implements Runnable, RemoteSession {
 
             if (userIdent == null && !ModuleRemote.getInstance().allowUnauthenticatedAccess())
             {
-                close("need authentication", request.rid);
+                close("need authentication", request);
                 return;
             }
 
             RemoteHandler handler = ModuleRemote.getInstance().getHandler(request.id);
             if (handler == null)
             {
-                sendMessage(new RemoteResponse(request.rid, "unknown message identifie"));
+                sendMessage(RemoteResponse.error(request, "unknown message identifier"));
             }
             else
             {
@@ -145,11 +145,45 @@ public class Session implements Runnable, RemoteSession {
      * @see com.forgeessentials.api.remote.RemoteSession#sendMessage(java.lang.Object)
      */
     @Override
-    public void sendMessage(RemoteResponse obj) throws IOException
+    public void sendMessage(RemoteResponse response) throws IOException
     {
         OutputStreamWriter ow = new OutputStreamWriter(socket.getOutputStream());
-        ow.write(getGson().toJson(obj) + SEPARATOR);
+        ow.write(getGson().toJson(response) + SEPARATOR);
         ow.flush();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.forgeessentials.api.remote.RemoteSession#sendMessage(java.lang.Object)
+     */
+    @Override
+    public boolean trySendMessage(RemoteResponse response)
+    {
+        if (isClosed())
+            return false;
+        try
+        {
+            sendMessage(response);
+            return true;
+        }
+        catch (IOException e)
+        {
+            return false;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.forgeessentials.api.remote.RemoteSession#transformRemoteRequest(com.forgeessentials.api.remote.RemoteRequest,
+     * java.lang.Class)
+     */
+    @Override
+    public <T> RemoteRequest<T> transformRemoteRequest(RemoteRequest<JsonElement> request, Class<T> clazz)
+    {
+        return RemoteRequest.transform(request, getGson().fromJson(request.data, clazz));
     }
 
     /*
@@ -205,10 +239,10 @@ public class Session implements Runnable, RemoteSession {
      * 
      * @throws IOException
      */
-    public void close(String error, int rid) throws IOException
+    public void close(String error, RemoteRequest<?> request) throws IOException
     {
         OutputHandler.felog.warning(String.format("[remote] Error: %s. Terminating session to %s", error, getRemoteAddress()));
-        sendMessage(new RemoteResponse(rid, error));
+        sendMessage(RemoteResponse.error(request, error));
         close();
     }
 

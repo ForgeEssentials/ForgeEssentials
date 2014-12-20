@@ -3,6 +3,7 @@ package com.forgeessentials.api.remote;
 import java.io.IOException;
 
 import com.forgeessentials.util.UserIdent;
+import com.google.gson.JsonElement;
 
 /**
  *
@@ -14,9 +15,26 @@ public interface RemoteSession {
      * 
      * @param obj
      * @throws SessionClosedException
-     * @throws IOException 
+     * @throws IOException
      */
-    void sendMessage(RemoteResponse obj) throws IOException;
+    void sendMessage(RemoteResponse response) throws IOException;
+
+    /**
+     * Sends a message to the client. Throws a {@link SessionClosedException}, if the session was already closed.
+     * 
+     * @param obj
+     * @throws SessionClosedException
+     * @throws IOException
+     */
+    boolean trySendMessage(RemoteResponse response);
+
+    /**
+     * Transforms a generic request into one with the correctly deserialized data
+     * 
+     * @param request
+     * @param clazz
+     */
+    <T> RemoteRequest<T> transformRemoteRequest(RemoteRequest<JsonElement> request, Class<T> clazz);
 
     /**
      * Returns the hostname of the remote client

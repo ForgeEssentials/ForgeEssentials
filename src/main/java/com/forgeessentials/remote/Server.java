@@ -11,6 +11,8 @@ import java.util.Set;
 
 import javax.net.ssl.SSLContext;
 
+import com.forgeessentials.api.remote.RemoteResponse;
+
 /**
  *
  */
@@ -61,6 +63,12 @@ public class Server implements Runnable {
     {
         try
         {
+            RemoteResponse<?> shutdownMessage = RemoteResponse.ok("shutdown", 0, "Server shutting down");
+            for (Session session : sessions)
+            {
+                session.trySendMessage(shutdownMessage);
+                session.close();
+            }
             serverSocket.close();
         }
         catch (IOException e)

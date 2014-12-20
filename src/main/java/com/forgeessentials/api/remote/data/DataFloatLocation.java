@@ -10,13 +10,13 @@ import com.forgeessentials.commons.selections.WarpPoint;
 public class DataFloatLocation {
 
     public int dim;
-    
+
     public double x;
-    
+
     public double y;
-    
+
     public double z;
-    
+
     public DataFloatLocation(Entity entity)
     {
         dim = entity.dimension;
@@ -24,7 +24,7 @@ public class DataFloatLocation {
         y = entity.posY;
         z = entity.posZ;
     }
-    
+
     public DataFloatLocation(WarpPoint point)
     {
         dim = point.getDimension();
@@ -32,5 +32,5 @@ public class DataFloatLocation {
         y = point.getY();
         z = point.getZ();
     }
-    
+
 }
