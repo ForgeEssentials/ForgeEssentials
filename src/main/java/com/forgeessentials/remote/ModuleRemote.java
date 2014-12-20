@@ -30,7 +30,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     private static final String CONFIG_CAT = "Remote";
 
-    private static String certificateFilename = "com/forgeessentials/remote/FeRemote.jks";
+    private static String certificateFilename = "FeRemote.jks";
     private static String certificatePassword = "feremote";
 
     @FEModule.Instance
