@@ -10,7 +10,6 @@ import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
 import com.forgeessentials.remote.handler.GetPlayerHandler.Request;
-import com.forgeessentials.remote.handler.GetPlayerHandler.Response;
 import com.forgeessentials.util.UserIdent;
 
 public class GetPlayerHandler extends GenericRemoteHandler<Request> {
@@ -25,7 +24,7 @@ public class GetPlayerHandler extends GenericRemoteHandler<Request> {
     {
         UserIdent ident = new UserIdent(request.data.username);
         if (!ident.hasPlayer())
-            return new RemoteResponse.Error(request.rid, "player not found");
+            return new RemoteResponse(request.rid, "player not found");
 
         Response response = new Response(ident.getUuid().toString(), ident.getUsername());
         for (String flag : request.data.flags)
@@ -53,6 +52,15 @@ public class GetPlayerHandler extends GenericRemoteHandler<Request> {
 
         public Set<String> flags;
 
+        public Request(String username, String... flags)
+        {
+            this.username = username;
+            int i = flags.length;
+            for (int j = 0; j < i; ++j)
+            {
+                this.flags.add(flags[i]);
+            }
+        }
     }
 
     public static class Response {
@@ -68,7 +76,6 @@ public class GetPlayerHandler extends GenericRemoteHandler<Request> {
             this.uuid = uuid;
             this.username = username;
         }
-
     }
 
 }

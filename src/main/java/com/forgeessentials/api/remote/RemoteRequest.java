@@ -21,4 +21,14 @@ public class RemoteRequest<T> {
         this.data = data;
     }
 
+    public RemoteRequest(String id, RequestAuth auth, T data)
+    {
+        this(id, 0, null, data);
+    }
+
+    public RemoteRequest(String id, T data)
+    {
+        this(id, null, data);
+    }
+
 }

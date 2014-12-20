@@ -117,7 +117,7 @@ public class Session implements Runnable, RemoteSession {
             RemoteHandler handler = ModuleRemote.getInstance().getHandler(request.id);
             if (handler == null)
             {
-                sendMessage(new RemoteResponse.Error(request.rid, "unknown message identifie"));
+                sendMessage(new RemoteResponse(request.rid, "unknown message identifie"));
             }
             else
             {
@@ -208,7 +208,7 @@ public class Session implements Runnable, RemoteSession {
     public void close(String error, int rid) throws IOException
     {
         OutputHandler.felog.warning(String.format("[remote] Error: %s. Terminating session to %s", error, getRemoteAddress()));
-        sendMessage(new RemoteResponse.Error(rid, error));
+        sendMessage(new RemoteResponse(rid, error));
         close();
     }
 

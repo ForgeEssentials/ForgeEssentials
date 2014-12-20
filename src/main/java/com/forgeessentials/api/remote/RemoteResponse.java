@@ -8,6 +8,8 @@ public class RemoteResponse<T> {
     public int rid;
 
     public final boolean success;
+    
+    public final String error;
 
     public final T data;
 
@@ -15,6 +17,7 @@ public class RemoteResponse<T> {
     {
         this.rid = 0;
         this.success = true;
+        this.error = null;
         this.data = data;
     }
 
@@ -22,31 +25,32 @@ public class RemoteResponse<T> {
     {
         this.rid = rid;
         this.success = true;
+        this.error = null;
         this.data = data;
     }
 
-    protected RemoteResponse(int rid)
+    public RemoteResponse(int rid, String error)
     {
         this.rid = rid;
         this.success = false;
+        this.error = error;
         this.data = null;
     }
 
-    public static class Error extends RemoteResponse<Object> {
+    public RemoteResponse(String error)
+    {
+        this.rid = 0;
+        this.success = false;
+        this.error = error;
+        this.data = null;
+    }
 
-        public final String error;
-
-        public Error(int rid, String error)
-        {
-            super(rid);
-            this.error = error;
-        }
-
-        public Error(String error)
-        {
-            this(0, error);
-        }
-
+    public RemoteResponse(RemoteResponse<?> response, T data)
+    {
+        this.rid = response.rid;
+        this.success = response.success;
+        this.error = response.error;
+        this.data = data;
     }
 
 }
