@@ -51,6 +51,10 @@ public class ModuleAfterlife extends ConfigLoaderBase {
 
         APIRegistry.perms.registerPermission(Deathchest.PERMISSION_BYPASS, null);
         APIRegistry.perms.registerPermission(Deathchest.PERMISSION_MAKE, RegisteredPermValue.TRUE, "Allows graves to spawn, if a player dies");
+
+        APIRegistry.perms.registerPermissionProperty(Deathchest.PERMPROP_XP_MODIFIER, "0.25", "Ratio of XP that you want to allow someone to keep in a grave. 1 keeps all XP.");
+
+
     }
 
     @SubscribeEvent
