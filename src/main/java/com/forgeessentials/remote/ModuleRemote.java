@@ -1,6 +1,7 @@
 package com.forgeessentials.remote;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,9 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     private static final String CONFIG_CAT = "Remote";
+
+    private static String certificateFilename = "com/forgeessentials/remote/FeRemote.jks";
+    private static String certificatePassword = "feremote";
 
     @FEModule.Instance
     private static ModuleRemote instance;
@@ -70,18 +74,31 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         {
             if (useSSL)
             {
-                SSLContextHelper sslCtxHelper = new SSLContextHelper();
-                sslCtxHelper.loadSSLCertificate("private.cert", "somepass", "someotherpass");
-                server = new Server(port, hostname, sslCtxHelper.getSSLCtx());
+                try
+                {
+                    InputStream is = ClassLoader.getSystemResourceAsStream(certificateFilename);
+                    if (is != null)
+                    {
+                        SSLContextHelper sslCtxHelper = new SSLContextHelper();
+                        sslCtxHelper.loadSSLCertificate(is, certificatePassword, certificatePassword);
+                        server = new Server(port, hostname, sslCtxHelper.getSSLCtx());
+                    }
+                    else
+                        OutputHandler.felog.severe("[remote] Unable to load SSL certificate: File not found");
+                }
+                catch (IOException | GeneralSecurityException e1)
+                {
+                    OutputHandler.felog.severe("[remote] Unable to load SSL certificate: " + e1.getMessage());
+                }
             }
             else
             {
                 server = new Server(port, hostname);
             }
         }
-        catch (IOException | GeneralSecurityException e1)
+        catch (IOException e1)
         {
-            OutputHandler.felog.severe("Unable to start remote-server: " + e1.getMessage());
+            OutputHandler.felog.severe("[remote] Unable to start remote-server: " + e1.getMessage());
         }
     }
 
@@ -100,8 +117,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     {
         hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of the minecraft server").getString();
         port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
-        // useSSL = config.get(CONFIG_CAT, "useSSL", false,
-        // "Protect the communication with SSL").getBoolean();
+        useSSL = config.get(CONFIG_CAT, "useSSL", false,
+                "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
     }
 
     /*
