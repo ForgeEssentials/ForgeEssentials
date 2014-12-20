@@ -186,8 +186,8 @@ public class TickTaskFill implements ITickTask
 			 * skip over chunks that already exist (we use the region cache so
 			 * as to not load them)
 			 */
-			while (!RegionFileCache.createOrLoadRegionFile(
-					world.getChunkSaveLocation(), X >> 5, Z >> 5).chunkExists(
+			while (RegionFileCache.createOrLoadRegionFile(
+					world.getChunkSaveLocation(), X, Z).chunkExists(
 					X & 0x1F, Z & 0x1F))
 			{
 				--todo;
