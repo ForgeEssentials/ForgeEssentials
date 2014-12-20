@@ -1,5 +1,8 @@
 package com.forgeessentials.backup;
 
+import com.forgeessentials.util.OutputHandler;
+import net.minecraftforge.common.DimensionManager;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -7,11 +10,8 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.TimerTask;
-
-import net.minecraftforge.common.DimensionManager;
-
-import com.forgeessentials.util.OutputHandler;
 
 public class AutoBackup extends TimerTask
 {
@@ -90,7 +90,7 @@ public class AutoBackup extends TimerTask
             }
             if (BackupConfig.maxfilesperbackupfolder != -1)
             {
-                checkMaxFilesPerFolder();
+                checkMaxFilesPerFolder(ModuleBackup.baseFolder);
             }
             if (BackupConfig.maxBackupLifespan != -1)
             {
@@ -109,10 +109,8 @@ public class AutoBackup extends TimerTask
         {
             if (folder.isDirectory())
             {
-                for (File folder1 : folders)
-                {
-                    loopThroughFolder(folder1);
-                }
+                loopThroughFolder(folder);
+
             }
             loopThroughFolder(folder);
         }
@@ -141,30 +139,38 @@ public class AutoBackup extends TimerTask
         }
     }
 
-    public static void checkMaxFilesPerFolder()
+    public static void checkMaxFilesPerFolder(File directory)
     {
-        File[] folders = getFolderList(ModuleBackup.baseFolder);
+        File[] folders = getFolderList(directory);
 
         for (File folder : folders)
         {
+            checkMaxFilesPerFolder(folder);
+            LinkedList<File> fileList = new LinkedList<File>(Arrays.asList(sortByLastModified(folder)));
+
             int trys = 0;
-            while (folder.list().length > BackupConfig.maxfilesperbackupfolder && trys < 5)
+            while (fileList.size() > BackupConfig.maxfilesperbackupfolder && trys < 5)
             {
-                trys++;
-                File file = lastFileModified(folder);
-                OutputHandler.debug("Try #" + trys + "Removed file: " + file.getAbsolutePath());
+                File toDelete = fileList.remove();
+                if (toDelete.isDirectory())
+                {
+                    continue;
+                }
                 try
                 {
-                    Files.delete(file.toPath());
+                    Files.delete(toDelete.toPath());
                 }
                 catch (IOException e)
                 {
-                    OutputHandler.felog.severe("Try #" + trys + "Removed file: " + file.getAbsolutePath());
-                    OutputHandler.felog.severe("Why you no delete file?");
+                    OutputHandler.felog.severe("Try #" + trys + "Removed file: " + toDelete.getAbsolutePath());
+                    OutputHandler.felog.severe("Could not delete file");
+                    trys++;
                     e.printStackTrace();
                 }
+
             }
         }
+
     }
 
     public static void diskSpaceCheck()
@@ -176,23 +182,29 @@ public class AutoBackup extends TimerTask
             int trys = 0;
             while (ModuleBackup.baseFolder.getFreeSpace() / 1024 / 1024 / 1024 < BackupConfig.minimunFreeSpace && trys < 5)
             {
-                trys++;
+
                 OutputHandler.debug("try " + trys);
                 File[] folders = getFolderList(ModuleBackup.baseFolder);
 
                 for (File folder : folders)
                 {
-                    File file = lastFileModified(folder);
-                    OutputHandler.debug("Removed file: " + file.getAbsolutePath());
+
+                    LinkedList<File> fileList = new LinkedList<File>(Arrays.asList(folder));
+                    File toDelete = fileList.remove();
+                    if (toDelete.isDirectory())
+                    {
+                        continue;
+                    }
                     try
                     {
-                        Files.delete(file.toPath());
+                        Files.delete(toDelete.toPath());
                     }
                     catch (IOException e)
                     {
-                        OutputHandler.felog.severe("Try #" + trys + "Removed file: " + file.getAbsolutePath());
-                        OutputHandler.felog.severe("Why you no delete file?");
+                        OutputHandler.felog.severe("Try #" + trys + "Removed file: " + toDelete.getAbsolutePath());
+                        OutputHandler.felog.severe("Could not delete file");
                         e.printStackTrace();
+                        trys++;
                     }
                 }
             }
@@ -211,26 +223,24 @@ public class AutoBackup extends TimerTask
         });
     }
 
-    public static File lastFileModified(File folder)
+    /**
+     * returns oldest files first
+     *
+     * @param folder
+     * @return
+     */
+    public static File[] sortByLastModified(File folder)
     {
-        File[] files = folder.listFiles(new FileFilter()
+        File[] files = folder.listFiles();
+
+        Arrays.sort(files, new Comparator<File>()
         {
-            @Override
-            public boolean accept(File file)
+            public int compare(File f1, File f2)
             {
-                return file.isFile();
+                return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
             }
         });
-        long lastMod = Long.MIN_VALUE;
-        File choise = null;
-        for (File file : files)
-        {
-            if (file.lastModified() > lastMod)
-            {
-                choise = file;
-                lastMod = file.lastModified();
-            }
-        }
-        return choise;
+
+        return files;
     }
 }

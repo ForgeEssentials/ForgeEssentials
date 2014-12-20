@@ -77,7 +77,8 @@ public class Multiworld {
     public void removeAllPlayersFromWorld()
     {
         WorldServer overworld = MinecraftServer.getServer().worldServerForDimension(0);
-        List<EntityPlayerMP> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+        @SuppressWarnings("unchecked")
+		List<EntityPlayerMP> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
         for (EntityPlayerMP player : players)
         {
             if (player.dimension == dimensionId)
@@ -91,7 +92,7 @@ public class Multiworld {
     {
         if (!worldLoaded)
             return;
-        WorldServer worldServer = getWorldServer();
+//        WorldServer worldServer = getWorldServer();
 //        worldServer.difficultySetting = difficulty;
 //        worldServer.setAllowedSpawnTypes(allowHostileCreatures, allowPeacefulCreatures);
     }

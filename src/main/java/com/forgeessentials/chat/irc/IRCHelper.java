@@ -173,7 +173,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 
             else
             {
-                String send = "(IRC)[" + e.getChannel().getName() + "] <" + e.getUser().getNick() + "> " + e.getMessage().trim();
+                String send = IRCChatFormatter.formatIRCHeader(e.getChannel().getName(), e.getUser().getNick()) + ">" + e.getMessage().trim();
                 postMinecraft(send);
             }
         }

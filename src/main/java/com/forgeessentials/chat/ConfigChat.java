@@ -1,5 +1,6 @@
 package com.forgeessentials.chat;
 
+import com.forgeessentials.chat.irc.IRCChatFormatter;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.FunctionHelper;
@@ -98,6 +99,7 @@ public class ConfigChat extends ConfigLoaderBase {
         IRCHelper.silentMode = config.get("Chat.irc", "silentMode", false, "If set to true, messages will only be passed from IRC, and no messages will be sent to channels.").getBoolean();
 
         CommandMuter.muteCmdBlocks = config.get("Chat.irc", "muteCmdBlocks", false, "Mute command block output.").getBoolean();
+        IRCChatFormatter.ircHeader = config.get("Chat.irc", "ircHeader", "(IRC) [%channel] <%ircUser>", "String to identify IRC channel output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
 
         config.save();
     }
@@ -152,6 +154,7 @@ public class ConfigChat extends ConfigLoaderBase {
         config.get("Chat.irc", "silentMode", false, "If set to true, messages will only be passed from IRC, and no messages will be sent to channels.").set(IRCHelper.silentMode);
 
         config.get("Chat.irc", "muteCmdBlocks", false, "Mute command block output.").set(CommandMuter.muteCmdBlocks);
+        config.get("Chat.irc", "ircHeader", "(IRC) [%channel] <%ircUser>", "String to identify IRC channel output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").set(IRCChatFormatter.ircHeader);
 
         config.save();
     }
