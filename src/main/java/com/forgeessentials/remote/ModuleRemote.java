@@ -2,6 +2,8 @@ package com.forgeessentials.remote;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,10 +16,13 @@ import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.remote.command.CommandRemotePasskey;
+import com.forgeessentials.remote.command.CommandRemoteQr;
 import com.forgeessentials.remote.handler.PushChatHandler;
 import com.forgeessentials.remote.handler.QueryAllowedHandlersHandler;
 import com.forgeessentials.remote.handler.QueryPlayerHandler;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
@@ -71,6 +76,13 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
+    {
+        startRemoteServer();
+        new CommandRemoteQr().register();
+        new CommandRemotePasskey().register();
+    }
+
+    public void startRemoteServer()
     {
         try
         {
@@ -170,6 +182,41 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     public Gson getGson()
     {
         return gson;
+    }
+
+
+    /**
+     * @param userIdent
+     * @return
+     */
+    public String getPasskey(UserIdent userIdent)
+    {
+        return "password";
+    }
+
+    /**
+     * @param userIdent
+     * @return
+     */
+    public String getHostName()
+    {
+        try
+        {
+            return InetAddress.getLocalHost().getHostName();
+        }
+        catch (UnknownHostException e)
+        {
+            return "localhost";
+        }
+    }
+
+    /**
+     * @param userIdent
+     * @return
+     */
+    public String getConnectString(UserIdent userIdent)
+    {
+        return userIdent.getPlayer().getUniqueID() + "@" + (useSSL ? "ssl:" : "") + getHostName() + ":" + port + "|" + getPasskey(userIdent);
     }
 
 }

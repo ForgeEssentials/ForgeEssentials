@@ -101,8 +101,7 @@ public class Session implements Runnable, RemoteSession {
                     ident = null;
                 else
                 {
-                    String password = "password";
-                    if (!request.auth.password.equals(password))
+                    if (!request.auth.password.equals(ModuleRemote.getInstance().getPasskey(ident)))
                     {
                         close("authentication failed", request);
                         return;
