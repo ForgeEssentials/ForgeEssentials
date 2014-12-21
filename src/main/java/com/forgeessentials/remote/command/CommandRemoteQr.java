@@ -43,7 +43,7 @@ public class CommandRemoteQr extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return null;
+        return ModuleRemote.PERM;
     }
 
     @Override

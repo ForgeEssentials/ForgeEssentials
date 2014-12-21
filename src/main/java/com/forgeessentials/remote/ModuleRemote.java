@@ -12,8 +12,10 @@ import java.util.Map;
 import java.util.Random;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
@@ -50,6 +52,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     public static final char[] PASSKEY_CHARS;
 
+    public static final String PERM = "fe.remote";
+
     public static int PASSKEY_LENGTH = 6;
 
     static
@@ -77,8 +81,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     protected boolean useSSL;
 
-    protected boolean allowUnauthenticatedAccess;
-
     protected Server server;
 
     protected Map<String, RemoteHandler> handlers = new HashMap<>();
@@ -96,7 +98,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     public void load(FEModuleInitEvent e)
     {
         APIRegistry.remoteManager = this;
-
+        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Allows login to remote module");
+        
         new QueryPlayerHandler().register();
         new PushChatHandler().register();
         new QueryAllowedHandlersHandler().register();
@@ -175,8 +178,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        allowUnauthenticatedAccess = config.get(CONFIG_CAT, "unauthenticated_access", true,
-                "Allow unauthenticated access to some restricted features of remote (eg. chat)").getBoolean();
         hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of the minecraft server").getString();
         port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
         useSSL = config.get(CONFIG_CAT, "useSSL", false,
@@ -196,7 +197,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         final String id = handler.getID();
         if (handlers.containsKey(id))
             throw new IllegalArgumentException(String.format("Handler with ID \"%s\" already registerd", id));
+
         handlers.put(id, handler);
+        String perm = handler.getPermission();
+        if (perm != null && APIRegistry.perms.getServerZone().getRootZone().getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, perm) == null)
+            APIRegistry.perms.registerPermission(perm, RegisteredPermValue.OP);
     }
 
     /*
@@ -271,14 +276,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     /* ------------------------------------------------------------ */
 
     /**
-     * Check, if unauthenticated access is allowed
-     */
-    public boolean allowUnauthenticatedAccess()
-    {
-        return allowUnauthenticatedAccess;
-    }
-
-    /**
      * Get Gson instance used for remote module
      */
     @Override
@@ -309,7 +306,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
      */
     public String getConnectString(UserIdent userIdent)
     {
-        return userIdent.getPlayer().getUniqueID() + "@" + (useSSL ? "ssl:" : "") + getHostName() + ":" + port + "|" + getPasskey(userIdent);
+        return userIdent.getPlayer().getUniqueID().toString() + "@" + (useSSL ? "ssl:" : "") + getHostName() + ":" + port + "|" + getPasskey(userIdent);
     }
 
     /**

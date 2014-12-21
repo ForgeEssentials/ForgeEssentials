@@ -98,7 +98,11 @@ public class Session implements Runnable, RemoteSession {
             {
                 ident = new UserIdent(request.auth.username);
                 if (!ident.hasUUID())
+                {
                     ident = null;
+                    sendMessage(RemoteResponse.error(request, "unknown username"));
+                    return;
+                }
                 else
                 {
                     if (!request.auth.password.equals(ModuleRemote.getInstance().getPasskey(ident)))
@@ -109,12 +113,14 @@ public class Session implements Runnable, RemoteSession {
                 }
             }
 
-            if (ident == null && !ModuleRemote.getInstance().allowUnauthenticatedAccess())
+            // Check for remote permission
+            if (!APIRegistry.perms.checkUserPermission(ident, ModuleRemote.PERM))
             {
-                close("need authentication", request);
+                close(ident == null ? "need authentication" : "access denied", request);
                 return;
             }
 
+            // Get the correct remote handler
             RemoteHandler handler = ModuleRemote.getInstance().getHandler(request.id);
             if (handler == null)
             {
@@ -122,6 +128,7 @@ public class Session implements Runnable, RemoteSession {
                 return;
             }
 
+            // Check permission for remote handler
             String p = handler.getPermission();
             if (p != null && !APIRegistry.perms.checkUserPermission(ident, p))
             {
@@ -129,6 +136,7 @@ public class Session implements Runnable, RemoteSession {
                 return;
             }
 
+            // Handle request
             try
             {
                 RemoteResponse response = handler.handle(this, request);

@@ -28,7 +28,7 @@ public class CommandGenerateRemotePasskey extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return null;
+        return ModuleRemote.PERM;
     }
 
     @Override

@@ -57,7 +57,8 @@ public class ServerZone extends Zone {
 
         public GroupEntry(ServerZone zone, String group, int priority)
         {
-            this(group, priority, FunctionHelper.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY), FEPermissions.GROUP_PRIORITY_DEFAULT));
+            this(group, priority, FunctionHelper.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY),
+                    FEPermissions.GROUP_PRIORITY_DEFAULT));
         }
 
         public String getGroup()
@@ -349,8 +350,7 @@ public class ServerZone extends Zone {
 
         if (ident != null)
         {
-            if (ident.hasPlayer() && !ident.isFakePlayer()
-                    && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayer().getGameProfile()))
+            if (ident.hasGameProfile() && !ident.isFakePlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getGameProfile()))
             {
                 result.add(new GroupEntry(this, IPermissionsHelper.GROUP_OPERATORS));
             }

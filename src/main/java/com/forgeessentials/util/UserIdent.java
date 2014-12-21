@@ -29,6 +29,8 @@ public class UserIdent {
 
 	private EntityPlayerMP player;
 
+    private GameProfile profile;
+
 	public UserIdent(UUID uuid)
 	{
 		if (uuid == null)
@@ -124,9 +126,11 @@ public class UserIdent {
 		{
 			uuid = getUuidByUsername(username);
 		}
-		else if (username == null)
+		else if (username == null || profile == null)
 		{
-			username = getUsernameByUuid(uuid);
+		    profile = getGameProfileByUuid(uuid);
+		    if (profile != null)
+		        username = profile.getName();
 		}
 		if (player == null && uuid != null)
 		{
@@ -156,11 +160,17 @@ public class UserIdent {
 		return uuid != null;
 	}
 
-	public boolean hasPlayer()
-	{
-		identifyUser();
-		return player != null;
-	}
+    public boolean hasPlayer()
+    {
+        identifyUser();
+        return player != null;
+    }
+
+    public boolean hasGameProfile()
+    {
+        identifyUser();
+        return profile != null;
+    }
 
 	// ------------------------------------------------------------
 
@@ -176,11 +186,17 @@ public class UserIdent {
 		return username;
 	}
 
-	public EntityPlayerMP getPlayer()
-	{
-		identifyUser();
-		return player;
-	}
+    public EntityPlayerMP getPlayer()
+    {
+        identifyUser();
+        return player;
+    }
+
+    public GameProfile getGameProfile()
+    {
+        identifyUser();
+        return profile;
+    }
 
 	public String getUsernameOrUUID()
 	{
@@ -283,11 +299,18 @@ public class UserIdent {
 
 	public static String getUsernameByUuid(UUID uuid)
 	{
-		GameProfile profile = MinecraftServer.getServer().func_152358_ax().func_152652_a(uuid);
+		GameProfile profile = getGameProfileByUuid(uuid);
 		if (profile == null)
 			return null;
 		return profile.getName();
 	}
+	
+    public static GameProfile getGameProfileByUuid(UUID uuid)
+    {
+        GameProfile profile = MinecraftServer.getServer().func_152358_ax().func_152652_a(uuid);
+        return profile;
+    }
+
 
 	@SuppressWarnings("unchecked")
     public static EntityPlayerMP getPlayerByUuid(UUID uuid)
