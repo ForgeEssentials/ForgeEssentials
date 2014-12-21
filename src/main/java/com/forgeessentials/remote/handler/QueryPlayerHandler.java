@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
+import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
@@ -15,9 +19,14 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
 
     public static final String ID = "query_player";
 
+    public static final String PERM = RemoteHandler.PERM + ".query.player";
+    public static final String PERM_LOCATION = PERM + ".location";
+    public static final String PERM_DETAIL = PERM + ".detail";
+
     public QueryPlayerHandler()
     {
-        super(ID, QueryPlayerHandler.Request.class);
+        super(ID, PERM, QueryPlayerHandler.Request.class);
+        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Allows querying player data");
     }
 
     @Override
@@ -25,7 +34,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
     {
         UserIdent ident = new UserIdent(request.data.username);
         if (!ident.hasPlayer())
-            return RemoteResponse.error(request, "player not found");
+            error("player not found");
 
         Response response = new Response(ident.getUuid().toString(), ident.getUsername());
         for (String flag : request.data.flags)
@@ -33,9 +42,11 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
             switch (flag)
             {
             case "location":
+                checkPermission(session, PERM_LOCATION);
                 response.data.put(flag, new DataFloatLocation(ident.getPlayer()));
                 break;
             case "detail":
+                checkPermission(session, PERM_DETAIL);
                 response.data.put("health", ident.getPlayer().getHealth());
                 response.data.put("armor", ident.getPlayer().getTotalArmorValue());
                 response.data.put("hunger", ident.getPlayer().getFoodStats().getFoodLevel());

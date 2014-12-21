@@ -6,7 +6,9 @@ import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.RemoteHandler;
+import com.forgeessentials.api.remote.RemoteHandler.PermissionException;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
@@ -28,7 +30,7 @@ public class Session implements Runnable, RemoteSession {
 
     private final Thread thread;
 
-    private UserIdent userIdent;
+    private UserIdent ident;
 
     /**
      * @param socket
@@ -94,9 +96,9 @@ public class Session implements Runnable, RemoteSession {
 
             if (request.auth != null)
             {
-                userIdent = new UserIdent(request.auth.username);
-                if (!userIdent.hasUUID())
-                    userIdent = null;
+                ident = new UserIdent(request.auth.username);
+                if (!ident.hasUUID())
+                    ident = null;
                 else
                 {
                     String password = "password";
@@ -108,7 +110,7 @@ public class Session implements Runnable, RemoteSession {
                 }
             }
 
-            if (userIdent == null && !ModuleRemote.getInstance().allowUnauthenticatedAccess())
+            if (ident == null && !ModuleRemote.getInstance().allowUnauthenticatedAccess())
             {
                 close("need authentication", request);
                 return;
@@ -118,8 +120,17 @@ public class Session implements Runnable, RemoteSession {
             if (handler == null)
             {
                 sendMessage(RemoteResponse.error(request, "unknown message identifier"));
+                return;
             }
-            else
+
+            String p = handler.getPermission();
+            if (p != null && !APIRegistry.perms.checkUserPermission(ident, p))
+            {
+                sendMessage(RemoteResponse.error(request, RemoteHandler.MSG_NO_PERMISSION));
+                return;
+            }
+
+            try
             {
                 RemoteResponse response = handler.handle(this, request);
                 if (response != null)
@@ -127,6 +138,16 @@ public class Session implements Runnable, RemoteSession {
                     response.rid = request.rid;
                     sendMessage(response);
                 }
+            }
+            catch (PermissionException e)
+            {
+                sendMessage(RemoteResponse.error(request, RemoteHandler.MSG_NO_PERMISSION));
+                return;
+            }
+            catch (Exception e)
+            {
+                sendMessage(RemoteResponse.error(request, RemoteHandler.MSG_EXCEPTION));
+                return;
             }
         }
         catch (IllegalArgumentException e)
@@ -145,7 +166,7 @@ public class Session implements Runnable, RemoteSession {
      * @see com.forgeessentials.api.remote.RemoteSession#sendMessage(java.lang.Object)
      */
     @Override
-    public void sendMessage(RemoteResponse response) throws IOException
+    public synchronized void sendMessage(RemoteResponse response) throws IOException
     {
         OutputStreamWriter ow = new OutputStreamWriter(socket.getOutputStream());
         ow.write(getGson().toJson(response) + SEPARATOR);
@@ -216,7 +237,7 @@ public class Session implements Runnable, RemoteSession {
     @Override
     public UserIdent getUserIdent()
     {
-        return userIdent;
+        return ident;
     }
 
     /**

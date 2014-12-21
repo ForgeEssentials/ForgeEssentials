@@ -15,6 +15,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.remote.handler.PushChatHandler;
+import com.forgeessentials.remote.handler.QueryAllowedHandlersHandler;
 import com.forgeessentials.remote.handler.QueryPlayerHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -65,6 +66,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
         new QueryPlayerHandler().register();
         new PushChatHandler().register();
+        new QueryAllowedHandlersHandler().register();
     }
 
     @SubscribeEvent
@@ -115,6 +117,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     @Override
     public void load(Configuration config, boolean isReload)
     {
+        allowUnauthenticatedAccess = config.get(CONFIG_CAT, "unauthenticated_access", true,
+                "Allow unauthenticated access to some restricted features of remote (eg. chat)").getBoolean();
         hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of the minecraft server").getString();
         port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
         useSSL = config.get(CONFIG_CAT, "useSSL", false,
@@ -144,6 +148,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     public RemoteHandler getHandler(String id)
     {
         return handlers.get(id);
+    }
+
+    public Map<String, RemoteHandler> getHandlers()
+    {
+        return handlers;
     }
 
     /**

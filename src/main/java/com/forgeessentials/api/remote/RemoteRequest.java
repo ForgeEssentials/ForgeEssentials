@@ -35,4 +35,5 @@ public class RemoteRequest<T> {
     {
         return new RemoteRequest<T>(request.id, request.rid, request.auth, newData);
     }
+
 }

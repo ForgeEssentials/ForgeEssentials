@@ -11,9 +11,9 @@ public abstract class GenericRemoteHandler<T> extends AbstractRemoteHandler {
 
     private final Class<T> dataClass;
 
-    public GenericRemoteHandler(String id, Class<T> dataClass)
+    public GenericRemoteHandler(String id, String permission, Class<T> dataClass)
     {
-        super(id);
+        super(id, permission);
         this.dataClass = dataClass;
     }
 
