@@ -272,7 +272,7 @@ public class UserIdent {
 		{
 			throw new IllegalArgumentException("UserIdent string needs to be in the format \"(<uuid>|<username>)\"");
 		}
-		String[] parts = string.substring(1, string.length() - 2).split("\\|", 1);
+		String[] parts = string.substring(1, string.length() - 1).split("\\|", 2);
 		return new UserIdent(UUID.fromString(parts[0]), parts[1]);
 	}
 

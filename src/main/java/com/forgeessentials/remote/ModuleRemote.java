@@ -5,8 +5,11 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import net.minecraftforge.common.config.Configuration;
 
@@ -16,6 +19,8 @@ import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.remote.command.CommandGenerateRemotePasskey;
 import com.forgeessentials.remote.command.CommandRemotePasskey;
 import com.forgeessentials.remote.command.CommandRemoteQr;
 import com.forgeessentials.remote.handler.PushChatHandler;
@@ -34,36 +39,59 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
+    public static class PasskeyMap extends HashMap<UserIdent, String> { /* default */
+    };
+
     private static final String CONFIG_CAT = "Remote";
 
     private static String certificateFilename = "FeRemote.jks";
+
     private static String certificatePassword = "feremote";
 
+    public static final char[] PASSKEY_CHARS;
+
+    public static int PASSKEY_LENGTH = 6;
+
+    static
+    {
+        List<Character> chars = new ArrayList<Character>();
+        for (char c = 'a'; c <= 'z'; c++)
+            chars.add(c);
+        for (char c = 'A'; c <= 'Z'; c++)
+            chars.add(c);
+        for (char c = '0'; c <= '9'; c++)
+            chars.add(c);
+        PASSKEY_CHARS = new char[chars.size()];
+        for (int i = 0; i < chars.size(); i++)
+            PASSKEY_CHARS[i] = chars.get(i);
+    }
+
+    /* ------------------------------------------------------------ */
+
     @FEModule.Instance
-    private static ModuleRemote instance;
+    protected static ModuleRemote instance;
 
-    private int port;
+    protected int port;
 
-    private String hostname;
+    protected String hostname;
 
-    private boolean useSSL;
+    protected boolean useSSL;
 
-    private boolean allowUnauthenticatedAccess;
+    protected boolean allowUnauthenticatedAccess;
 
-    private Server server;
+    protected Server server;
 
-    private Map<String, RemoteHandler> handlers = new HashMap<>();
+    protected Map<String, RemoteHandler> handlers = new HashMap<>();
+
+    protected PasskeyMap passkeys = new PasskeyMap();
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    /**
-     * Get the instance of ModuleRemote
-     */
-    public static ModuleRemote getInstance()
-    {
-        return instance;
-    }
+    /* ------------------------------------------------------------ */
 
+    /**
+     * Register remote module and basic handlers
+     */
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
@@ -74,14 +102,22 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         new QueryAllowedHandlersHandler().register();
     }
 
+    /**
+     * Initialize passkeys, server and commands
+     */
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
+        loadPasskeys();
         startRemoteServer();
         new CommandRemoteQr().register();
         new CommandRemotePasskey().register();
+        new CommandGenerateRemotePasskey().register();
     }
 
+    /**
+     * Starts up the remote server
+     */
     public void startRemoteServer()
     {
         try
@@ -116,6 +152,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         }
     }
 
+    /**
+     * Stop remote server when the MC-server stops
+     */
     @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
@@ -126,6 +165,13 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.forgeessentials.core.moduleLauncher.config.IConfigLoader#load(net.minecraftforge.common.config.Configuration,
+     * boolean)
+     */
     @Override
     public void load(Configuration config, boolean isReload)
     {
@@ -136,6 +182,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         useSSL = config.get(CONFIG_CAT, "useSSL", false,
                 "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
     }
+
+    /* ------------------------------------------------------------ */
 
     /*
      * (non-Javadoc)
@@ -162,10 +210,65 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         return handlers.get(id);
     }
 
+    /**
+     * Get all registered remote-handlers
+     */
     public Map<String, RemoteHandler> getHandlers()
     {
         return handlers;
     }
+
+    /* ------------------------------------------------------------ */
+
+    /**
+     * Generates a new random passkey
+     */
+    public String generatePasskey()
+    {
+        StringBuilder passkey = new StringBuilder();
+        Random rnd = new Random();
+        for (int i = 0; i < PASSKEY_LENGTH; i++)
+            passkey.append(PASSKEY_CHARS[rnd.nextInt(PASSKEY_CHARS.length)]);
+        return passkey.toString();
+    }
+
+    /**
+     * Get stored passkey for user or generate a new one and save it
+     * 
+     * @param userIdent
+     */
+    public String getPasskey(UserIdent userIdent)
+    {
+        if (passkeys.containsKey(userIdent))
+            return passkeys.get(userIdent);
+        String passkey = generatePasskey();
+        setPasskey(userIdent, passkey);
+        return passkey;
+    }
+
+    /**
+     * Set and save a new passkey for a user
+     * 
+     * @param userIdent
+     * @param passkey
+     */
+    public void setPasskey(UserIdent userIdent, String passkey)
+    {
+        passkeys.put(userIdent, passkey);
+        DataManager.getInstance().save(passkeys, "passkeys");
+    }
+
+    /**
+     * Load the passkeys from data-backend
+     */
+    public void loadPasskeys()
+    {
+        passkeys = DataManager.getInstance().load(PasskeyMap.class, "passkeys");
+        if (passkeys == null)
+            passkeys = new PasskeyMap();
+    }
+
+    /* ------------------------------------------------------------ */
 
     /**
      * Check, if unauthenticated access is allowed
@@ -184,19 +287,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         return gson;
     }
 
-
     /**
-     * @param userIdent
-     * @return
-     */
-    public String getPasskey(UserIdent userIdent)
-    {
-        return "password";
-    }
-
-    /**
-     * @param userIdent
-     * @return
+     * Tries to get the hostname
      */
     public String getHostName()
     {
@@ -211,12 +303,21 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     }
 
     /**
+     * Generates a remote-connect string for the given user
+     * 
      * @param userIdent
-     * @return
      */
     public String getConnectString(UserIdent userIdent)
     {
         return userIdent.getPlayer().getUniqueID() + "@" + (useSSL ? "ssl:" : "") + getHostName() + ":" + port + "|" + getPasskey(userIdent);
+    }
+
+    /**
+     * Get the instance of ModuleRemote
+     */
+    public static ModuleRemote getInstance()
+    {
+        return instance;
     }
 
 }
