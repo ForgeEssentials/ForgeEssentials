@@ -278,31 +278,13 @@ public class PermissionCommandParser {
             return;
         }
 
-        // Auto-complete player name
-        if (arguments.isTabCompletion && arguments.args.size() == 1)
-        {
-            arguments.tabCompletion = completePlayer(arguments.args.peek());
+        // Parse player
+        UserIdent ident = arguments.parsePlayer();
+        if (ident == null)
             return;
-        }
-
-        String playerName = arguments.args.remove();
-        UserIdent ident;
-        if (playerName.equalsIgnoreCase("_ME_"))
+        if (!ident.hasUUID())
         {
-            if (arguments.senderPlayer == null)
-            {
-                arguments.error("_ME_ cannot be used in console.");
-                return;
-            }
-            ident = new UserIdent(arguments.senderPlayer);
-        }
-        else
-        {
-            ident = new UserIdent(playerName, arguments.sender);
-            if (!ident.hasUUID())
-            {
-                arguments.error(String.format("Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername()));
-            }
+            arguments.error(String.format("Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername()));
         }
 
         parseUserInner(arguments, ident, null);
@@ -1089,22 +1071,6 @@ public class PermissionCommandParser {
                 result.add(perm);
         }
 
-        return new ArrayList<String>(result);
-    }
-
-    public static List<String> completePlayer(String arg)
-    {
-        Set<String> result = new TreeSet<String>();
-        for (UserIdent knownPlayerIdent : APIRegistry.perms.getServerZone().getKnownPlayers())
-        {
-            if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUUID()))
-                result.add(knownPlayerIdent.getUsernameOrUUID());
-        }
-        for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
-        {
-            if (CommandBase.doesStringStartWith(arg, ((EntityPlayerMP) player).getGameProfile().getName()))
-                result.add(((EntityPlayerMP) player).getGameProfile().getName());
-        }
         return new ArrayList<String>(result);
     }
 

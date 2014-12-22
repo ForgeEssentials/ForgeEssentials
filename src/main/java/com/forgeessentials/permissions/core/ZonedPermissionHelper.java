@@ -763,7 +763,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public boolean checkUserPermission(UserIdent ident, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null,
+        return checkBooleanPermission(getPermission(ident, ident != null && ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null,
                 GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 

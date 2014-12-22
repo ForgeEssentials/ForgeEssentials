@@ -57,17 +57,15 @@ public class ModulePermissions extends ConfigLoaderBase {
     private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath() + "/permissions",
             false);
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preLoad(FEModulePreInitEvent e)
     {
-        MinecraftForge.EVENT_BUS.register(this);
-
         // Create permission manager
         permissionHelper = new ZonedPermissionHelper();
-
-        // Register permission manager
         APIRegistry.perms = permissionHelper;
         PermissionsManager.setPermProvider(permissionHelper);
+        
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
