@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.net.ssl.SSLContext;
 
 import com.forgeessentials.api.remote.RemoteResponse;
+import com.forgeessentials.util.UserIdent;
 
 /**
  *
@@ -102,6 +103,25 @@ public class Server implements Runnable {
             if (serverSocket.isClosed() || !serverSocket.isBound())
                 break;
         }
+    }
+
+    /**
+     * @return the sessions
+     */
+    public Set<Session> getSessions()
+    {
+        return sessions;
+    }
+
+    /**
+     * @return the session
+     */
+    public Session getSession(UserIdent ident)
+    {
+        for (Session session : sessions)
+            if (session.getUserIdent().equals(ident))
+                return session;
+        return null;
     }
 
 }

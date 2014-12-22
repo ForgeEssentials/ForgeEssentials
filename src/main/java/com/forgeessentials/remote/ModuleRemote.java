@@ -22,9 +22,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.remote.command.CommandGenerateRemotePasskey;
-import com.forgeessentials.remote.command.CommandRemotePasskey;
-import com.forgeessentials.remote.command.CommandRemoteQr;
+import com.forgeessentials.remote.command.CommandRemote;
 import com.forgeessentials.remote.handler.PushChatHandler;
 import com.forgeessentials.remote.handler.QueryAllowedHandlersHandler;
 import com.forgeessentials.remote.handler.QueryPlayerHandler;
@@ -47,14 +45,14 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     private static final String CONFIG_CAT = "Remote";
 
     private static String certificateFilename = "FeRemote.jks";
-
     private static String certificatePassword = "feremote";
 
     public static final char[] PASSKEY_CHARS;
 
     public static final String PERM = "fe.remote";
+    public static final String PERM_CONTROL = PERM + ".control";
 
-    public static int PASSKEY_LENGTH = 6;
+    public static int passkeyLength = 6;
 
     static
     {
@@ -99,7 +97,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     {
         APIRegistry.remoteManager = this;
         APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Allows login to remote module");
-        
+        APIRegistry.perms.registerPermission(PERM_CONTROL, RegisteredPermValue.OP,
+                "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
+
         new QueryPlayerHandler().register();
         new PushChatHandler().register();
         new QueryAllowedHandlersHandler().register();
@@ -112,17 +112,53 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     public void serverStarting(FEModuleServerInitEvent e)
     {
         loadPasskeys();
-        startRemoteServer();
-        new CommandRemoteQr().register();
-        new CommandRemotePasskey().register();
-        new CommandGenerateRemotePasskey().register();
+        startServer();
+        new CommandRemote().register();
+    }
+
+    /**
+     * Stop remote server when the MC-server stops
+     */
+    @SubscribeEvent
+    public void serverStopping(FEModuleServerStopEvent e)
+    {
+        stopServer();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.forgeessentials.core.moduleLauncher.config.IConfigLoader#load(net.minecraftforge.common.config.Configuration,
+     * boolean)
+     */
+    @Override
+    public void load(Configuration config, boolean isReload)
+    {
+        hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of the minecraft server").getString();
+        port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
+        useSSL = config.get(CONFIG_CAT, "use_ssl", false,
+                "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
+        passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6, "Length of the randomly generated passkeys").getInt();
+    }
+
+    /* ------------------------------------------------------------ */
+
+    /**
+     * @return the server
+     */
+    public Server getServer()
+    {
+        return server;
     }
 
     /**
      * Starts up the remote server
      */
-    public void startRemoteServer()
+    public void startServer()
     {
+        if (server != null)
+            return;
         try
         {
             if (useSSL)
@@ -156,10 +192,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     }
 
     /**
-     * Stop remote server when the MC-server stops
+     * Stops the remote server
      */
-    @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void stopServer()
     {
         if (server != null)
         {
@@ -167,24 +202,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
             server = null;
         }
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.forgeessentials.core.moduleLauncher.config.IConfigLoader#load(net.minecraftforge.common.config.Configuration,
-     * boolean)
-     */
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of the minecraft server").getString();
-        port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
-        useSSL = config.get(CONFIG_CAT, "useSSL", false,
-                "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
-    }
-
-    /* ------------------------------------------------------------ */
 
     /*
      * (non-Javadoc)
@@ -223,6 +240,14 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         return handlers;
     }
 
+    /**
+     * Remote server port
+     */
+    public int getPort()
+    {
+        return port;
+    }
+
     /* ------------------------------------------------------------ */
 
     /**
@@ -232,7 +257,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     {
         StringBuilder passkey = new StringBuilder();
         Random rnd = new Random();
-        for (int i = 0; i < PASSKEY_LENGTH; i++)
+        for (int i = 0; i < passkeyLength; i++)
             passkey.append(PASSKEY_CHARS[rnd.nextInt(PASSKEY_CHARS.length)]);
         return passkey.toString();
     }
@@ -259,7 +284,10 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
      */
     public void setPasskey(UserIdent userIdent, String passkey)
     {
-        passkeys.put(userIdent, passkey);
+        if (passkey == null)
+            passkeys.remove(userIdent);
+        else
+            passkeys.put(userIdent, passkey);
         DataManager.getInstance().save(passkeys, "passkeys");
     }
 

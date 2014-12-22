@@ -6,6 +6,8 @@ import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import net.minecraft.server.MinecraftServer;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler.PermissionException;
@@ -96,7 +98,10 @@ public class Session implements Runnable, RemoteSession {
 
             if (request.auth != null)
             {
-                ident = new UserIdent(request.auth.username);
+                synchronized (this)
+                {
+                    ident = new UserIdent(request.auth.username);
+                }
                 if (!ident.hasUUID())
                 {
                     ident = null;
@@ -113,6 +118,12 @@ public class Session implements Runnable, RemoteSession {
                 }
             }
 
+            // Check if user was banned
+            if (MinecraftServer.getServer().getConfigurationManager().func_152608_h().func_152702_a(ident.getGameProfile()))
+            {
+                close("banned", request);
+                return;
+            }
             // Check for remote permission
             if (!APIRegistry.perms.checkUserPermission(ident, ModuleRemote.PERM))
             {
@@ -242,7 +253,7 @@ public class Session implements Runnable, RemoteSession {
      * @see com.forgeessentials.api.remote.RemoteSession#getRemoteHostname()
      */
     @Override
-    public UserIdent getUserIdent()
+    public synchronized UserIdent getUserIdent()
     {
         return ident;
     }
@@ -250,6 +261,7 @@ public class Session implements Runnable, RemoteSession {
     /**
      * Terminates the session
      */
+    @Override
     public void close()
     {
         try
@@ -267,10 +279,22 @@ public class Session implements Runnable, RemoteSession {
      * 
      * @throws IOException
      */
-    public void close(String error, RemoteRequest<?> request) throws IOException
+    @Override
+    public void close(String reason, int rid)
+    {
+        trySendMessage(RemoteResponse.error("close", rid, reason));
+        close();
+    }
+
+    /**
+     * Terminates the session
+     * 
+     * @throws IOException
+     */
+    public void close(String error, RemoteRequest<?> request)
     {
         OutputHandler.felog.warning(String.format("[remote] Error: %s. Terminating session to %s", error, getRemoteAddress()));
-        sendMessage(RemoteResponse.error(request, error));
+        trySendMessage(RemoteResponse.error("close", request.rid, error));
         close();
     }
 

@@ -49,7 +49,7 @@ public class RemoteResponse<T> {
 
     public static RemoteResponse<Object> error(RemoteRequest<?> request, String message)
     {
-        return error(null, request.rid, message);
+        return error(request.id, request.rid, message);
     }
 
     public static RemoteResponse<Object> ok(String id, int rid, String message)

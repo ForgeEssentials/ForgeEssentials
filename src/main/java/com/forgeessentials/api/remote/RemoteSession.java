@@ -52,6 +52,16 @@ public interface RemoteSession {
     UserIdent getUserIdent();
 
     /**
+     * Closes the session
+     */
+    void close();
+
+    /**
+     * Closes the session
+     */
+    void close(String reason, int rid);
+
+    /**
      * Checks, if the session was closed
      */
     boolean isClosed();
