@@ -36,4 +36,14 @@ public class RemoteRequest<T> {
         return new RemoteRequest<T>(request.id, request.rid, request.auth, newData);
     }
 
+    public static class PushRequestData {
+
+        public boolean enable;
+
+        public PushRequestData(boolean enable)
+        {
+            this.enable = enable;
+        }
+    }
+
 }

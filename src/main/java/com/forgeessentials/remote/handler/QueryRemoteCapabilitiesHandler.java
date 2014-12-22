@@ -15,16 +15,16 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.ModuleRemote;
 import com.google.gson.JsonElement;
 
-public class QueryAllowedHandlersHandler extends GenericRemoteHandler<JsonElement> {
+public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonElement> {
 
-    public static final String ID = "query_allowed_handlers";
+    public static final String ID = "query_remote_capabilities";
 
-    public static final String PERM = RemoteHandler.PERM + ".query.allowedhandlers";
+    public static final String PERM = RemoteHandler.PERM + ".query.remote.capabilities";
 
-    public QueryAllowedHandlersHandler()
+    public QueryRemoteCapabilitiesHandler()
     {
         super(ID, PERM, JsonElement.class);
-        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows querying allowed handlers (should ALWAYS be granted)");
+        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows querying capabilities (allowed handlers - should ALWAYS be granted)");
     }
 
     @Override
@@ -34,10 +34,10 @@ public class QueryAllowedHandlersHandler extends GenericRemoteHandler<JsonElemen
         for (Entry<String, RemoteHandler> handler : ModuleRemote.getInstance().getHandlers().entrySet())
         {
             String p = handler.getValue().getPermission();
-            if (p == null || !APIRegistry.perms.checkUserPermission(session.getUserIdent(), p))
+            if (p == null || APIRegistry.perms.checkUserPermission(session.getUserIdent(), p))
                 response.handlers.add(handler.getKey());
         }
-        return new RemoteResponse<QueryAllowedHandlersHandler.Response>(request, response);
+        return new RemoteResponse<QueryRemoteCapabilitiesHandler.Response>(request, response);
     }
 
     public static class Response {

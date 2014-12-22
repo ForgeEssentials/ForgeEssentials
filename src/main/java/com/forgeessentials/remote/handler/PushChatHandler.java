@@ -5,17 +5,17 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.remote.AbstractRemoteHandler.PushRequest;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
+import com.forgeessentials.api.remote.RemoteRequest.PushRequestData;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class PushChatHandler extends GenericRemoteHandler<PushRequest> {
+public class PushChatHandler extends GenericRemoteHandler<PushRequestData> {
 
     public static final String ID = "push_chat";
 
@@ -23,13 +23,13 @@ public class PushChatHandler extends GenericRemoteHandler<PushRequest> {
 
     public PushChatHandler()
     {
-        super(ID, PERM, PushRequest.class);
+        super(ID, PERM, PushRequestData.class);
         APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows requesting chat push-messages");
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
-    public synchronized RemoteResponse handleData(RemoteSession session, RemoteRequest<PushRequest> request)
+    public synchronized RemoteResponse handleData(RemoteSession session, RemoteRequest<PushRequestData> request)
     {
         if (hasPushSession(session) ^ !request.data.enable)
             error("chat push already " + (request.data.enable ? "enabled" : "disabled"));

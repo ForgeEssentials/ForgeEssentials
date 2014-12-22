@@ -94,7 +94,7 @@ public class Session implements Runnable, RemoteSession {
             }.getType();
             RemoteRequest<JsonElement> request = getGson().fromJson(message, type);
 
-            OutputHandler.felog.info(String.format("[remote] Request [%s]: %s", request.id, request.data.toString()));
+            OutputHandler.felog.info(String.format("[remote] Request [%s]: %s", request.id, request.data == null ? "null" : request.data.toString()));
 
             if (request.auth != null)
             {
@@ -119,11 +119,12 @@ public class Session implements Runnable, RemoteSession {
             }
 
             // Check if user was banned
-            if (MinecraftServer.getServer().getConfigurationManager().func_152608_h().func_152702_a(ident.getGameProfile()))
+            if (ident != null && MinecraftServer.getServer().getConfigurationManager().func_152608_h().func_152702_a(ident.getGameProfile()))
             {
                 close("banned", request);
                 return;
             }
+            
             // Check for remote permission
             if (!APIRegistry.perms.checkUserPermission(ident, ModuleRemote.PERM))
             {

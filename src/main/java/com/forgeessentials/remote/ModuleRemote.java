@@ -24,8 +24,8 @@ import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoader
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
 import com.forgeessentials.remote.handler.PushChatHandler;
-import com.forgeessentials.remote.handler.QueryAllowedHandlersHandler;
 import com.forgeessentials.remote.handler.QueryPlayerHandler;
+import com.forgeessentials.remote.handler.QueryRemoteCapabilitiesHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -102,7 +102,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
         new QueryPlayerHandler().register();
         new PushChatHandler().register();
-        new QueryAllowedHandlersHandler().register();
+        new QueryRemoteCapabilitiesHandler().register();
     }
 
     /**
@@ -269,6 +269,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
      */
     public String getPasskey(UserIdent userIdent)
     {
+        if (!userIdent.hasUUID())
+            return null;
         if (passkeys.containsKey(userIdent))
             return passkeys.get(userIdent);
         String passkey = generatePasskey();
@@ -284,6 +286,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
      */
     public void setPasskey(UserIdent userIdent, String passkey)
     {
+        if (!userIdent.hasUUID())
+            return;
         if (passkey == null)
             passkeys.remove(userIdent);
         else
@@ -334,6 +338,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
      */
     public String getConnectString(UserIdent userIdent)
     {
+        if (!userIdent.hasUUID())
+            return null;
         return userIdent.getPlayer().getUniqueID().toString() + "@" + (useSSL ? "ssl:" : "") + getHostName() + ":" + port + "|" + getPasskey(userIdent);
     }
 

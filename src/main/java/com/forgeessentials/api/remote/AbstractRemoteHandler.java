@@ -81,14 +81,4 @@ public abstract class AbstractRemoteHandler implements RemoteHandler {
         }
     }
 
-    public static class PushRequest {
-
-        public boolean enable;
-
-        public PushRequest(boolean enable)
-        {
-            this.enable = enable;
-        }
-    }
-
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -45,7 +46,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
         {
             if (!args.hasPlayer())
                 throw new CommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            showPasskey(args);
+            showPasskey(args, args.userIdent);
         }
         else
         {
@@ -57,13 +58,15 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 UserIdent ident = args.parsePlayer();
                 if (ident == null)
                     return;
+                if (!ident.hasUUID())
+                    throw new CommandException(String.format("Player %s not found", ident.getUsernameOrUUID()));
                 if (!ident.equals(args.userIdent))
                     args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isTabCompletion)
                     return;
                 ModuleRemote.getInstance().setPasskey(ident, ModuleRemote.getInstance().generatePasskey());
                 args.info("Generated new passkey");
-                showPasskey(args);
+                showPasskey(args, ident);
                 return;
             }
             case "block":
@@ -71,6 +74,8 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 UserIdent ident = args.parsePlayer();
                 if (ident == null)
                     return;
+                if (!ident.hasUUID())
+                    throw new CommandException(String.format("Player %s not found", ident.getUsernameOrUUID()));
                 args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isTabCompletion)
                     return;
@@ -83,6 +88,8 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 UserIdent ident = args.parsePlayer();
                 if (ident == null)
                     return;
+                if (!ident.hasUUID())
+                    throw new CommandException(String.format("Player %s not found", ident.getUsernameOrUUID()));
                 args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isTabCompletion)
                     return;
@@ -130,11 +137,12 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
     /**
      * @param sender
      * @param args
+     * @param ident
      */
-    public void showPasskey(CommandParserArgs args)
+    public void showPasskey(CommandParserArgs args, UserIdent ident)
     {
-        String url = "https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + ModuleRemote.getInstance().getConnectString(args.userIdent);
-        url = url.replaceAll("\\|", "%7C");
+        String connectString = ModuleRemote.getInstance().getConnectString(ident);
+        String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
         args.sender.addChatMessage(IChatComponent.Serializer.func_150699_a("{" //
                 + "text:\"Remote passkey = " + ModuleRemote.getInstance().getPasskey(args.userIdent) + " \"," //
                 + "extra:[" //
@@ -148,6 +156,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 + "  }" //
                 + " }" //
                 + "]}"));
+        args.sender.addChatMessage(new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
     }
 
     @Override
@@ -174,7 +183,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
     @Override
     public boolean canConsoleUseCommand()
     {
-        return false;
+        return true;
     }
 
     @Override
