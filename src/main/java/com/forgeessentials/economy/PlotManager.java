@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class PlotManager {
 
-    public static Map<String, Offer> pendingOffers = new HashMap<>();
+    public static Map<String, Offer<Zone>> pendingOffers = new HashMap<>();
 
     public static int timeout;
 
@@ -44,22 +44,5 @@ public class PlotManager {
                 zones.add((AreaZone)zone);
         }
         return zones.toArray(new AreaZone[]{});
-    }
-
-    // Represents an offer to transact a plot. Do not persist.
-    public static class Offer
-    {
-        public Zone plot;
-        public EntityPlayer buyer;
-        public EntityPlayer seller;
-        public int amount;
-
-        public Offer(Zone plot, EntityPlayer buyer, EntityPlayer seller, int amount)
-        {
-            this.plot = plot;
-            this.buyer = buyer;
-            this.seller = seller;
-            this.amount = amount;
-        }
     }
 }

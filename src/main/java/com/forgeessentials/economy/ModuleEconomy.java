@@ -25,9 +25,13 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Call the WalletHandler class when working with Economy
@@ -43,6 +47,8 @@ public class ModuleEconomy extends ConfigLoaderBase {
     public static int startbudget;
 
     public static int psfPrice;
+
+    public static List<Offer<ItemStack>> offers = new ArrayList<>();
     
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)

@@ -3,6 +3,7 @@ package com.forgeessentials.economy.commands.plots;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.economy.Offer;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +12,6 @@ import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.economy.PlotManager;
-import com.forgeessentials.economy.PlotManager.Offer;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -50,7 +50,7 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
 
             OutputHandler.chatNotification(seller, "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + value
                     + ". Type /sellplot <plotName> yes to accept, /sellplot <plotName> no to deny. This offer will expire in " + PlotManager.timeout + " seconds.");
-            PlotManager.pendingOffers.put(plot.getName(), new Offer(plot, buyer, seller, value));
+            PlotManager.pendingOffers.put(plot.getName(), new Offer<Zone>(buyer, seller, plot, value));
         }
         else{
             OutputHandler.chatError(buyer, "Incorrect syntax. Try this instead: <plotName> <amount>");

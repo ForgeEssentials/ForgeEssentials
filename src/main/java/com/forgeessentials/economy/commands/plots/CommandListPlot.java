@@ -3,7 +3,7 @@ package com.forgeessentials.economy.commands.plots;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.economy.PlotManager.Offer;
+import com.forgeessentials.economy.Offer;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -33,7 +33,7 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
             if (args[1].equals("add"))
             {
                 Zone zone = APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[2]);
-                PlotManager.pendingOffers.put(args[2], new Offer(zone, null, player, Integer.parseInt(args[3])));
+                PlotManager.pendingOffers.put(args[2], new Offer<Zone>(null, player, zone, Integer.parseInt(args[3])));
             }
             else if (args[1].equals("remove"))
             {
@@ -42,11 +42,11 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
             else
             {
                 OutputHandler.chatNotification(player, "Listing all plots for sale:");
-                for (Entry<String, Offer> offer : PlotManager.pendingOffers.entrySet())
+                for (Entry<String, Offer<Zone>> offer : PlotManager.pendingOffers.entrySet())
                 {
                     if (offer.getValue().buyer == null)
                     {
-                        PlotManager.printPlotDetails(player, (AreaZone) offer.getValue().plot);
+                        PlotManager.printPlotDetails(player, (AreaZone) offer.getValue().item);
                     }
                 }
             }
