@@ -37,7 +37,7 @@ public abstract class Zone {
         public List<String> toList()
         {
             List<String> list = new ArrayList<String>();
-            for (Entry<String, String> perm : this.entrySet())
+            for (Map.Entry<String, String> perm : this.entrySet())
             {
                 if (perm.getValue() == null)
                     continue;
