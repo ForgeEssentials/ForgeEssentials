@@ -125,6 +125,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
                 // Set new server zone
                 rootZone.setServerZone(serverZone);
                 serverZone.rebuildZonesMap();
+                serverZone.updatePlayerIdents();
                 dirty = false;
                 APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
                 return true;

@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -390,6 +389,7 @@ public abstract class Zone {
             {
                 entry.getKey().updateUsername();
             }
+            getServerZone().registerPlayer(entry.getKey());
         }
     }
 

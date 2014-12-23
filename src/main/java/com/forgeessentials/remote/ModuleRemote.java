@@ -340,7 +340,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     {
         if (!userIdent.hasUUID())
             return null;
-        return userIdent.getPlayer().getUniqueID().toString() + "@" + (useSSL ? "ssl:" : "") + getHostName() + ":" + port + "|" + getPasskey(userIdent);
+        return userIdent.getUuid().toString() + "@" + (useSSL ? "ssl:" : "") + getHostName() + ":" + port + "|" + getPasskey(userIdent);
     }
 
     /**
