@@ -265,7 +265,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         
         // Make sure each player has at least one permission
         UserIdent ident = new UserIdent(e.player);
-        if (getServerZone().getPlayerPermissions(ident).size() == 0)
+        if (getServerZone().getPlayerPermissions(ident) == null || getServerZone().getPlayerPermissions(ident).size() == 0)
             getServerZone().setPlayerPermission(ident, FEPermissions.PLAYER_KNOWN, true);
         else
             getServerZone().clearPlayerPermission(ident, FEPermissions.PLAYER_KNOWN);
