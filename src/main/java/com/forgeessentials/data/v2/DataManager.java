@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,6 +15,7 @@ import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
+import com.forgeessentials.data.v2.types.UserIdentType;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.gson.ExclusionStrategy;
@@ -45,6 +47,7 @@ public class DataManager implements ExclusionStrategy {
 
     static
     {
+        addDataType(new UserIdentType());
         addDataType(new ItemStackType());
         addDataType(new NBTTagCompoundType());
     }
@@ -128,6 +131,28 @@ public class DataManager implements ExclusionStrategy {
         try (BufferedReader br = new BufferedReader(new FileReader(file)))
         {
             return getGson().fromJson(br, clazz);
+        }
+        catch (JsonParseException e)
+        {
+            OutputHandler.felog.severe(String.format("Error parsing data file \"%s\"", file.getAbsolutePath()));
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            OutputHandler.felog.severe(String.format("Error loading data file \"%s\"", file.getAbsolutePath()));
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public <T> T load(Type type, String key)
+    {
+        File file = getTypeFile(type.getClass(), key);
+        if (!file.exists())
+            return null;
+        try (BufferedReader br = new BufferedReader(new FileReader(file)))
+        {
+            return getGson().fromJson(br, type);
         }
         catch (JsonParseException e)
         {

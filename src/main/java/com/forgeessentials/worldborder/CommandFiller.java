@@ -126,6 +126,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
                 else
                 {
                     map.get(world.provider.dimensionId).stop();
+                    map.remove(world.provider.dimensionId);
                 }
             }
             else if (args[1].equalsIgnoreCase("reset"))

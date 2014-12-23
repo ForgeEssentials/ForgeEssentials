@@ -2,6 +2,7 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
+import com.forgeessentials.util.questioner.QuestionCenter;
 import com.forgeessentials.util.VersionUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -205,6 +206,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @EventHandler
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
+        new QuestionCenter();
         DataManager.setInstance(new DataManager(new File(FunctionHelper.getWorldPath(), "FEData/json")));
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerPreInitEvent(e));
     }

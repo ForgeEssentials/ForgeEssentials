@@ -79,7 +79,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         this.args = new LinkedList<String>(Arrays.asList(args));
         this.sender = sender;

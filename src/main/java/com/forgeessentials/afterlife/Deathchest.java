@@ -3,6 +3,7 @@ package com.forgeessentials.afterlife;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.forgeessentials.api.APIRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,6 +40,8 @@ public class Deathchest extends ServerEventHandler {
      * This is the permissions that allows you to bypass the protection timer.
      */
     public static final String PERMISSION_BYPASS = ModuleAfterlife.BASEPERM + ".deathchest.protectionBypass";
+
+    public static final String PERMPROP_XP_MODIFIER = ModuleAfterlife.BASEPERM + ".deathchest.xpmultiplier";
 
     public static boolean enable;
     public static boolean enableXP;
@@ -141,7 +144,10 @@ public class Deathchest extends ServerEventHandler {
                         EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
                         if (grave.xp > 0)
                         {
-                            player.addExperienceLevel(grave.xp);
+                            String modifier = APIRegistry.perms.getPermissionProperty(player, PERMPROP_XP_MODIFIER);
+                            double intmod = Double.parseDouble(modifier);
+                            int toAdd = (int)(grave.xp * intmod);
+                            player.addExperienceLevel(toAdd);
                             grave.xp = 0;
                         }
 

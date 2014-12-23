@@ -1,24 +1,35 @@
-ForgeEssentialsMain
+ForgeEssentialsMain [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain)
 ===================
 
 The code on this branch is for Minecraft 1.7.10. File issues at the issue tracker.
 
-[![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain)
-
-*******************
-####Join us on our IRC channel: [#forgeessentials](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on EsperNet.####
-
 *******************
 
-The Forge Essentials project consists of a permissions and protection system to be used with forge servers, incorporating a certain extent of WorldEdit functionality.
+The ForgeEssentials project consists many server features,  
+especially a powerful permissions and protection system:
+ - Permission management
+ - Protection (WorldGuard)
+ - Automatic backup management
+ - Multiworld (in bukkit aka. multiverse)
+ - Deathchests
+ - Huge collection of utility commands
+ - Remote server access and management with Andoid-app (WIP)
+ - Any many more!!!
 
-*More information can be found at the (wip - rewrite in progress) [wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki).*
+*******************
 
-#### This repo is for a port to Minecraft 1.7.10.
-There are compiled builds [here](http://198.23.242.205:8080/job/ForgeEssentials/).
-Betas are to be considered very unstable. Approach with caution. Please make backups before attempting to use this on a live server.
+#### For more information and tutorials, please read the [__WIKI__](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki) ####
 
-<br>
+##### If you need help or have suggestions, join us on our IRC channel [*#forgeessentials*](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on [esper.net](http://esper.net). #####
+
+*******************
+
+#### Download for the latest builds on [Jenkins](http://198.23.242.205:8080/job/ForgeEssentials/). or releases on [Curseforge](http://minecraft.curseforge.com/mc-mods/74735) ####
+
+ForgeEssentials for Minecraft 1.7.10 is still in **beta**!  
+Betas are to be considered unstable. Approach with caution. Please make backups before using / updating on a live server.
+
+*******************
 
 Development Setup
 =================
@@ -42,13 +53,6 @@ Repeat for the "Minecraft Server" run configuration.
 1. Please consider squashing all commits before initially submitting pull requests.
 2. For a local .gitignore use .git/info/exclude
 3. If you have any questions, hop on IRC.
-
-<br>
-
-Downloads
-=========
-
-If you would like test builds, go [here](http://198.23.242.205:8080/job/ForgeEssentials/). Untested and probably buggy!
 
 FE Team Members:
 ================
