@@ -41,6 +41,7 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
@@ -255,13 +256,19 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     // -- Events
     // ------------------------------------------------------------
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerLogin(PlayerLoggedInEvent e)
     {
+        // Update permission storage with new players
         for (Zone zone : getZones())
-        {
             zone.updatePlayerIdents();
-        }
+        
+        // Make sure each player has at least one permission
+        UserIdent ident = new UserIdent(e.player);
+        if (getServerZone().getPlayerPermissions(ident).size() == 0)
+            getServerZone().setPlayerPermission(ident, FEPermissions.PLAYER_KNOWN, true);
+        else
+            getServerZone().clearPlayerPermission(ident, FEPermissions.PLAYER_KNOWN);
     }
 
     @SubscribeEvent
