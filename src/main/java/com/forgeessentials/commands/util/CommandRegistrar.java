@@ -37,7 +37,6 @@ import com.forgeessentials.commands.CommandRename;
 import com.forgeessentials.commands.CommandRepair;
 import com.forgeessentials.commands.CommandRules;
 import com.forgeessentials.commands.CommandSmite;
-import com.forgeessentials.commands.CommandSpawnMob;
 import com.forgeessentials.commands.CommandTime;
 import com.forgeessentials.commands.CommandVanish;
 import com.forgeessentials.commands.CommandVirtualchest;
@@ -63,7 +62,6 @@ public class CommandRegistrar {
         cmdList.add(new CommandModlist());
         cmdList.add(new CommandButcher());
         cmdList.add(new CommandRemove());
-        cmdList.add(new CommandSpawnMob());
         cmdList.add(new CommandAFK());
         cmdList.add(new CommandKit());
         cmdList.add(new CommandEnderchest());
