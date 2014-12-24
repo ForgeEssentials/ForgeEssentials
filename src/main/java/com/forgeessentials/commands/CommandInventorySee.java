@@ -2,6 +2,7 @@ package com.forgeessentials.commands;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
@@ -33,6 +34,9 @@ public class CommandInventorySee extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
+        if (args[0] == null)
+            throw new CommandException("You need to specify a player!");
+
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
             return;
@@ -52,11 +56,6 @@ public class CommandInventorySee extends FEcmdModuleCommands {
         player.openContainer = new ContainerChest(player.inventory, chest);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addCraftingToCrafters(player);
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
     }
 
     @Override
