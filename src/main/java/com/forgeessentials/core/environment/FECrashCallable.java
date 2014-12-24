@@ -27,9 +27,9 @@ public class FECrashCallable implements ICrashCallable
             firstEntry = false;
         }
         String n = System.getProperty("line.separator");
-        String returned =  "Build information: Build number is: " + VersionUtils.getBuildNumber() + n
-                + "Build hash is: " + VersionUtils.getBuildHash() + n
-                + "Modules loaded: " + ModuleLauncher.getModuleList().size();
+        String returned =  "Build information: Build number is: " + VersionUtils.getBuildNumber()
+                + ", Build hash is: " + VersionUtils.getBuildHash()
+                + ", Modules loaded: " + modules;
 
         if (Environment.hasCauldron)
         {
