@@ -1,6 +1,5 @@
 package com.forgeessentials.core.environment;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -12,10 +11,13 @@ public class Environment
 
     private static boolean isClient = false;
 
+    protected static boolean hasCauldron = false;
+
     private static final String ALLOW_CAULDRON = "forgeessentials.allowCauldron";
 
     public static void check()
     {
+        FMLCommonHandler.instance().registerCrashCallable(new FECrashCallable());
         // Check if dedicated or integrated server
         try
         {
@@ -62,6 +64,7 @@ public class Environment
                 OutputHandler.felog.severe("Bad things may happen. By setting the environment variable you are proceeding at your own risk.");
                 OutputHandler.felog.severe("DO NOT BOTHER ANYONE IF YOU RUN INTO ISSUES.");
                 OutputHandler.felog.severe("You are highly recommended to uninstall FE and use bukkit plugins instead.");
+                hasCauldron = true;
                 return;
             }
 

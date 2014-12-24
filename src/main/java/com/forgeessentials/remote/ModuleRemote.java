@@ -161,6 +161,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
             return;
         try
         {
+            if (hostname.equals("*"))
+                hostname = "0.0.0.0";
             if (useSSL)
             {
                 try

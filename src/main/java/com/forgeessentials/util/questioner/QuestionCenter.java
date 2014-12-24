@@ -16,9 +16,14 @@ public class QuestionCenter extends ServerEventHandler{
 
     public static int defaultTime = 120;
 
-    public static void addToQuestionQue(QuestionData question)
+    public static void addToQuestionQueue(QuestionData question)
     {
         queue.put(question.getTarget().getCommandSenderName(), question);
+    }
+
+    public static void addtoQuestionQueue(ICommandSender target, String question, IReplyHandler runnable)
+    {
+        addToQuestionQueue(new QuestionData(target, question, runnable, defaultTime));
     }
 
     public static void abort(QuestionData questionData)

@@ -6,6 +6,7 @@ import com.forgeessentials.data.v2.DataManager.DataType;
 import com.forgeessentials.util.UserIdent;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 
@@ -21,7 +22,17 @@ public class UserIdentType implements DataType<UserIdent> {
     public UserIdent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
     {
         if (json.isJsonObject())
-            return new UserIdent(json.getAsJsonObject().get("uuid").getAsString(), json.getAsJsonObject().get("username").getAsString());
+        {
+            JsonObject obj = json.getAsJsonObject();
+            JsonElement uuid = obj.get("uuid");
+            JsonElement username = obj.get("username");
+            if (uuid == null)
+                return new UserIdent(username.getAsString());
+            else if (username == null)
+                return new UserIdent(uuid.getAsString());
+            else
+                return new UserIdent(uuid.getAsString(), username.getAsString());
+        }
         return UserIdent.fromString(json.getAsString());
     }
 

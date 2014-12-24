@@ -39,6 +39,7 @@ public final class FEPermissions {
 	public static final String PLAYER = FE_INTERNAL + ".player";
 	public static final String PLAYER_UUID = PLAYER + ".uuid";
 	public static final String PLAYER_NAME = PLAYER + ".name";
-	public static final String PLAYER_GROUPS = PLAYER + ".groups";
+    public static final String PLAYER_GROUPS = PLAYER + ".groups";
+    public static final String PLAYER_KNOWN = PLAYER + ".known";
 
 }

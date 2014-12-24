@@ -125,7 +125,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
     public ForgeEssentials()
     {
-        tasks = new TaskRegistry();
+        // Check environment
+        Environment.check();
     }
 
     @Mod.EventHandler
@@ -135,8 +136,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
         OutputHandler.felog.info("Initializing ForgeEssentials version " + FEModContainer.version + " (configDir = " + FEDIR.getAbsolutePath() + ")");
         OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber() + ", build hash is: " + VersionUtils.getBuildHash());
 
-        // Check environment
-        Environment.check();
 
         // Load configuration
         configManager = new ConfigManager(FEDIR, "main");
@@ -151,6 +150,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
         DataStorageManager.registerDriver("SQL_DB", SQLDataDriver.class);
         registerDataTypes();
         storageManager.setupManager();
+
+        tasks = new TaskRegistry();
 
         // Load network packages
         FunctionHelper.netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");

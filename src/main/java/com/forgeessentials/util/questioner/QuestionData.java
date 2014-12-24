@@ -12,23 +12,23 @@ public class QuestionData {
 
     private IReplyHandler processAnswer;
 
-    public QuestionData(ICommandSender target, String question, IReplyHandler runnable)
+    public QuestionData(ICommandSender target, String question, IReplyHandler runnable, int timeout)
     {
         this.target = target;
         startTime = System.currentTimeMillis();
         processAnswer = runnable;
-        waitTime = QuestionCenter.defaultTime;
+        waitTime = timeout;
 
         OutputHandler.sendMessage(target, question);
     }
 
-    public void setWaitTime(int seconds)
+    public int getTimeout()
     {
-        waitTime = seconds;
+        return waitTime;
     }
+
     public void count()
     {
-
         if ((System.currentTimeMillis() - startTime) / 1000L > waitTime)
         {
             QuestionCenter.abort(this);
