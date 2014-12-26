@@ -32,12 +32,14 @@ public class WalletHandler implements IEconManager {
     }
 
     @Override
-    public void removeFromWallet(int amountToSubtract, UUID player)
+    public boolean removeFromWallet(int amountToSubtract, UUID player)
     {
         if (wallets.get(player).amount - amountToSubtract >= 0)
         {
             wallets.get(player).amount = wallets.get(player).amount - amountToSubtract;
+            return true;
         }
+        return false;
     }
 
     @Override

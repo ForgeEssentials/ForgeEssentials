@@ -15,7 +15,6 @@ import com.forgeessentials.economy.commands.CommandSetWallet;
 import com.forgeessentials.economy.commands.plots.CommandBuyPlot;
 import com.forgeessentials.economy.commands.plots.CommandListPlot;
 import com.forgeessentials.economy.commands.plots.CommandRemovePlot;
-import com.forgeessentials.economy.commands.plots.CommandSellPlot;
 import com.forgeessentials.economy.commands.plots.CommandSetPlot;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -75,13 +74,14 @@ public class ModuleEconomy extends ConfigLoaderBase {
         FunctionHelper.registerServerCommand(new CommandPaidCommand());
         FunctionHelper.registerServerCommand(new CommandSellCommand());
         FunctionHelper.registerServerCommand(new CommandMoney());
+
         FunctionHelper.registerServerCommand(new CommandBuyPlot());
         FunctionHelper.registerServerCommand(new CommandRemovePlot());
-        FunctionHelper.registerServerCommand(new CommandSellPlot());
         FunctionHelper.registerServerCommand(new CommandSetPlot());
         FunctionHelper.registerServerCommand(new CommandListPlot());
 
         PermissionsManager.registerPermission(PICKUP_XP_PERM, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission("fe.economy.plots.set.free", RegisteredPermValue.OP);
     }
 
     @SubscribeEvent

@@ -5,7 +5,7 @@ import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.economy.PlotManager;
+import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.EventCancelledException;
@@ -13,6 +13,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandSetPlot extends ForgeEssentialsCommandBase
 {
@@ -23,21 +24,30 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
         PlayerInfo info = PlayerInfo.getPlayerInfo(player);
         try
         {
-            AreaZone zone = new AreaZone(APIRegistry.perms.getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0], info.getSelection());
-            zone.setGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM, true);
-            zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
-            zone.setHidden(true);
+            int price;
 
             if (args[1] != null)
             {
-                int price = Integer.parseInt(args[1]); // checks if it's a valid number
-                zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
+                price = Integer.parseInt(args[1]); // checks if it's a valid number
             }
             else
             {
-                int price = zone.getArea().getXLength() * zone.getArea().getZLength() * ModuleEconomy.psfPrice;
-                zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
+                price = info.getSelection().getXLength() * info.getSelection().getZLength() * ModuleEconomy.psfPrice;
             }
+
+            if (!PermissionsManager.checkPermission(player, getPermissionNode() + ".free"))
+            {
+                if(!APIRegistry.wallet.removeFromWallet(price, new UserIdent(player).getUuid()))
+                {
+                    throw new CommandException("You can't afford to set this plot!");
+                }
+            }
+
+            AreaZone zone = new AreaZone(APIRegistry.perms.getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0], info.getSelection());
+            zone.setGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.DATA_PERM, true);
+            zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
+            zone.setHidden(true);
+            zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
         }
         catch (EventCancelledException e)
         {
@@ -60,7 +70,7 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
     @Override
     public PermissionsManager.RegisteredPermValue getDefaultPermission()
     {
-        return PermissionsManager.RegisteredPermValue.OP;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override

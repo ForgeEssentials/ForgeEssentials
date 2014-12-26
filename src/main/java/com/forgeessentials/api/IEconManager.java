@@ -24,11 +24,12 @@ public interface IEconManager {
 
     /**
      * Remove a set amount from a target's Wallet
+     * returns true if it succeded, false if it didn't
      *
      * @param amountToSubtract
      * @param player
      */
-    public void removeFromWallet(int amountToSubtract, UUID player);
+    public boolean removeFromWallet(int amountToSubtract, UUID player);
 
     /**
      * Set the target's Wallet to the specified amount

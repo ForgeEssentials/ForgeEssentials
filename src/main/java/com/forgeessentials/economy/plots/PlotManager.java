@@ -1,13 +1,13 @@
-package com.forgeessentials.economy;
+package com.forgeessentials.economy.plots;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.economy.Offer;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,11 +20,16 @@ public class PlotManager {
 
     public static int timeout;
 
+    public static final String PLOT_PERM = "fe.economy.plots";
+
     public static final String PLOT_NAME_ID = "[PLOT]";
-    public static final String PLOT_PERM = "fe.plot";
-    public static final String PLOT_OWNER = PLOT_PERM + ".owner";
-    public static final String PLOT_NAME_PERM = PLOT_PERM + ".name";
-    public static final String PLOT_VALUE = PLOT_PERM + ".value";
+    public static final String DATA_PERM = PLOT_PERM + ".data";
+    public static final String PLOT_OWNER = DATA_PERM + ".owner";
+    public static final String PLOT_NAME_PERM = DATA_PERM + ".name";
+    public static final String PLOT_VALUE = DATA_PERM + ".value";
+
+    public static final String PLOT_PERMPROP_CLAIMCAP = PLOT_PERM + ".claimcap";
+    public static final String PLOT_PERMPROP_CLAIMED = PLOT_PERM + ".claimed";
 
     public static void printPlotDetails(ICommandSender sender, AreaZone plot)
     {

@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.PlotManager;
+import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.OutputHandler;
 import java.util.Map.Entry;
 

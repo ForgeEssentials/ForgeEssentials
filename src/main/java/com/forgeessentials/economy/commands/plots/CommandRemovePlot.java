@@ -3,7 +3,7 @@ package com.forgeessentials.economy.commands.plots;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.PlotManager;
+import com.forgeessentials.economy.plots.PlotManager;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager;
 

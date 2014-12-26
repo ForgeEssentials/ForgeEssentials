@@ -4,6 +4,9 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.economy.Offer;
+import com.forgeessentials.economy.plots.TransactionHandler;
+import com.forgeessentials.util.questioner.QuestionCenter;
+import com.forgeessentials.util.questioner.QuestionData;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.PlotManager;
+import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -48,9 +51,10 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
                 throw new CommandException("You can't afford that!");
             }
 
-            OutputHandler.chatNotification(seller, "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + value
-                    + ". Type /sellplot <plotName> yes to accept, /sellplot <plotName> no to deny. This offer will expire in " + PlotManager.timeout + " seconds.");
-            PlotManager.pendingOffers.put(plot.getName(), new Offer<Zone>(buyer, seller, plot, value));
+            Offer<Zone> item = new Offer<Zone>(buyer, seller, plot, value);
+
+            QuestionCenter.addToQuestionQueue(new QuestionData(seller, "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + value + ". Type /yes to accept, /no to deny. This offer will expire in " + PlotManager.timeout + " seconds.", new TransactionHandler(item), PlotManager.timeout));
+            PlotManager.pendingOffers.put(plot.getName(), item);
         }
         else{
             OutputHandler.chatError(buyer, "Incorrect syntax. Try this instead: <plotName> <amount>");
