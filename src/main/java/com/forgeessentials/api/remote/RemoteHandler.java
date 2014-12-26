@@ -1,6 +1,6 @@
 package com.forgeessentials.api.remote;
 
-import com.google.gson.JsonElement;
+import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
 
 /**
  *
@@ -17,7 +17,7 @@ public interface RemoteHandler {
 
     String getPermission();
 
-    RemoteResponse handle(RemoteSession session, RemoteRequest<JsonElement> request);
+    RemoteResponse handle(RemoteSession session, JsonRemoteRequest request);
 
     public static class RemoteException extends RuntimeException {
 

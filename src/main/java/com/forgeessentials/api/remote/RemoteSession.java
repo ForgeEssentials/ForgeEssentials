@@ -2,8 +2,8 @@ package com.forgeessentials.api.remote;
 
 import java.io.IOException;
 
+import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
 import com.forgeessentials.util.UserIdent;
-import com.google.gson.JsonElement;
 
 /**
  *
@@ -34,7 +34,7 @@ public interface RemoteSession {
      * @param request
      * @param clazz
      */
-    <T> RemoteRequest<T> transformRemoteRequest(RemoteRequest<JsonElement> request, Class<T> clazz);
+    <T> RemoteRequest<T> transformRemoteRequest(JsonRemoteRequest request, Class<T> clazz);
 
     /**
      * Returns the hostname of the remote client

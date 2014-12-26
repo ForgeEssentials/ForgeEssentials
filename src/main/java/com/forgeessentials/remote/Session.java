@@ -2,7 +2,6 @@ package com.forgeessentials.remote;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -12,14 +11,13 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler.PermissionException;
 import com.forgeessentials.api.remote.RemoteRequest;
+import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 
 /**
  *
@@ -90,9 +88,7 @@ public class Session implements Runnable, RemoteSession {
     {
         try
         {
-            Type type = new TypeToken<RemoteRequest<JsonElement>>() {/**/
-            }.getType();
-            RemoteRequest<JsonElement> request = getGson().fromJson(message, type);
+            JsonRemoteRequest request = getGson().fromJson(message, JsonRemoteRequest.class);
 
             OutputHandler.felog.info(String.format("[remote] Request [%s]: %s", request.id, request.data == null ? "null" : request.data.toString()));
 
@@ -221,7 +217,7 @@ public class Session implements Runnable, RemoteSession {
      * java.lang.Class)
      */
     @Override
-    public <T> RemoteRequest<T> transformRemoteRequest(RemoteRequest<JsonElement> request, Class<T> clazz)
+    public <T> RemoteRequest<T> transformRemoteRequest(JsonRemoteRequest request, Class<T> clazz)
     {
         return RemoteRequest.transform(request, getGson().fromJson(request.data, clazz));
     }
