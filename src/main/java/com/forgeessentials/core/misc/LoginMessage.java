@@ -4,6 +4,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
@@ -184,7 +185,7 @@ public class LoginMessage {
         int logins = 0;
         try
         {
-            logins = server.getConfigurationManager().getAvailablePlayerDat().length;
+            logins = PlayerInfo.getPlayerInfoMap().size();
         }
         catch (Exception e)
         {
