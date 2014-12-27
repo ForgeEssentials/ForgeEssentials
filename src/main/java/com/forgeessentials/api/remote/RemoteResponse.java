@@ -1,5 +1,7 @@
 package com.forgeessentials.api.remote;
 
+import com.google.gson.JsonElement;
+
 /**
  * Represents a generic remote response
  */
@@ -77,4 +79,18 @@ public class RemoteResponse<T> {
         return new RemoteResponse<T>(response.id, response.rid, response.success, response.message, newData);
     }
 
+    public static class JsonRemoteResponse extends RemoteResponse<JsonElement> {
+
+        public JsonRemoteResponse(String id, int rid, boolean success, String message, JsonElement data)
+        {
+            super(id, rid, success, message, data);
+        }
+
+        public JsonRemoteResponse(String id, JsonElement data)
+        {
+            super(id, data);
+        }
+
+    }
+    
 }

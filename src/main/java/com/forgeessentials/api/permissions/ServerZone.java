@@ -344,9 +344,10 @@ public class ServerZone extends Zone {
     {
         SortedSet<GroupEntry> result = getAdditionalPlayerGroups(ident);
         // Check groups added through zones
-        for (Zone z : getZonesAt(ident))
-            if (!(z instanceof ServerZone))
-                result.addAll(z.getStoredPlayerGroups(ident));
+        if (ident != null)
+            for (Zone z : getZonesAt(ident))
+                if (!(z instanceof ServerZone))
+                    result.addAll(z.getStoredPlayerGroups(ident));
         return includeGroups(result);
     }
 
@@ -410,7 +411,11 @@ public class ServerZone extends Zone {
 
     public List<Zone> getZonesAt(UserIdent ident)
     {
-        if (ident.hasPlayer())
+        if (ident == null)
+        {
+            return new ArrayList<>();
+        }
+        else if (ident.hasPlayer())
         {
             return getZonesAt(new WorldPoint(ident.getPlayer()));
         }
