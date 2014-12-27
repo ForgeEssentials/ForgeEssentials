@@ -1,12 +1,13 @@
 package com.forgeessentials.permissions.core;
 
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.util.UserIdent;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Map.Entry;
-import java.util.Set;
 
 public abstract class ZonePersistenceProvider {
 
@@ -33,8 +34,7 @@ public abstract class ZonePersistenceProvider {
             serverZone.clearPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
             if (groupList == null)
                 continue;
-            String[] groups = groupList.split(",");
-            for (String group : groups)
+            for (String group : groupList.replace(" ", "").split(","))
             {
                 serverZone.addPlayerToGroup(ident, group);
             }

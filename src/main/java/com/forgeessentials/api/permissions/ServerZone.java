@@ -38,8 +38,6 @@ public class ServerZone extends Zone {
     private int maxZoneID;
 
     private Map<UserIdent, Set<String>> playerGroups = new HashMap<UserIdent, Set<String>>();
-    
-    // private Map<UserIdent, Map<List<Zone>, Set<String>>> playerGroupsCache = new HashMap<>();
 
     private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
 
@@ -276,13 +274,6 @@ public class ServerZone extends Zone {
 
     // ------------------------------------------------------------
 
-    @Override
-    public void setDirty()
-    {
-        super.setDirty();
-        // playerGroupsCache.clear();
-    }
-
     public Map<UserIdent, Set<String>> getPlayerGroups()
     {
         return playerGroups;
@@ -354,7 +345,19 @@ public class ServerZone extends Zone {
 
     public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)
     {
-        return includeGroups(getAdditionalPlayerGroups(ident));
+        SortedSet<GroupEntry> result = getAdditionalPlayerGroups(ident);
+        
+        // Check groups added through zones
+        for (Zone z : getZonesAt(ident))
+            if (!(z instanceof ServerZone))
+            {
+                String groupList = z.getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
+                if (groupList != null)
+                    for (String group : groupList.replace(" ", "").split(","))
+                        result.add(new GroupEntry(this, group));
+            }
+        
+        return includeGroups(result);
     }
 
     public String getPrimaryPlayerGroup(UserIdent ident)
@@ -411,8 +414,22 @@ public class ServerZone extends Zone {
             if (zone.isInZone(worldPoint))
                 result.add(zone);
         result.add(w);
-        result.add(w.getParent());
+        result.add(this);
         return result;
+    }
+
+    public List<Zone> getZonesAt(UserIdent ident)
+    {
+        if (ident.hasPlayer())
+        {
+            return getZonesAt(new WorldPoint(ident.getPlayer()));
+        }
+        else
+        {
+            ArrayList<Zone> result = new ArrayList<>();
+            result.add(this);
+            return result;
+        }
     }
 
     public Zone getZoneAt(WorldPoint worldPoint)
@@ -540,9 +557,9 @@ public class ServerZone extends Zone {
     }
 
     public static interface PermissionDebugger {
-        
+
         void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value);
-        
+
     }
-    
+
 }
