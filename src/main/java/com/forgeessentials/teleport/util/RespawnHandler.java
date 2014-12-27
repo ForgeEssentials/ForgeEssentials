@@ -1,4 +1,4 @@
-package com.forgeessentials.core.misc;
+package com.forgeessentials.teleport.util;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

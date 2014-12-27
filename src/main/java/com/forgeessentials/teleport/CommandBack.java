@@ -36,8 +36,7 @@ public class CommandBack extends ForgeEssentialsCommandBase {
                 {
                     WarpPoint death = info.getLastTeleportOrigin();
                     info.setLastTeleportOrigin(new WarpPoint(sender));
-                    EntityPlayerMP player = sender;
-                    TeleportHelper.teleport(player, death);
+                    TeleportHelper.teleport(sender, death);
                 }
                 else
                 {

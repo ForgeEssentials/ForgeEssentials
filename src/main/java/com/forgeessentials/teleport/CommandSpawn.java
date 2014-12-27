@@ -2,7 +2,7 @@ package com.forgeessentials.teleport;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.RespawnHandler;
+import com.forgeessentials.teleport.util.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
