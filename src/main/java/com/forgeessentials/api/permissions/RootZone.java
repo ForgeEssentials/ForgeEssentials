@@ -1,5 +1,6 @@
 package com.forgeessentials.api.permissions;
 
+import com.forgeessentials.api.permissions.ServerZone.PermissionDebugger;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 
@@ -11,9 +12,11 @@ import com.forgeessentials.commons.selections.WorldPoint;
  */
 public class RootZone extends Zone {
 
-	private ServerZone serverZone;
+    protected ServerZone serverZone;
 	
-	private IPermissionsHelper permissionHelper;
+	protected IPermissionsHelper permissionHelper;
+    
+	protected PermissionDebugger permissionDebugger;
 
 	public RootZone(IPermissionsHelper permissionHelper)
 	{
@@ -69,5 +72,15 @@ public class RootZone extends Zone {
 	{
 		return permissionHelper;
 	}
+
+    public void setPermissionDebugger(PermissionDebugger permissionDebugger)
+    {
+        this.permissionDebugger = permissionDebugger;
+    }
+
+    public PermissionDebugger getPermissionDebugger()
+    {
+        return permissionDebugger;
+    }
 
 }

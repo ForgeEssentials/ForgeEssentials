@@ -42,7 +42,7 @@ public class CommandSellPlot extends ForgeEssentialsCommandBase
                 APIRegistry.wallet.removeFromWallet(offer.amount, offer.buyer.getPersistentID());
                 APIRegistry.wallet.addToWallet(offer.amount, seller.getPersistentID());
                 Zone plot = offer.plot;
-                plot.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER, offer.buyer.getPersistentID().toString());
+                plot.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER, offer.buyer.getPersistentID().toString());
                 OutputHandler.chatNotification(seller, "Transaction complete. " + offer.amount + "added to your wallet.");
                 OutputHandler.chatNotification(offer.buyer, "Transaction complete. You are now owner of " + plot.getName());
                 PlotManager.pendingOffers.remove(args[0]);

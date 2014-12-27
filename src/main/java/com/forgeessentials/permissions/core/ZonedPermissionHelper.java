@@ -26,11 +26,12 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
-import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
+import com.forgeessentials.api.permissions.ServerZone.PermissionDebugger;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
@@ -50,7 +51,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
  * 
  * @author Olee
  */
-public class ZonedPermissionHelper implements IPermissionsHelper {
+public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebugger {
 
     protected RootZone rootZone;
 
@@ -69,8 +70,10 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     public ZonedPermissionHelper()
     {
         FMLCommonHandler.instance().bus().register(this);
+        
         rootZone = new RootZone(this);
         rootZone.setServerZone(new ServerZone(rootZone));
+        rootZone.setPermissionDebugger(this);
 
         permissionDebugFilters.add("fe.protection.mobspawn");
         permissionDebugFilters.add("fe.protection.gamemode");
@@ -156,8 +159,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
 
     public PermissionList getRegisteredPermissions()
     {
-        PermissionList perms = (PermissionList) rootZone.getGroupPermissions(IPermissionsHelper.GROUP_DEFAULT).clone();
-        for (Entry<String, String> perm : rootZone.getGroupPermissions(IPermissionsHelper.GROUP_OPERATORS).entrySet())
+        PermissionList perms = (PermissionList) rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).clone();
+        for (Entry<String, String> perm : rootZone.getGroupPermissions(Zone.GROUP_OPERATORS).entrySet())
             perms.put(perm.getKey(), perm.getValue());
         return perms;
     }
@@ -165,7 +168,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     public Set<String> enumRegisteredPermissions()
     {
         Set<String> perms = new TreeSet<String>();
-        for (String perm : rootZone.getGroupPermissions(IPermissionsHelper.GROUP_DEFAULT).keySet())
+        for (String perm : rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).keySet())
         {
             if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
                 perms.add(perm);
@@ -230,14 +233,15 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         return result;
     }
 
-    protected void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value)
+    @Override
+    public void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value)
     {
         for (String filter : permissionDebugFilters)
         {
             if (node.startsWith(filter))
                 return;
         }
-        String msg1 = String.format("\u00a7b%s\u00a7f = \u00a7%s%s", permissionNode, PERMISSION_FALSE.equals(value) ? "4" : "2", value);
+        String msg1 = String.format("\u00a7b%s\u00a7f = \u00a7%s%s", permissionNode, Zone.PERMISSION_FALSE.equals(value) ? "4" : "2", value);
         String msg2;
         if (zone == null)
             msg2 = "\u00a74  permission not set";
@@ -323,90 +327,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         zones.add(rootZone.getServerZone());
         zones.add(rootZone);
 
-        return getPermission(zones, ident, groups, permissionNode, isProperty);
-    }
-
-    public String getPermission(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String permissionNode, boolean isProperty)
-    {
-        // Build node list
-        List<String> nodes = new ArrayList<String>();
-        nodes.add(permissionNode);
-        if (!isProperty)
-        {
-            String[] nodeParts = permissionNode.split("\\.");
-            for (int i = nodeParts.length; i > 0; i--)
-            {
-                String node = "";
-                for (int j = 0; j < i; j++)
-                {
-                    node += nodeParts[j] + ".";
-                }
-                nodes.add(node + PERMISSION_ASTERIX);
-            }
-            nodes.add(PERMISSION_ASTERIX);
-        }
-
-        // Check player permissions
-        if (ident != null)
-        {
-            for (Zone zone : zones)
-            {
-                for (String node : nodes)
-                {
-                    String result = zone.getPlayerPermission(ident, node);
-                    if (result != null)
-                    {
-                        debugPermission(zone, ident, null, permissionNode, node, result);
-                        return result;
-                    }
-                }
-            }
-        }
-
-        // Check group permissions
-        // Add default group
-        if (groups != null)
-        {
-            // Lowest order: group hierarchy
-            // (e.g. ADMIN, MEMBER, _OPS_, _ALL_)
-            for (String group : groups)
-            {
-                // Second order: zones
-                // (e.g. area, world, server, root)
-                for (Zone zone : zones)
-                {
-                    // First order: nodes
-                    // (e.g. fe.commands.time, fe.commands.time.*, fe.commands.*, fe.*, *)
-                    for (String node : nodes)
-                    {
-                        String result = zone.getGroupPermission(group, node);
-                        if (result != null)
-                        {
-                            debugPermission(zone, null, group, permissionNode, node, result);
-                            return result;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Check default permissions
-        for (String node : nodes)
-        {
-            // Check group permissions
-            for (Zone zone : zones)
-            {
-                String result = zone.getGroupPermission(GROUP_DEFAULT, node);
-                if (result != null)
-                {
-                    debugPermission(zone, null, GROUP_DEFAULT, permissionNode, node, result);
-                    return result;
-                }
-            }
-        }
-
-        debugPermission(null, null, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE);
-        return null;
+        return getServerZone().getPermission(zones, ident, groups, permissionNode, isProperty);
     }
 
     // ------------------------------------------------------------
@@ -414,26 +335,26 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public void registerPermissionProperty(String permissionNode, String defaultValue)
     {
-        rootZone.setGroupPermissionProperty(GROUP_DEFAULT, permissionNode, defaultValue);
+        rootZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, permissionNode, defaultValue);
     }
 
     @Override
     public void registerPermissionPropertyOp(String permissionNode, String defaultValue)
     {
-        rootZone.setGroupPermissionProperty(GROUP_OPERATORS, permissionNode, defaultValue);
+        rootZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, permissionNode, defaultValue);
     }
 
     @Override
     public void registerPermission(String permissionNode, PermissionsManager.RegisteredPermValue permLevel)
     {
         if (permLevel == RegisteredPermValue.FALSE)
-            rootZone.setGroupPermission(GROUP_DEFAULT, permissionNode, false);
+            rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, false);
         else if (permLevel == RegisteredPermValue.TRUE)
-            rootZone.setGroupPermission(GROUP_DEFAULT, permissionNode, true);
+            rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, true);
         else if (permLevel == RegisteredPermValue.OP)
         {
-            rootZone.setGroupPermission(GROUP_DEFAULT, permissionNode, false);
-            rootZone.setGroupPermission(GROUP_OPERATORS, permissionNode, true);
+            rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, false);
+            rootZone.setGroupPermission(Zone.GROUP_OPERATORS, permissionNode, true);
         }
     }
 
@@ -491,7 +412,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public String getPermissionDescription(String permissionNode)
     {
-        return rootZone.getGroupPermission(GROUP_DEFAULT, permissionNode + FEPermissions.DESCRIPTION_PROPERTY);
+        return rootZone.getGroupPermission(Zone.GROUP_DEFAULT, permissionNode + FEPermissions.DESCRIPTION_PROPERTY);
     }
 
     // ------------------------------------------------------------
@@ -688,8 +609,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public boolean isSystemGroup(String group)
     {
-        return group.equals(IPermissionsHelper.GROUP_DEFAULT) || group.equals(IPermissionsHelper.GROUP_OPERATORS)
-                || group.equals(IPermissionsHelper.GROUP_GUESTS);
+        return group.equals(Zone.GROUP_DEFAULT) || group.equals(Zone.GROUP_OPERATORS)
+                || group.equals(Zone.GROUP_GUESTS);
     }
 
     @Override
@@ -746,7 +667,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
         }
         else
         {
-            return !permissionValue.equals(PERMISSION_FALSE);
+            return !permissionValue.equals(Zone.PERMISSION_FALSE);
         }
     }
 
@@ -829,13 +750,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public boolean checkUserPermission(UserIdent ident, Zone zone, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
+        return checkBooleanPermission(getServerZone().getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
     @Override
     public String getUserPermissionProperty(UserIdent ident, Zone zone, String permissionNode)
     {
-        return getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
+        return getServerZone().getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
     }
 
     // ------------------------------------------------------------
@@ -843,37 +764,37 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public String getGroupPermissionProperty(String group, String permissionNode)
     {
-        return getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, true);
+        return getServerZone().getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, true);
     }
 
     @Override
     public String getGroupPermissionProperty(String group, Zone zone, String permissionNode)
     {
-        return getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, true);
+        return getServerZone().getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, true);
     }
 
     @Override
     public boolean checkGroupPermission(String group, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, false));
+        return checkBooleanPermission(getServerZone().getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, false));
     }
 
     @Override
     public boolean checkGroupPermission(String group, Zone zone, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, false));
+        return checkBooleanPermission(getServerZone().getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, false));
     }
 
     @Override
     public String getGroupPermissionProperty(String group, WorldPoint point, String permissionNode)
     {
-        return getPermission(getZonesAt(point), null, Arrays.asList(group), permissionNode, true);
+        return getServerZone().getPermission(getZonesAt(point), null, Arrays.asList(group), permissionNode, true);
     }
 
     @Override
     public boolean checkGroupPermission(String group, WorldPoint point, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(getZonesAt(point), null, Arrays.asList(group), permissionNode, false));
+        return checkBooleanPermission(getServerZone().getPermission(getZonesAt(point), null, Arrays.asList(group), permissionNode, false));
     }
 
     // ------------------------------------------------------------
@@ -881,25 +802,25 @@ public class ZonedPermissionHelper implements IPermissionsHelper {
     @Override
     public String getGlobalPermissionProperty(String permissionNode)
     {
-        return getGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, permissionNode);
+        return getGroupPermissionProperty(Zone.GROUP_DEFAULT, permissionNode);
     }
 
     @Override
     public String getGlobalPermissionProperty(Zone zone, String permissionNode)
     {
-        return getGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, zone, permissionNode);
+        return getGroupPermissionProperty(Zone.GROUP_DEFAULT, zone, permissionNode);
     }
 
     @Override
     public boolean checkGlobalPermission(String permissionNode)
     {
-        return checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, permissionNode);
+        return checkGroupPermission(Zone.GROUP_DEFAULT, permissionNode);
     }
 
     @Override
     public boolean checkGlobalPermission(Zone zone, String permissionNode)
     {
-        return checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, zone, permissionNode);
+        return checkGroupPermission(Zone.GROUP_DEFAULT, zone, permissionNode);
     }
 
     // ------------------------------------------------------------

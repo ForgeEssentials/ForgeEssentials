@@ -1,14 +1,14 @@
 package com.forgeessentials.permissions.core;
 
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.permissions.Zone.PermissionList;
-import com.forgeessentials.util.FunctionHelper;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.TreeSet;
+
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.util.FunctionHelper;
 
 public final class PermissionsListWriter {
 
@@ -66,9 +66,9 @@ public final class PermissionsListWriter {
                         sb.append(value);
                         writer.write(sb.toString());
                     }
-                    else if (perm.endsWith(IPermissionsHelper.ALL_PERMS))
+                    else if (perm.endsWith(Zone.ALL_PERMS))
                     {
-                        String parentPerm = perm.substring(0, perm.length() - IPermissionsHelper.PERMISSION_ASTERIX.length() - 1);
+                        String parentPerm = perm.substring(0, perm.length() - Zone.PERMISSION_ASTERIX.length() - 1);
                         if (!permissions.containsKey(parentPerm)) {
                             writer.newLine();
                             writer.write(parentPerm);

@@ -9,7 +9,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.permissions.IPermissionsProvider;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.UserIdent;
@@ -20,15 +19,6 @@ import com.forgeessentials.util.UserIdent;
  * @author Olee
  */
 public interface IPermissionsHelper extends IPermissionsProvider {
-
-    static final String GROUP_DEFAULT = "_ALL_";
-    static final String GROUP_GUESTS = "_GUESTS_";
-    static final String GROUP_OPERATORS = "_OPS_";
-
-    static final String PERMISSION_ASTERIX = "*";
-    static final String PERMISSION_FALSE = "false";
-    static final String PERMISSION_TRUE = "true";
-    static final String ALL_PERMS = "." + PERMISSION_ASTERIX;
 
     // ---------------------------------------------------------------------------
     // -- Persistence

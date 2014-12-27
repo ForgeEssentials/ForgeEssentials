@@ -14,7 +14,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
+import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.playerlogger.types.BlockChangeType;
 import com.forgeessentials.playerlogger.types.BlockChangeType.blockChangeLogCategory;
 import com.forgeessentials.playerlogger.types.CommandType;

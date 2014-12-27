@@ -8,8 +8,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.PermissionEvent;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.OutputHandler;
@@ -27,11 +27,11 @@ public class CommandBubble extends FEcmdModuleCommands {
     @SubscribeEvent
     public void permissionInitializeEvent(PermissionEvent.Initialize e) {
         e.serverZone.setGroupPermissionProperty(BUBBLE_GROUP, FEPermissions.GROUP_PRIORITY, "45");
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_USE + IPermissionsHelper.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_PLACE + IPermissionsHelper.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_BREAK + IPermissionsHelper.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT + IPermissionsHelper.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT_ENTITY + IPermissionsHelper.ALL_PERMS, false);
+        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_USE + Zone.ALL_PERMS, false);
+        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
+        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
+        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
+        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
     }
     
     @Override
@@ -60,7 +60,7 @@ public class CommandBubble extends FEcmdModuleCommands {
 
     public void doCmd(ICommandSender sender, String[] args)
     {
-        boolean toggleOn = !APIRegistry.perms.getServerZone().getIncludedGroups(IPermissionsHelper.GROUP_DEFAULT).contains(BUBBLE_GROUP);
+        boolean toggleOn = !APIRegistry.perms.getServerZone().getIncludedGroups(Zone.GROUP_DEFAULT).contains(BUBBLE_GROUP);
         if (args.length == 1)
         {
             if (args[0].equalsIgnoreCase("on"))
@@ -70,12 +70,12 @@ public class CommandBubble extends FEcmdModuleCommands {
         }
         if (toggleOn)
         {
-            APIRegistry.perms.getServerZone().groupIncludeAdd(IPermissionsHelper.GROUP_DEFAULT, BUBBLE_GROUP);
+            APIRegistry.perms.getServerZone().groupIncludeAdd(Zone.GROUP_DEFAULT, BUBBLE_GROUP);
             OutputHandler.chatConfirmation(sender, "Activated bubble. Players are now unable to interact with the world.");
         }
         else
         {
-            APIRegistry.perms.getServerZone().groupIncludeRemove(IPermissionsHelper.GROUP_DEFAULT, BUBBLE_GROUP);
+            APIRegistry.perms.getServerZone().groupIncludeRemove(Zone.GROUP_DEFAULT, BUBBLE_GROUP);
             OutputHandler.chatConfirmation(sender, "Deactivated bubble");
         }
     }

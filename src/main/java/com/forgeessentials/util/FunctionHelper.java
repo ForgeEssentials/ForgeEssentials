@@ -37,7 +37,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
+import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;

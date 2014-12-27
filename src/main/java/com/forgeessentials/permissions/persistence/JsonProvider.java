@@ -18,16 +18,14 @@ import java.util.Set;
 
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.ServerZone;
-import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
-import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.google.gson.FieldNamingPolicy;
@@ -79,10 +77,10 @@ public class JsonProvider extends ZonePersistenceProvider
             list.put(FEPermissions.PREFIX, groupData.prefix);
             list.put(FEPermissions.SUFFIX, groupData.suffix);
             list.put(FEPermissions.GROUP_PRIORITY, Integer.toString(groupData.priority));
-            list.put(FEPermissions.GROUP, ZonedPermissionHelper.PERMISSION_TRUE);
+            list.put(FEPermissions.GROUP, Zone.PERMISSION_TRUE);
             if(groupData.Default)
             {
-                list.put("fe.internal.group.default", IPermissionsHelper.PERMISSION_TRUE);
+                list.put("fe.internal.group.default", Zone.PERMISSION_TRUE);
             }
             serverZone.getOrCreateGroupPermissions(group).putAll(list);
         }

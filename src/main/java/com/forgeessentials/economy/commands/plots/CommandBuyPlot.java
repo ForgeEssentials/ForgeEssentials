@@ -26,11 +26,11 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
         if (args.length == 3)
         {
             Zone plot = APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
-            if (!plot.checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM))
+            if (!plot.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM))
             {
                 throw new CommandException("No such plot!");
             }
-            EntityPlayer seller = UserIdent.getPlayerByUuid(UUID.fromString(plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER)));
+            EntityPlayer seller = UserIdent.getPlayerByUuid(UUID.fromString(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER)));
             OutputHandler.chatNotification(seller, "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + args[1]
                     + ". Type /sellplot <plotName> yes to accept, /sellplot <plotName> no to deny. This offer will expire in " + PlotManager.timeout + " seconds.");
             PlotManager.pendingOffers.put(plot.getName(), new Offer(plot, buyer, seller, Integer.parseInt(args[1])));

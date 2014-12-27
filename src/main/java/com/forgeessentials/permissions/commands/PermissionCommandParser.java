@@ -19,8 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -689,7 +689,7 @@ public class PermissionCommandParser {
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP))
             throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-        parseGroupInner(arguments, IPermissionsHelper.GROUP_DEFAULT, null);
+        parseGroupInner(arguments, Zone.GROUP_DEFAULT, null);
     }
 
     public static void parseGroupInner(CommandParserArgs arguments, String group, Zone zone)

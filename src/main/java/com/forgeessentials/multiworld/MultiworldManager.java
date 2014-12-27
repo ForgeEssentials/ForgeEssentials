@@ -30,8 +30,8 @@ import org.apache.commons.io.FileUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.NamedWorldHandler;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.multiworld.MultiworldException.Type;
 import com.forgeessentials.multiworld.gen.WorldTypeMultiworld;
@@ -236,7 +236,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
             // Handle permission-dim changes
             checkMultiworldPermissions(world);
-            APIRegistry.perms.getWorldZone(world.dimensionId).setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PERM_PROP_MULTIWORLD,
+            APIRegistry.perms.getWorldZone(world.dimensionId).setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD,
                     world.getName());
 
             // Register the dimension
@@ -308,7 +308,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     {
         for (WorldZone zone : APIRegistry.perms.getServerZone().getWorldZones().values())
         {
-            String wn = zone.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PERM_PROP_MULTIWORLD);
+            String wn = zone.getGroupPermission(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD);
             if (wn != null && wn.equals(world.getName()))
             {
                 if (zone.getDimensionID() != world.dimensionId)
