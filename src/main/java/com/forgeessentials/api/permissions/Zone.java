@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import net.minecraft.entity.player.EntityPlayer;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -403,6 +409,52 @@ public abstract class Zone {
     }
 
     // ------------------------------------------------------------
+
+    private Set<String> getPlayerGroups(UserIdent ident)
+    {
+        Set<String> result = new HashSet<>();
+        String groupsStr = getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
+        if (groupsStr != null && !groupsStr.isEmpty())
+            for (String g : groupsStr.replaceAll(" ", "").split(","))
+                if (!g.isEmpty())
+                    result.add(g);
+        return result;
+    }
+
+    public boolean addPlayerToGroup(UserIdent ident, String group)
+    {
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+            return false;
+        Set<String> groups = getPlayerGroups(ident);
+        groups.add(group);
+        APIRegistry.perms.setPlayerPermissionProperty(ident, FEPermissions.PLAYER_GROUPS, StringUtils.join(groups, ","));
+        return true;
+    }
+
+    public boolean removePlayerFromGroup(UserIdent ident, String group)
+    {
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+            return false;
+        Set<String> groups = getPlayerGroups(ident);
+        groups.remove(group);
+        APIRegistry.perms.setPlayerPermissionProperty(ident, FEPermissions.PLAYER_GROUPS, StringUtils.join(groups, ","));
+        return true;
+    }
+
+    /**
+     * Return a list of the user's groups in this zone
+     */
+    public SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident)
+    {
+        SortedSet<GroupEntry> result = new TreeSet<GroupEntry>();
+        String groupsStr = getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
+        if (groupsStr != null && !groupsStr.isEmpty())
+            for (String group : groupsStr.replace(" ", "").split(","))
+                result.add(new GroupEntry(getServerZone(), group));
+        return result;
+    }
+
+    // ------------------------------------------------------------
     // -- Group permissions
     // ------------------------------------------------------------
 
@@ -528,7 +580,6 @@ public abstract class Zone {
         return false;
     }
 
-
     /**
      * Swaps the permissions of one zone with another one
      */
@@ -542,5 +593,6 @@ public abstract class Zone {
         zone.playerPermissions = playerPermissions;
         playerPermissions = swapPlayerPermissions;
     }
+
 
 }

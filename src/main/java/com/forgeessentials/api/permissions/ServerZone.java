@@ -189,12 +189,9 @@ public class ServerZone extends Zone {
         Set<String> result = new HashSet<>();
         String groupsStr = getGroupPermission(group, FEPermissions.GROUP_INCLUDES);
         if (groupsStr != null && !groupsStr.isEmpty())
-        {
-            groupsStr = groupsStr.replaceAll(" ", "");
-            for (String g : groupsStr.split(","))
+            for (String g : groupsStr.replaceAll(" ", "").split(","))
                 if (!g.isEmpty())
                     result.add(g);
-        }
         return result;
     }
 
@@ -219,12 +216,9 @@ public class ServerZone extends Zone {
         Set<String> result = new HashSet<>();
         String groupsStr = getGroupPermission(group, FEPermissions.GROUP_PARENTS);
         if (groupsStr != null && !groupsStr.isEmpty())
-        {
-            groupsStr = groupsStr.replaceAll(" ", "");
-            for (String g : groupsStr.split(","))
+            for (String g : groupsStr.replaceAll(" ", "").split(","))
                 if (!g.isEmpty())
                     result.add(g);
-        }
         return result;
     }
 
@@ -244,6 +238,7 @@ public class ServerZone extends Zone {
 
     // ------------------------------------------------------------
 
+    @Override
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
@@ -260,6 +255,7 @@ public class ServerZone extends Zone {
         return true;
     }
 
+    @Override
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
@@ -279,6 +275,7 @@ public class ServerZone extends Zone {
         return playerGroups;
     }
 
+    @Override
     public SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident)
     {
         registerPlayer(ident);
@@ -346,17 +343,10 @@ public class ServerZone extends Zone {
     public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)
     {
         SortedSet<GroupEntry> result = getAdditionalPlayerGroups(ident);
-        
         // Check groups added through zones
         for (Zone z : getZonesAt(ident))
             if (!(z instanceof ServerZone))
-            {
-                String groupList = z.getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
-                if (groupList != null)
-                    for (String group : groupList.replace(" ", "").split(","))
-                        result.add(new GroupEntry(this, group));
-            }
-        
+                result.addAll(z.getStoredPlayerGroups(ident));
         return includeGroups(result);
     }
 
