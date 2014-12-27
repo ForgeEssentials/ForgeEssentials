@@ -67,7 +67,6 @@ public class RootZone extends Zone {
 			serverZone.setRootZone(this);
 	}
 
-
 	public IPermissionsHelper getPermissionHelper()
 	{
 		return permissionHelper;

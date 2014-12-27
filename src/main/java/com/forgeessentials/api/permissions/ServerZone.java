@@ -274,10 +274,9 @@ public class ServerZone extends Zone {
         return result;
     }
 
-    public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)
+    public SortedSet<GroupEntry> getAdditionalPlayerGroups(UserIdent ident)
     {
         SortedSet<GroupEntry> result = getStoredPlayerGroups(ident);
-
         if (ident != null)
         {
             if (ident.hasGameProfile() && !ident.isFakePlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getGameProfile()))
@@ -290,14 +289,18 @@ public class ServerZone extends Zone {
             }
         }
         result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
+        return result;
+    }
 
+    public SortedSet<GroupEntry> includeGroups(SortedSet<GroupEntry> groups)
+    {
         // Get included groups
         Set<String> checkedGroups = new HashSet<>();
         boolean addedGroup;
         do
         {
             addedGroup = false;
-            for (GroupEntry existingGroup : new ArrayList<GroupEntry>(result))
+            for (GroupEntry existingGroup : new ArrayList<GroupEntry>(groups))
             {
                 // Check if group was already checked for inclusion
                 if (!checkedGroups.add(existingGroup.getGroup()))
@@ -305,27 +308,28 @@ public class ServerZone extends Zone {
                 String p = getGroupPermission(existingGroup.getGroup(), FEPermissions.GROUP_INCLUDES);
                 if (p != null)
                 {
-                    p = p.replaceAll(" ", "");
-                    String[] groups = p.split(",");
-                    for (String group : groups)
+                    for (String group : p.replaceAll(" ", "").split(","))
                         if (!group.isEmpty())
-                            addedGroup |= result.add(new GroupEntry(this, group));
+                            addedGroup |= groups.add(new GroupEntry(this, group));
                 }
 
                 p = getGroupPermission(existingGroup.getGroup(), FEPermissions.GROUP_PARENTS);
                 if (p != null)
                 {
-                    p = p.replaceAll(" ", "");
-                    String[] groups = p.split(",");
-                    for (String group : groups)
+                    for (String group : p.replaceAll(" ", "").split(","))
                         if (!group.isEmpty())
-                            addedGroup |= result.add(new GroupEntry(this, group, existingGroup.getPriority()));
+                            addedGroup |= groups.add(new GroupEntry(this, group, existingGroup.getPriority()));
                 }
             }
         }
         while (addedGroup);
 
-        return result;
+        return groups;
+    }
+
+    public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)
+    {
+        return includeGroups(getAdditionalPlayerGroups(ident));
     }
 
     public String getPrimaryPlayerGroup(UserIdent ident)
