@@ -9,6 +9,7 @@ import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.EventCancelledException;
+import com.forgeessentials.util.events.PlotEvent;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -37,17 +38,20 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
 
             if (!PermissionsManager.checkPermission(player, getPermissionNode() + ".free"))
             {
-                if(!APIRegistry.wallet.removeFromWallet(price, new UserIdent(player).getUuid()))
+                if (!APIRegistry.wallet.removeFromWallet(price, new UserIdent(player).getUuid()))
                 {
                     throw new CommandException("You can't afford to set this plot!");
                 }
             }
 
             AreaZone zone = new AreaZone(APIRegistry.perms.getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0], info.getSelection());
-            zone.setGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.DATA_PERM, true);
-            zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
-            zone.setHidden(true);
-            zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
+            if (!APIRegistry.getFEEventBus().post(new PlotEvent.Define(zone, player)))
+            {
+                zone.setGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.DATA_PERM, true);
+                zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
+                zone.setHidden(true);
+                zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
+            }
         }
         catch (EventCancelledException e)
         {
