@@ -30,8 +30,8 @@ public class PermissionEventHandler extends ServerEventHandler {
         // Abort processing, if the event has already been cancelled
         if (!e.isCanceled())
         {
-            Zone before = APIRegistry.perms.getZonesAt(e.before.toWorldPoint()).get(0);
-            Zone after = APIRegistry.perms.getZonesAt(e.after.toWorldPoint()).get(0);
+            Zone before = APIRegistry.perms.getServerZone().getZonesAt(e.before.toWorldPoint()).get(0);
+            Zone after = APIRegistry.perms.getServerZone().getZonesAt(e.after.toWorldPoint()).get(0);
             if (!before.equals(after))
             {
                 PlayerChangedZone event = new PlayerChangedZone(e.entityPlayer, before, after, e.before, e.after);

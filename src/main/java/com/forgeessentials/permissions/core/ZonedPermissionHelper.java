@@ -17,14 +17,12 @@ import java.util.TreeSet;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.permissions.IContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
@@ -284,7 +282,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
-        getWorldZone(e.world.provider.dimensionId);
+        getServerZone().getWorldZone(e.world.provider.dimensionId);
     }
 
     // ------------------------------------------------------------
@@ -307,9 +305,9 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
         // Get world zone
         WorldZone worldZone = null;
         if (point != null)
-            worldZone = getWorldZone(point.getDimension());
+            worldZone = getServerZone().getWorldZone(point.getDimension());
         else if (area != null)
-            worldZone = getWorldZone(area.getDimension());
+            worldZone = getServerZone().getWorldZone(area.getDimension());
 
         // Get zones in correct order
         List<Zone> zones = new ArrayList<Zone>();
@@ -530,61 +528,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
         return getRootZone().getServerZone();
     }
 
-    @Override
-    public WorldZone getWorldZone(int dimensionId)
-    {
-        WorldZone zone = rootZone.getServerZone().getWorldZones().get(dimensionId);
-        if (zone == null)
-        {
-            zone = new WorldZone(getServerZone(), dimensionId);
-        }
-        return zone;
-    }
-
-    @Override
-    public WorldZone getWorldZone(World world)
-    {
-        return getWorldZone(world.provider.dimensionId);
-    }
-
-    @Override
-    public List<Zone> getZonesAt(WorldPoint worldPoint)
-    {
-        WorldZone w = getWorldZone(worldPoint.getDimension());
-        List<Zone> result = new ArrayList<Zone>();
-        for (AreaZone zone : w.getAreaZones())
-            if (zone.isInZone(worldPoint))
-                result.add(zone);
-        result.add(w);
-        result.add(w.getParent());
-        return result;
-    }
-
-    @Override
-    public List<AreaZone> getAreaZonesAt(WorldPoint worldPoint)
-    {
-        WorldZone w = getWorldZone(worldPoint.getDimension());
-        List<AreaZone> result = new ArrayList<AreaZone>();
-        for (AreaZone zone : w.getAreaZones())
-            if (zone.isInZone(worldPoint))
-                result.add(zone);
-        return result;
-    }
-
-    @Override
-    public Zone getZoneAt(WorldPoint worldPoint)
-    {
-        List<Zone> zones = getZonesAt(worldPoint);
-        return zones.isEmpty() ? null : zones.get(0);
-    }
-
-    @Override
-    public AreaZone getAreaZoneAt(WorldPoint worldPoint)
-    {
-        List<AreaZone> zones = getAreaZonesAt(worldPoint);
-        return zones.isEmpty() ? null : zones.get(0);
-    }
-
     public Collection<Zone> getGlobalZones()
     {
         List<Zone> zones = new ArrayList<Zone>();
@@ -788,13 +731,13 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     @Override
     public String getGroupPermissionProperty(String group, WorldPoint point, String permissionNode)
     {
-        return getServerZone().getPermission(getZonesAt(point), null, Arrays.asList(group), permissionNode, true);
+        return getServerZone().getPermission(getServerZone().getZonesAt(point), null, Arrays.asList(group), permissionNode, true);
     }
 
     @Override
     public boolean checkGroupPermission(String group, WorldPoint point, String permissionNode)
     {
-        return checkBooleanPermission(getServerZone().getPermission(getZonesAt(point), null, Arrays.asList(group), permissionNode, false));
+        return checkBooleanPermission(getServerZone().getPermission(getServerZone().getZonesAt(point), null, Arrays.asList(group), permissionNode, false));
     }
 
     // ------------------------------------------------------------

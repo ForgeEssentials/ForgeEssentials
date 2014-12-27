@@ -236,7 +236,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
             // Handle permission-dim changes
             checkMultiworldPermissions(world);
-            APIRegistry.perms.getWorldZone(world.dimensionId).setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD,
+            APIRegistry.perms.getServerZone().getWorldZone(world.dimensionId).setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD,
                     world.getName());
 
             // Register the dimension
@@ -313,7 +313,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             {
                 if (zone.getDimensionID() != world.dimensionId)
                 {
-                    WorldZone newZone = APIRegistry.perms.getWorldZone(world.dimensionId);
+                    WorldZone newZone = APIRegistry.perms.getServerZone().getWorldZone(world.dimensionId);
                     // Swap the permissions of the multiworld with the one
                     // that's currently taking up it's dimID
                     zone.swapPermissions(newZone);

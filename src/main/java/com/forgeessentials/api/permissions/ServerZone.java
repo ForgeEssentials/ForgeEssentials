@@ -12,6 +12,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,6 +38,8 @@ public class ServerZone extends Zone {
     private int maxZoneID;
 
     private Map<UserIdent, Set<String>> playerGroups = new HashMap<UserIdent, Set<String>>();
+    
+    // private Map<UserIdent, Map<List<Zone>, Set<String>>> playerGroupsCache = new HashMap<>();
 
     private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
 
@@ -104,23 +107,15 @@ public class ServerZone extends Zone {
         return this;
     }
 
+    void setRootZone(RootZone rootZone)
+    {
+        this.rootZone = rootZone;
+        addZone(this.rootZone);
+    }
+
     public RootZone getRootZone()
     {
         return rootZone;
-    }
-
-    // ------------------------------------------------------------
-
-    public Map<Integer, WorldZone> getWorldZones()
-    {
-        return worldZones;
-    }
-
-    public void addWorldZone(WorldZone zone)
-    {
-        worldZones.put(zone.getDimensionID(), zone);
-        addZone(zone);
-        setDirty();
     }
 
     public int getMaxZoneID()
@@ -138,10 +133,33 @@ public class ServerZone extends Zone {
         this.maxZoneID = maxId;
     }
 
-    void setRootZone(RootZone rootZone)
+    // ------------------------------------------------------------
+
+    public Map<Integer, WorldZone> getWorldZones()
     {
-        this.rootZone = rootZone;
-        addZone(this.rootZone);
+        return worldZones;
+    }
+
+    public void addWorldZone(WorldZone zone)
+    {
+        worldZones.put(zone.getDimensionID(), zone);
+        addZone(zone);
+        setDirty();
+    }
+
+    public WorldZone getWorldZone(int dimensionId)
+    {
+        WorldZone zone = getWorldZones().get(dimensionId);
+        if (zone == null)
+        {
+            zone = new WorldZone(getServerZone(), dimensionId);
+        }
+        return zone;
+    }
+
+    public WorldZone getWorldZone(World world)
+    {
+        return getWorldZone(world.provider.dimensionId);
     }
 
     // ------------------------------------------------------------
@@ -257,6 +275,13 @@ public class ServerZone extends Zone {
     }
 
     // ------------------------------------------------------------
+
+    @Override
+    public void setDirty()
+    {
+        super.setDirty();
+        // playerGroupsCache.clear();
+    }
 
     public Map<UserIdent, Set<String>> getPlayerGroups()
     {
@@ -376,6 +401,40 @@ public class ServerZone extends Zone {
     public Collection<Zone> getZones()
     {
         return zones.values();
+    }
+
+    public List<Zone> getZonesAt(WorldPoint worldPoint)
+    {
+        WorldZone w = getWorldZone(worldPoint.getDimension());
+        List<Zone> result = new ArrayList<Zone>();
+        for (AreaZone zone : w.getAreaZones())
+            if (zone.isInZone(worldPoint))
+                result.add(zone);
+        result.add(w);
+        result.add(w.getParent());
+        return result;
+    }
+
+    public Zone getZoneAt(WorldPoint worldPoint)
+    {
+        List<Zone> zones = getZonesAt(worldPoint);
+        return zones.isEmpty() ? null : zones.get(0);
+    }
+
+    public List<AreaZone> getAreaZonesAt(WorldPoint worldPoint)
+    {
+        WorldZone w = getWorldZone(worldPoint.getDimension());
+        List<AreaZone> result = new ArrayList<AreaZone>();
+        for (AreaZone zone : w.getAreaZones())
+            if (zone.isInZone(worldPoint))
+                result.add(zone);
+        return result;
+    }
+
+    public AreaZone getAreaZoneAt(WorldPoint worldPoint)
+    {
+        List<AreaZone> zones = getAreaZonesAt(worldPoint);
+        return zones.isEmpty() ? null : zones.get(0);
     }
 
     // ------------------------------------------------------------

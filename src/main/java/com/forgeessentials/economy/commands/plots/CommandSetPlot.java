@@ -23,7 +23,7 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
         PlayerInfo info = PlayerInfo.getPlayerInfo(player);
         try
         {
-            AreaZone zone = new AreaZone(APIRegistry.perms.getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0], info.getSelection());
+            AreaZone zone = new AreaZone(APIRegistry.perms.getServerZone().getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0], info.getSelection());
             zone.setGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM, true);
             zone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
             zone.setHidden(true);

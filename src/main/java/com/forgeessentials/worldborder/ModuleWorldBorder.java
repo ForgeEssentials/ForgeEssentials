@@ -167,7 +167,7 @@ public class ModuleWorldBorder {
 	@SubscribeEvent
 	public void playerMove(PlayerMoveEvent e)
 	{
-		Zone zone = APIRegistry.perms.getWorldZone(e.entityPlayer.worldObj);
+		Zone zone = APIRegistry.perms.getServerZone().getWorldZone(e.entityPlayer.worldObj);
 		WorldBorder border = borderMap.get(zone.getName());
 		border.check((EntityPlayerMP) e.entityPlayer);
 		borderMap.get(APIRegistry.perms.getServerZone().getName()).check((EntityPlayerMP) e.entityPlayer);
@@ -181,7 +181,7 @@ public class ModuleWorldBorder {
 			return;
 		}
 
-		Zone zone = APIRegistry.perms.getWorldZone(e.world);
+		Zone zone = APIRegistry.perms.getServerZone().getWorldZone(e.world);
 		if (!borderMap.containsKey(zone.getName()))
 		{
 		    WorldBorder wb = DataManager.getInstance().load(WorldBorder.class, zone.getName());
@@ -206,7 +206,7 @@ public class ModuleWorldBorder {
 			return;
 		}
 
-		Zone zone = APIRegistry.perms.getWorldZone(e.world);
+		Zone zone = APIRegistry.perms.getServerZone().getWorldZone(e.world);
 		borderMap.remove(zone.getName());
 	}
 }

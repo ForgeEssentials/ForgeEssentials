@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -1104,7 +1103,7 @@ public class PermissionCommandParser {
                 return null;
             }
 
-            Zone zone = APIRegistry.perms.getWorldZone(((EntityPlayerMP) sender).dimension).getAreaZone(zoneId);
+            Zone zone = APIRegistry.perms.getServerZone().getWorldZone(((EntityPlayerMP) sender).dimension).getAreaZone(zoneId);
             if (zone != null)
                 return zone;
 
@@ -1199,7 +1198,7 @@ public class PermissionCommandParser {
     public static void listZones(ICommandSender sender, WorldPoint location)
     {
         OutputHandler.chatNotification(sender, "Zones at position " + location.toString());
-        for (Zone zone : APIRegistry.perms.getZonesAt(location))
+        for (Zone zone : APIRegistry.perms.getServerZone().getZonesAt(location))
         {
             if (zone.isHidden())
                 continue;

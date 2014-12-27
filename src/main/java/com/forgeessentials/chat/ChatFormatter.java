@@ -1,24 +1,26 @@
 package com.forgeessentials.chat;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.chat.commands.CommandPm;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.google.common.base.Strings;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.chat.commands.CommandPm;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.google.common.base.Strings;
+
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ChatFormatter {
     public static List<String> bannedWords = new ArrayList<String>();
@@ -105,7 +107,7 @@ public class ChatFormatter {
 		String playerSuffix = FunctionHelper.formatColors(FunctionHelper.getPlayerPrefixSuffix(new UserIdent(event.player), true));
 		String groupPrefix = FunctionHelper.formatColors(FunctionHelper.getPlayerGroupPrefixSuffix(new UserIdent(event.player), false));
 		String groupSuffix = FunctionHelper.formatColors(FunctionHelper.getPlayerGroupPrefixSuffix(new UserIdent(event.player), true));
-		String zoneID = APIRegistry.perms.getZonesAt(new WorldPoint(event.player)).get(0).getName();
+		String zoneID = APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(event.player)).getName();
 		String rank = "";
 
 

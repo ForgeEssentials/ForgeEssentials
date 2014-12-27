@@ -1,12 +1,9 @@
 package com.forgeessentials.worldborder;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
@@ -14,9 +11,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Used to check or set the border. Filler will get a sperate command later
@@ -75,11 +77,11 @@ public class CommandWB extends ForgeEssentialsCommandBase {
 				OutputHandler.chatError(sender, args[0] + " is not an ID of a loaded world.");
 				return;
 			}
-			zone = APIRegistry.perms.getWorldZone(world);
+			zone = APIRegistry.perms.getServerZone().getWorldZone(world);
 		}
 		else if (args[0].equalsIgnoreCase("world") && sender instanceof EntityPlayer)
 		{
-			zone = APIRegistry.perms.getWorldZone(((EntityPlayer) sender).worldObj);
+			zone = APIRegistry.perms.getServerZone().getWorldZone(((EntityPlayer) sender).worldObj);
 		}
 		else
 		{
