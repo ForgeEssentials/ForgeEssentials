@@ -17,6 +17,14 @@ public class DataFloatLocation {
 
     public double z;
 
+    public DataFloatLocation(int dim, double x, double y, double z)
+    {
+        this.dim = dim;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
     public DataFloatLocation(Entity entity)
     {
         dim = entity.dimension;
