@@ -34,7 +34,7 @@ public class Environment
             hasWorldEdit = true;
             try
             {
-                Class.forName("com.forgeessentials.worldedit.compat.WEIntegration");
+                Class.forName("com.forgeessentials.compat.worldedit.WEIntegration");
             }
             catch (ClassNotFoundException cnfe)
             {
