@@ -1,7 +1,6 @@
 package com.forgeessentials.economy.plots;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.economy.Offer;
 import com.forgeessentials.util.OutputHandler;
@@ -33,7 +32,7 @@ public class TransactionHandler implements IReplyHandler
             APIRegistry.wallet.removeFromWallet(offer.price, offer.buyer.getPersistentID());
             APIRegistry.wallet.addToWallet(offer.price, offer.seller.getPersistentID());
             Zone plot = offer.item;
-            plot.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER, offer.buyer.getPersistentID().toString());
+            plot.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER, offer.buyer.getPersistentID().toString());
             OutputHandler.chatNotification(offer.seller, "Transaction complete. " + offer.price + "added to your wallet.");
             OutputHandler.chatNotification(offer.buyer, "Transaction complete. You are now owner of " + plot.getName());
             PlotManager.pendingOffers.remove(offer.item.getName());

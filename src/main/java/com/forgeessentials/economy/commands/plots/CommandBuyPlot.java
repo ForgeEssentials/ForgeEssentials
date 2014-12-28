@@ -1,7 +1,6 @@
 package com.forgeessentials.economy.commands.plots;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.economy.Offer;
 import com.forgeessentials.economy.plots.TransactionHandler;
@@ -30,18 +29,18 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
         {
             int value;
             Zone plot = APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
-            if (!plot.checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM))
+            if (!plot.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM))
             {
                 throw new CommandException("No such plot!");
             }
-            EntityPlayer seller = UserIdent.getPlayerByUuid(UUID.fromString(plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER)));
+            EntityPlayer seller = UserIdent.getPlayerByUuid(UUID.fromString(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER)));
             if (args[1] != null)
             {
                 value = Integer.parseInt(args[1]);
             }
             else
             {
-                value = Integer.parseInt(plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_VALUE));
+                value = Integer.parseInt(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_VALUE));
                 OutputHandler.chatNotification(buyer, "No value specified. Will use current valuation of plot, which is " + value);
             }
 
@@ -53,7 +52,10 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
 
             Offer<Zone> item = new Offer<Zone>(buyer, seller, plot, value);
 
-            QuestionCenter.addToQuestionQueue(new QuestionData(seller, "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + value + ". Type /yes to accept, /no to deny. This offer will expire in " + PlotManager.timeout + " seconds.", new TransactionHandler(item), PlotManager.timeout));
+            QuestionCenter.addToQuestionQueue(new QuestionData(seller,
+                    "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + value
+                            + ". Type /yes to accept, /no to deny. This offer will expire in " + PlotManager.timeout + " seconds.",
+                    new TransactionHandler(item), PlotManager.timeout));
             PlotManager.pendingOffers.put(plot.getName(), item);
         }
         else{

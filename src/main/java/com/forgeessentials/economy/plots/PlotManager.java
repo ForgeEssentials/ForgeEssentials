@@ -2,7 +2,6 @@ package com.forgeessentials.economy.plots;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.economy.Offer;
 import com.forgeessentials.util.OutputHandler;
@@ -33,11 +32,11 @@ public class PlotManager {
 
     public static void printPlotDetails(ICommandSender sender, AreaZone plot)
     {
-        if (!plot.checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM)) return;
+        if (!plot.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM)) return;
         OutputHandler.chatNotification(sender,
-                "Name: " + plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_NAME_PERM) + " Owner: " + UserIdent
-                        .getUsernameByUuid(plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER)) + "Location: between " + plot
-                        .getArea().getHighPoint().toString() + " and " + plot.getArea().getLowPoint().toString() + " Value: " + plot.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PLOT_VALUE));
+                "Name: " + plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_NAME_PERM) + " Owner: " + UserIdent
+                        .getUsernameByUuid(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER)) + "Location: between " + plot
+                        .getArea().getHighPoint().toString() + " and " + plot.getArea().getLowPoint().toString() + " Value: " + plot.getGroupPermission(Zone.GROUP_DEFAULT, PLOT_VALUE));
     }
 
     public static AreaZone[] getPlotList()
@@ -45,7 +44,7 @@ public class PlotManager {
         List<AreaZone> zones = new ArrayList<AreaZone>();
         for (Zone zone : APIRegistry.perms.getZones())
         {
-            if (zone.checkGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_PERM) && zone instanceof AreaZone)
+            if (zone.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM) && zone instanceof AreaZone)
                 zones.add((AreaZone)zone);
         }
         return zones.toArray(new AreaZone[]{});

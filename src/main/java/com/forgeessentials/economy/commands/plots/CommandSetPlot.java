@@ -1,8 +1,13 @@
 package com.forgeessentials.economy.commands.plots;
 
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.PlotManager;
@@ -10,10 +15,6 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.events.PlotEvent;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandSetPlot extends ForgeEssentialsCommandBase
@@ -44,13 +45,13 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
                 }
             }
 
-            AreaZone zone = new AreaZone(APIRegistry.perms.getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0], info.getSelection());
+            AreaZone zone = new AreaZone(APIRegistry.perms.getServerZone().getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0], info.getSelection());
             if (!APIRegistry.getFEEventBus().post(new PlotEvent.Define(zone, player)))
             {
-                zone.setGroupPermission(IPermissionsHelper.GROUP_DEFAULT, PlotManager.DATA_PERM, true);
-                zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
+                zone.setGroupPermission(Zone.GROUP_DEFAULT, PlotManager.DATA_PERM, true);
+                zone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
                 zone.setHidden(true);
-                zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
+                zone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
             }
         }
         catch (EventCancelledException e)

@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
@@ -75,7 +74,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             WorldZone worldZone = null;
             if (sender instanceof EntityPlayerMP)
             {
-                worldZone = APIRegistry.perms.getWorldZone(((EntityPlayerMP) sender).dimension);
+                worldZone = APIRegistry.perms.getServerZone().getWorldZone(((EntityPlayerMP) sender).dimension);
             }
 
             String arg = args.remove().toLowerCase();
@@ -359,14 +358,14 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
         if (args.isEmpty())
         {
-            zone.getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE);
+            zone.getGroupPermission(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE);
         }
         else
         {
             String msg = StringUtils.join(args, " ");
             if (msg.equalsIgnoreCase("clear"))
                 msg = null;
-            zone.setGroupPermissionProperty(IPermissionsHelper.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
+            zone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
         }
     }
 

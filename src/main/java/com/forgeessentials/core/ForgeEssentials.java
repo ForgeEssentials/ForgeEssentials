@@ -29,7 +29,6 @@ import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.LoginMessage;
-import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TickTaskHandler;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -104,9 +103,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
     public ModuleLauncher moduleLauncher;
 
     private TaskRegistry tasks;
-
-    @SuppressWarnings("unused")
-    private RespawnHandler respawnHandler;
 
     @SuppressWarnings("unused")
     private SelectionEventHandler wandHandler;
@@ -189,7 +185,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
         // other stuff
         factory = new ForgeEssentialsEventFactory();
-        respawnHandler = new RespawnHandler();
         wandHandler = new SelectionEventHandler();
         teleportHelper = new TeleportHelper();
         tickTaskHandler = new TickTaskHandler();
@@ -226,7 +221,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
         new CommandFEInfo().register();
         new CommandFEDebug().register();
 
-        if (!ModuleLauncher.getModuleList().contains("WEIntegration"))
+        if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
             new CommandPos(1).register();
             new CommandPos(2).register();

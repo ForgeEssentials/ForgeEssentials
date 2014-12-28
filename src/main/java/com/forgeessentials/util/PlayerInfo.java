@@ -8,6 +8,7 @@ import java.util.Stack;
 import java.util.UUID;
 
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -21,7 +22,6 @@ import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.api.ClassContainer;
 import com.forgeessentials.data.api.DataStorageManager;
@@ -503,6 +503,11 @@ public class PlayerInfo {
     public void setHasFEClient(boolean status)
     {
         this.hasFEClient = status;
+    }
+
+    public static Map<UUID, PlayerInfo> getPlayerInfoMap()
+    {
+        return ImmutableMap.copyOf(playerInfoMap);
     }
 
 }

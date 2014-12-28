@@ -1,21 +1,23 @@
 package com.forgeessentials.chat.irc;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.chat.ConfigChat;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.google.common.base.Strings;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.DamageSource;
-import net.minecraftforge.event.ServerChatEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.DamageSource;
+import net.minecraftforge.event.ServerChatEvent;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.chat.ConfigChat;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
+import com.google.common.base.Strings;
+
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 // Largely copied from ChatFormatter, to deal with special cases for IRC
 public class IRCChatFormatter {
@@ -84,7 +86,7 @@ public class IRCChatFormatter {
 		String playerSuffix = FunctionHelper.formatColors(FunctionHelper.getPlayerPrefixSuffix(new UserIdent(event.player), true));
 		String groupPrefix = FunctionHelper.formatColors(FunctionHelper.getPlayerGroupPrefixSuffix(new UserIdent(event.player), false));
 		String groupSuffix = FunctionHelper.formatColors(FunctionHelper.getPlayerGroupPrefixSuffix(new UserIdent(event.player), true));
-		String zoneID = APIRegistry.perms.getZonesAt(new WorldPoint(event.player)).get(0).getName();
+		String zoneID = APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(event.player)).getName();
 		String rank = "";
 
         // It may be beneficial to make this a public function. -RlonRyan

@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import net.minecraft.entity.player.EntityPlayer;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -31,6 +37,15 @@ import com.forgeessentials.util.UserIdent;
  */
 public abstract class Zone {
 
+    public static final String GROUP_DEFAULT = "_ALL_";
+    public static final String GROUP_GUESTS = "_GUESTS_";
+    public static final String GROUP_OPERATORS = "_OPS_";
+
+    public static final String PERMISSION_ASTERIX = "*";
+    public static final String PERMISSION_FALSE = "false";
+    public static final String PERMISSION_TRUE = "true";
+    public static final String ALL_PERMS = "." + PERMISSION_ASTERIX;
+
     public static class PermissionList extends HashMap<String, String> {
         private static final long serialVersionUID = 1L;
 
@@ -41,11 +56,11 @@ public abstract class Zone {
             {
                 if (perm.getValue() == null)
                     continue;
-                if (perm.getValue().equals(IPermissionsHelper.PERMISSION_TRUE))
+                if (perm.getValue().equals(PERMISSION_TRUE))
                 {
                     list.add(perm.getKey());
                 }
-                else if (perm.getValue().equals(IPermissionsHelper.PERMISSION_FALSE))
+                else if (perm.getValue().equals(PERMISSION_FALSE))
                 {
                     list.add("-" + perm.getKey());
                 }
@@ -69,9 +84,9 @@ public abstract class Zone {
                 else if (permParts.length == 1)
                 {
                     if (permission.startsWith("-"))
-                        list.put(permission.substring(1, permission.length()), IPermissionsHelper.PERMISSION_FALSE);
+                        list.put(permission.substring(1, permission.length()), PERMISSION_FALSE);
                     else
-                        list.put(permission, IPermissionsHelper.PERMISSION_TRUE);
+                        list.put(permission, PERMISSION_TRUE);
                 }
             }
             return list;
@@ -306,7 +321,7 @@ public abstract class Zone {
         if (map != null)
         {
             String permValue = map.get(permissionNode);
-            return !IPermissionsHelper.PERMISSION_FALSE.equalsIgnoreCase(permValue);
+            return !PERMISSION_FALSE.equalsIgnoreCase(permValue);
         }
         return null;
     }
@@ -340,7 +355,7 @@ public abstract class Zone {
      */
     public boolean setPlayerPermission(UserIdent ident, String permissionNode, boolean value)
     {
-        return setPlayerPermissionProperty(ident, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
+        return setPlayerPermissionProperty(ident, permissionNode, value ? PERMISSION_TRUE : PERMISSION_FALSE);
     }
 
     /**
@@ -391,6 +406,52 @@ public abstract class Zone {
             }
             getServerZone().registerPlayer(entry.getKey());
         }
+    }
+
+    // ------------------------------------------------------------
+
+    private Set<String> getPlayerGroups(UserIdent ident)
+    {
+        Set<String> result = new HashSet<>();
+        String groupsStr = getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
+        if (groupsStr != null && !groupsStr.isEmpty())
+            for (String g : groupsStr.replaceAll(" ", "").split(","))
+                if (!g.isEmpty())
+                    result.add(g);
+        return result;
+    }
+
+    public boolean addPlayerToGroup(UserIdent ident, String group)
+    {
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+            return false;
+        Set<String> groups = getPlayerGroups(ident);
+        groups.add(group);
+        APIRegistry.perms.setPlayerPermissionProperty(ident, FEPermissions.PLAYER_GROUPS, StringUtils.join(groups, ","));
+        return true;
+    }
+
+    public boolean removePlayerFromGroup(UserIdent ident, String group)
+    {
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+            return false;
+        Set<String> groups = getPlayerGroups(ident);
+        groups.remove(group);
+        APIRegistry.perms.setPlayerPermissionProperty(ident, FEPermissions.PLAYER_GROUPS, StringUtils.join(groups, ","));
+        return true;
+    }
+
+    /**
+     * Return a list of the user's groups in this zone
+     */
+    public SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident)
+    {
+        SortedSet<GroupEntry> result = new TreeSet<GroupEntry>();
+        String groupsStr = getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
+        if (groupsStr != null && !groupsStr.isEmpty())
+            for (String group : groupsStr.replace(" ", "").split(","))
+                result.add(new GroupEntry(getServerZone(), group));
+        return result;
     }
 
     // ------------------------------------------------------------
@@ -463,7 +524,7 @@ public abstract class Zone {
         if (map != null)
         {
             String permValue = map.get(permissionNode);
-            return !IPermissionsHelper.PERMISSION_FALSE.equalsIgnoreCase(permValue);
+            return !PERMISSION_FALSE.equalsIgnoreCase(permValue);
         }
         return null;
     }
@@ -496,7 +557,7 @@ public abstract class Zone {
      */
     public boolean setGroupPermission(String group, String permissionNode, boolean value)
     {
-        return setGroupPermissionProperty(group, permissionNode, value ? IPermissionsHelper.PERMISSION_TRUE : IPermissionsHelper.PERMISSION_FALSE);
+        return setGroupPermissionProperty(group, permissionNode, value ? PERMISSION_TRUE : PERMISSION_FALSE);
     }
 
     /**
@@ -519,7 +580,6 @@ public abstract class Zone {
         return false;
     }
 
-
     /**
      * Swaps the permissions of one zone with another one
      */
@@ -533,5 +593,6 @@ public abstract class Zone {
         zone.playerPermissions = playerPermissions;
         playerPermissions = swapPlayerPermissions;
     }
+
 
 }

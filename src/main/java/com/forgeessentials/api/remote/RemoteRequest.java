@@ -1,5 +1,7 @@
 package com.forgeessentials.api.remote;
 
+import com.google.gson.JsonElement;
+
 /**
  * Represents a generic remote request
  */
@@ -36,6 +38,25 @@ public class RemoteRequest<T> {
         return new RemoteRequest<T>(request.id, request.rid, request.auth, newData);
     }
 
+    public static class JsonRemoteRequest extends RemoteRequest<JsonElement> {
+
+        public JsonRemoteRequest(String id, int rid, RequestAuth auth, JsonElement data)
+        {
+            super(id, rid, auth, data);
+        }
+
+        public JsonRemoteRequest(String id, RequestAuth auth, JsonElement data)
+        {
+            super(id, auth, data);
+        }
+
+        public JsonRemoteRequest(String id, JsonElement data)
+        {
+            super(id, data);
+        }
+
+    }
+    
     public static class PushRequestData {
 
         public boolean enable;

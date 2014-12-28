@@ -1,5 +1,6 @@
 package com.forgeessentials.api.remote;
 
+import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
 import com.google.gson.JsonElement;
 
 /**
@@ -30,7 +31,7 @@ public abstract class GenericRemoteHandler<T> extends AbstractRemoteHandler {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public RemoteResponse handle(RemoteSession session, RemoteRequest<JsonElement> request)
+    public RemoteResponse handle(RemoteSession session, JsonRemoteRequest request)
     {
         if (request.data == null || dataClass.equals(JsonElement.class))
             return handleData(session, (RemoteRequest) request);

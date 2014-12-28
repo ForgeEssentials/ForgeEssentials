@@ -19,8 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
+import com.forgeessentials.api.permissions.GroupEntry;
+import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -304,11 +304,11 @@ public class PermissionCommandParser {
                 }
                 return;
             }
-            // arguments.info("Possible usage:");
-            // arguments.info("/p ... group add|remove <group>: Player's group settings");
-            // arguments.info("/p ... allow|deny|clear <perms> : Set permissions");
-            // arguments.info("/p ... value <perm> <value> : Set permission property");
-            // arguments.info("/p ... spawn : Set player spawn");
+            // args.info("Possible usage:");
+            // args.info("/p ... group add|remove <group>: Player's group settings");
+            // args.info("/p ... allow|deny|clear <perms> : Set permissions");
+            // args.info("/p ... value <perm> <value> : Set permission property");
+            // args.info("/p ... spawn : Set player spawn");
             arguments.info(ident.getUsernameOrUUID() + "'s permissions in zone " + zone.getName() + ":");
             for (Entry<String, String> perm : zone.getPlayerPermissions(ident).entrySet())
             {
@@ -355,7 +355,7 @@ public class PermissionCommandParser {
         switch (cmd)
         {
         case "group":
-            parseUserGroup(arguments, ident);
+            parseUserGroup(arguments, ident, zone);
             break;
         case "perms":
             listUserPermissions(arguments.sender, ident, true);
@@ -540,7 +540,7 @@ public class PermissionCommandParser {
         }
     }
 
-    public static void parseUserGroup(CommandParserArgs arguments, UserIdent ident)
+    public static void parseUserGroup(CommandParserArgs arguments, UserIdent ident, Zone zone)
     {
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
@@ -549,8 +549,11 @@ public class PermissionCommandParser {
         }
         if (arguments.args.isEmpty())
         {
-            arguments.info(String.format("Groups for player %s (without includes):", ident.getUsernameOrUUID()));
-            for (GroupEntry g : APIRegistry.perms.getStoredPlayerGroups(ident))
+            if (zone instanceof ServerZone)
+                arguments.info(String.format("Groups for player %s (without includes):", ident.getUsernameOrUUID()));
+            else
+                arguments.info(String.format("Groups for player %s (without includes) in %s:", ident.getUsernameOrUUID(), zone.getName()));
+            for (GroupEntry g : zone.getStoredPlayerGroups(ident))
             {
                 arguments.info("  " + g);
             }
@@ -596,21 +599,19 @@ public class PermissionCommandParser {
                 {
                 case "add":
                     for (String group : groups)
-                        APIRegistry.perms.addPlayerToGroup(ident, group);
+                        zone.addPlayerToGroup(ident, group);
                     arguments.info(String.format("Player %s added to group(s) %s", ident.getUsernameOrUUID(), StringUtils.join(groups, ", ")));
                     break;
                 case "remove":
                     for (String group : groups)
-                        APIRegistry.perms.removePlayerFromGroup(ident, group);
+                        zone.removePlayerFromGroup(ident, group);
                     arguments.info(String.format("Player %s removed from group(s) %s", ident.getUsernameOrUUID(), StringUtils.join(groups, ", ")));
                     break;
                 case "set":
                     for (GroupEntry g : APIRegistry.perms.getStoredPlayerGroups(ident))
-                    {
-                        APIRegistry.perms.removePlayerFromGroup(ident, g.getGroup());
-                    }
+                        zone.removePlayerFromGroup(ident, g.getGroup());
                     for (String group : groups)
-                        APIRegistry.perms.addPlayerToGroup(ident, group);
+                        zone.addPlayerToGroup(ident, group);
                     arguments.info(String.format("Set %s's group(s) to %s", ident.getUsernameOrUUID(), StringUtils.join(groups, ", ")));
                     break;
                 }
@@ -689,7 +690,7 @@ public class PermissionCommandParser {
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP))
             throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-        parseGroupInner(arguments, IPermissionsHelper.GROUP_DEFAULT, null);
+        parseGroupInner(arguments, Zone.GROUP_DEFAULT, null);
     }
 
     public static void parseGroupInner(CommandParserArgs arguments, String group, Zone zone)
@@ -991,7 +992,7 @@ public class PermissionCommandParser {
             arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupIncludeArgs);
             return;
         }
-        
+
         final String displayName1 = (isParent ? " parent" : " include");
 
         // Get included groups
@@ -999,8 +1000,8 @@ public class PermissionCommandParser {
 
         if (arguments.args.isEmpty())
         {
-            //arguments.info("/feperm group " + group + " " + displayName1 + " add|remove <group>");
-            //arguments.info("/feperm group " + group + " " + displayName1 + " clear");
+            // arguments.info("/feperm group " + group + " " + displayName1 + " add|remove <group>");
+            // arguments.info("/feperm group " + group + " " + displayName1 + " clear");
             arguments.info(String.format((isParent ? "Parented" : "Included") + " groups for %s:", group));
             for (String includedGroup : groups)
                 arguments.info("  " + includedGroup);
@@ -1052,7 +1053,8 @@ public class PermissionCommandParser {
             return;
         }
 
-        APIRegistry.perms.setGroupPermissionProperty(group, isParent ? FEPermissions.GROUP_PARENTS : FEPermissions.GROUP_INCLUDES, StringUtils.join(groups, ","));
+        APIRegistry.perms.setGroupPermissionProperty(group, isParent ? FEPermissions.GROUP_PARENTS : FEPermissions.GROUP_INCLUDES,
+                StringUtils.join(groups, ","));
     }
 
     // ------------------------------------------------------------
@@ -1104,7 +1106,7 @@ public class PermissionCommandParser {
                 return null;
             }
 
-            Zone zone = APIRegistry.perms.getWorldZone(((EntityPlayerMP) sender).dimension).getAreaZone(zoneId);
+            Zone zone = APIRegistry.perms.getServerZone().getWorldZone(((EntityPlayerMP) sender).dimension).getAreaZone(zoneId);
             if (zone != null)
                 return zone;
 
@@ -1199,7 +1201,7 @@ public class PermissionCommandParser {
     public static void listZones(ICommandSender sender, WorldPoint location)
     {
         OutputHandler.chatNotification(sender, "Zones at position " + location.toString());
-        for (Zone zone : APIRegistry.perms.getZonesAt(location))
+        for (Zone zone : APIRegistry.perms.getServerZone().getZonesAt(location))
         {
             if (zone.isHidden())
                 continue;

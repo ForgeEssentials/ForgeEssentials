@@ -1,19 +1,21 @@
 package com.forgeessentials.permissions.autoPromote;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.tasks.TaskRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimerTask;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.data.api.ClassContainer;
+import com.forgeessentials.data.api.DataStorageManager;
+import com.forgeessentials.util.tasks.TaskRegistry;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class AutoPromoteManager extends TimerTask {
 	static ClassContainer con = new ClassContainer(AutoPromote.class);
@@ -68,7 +70,7 @@ public class AutoPromoteManager extends TimerTask {
 		for (String username : MinecraftServer.getServer().getAllUsernames())
 		{
 			EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(username);
-			List<AreaZone> zones = APIRegistry.perms.getAreaZonesAt(new WorldPoint(player));
+			List<AreaZone> zones = APIRegistry.perms.getServerZone().getAreaZonesAt(new WorldPoint(player));
 			Zone zone = zones.isEmpty() ? null : zones.get(0);
 			while (zone != null)
 			{

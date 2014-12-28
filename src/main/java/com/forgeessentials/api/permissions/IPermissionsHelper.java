@@ -1,15 +1,12 @@
 package com.forgeessentials.api.permissions;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.SortedSet;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
 import net.minecraftforge.permissions.IPermissionsProvider;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.permissions.ServerZone.GroupEntry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.UserIdent;
@@ -20,15 +17,6 @@ import com.forgeessentials.util.UserIdent;
  * @author Olee
  */
 public interface IPermissionsHelper extends IPermissionsProvider {
-
-    static final String GROUP_DEFAULT = "_ALL_";
-    static final String GROUP_GUESTS = "_GUESTS_";
-    static final String GROUP_OPERATORS = "_OPS_";
-
-    static final String PERMISSION_ASTERIX = "*";
-    static final String PERMISSION_FALSE = "false";
-    static final String PERMISSION_TRUE = "true";
-    static final String ALL_PERMS = "." + PERMISSION_ASTERIX;
 
     // ---------------------------------------------------------------------------
     // -- Persistence
@@ -371,50 +359,6 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * Returns the {@link ServerZone}
      */
     ServerZone getServerZone();
-
-    /**
-     * Returns the {@link WorldZone} for the specified world
-     * 
-     * @param world
-     */
-    WorldZone getWorldZone(World world);
-
-    /**
-     * Returns the {@link WorldZone} for the specified world
-     * 
-     * @param dimensionId
-     */
-    WorldZone getWorldZone(int dimensionId);
-
-    // ---------------------------------------------------------------------------
-
-    /**
-     * Get zones that cover the point. Result is ordered by priority.
-     * 
-     * @param worldPoint
-     */
-    List<Zone> getZonesAt(WorldPoint worldPoint);
-
-    /**
-     * Get area-zones that cover the point. Result is ordered by priority.
-     * 
-     * @param worldPoint
-     */
-    List<AreaZone> getAreaZonesAt(WorldPoint worldPoint);
-
-    /**
-     * Get zones with the highest priority, that covers the point.
-     * 
-     * @param worldPoint
-     */
-    Zone getZoneAt(WorldPoint worldPoint);
-
-    /**
-     * Get area-zone with the highest priority, that covers the point.
-     * 
-     * @param worldPoint
-     */
-    Zone getAreaZoneAt(WorldPoint worldPoint);
 
     // ---------------------------------------------------------------------------
 

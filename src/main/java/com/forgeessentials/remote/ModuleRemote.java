@@ -15,7 +15,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
@@ -219,7 +219,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
         handlers.put(id, handler);
         String perm = handler.getPermission();
-        if (perm != null && APIRegistry.perms.getServerZone().getRootZone().getGroupPermission(IPermissionsHelper.GROUP_DEFAULT, perm) == null)
+        if (perm != null && APIRegistry.perms.getServerZone().getRootZone().getGroupPermission(Zone.GROUP_DEFAULT, perm) == null)
             APIRegistry.perms.registerPermission(perm, RegisteredPermValue.OP);
     }
 

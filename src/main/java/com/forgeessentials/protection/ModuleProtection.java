@@ -37,7 +37,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
@@ -160,9 +160,9 @@ public class ModuleProtection {
 
         // ----------------------------------------
         // Register mobs
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + IPermissionsHelper.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "(global) Allow spawning of mobs");
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow natural spawning of mobs (random spawn in the dark)");
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow forced spawning of mobs (spawners, spawn-eggs)");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + Zone.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "(global) Allow spawning of mobs");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow natural spawning of mobs (random spawn in the dark)");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow forced spawning of mobs (spawners, spawn-eggs)");
         for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
             {
@@ -172,24 +172,24 @@ public class ModuleProtection {
 
         // ----------------------------------------
         // Register items
-        APIRegistry.perms.registerPermission(PERM_USE + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "Allow using items");
-        APIRegistry.perms.registerPermission(PERM_INVENTORY + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "Allow having item in inventory. Item will be dropped if not allowed.");
+        APIRegistry.perms.registerPermission(PERM_USE + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow using items");
+        APIRegistry.perms.registerPermission(PERM_INVENTORY + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow having item in inventory. Item will be dropped if not allowed.");
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
-                String itemPerm = "." + item.getUnlocalizedName() + IPermissionsHelper.ALL_PERMS;
+                String itemPerm = "." + item.getUnlocalizedName() + Zone.ALL_PERMS;
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, RegisteredPermValue.TRUE, "USE " + getItemName(item));
                 APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, RegisteredPermValue.TRUE, "INVENTORY " + getItemName(item));
             }
 
         // ----------------------------------------
         // Register blocks
-        APIRegistry.perms.registerPermission(PERM_BREAK + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "Allow breaking blocks");
-        APIRegistry.perms.registerPermission(PERM_PLACE + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "Allow placing blocks");
-        APIRegistry.perms.registerPermission(PERM_INTERACT + IPermissionsHelper.ALL_PERMS, RegisteredPermValue.TRUE, "Allow interacting with blocks (button, chest, workbench)");
+        APIRegistry.perms.registerPermission(PERM_BREAK + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow breaking blocks");
+        APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow placing blocks");
+        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
-            String blockPerm = "." + block.getUnlocalizedName() + IPermissionsHelper.ALL_PERMS;
+            String blockPerm = "." + block.getUnlocalizedName() + Zone.ALL_PERMS;
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, RegisteredPermValue.TRUE, "BREAK " + block.getLocalizedName());
             APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, RegisteredPermValue.TRUE, "PLACE " + block.getLocalizedName());
             APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, RegisteredPermValue.TRUE, "INTERACT " + block.getLocalizedName());

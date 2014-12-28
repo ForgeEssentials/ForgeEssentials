@@ -3,6 +3,7 @@ package com.forgeessentials.teleport;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.forgeessentials.teleport.util.RespawnHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
@@ -70,6 +71,9 @@ public class TeleportModule {
 
     @SuppressWarnings("unused")
     private PortalManager portalManager;
+
+    @SuppressWarnings("unused")
+    private RespawnHandler respawnHandler;
     
     static
     {
@@ -94,6 +98,8 @@ public class TeleportModule {
     {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
+
+        respawnHandler = new RespawnHandler();
 
         portalManager = new PortalManager();
     }

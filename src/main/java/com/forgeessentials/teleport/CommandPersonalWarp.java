@@ -64,11 +64,11 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		}
 		else
 		{
-			if (args[0].equalsIgnoreCase("goto"))
+			if (args.length == 1)
 			{
-				if (map.containsKey(args[1]))
+				if (map.containsKey(args[0]))
 				{
-					PWarp warp = map.get(args[1]);
+					PWarp warp = map.get(args[0]);
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
 					CommandBack.justDied.remove(sender.getPersistentID());

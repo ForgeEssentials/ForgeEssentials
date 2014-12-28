@@ -38,7 +38,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -472,7 +472,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         effects.clear();
 
         // Check knockback
-        if (!APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_KNOCKBACK).equals(IPermissionsHelper.PERMISSION_FALSE))
+        if (!APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_KNOCKBACK).equals(Zone.PERMISSION_FALSE))
         {
             getZoneDeniedMessageHandler(event.entityPlayer).run();
 

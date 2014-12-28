@@ -13,15 +13,10 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.commons.selections.WorldPoint;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 	@Override
@@ -42,12 +37,12 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		/*
 		 * Get the right zone. If nothing valid is given, defaults to the senders position.
 		 */
-		Zone zone = APIRegistry.perms.getZoneAt(new WorldPoint(sender));
+		Zone zone = APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(sender));
 		if (args.length > 0)
 		{
 			if (args[0].equalsIgnoreCase("world"))
 			{
-				zone = APIRegistry.perms.getWorldZone(sender.worldObj);
+				zone = APIRegistry.perms.getServerZone().getWorldZone(sender.worldObj);
 			}
 			if (args[0].equalsIgnoreCase("global"))
 			{
@@ -274,10 +269,10 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		{
 			try
 			{
-				Zone zone = APIRegistry.perms.getZoneAt(new WorldPoint((Entity) sender));
+				Zone zone = APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint((Entity) sender));
 				if (args[0].equalsIgnoreCase("world"))
 				{
-					zone = APIRegistry.perms.getWorldZone(((Entity) sender).worldObj);
+					zone = APIRegistry.perms.getServerZone().getWorldZone(((Entity) sender).worldObj);
 				}
 				if (args[0].equalsIgnoreCase("global"))
 				{
@@ -305,10 +300,10 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		{
 			try
 			{
-				Zone zone = APIRegistry.perms.getZoneAt(new WorldPoint((Entity) sender));
+				Zone zone = APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint((Entity) sender));
 				if (args[0].equalsIgnoreCase("world"))
 				{
-					zone = APIRegistry.perms.getWorldZone(((Entity) sender).worldObj);
+					zone = APIRegistry.perms.getServerZone().getWorldZone(((Entity) sender).worldObj);
 				}
 				if (args[0].equalsIgnoreCase("global"))
 				{
