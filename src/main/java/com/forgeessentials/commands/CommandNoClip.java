@@ -50,7 +50,9 @@ public class CommandNoClip extends FEcmdModuleCommands
 		
 		if(args.length == 0)
 		{
+			if (!player.noClip)
 			player.noClip = true;
+			else player.noClip = false;
 		}
 		else
 		{
@@ -59,7 +61,6 @@ public class CommandNoClip extends FEcmdModuleCommands
 		if(!player.noClip)
 			findSafeY(player);
 		FunctionHelper.netHandler.sendTo(new S5PacketNoclip(player.noClip), player);
-		OutputHandler.chatConfirmation(player, "NoClip " + (player.noClip ? "enabled." : "disabled."));
 	}
 	
 	public static void checkClip(EntityPlayer player)

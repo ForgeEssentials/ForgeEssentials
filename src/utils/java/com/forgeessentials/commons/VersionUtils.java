@@ -1,20 +1,19 @@
-package com.forgeessentials.util;
+package com.forgeessentials.commons;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import com.forgeessentials.core.preloader.FEPreLoader;
-
 public class VersionUtils
 {
-    public static String getBuildNumber()
+    public static String getBuildNumber(File source)
     {
         try
         {
-            if (FEPreLoader.jarLocation != null)
+            if (source != null)
             {
-                JarFile jar = new JarFile(FEPreLoader.jarLocation);
+                JarFile jar = new JarFile(source);
                 Manifest manifest = jar.getManifest();
                 return manifest.getMainAttributes().getValue("Build-Number");
             }
@@ -26,13 +25,13 @@ public class VersionUtils
         return "0";
     }
 
-    public static String getBuildHash()
+    public static String getBuildHash(File source)
     {
         try
         {
-            if (FEPreLoader.jarLocation != null)
+            if (source != null)
             {
-                JarFile jar = new JarFile(FEPreLoader.jarLocation);
+                JarFile jar = new JarFile(source);
                 Manifest manifest = jar.getManifest();
                 return manifest.getMainAttributes().getValue("BuildID");
             }

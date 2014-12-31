@@ -3,9 +3,9 @@ package com.forgeessentials.core.commands;
 import java.util.List;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.FEModContainer;
+import com.forgeessentials.core.preloader.FEPreLoader;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.VersionUtils;
-import cpw.mods.fml.common.FMLCommonHandler;
+import com.forgeessentials.commons.VersionUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -68,7 +68,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
         else if (args[0].equalsIgnoreCase("about"))
         {
             OutputHandler.chatNotification(sender, "You are currently running ForgeEssentials version " + FEModContainer.version);
-            OutputHandler.chatNotification(sender, "Build information: Build number is: " + VersionUtils.getBuildNumber() + ", build hash is: " + VersionUtils.getBuildHash());
+            OutputHandler.chatNotification(sender, "Build information: Build number is: " + VersionUtils.getBuildNumber(FEPreLoader.jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(FEPreLoader.jarLocation));
             OutputHandler.chatNotification(sender,
                     "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
         }

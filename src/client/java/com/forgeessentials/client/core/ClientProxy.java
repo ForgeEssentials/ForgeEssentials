@@ -11,6 +11,7 @@ import com.forgeessentials.client.network.C3PacketRollback;
 import com.forgeessentials.client.network.C4PacketEconomy;
 import com.forgeessentials.client.network.C5PacketNoclip;
 import com.forgeessentials.client.util.DummyProxy;
+import com.forgeessentials.commons.VersionUtils;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -19,6 +20,7 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
+import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 import static com.forgeessentials.client.ForgeEssentialsClient.netHandler;
 
 public class ClientProxy extends DummyProxy
@@ -28,7 +30,7 @@ public class ClientProxy extends DummyProxy
     @Override
     public void doPreInit(FMLPreInitializationEvent e)
     {
-
+        feclientlog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(e.getSourceFile()) + ", build hash is: " + VersionUtils.getBuildHash(e.getSourceFile()));
         if (FMLCommonHandler.instance().getSide().isClient())
         {
             config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));
