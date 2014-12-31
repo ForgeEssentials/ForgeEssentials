@@ -1,17 +1,19 @@
 package com.forgeessentials.economy.plots;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.economy.Offer;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.PlotEvent;
 import com.forgeessentials.util.questioner.QuestionCenter.IReplyHandler;
 
 // Sells a plot. There must already be an existing offer made by another player.
 public class TransactionHandler implements IReplyHandler
 {
-    private Offer<Zone> offer;
+    private Offer<AreaZone> offer;
 
-    public TransactionHandler(Offer<Zone> offer)
+    public TransactionHandler(Offer<AreaZone> offer)
     {
         this.offer = offer;
     }
@@ -29,9 +31,11 @@ public class TransactionHandler implements IReplyHandler
         {
             OutputHandler.chatNotification(offer.buyer,
                     "The seller agreed to sell plot " + offer.item.getName() + " to you. " + offer.price + " will be deducted from your wallet.");
+
+            AreaZone plot = offer.item;
+            APIRegistry.getFEEventBus().post(new PlotEvent.OwnerUnset(plot, offer.seller));
             APIRegistry.wallet.removeFromWallet(offer.price, offer.buyer.getPersistentID());
             APIRegistry.wallet.addToWallet(offer.price, offer.seller.getPersistentID());
-            Zone plot = offer.item;
             plot.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER, offer.buyer.getPersistentID().toString());
             OutputHandler.chatNotification(offer.seller, "Transaction complete. " + offer.price + "added to your wallet.");
             OutputHandler.chatNotification(offer.buyer, "Transaction complete. You are now owner of " + plot.getName());

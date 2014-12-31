@@ -32,8 +32,8 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
         {
             if (args[1].equals("add"))
             {
-                Zone zone = APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[2]);
-                PlotManager.pendingOffers.put(args[2], new Offer<Zone>(null, player, zone, Integer.parseInt(args[3])));
+                AreaZone zone = (AreaZone) APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[2]);
+                PlotManager.pendingOffers.put(args[2], new Offer<AreaZone>(null, player, zone, Integer.parseInt(args[3])));
             }
             else if (args[1].equals("remove"))
             {
@@ -42,11 +42,11 @@ public class CommandListPlot extends ForgeEssentialsCommandBase
             else
             {
                 OutputHandler.chatNotification(player, "Listing all plots for sale:");
-                for (Entry<String, Offer<Zone>> offer : PlotManager.pendingOffers.entrySet())
+                for (Entry<String, Offer<AreaZone>> offer : PlotManager.pendingOffers.entrySet())
                 {
                     if (offer.getValue().buyer == null)
                     {
-                        PlotManager.printPlotDetails(player, (AreaZone) offer.getValue().item);
+                        PlotManager.printPlotDetails(player, offer.getValue().item);
                     }
                 }
             }

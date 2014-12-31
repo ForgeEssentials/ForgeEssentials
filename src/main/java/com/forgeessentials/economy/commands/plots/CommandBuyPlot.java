@@ -1,6 +1,7 @@
 package com.forgeessentials.economy.commands.plots;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.Offer;
@@ -29,7 +30,7 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
         if (args.length >= 1)
         {
             int value;
-            Zone plot = APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
+            AreaZone plot = (AreaZone) APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
             if (!plot.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM))
             {
                 throw new CommandException("No such plot!");
@@ -51,7 +52,7 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
                 throw new CommandException("You can't afford that!");
             }
 
-            Offer<Zone> item = new Offer<Zone>(buyer, seller, plot, value);
+            Offer<AreaZone> item = new Offer<AreaZone>(buyer, seller, plot, value);
 
             QuestionCenter.addToQuestionQueue(new QuestionData(seller,
                     "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + ModuleEconomy.formatCurrency(value)

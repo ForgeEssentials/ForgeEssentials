@@ -2,6 +2,7 @@ package com.forgeessentials.economy;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.events.PlotEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
@@ -29,4 +30,29 @@ public class EconEventHandler extends ServerEventHandler
             e.entityPlayer.getEntityData().setInteger("FEXPThreshold", xp - threshold);
         }
     }
+
+    /*
+    olee i need your help with this
+    OwnerSet and Define require adding the player to the plot-owners group in zones
+    OwnerUnset and RentDefaulted require removing the player from the plot-owners group
+    @SubscribeEvent
+    public void onPlotSet(PlotEvent.Define e)
+    {
+    }
+
+    @SubscribeEvent
+    public void onOwnerAdd(PlotEvent.OwnerSet e)
+    {
+    }
+
+    @SubscribeEvent
+    public void onOwnerUnset(PlotEvent.OwnerUnset e)
+    {
+    }
+
+    @SubscribeEvent
+    public void onRentDefault(PlotEvent.RentDefaulted e)
+    {
+    }
+    */
 }

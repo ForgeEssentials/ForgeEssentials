@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class PlotManager {
 
-    public static Map<String, Offer<Zone>> pendingOffers = new HashMap<>();
+    public static Map<String, Offer<AreaZone>> pendingOffers = new HashMap<>();
 
     public static int timeout;
 
