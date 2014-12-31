@@ -2,10 +2,17 @@ package com.forgeessentials.economy.commands;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandSell extends ForgeEssentialsCommandBase
 {
+    @Override
+    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    {
+
+    }
+
     @Override
     public boolean canConsoleUseCommand()
     {
