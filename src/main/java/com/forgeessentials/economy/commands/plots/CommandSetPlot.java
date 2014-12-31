@@ -1,5 +1,6 @@
 package com.forgeessentials.economy.commands.plots;
 
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -52,6 +53,7 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
                 zone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
                 zone.setHidden(true);
                 zone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
+                OutputHandler.chatConfirmation(player, "Plot defined. " + ModuleEconomy.formatCurrency(price) + " has been deducted from your account.");
             }
         }
         catch (EventCancelledException e)

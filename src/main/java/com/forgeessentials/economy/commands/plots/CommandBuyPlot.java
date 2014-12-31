@@ -2,6 +2,7 @@ package com.forgeessentials.economy.commands.plots;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.Offer;
 import com.forgeessentials.economy.plots.TransactionHandler;
 import com.forgeessentials.util.questioner.QuestionCenter;
@@ -41,7 +42,7 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
             else
             {
                 value = Integer.parseInt(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_VALUE));
-                OutputHandler.chatNotification(buyer, "No value specified. Will use current valuation of plot, which is " + value);
+                OutputHandler.chatNotification(buyer, "No value specified. Will use current valuation of plot, which is " + ModuleEconomy.formatCurrency(value));
             }
 
             // check if the player can afford it...
@@ -53,7 +54,7 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
             Offer<Zone> item = new Offer<Zone>(buyer, seller, plot, value);
 
             QuestionCenter.addToQuestionQueue(new QuestionData(seller,
-                    "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + value
+                    "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + ModuleEconomy.formatCurrency(value)
                             + ". Type /yes to accept, /no to deny. This offer will expire in " + PlotManager.timeout + " seconds.",
                     new TransactionHandler(item), PlotManager.timeout));
             PlotManager.pendingOffers.put(plot.getName(), item);

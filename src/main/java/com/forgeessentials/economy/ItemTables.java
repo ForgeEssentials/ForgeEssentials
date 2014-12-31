@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ItemTables extends ConfigLoaderBase
 {
-    private Map<String, Integer> valueMap = new HashMap<>();
+    protected Map<String, Integer> valueMap = new HashMap<>();
 
     private static final String category = "ItemTables";
 

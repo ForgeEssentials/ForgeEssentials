@@ -48,6 +48,8 @@ public class ModuleEconomy extends ConfigLoaderBase {
     public static int psfPrice;
 
     public static List<Offer<ItemStack>> offers = new ArrayList<>();
+
+    public static ItemTables tables;
     
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
@@ -61,7 +63,8 @@ public class ModuleEconomy extends ConfigLoaderBase {
         APIRegistry.wallet = new WalletHandler();
         FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
         new EconEventHandler();
-        ForgeEssentials.getConfigManager().registerLoader("ItemTables", new ItemTables());
+        tables = new ItemTables();
+        ForgeEssentials.getConfigManager().registerLoader("ItemTables", tables);
     }
 
     @SubscribeEvent
@@ -110,6 +113,15 @@ public class ModuleEconomy extends ConfigLoaderBase {
         config.get(CONFIG_CAT, "currencyPlural", "gold").set(currencyPlural);
         config.get(CONFIG_CAT, "startbudget", 100).set(startbudget);
         config.get(CONFIG_CAT, "multiplier", 1).set(psfPrice);
+    }
+
+    public static String formatCurrency(int amount)
+    {
+        if (amount == 1)
+        {
+            return amount + " " + currencySingular;
+        }
+        else return amount + " " + currencyPlural;
     }
 
 }
