@@ -1,6 +1,5 @@
 package com.forgeessentials.economy.commands.plots;
 
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;

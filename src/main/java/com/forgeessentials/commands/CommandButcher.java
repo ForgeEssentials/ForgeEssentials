@@ -1,11 +1,7 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.tasks.TaskRegistry;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -22,9 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
 
 public class CommandButcher extends FEcmdModuleCommands {
     

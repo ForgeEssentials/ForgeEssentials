@@ -1,6 +1,6 @@
 package com.forgeessentials.core.preloader.forge;
 
-import com.forgeessentials.util.events.forge.SignEditEvent;
+import net.minecraftforge.event.world.SignEditEvent;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.Unpooled;

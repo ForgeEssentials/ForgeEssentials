@@ -2,7 +2,6 @@ package com.forgeessentials.economy.commands.plots;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.economy.plots.PlotManager.Offer;
 import net.minecraft.command.ICommandSender;

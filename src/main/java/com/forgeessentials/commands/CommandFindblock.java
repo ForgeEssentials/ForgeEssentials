@@ -12,7 +12,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
-import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.registry.GameData;
 

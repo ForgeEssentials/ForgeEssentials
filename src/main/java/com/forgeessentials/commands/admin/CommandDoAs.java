@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.admin;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
