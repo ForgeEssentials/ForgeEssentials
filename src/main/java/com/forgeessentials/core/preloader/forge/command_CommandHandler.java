@@ -3,6 +3,7 @@ package com.forgeessentials.core.preloader.forge;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.server.CommandHandlerForge;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,7 +29,7 @@ public class command_CommandHandler
             {
                 Entry entry = (Entry)iterator.next();
 
-                if (CommandBase.doesStringStartWith(s1, (String) entry.getKey()) && net.minecraftforge.server.CommandHandlerForge.canUse(((ICommand)entry.getValue()), p_71558_1_))
+                if (CommandBase.doesStringStartWith(s1, (String) entry.getKey()) && CommandHandlerForge.canUse(((ICommand) entry.getValue()), p_71558_1_))
                 {
                     arraylist.add(entry.getKey());
                 }
@@ -62,7 +63,7 @@ public class command_CommandHandler
 
             if (icommand != null) {
 
-                if (net.minecraftforge.server.CommandHandlerForge.canUse(icommand, p_71557_1_)) {
+                if (CommandHandlerForge.canUse(icommand, p_71557_1_)) {
                     arraylist.add(icommand);
                 }
             }

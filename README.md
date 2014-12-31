@@ -10,11 +10,11 @@ especially a powerful permissions and protection system:
  - Permission management
  - Protection (WorldGuard)
  - Automatic backup management
- - Multiworld (in bukkit aka. multiverse)
+ - Multiworld support(in bukkit aka. multiverse)
  - Deathchests
  - Huge collection of utility commands
- - Remote server access and management with Andoid-app (WIP)
- - Any many more!!!
+ - Remote server access and management with a versatile API
+ - And many more!!!
 
 *******************
 

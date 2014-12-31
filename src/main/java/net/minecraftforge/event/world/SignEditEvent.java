@@ -1,4 +1,4 @@
-package com.forgeessentials.util.events.forge;
+package net.minecraftforge.event.world;
 
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
