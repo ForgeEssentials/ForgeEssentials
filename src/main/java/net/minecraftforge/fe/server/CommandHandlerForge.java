@@ -1,4 +1,4 @@
-package net.minecraftforge.server;
+package net.minecraftforge.fe.server;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
@@ -29,7 +29,7 @@ public class CommandHandlerForge {
      * Mods, use this!
      * This is a permissions-aware version of FMLServerStartingEvent's registerCommand.
      * You should be using this, and NOT FML's, if you wish to specify a custom permission node
-     * @param your ICommand
+     * @param command your ICommand
      * @param node a permission node
      * @param permLevel the default permission level ({@link RegisteredPermValue})
      */

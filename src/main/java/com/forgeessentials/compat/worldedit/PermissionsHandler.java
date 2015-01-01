@@ -5,7 +5,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-import net.minecraftforge.server.CommandHandlerForge;
+import net.minecraftforge.fe.server.CommandHandlerForge;
 
 public class PermissionsHandler implements ForgePermissionsProvider
 {
