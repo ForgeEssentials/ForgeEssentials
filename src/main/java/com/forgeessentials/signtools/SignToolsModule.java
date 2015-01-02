@@ -6,7 +6,7 @@ import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoader
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import net.minecraftforge.event.world.SignEditEvent;
+import net.minecraftforge.fe.event.world.SignEditEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;

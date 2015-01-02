@@ -3,7 +3,7 @@ package com.forgeessentials.core.preloader.forge;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.server.CommandHandlerForge;
+import net.minecraftforge.fe.server.CommandHandlerForge;
 
 import java.util.ArrayList;
 import java.util.Iterator;

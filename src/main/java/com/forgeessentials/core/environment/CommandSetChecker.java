@@ -7,7 +7,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.CommandHandlerForge;
+import net.minecraftforge.fe.server.CommandHandlerForge;
 
 import java.util.HashMap;
 import java.util.HashSet;
