@@ -45,12 +45,14 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, playerName);
             if (player != null)
             {
-                boolean found = false;
+                boolean found = false, hasMeta = false;
+
                 String itemName = args[1];
                 int amount = Integer.parseInt(args[2]);
                 int meta = -1;
                 if (args.length >= 5)
                 {
+                    hasMeta = true;
                     meta = Integer.parseInt(args[3]);
                 }
 
@@ -94,10 +96,21 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                         // Do command
 
                         StringBuilder cmd = new StringBuilder(args.toString().length());
-                        for (int i = 4; i < args.length; i++)
+                        if (hasMeta)
                         {
-                            cmd.append(args[i]);
-                            cmd.append(" ");
+                            for (int i = 4; i < args.length; i++)
+                            {
+                                cmd.append(args[i]);
+                                cmd.append(" ");
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 3; i < args.length; i++)
+                            {
+                                cmd.append(args[i]);
+                                cmd.append(" ");
+                            }
                         }
                         MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
                         OutputHandler.chatConfirmation(player, String.format("That cost you %d x %s. Your balance is %s.",
