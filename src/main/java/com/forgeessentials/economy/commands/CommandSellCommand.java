@@ -6,6 +6,7 @@ import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.api.APIRegistry;
 
 import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -31,13 +32,13 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
     }
 
     /*
-     * Expected structure: "/sellcommand <player> <['amount'x]item[:'meta']> <command [args]>"
+     * Expected structure: "/sellcommand <player> <item> [amount] [meta] <command [args]>"
      */
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
         // System.out.print(sender);
-        if (args.length >= 3)
+        if (args.length >= 4)
         {
             String playerName = args[0];
 
@@ -45,30 +46,18 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
             if (player != null)
             {
                 boolean found = false;
-                int amount = 1, meta = -1;
                 String itemName = args[1];
-
-                // parse amount
-                if (itemName.contains("x"))
+                int amount = Integer.parseInt(args[2]);
+                int meta = -1;
+                if (args.length >= 5)
                 {
-                    String[] split = itemName.split("x");
-                    amount = parseIntBounded(sender, split[0], 0, 64);
-                    itemName = split[1];
-                }
-
-                // parse meta
-                if (itemName.contains(":"))
-                {
-                    String[] split = itemName.split(":");
-                    meta = parseInt(sender, split[1]);
-                    itemName = split[0];
+                    meta = Integer.parseInt(args[3]);
                 }
 
                 // get item
                 Item offeredItem = null;
                 try {
-                    int itemId = Integer.parseInt(itemName);
-                    offeredItem = Item.getItemById(itemId);
+                    offeredItem = CommandBase.getItemByText(sender, itemName);
                 }
                 catch(NumberFormatException e) {
                     offeredItem = (Item)GameData.getItemRegistry().getObject(itemName);
@@ -105,7 +94,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                         // Do command
 
                         StringBuilder cmd = new StringBuilder(args.toString().length());
-                        for (int i = 2; i < args.length; i++)
+                        for (int i = 4; i < args.length; i++)
                         {
                             cmd.append(args[i]);
                             cmd.append(" ");
