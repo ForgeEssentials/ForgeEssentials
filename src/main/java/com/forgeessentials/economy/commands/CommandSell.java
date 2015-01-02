@@ -6,6 +6,7 @@ import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -22,7 +23,7 @@ public class CommandSell extends ForgeEssentialsCommandBase
 
         int price = APIRegistry.wallet.getItemTables().get(itemName);
 
-        ItemStack stack = new ItemStack(GameData.getItemRegistry().getObject(itemName), amount, meta);
+        ItemStack stack = new ItemStack(CommandBase.getItemByText(player, itemName), amount, meta);
         int transact = price * amount;
 
         String targetName = stack.getUnlocalizedName();
