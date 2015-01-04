@@ -104,9 +104,8 @@ dependencies {
     myCompile 'com.h2database:h2:1.3.175'
     myCompile 'mysql:mysql-connector-java:5.1.22'
 
-    // WE integration - temp until sk accepts pr 312
-    myCompile 'com.sk89q.worldedit:worldedit-core:6.0.1'
-    myCompile files('lib/worldedit-forge-mc1.7.10-6.0-SNAPSHOT-dev.jar')
+    // WE integration
+    myCompile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.1:dev'
 
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
@@ -253,9 +252,9 @@ publishing {
     //artifactId = "forgeessentials"
     publications {
         mavenJava(MavenPublication) {
-            groupId 'com.forgeessentials'
-            artifactId 'forgeessentials'
-            version '1.4.0-SNAPSHOT'
+            groupId "com.forgeessentials"
+            artifactId "forgeessentials"
+            version "1.4.0-SNAPSHOT"
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
