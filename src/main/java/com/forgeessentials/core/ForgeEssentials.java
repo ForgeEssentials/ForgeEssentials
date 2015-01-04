@@ -215,6 +215,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
         ((StorageManager) DataStorageManager.manager).serverStart(e);
 
         BlockModListFile.makeModList();
+        BlockModListFile.dumpFMLRegistries();
 
         // commands
         e.registerServerCommand(new HelpFixer());

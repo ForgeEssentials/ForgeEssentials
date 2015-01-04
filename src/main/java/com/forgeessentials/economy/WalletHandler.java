@@ -9,6 +9,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -32,12 +33,14 @@ public class WalletHandler implements IEconManager {
     }
 
     @Override
-    public void removeFromWallet(int amountToSubtract, UUID player)
+    public boolean removeFromWallet(int amountToSubtract, UUID player)
     {
         if (wallets.get(player).amount - amountToSubtract >= 0)
         {
             wallets.get(player).amount = wallets.get(player).amount - amountToSubtract;
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class WalletHandler implements IEconManager {
     public String getMoneyString(UUID username)
     {
         int am = getWallet(username);
-        return am + " " + currency(am);
+        return ModuleEconomy.formatCurrency(am);
     }
 
     private void saveWallet(Wallet wallet)
@@ -78,6 +81,12 @@ public class WalletHandler implements IEconManager {
         for (Wallet wallet : wallets.values()) {
             saveWallet(wallet);
         }
+    }
+
+    @Override
+    public Map<String, Integer> getItemTables()
+    {
+        return ModuleEconomy.tables.valueMap;
     }
 
     @SubscribeEvent

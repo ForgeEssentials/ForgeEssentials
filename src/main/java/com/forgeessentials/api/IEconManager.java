@@ -2,6 +2,7 @@ package com.forgeessentials.api;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.util.Map;
 import java.util.UUID;
 
 public interface IEconManager {
@@ -24,11 +25,12 @@ public interface IEconManager {
 
     /**
      * Remove a set amount from a target's Wallet
+     * returns true if it succeded, false if it didn't
      *
      * @param amountToSubtract
      * @param player
      */
-    public void removeFromWallet(int amountToSubtract, UUID player);
+    public boolean removeFromWallet(int amountToSubtract, UUID player);
 
     /**
      * Set the target's Wallet to the specified amount
@@ -58,4 +60,6 @@ public interface IEconManager {
      * (for users still on the server when it's stopping)
      */
     public void save();
+
+    public Map<String, Integer> getItemTables();
 }

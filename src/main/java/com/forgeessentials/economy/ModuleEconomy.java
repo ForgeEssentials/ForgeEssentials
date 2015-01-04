@@ -15,9 +15,7 @@ import com.forgeessentials.economy.commands.CommandSetWallet;
 import com.forgeessentials.economy.commands.plots.CommandBuyPlot;
 import com.forgeessentials.economy.commands.plots.CommandListPlot;
 import com.forgeessentials.economy.commands.plots.CommandRemovePlot;
-import com.forgeessentials.economy.commands.plots.CommandSellPlot;
 import com.forgeessentials.economy.commands.plots.CommandSetPlot;
-import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -26,7 +24,13 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Call the WalletHandler class when working with Economy
@@ -35,12 +39,17 @@ import net.minecraftforge.common.config.Configuration;
 public class ModuleEconomy extends ConfigLoaderBase {
 
     public static final String CONFIG_CAT = "Economy";
+    public static final String PICKUP_XP_PERM = "fe.economy.convertXP";
     public static String currencySingular;
     public static String currencyPlural;
     
     public static int startbudget;
 
     public static int psfPrice;
+
+    public static List<Offer<ItemStack>> offers = new ArrayList<>();
+
+    public static ItemTables tables;
     
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
@@ -53,6 +62,9 @@ public class ModuleEconomy extends ConfigLoaderBase {
     {
         APIRegistry.wallet = new WalletHandler();
         FMLCommonHandler.instance().bus().register(APIRegistry.wallet);
+        new EconEventHandler();
+        tables = new ItemTables();
+        ForgeEssentials.getConfigManager().registerLoader("ItemTables", tables);
     }
 
     @SubscribeEvent
@@ -66,11 +78,14 @@ public class ModuleEconomy extends ConfigLoaderBase {
         FunctionHelper.registerServerCommand(new CommandPaidCommand());
         FunctionHelper.registerServerCommand(new CommandSellCommand());
         FunctionHelper.registerServerCommand(new CommandMoney());
+
         FunctionHelper.registerServerCommand(new CommandBuyPlot());
         FunctionHelper.registerServerCommand(new CommandRemovePlot());
-        FunctionHelper.registerServerCommand(new CommandSellPlot());
         FunctionHelper.registerServerCommand(new CommandSetPlot());
         FunctionHelper.registerServerCommand(new CommandListPlot());
+
+        PermissionsManager.registerPermission(PICKUP_XP_PERM, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission("fe.economy.plots.set.free", RegisteredPermValue.OP);
     }
 
     @SubscribeEvent
@@ -82,9 +97,13 @@ public class ModuleEconomy extends ConfigLoaderBase {
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        currencySingular = config.get(CONFIG_CAT, "currencySingular", "gold").getString();
-        currencyPlural = config.get(CONFIG_CAT, "currencyPlural", "gold").getString();
-        startbudget = config.get(CONFIG_CAT, "startbuget", 100).getInt();
+        currencySingular = config.get(CONFIG_CAT, "currencySingular", "gold", "Name of singular currency unit").getString();
+        currencyPlural = config.get(CONFIG_CAT, "currencyPlural", "gold", "Name of plural currency unit").getString();
+        startbudget = config.get(CONFIG_CAT, "startbudget", 100, "Starting amount of money for players.").getInt();
+        psfPrice = config.get(CONFIG_CAT, "multiplier", 1, "Multiplier for automatic plot valuation.").getInt();
+        EconEventHandler.convertXPDrops = config.get(CONFIG_CAT, "convertXPDrops", false, "Allow players picking up XP orbs to gain currency as well.").getBoolean(true);
+        EconEventHandler.threshold = config.get(CONFIG_CAT, "threshold", 10, "Amount of XP that can be converted to 1 currency").getInt(10);
+
     }
 
     @Override
@@ -93,6 +112,16 @@ public class ModuleEconomy extends ConfigLoaderBase {
         config.get(CONFIG_CAT, "currencySingular", "gold").set(currencySingular);
         config.get(CONFIG_CAT, "currencyPlural", "gold").set(currencyPlural);
         config.get(CONFIG_CAT, "startbudget", 100).set(startbudget);
+        config.get(CONFIG_CAT, "multiplier", 1).set(psfPrice);
+    }
+
+    public static String formatCurrency(int amount)
+    {
+        if (amount == 1)
+        {
+            return amount + " " + currencySingular;
+        }
+        else return amount + " " + currencyPlural;
     }
 
 }

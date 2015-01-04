@@ -1,5 +1,6 @@
 package com.forgeessentials.economy.commands.plots;
 
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -9,10 +10,13 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.EventCancelledException;
+import com.forgeessentials.util.events.PlotEvent;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class CommandSetPlot extends ForgeEssentialsCommandBase
 {
@@ -23,10 +27,34 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
         PlayerInfo info = PlayerInfo.getPlayerInfo(player);
         try
         {
+            int price;
+
+            if (args[1] != null)
+            {
+                price = Integer.parseInt(args[1]); // checks if it's a valid number
+            }
+            else
+            {
+                price = info.getSelection().getXLength() * info.getSelection().getZLength() * ModuleEconomy.psfPrice;
+            }
+
+            if (!PermissionsManager.checkPermission(player, getPermissionNode() + ".free"))
+            {
+                if (!APIRegistry.wallet.removeFromWallet(price, new UserIdent(player).getUuid()))
+                {
+                    throw new CommandException("You can't afford to set this plot!");
+                }
+            }
+
             AreaZone zone = new AreaZone(APIRegistry.perms.getServerZone().getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0], info.getSelection());
-            zone.setGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM, true);
-            zone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
-            zone.setHidden(true);
+            if (!APIRegistry.getFEEventBus().post(new PlotEvent.Define(zone, player)))
+            {
+                zone.setGroupPermission(Zone.GROUP_DEFAULT, PlotManager.DATA_PERM, true);
+                zone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER, new UserIdent(player).getUuid().toString());
+                zone.setHidden(true);
+                zone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, PlotManager.PLOT_VALUE, Integer.toString(price));
+                OutputHandler.chatConfirmation(player, "Plot defined. " + ModuleEconomy.formatCurrency(price) + " has been deducted from your account.");
+            }
         }
         catch (EventCancelledException e)
         {
@@ -49,7 +77,7 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
     @Override
     public PermissionsManager.RegisteredPermValue getDefaultPermission()
     {
-        return PermissionsManager.RegisteredPermValue.OP;
+        return RegisteredPermValue.TRUE;
     }
 
     @Override
@@ -61,6 +89,6 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/setplot <name> <value> Set the current selection as a tradeable plot";
+        return "/setplot <name> [value] Set the current selection as a tradeable plot";
     }
 }
