@@ -68,10 +68,14 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     public ZonedPermissionHelper()
     {
         FMLCommonHandler.instance().bus().register(this);
-        
+        APIRegistry.getFEEventBus().register(this);
+
         rootZone = new RootZone(this);
-        rootZone.setServerZone(new ServerZone(rootZone));
         rootZone.setPermissionDebugger(this);
+
+        ServerZone serverZone = new ServerZone(rootZone);
+        APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
+        rootZone.setServerZone(serverZone);
 
         permissionDebugFilters.add("fe.protection.mobspawn");
         permissionDebugFilters.add("fe.protection.gamemode");
@@ -258,13 +262,35 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     // -- Events
     // ------------------------------------------------------------
 
+    @SubscribeEvent
+    public void permissionAfterLoadEvent(PermissionEvent.AfterLoad e)
+    {
+        if (!e.serverZone.groupExists(Zone.GROUP_DEFAULT))
+        {
+            e.serverZone.setGroupPermission(Zone.GROUP_DEFAULT, FEPermissions.GROUP, true);
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_PRIORITY, "0");
+        }
+        if (!e.serverZone.groupExists(Zone.GROUP_GUESTS))
+        {
+            e.serverZone.setGroupPermission(Zone.GROUP_GUESTS, FEPermissions.GROUP, true);
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_GUESTS, FEPermissions.GROUP_PRIORITY, "10");
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_GUESTS, FEPermissions.PREFIX, "[GUEST]");
+        }
+        if (!e.serverZone.groupExists(Zone.GROUP_OPERATORS))
+        {
+            e.serverZone.setGroupPermission(Zone.GROUP_OPERATORS, FEPermissions.GROUP, true);
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[OPERATOR]");
+        }
+    }
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerLogin(PlayerLoggedInEvent e)
     {
         // Update permission storage with new players
         for (Zone zone : getZones())
             zone.updatePlayerIdents();
-        
+
         // Make sure each player has at least one permission
         UserIdent ident = new UserIdent(e.player);
         if (getServerZone().getPlayerPermissions(ident) == null || getServerZone().getPlayerPermissions(ident).size() == 0)
@@ -552,8 +578,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     @Override
     public boolean isSystemGroup(String group)
     {
-        return group.equals(Zone.GROUP_DEFAULT) || group.equals(Zone.GROUP_OPERATORS)
-                || group.equals(Zone.GROUP_GUESTS);
+        return group.equals(Zone.GROUP_DEFAULT) || group.equals(Zone.GROUP_OPERATORS) || group.equals(Zone.GROUP_GUESTS);
     }
 
     @Override
@@ -693,7 +718,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     @Override
     public boolean checkUserPermission(UserIdent ident, Zone zone, String permissionNode)
     {
-        return checkBooleanPermission(getServerZone().getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
+        return checkBooleanPermission(getServerZone().getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode,
+                false));
     }
 
     @Override

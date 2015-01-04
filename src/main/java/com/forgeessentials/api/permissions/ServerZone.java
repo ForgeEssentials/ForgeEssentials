@@ -46,14 +46,6 @@ public class ServerZone extends Zone {
     public ServerZone()
     {
         super(1);
-        setGroupPermission(GROUP_DEFAULT, FEPermissions.GROUP, true);
-        setGroupPermission(GROUP_GUESTS, FEPermissions.GROUP, true);
-        setGroupPermission(GROUP_OPERATORS, FEPermissions.GROUP, true);
-        setGroupPermissionProperty(GROUP_DEFAULT, FEPermissions.GROUP_PRIORITY, "0");
-        setGroupPermissionProperty(GROUP_GUESTS, FEPermissions.GROUP_PRIORITY, "10");
-        setGroupPermissionProperty(GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
-        setGroupPermissionProperty(GROUP_GUESTS, FEPermissions.PREFIX, "[GUEST]");
-        setGroupPermissionProperty(GROUP_OPERATORS, FEPermissions.PREFIX, "[OPERATOR]");
         APIRegistry.getFEEventBus().post(new PermissionEvent.Initialize(this));
         addZone(this);
     }
