@@ -2,6 +2,7 @@ package com.forgeessentials.chat;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.commands.CommandAutoMessage;
+import com.forgeessentials.chat.commands.CommandBannedWords;
 import com.forgeessentials.chat.commands.CommandMail;
 import com.forgeessentials.chat.commands.CommandMsg;
 import com.forgeessentials.chat.commands.CommandMute;
@@ -95,6 +96,7 @@ public class ModuleChat {
         FunctionHelper.registerServerCommand(new CommandUnmute());
         FunctionHelper.registerServerCommand(new CommandMail());
         FunctionHelper.registerServerCommand(new CommandAutoMessage());
+        new CommandBannedWords().register();
 
         try
         {

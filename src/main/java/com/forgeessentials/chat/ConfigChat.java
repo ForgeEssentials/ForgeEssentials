@@ -8,6 +8,7 @@ import com.forgeessentials.util.OutputHandler;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ConfigChat extends ConfigLoaderBase {
@@ -65,8 +66,8 @@ public class ConfigChat extends ConfigLoaderBase {
         ChatFormatter.gmA = config.get("Chat.gm", "Adventure", "[Adv]").getString();
 
         ChatFormatter.censor = config.get("BannedWords", "censor", true, "censor the words in the censorList").getBoolean(true);
-        ChatFormatter.bannedWords = Arrays.asList(config.get("BannedWords", "censorList", new String[] { "fuck", "ass", "bitch", "shit" },
-                "List of words to be censored").getStringList());
+        ChatFormatter.bannedWords = new ArrayList<>(Arrays.asList(config.get("BannedWords", "censorList", new String[] { "fuck", "ass", "bitch", "shit" },
+                "List of words to be censored").getStringList()));
         ChatFormatter.censorSlap = config.get("BannedWords", "slapDamage", 1, "0 is off, 1 is 1/2 heart, ...").getInt();
         ChatFormatter.censorSymbol = config.get("BannedWords", "censorSymbol", "#",
                 "Character to replace censored words with (Use only one character in this config)").getString();
