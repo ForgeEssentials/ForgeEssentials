@@ -1,17 +1,11 @@
 package com.forgeessentials.scripting;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.scripting.macros.MacroReader;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 public enum EventType {
     LOGIN("login"),
@@ -41,8 +35,7 @@ public enum EventType {
         try
         {
             File pscript = new File(event.player, player.getCommandSenderName() + ".txt");
-            OutputHandler.felog.info("Reading command script file " + pscript.getAbsolutePath());
-            MacroReader.run(pscript, player, new String[]{});
+            ScriptParser.run(pscript, player, new String[] { });
 
         }
         catch (Exception e)
@@ -53,8 +46,7 @@ public enum EventType {
         try
         {
             File gscript = new File(event.group, APIRegistry.perms.getPrimaryGroup(new UserIdent(player)) + ".txt");
-            OutputHandler.felog.info("Reading command script file " + gscript.getAbsolutePath());
-            MacroReader.run(gscript, player, new String[]{});
+            ScriptParser.run(gscript, player, new String[] { });
         }
         catch (Exception e)
         {

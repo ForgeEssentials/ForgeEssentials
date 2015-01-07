@@ -1,5 +1,6 @@
-package com.forgeessentials.scripting.macros;
+package com.forgeessentials.scripting;
 
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,11 +13,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class MacroReader
+public class ScriptParser
 {
     public static void run(File macroFile, ICommandSender sender, String[] args) throws IOException
     {
         ArrayList<String> scripts = new ArrayList<String>();
+        ArrayList<String> scriptargs = new ArrayList<>();
 
         OutputHandler.felog.info("Reading command script file " + macroFile.getAbsolutePath());
         FileInputStream stream = new FileInputStream(macroFile);
@@ -32,14 +34,15 @@ public class MacroReader
                 continue;
             }
 
-            read = read.replaceAll("%p", sender.getCommandSenderName());
-            if (args.length > 0)
+            // expected syntax: $ <arg number> <argCode>
+            if (read.startsWith("$"))
             {
-                for (int i =0; i < args.length; i++)
-                {
-                    read = read.replaceAll("%a" + i, args[i]);
-                }
+                String[] argCode = FunctionHelper.dropFirstString(read.split(" "));
+                int order = Integer.parseInt(argCode[0]);
+                scriptargs.add(order, argCode[1]);
             }
+
+            read = read.replaceAll("%p", sender.getCommandSenderName());
 
             if (sender instanceof EntityPlayerMP)
             {
@@ -48,6 +51,10 @@ public class MacroReader
                 read = read.replaceAll("%px", Integer.toString(player.getPlayerCoordinates().posX));
                 read = read.replaceAll("%py", Integer.toString(player.getPlayerCoordinates().posY));
                 read = read.replaceAll("%pz", Integer.toString(player.getPlayerCoordinates().posZ));
+            }
+
+            for (int i = 0; i < scriptargs.size(); i++) {
+                read = read.replaceAll("%" + scriptargs.get(i), args[i]);
             }
 
             scripts.add(read);
