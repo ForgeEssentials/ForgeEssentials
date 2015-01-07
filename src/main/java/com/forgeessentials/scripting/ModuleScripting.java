@@ -3,7 +3,6 @@ package com.forgeessentials.scripting;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.commands.ShortcutCommands;
-import com.forgeessentials.scripting.macros.MacroCommand;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -15,33 +14,29 @@ import net.minecraft.command.ICommandSender;
 import java.io.File;
 
 @FEModule(name = "Scripting", parentMod = ForgeEssentials.class, isCore = false)
-public class ModuleScripting {
+public class ModuleScripting
+{
 
     @FEModule.ModuleDir
     public static File moduleDir = new File(ForgeEssentials.getFEDirectory(), "scripting/");
-
-    public static void startup()
-    {
-        try
-        {
-            moduleDir.mkdirs();
-            for (EventType e : EventType.values())
-            {
-                e.mkdirs();
-            }
-
-        }
-        catch (Exception e)
-        {
-            OutputHandler.felog.warning("Could not setup scripting folders - you might have to do it yourself.");
-        }
-    }
 
     @SubscribeEvent
     public void preInit(FEModulePreInitEvent e)
     {
         OutputHandler.felog.info("Scripts are being read from " + moduleDir.getAbsolutePath());
-        startup();
+        try
+        {
+            moduleDir.mkdirs();
+            for (EventType et : EventType.values())
+            {
+                et.mkdirs();
+            }
+
+        }
+        catch (Exception e1)
+        {
+            OutputHandler.felog.warning("Could not setup scripting folders - you might have to do it yourself.");
+        }
     }
 
     @SubscribeEvent
