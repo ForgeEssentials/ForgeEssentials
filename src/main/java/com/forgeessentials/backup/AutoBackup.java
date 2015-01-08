@@ -133,8 +133,16 @@ public class AutoBackup extends TimerTask
         {
             if (System.currentTimeMillis() > file.lastModified() + BackupConfig.maxBackupLifespan * 3600000)
             {
-                file.delete();
-                OutputHandler.debug("Removed file: " + file.getAbsolutePath());
+                try
+                {
+                    Files.delete(file.toPath());
+                    OutputHandler.felog.info("Deleted file " + file.getPath());
+                }
+                catch (IOException e)
+                {
+                    OutputHandler.felog.severe("Could not delete file");
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -159,6 +167,7 @@ public class AutoBackup extends TimerTask
                 try
                 {
                     Files.delete(toDelete.toPath());
+                    OutputHandler.felog.info("Deleted file " + toDelete.getPath());
                 }
                 catch (IOException e)
                 {
@@ -198,6 +207,7 @@ public class AutoBackup extends TimerTask
                     try
                     {
                         Files.delete(toDelete.toPath());
+                        OutputHandler.felog.info("Deleted file " + toDelete.getPath());
                     }
                     catch (IOException e)
                     {
