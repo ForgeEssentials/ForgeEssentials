@@ -87,6 +87,8 @@ public class ModuleWorldBorder {
 		}
 		for (int i = d; i >= 0; i--)
 		{
+			if (effectsList.isEmpty())
+				continue;
 			if (effectsList.containsKey(i))
 			{
 				for (IEffect effect : effectsList.get(i))
