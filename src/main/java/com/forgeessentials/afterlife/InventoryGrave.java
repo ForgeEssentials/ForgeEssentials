@@ -1,6 +1,7 @@
 package com.forgeessentials.afterlife;
 
 import com.forgeessentials.util.UserIdent;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 
@@ -52,5 +53,11 @@ public class InventoryGrave extends InventoryBasic {
         grave.checkGrave();
         grave.setOpen(false);
         super.closeInventory();
+    }
+
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer player)
+    {
+        return grave.canOpen(player);
     }
 }

@@ -125,6 +125,10 @@ public class Grave {
         {
             return true;
         }
+        if (!opened)
+        {
+            return true;
+        }
 
         return false;
     }

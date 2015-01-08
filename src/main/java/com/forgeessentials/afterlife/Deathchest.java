@@ -132,7 +132,7 @@ public class Deathchest extends ServerEventHandler {
             {
                 Grave grave = gravemap.get(point.toString());
                 Block block = e.entity.worldObj.getBlock(e.x, e.y, e.z);
-                if (block == Blocks.skull || block == Blocks.chest)
+                if (block == Blocks.skull || block == Blocks.chest || block == Blocks.fence)
                 {
                     if (!grave.canOpen(e.entityPlayer))
                     {
