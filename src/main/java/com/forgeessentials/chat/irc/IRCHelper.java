@@ -108,7 +108,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 
     public static void shutdown()
     {
-        if (bot != null)
+        if (bot != null && bot.isConnected())
         {
             bot.disconnect();
         }
