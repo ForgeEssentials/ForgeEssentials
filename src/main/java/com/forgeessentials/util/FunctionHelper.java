@@ -447,7 +447,7 @@ public final class FunctionHelper {
 	 */
 	public static String replaceAllIgnoreCase(String text, String search, String replacement)
 	{
-		return text.replaceAll("(?i)" + Pattern.quote(search), replacement);
+		return Pattern.compile("(?i)" + Pattern.quote(search)).matcher(text).quoteReplacement(replacement);
 	}
 
 	/**
