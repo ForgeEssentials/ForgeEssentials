@@ -11,7 +11,6 @@ import com.forgeessentials.commands.CommandBubble;
 import com.forgeessentials.commands.CommandBurn;
 import com.forgeessentials.commands.CommandButcher;
 import com.forgeessentials.commands.CommandCapabilities;
-import com.forgeessentials.commands.CommandChunkLoaderList;
 import com.forgeessentials.commands.CommandCraft;
 import com.forgeessentials.commands.CommandDrop;
 import com.forgeessentials.commands.CommandEnchant;
@@ -42,7 +41,6 @@ import com.forgeessentials.commands.CommandVanish;
 import com.forgeessentials.commands.CommandVirtualchest;
 import com.forgeessentials.commands.CommandWeather;
 import com.forgeessentials.commands.admin.CommandDoAs;
-import com.forgeessentials.commands.admin.CommandServerPerf;
 import com.forgeessentials.commands.admin.CommandServerSettings;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -81,7 +79,6 @@ public class CommandRegistrar {
         cmdList.add(new CommandDoAs());
         cmdList.add(new CommandServerSettings());
         cmdList.add(new CommandGetCommandBook());
-        cmdList.add(new CommandChunkLoaderList());
         cmdList.add(new CommandWeather());
         cmdList.add(new CommandBind());
         cmdList.add(new CommandRename());
@@ -90,7 +87,6 @@ public class CommandRegistrar {
         cmdList.add(new CommandDrop());
         cmdList.add(new CommandPulse());
         cmdList.add(new CommandFindblock());
-        cmdList.add(new CommandServerPerf());
         cmdList.add(new CommandNoClip());
         cmdList.add(new CommandBubble());
     }

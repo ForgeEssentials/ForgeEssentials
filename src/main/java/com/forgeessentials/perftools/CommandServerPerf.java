@@ -1,5 +1,6 @@
-package com.forgeessentials.commands.admin;
+package com.forgeessentials.perftools;
 
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -13,20 +14,15 @@ import net.minecraftforge.server.command.ForgeCommand;
 
 import java.text.DecimalFormat;
 
-public class CommandServerPerf extends FEcmdModuleCommands {
+public class CommandServerPerf extends ForgeEssentialsCommandBase
+{
 
     private static final DecimalFormat formatNumbers = new DecimalFormat("########0.000");
 
     @Override
     public String getCommandName()
     {
-        return "memusage";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "perfstats" };
+        return "perfstats";
     }
 
     @Override
@@ -39,12 +35,19 @@ public class CommandServerPerf extends FEcmdModuleCommands {
         long used = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         OutputHandler.chatNotification(sender, "Used: " + (used / 1024 / 1024) + " MiB");
         OutputHandler.chatNotification(sender, "Average tick time: " + formatNumbers.format(this.func_120035_a(MinecraftServer.getServer().tickTimeArray) * 1.0E-6D) + " ms");
+        OutputHandler.chatNotification(sender, "For TPS information, run /forge tps.");
     }
 
     @Override
     public boolean canConsoleUseCommand()
     {
         return true;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return "fe.perftools.perfstats";
     }
 
     @Override

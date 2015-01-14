@@ -1,33 +1,21 @@
-package com.forgeessentials.core.misc;
+package com.forgeessentials.perftools;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.TaskRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import java.util.TimerTask;
 
 /**
- * Warns those with permission when the memory usa
+ * Warns those with permission when the memory usage passes a certain percentage threshold
  */
-public class MemoryWatchdog extends TimerTask implements IConfigLoader
+public class MemoryWatchdog extends TimerTask
 {
-    private static final String PERM_WARN = "fe.core.memUsageMsg";
-    public static int percentageWarn;
-    public static int checkInterval;
-
     public MemoryWatchdog()
     {
-        ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
-        PermissionsManager.registerPermission(PERM_WARN, RegisteredPermValue.OP);
-        TaskRegistry.registerRecurringTask(this, 0, 0, 0, 0, 0, checkInterval, 0, 0);
     }
 
     @Override
@@ -38,7 +26,7 @@ public class MemoryWatchdog extends TimerTask implements IConfigLoader
 
         long percentage = total * 100L / max;
 
-        if (percentage >= percentageWarn)
+        if (percentage >= PerfToolsModule.percentageWarn)
         {
 
             MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
@@ -56,7 +44,7 @@ public class MemoryWatchdog extends TimerTask implements IConfigLoader
                 for (String username : manager.getAllUsernames())
                 {
                     EntityPlayerMP player = manager.func_152612_a(username);
-                    if (PermissionsManager.checkPermission(player, PERM_WARN))
+                    if (PermissionsManager.checkPermission(player, PerfToolsModule.PERM_WARN))
                     {
                         OutputHandler.chatNotification(player, "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
                     }
@@ -66,26 +54,6 @@ public class MemoryWatchdog extends TimerTask implements IConfigLoader
             {
             }
         }
-    }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        percentageWarn = config.get(ForgeEssentials.CONFIG_CAT, "percentageWarn", 90, "Percentage at which to warn server ops").getInt(90);
-        checkInterval = config.get(ForgeEssentials.CONFIG_CAT, "checkInterval", 5, "Interval in minutes to check memory use.").getInt(5);
-    }
-
-    /**
-     * dummy methods below for the sake of the interface
-     */
-
-    @Override
-    public void save(Configuration config){}
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
     }
 }
 

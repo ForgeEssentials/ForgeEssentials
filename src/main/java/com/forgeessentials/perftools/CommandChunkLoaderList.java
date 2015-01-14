@@ -1,10 +1,11 @@
-package com.forgeessentials.commands;
+package com.forgeessentials.perftools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -23,17 +24,18 @@ import com.google.common.collect.HashMultimap;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 
-public class CommandChunkLoaderList extends FEcmdModuleCommands {
+public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
+{
+    @Override
+    public String getPermissionNode()
+    {
+        return "fe.perftools.chunkloaderlist";
+    }
+
     @Override
     public String getCommandName()
     {
         return "chunkloaderlist";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "cll" };
     }
 
     @Override
