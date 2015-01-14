@@ -56,7 +56,7 @@ public class ModuleBackup {
             for (String username : manager.getAllUsernames())
             {
                 EntityPlayerMP player = manager.func_152612_a(username);
-                if (PermissionsManager.checkPermission(player, "ForgeEssentials.backup.msg"))
+                if (PermissionsManager.checkPermission(player, "fe.backup.msg"))
                 {
                     OutputHandler.chatNotification(player, "[ForgeEssentials] " + msg);
                 }

@@ -42,7 +42,7 @@ import com.forgeessentials.commands.CommandVanish;
 import com.forgeessentials.commands.CommandVirtualchest;
 import com.forgeessentials.commands.CommandWeather;
 import com.forgeessentials.commands.admin.CommandDoAs;
-import com.forgeessentials.commands.admin.CommandMemusage;
+import com.forgeessentials.commands.admin.CommandServerPerf;
 import com.forgeessentials.commands.admin.CommandServerSettings;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -90,7 +90,7 @@ public class CommandRegistrar {
         cmdList.add(new CommandDrop());
         cmdList.add(new CommandPulse());
         cmdList.add(new CommandFindblock());
-        cmdList.add(new CommandMemusage());
+        cmdList.add(new CommandServerPerf());
         cmdList.add(new CommandNoClip());
         cmdList.add(new CommandBubble());
     }
