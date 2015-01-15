@@ -57,15 +57,15 @@ public class IRCHelper extends ListenerAdapter implements Listener {
         }
         catch (NickAlreadyInUseException e)
         {
-            OutputHandler.felog.warning("Could not connect to IRC server = someone is already using the name you have assigned.");
+            OutputHandler.felog.warning("IRC connection failed, the assigned nick is already in use.");
         }
         catch (IOException e1)
         {
-            OutputHandler.felog.warning("Could not connect to IRC server.");
+            OutputHandler.felog.warning("IRC connection failed, could not reach the server.");
         }
         catch (IrcException e2)
         {
-            OutputHandler.felog.warning("Could not connect to IRC server.");
+            OutputHandler.felog.warning("IRC connection failed, the server actively refused it.");
         }
 
     }
@@ -122,15 +122,15 @@ public class IRCHelper extends ListenerAdapter implements Listener {
         }
         catch (NickAlreadyInUseException e)
         {
-            OutputHandler.chatError(sender, "Could not reconnect to the IRC server - the assigned nick is already in use. Try again in a few minutes.");
+            OutputHandler.chatError(sender, "Reconnection failed - the assigned nick is already in use. Try again in a few minutes.");
         }
         catch (IOException e)
         {
-            OutputHandler.chatError(sender, "Could not reconnect to the IRC server - something went wrong.");
+            OutputHandler.chatError(sender, "Reconnection failed - could not reach the IRC server.");
         }
         catch (IrcException e)
         {
-            OutputHandler.chatError(sender, "Could not reconnect to the IRC server - something went wrong, or you are already connected to the server.");
+            OutputHandler.chatError(sender, "Reconnection failed - server actively refused it, or you are already connected to the server.");
         }
     }
 
