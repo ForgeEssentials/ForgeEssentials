@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
@@ -447,7 +448,18 @@ public final class FunctionHelper {
 	 */
 	public static String replaceAllIgnoreCase(String text, String search, String replacement)
 	{
-		return text.replaceAll("(?i)" + Pattern.quote(search), replacement);
+		Pattern p = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(text);
+
+		StringBuffer sb = new StringBuffer();
+
+		while (m.find()) {
+		  m.appendReplacement(sb, Matcher.quoteReplacement(replacement));
+		}
+		
+		m.appendTail(sb);
+
+		return sb.toString();
 	}
 
 	/**
