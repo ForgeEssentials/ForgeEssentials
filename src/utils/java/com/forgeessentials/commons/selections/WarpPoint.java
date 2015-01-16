@@ -150,7 +150,6 @@ public class WarpPoint {
     }
 
     /**
-     * @param point
      * @return The distance to a given Block.
      */
     public double getDistanceTo(Entity e)
@@ -260,6 +259,12 @@ public class WarpPoint {
     public WorldPoint toWorldPoint()
     {
         return new WorldPoint(dim, (int) Math.floor(xd), (int) Math.floor(yd), (int) Math.floor(zd));
+    }
+
+    @Override
+    public boolean equals(Object point)
+    {
+        return this.toString().equals(point.toString());
     }
 
 }
