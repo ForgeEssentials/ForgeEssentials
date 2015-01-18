@@ -6,7 +6,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.economy.Offer;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlotEvent;
-import com.forgeessentials.util.questioner.QuestionCenter.IReplyHandler;
+import com.forgeessentials.util.questioner.Questioner.IReplyHandler;
 
 // Sells a plot. There must already be an existing offer made by another player.
 public class TransactionHandler implements IReplyHandler

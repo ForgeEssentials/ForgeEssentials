@@ -19,7 +19,7 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        QuestionCenter.processAnswer(sender, status);
+        Questioner.processAnswer(sender, status);
     }
 
     @Override

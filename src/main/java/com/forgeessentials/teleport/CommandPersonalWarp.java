@@ -44,12 +44,12 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	@Override
 	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 	{
-		HashMap<String, PWarp> map = TeleportDataManager.pwMap.get(sender.getPersistentID().toString());
+		HashMap<String, PWarp> map = TeleportDataManager.privateWarps.get(sender.getPersistentID().toString());
 
 		if (map == null)
 		{
 			map = new HashMap<String, PWarp>();
-			TeleportDataManager.pwMap.put(sender.getPersistentID().toString(), map);
+			TeleportDataManager.privateWarps.put(sender.getPersistentID().toString(), map);
 		}
 
 		if (args.length == 0)
@@ -168,7 +168,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 				OutputHandler.chatConfirmation(sender, String.format("The current limit is %s.", getLimit(sender)));
 			}
 		}
-		TeleportDataManager.pwMap.put(sender.getPersistentID().toString(), map);
+		TeleportDataManager.privateWarps.put(sender.getPersistentID().toString(), map);
 		TeleportDataManager.savePWarps(sender.getPersistentID().toString());
 	}
 
@@ -252,11 +252,11 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 //		}
 		if (args.length == 2)
 		{
-			if (TeleportDataManager.pwMap.get(sender.getCommandSenderName()) == null)
+			if (TeleportDataManager.privateWarps.get(sender.getCommandSenderName()) == null)
 			{
-				TeleportDataManager.pwMap.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
+				TeleportDataManager.privateWarps.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
 			}
-			return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.pwMap.get(sender.getCommandSenderName()).keySet());
+			return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.privateWarps.get(sender.getCommandSenderName()).keySet());
 		}
 		return null;
 	}

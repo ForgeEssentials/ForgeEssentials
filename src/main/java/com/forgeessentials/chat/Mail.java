@@ -1,13 +1,13 @@
 package com.forgeessentials.chat;
 
+import java.rmi.server.UID;
+import java.util.UUID;
+
 import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-
-import java.rmi.server.UID;
-import java.util.UUID;
 
 @SaveableObject
 public class Mail {
@@ -26,14 +26,9 @@ public class Mail {
 
     public Mail(String key, UUID sender, UUID receiver, String message)
     {
-        if (key.equals(""))
-        {
-            this.key = new UID().toString().replaceAll(":", "_");
-        }
-        else
-        {
-            this.key = key;
-        }
+        if (key == null || key.isEmpty())
+            key = new UID().toString().replaceAll(":", "_");
+        this.key = key;
         this.sender = sender.toString();
         this.receiver = receiver.toString();
         this.message = message;
@@ -41,14 +36,9 @@ public class Mail {
 
     public Mail(String key, String sender, String receiver, String message)
     {
-        if (key.equals(""))
-        {
-            this.key = new UID().toString().replaceAll(":", "_");
-        }
-        else
-        {
-            this.key = key;
-        }
+        if (key == null || key.isEmpty())
+            key = new UID().toString().replaceAll(":", "_");
+        this.key = key;
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;

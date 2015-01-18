@@ -58,11 +58,11 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 		/*
 		 * Need to make a new one?
 		 */
-		AutoPromote ap = AutoPromoteManager.instance().map.get(zone.toString());
+		AutoPromote ap = AutoPromoteManager.instance().promoteMap.get(zone.toString());
 		if (ap == null)
 		{
-			AutoPromoteManager.instance().map.put(zone.getId(), new AutoPromote(zone.getId(), false));
-			ap = AutoPromoteManager.instance().map.get(zone.toString());
+			AutoPromoteManager.instance().promoteMap.put(zone.getId(), new AutoPromote(zone.getId(), false));
+			ap = AutoPromoteManager.instance().promoteMap.get(zone.toString());
 		}
 
 		/*
@@ -283,11 +283,11 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				// {
 				// zone = APIRegistry.perms.getZone(args[0]);
 				// }
-				AutoPromote ap = AutoPromoteManager.instance().map.get(zone.toString());
+				AutoPromote ap = AutoPromoteManager.instance().promoteMap.get(zone.toString());
 				if (ap == null)
 				{
-					AutoPromoteManager.instance().map.put(zone.getId(), new AutoPromote(zone.getId(), false));
-					ap = AutoPromoteManager.instance().map.get(zone.toString());
+					AutoPromoteManager.instance().promoteMap.put(zone.getId(), new AutoPromote(zone.getId(), false));
+					ap = AutoPromoteManager.instance().promoteMap.get(zone.toString());
 				}
 				return getListOfStringsFromIterableMatchingLastWord(args, ap.getList());
 			}

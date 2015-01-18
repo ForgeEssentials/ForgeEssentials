@@ -2,20 +2,13 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
-import com.forgeessentials.core.preloader.FEPreLoader;
-import com.forgeessentials.util.questioner.QuestionCenter;
-import com.forgeessentials.commons.VersionUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.commons.VersionUtils;
+import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
@@ -26,7 +19,6 @@ import com.forgeessentials.core.commands.selections.CommandPos;
 import com.forgeessentials.core.commands.selections.CommandWand;
 import com.forgeessentials.core.commands.selections.SelectionEventHandler;
 import com.forgeessentials.core.environment.CommandSetChecker;
-import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.LoginMessage;
@@ -38,15 +30,7 @@ import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoader
 import com.forgeessentials.core.network.S0PacketHandshake;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.core.preloader.FEModContainer;
-import com.forgeessentials.data.ForgeConfigDataDriver;
-import com.forgeessentials.data.NBTDataDriver;
-import com.forgeessentials.data.SQLDataDriver;
-import com.forgeessentials.data.StorageManager;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.data.typeInfo.TypeInfoItemStack;
-import com.forgeessentials.data.typeInfo.TypeInfoNBTCompound;
-import com.forgeessentials.data.typeInfo.TypeInfoNBTTagList;
+import com.forgeessentials.core.preloader.FEPreLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
@@ -57,6 +41,7 @@ import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
+import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.Mod;
@@ -119,6 +104,9 @@ public class ForgeEssentials extends ConfigLoaderBase {
     
     @SuppressWarnings("unused")
     private TickTaskHandler tickTaskHandler;
+    
+    @SuppressWarnings("unused")
+    private Questioner questioner;
 
     public ForgeEssentials()
     {
@@ -139,15 +127,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
         configManager.registerLoader(configManager.getMainConfigName(), this);
         configManager.registerLoader(configManager.getMainConfigName(), new OutputHandler());
 
-        // Initialize data-API
-        StorageManager storageManager = new StorageManager(configManager.getConfig("DataStorage"));
-        DataStorageManager.manager = storageManager;
-        DataStorageManager.registerDriver("ForgeConfig", ForgeConfigDataDriver.class);
-        DataStorageManager.registerDriver("NBT", NBTDataDriver.class);
-        DataStorageManager.registerDriver("SQL_DB", SQLDataDriver.class);
-        registerDataTypes();
-        storageManager.setupManager();
-
         tasks = new TaskRegistry();
 
         // Load network packages
@@ -162,20 +141,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
         // Load modules
         moduleLauncher = new ModuleLauncher();
         moduleLauncher.preLoad(e);
-    }
-
-    public void registerDataTypes()
-    {
-        // Register data types
-        DataStorageManager.registerSaveableType(PlayerInfo.class);
-
-        DataStorageManager.registerSaveableType(Point.class);
-        DataStorageManager.registerSaveableType(WorldPoint.class);
-        DataStorageManager.registerSaveableType(WarpPoint.class);
-
-        DataStorageManager.registerSaveableType(TypeInfoItemStack.class, new ClassContainer(ItemStack.class));
-        DataStorageManager.registerSaveableType(TypeInfoNBTCompound.class, new ClassContainer(NBTTagCompound.class));
-        DataStorageManager.registerSaveableType(TypeInfoNBTTagList.class, new ClassContainer(NBTTagList.class));
     }
 
     @EventHandler
@@ -203,7 +168,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @EventHandler
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
-        new QuestionCenter();
+        questioner = new Questioner();
         DataManager.setInstance(new DataManager(new File(FunctionHelper.getWorldPath(), "FEData/json")));
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerPreInitEvent(e));
     }
@@ -211,9 +176,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @EventHandler
     public void serverStarting(FMLServerStartingEvent e)
     {
-        // load up DataAPI
-        ((StorageManager) DataStorageManager.manager).serverStart(e);
-
         BlockModListFile.makeModList();
         BlockModListFile.dumpFMLRegistries();
 

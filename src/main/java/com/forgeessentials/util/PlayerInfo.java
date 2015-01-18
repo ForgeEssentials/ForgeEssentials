@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -22,10 +20,10 @@ import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.v2.DataManager;
+import com.google.common.collect.ImmutableMap;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -156,7 +154,6 @@ public class PlayerInfo {
         this.uuid_string = uuid.toString();
     }
 
-    @SuppressWarnings("unchecked")
     @Reconstructor()
     public static PlayerInfo reconstruct(IReconstructData tag)
     {
@@ -187,7 +184,6 @@ public class PlayerInfo {
     {
         recalcTimePlayed();
         DataManager.getInstance().save(this, uuid_string);
-        DataStorageManager.getReccomendedDriver().saveObject(new ClassContainer(PlayerInfo.class), this);
     }
 
     @SubscribeEvent
@@ -209,8 +205,6 @@ public class PlayerInfo {
     private static PlayerInfo load(String key)
     {
         PlayerInfo info = DataManager.getInstance().load(PlayerInfo.class, key);
-        if (info == null)
-            info = (PlayerInfo) DataStorageManager.getReccomendedDriver().loadObject(new ClassContainer(PlayerInfo.class), key);
         return info;
     }
 

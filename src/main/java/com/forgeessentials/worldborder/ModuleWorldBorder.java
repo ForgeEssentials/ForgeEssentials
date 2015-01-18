@@ -14,8 +14,6 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -37,27 +35,18 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
  */
 @FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class)
 public class ModuleWorldBorder {
-	static final ClassContainer con = new ClassContainer(WorldBorder.class);
-	public static boolean logToConsole = true;
-	public static HashMap<String, WorldBorder> borderMap = new HashMap<String, WorldBorder>();
-	public static HashMap<Integer, IEffect[]> effectsList = new HashMap<Integer, IEffect[]>();
-	public static int overGenerate = 345;
+
+    public static boolean logToConsole = true;
+	
+    public static Map<String, WorldBorder> borderMap = new HashMap<String, WorldBorder>();
+	
+    public static Map<Integer, IEffect[]> effectsList = new HashMap<Integer, IEffect[]>();
+	
+    public static int overGenerate = 345;
 
 	public static void loadAll()
 	{
-        Map<String, WorldBorder> wbs = DataManager.getInstance().loadAll(WorldBorder.class);
-        if (!wbs.isEmpty())
-            for (WorldBorder wb : wbs.values())
-                borderMap.put(wb.zone, wb);
-        else
-        {
-    		for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(con))
-    		{
-    			WorldBorder wb = (WorldBorder) obj;
-    			borderMap.put(wb.zone, wb);
-    		}
-    		saveAll();
-        }
+	    borderMap = DataManager.getInstance().loadAll(WorldBorder.class);
 	}
 
 	public static void saveAll()
@@ -187,8 +176,6 @@ public class ModuleWorldBorder {
 		if (!borderMap.containsKey(zone.getName()))
 		{
 		    WorldBorder wb = DataManager.getInstance().load(WorldBorder.class, zone.getName());
-	        if (wb == null)
-	            wb = (WorldBorder) DataStorageManager.getReccomendedDriver().loadObject(con, zone.getName());
 			if (wb != null)
 			{
 				borderMap.put(zone.getName(), wb);

@@ -15,8 +15,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.permissions.autoPromote.AutoPromote;
 import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
 import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
@@ -71,8 +69,6 @@ public class ModulePermissions extends ConfigLoaderBase {
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        DataStorageManager.registerSaveableType(AutoPromote.class);
-
         // Register permission event-handler
         permissionEventHandler = new PermissionEventHandler();
     }

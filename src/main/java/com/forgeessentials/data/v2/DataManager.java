@@ -106,8 +106,7 @@ public class DataManager implements ExclusionStrategy {
         return file.delete();
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> Map<String, T> loadAll(Class<?> clazz)
+    public <T> Map<String, T> loadAll(Class<T> clazz)
     {
         File[] files = getTypePath(clazz).listFiles();
         Map<String, T> objects = new HashMap<>();
@@ -116,7 +115,7 @@ public class DataManager implements ExclusionStrategy {
                 if (!file.isDirectory() && file.getName().endsWith(".json"))
                 {
                     String key = file.getName().replace(".json", "");
-                    T o = (T) load(clazz, key);
+                    T o = load(clazz, key);
                     if (o != null)
                         objects.put(key, o);
                 }

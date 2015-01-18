@@ -1,19 +1,21 @@
 package com.forgeessentials.permissions.autoPromote;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.PlayerInfo;
-import net.minecraft.entity.player.EntityPlayerMP;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 
 @SaveableObject
 public class AutoPromote {
+    
 	@UniqueLoadingKey
 	@SaveableField
 	private int zone;

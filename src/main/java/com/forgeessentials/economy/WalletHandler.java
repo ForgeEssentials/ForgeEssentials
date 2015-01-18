@@ -1,23 +1,22 @@
 package com.forgeessentials.economy;
 
-import com.forgeessentials.api.IEconManager;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
-import com.forgeessentials.data.v2.DataManager;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import net.minecraft.entity.player.EntityPlayer;
+
+import com.forgeessentials.api.IEconManager;
+import com.forgeessentials.data.v2.DataManager;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 /**
  * Call these methods to modify a target's Wallet.
  */
 public class WalletHandler implements IEconManager {
 
-    private static ClassContainer con = new ClassContainer(Wallet.class);
     private static HashMap<UUID, Wallet> wallets = new HashMap<UUID, Wallet>();
 
     @Override
@@ -72,7 +71,6 @@ public class WalletHandler implements IEconManager {
     private void saveWallet(Wallet wallet)
     {
         DataManager.getInstance().save(wallet, wallet.getUsername());
-        DataStorageManager.getReccomendedDriver().saveObject(con, wallet);
     }
 
     @Override
@@ -93,8 +91,6 @@ public class WalletHandler implements IEconManager {
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
         Wallet wallet = DataManager.getInstance().load(Wallet.class, event.player.getUniqueID().toString());
-        if (wallet == null)
-            wallet = (Wallet) DataStorageManager.getReccomendedDriver().loadObject(con, event.player.getUniqueID().toString());
         if (wallet == null)
         {
             wallet = new Wallet(event.player, ModuleEconomy.startbudget);

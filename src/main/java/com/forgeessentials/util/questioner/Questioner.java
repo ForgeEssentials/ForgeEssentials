@@ -1,17 +1,22 @@
 package com.forgeessentials.util.questioner;
 
-import com.forgeessentials.util.events.ServerEventHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.command.ICommandSender;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class QuestionCenter extends ServerEventHandler{
+import net.minecraft.command.ICommandSender;
+
+import com.forgeessentials.util.events.ServerEventHandler;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+
+public class Questioner extends ServerEventHandler {
+    
     private static Map<String, QuestionData> queue = new HashMap<String, QuestionData>();
+    
     private static ArrayList<String> removeQueue = new ArrayList<String>();
+    
     private static ArrayList<String> playerQueue = new ArrayList<String>();
 
     public static int defaultTime = 120;
@@ -36,7 +41,7 @@ public class QuestionCenter extends ServerEventHandler{
         removeQueue.add(questionData.getTarget().getCommandSenderName());
     }
 
-    public QuestionCenter()
+    public Questioner()
     {
         super();
         new CommandQuestioner(true).register();

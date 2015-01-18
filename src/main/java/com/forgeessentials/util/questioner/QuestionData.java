@@ -1,7 +1,7 @@
 package com.forgeessentials.util.questioner;
 
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.questioner.QuestionCenter.IReplyHandler;
+import com.forgeessentials.util.questioner.Questioner.IReplyHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -31,14 +31,14 @@ public class QuestionData {
     {
         if ((System.currentTimeMillis() - startTime) / 1000L > waitTime)
         {
-            QuestionCenter.abort(this);
+            Questioner.abort(this);
         }
     }
 
     public void doAnswer(boolean affirmative)
     {
         processAnswer.replyReceived(affirmative);
-        QuestionCenter.questionDone(this);
+        Questioner.questionDone(this);
     }
 
     public ICommandSender getTarget()

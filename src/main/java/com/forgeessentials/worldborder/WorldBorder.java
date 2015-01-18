@@ -11,7 +11,6 @@ import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.v2.DataManager;
 
 @SaveableObject
@@ -151,7 +150,6 @@ public class WorldBorder {
     public void save()
     {
         DataManager.getInstance().save(this, zone);
-        DataStorageManager.getReccomendedDriver().saveObject(ModuleWorldBorder.con, this);
     }
 
     public String getShape()

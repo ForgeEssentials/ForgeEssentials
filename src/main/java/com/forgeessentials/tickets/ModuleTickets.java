@@ -11,8 +11,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -34,8 +32,6 @@ public class ModuleTickets {
     public static List<String> categories = new ArrayList<String>();
 
     public static int currentID;
-
-    private static ClassContainer ticketContainer = new ClassContainer(Ticket.class);
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
@@ -76,17 +72,9 @@ public class ModuleTickets {
     public static void loadAll()
     {
         Map<String, Ticket> loadedTickets = DataManager.getInstance().loadAll(Ticket.class);
-        if (!loadedTickets.isEmpty())
-            for (Ticket ticket : loadedTickets.values())
-                ticketList.add(ticket);
-        else
-        {
-            for (Object obj : DataStorageManager.getReccomendedDriver().loadAllObjects(ticketContainer))
-            {
-                ticketList.add((Ticket) obj);
-            }
-            saveAll();
-        }
+        ticketList.clear();
+        for (Ticket ticket : loadedTickets.values())
+            ticketList.add(ticket);
     }
 
     public static void saveAll()
@@ -94,7 +82,6 @@ public class ModuleTickets {
         for (Ticket ticket : ticketList)
         {
             DataManager.getInstance().save(ticket, Integer.toString(ticket.id));
-            DataStorageManager.getReccomendedDriver().saveObject(ticketContainer, ticket);
         }
     }
 

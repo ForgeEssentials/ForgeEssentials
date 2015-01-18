@@ -8,17 +8,17 @@ import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.v2.DataManager;
 
 @SaveableObject
 public class PlayerPassData {
-    public static final ClassContainer container = new ClassContainer(PlayerPassData.class);
+
     private static HashMap<UUID, PlayerPassData> datas = new HashMap<UUID, PlayerPassData>();
+    
     @UniqueLoadingKey
     @SaveableField
     public final String username;
+    
     @SaveableField
     public String password;
 
@@ -40,9 +40,6 @@ public class PlayerPassData {
         if (data == null)
         {
             data = DataManager.getInstance().load(PlayerPassData.class, username.toString());
-            if (data == null)
-                data = (PlayerPassData) DataStorageManager.getReccomendedDriver().loadObject(container, username.toString());
-            data = (PlayerPassData) DataStorageManager.getReccomendedDriver().loadObject(container, username.toString());
         }
         return data;
     }
@@ -89,7 +86,6 @@ public class PlayerPassData {
     {
         PlayerPassData data = datas.remove(username);
         DataManager.getInstance().delete(PlayerPassData.class, username.toString());
-        DataStorageManager.getReccomendedDriver().deleteObject(container, username.toString());
     }
 
     @Reconstructor
@@ -104,7 +100,6 @@ public class PlayerPassData {
     public void save()
     {
         DataManager.getInstance().save(this, username);
-        DataStorageManager.getReccomendedDriver().saveObject(container, this);
     }
 
 }

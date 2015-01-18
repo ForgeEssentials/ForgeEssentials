@@ -3,16 +3,13 @@ package com.forgeessentials.teleport.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.forgeessentials.data.api.ClassContainer;
-import com.forgeessentials.data.api.DataStorageManager;
 import com.forgeessentials.data.v2.DataManager;
 
 public class TeleportDataManager {
-    private static ClassContainer conWarp = new ClassContainer(Warp.class);
-    private static ClassContainer conPWarp = new ClassContainer(PWarp.class);
 
-    public static HashMap<String, Warp> warps = new HashMap<String, Warp>();
-    public static HashMap<String, HashMap<String, PWarp>> pwMap = new HashMap<String, HashMap<String, PWarp>>();
+    public static Map<String, Warp> warps = new HashMap<String, Warp>();
+
+    public static Map<String, HashMap<String, PWarp>> privateWarps = new HashMap<String, HashMap<String, PWarp>>();
 
     public static void load()
     {
@@ -31,51 +28,21 @@ public class TeleportDataManager {
      */
     public static void loadWarps()
     {
-        Map<String, Warp> loadedWarps = DataManager.getInstance().loadAll(Warp.class);
-        if (!loadedWarps.isEmpty())
-            for (Warp warp : loadedWarps.values())
-                warps.put(warp.getName(), warp);
-        else
-        {
-            Object[] objs = DataStorageManager.getReccomendedDriver().loadAllObjects(conWarp);
-            for (Object obj : objs)
-            {
-                Warp warp = (Warp) obj;
-                warps.put(warp.getName(), warp);
-            }
-            saveWarps();
-        }
+        warps = DataManager.getInstance().loadAll(Warp.class);
     }
 
     public static void loadPWarps()
     {
         Map<String, PWarp> loadedWarps = DataManager.getInstance().loadAll(PWarp.class);
-        if (!loadedWarps.isEmpty())
-            for (PWarp warp : loadedWarps.values())
-            {
-                HashMap<String, PWarp> map = pwMap.get(warp.getUsername());
-                if (map == null)
-                {
-                    map = new HashMap<String, PWarp>();
-                }
-                map.put(warp.getName(), warp);
-                pwMap.put(warp.getUsername(), map);
-            }
-        else
+        for (PWarp warp : loadedWarps.values())
         {
-            Object[] objs = DataStorageManager.getReccomendedDriver().loadAllObjects(conPWarp);
-            for (Object obj : objs)
+            HashMap<String, PWarp> map = privateWarps.get(warp.getUsername());
+            if (map == null)
             {
-                PWarp warp = (PWarp) obj;
-                HashMap<String, PWarp> map = pwMap.get(warp.getUsername());
-                if (map == null)
-                {
-                    map = new HashMap<String, PWarp>();
-                }
-                map.put(warp.getName(), warp);
-                pwMap.put(warp.getUsername(), map);
+                map = new HashMap<String, PWarp>();
             }
-            savePWarps();
+            map.put(warp.getName(), warp);
+            privateWarps.put(warp.getUsername(), map);
         }
     }
 
@@ -87,28 +54,25 @@ public class TeleportDataManager {
         for (Warp warp : warps.values())
         {
             DataManager.getInstance().save(warp, warp.getName());
-            DataStorageManager.getReccomendedDriver().saveObject(conWarp, warp);
         }
     }
 
     public static void savePWarps()
     {
-        for (HashMap<String, PWarp> pws : pwMap.values())
+        for (HashMap<String, PWarp> pws : privateWarps.values())
         {
             for (PWarp warp : pws.values())
             {
                 DataManager.getInstance().save(warp, warp.getName());
-                DataStorageManager.getReccomendedDriver().saveObject(conPWarp, warp);
             }
         }
     }
 
     public static void savePWarps(String username)
     {
-        for (PWarp warp : pwMap.get(username).values())
+        for (PWarp warp : privateWarps.get(username).values())
         {
             DataManager.getInstance().save(warp, warp.getName());
-            DataStorageManager.getReccomendedDriver().saveObject(conPWarp, warp);
         }
     }
 
@@ -121,7 +85,6 @@ public class TeleportDataManager {
         warps.put(warp.getName(), warp);
         System.out.println(warp.getName());
         DataManager.getInstance().save(warp, warp.getName());
-        DataStorageManager.getReccomendedDriver().saveObject(conWarp, warp);
     }
 
     /*
@@ -131,12 +94,10 @@ public class TeleportDataManager {
     {
         warps.remove(warp.getName());
         DataManager.getInstance().delete(Warp.class, warp.getName());
-        DataStorageManager.getReccomendedDriver().deleteObject(conWarp, warp.getName());
     }
 
     public static void removePWarp(PWarp pwarp)
     {
         DataManager.getInstance().delete(PWarp.class, pwarp.getName());
-        DataStorageManager.getReccomendedDriver().deleteObject(conPWarp, pwarp.getFilename());
     }
 }
