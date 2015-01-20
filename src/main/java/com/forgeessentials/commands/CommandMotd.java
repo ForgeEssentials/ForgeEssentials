@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.misc.LoginMessage;
+import com.forgeessentials.commands.util.LoginMessage;
 
 public class CommandMotd extends FEcmdModuleCommands {
 

@@ -2,6 +2,7 @@ package com.forgeessentials.auth;
 
 import java.util.UUID;
 
+import cpw.mods.fml.common.eventhandler.Event.Result;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -14,6 +15,7 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.util.OutputHandler;
@@ -187,6 +189,18 @@ public class AuthEventHandler {
         if (!ModuleAuth.hasSession.contains(username))
         {
             event.setCanceled(true);
+            OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onPlayerOpenContainer(PlayerOpenContainerEvent event)
+    {
+        UUID username = event.entityPlayer.getPersistentID();
+
+        if (!ModuleAuth.hasSession.contains(username))
+        {
+            event.setResult(Result.DENY);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
         }
     }

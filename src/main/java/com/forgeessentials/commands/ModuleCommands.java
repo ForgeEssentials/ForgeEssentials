@@ -8,6 +8,7 @@ import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.ConfigCmd;
 import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.commands.util.LoginMessage;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -33,6 +34,7 @@ public class ModuleCommands {
         MinecraftForge.EVENT_BUS.register(eventHandler);
         FMLCommonHandler.instance().bus().register(eventHandler);
         FunctionHelper.netHandler.registerMessage(S5PacketNoclip.class, S5PacketNoclip.class, 5, Side.CLIENT);
+        LoginMessage.loadFile();
     }
 
     @SubscribeEvent

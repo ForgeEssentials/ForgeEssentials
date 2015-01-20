@@ -21,7 +21,6 @@ import com.forgeessentials.core.commands.selections.SelectionEventHandler;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
-import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TickTaskHandler;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -136,7 +135,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
         // Misc
         miscEventHandler = new MiscEventHandler();
-        LoginMessage.loadFile();
 
         // Load modules
         moduleLauncher = new ModuleLauncher();

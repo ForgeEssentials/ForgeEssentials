@@ -2,7 +2,6 @@ package com.forgeessentials.commands.util;
 
 import com.forgeessentials.commands.CommandNoClip;
 import com.forgeessentials.commands.CommandVanish;
-import com.forgeessentials.core.misc.LoginMessage;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
 import com.google.common.base.Strings;

@@ -1,4 +1,4 @@
-package com.forgeessentials.core.misc;
+package com.forgeessentials.commands.util;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.compat.CompatReiMinimap;
@@ -110,16 +110,17 @@ public class LoginMessage {
             {
                 if (sender instanceof EntityPlayer)
                 {
-                    OutputHandler.sendMessage(sender, CompatReiMinimap.reimotd((EntityPlayer) sender) + Format(messageList.get(id), sender.getCommandSenderName()));
+                    OutputHandler.sendMessage(sender, CompatReiMinimap.reimotd((EntityPlayer) sender) + format(messageList.get(id),
+                            sender.getCommandSenderName()));
                 }
                 else
                 {
-                    OutputHandler.sendMessage(sender, Format(messageList.get(id), sender.getCommandSenderName()));
+                    OutputHandler.sendMessage(sender, format(messageList.get(id), sender.getCommandSenderName()));
                 }
             }
             else
             {
-                OutputHandler.sendMessage(sender, Format(messageList.get(id), sender.getCommandSenderName()));
+                OutputHandler.sendMessage(sender, format(messageList.get(id), sender.getCommandSenderName()));
             }
         }
     }
@@ -129,7 +130,7 @@ public class LoginMessage {
      *
      * @param line to parse the amount to add to the WalletHandler
      */
-    private static String Format(String line, String playerName)
+    private static String format(String line, String playerName)
     {
         Calendar cal = Calendar.getInstance();
 
