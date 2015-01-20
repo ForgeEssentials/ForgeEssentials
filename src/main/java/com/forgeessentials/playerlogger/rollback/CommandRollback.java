@@ -6,6 +6,7 @@ import com.forgeessentials.playerlogger.network.S3PacketRollback;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.tasks.TaskRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
@@ -42,16 +43,11 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
                 { "rb" });
     }
 
-    @Override
-    public void processCommand(ICommandSender sender, String[] args)
-    {
-        doRollback(sender, args);
-    }
-
     /*
      * We want: /rollback <username> [undo|clear]
      */
-    private void doRollback(ICommandSender sender, String[] args)
+    @Override
+    public void processCommand(ICommandSender sender, String[] args)
     {
         ArrayList<String> userlist = new ArrayList<String>();
         userlist.addAll(Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()));
@@ -115,7 +111,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             OutputHandler.chatError(sender, "You have to provide a username!");
             return;
         }
-        else if (!userlist.contains(args[1]))
+        else if (userlist.contains(UserIdent.getUuidByUsername(args[1])))
         {
             OutputHandler.chatError(sender, "That player is not in the database.");
             return;
