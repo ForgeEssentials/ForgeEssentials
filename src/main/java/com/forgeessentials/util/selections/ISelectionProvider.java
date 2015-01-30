@@ -1,4 +1,4 @@
-package com.forgeessentials.util;
+package com.forgeessentials.util.selections;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;

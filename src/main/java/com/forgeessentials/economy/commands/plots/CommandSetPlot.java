@@ -1,6 +1,7 @@
 package com.forgeessentials.economy.commands.plots;
 
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.SelectionHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,7 +25,6 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player);
         try
         {
             int price;
@@ -35,7 +35,7 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
             }
             else
             {
-                price = info.getSelection().getXLength() * info.getSelection().getZLength() * ModuleEconomy.psfPrice;
+                price = SelectionHandler.selectionProvider.getSelection(player).getXLength() * SelectionHandler.selectionProvider.getSelection(player).getZLength() * ModuleEconomy.psfPrice;
             }
 
             if (!PermissionsManager.checkPermission(player, getPermissionNode() + ".free"))
@@ -46,7 +46,7 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
                 }
             }
 
-            AreaZone zone = new AreaZone(APIRegistry.perms.getServerZone().getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0], info.getSelection());
+            AreaZone zone = new AreaZone(APIRegistry.perms.getServerZone().getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0], SelectionHandler.selectionProvider.getSelection(player));
             if (!APIRegistry.getFEEventBus().post(new PlotEvent.Define(zone, player)))
             {
                 zone.setGroupPermission(Zone.GROUP_DEFAULT, PlotManager.DATA_PERM, true);

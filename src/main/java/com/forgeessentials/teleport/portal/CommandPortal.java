@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.forgeessentials.util.selections.SelectionHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -103,7 +104,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
             target = new NamedWorldPoint(sender.dimension, x, y, z);
         }
 
-        Selection selection = PlayerInfo.getPlayerInfo(sender).getSelection();
+        Selection selection = SelectionHandler.selectionProvider.getSelection(sender);
         if (selection == null)
             throw new CommandException("Missing selection");
         

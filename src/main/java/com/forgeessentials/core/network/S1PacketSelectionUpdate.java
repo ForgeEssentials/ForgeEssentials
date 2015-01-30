@@ -3,10 +3,12 @@ package com.forgeessentials.core.network;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.SelectionHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 public class S1PacketSelectionUpdate implements IMessageHandler<S1PacketSelectionUpdate, IMessage>, IMessage {
 
@@ -16,13 +18,13 @@ public class S1PacketSelectionUpdate implements IMessageHandler<S1PacketSelectio
         return null;
     }
 
-    private PlayerInfo info;
+    private EntityPlayerMP player;
 
         public S1PacketSelectionUpdate(){}
 
-        public S1PacketSelectionUpdate(PlayerInfo info)
+        public S1PacketSelectionUpdate(EntityPlayerMP player)
         {
-            this.info = info;
+            this.player = player;
         }
 
         @Override
@@ -33,9 +35,9 @@ public class S1PacketSelectionUpdate implements IMessageHandler<S1PacketSelectio
         {
             try
             {
-                if (info != null && info.getPoint1() != null)
+                if (player != null && SelectionHandler.selectionProvider.getPoint1(player) != null)
                 {
-                    Point p1 = info.getPoint1();
+                    Point p1 = SelectionHandler.selectionProvider.getPoint1(player);
                     byteBuf.writeBoolean(true);
                     byteBuf.writeDouble(p1.getX());
                     byteBuf.writeDouble(p1.getY());
@@ -46,9 +48,9 @@ public class S1PacketSelectionUpdate implements IMessageHandler<S1PacketSelectio
                     byteBuf.writeBoolean(false);
                 }
 
-                if (info != null && info.getPoint2() != null)
+                if (player != null && SelectionHandler.selectionProvider.getPoint2(player) != null)
                 {
-                    Point p2 = info.getPoint2();
+                    Point p2 = SelectionHandler.selectionProvider.getPoint2(player);
                     byteBuf.writeBoolean(true);
                     byteBuf.writeDouble(p2.getX());
                     byteBuf.writeDouble(p2.getY());

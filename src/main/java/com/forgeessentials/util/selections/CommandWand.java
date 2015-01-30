@@ -1,4 +1,4 @@
-package com.forgeessentials.core.commands.selections;
+package com.forgeessentials.util.selections;
 
 //Depreciated
 

@@ -2,7 +2,8 @@ package com.forgeessentials.compat.worldedit;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.util.ISelectionProvider;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.selections.ISelectionProvider;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.Vector;
@@ -17,6 +18,11 @@ import com.sk89q.worldedit.regions.RegionSelector;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class WESelectionHandler implements ISelectionProvider {
+
+    public WESelectionHandler()
+    {
+        OutputHandler.felog.info("WorldEdit selection provider started.");
+    }
 
     @Override
     public Point getPoint1(EntityPlayerMP player)

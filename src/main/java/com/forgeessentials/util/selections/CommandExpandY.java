@@ -1,4 +1,4 @@
-package com.forgeessentials.core.commands.selections;
+package com.forgeessentials.util.selections;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,14 +24,13 @@ public class CommandExpandY extends ForgeEssentialsCommandBase {
 	@Override
 	public void processCommandPlayer(EntityPlayerMP player, String[] args)
 	{
-		PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
-		if (info.getPoint1() == null || info.getPoint2() == null)
+		if (SelectionHandler.selectionProvider.getPoint1(player) == null || SelectionHandler.selectionProvider.getPoint2(player) == null)
 		{
 			OutputHandler.chatError(player, "Invalid selection.");
 			return;
 		}
-		info.getPoint1().setY(0);
-		info.getPoint2().setY(255);
+		SelectionHandler.selectionProvider.getPoint1(player).setY(0);
+		SelectionHandler.selectionProvider.getPoint2(player).setY(255);
 		OutputHandler.chatConfirmation(player, "Selection expanded to world height.");
 	}
 

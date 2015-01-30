@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
+import com.forgeessentials.util.selections.ISelectionProvider;
+import cpw.mods.fml.common.Mod;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -32,58 +34,7 @@ public class PlayerInfo {
 
     private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
 
-    // -------------------------------------------------------------------------------------------
-
-    public static ISelectionProvider selectionProvider = new FESelectionProvider();
-
     public static boolean persistSelections;
-
-    public static class FESelectionProvider implements ISelectionProvider {
-
-        @Override
-        public Point getPoint1(EntityPlayerMP player)
-        {
-            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-            return pi.sel1;
-        }
-
-        @Override
-        public Point getPoint2(EntityPlayerMP player)
-        {
-            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-            return pi.sel2;
-        }
-
-        @Override
-        public Selection getSelection(EntityPlayerMP player)
-        {
-            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-            if (pi.sel1 == null || pi.sel2 == null)
-            {
-                return null;
-            }
-            return new Selection(pi.sel1, pi.sel2);
-        }
-
-        @Override
-        public void setPoint1(EntityPlayerMP player, Point sel1)
-        {
-            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-            pi.sel1 = sel1;
-            pi.sendSelectionUpdate();
-        }
-
-        @Override
-        public void setPoint2(EntityPlayerMP player, Point sel2)
-        {
-            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-            pi.sel2 = sel2;
-            pi.sendSelectionUpdate();
-        }
-
-    }
-
-    // -------------------------------------------------------------------------------------------
 
     @SaveableField()
     private UserIdent ident;
@@ -338,19 +289,24 @@ public class PlayerInfo {
     // ------------ Selection stuff -----------------
     // ----------------------------------------------
 
-    public Point getPoint1()
+    public Point getSel1()
     {
-        return selectionProvider.getPoint1(ident.getPlayer());
+        return sel1;
     }
 
-    public Point getPoint2()
+    public Point getSel2()
     {
-        return selectionProvider.getPoint2(ident.getPlayer());
+        return sel2;
     }
 
-    public Selection getSelection()
+    public void setSel1(Point point)
     {
-        return selectionProvider.getSelection(ident.getPlayer());
+        sel1 = point;
+    }
+
+    public void setSel2(Point point)
+    {
+        sel2 = point;
     }
 
     public void clearSelection()
@@ -359,13 +315,13 @@ public class PlayerInfo {
         {
             sel1 = null;
             sel2 = null;
-            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(this), ident.getPlayer());
+            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(ident.getPlayer()), ident.getPlayer());
         }
     }
 
     public void sendSelectionUpdate()
     {
-        FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(this), ident.getPlayer());
+        FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(ident.getPlayer()), ident.getPlayer());
     }
 
     // ----------------------------------------------

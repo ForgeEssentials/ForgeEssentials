@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import com.forgeessentials.util.selections.SelectionHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -252,8 +253,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             throw new CommandException("Command not usable from console. Try /zone set <name> <coords> instead");
         }
         
-        PlayerInfo info = PlayerInfo.getPlayerInfo((EntityPlayerMP) sender);
-        area = info.getSelection();
+        area = SelectionHandler.selectionProvider.getSelection((EntityPlayerMP) sender);
         if (area == null)
             throw new CommandException("No selection available. Please select a region first.");
 

@@ -1,4 +1,4 @@
-package com.forgeessentials.core.commands.selections;
+package com.forgeessentials.util.selections;
 
 //Depreciated
 
@@ -46,11 +46,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
                 if (type == 1)
                 {
-                    PlayerInfo.selectionProvider.setPoint1(player,new Point(x, y, z));
+                    SelectionHandler.selectionProvider.setPoint1(player,new Point(x, y, z));
                 }
                 else
                 {
-                    PlayerInfo.selectionProvider.setPoint2(player,new Point(x, y, z));
+                    SelectionHandler.selectionProvider.setPoint2(player,new Point(x, y, z));
                 }
 
                 OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -83,11 +83,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
             if (type == 1)
             {
-                PlayerInfo.selectionProvider.setPoint1(player,new Point(x, y, z));
+                SelectionHandler.selectionProvider.setPoint1(player,new Point(x, y, z));
             }
             else
             {
-                PlayerInfo.selectionProvider.setPoint2(player,new Point(x, y, z));
+                SelectionHandler.selectionProvider.setPoint2(player,new Point(x, y, z));
             }
 
             OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -115,11 +115,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
         if (type == 1)
         {
-            PlayerInfo.selectionProvider.setPoint1(player, point);
+            SelectionHandler.selectionProvider.setPoint1(player, point);
         }
         else
         {
-            PlayerInfo.selectionProvider.setPoint2(player, point);
+            SelectionHandler.selectionProvider.setPoint2(player, point);
         }
 
         OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);

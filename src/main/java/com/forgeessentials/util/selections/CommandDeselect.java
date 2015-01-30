@@ -1,4 +1,4 @@
-package com.forgeessentials.core.commands.selections;
+package com.forgeessentials.util.selections;
 
 import java.util.Arrays;
 import java.util.List;
