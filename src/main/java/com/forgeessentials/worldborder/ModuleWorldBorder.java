@@ -160,7 +160,10 @@ public class ModuleWorldBorder {
 	{
 		Zone zone = APIRegistry.perms.getServerZone().getWorldZone(e.entityPlayer.worldObj);
 		WorldBorder border = borderMap.get(zone.getName());
-		border.check((EntityPlayerMP) e.entityPlayer);
+        if (border != null)
+        {
+            border.check((EntityPlayerMP) e.entityPlayer);
+        }
 		borderMap.get(APIRegistry.perms.getServerZone().getName()).check((EntityPlayerMP) e.entityPlayer);
 	}
 
