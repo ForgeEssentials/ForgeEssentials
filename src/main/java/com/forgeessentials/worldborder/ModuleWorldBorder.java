@@ -3,6 +3,7 @@ package com.forgeessentials.worldborder;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,6 +44,12 @@ public class ModuleWorldBorder {
     public static Map<Integer, IEffect[]> effectsList = new HashMap<Integer, IEffect[]>();
 	
     public static int overGenerate = 345;
+
+    @Preconditions
+    public boolean tempForceDisable()
+    {
+        return false;
+    }
 
 	public static void loadAll()
 	{
