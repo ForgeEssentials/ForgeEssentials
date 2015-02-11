@@ -197,6 +197,7 @@ public class TickTaskFill implements ITickTask {
 
             Chunk chunk = provider.currentChunkProvider.loadChunk(X, Z);
             chunk.populateChunk(provider, provider, X, Z);
+            provider.currentChunkProvider.populate(provider, X, Z);
             saveChunk(provider, chunk);
 
             --todo;
