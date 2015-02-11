@@ -38,7 +38,7 @@ public class ModuleWorldBorder {
 
     public static boolean logToConsole = true;
 	
-    public static Map<String, WorldBorder> borderMap = new HashMap<String, WorldBorder>();
+    private static Map<String, WorldBorder> borderMap = new HashMap<String, WorldBorder>();
 	
     public static Map<Integer, IEffect[]> effectsList = new HashMap<Integer, IEffect[]>();
 	
@@ -137,12 +137,6 @@ public class ModuleWorldBorder {
 	public void serverStarted(FEModuleServerPostInitEvent e)
 	{
 		loadAll();
-
-		Zone zone = APIRegistry.perms.getServerZone();
-		if (!borderMap.containsKey(zone.getName()))
-		{
-			borderMap.put(zone.getName(), new WorldBorder(zone));
-		}
 	}
 
 	@SubscribeEvent
@@ -154,12 +148,23 @@ public class ModuleWorldBorder {
 	/*
 	 * Static Helper Methods
 	 */
-	
+
     public static void checkBorder(EntityPlayerMP player, String name)
     {
         WorldBorder border = borderMap.get(name);
         if (border != null)
             border.check(player);
+    }
+    
+    public static WorldBorder getBorder(String name, boolean createIfNull)
+    {
+        WorldBorder border = borderMap.get(name);
+        if (border == null && createIfNull)
+        {
+            border = new WorldBorder(name);
+            borderMap.put(name, border);
+        }
+        return border;
     }
 
 	@SubscribeEvent
@@ -167,19 +172,6 @@ public class ModuleWorldBorder {
 	{
         checkBorder((EntityPlayerMP) e.entityPlayer, APIRegistry.perms.getServerZone().getWorldZone(e.entityPlayer.worldObj).getName());
         checkBorder((EntityPlayerMP) e.entityPlayer, APIRegistry.perms.getServerZone().getName());
-	}
-
-	@SubscribeEvent
-	public void worldLoad(WorldEvent.Load e)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-			return;
-		Zone zone = APIRegistry.perms.getServerZone().getWorldZone(e.world);
-		if (!borderMap.containsKey(zone.getName()))
-		{
-		    WorldBorder wb = DataManager.getInstance().load(WorldBorder.class, zone.getName());
-		    borderMap.put(zone.getName(), wb != null ? wb : new WorldBorder(zone));
-		}
 	}
 
 	@SubscribeEvent

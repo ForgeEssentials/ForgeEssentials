@@ -61,20 +61,13 @@ public class WorldBorder {
         this.enabled = enabled;
     }
 
-    public WorldBorder(Zone zone)
+    public WorldBorder(String name)
     {
-        if (zone instanceof ServerZone || zone instanceof WorldZone)
-        {
-            this.zone = zone.getName();
-            center = new Point(0, 0, 0);
-            rad = 0;
-            shapeByte = 0;
-            enabled = false;
-        }
-        else
-        {
-            throw new RuntimeException(zone.getName() + " is not the global zone or a worldzone");
-        }
+        zone = name;
+        center = new Point(0, 0, 0);
+        rad = 0;
+        shapeByte = 0;
+        enabled = false;
     }
 
     @SuppressWarnings("boxing")

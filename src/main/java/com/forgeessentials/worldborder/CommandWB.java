@@ -92,7 +92,7 @@ public class CommandWB extends ForgeEssentialsCommandBase {
 		/*
 		 * Now we have the zone...
 		 */
-		WorldBorder border = ModuleWorldBorder.borderMap.get(zone.getName());
+		WorldBorder border = ModuleWorldBorder.getBorder(zone.getName(), true);
 
 		/*
 		 * Want info?

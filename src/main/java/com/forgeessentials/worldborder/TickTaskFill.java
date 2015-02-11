@@ -107,9 +107,8 @@ public class TickTaskFill implements ITickTask {
 
         source = sender;
         world = worldToFill;
-        border = ModuleWorldBorder.borderMap.get(APIRegistry.perms.getServerZone().getWorldZone(world).getName());
-
-        if (border.shapeByte == 0 || border.rad == 0)
+        border = ModuleWorldBorder.getBorder(APIRegistry.perms.getServerZone().getWorldZone(world).getName(), false);
+        if (border == null || border.shapeByte == 0 || border.rad == 0)
         {
             OutputHandler.chatError(sender, "You need to set the worldborder first!");
             return;
@@ -196,8 +195,8 @@ public class TickTaskFill implements ITickTask {
             ChunkProviderServer provider = (ChunkProviderServer) world.getChunkProvider();
 
             Chunk chunk = provider.currentChunkProvider.loadChunk(X, Z);
+            // TODO: Populating chunks that way only works, if the surrounding chunks also exist
             chunk.populateChunk(provider, provider, X, Z);
-            provider.currentChunkProvider.populate(provider, X, Z);
             saveChunk(provider, chunk);
 
             --todo;
