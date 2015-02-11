@@ -62,7 +62,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return TeleportModule.PERM_TPAHERE;
+        return TeleportModule.PERM_TPHERE;
     }
 
     @Override

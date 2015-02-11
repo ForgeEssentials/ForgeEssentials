@@ -61,6 +61,8 @@ public class TeleportModule {
     public static final String PERM_TPAHERE = "fe.teleport.tpahere";
     public static final String PERM_TPAHERE_SENDREQUEST = "fe.teleport.tpahere.sendrequest";
 
+    public static final String PERM_TPHERE = "fe.teleport.tphere";
+
     public static final String PERM_WARP = "fe.teleport.warp";
     public static final String PERM_WARP_ADMIN = "fe.teleport.warp.admin";
     
