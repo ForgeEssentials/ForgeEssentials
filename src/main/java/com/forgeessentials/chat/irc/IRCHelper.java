@@ -65,7 +65,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
         }
         catch (IrcException e2)
         {
-            OutputHandler.felog.warning("IRC connection failed, the server actively refused it.");
+            OutputHandler.felog.warning("IRC connection failed, the server actively refused it. Error is: " + e2.getMessage());
         }
 
     }
@@ -130,7 +130,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
         }
         catch (IrcException e)
         {
-            OutputHandler.chatError(sender, "Reconnection failed - server actively refused it, or you are already connected to the server.");
+            OutputHandler.chatError(sender, "Reconnection failed - server actively refused it, or you are already connected to the server. Error is: " + e.getMessage());
         }
     }
 
