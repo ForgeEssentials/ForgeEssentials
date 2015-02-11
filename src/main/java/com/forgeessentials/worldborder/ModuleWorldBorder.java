@@ -3,7 +3,6 @@ package com.forgeessentials.worldborder;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,12 +43,6 @@ public class ModuleWorldBorder {
     public static Map<Integer, IEffect[]> effectsList = new HashMap<Integer, IEffect[]>();
 	
     public static int overGenerate = 345;
-
-    @Preconditions
-    public boolean tempForceDisable()
-    {
-        return false;
-    }
 
 	public static void loadAll()
 	{
@@ -161,51 +154,40 @@ public class ModuleWorldBorder {
 	/*
 	 * Static Helper Methods
 	 */
+	
+    public static void checkBorder(EntityPlayerMP player, String name)
+    {
+        WorldBorder border = borderMap.get(name);
+        if (border != null)
+            border.check(player);
+    }
 
 	@SubscribeEvent
 	public void playerMove(PlayerMoveEvent e)
 	{
-		Zone zone = APIRegistry.perms.getServerZone().getWorldZone(e.entityPlayer.worldObj);
-		WorldBorder border = borderMap.get(zone.getName());
-        if (border != null)
-        {
-            border.check((EntityPlayerMP) e.entityPlayer);
-        }
-		borderMap.get(APIRegistry.perms.getServerZone().getName()).check((EntityPlayerMP) e.entityPlayer);
+        checkBorder((EntityPlayerMP) e.entityPlayer, APIRegistry.perms.getServerZone().getWorldZone(e.entityPlayer.worldObj).getName());
+        checkBorder((EntityPlayerMP) e.entityPlayer, APIRegistry.perms.getServerZone().getName());
 	}
 
 	@SubscribeEvent
 	public void worldLoad(WorldEvent.Load e)
 	{
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
 			return;
-		}
-
 		Zone zone = APIRegistry.perms.getServerZone().getWorldZone(e.world);
 		if (!borderMap.containsKey(zone.getName()))
 		{
 		    WorldBorder wb = DataManager.getInstance().load(WorldBorder.class, zone.getName());
-			if (wb != null)
-			{
-				borderMap.put(zone.getName(), wb);
-			}
-			else
-			{
-				borderMap.put(zone.getName(), new WorldBorder(zone));
-			}
+		    borderMap.put(zone.getName(), wb != null ? wb : new WorldBorder(zone));
 		}
 	}
 
 	@SubscribeEvent
 	public void worldUnLoad(WorldEvent.Unload e)
 	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			return;
-		}
-
-		Zone zone = APIRegistry.perms.getServerZone().getWorldZone(e.world);
-		borderMap.remove(zone.getName());
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+        Zone zone = APIRegistry.perms.getServerZone().getWorldZone(e.world);
+        borderMap.remove(zone.getName());
 	}
 }
