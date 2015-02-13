@@ -120,7 +120,7 @@ public class ModulePermissions extends ConfigLoaderBase {
         autoPromoteManager = new AutoPromoteManager();
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
         PermissionsListWriter.write(permissionHelper.getRegisteredPermissions(), new File(ForgeEssentials.getFEDirectory(), "PermissionsList.txt"));
