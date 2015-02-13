@@ -36,13 +36,17 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
 public class ModulePermissions extends ConfigLoaderBase {
 
     private static final String CONFIG_CAT = "Permissions";
+
+    private static final String PERMISSIONS_LIST_FILE = "PermissionsList.txt";
 
     public static AutoPromoteManager autoPromoteManager;
 
@@ -55,6 +59,8 @@ public class ModulePermissions extends ConfigLoaderBase {
     private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath() + "/permissions",
             false);
 
+    private boolean permissionsListGenerated = false;
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preLoad(FEModulePreInitEvent e)
     {
@@ -64,6 +70,7 @@ public class ModulePermissions extends ConfigLoaderBase {
         PermissionsManager.setPermProvider(permissionHelper);
         
         MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     @SubscribeEvent
@@ -123,8 +130,16 @@ public class ModulePermissions extends ConfigLoaderBase {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
-        PermissionsListWriter.write(permissionHelper.getRegisteredPermissions(), new File(ForgeEssentials.getFEDirectory(), "PermissionsList.txt"));
         permissionHelper.save();
+    }
+
+    @SubscribeEvent
+    public void serverTick(ServerTickEvent e)
+    {
+        if (!permissionsListGenerated) {
+            permissionsListGenerated = true;
+            PermissionsListWriter.write(permissionHelper.getRegisteredPermissions(), new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE));
+        }
     }
 
     @SubscribeEvent
