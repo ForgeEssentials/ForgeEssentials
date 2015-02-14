@@ -1,5 +1,6 @@
 package com.forgeessentials.permissions.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,6 +16,8 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.permissions.ModulePermissions;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.world.WorldEvent;
@@ -118,6 +121,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
             APIRegistry.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
         }
+
+        if (!ModulePermissions.permissionsListGenerated) {
+            ModulePermissions.permissionsListGenerated = true;
+            PermissionsListWriter.write(ModulePermissions.permissionHelper.getRegisteredPermissions(), new File(ForgeEssentials.getFEDirectory(), ModulePermissions.PERMISSIONS_LIST_FILE));
+        }
+
         dirty = false;
     }
 
@@ -317,8 +326,7 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
 
     /**
      * Main function for permission retrieval. This method should not be used directly. Use the helper methods instead.
-     * 
-     * @param playerId
+     *
      * @param point
      * @param groups
      * @param permissionNode
@@ -360,12 +368,14 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     public void registerPermissionProperty(String permissionNode, String defaultValue)
     {
         rootZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, permissionNode, defaultValue);
+        ModulePermissions.permissionsListGenerated = false;
     }
 
     @Override
     public void registerPermissionPropertyOp(String permissionNode, String defaultValue)
     {
         rootZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, permissionNode, defaultValue);
+        ModulePermissions.permissionsListGenerated = false;
     }
 
     @Override
@@ -380,12 +390,14 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
             rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, false);
             rootZone.setGroupPermission(Zone.GROUP_OPERATORS, permissionNode, true);
         }
+        ModulePermissions.permissionsListGenerated = false;
     }
 
     @Override
     public void registerPermissionDescription(String permissionNode, String description)
     {
         registerPermissionProperty(permissionNode + FEPermissions.DESCRIPTION_PROPERTY, description);
+        ModulePermissions.permissionsListGenerated = false;
     }
 
     @Override

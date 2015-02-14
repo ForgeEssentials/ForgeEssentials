@@ -1,5 +1,6 @@
 package com.forgeessentials.compat.worldedit;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -7,7 +8,10 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.event.platform.PlatformInitializeEvent;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
+import com.sk89q.worldedit.util.eventbus.Subscribe;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -35,6 +39,7 @@ public class WEIntegrationHandler
     {
         cuiComms = new CUIComms();
         ForgeWorldEdit.inst.setPermissionsProvider(new PermissionsHandler());
+        WorldEdit.getInstance().getEventBus().register(this);
     }
 
     @SubscribeEvent
@@ -42,5 +47,12 @@ public class WEIntegrationHandler
     {
         SelectionHandler.selectionProvider = new WESelectionHandler();
     }
+
+    @Subscribe
+    public void onWEInitComplete(PlatformInitializeEvent e)
+    {
+        APIRegistry.perms.setDirty();
+    }
+
 
 }
