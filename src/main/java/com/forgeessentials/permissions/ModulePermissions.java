@@ -20,7 +20,6 @@ import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandZone;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
-import com.forgeessentials.permissions.core.PermissionEventHandler;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.permissions.persistence.JsonProvider;
@@ -29,7 +28,6 @@ import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -48,8 +46,6 @@ public class ModulePermissions extends ConfigLoaderBase {
 
     public static ZonedPermissionHelper permissionHelper;
 
-    public static PermissionEventHandler permissionEventHandler;
-
     private String persistenceBackend = "flatfile";
 
     private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath() + "/permissions",
@@ -65,13 +61,6 @@ public class ModulePermissions extends ConfigLoaderBase {
         
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
-    }
-
-    @SubscribeEvent
-    public void load(FEModuleInitEvent e)
-    {
-        // Register permission event-handler
-        permissionEventHandler = new PermissionEventHandler();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

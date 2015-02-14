@@ -18,7 +18,12 @@ import java.util.TreeSet;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fe.server.CommandHandlerForge;
 import net.minecraftforge.permissions.IContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -35,13 +40,18 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.events.PlayerChangedZone;
+import com.forgeessentials.util.events.PlayerMoveEvent;
+import com.forgeessentials.util.events.ServerEventHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -51,7 +61,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
  * 
  * @author Olee
  */
-public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebugger {
+public class ZonedPermissionHelper extends ServerEventHandler implements IPermissionsHelper, PermissionDebugger {
 
     public static final String PERMISSIONS_LIST_FILE = "PermissionsList.txt";
 
@@ -73,9 +83,6 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
 
     public ZonedPermissionHelper()
     {
-        FMLCommonHandler.instance().bus().register(this);
-        APIRegistry.getFEEventBus().register(this);
-
         rootZone = new RootZone(this);
         rootZone.setPermissionDebugger(this);
 
@@ -309,6 +316,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
             getServerZone().setPlayerPermission(ident, FEPermissions.PLAYER_KNOWN, true);
         else
             getServerZone().clearPlayerPermission(ident, FEPermissions.PLAYER_KNOWN);
+
+        // Fire first zone-changed event
+        WarpPoint point = new WarpPoint(e.player);
+        Zone zone = APIRegistry.perms.getServerZone().getZonesAt(point.toWorldPoint()).get(0);
+        PlayerChangedZone event = new PlayerChangedZone(e.player, zone, zone, point, point);
+        MinecraftForge.EVENT_BUS.post(event);
     }
 
     @SubscribeEvent
@@ -321,6 +334,55 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     public void worldLoad(WorldEvent.Load e)
     {
         getServerZone().getWorldZone(e.world.provider.dimensionId);
+    }
+    
+    @SubscribeEvent
+    public void playerMoveEvent(PlayerMoveEvent e)
+    {
+        // Abort processing, if the event has already been cancelled
+        if (!e.isCanceled())
+        {
+            Zone before = APIRegistry.perms.getServerZone().getZonesAt(e.before.toWorldPoint()).get(0);
+            Zone after = APIRegistry.perms.getServerZone().getZonesAt(e.after.toWorldPoint()).get(0);
+            if (!before.equals(after))
+            {
+                PlayerChangedZone event = new PlayerChangedZone(e.entityPlayer, before, after, e.before, e.after);
+                e.setCanceled(MinecraftForge.EVENT_BUS.post(event));
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerChangedZoneEvent(PlayerChangedZone event)
+    {
+        UserIdent ident = new UserIdent(event.entityPlayer);
+        String exitMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
+        if (exitMsg != null)
+        {
+            OutputHandler.sendMessage(event.entityPlayer, FunctionHelper.formatColors(exitMsg));
+        }
+        String entryMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, FEPermissions.ZONE_ENTRY_MESSAGE);
+        if (entryMsg != null)
+        {
+            OutputHandler.sendMessage(event.entityPlayer, FunctionHelper.formatColors(entryMsg));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void checkCommandPerm(CommandEvent e)
+    {
+        if (!(e.command instanceof ForgeEssentialsCommandBase) && e.sender instanceof EntityPlayer && !CommandHandlerForge.canUse(e.command, e.sender))
+        {
+            e.setCanceled(true);
+            permissionDeniedMessage(e.sender);
+        }
+    }
+
+    public static void permissionDeniedMessage(ICommandSender sender)
+    {
+        ChatComponentTranslation msg = new ChatComponentTranslation("commands.generic.permission", new Object[0]);
+        msg.getChatStyle().setColor(EnumChatFormatting.RED);
+        sender.addChatMessage(msg);
     }
 
     // ------------------------------------------------------------
@@ -576,7 +638,8 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     public Collection<Zone> getGlobalZones(Zone firstZone)
     {
         List<Zone> zones = new ArrayList<Zone>();
-        zones.add(firstZone);
+        if (firstZone != null)
+            zones.add(firstZone);
         zones.add(rootZone.getServerZone());
         zones.add(rootZone);
         return zones;
