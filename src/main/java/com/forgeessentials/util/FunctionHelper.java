@@ -31,6 +31,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fe.server.CommandHandlerForge;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -537,7 +538,7 @@ public final class FunctionHelper {
 	 */
 	public static void teleportPlayer(EntityPlayerMP player, WarpPoint p)
 	{
-		if (player.dimension != p.getDimension())
+		if (player.dimension != p.getDimension() && DimensionManager.isDimensionRegistered(p.getDimension()))
 		{
 			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, p.getDimension());
 		}
