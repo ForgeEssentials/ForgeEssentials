@@ -1,63 +1,79 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.ITickTask;
-import com.forgeessentials.util.tasks.TaskRegistry;
-import cpw.mods.fml.common.registry.GameData;
+import java.util.ArrayList;
+
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.tasks.ITickTask;
+import com.forgeessentials.util.tasks.TaskRegistry;
+
+import cpw.mods.fml.common.registry.GameData;
 
 public class TickTaskBlockFinder implements ITickTask {
-    World world;
-    EntityPlayer player;
-    String id;
-    int meta;
-    int targetRange;
-    int targetAmount;
-    int centerX, centerZ;
-    ItemStack stack;
-    int speed;
 
-    int count;
+    private World world;
+    private EntityPlayer player;
+    private Block block;
+    private String blockName;
+    
+    private int meta;
+    private int targetRange;
+    private int targetAmount;
+    private int centerX, centerZ;
+    private ItemStack stack;
+    private int speed;
 
     // (di, dj) is a vector - direction in which we move right now
-    int di = 1;
-    int dj = 0;
+    private int di = 1;
+    private int dj = 0;
     // length of current segment
-    int segment_length = 1;
+    private int segment_length = 1;
 
     // current position (i, j) and how much of current segment we passed
-    int i = 0;
-    int j = 0;
-    int segment_passed = 0;
+    private int i = 0;
+    private int j = 0;
+    private int segment_passed = 0;
 
     ArrayList<Point> results = new ArrayList<Point>();
 
     public TickTaskBlockFinder(EntityPlayer player, String id, int meta, int range, int amount, int speed)
     {
         this.player = player;
-        this.world = player.worldObj;
-        this.id = id;
         this.meta = meta;
         this.targetRange = range;
         this.targetAmount = amount;
         this.speed = speed;
-        this.stack = new ItemStack(GameData.getBlockRegistry().getObject(id), 1, meta);
         this.centerX = (int) player.posX;
         this.centerZ = (int) player.posZ;
-        if (stack == null)
-        {
-            msg("Error. " + id + ":" + meta + " unkown.");
+        world = player.worldObj;
+
+        block = GameData.getBlockRegistry().getObject(id);
+        if (block == null) {
+            try
+            {
+                int intId = Integer.parseInt(id);
+                block = GameData.getBlockRegistry().getRaw(intId);
+            }
+            catch (NumberFormatException e)
+            {
+                /* ignore */
+            }
         }
-        else
-        {
-            msg("Start the hunt for " + stack.getDisplayName() + " " + speed);
-            TaskRegistry.registerTask(this);
+        if (block == null) {
+            msg("Error: " + id + ":" + meta + " unkown.");
+            return;
         }
+        
+        stack = new ItemStack(block, 1, meta);
+        blockName = stack.getItem() != null ? stack.getDisplayName() : GameData.getBlockRegistry().getNameForObject(block);
+
+        msg("Start the hunt for " + blockName);
+        TaskRegistry.registerTask(this);
     }
 
     @Override
@@ -67,17 +83,16 @@ public class TickTaskBlockFinder implements ITickTask {
         while (!isComplete() && speedcounter < speed)
         {
             speedcounter++;
-            count++;
 
             int y = world.getActualHeight();
             while (!isComplete() && y >= 0)
             {
-                if (world.getBlock(centerX + i, y, centerZ + j).getUnlocalizedName() == id && (meta == -1
-                        || world.getBlockMetadata(centerX + i, y, centerZ + j) == meta))
+                Block b = world.getBlock(centerX + i, y, centerZ + j);
+                if (b.equals(block) && (meta == -1 || world.getBlockMetadata(centerX + i, y, centerZ + j) == meta))
                 {
                     Point p = new Point(centerX + i, y, centerZ + j);
                     results.add(p);
-                    msg("Found " + stack.getDisplayName() + " at " + p.getX() + ";" + p.getY() + ";" + p.getZ());
+                    msg("Found " + blockName + " at " + p.getX() + ";" + p.getY() + ";" + p.getZ());
 
                 }
                 y--;
@@ -121,7 +136,7 @@ public class TickTaskBlockFinder implements ITickTask {
         }
         else
         {
-            msg("Stoped looking for " + stack.getDisplayName());
+            msg("Stoped looking for " + blockName);
         }
     }
 
