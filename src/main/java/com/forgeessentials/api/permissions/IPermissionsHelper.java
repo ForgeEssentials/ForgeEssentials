@@ -24,8 +24,9 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 
     /**
      * Marks the permission storage as dirty, so it will be persisted as soon as possible.
+     * @param registeredPermission 
      */
-    void setDirty();
+    void setDirty(boolean registeredPermission);
 
     // ---------------------------------------------------------------------------
     // -- Permissions

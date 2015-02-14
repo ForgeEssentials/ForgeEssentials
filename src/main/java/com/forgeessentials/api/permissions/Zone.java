@@ -228,7 +228,7 @@ public abstract class Zone {
     public void setDirty()
     {
         if (getServerZone() != null && getServerZone().getRootZone() != null)
-            getServerZone().getRootZone().getPermissionHelper().setDirty();
+            getServerZone().getRootZone().getPermissionHelper().setDirty(false);
     }
 
     /**

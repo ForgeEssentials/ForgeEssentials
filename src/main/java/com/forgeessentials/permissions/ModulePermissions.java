@@ -44,8 +44,6 @@ public class ModulePermissions extends ConfigLoaderBase {
 
     private static final String CONFIG_CAT = "Permissions";
 
-    public static final String PERMISSIONS_LIST_FILE = "PermissionsList.txt";
-
     public static AutoPromoteManager autoPromoteManager;
 
     public static ZonedPermissionHelper permissionHelper;
@@ -56,8 +54,6 @@ public class ModulePermissions extends ConfigLoaderBase {
 
     private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath() + "/permissions",
             false);
-
-    public static boolean permissionsListGenerated = false;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preLoad(FEModulePreInitEvent e)

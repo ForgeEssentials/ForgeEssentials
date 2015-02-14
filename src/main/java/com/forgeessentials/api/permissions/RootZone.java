@@ -82,4 +82,11 @@ public class RootZone extends Zone {
         return permissionDebugger;
     }
 
+    @Override
+    public void setDirty()
+    {
+        permissionHelper.setDirty(true);
+    }
+    
+    
 }

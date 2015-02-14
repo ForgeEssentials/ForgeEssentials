@@ -16,8 +16,6 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.permissions.ModulePermissions;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.world.WorldEvent;
@@ -39,6 +37,7 @@ import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -54,13 +53,17 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
  */
 public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebugger {
 
+    public static final String PERMISSIONS_LIST_FILE = "PermissionsList.txt";
+
     protected RootZone rootZone;
 
     protected ZonePersistenceProvider persistenceProvider;
 
     protected Timer persistenceTimer;
 
-    protected boolean dirty;
+    protected boolean dirty = true;
+
+    protected boolean registeredPermission = true;
 
     public Set<ICommandSender> permissionDebugUsers = new HashSet<>();
 
@@ -122,12 +125,11 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
             persistenceProvider.save(rootZone.getServerZone());
         }
 
-        if (!ModulePermissions.permissionsListGenerated) {
-            ModulePermissions.permissionsListGenerated = true;
-            PermissionsListWriter.write(ModulePermissions.permissionHelper.getRegisteredPermissions(), new File(ForgeEssentials.getFEDirectory(), ModulePermissions.PERMISSIONS_LIST_FILE));
-        }
+        if (registeredPermission)
+            PermissionsListWriter.write(getRegisteredPermissions(), new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE));
 
         dirty = false;
+        registeredPermission = false;
     }
 
     public boolean load()
@@ -155,9 +157,10 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     }
 
     @Override
-    public void setDirty()
+    public void setDirty(boolean registeredPermission)
     {
         this.dirty = true;
+        this.registeredPermission |= registeredPermission;
         if (persistenceTimer != null)
             persistenceTimer.cancel();
         persistenceTimer = new Timer("permission persistence timer", true);
@@ -368,14 +371,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
     public void registerPermissionProperty(String permissionNode, String defaultValue)
     {
         rootZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, permissionNode, defaultValue);
-        ModulePermissions.permissionsListGenerated = false;
     }
 
     @Override
     public void registerPermissionPropertyOp(String permissionNode, String defaultValue)
     {
         rootZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, permissionNode, defaultValue);
-        ModulePermissions.permissionsListGenerated = false;
     }
 
     @Override
@@ -390,14 +391,12 @@ public class ZonedPermissionHelper implements IPermissionsHelper, PermissionDebu
             rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, false);
             rootZone.setGroupPermission(Zone.GROUP_OPERATORS, permissionNode, true);
         }
-        ModulePermissions.permissionsListGenerated = false;
     }
 
     @Override
     public void registerPermissionDescription(String permissionNode, String description)
     {
         registerPermissionProperty(permissionNode + FEPermissions.DESCRIPTION_PROPERTY, description);
-        ModulePermissions.permissionsListGenerated = false;
     }
 
     @Override
