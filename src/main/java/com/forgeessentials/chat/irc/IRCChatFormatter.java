@@ -148,7 +148,8 @@ public class IRCChatFormatter {
     }
 
     public static String ircHeader;
-
+    public static String ircPrivateHeader;
+    
     public static String formatIRCHeader(String channel, String ircUser)
     {
         String format = ircHeader;
@@ -157,4 +158,11 @@ public class IRCChatFormatter {
         return FunctionHelper.formatColors(format);
     }
 
+    public static String formatIRCPrivateHeader(String channel, String ircUser)
+    {
+        String format = ircPrivateHeader;
+        format = FunctionHelper.replaceAllIgnoreCase(format, "%channel", channel);
+        format = FunctionHelper.replaceAllIgnoreCase(format, "%ircUser", ircUser);
+        return FunctionHelper.formatColors(format);
+    }
 }

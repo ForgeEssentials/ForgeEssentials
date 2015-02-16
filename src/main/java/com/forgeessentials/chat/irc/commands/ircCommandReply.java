@@ -1,10 +1,14 @@
 package com.forgeessentials.chat.irc.commands;
 
 import com.forgeessentials.chat.commands.CommandMsg;
+import com.forgeessentials.chat.irc.IRCChatFormatter;
+import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.util.OutputHandler;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
+
+
 import org.pircbotx.User;
 
 public class ircCommandReply extends ircCommand {
@@ -43,19 +47,19 @@ public class ircCommandReply extends ircCommand {
 
             if (player == null)
             {
-                user.sendMessage("Unable to send message: Player not found.");
+                IRCHelper.privateMessage(user,"Unable to send message: Player not found.");
                 return;
             }
 
-            String send = EnumChatFormatting.GOLD + "(IRC)[" + user.getNick() + " -> me] " + EnumChatFormatting.GRAY + message;
-            String recipt = "(IRC)[me -> " + player.getCommandSenderName() + "] " + message;
+            String send =  IRCChatFormatter.formatIRCPrivateHeader(IRCHelper.channel, "me -> "+user.getNick()) + " " + message;            
 
             OutputHandler.sendMessage(player, send);
-            user.sendMessage(recipt);
+            IRCHelper.privateMessage(player.getCommandSenderName(), user.getNick(), message);
+            
         }
         catch (Exception ex)
         {
-            user.sendMessage("Unable to send message: Something went really wrong.");
+            IRCHelper.privateMessage(user,"Unable to send message: Something went really wrong.");
             return;
         }
     }

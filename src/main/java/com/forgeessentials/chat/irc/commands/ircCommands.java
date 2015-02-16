@@ -2,6 +2,8 @@ package com.forgeessentials.chat.irc.commands;
 
 import org.pircbotx.User;
 
+import com.forgeessentials.chat.irc.IRCHelper;
+
 import java.util.ArrayList;
 
 public class ircCommands {
@@ -45,6 +47,7 @@ public class ircCommands {
         }
 
         // Uh-Oh
-        user.sendMessage("Unable to find command: %" + commandName);
+        IRCHelper.privateMessage(user, "Unable to find command: %" + commandName);        
+        
     }
 }

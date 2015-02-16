@@ -2,6 +2,8 @@ package com.forgeessentials.chat.irc.commands;
 
 import org.pircbotx.User;
 
+import com.forgeessentials.chat.irc.IRCHelper;
+
 public class ircCommandHelp extends ircCommand {
 
     @Override
@@ -25,14 +27,21 @@ public class ircCommandHelp extends ircCommand {
     @Override
     public void execute(String[] args, User user)
     {
-        user.sendMessage("Help:");
+    	IRCHelper.privateMessage(user,"Help:");
         for (ircCommand cmd : ircCommands.ircCommands)
         {
-            user.sendMessage("");
-            user.sendMessage("Command: " + cmd.getCommandName());
-            user.sendMessage("Aliases: " + cmd.getAliasesAsString());
-            user.sendMessage("Usage: " + cmd.getCommandUsage());
-            user.sendMessage("Info: " + cmd.getCommandInfo());
+        	if ( !IRCHelper.twitchMode )
+        	{
+        		IRCHelper.privateMessage(user,"");
+        		IRCHelper.privateMessage(user,"Command: " + cmd.getCommandName());
+        		IRCHelper.privateMessage(user,"Aliases: " + cmd.getAliasesAsString());
+        		IRCHelper.privateMessage(user,"Usage: " + cmd.getCommandUsage());
+        		IRCHelper.privateMessage(user,"Info: " + cmd.getCommandInfo());
+        	}
+        	else
+        	{        		
+        		IRCHelper.privateMessage(user,": " + cmd.getCommandUsage() + " " + cmd.getCommandInfo() );
+        	}
         }
     }
 

@@ -24,7 +24,10 @@ public class CommandIRC extends ForgeEssentialsCommandBase {
         {
             IRCHelper.shutdown();
         }
-
+        else if (args[0].equalsIgnoreCase("staus"))
+        {
+            IRCHelper.status(sender);
+        }
     }
 
     @Override
@@ -42,7 +45,7 @@ public class CommandIRC extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/irc [reconnect|disconnect] Connect or disconnect the IRC server bot.";
+        return "/irc [reconnect|disconnect|status] Connect or disconnect the IRC server bot.";
     }
 
     @Override
