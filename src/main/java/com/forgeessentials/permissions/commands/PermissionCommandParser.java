@@ -209,11 +209,11 @@ public class PermissionCommandParser {
         String result = APIRegistry.perms.getPermissionProperty(arguments.senderPlayer, permissionNode);
         if (result == null)
         {
-            arguments.info(permissionNode + " = §etrue (not set)");
+            arguments.info(permissionNode + " = \u00a7etrue (not set)");
         }
         else if (Zone.PERMISSION_FALSE.equalsIgnoreCase(result))
         {
-            arguments.info(permissionNode + " = §c" + result);
+            arguments.info(permissionNode + " = \u00a7c" + result);
         }
         else
         {
