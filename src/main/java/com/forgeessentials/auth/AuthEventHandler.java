@@ -193,7 +193,7 @@ public class AuthEventHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerOpenContainer(PlayerOpenContainerEvent event)
     {
         UUID username = event.entityPlayer.getPersistentID();
@@ -203,7 +203,7 @@ public class AuthEventHandler {
             event.setResult(Result.DENY);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
         }
-    }
+    }*/
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onLogin(PlayerEvent.PlayerLoggedInEvent e)
