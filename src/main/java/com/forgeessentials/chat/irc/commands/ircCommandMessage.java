@@ -39,11 +39,11 @@ public class ircCommandMessage extends ircCommand {
         	
             if (args.length < 1)
             {
-                IRCHelper.privateMessage(user,"Unable to send message: No player.");
-                IRCHelper.privateMessage(user,"Did you forget the :?");
-                IRCHelper.privateMessage(user,"Sytax: /privmsg " + IRCHelper.getBotName() + " :%msg playername message");
-                IRCHelper.privateMessage(user,"Or to reply to a previous private message.");
-                IRCHelper.privateMessage(user,"Sytax: /privmsg " + IRCHelper.getBotName() + " :%r message");
+                IRCHelper.privateMessage(user, "Unable to send message: No player.");
+                IRCHelper.privateMessage(user, "Did you forget the :?");
+                IRCHelper.privateMessage(user, "Sytax: /privmsg " + IRCHelper.getBotName() + " :%msg playername message");
+                IRCHelper.privateMessage(user, "Or to reply to a previous private message.");
+                IRCHelper.privateMessage(user, "Sytax: /privmsg " + IRCHelper.getBotName() + " :%r message");
                 return;
             }
 
@@ -59,11 +59,11 @@ public class ircCommandMessage extends ircCommand {
 
             if (player == null)
             {
-                IRCHelper.privateMessage(user,"Unable to send message: Player not found.");
+                IRCHelper.privateMessage(user, "Unable to send message: Player not found.");
                 return;
             }
 
-            String send = IRCChatFormatter.formatIRCPrivateHeader(IRCHelper.channel, user.getNick() + " -> me") + " " + message;
+            String send = IRCChatFormatter.formatIRCHeader(IRCChatFormatter.ircPrivateHeader, IRCHelper.channel, user.getNick() + " -> me") + " " + message;
            
             OutputHandler.sendMessage(player, send);
             IRCHelper.privateMessage(user.getNick(),player.getCommandSenderName(),message);
@@ -76,7 +76,7 @@ public class ircCommandMessage extends ircCommand {
         }
         catch (Exception ex)
         {
-            IRCHelper.privateMessage(user,"Unable to send message: Something went really wrong.");
+            IRCHelper.privateMessage(user, "Unable to send message: Something went really wrong.");
             return;
         }
     }

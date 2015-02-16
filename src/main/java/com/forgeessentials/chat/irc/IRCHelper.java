@@ -236,7 +236,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 
             else
             {
-                String send = IRCChatFormatter.formatIRCHeader(e.getChannel().getName(), e.getUser().getNick()) + " " + e.getMessage().trim();
+                String send = IRCChatFormatter.formatIRCHeader(IRCChatFormatter.ircHeader, e.getChannel().getName(), e.getUser().getNick()) + " " + e.getMessage().trim();
                 postMinecraft(send);
             }
         }
@@ -288,7 +288,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	{
 		if ( !suppressEvents )
 		{
-			String send = IRCChatFormatter.formatIRCHeader(e.getChannel().getName(), e.getUser().getNick()) + " joined the channel";
+			String send = IRCChatFormatter.formatIRCHeader(IRCChatFormatter.ircHeader, e.getChannel().getName(), e.getUser().getNick()) + " joined the channel";
 			postMinecraft(send);
 		}		
 	}
@@ -301,7 +301,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	{
 		if ( !suppressEvents )
 		{
-			String send = IRCChatFormatter.formatIRCHeader(e.getChannel().getName(), e.getUser().getNick()) + " left the channel";
+			String send = IRCChatFormatter.formatIRCHeader(IRCChatFormatter.ircHeader, e.getChannel().getName(), e.getUser().getNick()) + " left the channel";
 			postMinecraft(send);
 		}		
 	}
@@ -314,7 +314,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	{
 		if ( !suppressEvents )
 		{
-			String send = IRCChatFormatter.formatIRCHeader(channel, "System") + " Connection established";
+			String send = IRCChatFormatter.formatIRCHeader(IRCChatFormatter.ircHeader, channel, "System") + " Connection established";
 			postMinecraft(send);
 		}	
 	}
@@ -327,12 +327,9 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	{
 		if ( !suppressEvents )
 		{
-			String send = IRCChatFormatter.formatIRCHeader(channel, "System") + " Connection lost";
+			String send = IRCChatFormatter.formatIRCHeader(IRCChatFormatter.ircHeader, channel, "System") + " Connection lost";
 			postMinecraft(send);
 		}
 	}
-    
-    
-
     
 }

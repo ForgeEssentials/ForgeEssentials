@@ -101,8 +101,9 @@ public class ConfigChat extends ConfigLoaderBase {
         IRCHelper.twitchMode = config.get("Chat.irc", "twitchMode", false, "If set to true, sets connection to twitch mode.").getBoolean();
         IRCHelper.debugMode = config.get("Chat.irc", "debugMode", false, "If set to true, all output from irc will be logged.").getBoolean();
         CommandMuter.muteCmdBlocks = config.get("Chat.irc", "muteCmdBlocks", false, "Mute command block output.").getBoolean();
-        IRCChatFormatter.ircHeader = config.get("Chat.irc", "ircHeader", "(IRC) [%channel] <%ircUser>", "String to identify IRC channel output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
-        IRCChatFormatter.ircPrivateHeader = config.get("Chat.irc", "ircPrivateHeader", "&6(IRC) [%ircUser]&7", "String to identify IRC Private MSG output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
+        IRCChatFormatter.ircHeader = config.get("Chat.irc", "ircOutput", "(IRC) [%channel] <%ircUser>", "String to identify IRC channel output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
+        IRCChatFormatter.ircPrivateHeader = config.get("Chat.irc", "ircPrivateOutput", "&6(IRC) [%ircUser]&7", "String to identify IRC Private MSG output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
+        IRCChatFormatter.mcHeader = config.get("Chat.irc", "mcFormat", "<%username> %message", "String for formatting messages posted to the IRC channel by the bot.").getString();
 
         config.save();
     }

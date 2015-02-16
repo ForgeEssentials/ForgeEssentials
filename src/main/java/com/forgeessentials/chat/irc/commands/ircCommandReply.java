@@ -51,7 +51,7 @@ public class ircCommandReply extends ircCommand {
                 return;
             }
 
-            String send =  IRCChatFormatter.formatIRCPrivateHeader(IRCHelper.channel, "me -> "+user.getNick()) + " " + message;            
+            String send =  IRCChatFormatter.formatIRCHeader(IRCChatFormatter.ircPrivateHeader, IRCHelper.channel, "me -> " + user.getNick()) + " " + message;
 
             OutputHandler.sendMessage(player, send);
             IRCHelper.privateMessage(player.getCommandSenderName(), user.getNick(), message);
