@@ -31,6 +31,11 @@ public class IRCChatFormatter {
     public static String gmA;
     public static int censorSlap;
 
+    public static String ircHeader;
+    public static String ircPrivateHeader;
+    public static String mcHeader;
+
+
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void chatEvent(ServerChatEvent event)
     {
@@ -90,8 +95,7 @@ public class IRCChatFormatter {
 		String rank = "";
 
         // It may be beneficial to make this a public function. -RlonRyan
-        String format = ConfigChat.chatFormat;
-        format = ConfigChat.chatFormat == null || ConfigChat.chatFormat.trim().isEmpty() ? "<%username>%message" : ConfigChat.chatFormat;
+        String format = mcHeader;
 
 		/*
          * if(enable_chat%){ format = replaceAllIngnoreCase(format, "%message",
@@ -144,17 +148,15 @@ public class IRCChatFormatter {
 
         // finally make it the chat line.
         // TODO: This is probably incorrect with regards to coloring
-        IRCHelper.postIRC("<" + event.username + "> " + event.message);
+
+        IRCHelper.postIRC(format);
     }
 
-    public static String ircHeader;
-
-    public static String formatIRCHeader(String channel, String ircUser)
+    public static String formatIRCHeader(String header, String channel, String ircUser)
     {
-        String format = ircHeader;
+        String format = header;
         format = FunctionHelper.replaceAllIgnoreCase(format, "%channel", channel);
         format = FunctionHelper.replaceAllIgnoreCase(format, "%ircUser", ircUser);
         return FunctionHelper.formatColors(format);
     }
-
 }

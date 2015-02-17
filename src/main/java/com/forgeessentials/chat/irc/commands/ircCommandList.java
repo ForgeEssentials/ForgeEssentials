@@ -4,6 +4,8 @@ import net.minecraft.server.MinecraftServer;
 
 import org.pircbotx.User;
 
+import com.forgeessentials.chat.irc.IRCHelper;
+
 public class ircCommandList extends ircCommand {
 
     @Override
@@ -27,10 +29,10 @@ public class ircCommandList extends ircCommand {
     @Override
     public void execute(String[] args, User user)
     {
-        user.sendMessage("Players online: ");
+    	IRCHelper.privateMessage(user,"Players online: ");
         for (String username : MinecraftServer.getServer().getConfigurationManager().getAllUsernames())
         {
-            user.sendMessage(username);
+        	IRCHelper.privateMessage(user,username);
         }
     }
 

@@ -1,11 +1,14 @@
 package com.forgeessentials.chat.irc.commands;
 
 import com.forgeessentials.chat.commands.CommandMsg;
+import com.forgeessentials.chat.irc.IRCChatFormatter;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.util.OutputHandler;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
+
+
 import org.pircbotx.User;
 
 public class ircCommandMessage extends ircCommand {
@@ -33,14 +36,14 @@ public class ircCommandMessage extends ircCommand {
     {
         try
         {
-
+        	
             if (args.length < 1)
             {
-                user.sendMessage("Unable to send message: No player.");
-                user.sendMessage("Did you forget the :?");
-                user.sendMessage("Sytax: /privmsg " + IRCHelper.getBotName() + " :%msg playername message");
-                user.sendMessage("Or to reply to a previous private message.");
-                user.sendMessage("Sytax: /privmsg " + IRCHelper.getBotName() + " :%r message");
+                IRCHelper.privateMessage(user, "Unable to send message: No player.");
+                IRCHelper.privateMessage(user, "Did you forget the :?");
+                IRCHelper.privateMessage(user, "Sytax: /privmsg " + IRCHelper.getBotName() + " :%msg playername message");
+                IRCHelper.privateMessage(user, "Or to reply to a previous private message.");
+                IRCHelper.privateMessage(user, "Sytax: /privmsg " + IRCHelper.getBotName() + " :%r message");
                 return;
             }
 
@@ -56,15 +59,14 @@ public class ircCommandMessage extends ircCommand {
 
             if (player == null)
             {
-                user.sendMessage("Unable to send message: Player not found.");
+                IRCHelper.privateMessage(user, "Unable to send message: Player not found.");
                 return;
             }
 
-            String send = EnumChatFormatting.GOLD + "(IRC)[" + user.getNick() + " -> me] " + EnumChatFormatting.GRAY + message;
-            String recipt = "(IRC)[me -> " + player.getCommandSenderName() + "] " + message;
-
+            String send = IRCChatFormatter.formatIRCHeader(IRCChatFormatter.ircPrivateHeader, IRCHelper.channel, user.getNick() + " -> me") + " " + message;
+           
             OutputHandler.sendMessage(player, send);
-            IRCHelper.privateMessage(user.getNick(), recipt);
+            IRCHelper.privateMessage(user.getNick(),player.getCommandSenderName(),message);
 
             // Add in /r stuff
             CommandMsg.clearReply(user.getNick());
@@ -74,7 +76,7 @@ public class ircCommandMessage extends ircCommand {
         }
         catch (Exception ex)
         {
-            user.sendMessage("Unable to send message: Something went really wrong.");
+            IRCHelper.privateMessage(user, "Unable to send message: Something went really wrong.");
             return;
         }
     }

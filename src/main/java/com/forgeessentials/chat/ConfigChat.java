@@ -98,9 +98,12 @@ public class ConfigChat extends ConfigLoaderBase {
         IRCHelper.password = config.get("Chat.irc", "nickservPass", "", "Nickserv password for the bot.").getString();
         IRCHelper.serverPass = config.get("Chat.irc", "serverPass", "", "Server password for the bot.").getString();
         IRCHelper.silentMode = config.get("Chat.irc", "silentMode", false, "If set to true, messages will only be passed from IRC, and no messages will be sent to channels.").getBoolean();
-
+        IRCHelper.twitchMode = config.get("Chat.irc", "twitchMode", false, "If set to true, sets connection to twitch mode.").getBoolean();
+        IRCHelper.debugMode = config.get("Chat.irc", "debugMode", false, "If set to true, all output from irc will be logged.").getBoolean();
         CommandMuter.muteCmdBlocks = config.get("Chat.irc", "muteCmdBlocks", false, "Mute command block output.").getBoolean();
-        IRCChatFormatter.ircHeader = config.get("Chat.irc", "ircHeader", "(IRC) [%channel] <%ircUser>", "String to identify IRC channel output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
+        IRCChatFormatter.ircHeader = config.get("Chat.irc", "ircOutput", "(IRC) [%channel] <%ircUser>", "String to identify IRC channel output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
+        IRCChatFormatter.ircPrivateHeader = config.get("Chat.irc", "ircPrivateOutput", "&6(IRC) [%ircUser]&7", "String to identify IRC Private MSG output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
+        IRCChatFormatter.mcHeader = config.get("Chat.irc", "mcFormat", "<%username> %message", "String for formatting messages posted to the IRC channel by the bot.").getString();
 
         config.save();
     }
@@ -153,9 +156,12 @@ public class ConfigChat extends ConfigLoaderBase {
         config.get("Chat.irc", "nickservPass", "", "Nickserv password for the bot.").set(IRCHelper.password);
         config.get("Chat.irc", "serverPass", "", "Server password for the bot.").set(IRCHelper.serverPass);
         config.get("Chat.irc", "silentMode", false, "If set to true, messages will only be passed from IRC, and no messages will be sent to channels.").set(IRCHelper.silentMode);
-
+        config.get("Chat.irc", "twitchMode", false, "If set to true, sets connection to twitch mode.").set(IRCHelper.twitchMode);
+        config.get("Chat.irc", "debugMode", false, "If set to true, all output from irc will be logged.").set(IRCHelper.debugMode);
+        
         config.get("Chat.irc", "muteCmdBlocks", false, "Mute command block output.").set(CommandMuter.muteCmdBlocks);
         config.get("Chat.irc", "ircHeader", "(IRC) [%channel] <%ircUser>", "String to identify IRC channel output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").set(IRCChatFormatter.ircHeader);
+        config.get("Chat.irc", "ircPrivateHeader", "&6(IRC) [%ircUser]&7", "String to identify IRC Private MSG output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").set(IRCChatFormatter.ircPrivateHeader);
 
         config.save();
     }

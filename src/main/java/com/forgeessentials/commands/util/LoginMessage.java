@@ -2,10 +2,12 @@ package com.forgeessentials.commands.util;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.compat.CompatReiMinimap;
+import com.forgeessentials.util.ConnectionMonitor;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -78,7 +80,8 @@ public class LoginMessage {
                     pw.println("# %time% => Local server time. All in one string.");
                     pw.println("# %hour% ; %min% ; %sec% => Local server time.");
                     pw.println("# %day% ; %month% ; %year% => Local server date.");
-                    pw.println("# %online => Nice list of online players.");
+                    pw.println("# %online% => Nice list of online players.");
+                    pw.println("# %irc% => IRC Connection Status online/offline");
                     pw.println("# ");
                     pw.println("# If you would like more codes, you can make an issue on https://github.com/ForgeEssentials/ForgeEssentialsMain/issues");
                     pw.println("");
@@ -141,7 +144,8 @@ public class LoginMessage {
         line = FunctionHelper.replaceAllIgnoreCase(line, "%players%", online()); // players online
         line = FunctionHelper.replaceAllIgnoreCase(line, "%uptime%", getUptime()); // uptime
         line = FunctionHelper.replaceAllIgnoreCase(line, "%uniqueplayers%", uniqueplayers()); // unique players
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%online", FunctionHelper.getFormattedPlayersOnline()); // All online players
+        line = FunctionHelper.replaceAllIgnoreCase(line, "%online%", FunctionHelper.getFormattedPlayersOnline()); // All online players
+        line = FunctionHelper.replaceAllIgnoreCase(line, "%irc%", ConnectionMonitor.getIRCConnectionStatus());
 
         // time stuff
         line = FunctionHelper.replaceAllIgnoreCase(line, "%time%", FunctionHelper.getCurrentTimeString());
