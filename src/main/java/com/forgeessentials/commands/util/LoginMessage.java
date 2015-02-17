@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.util.ConnectionMonitor;
