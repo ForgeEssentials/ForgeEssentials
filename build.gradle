@@ -61,8 +61,14 @@ minecraft {
     replace "%VERSION%", project.version
 
     srgExtra "PK: org/spongepowered/asm com/forgeessentials/repackage/org_spongepowered/asm"
-    srgExtra "PK: org/spongepowered/tools com/forgeessentials/repackage/org_spongepowered/tools"
 }
+
+afterEvaluate {
+    tasks.compileJava.options.compilerArgs += "-AreobfSrgFile=${tasks.reobf.srg}"
+    tasks.compileUtilsJava.options.compilerArgs += "-AreobfSrgFile=${tasks.reobf.srg}"
+    tasks.compileClientJava.options.compilerArgs += "-AreobfSrgFile=${tasks.reobf.srg}"
+}
+
 
 configurations {
     serverLibs
@@ -157,7 +163,7 @@ jar {
 
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {
-            exclude 'META-INF', 'META-INF/**'
+            include "org/spongepowered/asm/**"
         }
     }
 }
