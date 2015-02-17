@@ -10,6 +10,7 @@ import com.forgeessentials.client.network.C2PacketPlayerLogger;
 import com.forgeessentials.client.network.C3PacketRollback;
 import com.forgeessentials.client.network.C4PacketEconomy;
 import com.forgeessentials.client.network.C5PacketNoclip;
+import com.forgeessentials.client.network.C6PacketSpeed;
 import com.forgeessentials.client.util.DummyProxy;
 import com.forgeessentials.commons.VersionUtils;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -43,6 +44,7 @@ public class ClientProxy extends DummyProxy
         netHandler.registerMessage(C3PacketRollback.class, C3PacketRollback.class, 3, Side.CLIENT);
         netHandler.registerMessage(C4PacketEconomy.class, C4PacketEconomy.class, 4, Side.CLIENT);
         netHandler.registerMessage(C5PacketNoclip.class, C5PacketNoclip.class, 5, Side.CLIENT);
+        netHandler.registerMessage(C6PacketSpeed.class, C6PacketSpeed.class, 6, Side.CLIENT);
     }
     
     @Override

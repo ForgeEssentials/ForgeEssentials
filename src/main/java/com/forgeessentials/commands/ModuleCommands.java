@@ -2,6 +2,7 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.network.S5PacketNoclip;
+import com.forgeessentials.commands.network.S6PacketSpeed;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandRegistrar;
 import com.forgeessentials.commands.util.CommandsEventHandler;
@@ -34,6 +35,7 @@ public class ModuleCommands {
         MinecraftForge.EVENT_BUS.register(eventHandler);
         FMLCommonHandler.instance().bus().register(eventHandler);
         FunctionHelper.netHandler.registerMessage(S5PacketNoclip.class, S5PacketNoclip.class, 5, Side.CLIENT);
+        FunctionHelper.netHandler.registerMessage(S6PacketSpeed.class, S6PacketSpeed.class, 6, Side.CLIENT);
         LoginMessage.loadFile();
     }
 
