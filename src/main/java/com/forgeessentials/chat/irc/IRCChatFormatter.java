@@ -149,7 +149,6 @@ public class IRCChatFormatter {
         // finally make it the chat line.
         // TODO: This is probably incorrect with regards to coloring
 
-        System.out.println(format);
         IRCHelper.postIRC(format);
     }
 
