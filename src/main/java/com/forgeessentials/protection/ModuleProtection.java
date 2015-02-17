@@ -122,7 +122,7 @@ public class ModuleProtection {
         {
             return item.getItemStackDisplayName(new ItemStack(item));
         }
-        catch (Exception e)
+        catch (Exception | NoClassDefFoundError e)
         {
             return item.getUnlocalizedName();
         }
