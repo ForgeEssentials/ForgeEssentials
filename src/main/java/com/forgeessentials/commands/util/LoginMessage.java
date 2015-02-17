@@ -3,6 +3,7 @@ package com.forgeessentials.commands.util;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.compat.CompatReiMinimap;
+import com.forgeessentials.util.ConnectionMonitor;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -145,7 +146,7 @@ public class LoginMessage {
         line = FunctionHelper.replaceAllIgnoreCase(line, "%uptime%", getUptime()); // uptime
         line = FunctionHelper.replaceAllIgnoreCase(line, "%uniqueplayers%", uniqueplayers()); // unique players
         line = FunctionHelper.replaceAllIgnoreCase(line, "%online%", FunctionHelper.getFormattedPlayersOnline()); // All online players
-        line = FunctionHelper.replaceAllIgnoreCase(line, "%irc%", IRCHelper.getConnectionStatus());
+        line = FunctionHelper.replaceAllIgnoreCase(line, "%irc%", ConnectionMonitor.getIRCConnectionStatus());
 
         // time stuff
         line = FunctionHelper.replaceAllIgnoreCase(line, "%time%", FunctionHelper.getCurrentTimeString());
