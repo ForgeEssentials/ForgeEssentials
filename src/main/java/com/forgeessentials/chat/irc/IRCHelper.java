@@ -2,6 +2,7 @@ package com.forgeessentials.chat.irc;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.commands.ircCommands;
+import com.forgeessentials.util.ConnectionMonitor;
 import com.forgeessentials.util.OutputHandler;
 
 import net.minecraft.command.ICommandSender;
@@ -70,6 +71,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
             OutputHandler.felog.info("Attempting to join " + server + " channel: " + channel);
             bot.joinChannel(channel);
             OutputHandler.felog.info("Successfully joined IRC Channel!");
+            ConnectionMonitor.isIRCConnected = true;
 
         }
         catch (NickAlreadyInUseException e)
@@ -158,6 +160,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
         {
             bot.disconnect();
         }
+        ConnectionMonitor.isIRCConnected = false;
     }
 
     public static void reconnect(ICommandSender sender)
@@ -167,8 +170,10 @@ public class IRCHelper extends ListenerAdapter implements Listener {
         	if ( bot.isConnected() )
         	{
         		bot.disconnect();
+                ConnectionMonitor.isIRCConnected = false;
         	}
             bot.reconnect();
+            ConnectionMonitor.isIRCConnected = true;
         }
         catch (NickAlreadyInUseException e)
         {
@@ -187,11 +192,6 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     public static void status(ICommandSender sender)
     {
     	OutputHandler.sendMessage(sender,"IRC Connection is " + ( bot.isConnected() ? "online" : "offline") );
-    }
-    
-    public static String getConnectionStatus()
-    {
-    	   return ( bot.isConnected() ? "online" : "offline"); 	
     }
     
     // IRC events
@@ -268,6 +268,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
         OutputHandler.felog.warning(
                 "The IRC bot was kicked from " + e.getChannel().getName() + " by " + e.getSource().getNick() + " with reason " + e.getReason()
                         + " , please attempt to reconnect.");
+        ConnectionMonitor.isIRCConnected = false;
 
     }
 
