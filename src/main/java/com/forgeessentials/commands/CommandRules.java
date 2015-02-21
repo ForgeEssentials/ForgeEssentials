@@ -37,7 +37,7 @@ import com.forgeessentials.util.OutputHandler;
 public class CommandRules extends FEcmdModuleCommands {
 
     public static final String[] autocomargs =
-            { "add", "remove", "move", "change", "book" };
+            { "add", "remove", "move", "change", "book", "reload" };
     public static ArrayList<String> rules;
     public static File rulesFile = new File(ForgeEssentials.getFEDirectory(), "rules.txt");
 
@@ -216,7 +216,7 @@ public class CommandRules extends FEcmdModuleCommands {
             sender.inventory.addItemStackToInventory(is);
             return;
         }
-        else if (args.length == 1)
+        else if ( (args.length == 1) && (!args[0].equalsIgnoreCase("reload")) )
         {
         	
         	if (args[0].equalsIgnoreCase("help"))
@@ -294,6 +294,12 @@ public class CommandRules extends FEcmdModuleCommands {
             newRule = FunctionHelper.formatColors(newRule);
             rules.set(index - 1, newRule);
             OutputHandler.chatConfirmation(sender, String.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+        }
+        else if (args[0].equalsIgnoreCase("reload"))
+        {
+        	rules = loadRules();
+        	OutputHandler.chatNotification(sender, "rules reloaded from disc");
+        	return;
         }
         else
         {
