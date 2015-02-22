@@ -1,21 +1,36 @@
-package com.forgeessentials.core.preloader.forge;
+package com.forgeessentials.core.preloader.asm.mixins.command;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.fe.server.CommandHandlerForge;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class command_CommandHandler
+@Mixin(CommandHandler.class)
+public abstract class MixinCommandHandler_01
 {
+    @Shadow
+    private final Map commandMap = new HashMap();
+
+    @Shadow
+    public Set commandSet = new HashSet();
+
     // patch method
-    public static List getPossibleCommands(Map commandMap, ICommandSender p_71558_1_, String p_71558_2_)
+    @Overwrite
+    public List getPossibleCommands(ICommandSender p_71558_1_, String p_71558_2_)
     {
         String[] astring = p_71558_2_.split(" ", -1);
         String s1 = astring[0];
@@ -53,35 +68,25 @@ public class command_CommandHandler
         }
     }
 
-    // patch method
-    public static List getPossibleCommands(Map commandSet, ICommandSender p_71557_1_)
+    @Overwrite
+    public List getPossibleCommands(ICommandSender p_71557_1_)
     {
         ArrayList arraylist = new ArrayList();
+        Iterator iterator = this.commandSet.iterator();
 
-        for (Object o : commandSet.keySet()) {
-            ICommand icommand = (ICommand) commandSet.get(o);
+        while (iterator.hasNext())
+        {
+            ICommand icommand = (ICommand)iterator.next();
 
-            if (icommand != null) {
-
-                if (CommandHandlerForge.canUse(icommand, p_71557_1_)) {
-                    arraylist.add(icommand);
-                }
+            if (CommandHandlerForge.canUse(icommand, p_71557_1_))
+            {
+                arraylist.add(icommand);
             }
         }
 
         return arraylist;
     }
 
-    // in case we can't use the one in FunctionHelper
-    public static String[] dropFirstString(String[] par0ArrayOfStr)
-    {
-        String[] var1 = new String[par0ArrayOfStr.length - 1];
-
-        for (int var2 = 1; var2 < par0ArrayOfStr.length; ++var2)
-        {
-            var1[var2 - 1] = par0ArrayOfStr[var2];
-        }
-
-        return var1;
-    }
+    @Shadow
+    public abstract String[] dropFirstString(String[] par0ArrayOfStr);
 }

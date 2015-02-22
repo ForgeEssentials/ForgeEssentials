@@ -65,10 +65,13 @@ minecraft {
     srgExtra "PK: org/spongepowered/asm com/forgeessentials/repackage/org_spongepowered/asm"
 }
 
+def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + 'mixins.srg'
+
 afterEvaluate {
-    tasks.compileJava.options.compilerArgs += "-AreobfSrgFile=${tasks.reobf.srg}"
-    tasks.compileUtilsJava.options.compilerArgs += "-AreobfSrgFile=${tasks.reobf.srg}"
-    tasks.compileClientJava.options.compilerArgs += "-AreobfSrgFile=${tasks.reobf.srg}"
+    tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
+    tasks.compileUtilsJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
+    tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
+
 }
 
 
@@ -189,6 +192,8 @@ processResources {
         include 'mcmod.info'
     }
 }
+
+reobf.addExtraSrgFile mixinSrg
 
 //client
 task clientJar(dependsOn: "jar", type: Jar) {

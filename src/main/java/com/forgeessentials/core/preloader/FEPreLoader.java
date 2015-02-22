@@ -1,12 +1,13 @@
 package com.forgeessentials.core.preloader;
 
 import com.forgeessentials.core.preloader.classloading.FEClassLoader;
-import com.forgeessentials.core.preloader.forge.FEHooks;
 import cpw.mods.fml.relauncher.IFMLCallHook;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.io.File;
 import java.util.Map;
@@ -24,12 +25,17 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
     public static File mcLocation, jarLocation;
     public static LaunchClassLoader classLoader;
 
-    private String[] transformers = { "com.forgeessentials.core.preloader.asm.EventInjector" };
+    public FEPreLoader()
+    {
+        MixinBootstrap.init();
+        MixinEnvironment.getCurrentEnvironment().addConfiguration("mixins.forgeessentials.json");
+    }
+
+    private String[] transformers = { MixinBootstrap.TRANSFORMER_CLASS };
 
     @Override
     public String[] getASMTransformerClass()
     {
-        FEHooks.doInit();
         return transformers;
     }
 
