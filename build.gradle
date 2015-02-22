@@ -163,6 +163,7 @@ jar {
     manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader",
                 "FMLCorePluginContainsFMLMod": "true",
+                "ForceLoadAsMod": "true",
                 "BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
                 "TweakClass": "com.forgeessentials.repackage.org_spongepowered.asm.launch.MixinTweaker",
@@ -231,6 +232,7 @@ task deobfJar(dependsOn: "jar", type: Jar) {
     manifest {
         attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader",
                 "FMLCorePluginContainsFMLMod": "true",
+                "ForceLoadAsMod": "true",
                 "BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
                 "TweakClass": "com.forgeessentials.repackage.org_spongepowered.asm.launch.MixinTweaker",
