@@ -22,7 +22,7 @@ public class MemoryWatchdog extends TimerTask
     public void run()
     {
         long max = Runtime.getRuntime().maxMemory();
-        long total = Runtime.getRuntime().totalMemory();
+        long total = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
         long percentage = total * 100L / max;
 
