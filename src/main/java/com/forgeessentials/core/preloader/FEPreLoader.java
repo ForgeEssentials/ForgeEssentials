@@ -27,7 +27,6 @@ public class FEPreLoader implements IFMLLoadingPlugin, IFMLCallHook
 
     public FEPreLoader()
     {
-        MixinBootstrap.init();
         MixinEnvironment.getCurrentEnvironment().addConfiguration("mixins.forgeessentials.json");
     }
 
