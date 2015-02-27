@@ -64,7 +64,7 @@ public class PermissionCommandParser {
                                                                                                                                      // "promote",
     private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
     private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms" };
-    private static final String[] parseGroupArgs = { "zone", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
+    private static final String[] parseGroupArgs = { "zone", "users", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
             "priority", "parent", "include" };
     private static final String[] parseUserGroupArgs = { "add", "remove", "set" };
     private static final String[] parseGroupIncludeArgs = { "add", "remove", "clear" };
@@ -597,6 +597,7 @@ public class PermissionCommandParser {
         {
             arguments.info("Possible usage:");
             arguments.info("/p group <group> : Display group info");
+            arguments.info("/p group <group> users : Show users in this group");
             arguments.info("/p group <group> zone <zone> ... : Work with zones");
             arguments.info("/p group <group> create : Create a new group");
             arguments.info("/p group <group> perms : List group's permissions");
@@ -736,6 +737,9 @@ public class PermissionCommandParser {
         case "perms":
             arguments.info("Group " + group + " permissions:");
             listGroupPermissions(arguments.sender, group);
+            break;
+        case "users":
+            listGroupUsers(arguments.sender, group);
             break;
         case "prefix":
             parseGroupPrefixSuffix(arguments, group, zone, false);
@@ -1200,6 +1204,15 @@ public class PermissionCommandParser {
         {
             OutputHandler.chatNotification(sender, " - " + ((EntityPlayerMP) player).getCommandSenderName());
         }
+    }
+
+    public static void listGroupUsers(ICommandSender sender, String group)
+    {
+        Set<UserIdent> players = ModulePermissions.permissionHelper.getServerZone().getGroupPlayers().get(group);
+        OutputHandler.chatNotification(sender, "Players in group " + group + ":");
+        if (players != null)
+            for (UserIdent player : players)
+                OutputHandler.chatNotification(sender, "  " + player.getUsernameOrUUID());
     }
 
 }

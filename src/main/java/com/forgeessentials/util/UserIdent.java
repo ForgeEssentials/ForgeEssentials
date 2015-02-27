@@ -177,25 +177,29 @@ public class UserIdent {
 
     public UUID getUuid()
     {
-        identifyUser();
+        if (uuid == null)
+            identifyUser();
         return uuid;
     }
 
     public String getUsername()
     {
-        identifyUser();
+        if (username == null)
+            identifyUser();
         return username;
     }
 
     public EntityPlayerMP getPlayer()
     {
-        identifyUser();
+        if (player == null)
+            identifyUser();
         return player;
     }
 
     public GameProfile getGameProfile()
     {
-        identifyUser();
+        if (profile == null)
+            identifyUser();
         return profile;
     }
 

@@ -301,6 +301,15 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
             e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[OPERATOR]");
         }
+        if (!e.serverZone.groupExists(Zone.GROUP_FAKEPLAYERS))
+        {
+            // Configure FakePlayer group
+            // It can either use allow-all or inherit the permissions of another (OPs) group
+            e.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, FEPermissions.GROUP, true);
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_FAKEPLAYERS, FEPermissions.GROUP_PRIORITY, "15");
+            e.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, Zone.PERMISSION_ASTERIX, true);
+            //e.serverZone.groupParentAdd(Zone.GROUP_FAKEPLAYERS, Zone.GROUP_OPERATORS);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -696,8 +705,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         return getServerZone().getStoredPlayerGroups(ident);
     }
-
-    // ------------------------------------------------------------
+    
+    // --------------------------------------------------------
     // -- Permission checking
     // ------------------------------------------------------------
 

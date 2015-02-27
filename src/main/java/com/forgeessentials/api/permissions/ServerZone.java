@@ -7,12 +7,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -233,7 +235,8 @@ public class ServerZone extends Zone {
     @Override
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
-        registerPlayer(ident);
+        if (!isFakePlayer(ident))
+            registerPlayer(ident); 
         if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
             return false;
         Set<String> groupSet = playerGroups.get(ident);
@@ -265,6 +268,25 @@ public class ServerZone extends Zone {
     public Map<UserIdent, Set<String>> getPlayerGroups()
     {
         return playerGroups;
+    }
+
+    public Map<String, Set<UserIdent>> getGroupPlayers()
+    {
+        Map<String, Set<UserIdent>> groupPlayers = new HashMap<String, Set<UserIdent>>();
+        for (Entry<UserIdent, Set<String>> player : playerGroups.entrySet())
+        {
+            for (String group : player.getValue())
+            {
+                Set<UserIdent> players = groupPlayers.get(group);
+                if (players == null)
+                {
+                    players = new HashSet<UserIdent>();
+                    groupPlayers.put(group, players);
+                }
+                players.add(player.getKey());
+            }
+        }
+        return groupPlayers;
     }
 
     @Override
@@ -442,11 +464,20 @@ public class ServerZone extends Zone {
     }
 
     // ------------------------------------------------------------
+    
+    public boolean isFakePlayer(UserIdent ident)
+    {
+        return ident.hasPlayer() && ident.getPlayer() instanceof FakePlayer;
+    }
 
     public void registerPlayer(UserIdent ident)
     {
         if (ident != null)
+        {
             knownPlayers.add(ident);
+            if (isFakePlayer(ident))
+                addPlayerToGroup(ident, GROUP_FAKEPLAYERS);
+        }
     }
 
     public Set<UserIdent> getKnownPlayers()
