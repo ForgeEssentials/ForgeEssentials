@@ -1,6 +1,7 @@
 package com.forgeessentials.core.preloader.classloading;
 
-import com.forgeessentials.core.preloader.FEPreLoader;
+import com.forgeessentials.core.preloader.FELaunchHandler;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -29,7 +30,7 @@ public class FEClassLoader
 
     private boolean reExtract;
 
-    public void extractLibs(File mcLocation)
+    public void extractLibs(File mcLocation, LaunchClassLoader cl)
     {
         FEfolder = new File(mcLocation, "ForgeEssentials/");
         if (!FEfolder.exists())
@@ -43,7 +44,7 @@ public class FEClassLoader
             reExtract = true;
         }
 
-        if (FEPreLoader.runtimeDeobfEnabled)
+        if (FELaunchHandler.runtimeDeobfEnabled)
         {
 
             System.out.println("[ForgeEssentials] Checking if we need to extract libraries");
@@ -85,11 +86,11 @@ public class FEClassLoader
                 }
             }
         }
-        runClassLoad(FEfolder);
+        runClassLoad(FEfolder, cl);
 
     }
 
-    public void runClassLoad(File root)
+    public void runClassLoad(File root, LaunchClassLoader cl)
     {
         File lib = new File(root, "lib/");
         if (!lib.exists())
@@ -104,7 +105,7 @@ public class FEClassLoader
                 try
                 {
 
-                    FEPreLoader.classLoader.addURL(f.toURI().toURL());
+                    cl.addURL(f.toURI().toURL());
                     System.out.println("[ForgeEssentials] Loaded library file " + f.getAbsolutePath());
                 }
                 catch (MalformedURLException e)
@@ -127,7 +128,7 @@ public class FEClassLoader
             {
                 try
                 {
-                    FEPreLoader.classLoader.addURL(f.toURI().toURL());
+                    cl.addURL(f.toURI().toURL());
                 }
                 catch (MalformedURLException e)
                 {
@@ -137,19 +138,19 @@ public class FEClassLoader
         }
         System.out.println("[ForgeEssentials] Loaded " + module.listFiles().length + " modules");
 
-        checkLibs();
+        checkLibs(cl);
     }
 
     private static String[] compulsoryLibs = { "com.mysql.jdbc.Driver", "org.pircbotx.PircBotX", "org.h2.Driver" };
 
-    public void checkLibs()
+    public void checkLibs(LaunchClassLoader cl)
     {
         List<String> erroredLibs = new ArrayList<String>();
         for (String clazz : compulsoryLibs)
         {
             try
             {
-                Class.forName(clazz);
+                cl.findClass(clazz);
                 System.out.println("[ForgeEssentials] Found library " + clazz);
             }
             catch (ClassNotFoundException cnfe)

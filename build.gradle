@@ -56,13 +56,13 @@ minecraft {
     runDir = "rundir"
     ext.forgeVersion = "10.13.2.1258"
 
-    replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
+    replaceIn "com/forgeessentials/core/ForgeEssentials.java"
     replace "%VERSION%", project.version
 
     replaceIn "com/forgeessentials/client/ForgeEssentialsClient.java"
     replace "%VERSION%", project.version
 
-    srgExtra "PK: org/spongepowered/asm com/forgeessentials/repackage/org_spongepowered/asm"
+    //srgExtra "PK: org/spongepowered/asm com/forgeessentials/repackage/org_spongepowered/asm"
 }
 
 def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + 'mixins.srg'
@@ -161,12 +161,10 @@ jar {
     classifier = 'server'
     appendix = project.minecraft.version
     manifest {
-        attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader",
-                "FMLCorePluginContainsFMLMod": "true",
-                "ForceLoadAsMod": "true",
+        attributes(
                 "BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
-                "TweakClass": "com.forgeessentials.repackage.org_spongepowered.asm.launch.MixinTweaker",
+                "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
                 "TweakOrder": "10000"
         )
     }
@@ -230,12 +228,10 @@ task deobfJar(dependsOn: "jar", type: Jar) {
     }
 
     manifest {
-        attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader",
-                "FMLCorePluginContainsFMLMod": "true",
-                "ForceLoadAsMod": "true",
+        attributes(
                 "BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
-                "TweakClass": "com.forgeessentials.repackage.org_spongepowered.asm.launch.MixinTweaker",
+                "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
                 "TweakOrder": "10000"
         )
         classifier = 'deobf'

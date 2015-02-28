@@ -41,9 +41,9 @@ Additional step (VERY IMPORTANT, OR EVENTS WILL NOT FIRE!!!)
 
 Open your IDE run configs, and select the preconfigured "Minecraft Client" run configuration.
 
-Under "VM Arguments", add the following:
+Under "Program Arguments", add the following:
 
-    -Dfml.coreMods.load=com.forgeessentials.core.preloader.FEPreLoader
+    --tweakClass com.forgeessentials.core.preloader.FELaunchHandler
 
 Repeat for the "Minecraft Server" run configuration.
 
