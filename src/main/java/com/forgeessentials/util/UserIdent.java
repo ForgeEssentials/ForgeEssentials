@@ -141,7 +141,12 @@ public class UserIdent {
 
     public void updateUsername()
     {
-        username = getUsernameByUuid(uuid);
+        if (uuid != null)
+            username = getUsernameByUuid(uuid);
+        else if (player != null)
+            username = player.getCommandSenderName();
+        else if (profile != null)
+            username = profile.getName();
     }
 
     public boolean wasValidUUID()
