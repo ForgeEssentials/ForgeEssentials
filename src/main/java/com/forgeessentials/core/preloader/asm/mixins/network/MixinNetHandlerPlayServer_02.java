@@ -1,12 +1,11 @@
-package com.forgeessentials.core.preloader.forge;
+package com.forgeessentials.core.preloader.asm.mixins.network;
 
-import net.minecraftforge.fe.event.world.SignEditEvent;
 import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
 import io.netty.buffer.Unpooled;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityMinecartCommandBlock;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerBeacon;
@@ -19,100 +18,34 @@ import net.minecraft.item.ItemWritableBook;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.C12PacketUpdateSign;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityBeacon;
 import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public class network_NetHandlerPlayServer
+@Mixin(NetHandlerPlayServer.class)
+public abstract class MixinNetHandlerPlayServer_02
 {
-    // patch method
-    public static void processUpdateSign(NetHandlerPlayServer net, C12PacketUpdateSign p_147343_1_)
-    {
-        net.playerEntity.func_143004_u();
-        WorldServer worldserver = net.serverController.worldServerForDimension(net.playerEntity.dimension);
+    @Shadow
+    public EntityPlayerMP playerEntity;
 
-        if (worldserver.blockExists(p_147343_1_.func_149588_c(), p_147343_1_.func_149586_d(), p_147343_1_.func_149585_e()))
-        {
-            TileEntity tileentity = worldserver.getTileEntity(p_147343_1_.func_149588_c(), p_147343_1_.func_149586_d(), p_147343_1_.func_149585_e());
-
-            if (tileentity instanceof TileEntitySign)
-            {
-                TileEntitySign tileentitysign = (TileEntitySign)tileentity;
-
-                if (!tileentitysign.func_145914_a() || tileentitysign.func_145911_b() != net.playerEntity)
-                {
-                    net.serverController.logWarning("Player " + net.playerEntity.getCommandSenderName() + " just tried to change non-editable sign");
-                    return;
-                }
-            }
-
-            int i;
-            int j;
-
-            for (j = 0; j < 4; ++j)
-            {
-                boolean flag = true;
-
-                if (p_147343_1_.func_149589_f()[j].length() > 15)
-                {
-                    flag = false;
-                }
-                else
-                {
-                    for (i = 0; i < p_147343_1_.func_149589_f()[j].length(); ++i)
-                    {
-                        if (!ChatAllowedCharacters.isAllowedCharacter(p_147343_1_.func_149589_f()[j].charAt(i)))
-                        {
-                            flag = false;
-                        }
-                    }
-                }
-
-                if (!flag)
-                {
-                    p_147343_1_.func_149589_f()[j] = "!?";
-                }
-            }
-
-            if (tileentity instanceof TileEntitySign)
-            {
-                j = p_147343_1_.func_149588_c();
-                int k = p_147343_1_.func_149586_d();
-                i = p_147343_1_.func_149585_e();
-                TileEntitySign tileentitysign1 = (TileEntitySign)tileentity;
-                System.arraycopy(Preconditions.checkNotNull(onSignEditEvent(net, p_147343_1_)), 0, tileentitysign1.signText, 0, 4);
-                tileentitysign1.markDirty();
-                worldserver.markBlockForUpdate(j, k, i);
-            }
-        }
-    }
-
-    // helper method
-    public static String[] onSignEditEvent(NetHandlerPlayServer net, C12PacketUpdateSign data)
-    {
-        SignEditEvent e = new SignEditEvent(data.func_149588_c(), data.func_149586_d(), data.func_149585_e(), data.func_149589_f(), net.playerEntity);
-        if (MinecraftForge.EVENT_BUS.post(e))
-        {
-            return null;
-        }
-        return e.text;
-
-    }
+    @Shadow
+    public MinecraftServer serverController;
     
     // patch method
-    public static  void processVanilla250Packet(NetHandlerPlayServer net, C17PacketCustomPayload p_147349_1_)
+    @Overwrite
+    public void processVanilla250Packet(C17PacketCustomPayload p_147349_1_)
     {
         PacketBuffer packetbuffer;
         ItemStack itemstack;
@@ -136,7 +69,7 @@ public class network_NetHandlerPlayServer
                     throw new IOException("Invalid book tag!");
                 }
 
-                itemstack1 = net.playerEntity.inventory.getCurrentItem();
+                itemstack1 = playerEntity.inventory.getCurrentItem();
 
                 if (itemstack1 != null)
                 {
@@ -175,7 +108,7 @@ public class network_NetHandlerPlayServer
                         throw new IOException("Invalid book tag!");
                     }
 
-                    itemstack1 = net.playerEntity.inventory.getCurrentItem();
+                    itemstack1 = playerEntity.inventory.getCurrentItem();
 
                     if (itemstack1 == null)
                     {
@@ -184,7 +117,7 @@ public class network_NetHandlerPlayServer
 
                     if (itemstack.getItem() == Items.written_book && itemstack1.getItem() == Items.writable_book)
                     {
-                        itemstack1.setTagInfo("author", new NBTTagString(net.playerEntity.getCommandSenderName()));
+                        itemstack1.setTagInfo("author", new NBTTagString(playerEntity.getCommandSenderName()));
                         itemstack1.setTagInfo("title", new NBTTagString(itemstack.getTagCompound().getString("title")));
                         itemstack1.setTagInfo("pages", itemstack.getTagCompound().getTagList("pages", 8));
                         itemstack1.func_150996_a(Items.written_book);
@@ -216,7 +149,7 @@ public class network_NetHandlerPlayServer
                 {
                     datainputstream = new DataInputStream(new ByteArrayInputStream(p_147349_1_.func_149558_e()));
                     i = datainputstream.readInt();
-                    Container container = net.playerEntity.openContainer;
+                    Container container = playerEntity.openContainer;
 
                     if (container instanceof ContainerMerchant)
                     {
@@ -230,11 +163,11 @@ public class network_NetHandlerPlayServer
             }
             else if ("MC|AdvCdm".equals(p_147349_1_.func_149559_c()))
             {
-                if (!net.serverController.isCommandBlockEnabled())
+                if (!serverController.isCommandBlockEnabled())
                 {
-                    net.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.notEnabled", new Object[0]));
+                    playerEntity.addChatMessage(new ChatComponentTranslation("advMode.notEnabled", new Object[0]));
                 }
-                else if (PermissionsManager.checkPermission(net.playerEntity, "mc.cmdblocks") && net.playerEntity.capabilities.isCreativeMode)
+                else if (PermissionsManager.checkPermission(playerEntity, "mc.cmdblocks") && playerEntity.capabilities.isCreativeMode)
                 {
                     packetbuffer = new PacketBuffer(Unpooled.wrappedBuffer(p_147349_1_.func_149558_e()));
 
@@ -245,7 +178,7 @@ public class network_NetHandlerPlayServer
 
                         if (b0 == 0)
                         {
-                            TileEntity tileentity = net.playerEntity.worldObj.getTileEntity(packetbuffer.readInt(), packetbuffer.readInt(), packetbuffer.readInt());
+                            TileEntity tileentity = playerEntity.worldObj.getTileEntity(packetbuffer.readInt(), packetbuffer.readInt(), packetbuffer.readInt());
 
                             if (tileentity instanceof TileEntityCommandBlock)
                             {
@@ -254,7 +187,7 @@ public class network_NetHandlerPlayServer
                         }
                         else if (b0 == 1)
                         {
-                            Entity entity = net.playerEntity.worldObj.getEntityByID(packetbuffer.readInt());
+                            Entity entity = playerEntity.worldObj.getEntityByID(packetbuffer.readInt());
 
                             if (entity instanceof EntityMinecartCommandBlock)
                             {
@@ -268,7 +201,7 @@ public class network_NetHandlerPlayServer
                         {
                             commandblocklogic.func_145752_a(s1);
                             commandblocklogic.func_145756_e();
-                            net.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] {s1}));
+                            playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] {s1}));
                         }
                     }
                     catch (Exception exception1)
@@ -282,19 +215,19 @@ public class network_NetHandlerPlayServer
                 }
                 else
                 {
-                    net.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.notAllowed", new Object[0]));
+                    playerEntity.addChatMessage(new ChatComponentTranslation("advMode.notAllowed", new Object[0]));
                 }
             }
             else if ("MC|Beacon".equals(p_147349_1_.func_149559_c()))
             {
-                if (net.playerEntity.openContainer instanceof ContainerBeacon)
+                if (playerEntity.openContainer instanceof ContainerBeacon)
                 {
                     try
                     {
                         datainputstream = new DataInputStream(new ByteArrayInputStream(p_147349_1_.func_149558_e()));
                         i = datainputstream.readInt();
                         int j = datainputstream.readInt();
-                        ContainerBeacon containerbeacon = (ContainerBeacon)net.playerEntity.openContainer;
+                        ContainerBeacon containerbeacon = (ContainerBeacon)playerEntity.openContainer;
                         Slot slot = containerbeacon.getSlot(0);
 
                         if (slot.getHasStack())
@@ -312,9 +245,9 @@ public class network_NetHandlerPlayServer
                     }
                 }
             }
-            else if ("MC|ItemName".equals(p_147349_1_.func_149559_c()) && net.playerEntity.openContainer instanceof ContainerRepair)
+            else if ("MC|ItemName".equals(p_147349_1_.func_149559_c()) && playerEntity.openContainer instanceof ContainerRepair)
             {
-                ContainerRepair containerrepair = (ContainerRepair)net.playerEntity.openContainer;
+                ContainerRepair containerrepair = (ContainerRepair)playerEntity.openContainer;
 
                 if (p_147349_1_.func_149558_e() != null && p_147349_1_.func_149558_e().length >= 1)
                 {

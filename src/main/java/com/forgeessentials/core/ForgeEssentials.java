@@ -2,6 +2,7 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
+import com.forgeessentials.core.preloader.FELaunchHandler;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -28,8 +29,6 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.network.S0PacketHandshake;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
-import com.forgeessentials.core.preloader.FEModContainer;
-import com.forgeessentials.core.preloader.FEPreLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
@@ -61,12 +60,14 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = ForgeEssentials.FEVERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
 public class ForgeEssentials extends ConfigLoaderBase {
 
     public static final String CONFIG_CAT = "Core";
     public static final String CONFIG_CAT_MISC = "Core.Misc";
     public static final String CONFIG_CAT_MODULES = "Core.Modules";
+
+    public static final String FEVERSION = "%VERSION%";
 
     @Instance(value = "ForgeEssentials")
     public static ForgeEssentials instance;
@@ -117,8 +118,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
     public void preInit(FMLPreInitializationEvent e)
     {
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
-        OutputHandler.felog.info("Initializing ForgeEssentials version " + FEModContainer.version + " (configDir = " + FEDIR.getAbsolutePath() + ")");
-        OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(FEPreLoader.jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(FEPreLoader.jarLocation));
+        OutputHandler.felog.info("Initializing ForgeEssentials version " + FEVERSION + " (configDir = " + FEDIR.getAbsolutePath() + ")");
+        OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(FELaunchHandler.jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(FELaunchHandler.jarLocation));
 
 
         // Load configuration
