@@ -196,11 +196,11 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound> {
                     if (tagData.getValue().isJsonArray())
                     {
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
-                        int[] byteArray = new int[jsonArray.size()];
+                        int[] intArray = new int[jsonArray.size()];
                         int index = 0;
                         for (JsonElement el : jsonArray)
-                            byteArray[index++] = (int) context.deserialize(el, Integer.class);
-                        result.setTag(tagName, new NBTTagIntArray(byteArray));
+                            intArray[index++] = (int) context.deserialize(el, Integer.class);
+                        result.setTag(tagName, new NBTTagIntArray(intArray));
                     }
                     else
                     {
