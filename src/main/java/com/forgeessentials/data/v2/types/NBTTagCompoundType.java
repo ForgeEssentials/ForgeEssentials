@@ -122,8 +122,8 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound> {
             case 11:
             {
                 JsonArray jsonArray = new JsonArray();
-                NBTTagByteArray tagByteArray = (NBTTagByteArray) tag;
-                for (byte value : tagByteArray.func_150292_c())
+                NBTTagIntArray tagByteArray = (NBTTagIntArray) tag;
+                for (int value : tagByteArray.func_150302_c())
                 {
                     jsonArray.add(new JsonPrimitive(value));
                 }
