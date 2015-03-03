@@ -83,7 +83,7 @@ public class ConfigServerVote extends ConfigLoaderBase {
 
             ItemStack stack = new ItemStack(item, amount, meta);
 
-            OutputHandler.felog.finer(stack.toString());
+            OutputHandler.felog.finer(stack.getUnlocalizedName());
 
             freeStuff.add(stack);
         }
