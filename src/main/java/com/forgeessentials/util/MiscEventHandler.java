@@ -38,6 +38,9 @@ public class MiscEventHandler {
 
         if (MajoritySleep && FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
+       	    if (world.getWorldInfo().getWorldTime() % 24000L < 12000L){ 
+       	    	return; 
+       	    }
             int playersT = FMLCommonHandler.instance().getMinecraftServerInstance().getCurrentPlayerCount();
             int playersS = 1;
             for (Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
