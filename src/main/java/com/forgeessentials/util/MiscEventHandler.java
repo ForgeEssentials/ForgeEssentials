@@ -38,6 +38,7 @@ public class MiscEventHandler {
 
         if (MajoritySleep && FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
+            WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
        	    if (world.getWorldInfo().getWorldTime() % 24000L < 12000L){ 
        	    	return; 
        	    }
@@ -56,7 +57,6 @@ public class MiscEventHandler {
             OutputHandler.felog.finer("Players sleeping: " + percent + "%");
             if (percent > 50)
             {
-                WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
                 long time = world.getWorldInfo().getWorldTime() + 24000L;
                 world.getWorldInfo().setWorldTime(time - time % 24000L);
 
