@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.events.NoPlayerInfoEvent;
 import com.forgeessentials.util.selections.ISelectionProvider;
 import cpw.mods.fml.common.Mod;
 import net.minecraft.entity.player.EntityPlayer;
@@ -179,6 +181,7 @@ public class PlayerInfo {
             // Attempt to populate this info with some data from our storage.
             info = load(playerID.toString());
             if (info == null)
+                APIRegistry.getFEEventBus().post(new NoPlayerInfoEvent(UserIdent.getPlayerByUuid(playerID)));
                 info = new PlayerInfo(playerID);
             playerInfoMap.put(playerID, info);
         }
