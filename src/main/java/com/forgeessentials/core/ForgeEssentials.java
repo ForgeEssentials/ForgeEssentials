@@ -258,7 +258,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
                 "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
         PlayerInfo.persistSelections = config.get(CONFIG_CAT, "persistSelections", false,
                 "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.").getBoolean(false);
-        MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If +50% of players sleep, make it day.").getBoolean(true);
+        MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If a majority of players sleep, make it day.").getBoolean(true);
+        MiscEventHandler.majoritySleepThreshold = config.get(CONFIG_CAT_MISC, "MajoritySleepThreshold", 50, "Define the percentage of players that constitutes a majority for MajoritySleep to kick in.").getInt(50);
     }
 
     public static ConfigManager getConfigManager()
