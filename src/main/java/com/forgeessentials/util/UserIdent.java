@@ -310,9 +310,14 @@ public class UserIdent {
         GameProfile profile = getGameProfileByUuid(uuid);
         if (profile != null)
             return profile.getName();
-        for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
-            if (ident.getUuid().equals(uuid))
-                return ident.getUsername();
+        for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers()) {
+        	try {
+        		if (ident.getUuid().equals(uuid))
+        			return ident.getUsername();
+        	} catch (Exception e) {
+        		return null;
+        	}
+        }
         return null;
     }
 
