@@ -37,14 +37,15 @@ public class BlockChangeType extends LogType {
         {
             PreparedStatement ps = ModulePlayerLogger.getConnection().prepareStatement(getprepareStatementSQL());
             ps.setString(1, player.getPersistentID().toString());
-            ps.setString(2, cat.toString());
-            ps.setString(3, block);
-            ps.setInt(4, player.dimension);
-            ps.setInt(5, X);
-            ps.setInt(6, Y);
-            ps.setInt(7, Z);
-            ps.setTimestamp(8, time);
-            ps.setBlob(9, teBlob);
+            ps.setString(2, player.getCommandSenderName());
+            ps.setString(3, cat.toString());
+            ps.setString(4, block);
+            ps.setInt(5, player.dimension);
+            ps.setInt(6, X);
+            ps.setInt(7, Y);
+            ps.setInt(8, Z);
+            ps.setTimestamp(9, time);
+            ps.setBlob(10, teBlob);
             ps.execute();
             ps.clearParameters();
             ps.close();
@@ -70,13 +71,13 @@ public class BlockChangeType extends LogType {
     public String getTableCreateSQL()
     {
         return "CREATE TABLE IF NOT EXISTS " + getName()
-                + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player VARCHAR(255), category VARCHAR(32), block VARCHAR(32), Dim INT, X INT, Y INT, Z INT, time DATETIME, te LONGBLOB)";
+                + "(id INT UNSIGNED NOT NULL AUTO_INCREMENT,PRIMARY KEY (id), player VARCHAR(255), username VARCHAR(255), category VARCHAR(32), block VARCHAR(32), Dim INT, X INT, Y INT, Z INT, time DATETIME, te LONGBLOB)";
     }
 
     @Override
     public String getprepareStatementSQL()
     {
-        return "INSERT INTO " + getName() + " (player, category, block, Dim, X, Y, Z, time, te) VALUES (?,?,?,?,?,?,?,?,?);";
+        return "INSERT INTO " + getName() + " (player, username, category, block, Dim, X, Y, Z, time, te) VALUES (?,?,?,?,?,?,?,?,?,?);";
     }
 
     public enum blockChangeLogCategory {
