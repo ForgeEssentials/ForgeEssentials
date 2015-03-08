@@ -3,6 +3,7 @@ package com.forgeessentials.teleport.portal;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.HashMap;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -34,7 +35,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/portal delete|create <name> [width] [height] [x y z]";
+        return "/portal list|delete|create <name> [x y z] [dimension]";
     }
 
     @Override
@@ -75,6 +76,9 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
         case "delete":
             parseDelete(sender, args);
             break;
+        case "list":
+            parseList(sender, args);
+            break;
         default:
             throw new CommandException("Unknown subcommand " + subcommand);
         }
@@ -84,7 +88,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
     {
         if (args.isEmpty())
         {
-            OutputHandler.chatConfirmation(sender, "/portal create <name> [width] [height] [x y z]");
+            OutputHandler.chatConfirmation(sender, "/portal create <name> [x y z] <dimension>");
             return;
         }
 
@@ -100,7 +104,12 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
             int x = parseInt(sender, args.remove());
             int y = parseInt(sender, args.remove());
             int z = parseInt(sender, args.remove());
-            target = new NamedWorldPoint(sender.dimension, x, y, z);
+            
+            int dimension = sender.dimension;
+            if(args.size() == 1)
+            	dimension = parseInt(sender, args.remove());
+            	
+            target = new NamedWorldPoint(dimension, x, y, z);
         }
 
         Selection selection = SelectionHandler.selectionProvider.getSelection(sender);
@@ -125,10 +134,28 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
         }
 
         String name = args.remove();
-        if (!PortalManager.getInstance().portals.containsKey(name))
-            throw new CommandException("Portal by that name does not exist.");
+        if (PortalManager.getInstance().portals.containsKey(name))
+        	OutputHandler.chatConfirmation(sender, "Portal '" + name + "' deleted.");
+        else
+            throw new CommandException("Portal '" + name + "'  does not exist.");
 
         PortalManager.getInstance().remove(name);
+    }
+    
+    /**
+     * Print lists of portals, their locations and dimensions
+     */
+    private static void parseList(EntityPlayerMP sender, Queue<String> args)
+    {
+    	if (!args.isEmpty())
+    		throw new CommandException("No arguments are accepted for /portal list");
+        
+        for (HashMap.Entry<String, Portal> entry : PortalManager.getInstance().portals.entrySet()) {
+            String name = entry.getKey();
+            Portal portal = entry.getValue();
+            
+            OutputHandler.chatConfirmation(sender, name + ": " + portal.getPortalArea().toString());
+        }
     }
 
 }
