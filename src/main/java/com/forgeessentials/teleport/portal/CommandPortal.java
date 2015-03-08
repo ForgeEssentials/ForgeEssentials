@@ -33,12 +33,6 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
-    {
-        return "/portal delete|create <name> [width] [height] [x y z]";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -63,7 +57,9 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
 
         if (args.isEmpty())
         {
-            OutputHandler.chatConfirmation(sender, getCommandUsage(sender));
+            OutputHandler.chatConfirmation(sender, "/portal create <name> [x y z] [dimension]");
+            OutputHandler.chatConfirmation(sender, "/portal delete <name>");
+            OutputHandler.chatConfirmation(sender, "/portal list");
             return;
         }
 
@@ -88,7 +84,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
     {
         if (args.isEmpty())
         {
-            OutputHandler.chatConfirmation(sender, "/portal create <name> [width] [height] [x y z]");
+            OutputHandler.chatConfirmation(sender, "/portal create <name> [x y z] [dimension]");
             return;
         }
 
