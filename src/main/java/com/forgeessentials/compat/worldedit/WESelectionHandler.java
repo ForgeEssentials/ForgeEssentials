@@ -1,5 +1,9 @@
 package com.forgeessentials.compat.worldedit;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
+
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.util.OutputHandler;
@@ -8,14 +12,13 @@ import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
+import com.sk89q.worldedit.forge.ForgeWorld;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.CylinderRegion;
 import com.sk89q.worldedit.regions.EllipsoidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldedit.regions.RegionSelector;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 public class WESelectionHandler implements ISelectionProvider {
 
@@ -25,99 +28,74 @@ public class WESelectionHandler implements ISelectionProvider {
     }
 
     @Override
-    public Point getPoint1(EntityPlayerMP player)
-    {
-        Point[] points = getPoints(player);
-        if (points != null)
-            return points[0];
-        return null;
-    }
-
-    @Override
-    public Point getPoint2(EntityPlayerMP player)
-    {
-        Point[] points = getPoints(player);
-        if (points != null)
-            return points[1];
-        return null;
-    }
-
-    @Override
     public Selection getSelection(EntityPlayerMP player)
     {
-        Point[] points = getPoints(player);
-        if (points != null)
-            return new Selection(points[0], points[1]);
-        return null;
-    }
-
-    // these methods don't do anything, because in this case the selection is read-only
-
-    @Override
-    public void setPoint1(EntityPlayerMP player, Point point){}
-
-    @Override
-    public void setPoint2(EntityPlayerMP player, Point point){}
-
-    public Point[] getPoints(EntityPlayerMP player)
-    {
-        Point[] points = new Point[2];
-
-        // the following code is a modified version of WorldEdit Bukkit's selection sharing API.
-        LocalSession session = ForgeWorldEdit.inst.getSession(player);
-        RegionSelector selector = session.getRegionSelector(ForgeWorldEdit.inst.getWorld(player.worldObj));
-
         try
         {
-            Region region = selector.getRegion();
-            
-            //World world = session.getSelectionWorld();
-            
+            LocalSession session = ForgeWorldEdit.inst.getSession(player);
+            Region region = session.getSelection(session.getSelectionWorld());
+            World world = ((ForgeWorld) session.getSelectionWorld()).getWorld();
+
             if (region instanceof CuboidRegion)
             {
                 Vector wepos1 = ((CuboidRegion) region).getPos1();
                 Vector wepos2 = ((CuboidRegion) region).getPos2();
-                Point fepos1 = new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ());
-                Point fepos2 = new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ());
-
-                points[0] = fepos1;
-                points[1] = fepos2;
-                return points;
+                return new Selection(world, 
+                        new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), 
+                        new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
             }
             else if (region instanceof Polygonal2DRegion)
             {
                 Polygonal2DRegion polygon = (Polygonal2DRegion) region;
-                points[0] = new Point(polygon.getMinimumPoint().getBlockX(), polygon.getMinimumPoint().getBlockY(), polygon.getMinimumPoint().getBlockZ());
-                points[1] = new Point(polygon.getMaximumPoint().getBlockX(), polygon.getMaximumPoint().getBlockY(), polygon.getMaximumPoint().getBlockZ());
-                return points;
+                return new Selection(world, 
+                        new Point(polygon.getMinimumPoint().getBlockX(), polygon.getMinimumPoint().getBlockY(), polygon.getMinimumPoint().getBlockZ()), 
+                        new Point(polygon.getMaximumPoint().getBlockX(), polygon.getMaximumPoint().getBlockY(), polygon.getMaximumPoint().getBlockZ()));
             }
             else if (region instanceof EllipsoidRegion)
             {
                 EllipsoidRegion ellipsoid = (EllipsoidRegion) region;
                 Vector c = ellipsoid.getCenter();
                 Vector r = ellipsoid.getRadius();
-                points[0] = new Point(c.getBlockX() - r.getBlockX(), c.getBlockY() - r.getBlockY(), c.getBlockZ() - r.getBlockZ());
-                points[1] = new Point(c.getBlockX() + r.getBlockX(), c.getBlockY() + r.getBlockY(), c.getBlockZ() + r.getBlockZ());
-                return points;
+                return new Selection(world, 
+                        new Point(c.getBlockX() - r.getBlockX(), c.getBlockY() - r.getBlockY(), c.getBlockZ() - r.getBlockZ()), 
+                        new Point(c.getBlockX() + r.getBlockX(), c.getBlockY() + r.getBlockY(), c.getBlockZ() + r.getBlockZ()));
             }
             else if (region instanceof CylinderRegion)
             {
                 CylinderRegion cyl = (CylinderRegion) region;
                 Vector c = cyl.getCenter();
                 Vector2D r = cyl.getRadius();
-                points[0] = new Point(c.getBlockX() - r.getBlockX(), cyl.getMinimumY(), c.getBlockZ() - r.getBlockZ());
-                points[1] = new Point(c.getBlockX() + r.getBlockX(), cyl.getMaximumY(), c.getBlockZ() + r.getBlockZ());
-                return points;
-            }
-            else
-            {
-                return null;
+                return new Selection(world, 
+                        new Point(c.getBlockX() - r.getBlockX(), cyl.getMinimumY(), c.getBlockZ() - r.getBlockZ()), 
+                        new Point(c.getBlockX() + r.getBlockX(), cyl.getMaximumY(), c.getBlockZ() + r.getBlockZ()));
             }
         }
         catch (IncompleteRegionException e)
         {
-            return null;
+            /* do nothing */
         }
+        return null;
+    }
+
+    @Override
+    public void setDimension(EntityPlayerMP player, int dim)
+    {
+        LocalSession session = ForgeWorldEdit.inst.getSession(player);
+        session.getRegionSelector(session.getSelectionWorld()).setWorld(ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(dim)));
+    }
+
+    @Override
+    public void setStart(EntityPlayerMP player, Point start)
+    {
+        LocalSession session = ForgeWorldEdit.inst.getSession(player);
+        session.getRegionSelector(session.getSelectionWorld()).selectPrimary(new Vector(start.getX(), start.getY(), start.getZ()), null);
+    }
+
+    @Override
+    public void setEnd(EntityPlayerMP player, Point end)
+    {
+        LocalSession session = ForgeWorldEdit.inst.getSession(player);
+        session.getRegionSelector(session.getSelectionWorld()).selectSecondary(new Vector(end.getX(), end.getY(), end.getZ()), null);
     }
 
 }

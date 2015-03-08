@@ -7,26 +7,22 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.events.NoPlayerInfoEvent;
-import com.forgeessentials.util.selections.ISelectionProvider;
-import cpw.mods.fml.common.Mod;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.events.NoPlayerInfoEvent;
 import com.google.common.collect.ImmutableMap;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -69,11 +65,14 @@ public class PlayerInfo {
     private HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
 
     // selection stuff
-    @SaveableField()
+    @SaveableField
     protected Point sel1;
 
-    @SaveableField()
+    @SaveableField
     protected Point sel2;
+    
+    @SaveableField
+    protected int selDim;
 
     @SaveableField()
     private int timePlayed = 0;
@@ -302,6 +301,11 @@ public class PlayerInfo {
         return sel2;
     }
 
+    public int getSelDim()
+    {
+        return selDim;
+    }
+
     public void setSel1(Point point)
     {
         sel1 = point;
@@ -310,6 +314,11 @@ public class PlayerInfo {
     public void setSel2(Point point)
     {
         sel2 = point;
+    }
+
+    public void setSelDim(int dimension)
+    {
+        selDim = dimension;
     }
 
     public void clearSelection()
