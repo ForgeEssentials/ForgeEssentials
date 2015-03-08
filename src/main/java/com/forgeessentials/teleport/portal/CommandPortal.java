@@ -76,6 +76,9 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
         case "delete":
             parseDelete(sender, args);
             break;
+        case "list":
+            parseList(sender);
+            break;
         default:
             throw new CommandException("Unknown subcommand " + subcommand);
         }
@@ -130,6 +133,19 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
             throw new CommandException("Portal by that name does not exist.");
 
         PortalManager.getInstance().remove(name);
+    }
+    
+    /**
+     * Print lists of portals, their locations and dimensions
+     */
+    private static void parseList(EntityPlayerMP sender)
+    {
+        for (Map.Entry<String, Portal> entry : map.entrySet()) {
+            String name = entry.getKey();
+            Portal portal = entry.getValue();
+            
+            OutputHandler.chatConfirmation(sender, name + ": " + portal.getPortalArea.toString);
+        }
     }
 
 }
