@@ -3,6 +3,9 @@ package com.forgeessentials.teleport.portal;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.forgeessentials.util.selections.SelectionHandler;
 import net.minecraft.command.CommandException;
