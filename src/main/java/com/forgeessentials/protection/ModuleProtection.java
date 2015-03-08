@@ -138,8 +138,8 @@ public class ModuleProtection {
 
         // ----------------------------------------
         // Other
-        APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE, "Allow PvP");
-        APIRegistry.perms.registerPermissionProperty(PERM_GAMEMODE, "-1", "Force gamemode (-1 = none, 0 = survival, 1 = creative, 2 = adventure)");
+        APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE, "If denied for at least one of two fighting players, PvP will be disabled");
+        APIRegistry.perms.registerPermissionProperty(PERM_GAMEMODE, "-1", "Force gamemode (-1 = none / default, 0 = survival, 1 = creative, 2 = adventure)");
         APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default", "Inventory group property - can be set to any identifier to separate inventories for certain regions");
         APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE, "Allow interacting with entities (villagers, dogs, horses)");
         APIRegistry.perms.registerPermission(PERM_EXPLOSION, RegisteredPermValue.TRUE, "(global) Allows explosions.");
