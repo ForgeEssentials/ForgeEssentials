@@ -8,6 +8,7 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.command.ICommandSender;
 
@@ -51,6 +52,11 @@ public class ModuleScripting
         FunctionHelper.registerServerCommand(new CommandScript());
         FunctionHelper.registerServerCommand(new TimedTaskManager());
         FunctionHelper.registerServerCommand(new MacroCommand());
+    }
+
+    @SubscribeEvent
+    public void serverStarted(FEModuleServerPostInitEvent e)
+    {
         ShortcutCommands.load();
     }
 

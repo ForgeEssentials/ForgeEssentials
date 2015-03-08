@@ -1,5 +1,6 @@
 package com.forgeessentials.scripting.commands;
 
+import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
@@ -42,6 +43,10 @@ public class ShortcutCommands {
         CommandHandler ch = (CommandHandler) MinecraftServer.getServer().getCommandManager();
         for (CommandWrapper cmd : list)
         {
+            if (ch.commandSet.contains(cmd.getCommandName()))
+            {
+                OutputHandler.felog.warning(String.format("The command name %s is already in use for a regular command - defined shortcut command will be ignored.", cmd.getCommandName()));
+            }
             ch.registerCommand(cmd);
         }
     }
