@@ -3,6 +3,9 @@ package com.forgeessentials.teleport.portal;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.forgeessentials.util.selections.SelectionHandler;
 import net.minecraft.command.CommandException;
@@ -33,12 +36,6 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
-    {
-        return "/portal delete|create <name> [width] [height] [x y z]";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -63,7 +60,9 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
 
         if (args.isEmpty())
         {
-            OutputHandler.chatConfirmation(sender, getCommandUsage(sender));
+            OutputHandler.chatConfirmation(sender, "/portal create <name> [x y z] [dimension]");
+            OutputHandler.chatConfirmation(sender, "/portal delete <name>");
+            OutputHandler.chatConfirmation(sender, "/portal list");
             return;
         }
 
@@ -76,6 +75,9 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
         case "delete":
             parseDelete(sender, args);
             break;
+        case "list":
+            parseList(sender);
+            break;
         default:
             throw new CommandException("Unknown subcommand " + subcommand);
         }
@@ -85,7 +87,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
     {
         if (args.isEmpty())
         {
-            OutputHandler.chatConfirmation(sender, "/portal create <name> [width] [height] [x y z]");
+            OutputHandler.chatConfirmation(sender, "/portal create <name> [x y z] [dimension]");
             return;
         }
 
@@ -130,6 +132,19 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
             throw new CommandException("Portal by that name does not exist.");
 
         PortalManager.getInstance().remove(name);
+    }
+    
+    /**
+     * Print lists of portals, their locations and dimensions
+     */
+    private static void parseList(EntityPlayerMP sender)
+    {
+        for (Map.Entry<String, Portal> entry : PortalManager.getInstance().portals.entrySet()) {
+            String name = entry.getKey();
+            Portal portal = entry.getValue();
+            
+            OutputHandler.chatConfirmation(sender, name + ": " + portal.getPortalArea.toString);
+        }
     }
 
 }
