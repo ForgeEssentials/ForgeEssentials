@@ -136,7 +136,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
      */
     private static void parseList(EntityPlayerMP sender)
     {
-        for (Map.Entry<String, Portal> entry : map.entrySet()) {
+        for (Map.Entry<String, Portal> entry : PortalManager.getInstance().portals.entrySet()) {
             String name = entry.getKey();
             Portal portal = entry.getValue();
             
