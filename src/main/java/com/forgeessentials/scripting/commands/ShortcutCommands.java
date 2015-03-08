@@ -46,6 +46,7 @@ public class ShortcutCommands {
             if (ch.commandSet.contains(cmd.getCommandName()))
             {
                 OutputHandler.felog.warning(String.format("The command name %s is already in use for a regular command - defined shortcut command will be ignored.", cmd.getCommandName()));
+                continue;
             }
             ch.registerCommand(cmd);
         }
