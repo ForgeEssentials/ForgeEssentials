@@ -1,17 +1,33 @@
 package com.forgeessentials.commons.selections;
 
-public class Selection extends AreaBase {
-    // only really used for copying.. the points it was defined from.
-    private Point start;    // start selection
-    private Point end;    // end selection
+import net.minecraft.world.World;
 
-    public Selection(Point point1, Point point2)
+public class Selection extends WorldArea {
+
+    private Point start;
+
+    private Point end;
+
+    public Selection(int dim, Point start, Point end)
     {
-        super(point1, point2);
-        start = point1;
-        start.validate();
-        end = point2;
-        point2.validate();
+        super(dim, start == null ? (end == null ? new Point(0, 0, 0) : end) : start, end == null ? (start == null ? new Point(0, 0, 0) : start) : end);
+        this.start = start;
+        this.end = end;
+    }
+
+    public Selection(World world, Point start, Point end)
+    {
+        this(world.provider.dimensionId, start, end);
+    }
+
+    public Selection(int dim, AreaBase area)
+    {
+        this(dim, area.getLowPoint(), area.getHighPoint());
+    }
+
+    public Selection(World world, AreaBase area)
+    {
+        this(world.provider.dimensionId, area.getLowPoint(), area.getHighPoint());
     }
 
     public Point getStart()
@@ -37,4 +53,5 @@ public class Selection extends AreaBase {
         end.validate();
         redefine(start, this.end);
     }
+    
 }

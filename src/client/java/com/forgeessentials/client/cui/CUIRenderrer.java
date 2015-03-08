@@ -1,19 +1,22 @@
 package com.forgeessentials.client.cui;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.core.PlayerInfoClient;
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.Selection;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import com.forgeessentials.client.ForgeEssentialsClient;
+import com.forgeessentials.client.core.PlayerInfoClient;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.Selection;
+
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 //Depreciated
 @SideOnly(value = Side.CLIENT)
@@ -24,12 +27,12 @@ public class CUIRenderrer {
     {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
         PlayerInfoClient info = ForgeEssentialsClient.info;
-
-        if (player == null || info == null || info.getPoint1() == null && info.getPoint2() == null)
-        // OutputHandler.devdebug("NOT RENDERRING");
-        {
+        if (player == null || info == null)
             return;
-        }
+        
+        Selection sel = info.getSelection();
+        if (sel == null)
+            return;
 
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -43,9 +46,9 @@ public class CUIRenderrer {
         boolean render1 = false;
 
         // render p1
-        if (info.getPoint1() != null)
+        if (sel.getStart() != null)
         {
-            Point p1 = info.getPoint1();
+            Point p1 = sel.getStart();
             GL11.glTranslated(p1.x - RenderManager.renderPosX, p1.y + 1 - RenderManager.renderPosY, p1.z - RenderManager.renderPosZ);
             GL11.glScalef(1.0F, -1.0F, -1.0F);
             GL11.glColor3f(255, 0, 0);
@@ -54,10 +57,10 @@ public class CUIRenderrer {
         }
 
         // render p2
-        if (info.getPoint2() != null)
+        if (sel.getEnd() != null)
         {
-            Point p1 = info.getPoint1();
-            Point p2 = info.getPoint2();
+            Point p1 = sel.getStart();
+            Point p2 = sel.getEnd();
 
             if (render1)
             {
@@ -77,10 +80,8 @@ public class CUIRenderrer {
             renderBlockBox(tess);
         }
 
-        if (info.getSelection() != null)
+        if (sel.getStart() != null && sel.getEnd() != null)
         {
-            Selection sel = info.getSelection();
-
             float x = sel.getLowPoint().getX() - sel.getEnd().getX();
             float y = sel.getLowPoint().getY() - sel.getEnd().getY();
             float z = (float) (sel.getLowPoint().getZ() - sel.getEnd().getZ()) - 1;

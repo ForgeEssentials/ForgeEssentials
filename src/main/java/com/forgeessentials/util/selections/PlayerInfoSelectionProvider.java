@@ -1,51 +1,36 @@
 package com.forgeessentials.util.selections;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.util.PlayerInfo;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 public class PlayerInfoSelectionProvider implements ISelectionProvider {
-
-    @Override
-    public Point getPoint1(EntityPlayerMP player)
-    {
-        PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-        return pi.getSel1();
-    }
-
-    @Override
-    public Point getPoint2(EntityPlayerMP player)
-    {
-        PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-        return pi.getSel2();
-    }
 
     @Override
     public Selection getSelection(EntityPlayerMP player)
     {
         PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-        if (pi.getSel1() == null || pi.getSel2() == null)
-        {
-            return null;
-        }
-        return new Selection(pi.getSel1(), pi.getSel2());
+        return new Selection(pi.getSelDim(), pi.getSel1(), pi.getSel2());
     }
 
     @Override
-    public void setPoint1(EntityPlayerMP player, Point sel1)
+    public void setDimension(EntityPlayerMP player, int dim)
     {
-        PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-        pi.setSel1(sel1);
-        pi.sendSelectionUpdate();
+        PlayerInfo.getPlayerInfo(player).setSelDim(dim);
     }
 
     @Override
-    public void setPoint2(EntityPlayerMP player, Point sel2)
+    public void setStart(EntityPlayerMP player, Point start)
     {
-        PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
-        pi.setSel2(sel2);
-        pi.sendSelectionUpdate();
+        PlayerInfo.getPlayerInfo(player).setSel1(start);
+    }
+
+    @Override
+    public void setEnd(EntityPlayerMP player, Point end)
+    {
+        PlayerInfo.getPlayerInfo(player).setSel2(end);
     }
 
 }

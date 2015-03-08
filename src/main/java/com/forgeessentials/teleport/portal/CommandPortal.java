@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.forgeessentials.util.selections.SelectionHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,7 +15,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.NamedWorldArea;
 import com.forgeessentials.util.NamedWorldPoint;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.SelectionHandler;
 
 /**
  * @author Olee
@@ -112,7 +111,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
         if (size.getX() > 0 && size.getY() > 0 && size.getZ() > 0)
             throw new CommandException("Portal selection must be flat in one axis");
         
-        Portal portal = new Portal(new NamedWorldArea(sender.dimension, selection), target);
+        Portal portal = new Portal(new NamedWorldArea(selection.getDimension(), selection), target);
         PortalManager.getInstance().add(name, portal);
         OutputHandler.chatConfirmation(sender, String.format("Created new portal leading to %s", target.toString()));
     }

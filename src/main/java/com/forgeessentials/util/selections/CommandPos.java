@@ -10,12 +10,11 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WorldPoint;
 
 public class CommandPos extends ForgeEssentialsCommandBase {
     private int type;
@@ -46,11 +45,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
                 if (type == 1)
                 {
-                    SelectionHandler.selectionProvider.setPoint1(player,new Point(x, y, z));
+                    SelectionHandler.selectionProvider.setStart(player, new Point(x, y, z));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setPoint2(player,new Point(x, y, z));
+                    SelectionHandler.selectionProvider.setEnd(player, new Point(x, y, z));
                 }
 
                 OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -83,11 +82,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
             if (type == 1)
             {
-                SelectionHandler.selectionProvider.setPoint1(player,new Point(x, y, z));
+                SelectionHandler.selectionProvider.setStart(player, new Point(x, y, z));
             }
             else
             {
-                SelectionHandler.selectionProvider.setPoint2(player,new Point(x, y, z));
+                SelectionHandler.selectionProvider.setEnd(player, new Point(x, y, z));
             }
 
             OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -115,11 +114,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
         if (type == 1)
         {
-            SelectionHandler.selectionProvider.setPoint1(player, point);
+            SelectionHandler.selectionProvider.setStart(player, point);
         }
         else
         {
-            SelectionHandler.selectionProvider.setPoint2(player, point);
+            SelectionHandler.selectionProvider.setEnd(player, point);
         }
 
         OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);

@@ -1,16 +1,17 @@
 package com.forgeessentials.commons.selections;
 
+import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
+
 import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Vec3;
-
-import java.io.Serializable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @SaveableObject(SaveInline = true)
 public class Point implements Serializable, Comparable<Point> {
@@ -69,19 +70,22 @@ public class Point implements Serializable, Comparable<Point> {
 		return z;
 	}
 
-	public void setX(int x)
+	public Point setX(int x)
 	{
 		this.x = x;
+        return this;
 	}
 
-	public void setY(int y)
+	public Point setY(int y)
 	{
 		this.y = y;
+        return this;
 	}
 
-	public void setZ(int z)
+	public Point setZ(int z)
 	{
 		this.z = z;
+		return this;
 	}
 
 	/**
