@@ -39,13 +39,13 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 			UserIdent ident = new UserIdent(sender);
 			switch (args[0].toLowerCase()) {
 			case "here":
-				APIRegistry.perms.setPlayerPermissionProperty(ident, FEPermissions.SPAWN, new WorldPoint(sender).toString());
+				APIRegistry.perms.setPlayerPermissionProperty(ident, FEPermissions.SPAWN_LOC, new WorldPoint(sender).toString());
 				break;
 			case "bed":
-				APIRegistry.perms.setPlayerPermissionProperty(ident, FEPermissions.SPAWN, "bed");
+				APIRegistry.perms.setPlayerPermissionProperty(ident, FEPermissions.SPAWN_LOC, "bed");
 				break;
 			case "clear":
-				APIRegistry.perms.getServerZone().clearPlayerPermission(ident, FEPermissions.SPAWN);
+				APIRegistry.perms.getServerZone().clearPlayerPermission(ident, FEPermissions.SPAWN_LOC);
 				break;
 			default:
 				throw new CommandException("Invalid location argument");

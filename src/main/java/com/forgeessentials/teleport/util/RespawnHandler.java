@@ -34,7 +34,7 @@ public class RespawnHandler {
         UserIdent ident = new UserIdent(player);
         if (location == null)
             location = new WarpPoint(player);
-        String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null, GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN, true);
+        String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null, GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN_LOC, true);
         WorldPoint point = null;
         if (spawnProperty == null)
             return null;

@@ -458,20 +458,32 @@ public class PermissionCommandParser {
 
         String loc = arguments.args.remove().toLowerCase();
         WorldPoint point = null;
-        boolean isBed = false;
         switch (loc)
         {
         case "here":
             point = new WorldPoint(arguments.senderPlayer);
             break;
         case "bed":
-            isBed = true;
-            break;
+        {
+            if (arguments.args.isEmpty())
+                throw new CommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            String val = arguments.args.peek().toLowerCase();
+            if (val.equals("true") | val.equals("enable"))
+            {
+                zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, true);
+                
+            }
+            else if (val.equals("false") | val.equals("disable"))
+            {
+                zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, false);
+            }
+            return;
+        }
         case "clear":
             break;
         default:
             if (arguments.args.size() < 3)
-                throw new CommandException("Too few arguments!");
+                throw new CommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             try
             {
                 int x = CommandBase.parseInt(arguments.sender, loc);
@@ -488,19 +500,14 @@ public class PermissionCommandParser {
             break;
         }
 
-        if (isBed)
+        if (point == null)
         {
-            zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN, "bed");
-            arguments.info(String.format("Set spawn for user %s to be bed-location in zone %s", ident.getUsernameOrUUID(), zone.getName()));
-        }
-        else if (point == null)
-        {
-            zone.clearPlayerPermission(ident, FEPermissions.SPAWN);
+            zone.clearPlayerPermission(ident, FEPermissions.SPAWN_LOC);
             arguments.info(String.format("Cleared spawn-rule for user %s in zone %s", ident.getUsernameOrUUID(), zone.getName()));
         }
         else
         {
-            zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN, point.toString());
+            zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN_LOC, point.toString());
             arguments.info(String.format("Set spawn for user %s to %s in zone %s", ident.getUsernameOrUUID(), point.toString(), zone.getName()));
         }
     }
@@ -883,15 +890,27 @@ public class PermissionCommandParser {
 
         String loc = arguments.args.remove().toLowerCase();
         WorldPoint point = null;
-        boolean isBed = false;
         switch (loc)
         {
         case "here":
             point = new WorldPoint(arguments.senderPlayer);
             break;
         case "bed":
-            isBed = true;
-            break;
+        {
+            if (arguments.args.isEmpty())
+                throw new CommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            String val = arguments.args.peek().toLowerCase();
+            if (val.equals("true") | val.equals("enable"))
+            {
+                zone.setGroupPermission(group, FEPermissions.SPAWN_BED, true);
+                
+            }
+            else if (val.equals("false") | val.equals("disable"))
+            {
+                zone.setGroupPermission(group, FEPermissions.SPAWN_BED, false);
+            }
+            return;
+        }
         case "clear":
             break;
         default:
@@ -913,19 +932,14 @@ public class PermissionCommandParser {
             break;
         }
 
-        if (isBed)
+        if (point == null)
         {
-            zone.setGroupPermissionProperty(group, FEPermissions.SPAWN, "bed");
-            arguments.info(String.format("Set spawn for group %s to be bed-location in zone %s", group, zone.getName()));
-        }
-        else if (point == null)
-        {
-            zone.clearGroupPermission(group, FEPermissions.SPAWN);
+            zone.clearGroupPermission(group, FEPermissions.SPAWN_LOC);
             arguments.info(String.format("Cleared spawn-rule for group %s in zone %s", group, zone.getName()));
         }
         else
         {
-            zone.setGroupPermissionProperty(group, FEPermissions.SPAWN, point.toString());
+            zone.setGroupPermissionProperty(group, FEPermissions.SPAWN_LOC, point.toString());
             arguments.info(String.format("Set spawn for group %s to %s in zone %s", group, point.toString(), zone.getName()));
         }
     }

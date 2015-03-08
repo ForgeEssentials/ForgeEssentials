@@ -143,7 +143,8 @@ public class ModulePermissions extends ConfigLoaderBase {
         APIRegistry.perms.registerPermissionDescription(FEPermissions.SUFFIX, "Suffix property node");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_ENTRY_MESSAGE, "Zone entry message");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_EXIT_MESSAGE, "Zone exit message");
-        APIRegistry.perms.registerPermissionProperty(FEPermissions.SPAWN, "bed", "Player spawn property");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.SPAWN_LOC, "Player spawn location property");
+        APIRegistry.perms.registerPermission(FEPermissions.SPAWN_BED, RegisteredPermValue.TRUE, "Player spawn at bed if available");
 
         APIRegistry.perms.registerPermissionDescription(CommandZone.PERM_NODE, "Permission nodes for area-management command");
         APIRegistry.perms.registerPermission(CommandZone.PERM_ALL, RegisteredPermValue.OP);
