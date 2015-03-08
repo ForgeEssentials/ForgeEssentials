@@ -311,7 +311,7 @@ public class UserIdent {
         if (profile != null)
             return profile.getName();
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
-            if (ident.getUuid().equals(uuid))
+            if (ident.hasUUID() && ident.getUuid().equals(uuid))
                 return ident.getUsername();
         return null;
     }
