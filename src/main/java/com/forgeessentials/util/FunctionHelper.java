@@ -21,6 +21,7 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -1133,6 +1134,35 @@ public final class FunctionHelper {
         else
         {
             ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(command);
+        }
+    }
+
+    public static void findSafeY(EntityPlayer player)
+    {
+        int x = (int)player.posX;
+        int y = (int)player.posY;
+        int z = (int)player.posZ;
+        World w = player.worldObj;
+        if(w.getBlock(x, y, z) == Blocks.air)
+        {
+            if(w.getBlock(x, y + 1, z) == Blocks.air || w.getBlock(x, y - 1, z) == Blocks.air)
+                return;
+        }
+        else if(w.getBlock(x, y - 1, z) == Blocks.air && w.getBlock(x, y-2, z) == Blocks.air)
+        {
+            return;
+        }
+        else
+        {
+            while(y < 256)
+            {
+                if(w.getBlock(x, y, z) == Blocks.air && w.getBlock(x, y + 1, z) == Blocks.air)
+                {
+                    player.setPositionAndUpdate(player.posX, y, player.posZ);
+                    return;
+                }
+                y++;
+            }
         }
     }
 
