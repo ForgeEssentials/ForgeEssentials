@@ -11,14 +11,13 @@ import com.forgeessentials.util.selections.ISelectionProvider;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.Vector2D;
 import com.sk89q.worldedit.forge.ForgeWorld;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.CylinderRegion;
-import com.sk89q.worldedit.regions.EllipsoidRegion;
-import com.sk89q.worldedit.regions.Polygonal2DRegion;
-import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.regions.RegionSelector;
+import com.sk89q.worldedit.regions.selector.CuboidRegionSelector;
+import com.sk89q.worldedit.regions.selector.CylinderRegionSelector;
+import com.sk89q.worldedit.regions.selector.EllipsoidRegionSelector;
+import com.sk89q.worldedit.regions.selector.Polygonal2DRegionSelector;
 
 public class WESelectionHandler implements ISelectionProvider {
 
@@ -30,49 +29,85 @@ public class WESelectionHandler implements ISelectionProvider {
     @Override
     public Selection getSelection(EntityPlayerMP player)
     {
-        try
-        {
-            LocalSession session = ForgeWorldEdit.inst.getSession(player);
-            Region region = session.getSelection(session.getSelectionWorld());
-            World world = ((ForgeWorld) session.getSelectionWorld()).getWorld();
+        LocalSession session = ForgeWorldEdit.inst.getSession(player);
+        if (session.getSelectionWorld() == null)
+            return null;
+        World world = ((ForgeWorld) session.getSelectionWorld()).getWorld();
+        RegionSelector regionSelector = session.getRegionSelector(session.getSelectionWorld());
 
-            if (region instanceof CuboidRegion)
+        if (regionSelector instanceof CuboidRegionSelector)
+        {
+            CuboidRegionSelector rs = (CuboidRegionSelector) regionSelector;
+            try
             {
-                Vector wepos1 = ((CuboidRegion) region).getPos1();
-                Vector wepos2 = ((CuboidRegion) region).getPos2();
-                return new Selection(world, 
-                        new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), 
-                        new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                Vector wepos1 = rs.getPrimaryPosition();
+                Vector wepos2 = rs.isDefined() ? rs.getRegion().getPos2() : null;
+                return new Selection(world,
+                        new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()),
+                        wepos2 == null ? null : new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
             }
-            else if (region instanceof Polygonal2DRegion)
+            catch (IncompleteRegionException e)
             {
-                Polygonal2DRegion polygon = (Polygonal2DRegion) region;
-                return new Selection(world, 
-                        new Point(polygon.getMinimumPoint().getBlockX(), polygon.getMinimumPoint().getBlockY(), polygon.getMinimumPoint().getBlockZ()), 
-                        new Point(polygon.getMaximumPoint().getBlockX(), polygon.getMaximumPoint().getBlockY(), polygon.getMaximumPoint().getBlockZ()));
-            }
-            else if (region instanceof EllipsoidRegion)
-            {
-                EllipsoidRegion ellipsoid = (EllipsoidRegion) region;
-                Vector c = ellipsoid.getCenter();
-                Vector r = ellipsoid.getRadius();
-                return new Selection(world, 
-                        new Point(c.getBlockX() - r.getBlockX(), c.getBlockY() - r.getBlockY(), c.getBlockZ() - r.getBlockZ()), 
-                        new Point(c.getBlockX() + r.getBlockX(), c.getBlockY() + r.getBlockY(), c.getBlockZ() + r.getBlockZ()));
-            }
-            else if (region instanceof CylinderRegion)
-            {
-                CylinderRegion cyl = (CylinderRegion) region;
-                Vector c = cyl.getCenter();
-                Vector2D r = cyl.getRadius();
-                return new Selection(world, 
-                        new Point(c.getBlockX() - r.getBlockX(), cyl.getMinimumY(), c.getBlockZ() - r.getBlockZ()), 
-                        new Point(c.getBlockX() + r.getBlockX(), cyl.getMaximumY(), c.getBlockZ() + r.getBlockZ()));
+                return null;
             }
         }
-        catch (IncompleteRegionException e)
+        else if (regionSelector instanceof Polygonal2DRegionSelector)
         {
-            /* do nothing */
+            Polygonal2DRegionSelector rs = (Polygonal2DRegionSelector) regionSelector;
+            try
+            {
+                Vector wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
+                Vector wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
+                return new Selection(world,
+                        new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()),
+                        wepos2 == null ? null : new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+            }
+            catch (IncompleteRegionException e)
+            {
+                return null;
+            }
+        }
+        else if (regionSelector instanceof EllipsoidRegionSelector)
+        {
+            EllipsoidRegionSelector rs = (EllipsoidRegionSelector) regionSelector;
+            try
+            {
+                Vector wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
+                Vector wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
+                return new Selection(world,
+                        new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()),
+                        wepos2 == null ? null : new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                //Vector c = ellipsoid.getCenter();
+                //Vector r = ellipsoid.getRadius();
+                //return new Selection(world, 
+                //        new Point(c.getBlockX() - r.getBlockX(), c.getBlockY() - r.getBlockY(), c.getBlockZ() - r.getBlockZ()), 
+                //        new Point(c.getBlockX() + r.getBlockX(), c.getBlockY() + r.getBlockY(), c.getBlockZ() + r.getBlockZ()));
+            }
+            catch (IncompleteRegionException e)
+            {
+                return null;
+            }
+        }
+        else if (regionSelector instanceof CylinderRegionSelector)
+        {
+            CylinderRegionSelector rs = (CylinderRegionSelector) regionSelector;
+            try
+            {
+                Vector wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
+                Vector wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
+                return new Selection(world,
+                        new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()),
+                        wepos2 == null ? null : new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                //Vector c = cyl.getCenter();
+                //Vector2D r = cyl.getRadius();
+                //return new Selection(world, 
+                //        new Point(c.getBlockX() - r.getBlockX(), cyl.getMinimumY(), c.getBlockZ() - r.getBlockZ()), 
+                //        new Point(c.getBlockX() + r.getBlockX(), cyl.getMaximumY(), c.getBlockZ() + r.getBlockZ()));
+            }
+            catch (IncompleteRegionException e)
+            {
+                return null;
+            }
         }
         return null;
     }

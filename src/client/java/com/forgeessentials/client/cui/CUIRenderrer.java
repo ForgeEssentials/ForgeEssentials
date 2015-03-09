@@ -31,164 +31,104 @@ public class CUIRenderrer {
             return;
         
         Selection sel = info.getSelection();
-        if (sel == null)
+        if (sel == null || sel.getDimension() != FMLClientHandler.instance().getClient().thePlayer.dimension)
             return;
 
-        GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
-        Tessellator tess = Tessellator.instance;
-        Tessellator.renderingWorldRenderer = false;
+        GL11.glLineWidth(2);
 
-        // GL11.glLineWidth(20f);
-
-        boolean render1 = false;
-
-        // render p1
+        // render start
         if (sel.getStart() != null)
         {
-            Point p1 = sel.getStart();
-            GL11.glTranslated(p1.x - RenderManager.renderPosX, p1.y + 1 - RenderManager.renderPosY, p1.z - RenderManager.renderPosZ);
-            GL11.glScalef(1.0F, -1.0F, -1.0F);
+            Point p = sel.getStart();
+            GL11.glPushMatrix();
+            GL11.glTranslated(p.x - RenderManager.renderPosX + 0.5, p.y - RenderManager.renderPosY + 0.5, p.z - RenderManager.renderPosZ + 0.5);
+            GL11.glScalef(0.96F, 0.96F, 0.96F);
             GL11.glColor3f(255, 0, 0);
-            renderBlockBox(tess);
-            render1 = true;
+            renderBox();
+            GL11.glPopMatrix();
         }
 
-        // render p2
+        // render end
         if (sel.getEnd() != null)
+        {
+            Point p = sel.getEnd();
+            GL11.glPushMatrix();
+            GL11.glTranslated(p.x - RenderManager.renderPosX + 0.5, p.y - RenderManager.renderPosY + 0.5, p.z - RenderManager.renderPosZ + 0.5);
+            GL11.glScalef(0.98F, 0.98F, 0.98F);
+            GL11.glColor3f(0, 255, 0);
+            renderBox();
+            GL11.glPopMatrix();
+        }
+
+        // render box
+        if (sel.getStart() != null && sel.getEnd() != null)
         {
             Point p1 = sel.getStart();
             Point p2 = sel.getEnd();
-
-            if (render1)
-            {
-                float x = p2.getX() - p1.getX();
-                float y = (float) (p1.getY() - p2.getY()) + 1;
-                float z = (float) (p1.getZ() - p2.getZ()) - 1;
-
-                GL11.glTranslated(x, y, z);
-            }
-            else
-            {
-                GL11.glTranslated(p2.x - RenderManager.renderPosX, p2.y + 1 - RenderManager.renderPosY, p2.z - RenderManager.renderPosZ);
-            }
-
-            GL11.glScalef(1.0F, -1.0F, -1.0F);
-            GL11.glColor3f(0, 255, 0);
-            renderBlockBox(tess);
-        }
-
-        if (sel.getStart() != null && sel.getEnd() != null)
-        {
-            float x = sel.getLowPoint().getX() - sel.getEnd().getX();
-            float y = sel.getLowPoint().getY() - sel.getEnd().getY();
-            float z = (float) (sel.getLowPoint().getZ() - sel.getEnd().getZ()) - 1;
-
-            // translate to the low point..
-            GL11.glTranslated(x, y, z);
-
-            GL11.glScalef(1.0F, -1.0F, -1.0F);
-            GL11.glColor3f(0, 5, 100);
-            // renderBlockBox(tess);
-            renderBlockBoxTo(tess, new Point(sel.getXLength(), -sel.getYLength(), -sel.getZLength()));
+            Point size = sel.getSize();
+            GL11.glPushMatrix();
+            GL11.glTranslated((float) (p1.x + p2.x) / 2 - RenderManager.renderPosX + 0.5, (float) (p1.y + p2.y) / 2 - RenderManager.renderPosY + 0.5, (float) (p1.z + p2.z) / 2 - RenderManager.renderPosZ + 0.5);
+            GL11.glScalef(1 + size.getX(), 1 + size.getY(), 1 + size.getZ());
+            GL11.glColor3f(0, 255, 255);
+            renderBox();
+            GL11.glPopMatrix();
         }
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
-        // tess.renderingWorldRenderer = true;
-        GL11.glPopMatrix();
     }
 
     /**
      * must be translated to proper point before calling
      */
-    private void renderBlockBox(Tessellator tess)
+    private static void renderBox()
     {
-        tess.startDrawing(GL11.GL_LINES);
+        Tessellator.instance.startDrawing(GL11.GL_LINES);
 
         // FRONT
-        tess.addVertex(0, 0, 0);
-        tess.addVertex(0, 1, 0);
+        Tessellator.instance.addVertex(-0.5, -0.5, -0.5);
+        Tessellator.instance.addVertex(-0.5, 0.5, -0.5);
 
-        tess.addVertex(0, 1, 0);
-        tess.addVertex(1, 1, 0);
+        Tessellator.instance.addVertex(-0.5, 0.5, -0.5);
+        Tessellator.instance.addVertex(0.5, 0.5, -0.5);
 
-        tess.addVertex(1, 1, 0);
-        tess.addVertex(1, 0, 0);
+        Tessellator.instance.addVertex(0.5, 0.5, -0.5);
+        Tessellator.instance.addVertex(0.5, -0.5, -0.5);
 
-        tess.addVertex(1, 0, 0);
-        tess.addVertex(0, 0, 0);
-
-        // BACK
-        tess.addVertex(0, 0, -1);
-        tess.addVertex(0, 1, -1);
-        tess.addVertex(0, 0, -1);
-        tess.addVertex(1, 0, -1);
-        tess.addVertex(1, 0, -1);
-        tess.addVertex(1, 1, -1);
-        tess.addVertex(0, 1, -1);
-        tess.addVertex(1, 1, -1);
-
-        // betweens.
-        tess.addVertex(0, 0, 0);
-        tess.addVertex(0, 0, -1);
-
-        tess.addVertex(0, 1, 0);
-        tess.addVertex(0, 1, -1);
-
-        tess.addVertex(1, 0, 0);
-        tess.addVertex(1, 0, -1);
-
-        tess.addVertex(1, 1, 0);
-        tess.addVertex(1, 1, -1);
-
-        tess.draw();
-    }
-
-    private void renderBlockBoxTo(Tessellator tess, Point p2)
-    {
-        tess.startDrawing(GL11.GL_LINES);
-
-        // FRONT
-        tess.addVertex(0, 0, 0);
-        tess.addVertex(0, p2.y, 0);
-
-        tess.addVertex(0, p2.y, 0);
-        tess.addVertex(p2.x, p2.y, 0);
-
-        tess.addVertex(p2.x, p2.y, 0);
-        tess.addVertex(p2.x, 0, 0);
-
-        tess.addVertex(p2.x, 0, 0);
-        tess.addVertex(0, 0, 0);
+        Tessellator.instance.addVertex(0.5, -0.5, -0.5);
+        Tessellator.instance.addVertex(-0.5, -0.5, -0.5);
 
         // BACK
-        tess.addVertex(0, 0, p2.z);
-        tess.addVertex(0, p2.y, p2.z);
-        tess.addVertex(0, 0, p2.z);
-        tess.addVertex(p2.x, 0, p2.z);
-        tess.addVertex(p2.x, 0, p2.z);
-        tess.addVertex(p2.x, p2.y, p2.z);
-        tess.addVertex(0, p2.y, p2.z);
-        tess.addVertex(p2.x, p2.y, p2.z);
+        Tessellator.instance.addVertex(-0.5, -0.5, 0.5);
+        Tessellator.instance.addVertex(-0.5, 0.5, 0.5);
+
+        Tessellator.instance.addVertex(-0.5, 0.5, 0.5);
+        Tessellator.instance.addVertex(0.5, 0.5, 0.5);
+
+        Tessellator.instance.addVertex(0.5, 0.5, 0.5);
+        Tessellator.instance.addVertex(0.5, -0.5, 0.5);
+
+        Tessellator.instance.addVertex(0.5, -0.5, 0.5);
+        Tessellator.instance.addVertex(-0.5, -0.5, 0.5);
 
         // betweens.
-        tess.addVertex(0, 0, 0);
-        tess.addVertex(0, 0, p2.z);
+        Tessellator.instance.addVertex(0.5, 0.5, -0.5);
+        Tessellator.instance.addVertex(0.5, 0.5, 0.5);
 
-        tess.addVertex(0, p2.y, 0);
-        tess.addVertex(0, p2.y, p2.z);
+        Tessellator.instance.addVertex(0.5, -0.5, -0.5);
+        Tessellator.instance.addVertex(0.5, -0.5, 0.5);
 
-        tess.addVertex(p2.x, 0, 0);
-        tess.addVertex(p2.x, 0, p2.z);
+        Tessellator.instance.addVertex(-0.5, -0.5, -0.5);
+        Tessellator.instance.addVertex(-0.5, -0.5, 0.5);
 
-        tess.addVertex(p2.x, p2.y, 0);
-        tess.addVertex(p2.x, p2.y, p2.z);
-
-        tess.draw();
+        Tessellator.instance.addVertex(-0.5, 0.5, -0.5);
+        Tessellator.instance.addVertex(-0.5, 0.5, 0.5);
+        
+        Tessellator.instance.draw();
     }
 
 }
