@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import com.forgeessentials.util.selections.SelectionHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,6 +26,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.EventCancelledException;
+import com.forgeessentials.util.selections.SelectionHandler;
 
 public class CommandZone extends ForgeEssentialsCommandBase {
 
@@ -40,21 +40,21 @@ public class CommandZone extends ForgeEssentialsCommandBase {
     public static final String PERM_SETTINGS = PERM_NODE + ".settings";
 
     // Variables for auto-complete
-    private static final String[] parseMainArgs = { "help", "list", "info", "define", "redefine", "delete", "exit", "entry" };
+    private static final String[] parseMainArgs = { "help", "list", "select", "define", "redefine", "delete", "exit", "entry" };
     private boolean tabCompleteMode = false;
     private List<String> tabComplete;
 
     @Override
     public String getCommandName()
     {
-        return "zone";
+        return "area";
     }
 
     @Override
     public List<String> getCommandAliases()
     {
         ArrayList<String> list = new ArrayList<String>();
-        list.add("area");
+        list.add("zone");
         return list;
     }
 
@@ -83,8 +83,9 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             case "help":
                 help(sender);
                 break;
-            case "info":
-                throw new CommandException("Not yet implemented!");
+            case "select":
+                parseSelect(sender, worldZone, args);
+                break;
             case "list":
                 parseList(sender, worldZone, args);
                 break;
@@ -325,6 +326,51 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         }
         zone.getWorldZone().removeAreaZone(zone);
         OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been deleted.", zoneName));
+    }
+
+    private void parseSelect(ICommandSender sender, WorldZone worldZone, Queue<String> args)
+    {
+        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_DELETE))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
+        
+        if (!(sender instanceof EntityPlayerMP))
+            throw new CommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+        EntityPlayerMP player = (EntityPlayerMP) sender;
+        
+        if (worldZone == null)
+            throw new CommandException("No world found");
+
+        if (args.isEmpty())
+            throw new CommandException("Missing arguments!");
+
+        if (tabCompleteMode)
+        {
+            for (Zone z: APIRegistry.perms.getZones()) {
+                if (z instanceof AreaZone) {
+                    if (z.getName().startsWith(args.peek()))
+                        tabComplete.add(z.getName());
+                    if (Integer.toString(z.getId()).startsWith(args.peek()))
+                        tabComplete.add(Integer.toString(z.getId()));
+                }
+            }
+            return;
+        }
+        String zoneName = args.remove();
+        AreaZone zone = getAreaZone(worldZone, zoneName);
+        if (zone == null)
+        {
+            OutputHandler.chatError(sender, String.format("Area \"%s\" has does not exist!", zoneName));
+            return;
+        }
+        AreaBase area = zone.getArea();
+        SelectionHandler.selectionProvider.setStart(player, area.getLowPoint());
+        SelectionHandler.selectionProvider.setEnd(player, area.getHighPoint());
+        SelectionHandler.selectionProvider.setDimension(player, worldZone.getDimensionID());
+        PlayerInfo.getPlayerInfo(player).sendSelectionUpdate();
+        OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been selected.", zoneName));
     }
 
     private void parseEntryExitMessage(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean isEntry)

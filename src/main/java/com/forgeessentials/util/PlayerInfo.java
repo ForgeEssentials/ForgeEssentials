@@ -333,7 +333,8 @@ public class PlayerInfo {
 
     public void sendSelectionUpdate()
     {
-        FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(ident.getPlayer()), ident.getPlayer());
+        if (ident.hasPlayer())
+            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(ident.getPlayer()), ident.getPlayer());
     }
 
     // ----------------------------------------------
