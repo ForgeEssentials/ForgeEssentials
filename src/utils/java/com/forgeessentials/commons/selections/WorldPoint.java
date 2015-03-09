@@ -1,16 +1,17 @@
 package com.forgeessentials.commons.selections;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+
 import com.forgeessentials.commons.IReconstructData;
 import com.forgeessentials.commons.SaveableObject;
 import com.forgeessentials.commons.SaveableObject.Reconstructor;
 import com.forgeessentials.commons.SaveableObject.SaveableField;
 import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Almost exactly like a Point, except with an additional dimension member so we
@@ -125,9 +126,15 @@ public class WorldPoint extends Point
 			}
 			catch (NumberFormatException e)
 			{
+			    /* do nothing */
 			}
 		}
 		return null;
 	}
 
+    public WarpPoint toWarpPoint(float pitch, float yaw)
+    {
+        return new WarpPoint(dim, x + 0.5, y + 0.5, z + 0.5, pitch, yaw);
+    }
+    
 }

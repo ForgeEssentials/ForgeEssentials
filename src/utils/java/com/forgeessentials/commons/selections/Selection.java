@@ -53,5 +53,10 @@ public class Selection extends WorldArea {
         end.validate();
         redefine(start, this.end);
     }
-    
+
+    public boolean isValid()
+    {
+        return start != null && end != null;
+    }
+
 }

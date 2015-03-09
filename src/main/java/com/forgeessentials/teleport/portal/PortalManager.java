@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
-import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
@@ -72,7 +71,7 @@ public class PortalManager extends ServerEventHandler {
         {
             if (portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
             {
-                TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, new WarpPoint(portal.target, e.entityPlayer.rotationPitch,
+                TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, portal.target.toWarpPoint(e.entityPlayer.rotationPitch,
                         e.entityPlayer.rotationYaw));
             }
         }
@@ -123,9 +122,14 @@ public class PortalManager extends ServerEventHandler {
     // }
     // }
 
+    public Portal get(String name)
+    {
+        return portals.get(name);
+    }
+
     public void remove(String name)
     {
-        portals.remove(name);
+        destroyPortalFrame(portals.remove(name));
         DataManager.getInstance().delete(Portal.class, name);
     }
 
@@ -145,9 +149,20 @@ public class PortalManager extends ServerEventHandler {
                 for (int iy = portal.getPortalArea().getLowPoint().getY(); iy <= portal.getPortalArea().getHighPoint().getY(); iy++)
                     for (int iz = portal.getPortalArea().getLowPoint().getZ(); iz <= portal.getPortalArea().getHighPoint().getZ(); iz++)
                         if (world.getBlock(ix, iy, iz) != Blocks.glass_pane)
-                        {
                             world.setBlock(ix, iy, iz, Blocks.glass_pane);
-                        }
+        }
+    }
+
+    private static void destroyPortalFrame(Portal portal)
+    {
+        World world = DimensionManager.getWorld(portal.getPortalArea().getDimension());
+        if (world != null)
+        {
+            for (int ix = portal.getPortalArea().getLowPoint().getX(); ix <= portal.getPortalArea().getHighPoint().getX(); ix++)
+                for (int iy = portal.getPortalArea().getLowPoint().getY(); iy <= portal.getPortalArea().getHighPoint().getY(); iy++)
+                    for (int iz = portal.getPortalArea().getLowPoint().getZ(); iz <= portal.getPortalArea().getHighPoint().getZ(); iz++)
+                        if (world.getBlock(ix, iy, iz) == Blocks.glass_pane)
+                            world.setBlock(ix, iy, iz, Blocks.air);
         }
     }
 
