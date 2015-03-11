@@ -8,6 +8,7 @@ import java.util.Stack;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
@@ -180,8 +181,12 @@ public class PlayerInfo {
             // Attempt to populate this info with some data from our storage.
             info = load(playerID.toString());
             if (info == null)
-                APIRegistry.getFEEventBus().post(new NoPlayerInfoEvent(UserIdent.getPlayerByUuid(playerID)));
+            {
+                EntityPlayerMP player = UserIdent.getPlayerByUuid(playerID);
+                if (player != null)
+                    APIRegistry.getFEEventBus().post(new NoPlayerInfoEvent(player));
                 info = new PlayerInfo(playerID);
+            }
             playerInfoMap.put(playerID, info);
         }
         return info;
