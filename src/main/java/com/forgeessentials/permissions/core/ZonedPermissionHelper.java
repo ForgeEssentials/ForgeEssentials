@@ -69,7 +69,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     protected ZonePersistenceProvider persistenceProvider;
 
-    protected Timer persistenceTimer;
+    protected Timer persistenceTimer = new Timer("permission persistence", true);;
+
+    protected PersistenceTask persistenceTimerTask;
 
     protected boolean dirty = true;
 
@@ -127,7 +129,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         if (persistenceProvider != null)
         {
-            OutputHandler.felog.info("Saving permissions...");
+            OutputHandler.felog.fine("Saving permissions...");
             APIRegistry.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
         }
@@ -168,10 +170,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         this.dirty = true;
         this.registeredPermission |= registeredPermission;
-        if (persistenceTimer != null)
-            persistenceTimer.cancel();
-        persistenceTimer = new Timer("permission persistence timer", true);
-        persistenceTimer.schedule(new PersistenceTask(), 2000);
+        
+        // Restart timer
+        if (persistenceTimerTask != null)
+            persistenceTimerTask.cancel();
+        persistenceTimerTask = new PersistenceTask();
+        persistenceTimer.schedule(persistenceTimerTask, 1000);
     }
 
     // ------------------------------------------------------------
