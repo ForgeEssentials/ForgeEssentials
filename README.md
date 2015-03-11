@@ -24,7 +24,7 @@ especially a powerful permissions and protection system:
 
 *******************
 
-#### Download for the latest builds on [Jenkins](http://176.9.50.214:8080/job/ForgeEssentials/). or releases on [Curseforge](http://minecraft.curseforge.com/mc-mods/74735) ####
+#### Download for the latest builds on [Jenkins](http://ci.forgeessentials.com/job/ForgeEssentials/). or releases on [Curseforge](http://minecraft.curseforge.com/mc-mods/74735) ####
 
 ForgeEssentials for Minecraft 1.7.10 is still in **beta**!  
 Betas are to be considered unstable. Approach with caution. Please make backups before using / updating on a live server.
