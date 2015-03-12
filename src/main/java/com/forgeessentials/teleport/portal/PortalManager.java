@@ -83,12 +83,16 @@ public class PortalManager extends ServerEventHandler {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
+        if (getPortalAt(point) != null)
+            e.setCanceled(true);
+    }
+
+    public Portal getPortalAt(WorldPoint point)
+    {
         for (Portal portal : portals.values())
             if (portal.getPortalArea().contains(point))
-            {
-                e.setCanceled(true);
-                break;
-            }
+                return portal;
+        return null;
     }
 
     // @SubscribeEvent
@@ -148,8 +152,8 @@ public class PortalManager extends ServerEventHandler {
             for (int ix = portal.getPortalArea().getLowPoint().getX(); ix <= portal.getPortalArea().getHighPoint().getX(); ix++)
                 for (int iy = portal.getPortalArea().getLowPoint().getY(); iy <= portal.getPortalArea().getHighPoint().getY(); iy++)
                     for (int iz = portal.getPortalArea().getLowPoint().getZ(); iz <= portal.getPortalArea().getHighPoint().getZ(); iz++)
-                        if (world.getBlock(ix, iy, iz) != Blocks.glass_pane)
-                            world.setBlock(ix, iy, iz, Blocks.glass_pane);
+                        if (world.getBlock(ix, iy, iz) != Blocks.portal)
+                            world.setBlock(ix, iy, iz, Blocks.portal);
         }
     }
 
@@ -161,7 +165,7 @@ public class PortalManager extends ServerEventHandler {
             for (int ix = portal.getPortalArea().getLowPoint().getX(); ix <= portal.getPortalArea().getHighPoint().getX(); ix++)
                 for (int iy = portal.getPortalArea().getLowPoint().getY(); iy <= portal.getPortalArea().getHighPoint().getY(); iy++)
                     for (int iz = portal.getPortalArea().getLowPoint().getZ(); iz <= portal.getPortalArea().getHighPoint().getZ(); iz++)
-                        if (world.getBlock(ix, iy, iz) == Blocks.glass_pane)
+                        if (world.getBlock(ix, iy, iz) == Blocks.portal)
                             world.setBlock(ix, iy, iz, Blocks.air);
         }
     }
