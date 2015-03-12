@@ -1,5 +1,6 @@
 package com.forgeessentials.core.preloader.asm.mixins.command;
 
+import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
@@ -60,7 +61,7 @@ public abstract class MixinCommandHandler_01
 
                 if (icommand != null)
                 {
-                    return icommand.addTabCompletionOptions(p_71558_1_, dropFirstString(astring));
+                    return icommand.addTabCompletionOptions(p_71558_1_, FunctionHelper.dropFirstString(astring));
                 }
             }
 
@@ -86,7 +87,4 @@ public abstract class MixinCommandHandler_01
 
         return arraylist;
     }
-
-    @Shadow
-    public abstract String[] dropFirstString(String[] par0ArrayOfStr);
 }
