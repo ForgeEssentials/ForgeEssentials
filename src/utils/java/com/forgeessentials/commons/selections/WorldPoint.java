@@ -134,7 +134,7 @@ public class WorldPoint extends Point
 
     public WarpPoint toWarpPoint(float pitch, float yaw)
     {
-        return new WarpPoint(dim, x + 0.5, y + 0.5, z + 0.5, pitch, yaw);
+        return new WarpPoint(dim, x + 0.5, y, z + 0.5, pitch, yaw);
     }
     
 }

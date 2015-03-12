@@ -4,17 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
-import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -62,6 +59,7 @@ public class PortalManager extends ServerEventHandler {
             DataManager.getInstance().save(portal.getValue(), portal.getKey());
     }
 
+    /*
     @SubscribeEvent
     public void playerMove(PlayerMoveEvent e)
     {
@@ -76,6 +74,7 @@ public class PortalManager extends ServerEventHandler {
             }
         }
     }
+    */
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void breakEvent(BreakEvent e)

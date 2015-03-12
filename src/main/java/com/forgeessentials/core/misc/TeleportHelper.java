@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S1DPacketEntityEffect;
@@ -120,11 +121,15 @@ public class TeleportHelper extends ServerEventHandler {
         pi.setLastTeleportOrigin(new WarpPoint(player));
         pi.setLastTeleportTime(System.currentTimeMillis());
         if (player.dimension != point.getDimension())
-        {
             transferPlayerToDimension(player, point.getDimension());
-        }
-        player.motionX = player.motionY = player.motionZ = 0;
         player.playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 0.1, point.getZ(), point.getYaw(), point.getPitch());
+    }
+    
+    public static void doTeleportEntity(Entity entity, WarpPoint point)
+    {
+        if (entity.dimension != point.getDimension())
+            entity.travelToDimension(point.getDimension());
+        entity.setLocationAndAngles(point.getX(), point.getY() + 0.1, point.getZ(), point.getYaw(), point.getPitch());
     }
 
     @SubscribeEvent
@@ -173,5 +178,6 @@ public class TeleportHelper extends ServerEventHandler {
         }
         FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, j, dimId);
     }
+
 
 }
