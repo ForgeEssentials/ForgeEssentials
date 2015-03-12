@@ -4,14 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
+import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -59,7 +62,6 @@ public class PortalManager extends ServerEventHandler {
             DataManager.getInstance().save(portal.getValue(), portal.getKey());
     }
 
-    /*
     @SubscribeEvent
     public void playerMove(PlayerMoveEvent e)
     {
@@ -67,14 +69,13 @@ public class PortalManager extends ServerEventHandler {
         WorldPoint before = e.before.toWorldPoint();
         for (Portal portal : portals.values())
         {
-            if (portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
+            if (!portal.hasFrame() && portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
             {
                 TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, portal.target.toWarpPoint(e.entityPlayer.rotationPitch,
                         e.entityPlayer.rotationYaw));
             }
         }
     }
-    */
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void breakEvent(BreakEvent e)
@@ -82,7 +83,8 @@ public class PortalManager extends ServerEventHandler {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
-        if (getPortalAt(point) != null)
+        Portal portal = getPortalAt(point);
+        if (portal != null && portal.hasFrame())
             e.setCanceled(true);
     }
 
@@ -145,6 +147,8 @@ public class PortalManager extends ServerEventHandler {
 
     private static void buildPortalFrame(Portal portal)
     {
+        if (!portal.hasFrame())
+            return;
         World world = DimensionManager.getWorld(portal.getPortalArea().getDimension());
         if (world != null)
         {
@@ -158,6 +162,8 @@ public class PortalManager extends ServerEventHandler {
 
     private static void destroyPortalFrame(Portal portal)
     {
+        if (!portal.hasFrame())
+            return;
         World world = DimensionManager.getWorld(portal.getPortalArea().getDimension());
         if (world != null)
         {

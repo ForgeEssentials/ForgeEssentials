@@ -94,7 +94,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
     {
         if (args.isEmpty())
         {
-            OutputHandler.chatConfirmation(sender, "/portal create <name> [x y z] [dim]");
+            OutputHandler.chatConfirmation(sender, "/portal create <name> [frame|noframe] [x y z] [dim]");
             return;
         }
 
@@ -102,6 +102,22 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
         if (!recreate && PortalManager.getInstance().portals.containsKey(name))
             throw new CommandException("Portal by that name already exists. Use recreate!");
 
+        boolean frame = true;
+        if (!args.isEmpty())
+        {
+            switch (args.peek().toLowerCase())
+            {
+            case "noframe":
+                frame = false;
+                args.remove();
+                break;
+            case "frame":
+                frame = true;
+                args.remove();
+                break;
+            }
+        }
+        
         NamedWorldPoint target = new NamedWorldPoint(sender);
         if (!args.isEmpty())
         {
@@ -124,7 +140,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
         if (size.getX() > 0 && size.getY() > 0 && size.getZ() > 0)
             throw new CommandException("Portal selection must be flat in one axis");
         
-        Portal portal = new Portal(new NamedWorldArea(selection.getDimension(), selection), target);
+        Portal portal = new Portal(new NamedWorldArea(selection.getDimension(), selection), target, frame);
         PortalManager.getInstance().add(name, portal);
         OutputHandler.chatConfirmation(sender, String.format("Created new portal leading to %s", target.toString()));
     }
