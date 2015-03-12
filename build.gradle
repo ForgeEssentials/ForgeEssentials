@@ -35,7 +35,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 project.ext.build = '0'
 if (System.getenv('BUILD_NUMBER') != null)
-project.ext.build = System.getenv('BUILD_NUMBER')
+    project.ext.build = System.getenv('BUILD_NUMBER')
 
 evaluationDependsOn('Mixin')
 
@@ -170,7 +170,7 @@ jar {
     }
 
     from(project("Mixin").sourceSets.main.output) {
-        exclude 'LICENSE.txt'
+        include "org/spongepowered/asm/**"
     }
 }
 
@@ -212,7 +212,7 @@ task clientJar(dependsOn: "jar", type: Jar) {
 
 //core DEOBF use for development
 
-// to use: declare dependency com.forgeessentials:forgeessentials:<version>:deobf
+// to use: declare dependency com.forgeessentials:forgeessentials:<version>:
 task deobfJar(dependsOn: "jar", type: Jar) {
     from project.sourceSets.main.output
     include "**"
@@ -223,8 +223,12 @@ task deobfJar(dependsOn: "jar", type: Jar) {
     from project.sourceSets.utils.output
     include "**"
 
+    from project.sourceSets.client.output
+    include "com/forgeessentials/**"
+    // config guis won't work, but who cares, anyway?
+
     from(project("Mixin").sourceSets.main.output) {
-        exclude 'LICENSE.txt'
+        include "org/spongepowered/asm/**"
     }
 
     manifest {
@@ -237,88 +241,88 @@ task deobfJar(dependsOn: "jar", type: Jar) {
         classifier = 'deobf'
         appendix = project.minecraft.version
     }
+}
 
-    task sourceJar(type: Jar) {
-        from sourceSets.main.allSource
-        include "com/forgeessentials/api/**"
-        classifier = 'sources'
-        appendix = project.minecraft.version
-        manifest {
-            attributes("BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
-        }
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    include "com/forgeessentials/api/**"
+    classifier = 'sources'
+    appendix = project.minecraft.version
+    manifest {
+        attributes("BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
     }
 }
 
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        from javadoc.destinationDir
-        classifier = 'javadoc'
-        appendix = project.minecraft.version
-        manifest {
-            attributes("BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
-        }
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+    appendix = project.minecraft.version
+    manifest {
+        attributes("BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
     }
+}
 
-    reobf {
-        reobf(clientJar) { reobfSpec ->
-            reobfSpec.classpath = project.sourceSets.main.compileClasspath
-        }
+reobf {
+    reobf(clientJar) { reobfSpec ->
+        reobfSpec.classpath = project.sourceSets.main.compileClasspath
     }
+}
 
-    artifacts {
-        archives clientJar
-    }
+artifacts {
+    archives clientJar
+}
 
-    task wrapper(type: Wrapper) {
-        gradleVersion = '2.1'
-    }
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
 
-    task cleanLibFiles(dependsOn: "check", type: Delete) {
-        delete(completeZip.archivePath)
-    }
+task cleanLibFiles(dependsOn: "check", type: Delete) {
+    delete(completeZip.archivePath)
+}
 
-    project.tasks.build.dependsOn "cleanLibFiles"
+project.tasks.build.dependsOn "cleanLibFiles"
 
-    apply plugin: 'maven-publish'
+apply plugin: 'maven-publish'
 
-    publishing {
-        tasks.publish.dependsOn 'build'
-        //artifactId = "forgeessentials"
-        publications {
-            mavenJava(MavenPublication) {
-                groupId "com.forgeessentials"
-                artifactId "forgeessentials"
-                version "1.4.0-SNAPSHOT"
+publishing {
+    tasks.publish.dependsOn 'build'
+    //artifactId = "forgeessentials"
+    publications {
+        mavenJava(MavenPublication) {
+            groupId "com.forgeessentials"
+            artifactId "forgeessentials"
+            version "1.4.0-SNAPSHOT"
 
-                pom.withXml {
-                    def dependenciesNode = asNode().appendNode('dependencies')
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
 
-                    configurations.myCompile.allDependencies.each {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-
-                artifact sourceJar
-                artifact javadocJar
-                artifact deobfJar {
-                    classifier ""
+                configurations.myCompile.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
                 }
             }
-        }
 
-        repositories {
-            if (project.hasProperty('forgemaven_user') && project.hasProperty('forgemaven_password')) {
-                maven {
-                    credentials {
-                        username project.forgemaven_user
-                        password project.forgemaven_password
-                    }
-                    url 'http://files.minecraftforge.net/maven/manage/upload'
-                }
-            } else {
-                maven { url "file://${project.projectDir}/build/repo" }
+            artifact sourceJar
+            artifact javadocJar
+            artifact deobfJar {
+                classifier ""
             }
         }
     }
+
+    repositories {
+        if (project.hasProperty('forgemaven_user') && project.hasProperty('forgemaven_password')) {
+            maven {
+                credentials {
+                    username project.forgemaven_user
+                    password project.forgemaven_password
+                }
+                url 'http://files.minecraftforge.net/maven/manage/upload'
+            }
+        } else {
+            maven { url "file://${project.projectDir}/build/repo" }
+        }
+    }
+}
