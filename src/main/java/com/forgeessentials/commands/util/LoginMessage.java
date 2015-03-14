@@ -1,18 +1,5 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.compat.CompatReiMinimap;
-import com.forgeessentials.util.ConnectionMonitor;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.UserIdent;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -24,6 +11,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.compat.CompatReiMinimap;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.ConnectionMonitor;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class LoginMessage {
     private static List<String> messageList = new ArrayList<String>();
@@ -187,15 +188,7 @@ public class LoginMessage {
 
     private static String uniqueplayers()
     {
-        int logins = 0;
-        try
-        {
-            logins = PlayerInfo.getPlayerInfoMap().size();
-        }
-        catch (Exception e)
-        {
-        }
-        return "" + logins;
+        return Integer.toString(APIRegistry.perms.getServerZone().getKnownPlayers().size());
     }
 
     public static String getUptime()
