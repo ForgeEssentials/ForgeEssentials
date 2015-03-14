@@ -4,7 +4,10 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -143,19 +146,16 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
     {
         String connectString = ModuleRemote.getInstance().getConnectString(ident);
         String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-        args.sender.addChatMessage(IChatComponent.Serializer.func_150699_a("{" //
-                + "text:\"Remote passkey = " + ModuleRemote.getInstance().getPasskey(ident) + " \"," //
-                + "extra:[" //
-                + " {" //
-                + "  text:\"[QR code]\"," //
-                + "  color:red," //
-                + "  underlined:true," //
-                + "  clickEvent:{" //
-                + "   action:open_url," //
-                + "   value:\"" + url + "\"" //
-                + "  }" //
-                + " }" //
-                + "]}"));
+        
+        ChatComponentTranslation msg = new ChatComponentTranslation("Remote passkey = " + ModuleRemote.getInstance().getPasskey(ident) + " ");
+        
+        IChatComponent qrLink = new ChatComponentText("[QR code]");
+        qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        qrLink.getChatStyle().setColor(EnumChatFormatting.RED);
+        qrLink.getChatStyle().setUnderlined(true);
+        msg.appendSibling(qrLink);
+        
+        args.sender.addChatMessage(msg);
         args.sender.addChatMessage(new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
     }
 
