@@ -182,7 +182,7 @@ public class ChatFormatter {
 
         // finally make it the chat line.
         // TODO: This is probably incorrect with regards to coloring
-        event.component = new ChatComponentTranslation("%s", format);
+        event.component = FunctionHelper.newChatWithLinks(format);
 
         if (ConfigChat.logchat && ModuleChat.chatLog != null)
         {
