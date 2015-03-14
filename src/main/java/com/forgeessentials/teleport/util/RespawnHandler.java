@@ -32,6 +32,8 @@ public class RespawnHandler {
     public static WarpPoint getPlayerSpawn(EntityPlayer player, WarpPoint location)
     {
         UserIdent ident = new UserIdent(player);
+        if (location == null)
+            location = new WarpPoint(player);
         
         if (APIRegistry.perms.checkUserPermission(ident, FEPermissions.SPAWN_BED) && player.getBedLocation() != null)
         {
