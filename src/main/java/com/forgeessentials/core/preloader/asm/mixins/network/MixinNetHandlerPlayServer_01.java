@@ -87,7 +87,7 @@ public abstract class MixinNetHandlerPlayServer_01
     }
 
     // helper method
-    public static String[] onSignEditEvent(C12PacketUpdateSign data, EntityPlayerMP player)
+    private String[] onSignEditEvent(C12PacketUpdateSign data, EntityPlayerMP player)
     {
         SignEditEvent e = new SignEditEvent(data.func_149588_c(), data.func_149586_d(), data.func_149585_e(), data.func_149589_f(), player);
         if (MinecraftForge.EVENT_BUS.post(e))
