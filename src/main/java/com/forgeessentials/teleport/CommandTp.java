@@ -1,6 +1,5 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.commons.selections.Point;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,13 +10,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -89,7 +89,9 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 			if (args.length == 3)
 			{
 				EntityPlayerMP player = sender;
-				double x = parseDouble(sender, args[0]), y = parseDouble(sender, args[1]), z = parseDouble(sender, args[2]);
+				double x = func_110666_a(sender, player.posX, args[0]);
+				double y = func_110666_a(sender, player.posY, args[1]);
+				double z = func_110666_a(sender, player.posZ, args[2]);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 				TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
@@ -99,7 +101,9 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 				if (player != null)
 				{
-					double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);
+	                double x = func_110666_a(sender, player.posX, args[1]);
+	                double y = func_110666_a(sender, player.posY, args[2]);
+	                double z = func_110666_a(sender, player.posZ, args[3]);
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 					TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
