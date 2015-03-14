@@ -32,28 +32,23 @@ public class RespawnHandler {
     public static WarpPoint getPlayerSpawn(EntityPlayer player, WarpPoint location)
     {
         UserIdent ident = new UserIdent(player);
-        if (location == null)
-            location = new WarpPoint(player);
+        
+        if (APIRegistry.perms.checkUserPermission(ident, FEPermissions.SPAWN_BED) && player.getBedLocation() != null)
+        {
+            ChunkCoordinates spawn = player.getBedLocation();
+            EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
+            return new WarpPoint(player.dimension, spawn.posX, spawn.posY, spawn.posZ, player.cameraYaw, player.cameraPitch);
+        }
+        
         String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null, GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN_LOC, true);
-        WorldPoint point = null;
-        if (spawnProperty == null)
-            return null;
-        if (spawnProperty.equalsIgnoreCase("bed"))
+        if (spawnProperty != null)
         {
-            if (player.getBedLocation() != null)
-            {
-                ChunkCoordinates spawn = player.getBedLocation();
-                EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
-                point = new WorldPoint(player.dimension, spawn.posX, spawn.posY, spawn.posZ);
-            }
+            WorldPoint point = WorldPoint.fromString(spawnProperty);
+            if (point != null)
+                return new WarpPoint(point, player.cameraYaw, player.cameraPitch);
         }
-        else
-        {
-            point = WorldPoint.fromString(spawnProperty);
-        }
-        if (point == null)
-            return null;
-        return new WarpPoint(point, player.cameraYaw, player.cameraPitch);
+        
+        return null;
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

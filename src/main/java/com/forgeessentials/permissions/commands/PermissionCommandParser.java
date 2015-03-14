@@ -446,7 +446,8 @@ public class PermissionCommandParser {
             throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         if (arguments.args.isEmpty())
         {
-            arguments.info("/feperm user " + ident.getUsernameOrUUID() + " spawn (here|bed|clear|<x> <y> <z> <dim>) [zone] : Set spawn");
+            arguments.info("/feperm user " + ident.getUsernameOrUUID() + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
+            arguments.info("/feperm user " + ident.getUsernameOrUUID() + " spawn bed (enable|disable): Enable/disable spawning at bed");
             return;
         }
         if (arguments.isTabCompletion)
@@ -461,6 +462,8 @@ public class PermissionCommandParser {
         switch (loc)
         {
         case "here":
+            if (arguments.senderPlayer == null)
+                throw new CommandException("[here] cannot be used from console.");
             point = new WorldPoint(arguments.senderPlayer);
             break;
         case "bed":
@@ -471,12 +474,14 @@ public class PermissionCommandParser {
             if (val.equals("true") | val.equals("enable"))
             {
                 zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, true);
-                
+                arguments.info(String.format("Enabled bed-spawning for user %s in zone %s", ident.getUsernameOrUUID(), zone.getName()));
             }
             else if (val.equals("false") | val.equals("disable"))
             {
                 zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, false);
+                arguments.info(String.format("Disabled bed-spawning for user %s in zone %s", ident.getUsernameOrUUID(), zone.getName()));
             }
+            arguments.info("Invalid argument. Use enable or disable.");
             return;
         }
         case "clear":
@@ -876,9 +881,19 @@ public class PermissionCommandParser {
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP_SPAWN))
             throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+        
         if (arguments.args.isEmpty())
         {
-            arguments.info("/feperm group " + group + " spawn (here|bed|clear|<x> <y> <z> <dim>) [zone] : Set spawn");
+            if (arguments.command.equalsIgnoreCase("setspawn"))
+            {
+                arguments.info("/setspawn here|clear|<x> <y> <z> <dim>: Set spawn location");
+                arguments.info("/setspawn bed (enable|disable): Enable/disable spawning at bed");
+            }
+            else
+            {
+                arguments.info("/feperm group " + group + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
+                arguments.info("/feperm group " + group + " spawn bed (enable|disable): Enable/disable spawning at bed");
+            }
             return;
         }
         if (arguments.isTabCompletion)
@@ -893,6 +908,8 @@ public class PermissionCommandParser {
         switch (loc)
         {
         case "here":
+            if (arguments.senderPlayer == null)
+                throw new CommandException("[here] cannot be used from console.");
             point = new WorldPoint(arguments.senderPlayer);
             break;
         case "bed":
@@ -903,12 +920,14 @@ public class PermissionCommandParser {
             if (val.equals("true") | val.equals("enable"))
             {
                 zone.setGroupPermission(group, FEPermissions.SPAWN_BED, true);
-                
+                arguments.info(String.format("Enabled bed-spawning for group %s in zone %s", group, zone.getName()));
             }
             else if (val.equals("false") | val.equals("disable"))
             {
                 zone.setGroupPermission(group, FEPermissions.SPAWN_BED, false);
+                arguments.info(String.format("Disabled bed-spawning for group %s in zone %s", group, zone.getName()));
             }
+            arguments.info("Invalid argument. Use enable or disable.");
             return;
         }
         case "clear":
