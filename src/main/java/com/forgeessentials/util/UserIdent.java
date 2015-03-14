@@ -214,6 +214,15 @@ public class UserIdent {
         return username == null ? uuid.toString() : username;
     }
 
+    public UUID getOrGenerateUuid()
+    {
+        if (uuid == null)
+            identifyUser();
+        if (uuid != null)
+            return uuid;
+        return UUID.fromString(username);
+    }
+
     // ------------------------------------------------------------
 
     @Override
@@ -226,16 +235,7 @@ public class UserIdent {
     @Override
     public int hashCode()
     {
-        identifyUser();
-        if (uuid == null)
-        {
-            // throw new PlayerNotFoundException();
-            return username.hashCode();
-        }
-        else
-        {
-            return uuid.hashCode();
-        }
+        return getOrGenerateUuid().hashCode();
     }
 
     @Override
