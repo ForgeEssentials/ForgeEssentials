@@ -74,11 +74,9 @@ public class ModuleChat {
         MinecraftForge.EVENT_BUS.register(new ChatFormatter());
         MinecraftForge.EVENT_BUS.register(new CommandMuter());
 
-        if (!IRCHelper.suppressEvents && connectToIRC)
+        if (connectToIRC)
         {
             ircPlayerHandler = new PlayerEventHandler();
-            MinecraftForge.EVENT_BUS.register(ircPlayerHandler);
-            FMLCommonHandler.instance().bus().register(ircPlayerHandler);
             MinecraftForge.EVENT_BUS.register(new IRCChatFormatter());
         }
     }
