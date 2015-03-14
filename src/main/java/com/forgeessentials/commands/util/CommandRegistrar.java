@@ -82,7 +82,7 @@ public class CommandRegistrar {
         cmdList.add(new CommandWeather());
         cmdList.add(new CommandBind());
         cmdList.add(new CommandRename());
-        cmdList.add(new CommandVanish());
+        //cmdList.add(new CommandVanish());
         cmdList.add(new CommandPush());
         cmdList.add(new CommandDrop());
         cmdList.add(new CommandPulse());
