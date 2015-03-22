@@ -32,7 +32,7 @@ public class CommandKill extends FEcmdModuleCommands {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                player.attackEntityFrom(DamageSource.outOfWorld, 1000);
+                player.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
                 OutputHandler.chatError(player, "You were killed. You probably deserved it.");
             }
             else
@@ -42,7 +42,7 @@ public class CommandKill extends FEcmdModuleCommands {
         }
         else
         {
-            sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
+            sender.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
             OutputHandler.chatError(sender, "You were killed. You probably deserved it.");
         }
     }
@@ -55,7 +55,7 @@ public class CommandKill extends FEcmdModuleCommands {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                player.attackEntityFrom(DamageSource.outOfWorld, 1000);
+                player.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
                 OutputHandler.chatError(player, "You were killed. You probably deserved it.");
             }
             else
