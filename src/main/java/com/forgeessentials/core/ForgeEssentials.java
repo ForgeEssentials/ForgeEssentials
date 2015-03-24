@@ -183,12 +183,12 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
         new CommandFEInfo().register();
         new CommandFEDebug().register();
+        new CommandWand().register();
 
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
             new CommandPos(1).register();
             new CommandPos(2).register();
-            new CommandWand().register();
             new CommandDeselect().register();
             new CommandExpand().register();
             new CommandExpandY().register();

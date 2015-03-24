@@ -2,6 +2,7 @@ package com.forgeessentials.util.selections;
 
 //Depreciated
 
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +32,13 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
+		if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
+        {
+            OutputHandler.chatNotification(sender, "WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
+            OutputHandler.chatNotification(sender, "Please refer to http://wiki.sk89q.com/wiki/WorldEdit/Selection for more info.");
+            return;
+        }
+
 		// Get the wand item (or hands)
 		Item wandItem;
 		String wandId, wandName;
