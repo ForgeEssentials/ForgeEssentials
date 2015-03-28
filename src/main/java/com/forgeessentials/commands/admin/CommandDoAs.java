@@ -27,6 +27,10 @@ public class CommandDoAs extends FEcmdModuleCommands {
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
+        if (args.length == 0)
+        {
+            OutputHandler.chatError(sender, getCommandUsage(sender));
+        }
         if ((sender instanceof EntityPlayerMP) && args[0].equals("[CONSOLE]"))
         {
             EntityPlayerMP player = (EntityPlayerMP)sender;
