@@ -5,6 +5,7 @@ import java.util.List;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.FELaunchHandler;
+import com.forgeessentials.core.preloader.asm.EventInjector;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.commons.VersionUtils;
 import net.minecraft.command.ICommandSender;
@@ -72,6 +73,14 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
             OutputHandler.chatNotification(sender, "Build information: Build number is: " + VersionUtils.getBuildNumber(FELaunchHandler.jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(FELaunchHandler.jarLocation));
             OutputHandler.chatNotification(sender,
                     "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
+        }
+        else if (args[0].equalsIgnoreCase("debug"))
+        {
+            OutputHandler.chatNotification(sender, "Injected patches:");
+            for (String s : EventInjector.injectedPatches)
+            {
+                OutputHandler.chatNotification(sender, s);
+            }
         }
     }
 

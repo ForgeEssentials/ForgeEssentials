@@ -10,7 +10,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.compat.CompatReiMinimap;
-import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
 import com.forgeessentials.util.selections.CommandDeselect;
@@ -182,7 +181,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
         e.registerServerCommand(new HelpFixer());
 
         new CommandFEInfo().register();
-        new CommandFEDebug().register();
         new CommandWand().register();
 
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
