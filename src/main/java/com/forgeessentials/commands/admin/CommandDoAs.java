@@ -30,6 +30,7 @@ public class CommandDoAs extends FEcmdModuleCommands {
         if (args.length == 0)
         {
             OutputHandler.chatError(sender, getCommandUsage(sender));
+            return;
         }
         if ((sender instanceof EntityPlayerMP) && args[0].equals("[CONSOLE]"))
         {

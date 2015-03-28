@@ -17,14 +17,18 @@ public class CommandIRC extends ForgeEssentialsCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        if (args[0].equalsIgnoreCase("reconnect"))
+        if (args.length == 1)
         {
-            IRCHelper.reconnect(sender);
+            if (args[0].equalsIgnoreCase("reconnect"))
+            {
+                IRCHelper.reconnect(sender);
+            }
+            else if (args[0].equalsIgnoreCase("disconnect"))
+            {
+                IRCHelper.shutdown();
+            }
         }
-        else if (args[0].equalsIgnoreCase("disconnect"))
-        {
-            IRCHelper.shutdown();
-        }
+
         else
         {
             IRCHelper.status(sender);

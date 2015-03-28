@@ -31,6 +31,7 @@ public class CommandMail extends ForgeEssentialsCommandBase {
         if (args.length == 0)
         {
             OutputHandler.chatError(sender, "You must specify a player name!");
+            return;
         }
 
         if (!Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat()).contains(args[0]))
