@@ -1,6 +1,8 @@
 package com.forgeessentials.scripting.commands;
 
+import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.util.OutputHandler;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
@@ -11,6 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * This system allows someone to make shortcut commands.
@@ -40,15 +43,15 @@ public class ShortcutCommands {
      */
     public static void load()
     {
-        CommandHandler ch = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+        Set<?> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) MinecraftServer.getServer().getCommandManager(), CommandSetChecker.FIELDNAME);
         for (CommandWrapper cmd : list)
         {
-            if (ch.commandSet.contains(cmd.getCommandName()))
+            if (cmdList.contains(cmd.getCommandName()))
             {
                 OutputHandler.felog.warning(String.format("The command name %s is already in use for a regular command - defined shortcut command will be ignored.", cmd.getCommandName()));
                 continue;
             }
-            ch.registerCommand(cmd);
+            cmd.register();
         }
     }
 
