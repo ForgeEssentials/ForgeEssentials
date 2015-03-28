@@ -22,6 +22,9 @@ public class FELaunchHandler implements ITweaker
     {
         MixinBootstrap.init();
         MixinEnvironment.getCurrentEnvironment().addConfiguration("mixins.forgeessentials.json");
+
+        // compat hack for fastcraft
+        System.setProperty("fastcraft.asm.permissive", "true");
     }
 
     @Override
