@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.ImmutableUserIdent;
 import com.forgeessentials.util.UserIdent;
 
 /**
@@ -157,9 +158,9 @@ public abstract class Zone {
 
     private int id;
 
-    private Map<UserIdent, PermissionList> playerPermissions = new HashMap<UserIdent, PermissionList>();
+    protected Map<UserIdent, PermissionList> playerPermissions = new HashMap<UserIdent, PermissionList>();
 
-    private Map<String, PermissionList> groupPermissions = new HashMap<String, PermissionList>();
+    protected Map<String, PermissionList> groupPermissions = new HashMap<String, PermissionList>();
 
     public Zone(int id)
     {
@@ -276,6 +277,7 @@ public abstract class Zone {
         if (map == null)
         {
             map = new PermissionList();
+            ident = new ImmutableUserIdent(ident);
             playerPermissions.put(ident, map);
         }
         return playerPermissions.get(ident);
@@ -386,27 +388,19 @@ public abstract class Zone {
      */
     public void updatePlayerIdents()
     {
-        // TODO: TEST updatePlayerIdents !!!
-        // To do so add a permission by playername of user who is not connected
-        // When he joins an event needs to be fired that triggers this function
-        // It should update the map entry then
+        Map<UserIdent, PermissionList> toAdd = new HashMap<>();
         for (Iterator<Map.Entry<UserIdent, PermissionList>> iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
         {
-            Map.Entry<UserIdent, PermissionList> entry = iterator.next();
-            if (!entry.getKey().wasValidUUID())
+            Map.Entry<UserIdent, PermissionList> player = iterator.next();
+            getServerZone().registerPlayer(player.getKey());
+            UserIdent ident = new ImmutableUserIdent(player.getKey());
+            if (ident.hashCode() != player.getKey().hashCode())
             {
-                if (entry.getKey().hasUUID())
-                {
-                    iterator.remove();
-                    playerPermissions.put(entry.getKey(), entry.getValue());
-                }
+                iterator.remove();
+                toAdd.put(ident, player.getValue());
             }
-            else
-            {
-                entry.getKey().updateUsername();
-            }
-            getServerZone().registerPlayer(entry.getKey());
         }
+        playerPermissions.putAll(toAdd);
     }
 
     // ------------------------------------------------------------

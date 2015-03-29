@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -56,6 +54,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 /**
  * 
@@ -69,11 +68,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     protected ZonePersistenceProvider persistenceProvider;
 
-    protected Timer persistenceTimer = new Timer("permission persistence", true);;
-
-    protected PersistenceTask persistenceTimerTask;
-
     protected boolean dirty = true;
+
+    protected long lastDirty = 0;
 
     protected boolean registeredPermission = true;
 
@@ -100,25 +97,6 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // ------------------------------------------------------------
     // -- Persistence
     // ------------------------------------------------------------
-
-    class PersistenceTask extends TimerTask {
-
-        @Override
-        public void run()
-        {
-            if (persistenceProvider == null)
-                return;
-            if (dirty)
-            {
-                save();
-            }
-            else
-            {
-                // TODO: Detect manual changes to persistence backend
-            }
-        }
-
-    }
 
     public void setPersistenceProvider(ZonePersistenceProvider persistenceProvider)
     {
@@ -169,13 +147,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public void setDirty(boolean registeredPermission)
     {
         this.dirty = true;
+        this.lastDirty = System.currentTimeMillis();
         this.registeredPermission |= registeredPermission;
-        
-        // Restart timer
-        if (persistenceTimerTask != null)
-            persistenceTimerTask.cancel();
-        persistenceTimerTask = new PersistenceTask();
-        persistenceTimer.schedule(persistenceTimerTask, 1000);
     }
 
     // ------------------------------------------------------------
@@ -398,6 +371,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         sender.addChatMessage(msg);
     }
 
+    @SubscribeEvent
+    public void serverTickEvent(TickEvent.ServerTickEvent e)
+    {
+        if (dirty && System.currentTimeMillis() - lastDirty > 1000)
+            save();
+        // TODO: Detect manual changes to persistence backend
+    }
+    
     // ------------------------------------------------------------
     // -- Core permission handling
     // ------------------------------------------------------------

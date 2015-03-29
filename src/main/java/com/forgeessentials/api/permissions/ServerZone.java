@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.ImmutableUserIdent;
 import com.forgeessentials.util.UserIdent;
 
 /**
@@ -485,6 +486,26 @@ public class ServerZone extends Zone {
         return knownPlayers;
     }
 
+    @Override
+    public void updatePlayerIdents()
+    {
+        Map<UserIdent, PermissionList> toAdd = new HashMap<>();
+        for (Iterator<Map.Entry<UserIdent, PermissionList>> iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
+        {
+            Map.Entry<UserIdent, PermissionList> player = iterator.next();
+            getServerZone().registerPlayer(player.getKey());
+            UserIdent ident = new ImmutableUserIdent(player.getKey());
+            if (ident.hashCode() != player.getKey().hashCode())
+            {
+                iterator.remove();
+                toAdd.put(ident, player.getValue());
+                if (playerGroups.containsKey(player.getKey()))
+                    playerGroups.put(ident, playerGroups.remove(player.getKey()));
+            }
+        }
+        playerPermissions.putAll(toAdd);
+    }
+    
     // ------------------------------------------------------------
 
     public String getPermission(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String permissionNode, boolean isProperty)

@@ -23,14 +23,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class UserIdent {
 
     @SaveableField
-    private UUID uuid;
+    protected UUID uuid;
 
     @SaveableField
-    private String username;
+    protected String username;
 
-    private EntityPlayerMP player;
+    protected EntityPlayerMP player;
 
-    private GameProfile profile;
+    protected GameProfile profile;
 
     public UserIdent(UUID uuid)
     {
@@ -119,37 +119,84 @@ public class UserIdent {
         }
     }
 
-    // ------------------------------------------------------------
-
-    public void identifyUser()
+    public UserIdent(UserIdent ident)
     {
-        if (uuid == null)
+        this.uuid = ident.uuid;
+        this.player = ident.player;
+        this.username = ident.username;
+        this.profile = ident.profile;
+        
+        if (player == null)
         {
-            uuid = getUuidByUsername(username);
+            if (uuid != null)
+                player = getPlayerByUuid(uuid);
+            else if (username != null)
+                player = getPlayerByUsername(username);
+            else if (profile != null)
+                player = getPlayerByUuid(profile.getId());
         }
-        else if (username == null || profile == null)
+
+        if (profile == null && uuid != null)
         {
             profile = getGameProfileByUuid(uuid);
             if (profile != null)
                 username = profile.getName();
         }
-        if (player == null && uuid != null)
+
+        if (uuid == null)
         {
-            player = getPlayerByUuid(uuid);
+            if (profile != null)
+                uuid = profile.getId();
+            else if (player != null)
+                uuid = player.getPersistentID();
+            else if (username != null)
+                uuid = getUuidByUsername(username);
+        }
+    }
+
+    // ------------------------------------------------------------
+
+    public void identifyUser()
+    {
+        if (player == null)
+        {
+            if (uuid != null)
+                player = getPlayerByUuid(uuid);
+            else if (username != null)
+                player = getPlayerByUsername(username);
+            else if (profile != null)
+                player = getPlayerByUuid(profile.getId());
+        }
+
+        if (profile == null && uuid != null)
+        {
+            profile = getGameProfileByUuid(uuid);
+            if (profile != null)
+                username = profile.getName();
+        }
+
+        if (uuid == null)
+        {
+            if (profile != null)
+                uuid = profile.getId();
+            else if (player != null)
+                uuid = player.getPersistentID();
+            else if (username != null)
+                uuid = getUuidByUsername(username);
         }
     }
 
     public void updateUsername()
     {
-        if (uuid != null)
-            username = getUsernameByUuid(uuid);
+        if (profile != null)
+            username = profile.getName();
         else if (player != null)
             username = player.getCommandSenderName();
-        else if (profile != null)
-            username = profile.getName();
+        else if (uuid != null)
+            username = getUsernameByUuid(uuid);
     }
 
-    public boolean wasValidUUID()
+    public boolean uncheckedHasUUID()
     {
         return uuid != null;
     }
@@ -216,11 +263,14 @@ public class UserIdent {
 
     public UUID getOrGenerateUuid()
     {
-        if (uuid == null)
-            identifyUser();
         if (uuid != null)
             return uuid;
-        return UUID.fromString(username);
+        return getNameUuid();
+    }
+
+    public UUID getNameUuid()
+    {
+        return UUID.nameUUIDFromBytes(username.getBytes());
     }
 
     // ------------------------------------------------------------
