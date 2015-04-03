@@ -33,7 +33,9 @@ public class CommandVanish extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        OutputHandler.chatNotification(sender, "This command is currently not implemented.");
+
+        /*NBTTagCompound tag = sender.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
         tag.setBoolean(TAGNAME, !tag.getBoolean(TAGNAME));
         sender.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
 
@@ -55,7 +57,7 @@ public class CommandVanish extends FEcmdModuleCommands {
                     player.setInvisible(false);
                 }
             }
-        }
+        }*/
     }
 
     @Override

@@ -30,6 +30,11 @@ public class PlotManager {
     public static final String PLOT_PERMPROP_CLAIMCAP = PLOT_PERM + ".claimcap";
     public static final String PLOT_PERMPROP_CLAIMED = PLOT_PERM + ".claimed";
 
+    public static void registerPermComments()
+    {
+        APIRegistry.perms.registerPermissionDescription(PLOT_PERMPROP_CLAIMCAP, "Maximum amount of land a player is allowed to claim.");
+    }
+
     public static void printPlotDetails(ICommandSender sender, AreaZone plot)
     {
         if (!plot.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM)) return;
