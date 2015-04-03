@@ -1,7 +1,10 @@
 package com.forgeessentials.economy;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlotEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -31,28 +34,40 @@ public class EconEventHandler extends ServerEventHandler
         }
     }
 
-    /*
-    olee i need your help with this
-    OwnerSet and Define require adding the player to the plot-owners group in zones
-    OwnerUnset and RentDefaulted require removing the player from the plot-owners group
     @SubscribeEvent
     public void onPlotSet(PlotEvent.Define e)
     {
+        e.plot.addPlayerToGroup(new UserIdent(e.player), PlotManager.PLOT_GROUP);
     }
 
     @SubscribeEvent
     public void onOwnerAdd(PlotEvent.OwnerSet e)
     {
+        e.plot.addPlayerToGroup(new UserIdent(e.player), PlotManager.PLOT_GROUP);
     }
 
     @SubscribeEvent
     public void onOwnerUnset(PlotEvent.OwnerUnset e)
     {
+        e.plot.removePlayerFromGroup(new UserIdent(e.player), PlotManager.PLOT_GROUP);
     }
 
     @SubscribeEvent
     public void onRentDefault(PlotEvent.RentDefaulted e)
     {
+        e.plot.removePlayerFromGroup(new UserIdent(e.player), PlotManager.PLOT_GROUP);
     }
-    */
+
+    @SubscribeEvent
+    public void onZoneChange(PlayerChangedZone e)
+    {
+        if (e.afterZone.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_ISPLOT))
+        {
+            if (e.afterZone.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERMPROP_DENYENTRY)
+                    && e.afterZone.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER) != new UserIdent(e.entityPlayer).getUuid().toString())
+            {
+
+            }
+        }
+    }
 }

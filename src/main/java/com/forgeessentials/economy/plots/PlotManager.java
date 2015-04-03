@@ -22,13 +22,20 @@ public class PlotManager {
     public static final String PLOT_PERM = "fe.economy.plots";
 
     public static final String PLOT_NAME_ID = "[PLOT]";
+    public static final String PLOT_GROUP = "PlotOwners";
     public static final String DATA_PERM = PLOT_PERM + ".data";
+    public static final String PLOT_ISPLOT = DATA_PERM + ".isplot";
     public static final String PLOT_OWNER = DATA_PERM + ".owner";
     public static final String PLOT_NAME_PERM = DATA_PERM + ".name";
     public static final String PLOT_VALUE = DATA_PERM + ".value";
 
     public static final String PLOT_PERMPROP_CLAIMCAP = PLOT_PERM + ".claimcap";
     public static final String PLOT_PERMPROP_CLAIMED = PLOT_PERM + ".claimed";
+
+    public static final String PLOT_ENTRY = PLOT_PERM + ".entry";
+    public static final String PLOT_PERMPROP_ENTRYFEE = PLOT_ENTRY + ".fee";
+    public static final String PLOT_PERMPROP_DENYENTRY = PLOT_ENTRY + ".deny";
+    public static final String PLOT_PERMPROP_EXEMPT = PLOT_ENTRY + ".exempt";
 
     public static void registerPermComments()
     {
