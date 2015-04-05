@@ -33,26 +33,7 @@ Betas are to be considered unstable. Approach with caution. Please make backups 
 
 Development Setup
 =================
-Set up for ForgeEssentials development is simllar to any other ForgeGradle-based mod. Please refer to ForgeGradle instructions for importing a project.
-
-*Note: ForgeGradle versions for Minecraft 1.7 recommends Java 7.*
-
-Additional step (VERY IMPORTANT, OR EVENTS WILL NOT FIRE!!!)
-
-Open your IDE run configs, and select the preconfigured "Minecraft Client" run configuration.
-
-Under "Program Arguments", add the following:
-
-    --tweakClass com.forgeessentials.core.preloader.FELaunchHandler
-
-Repeat for the "Minecraft Server" run configuration.
-
-**FE CURRENTLY DOES NOT SUPPORT THE FORGEGRADLE RUN TASKS.**
-
-*Notes:*
-1. Please consider squashing all commits before initially submitting pull requests.
-2. For a local .gitignore use .git/info/exclude
-3. If you have any questions, hop on IRC.
+Please refer to CONTRIBUTING.md.
 
 FE Team Members:
 ================
