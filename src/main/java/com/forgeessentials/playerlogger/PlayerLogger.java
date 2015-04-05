@@ -33,9 +33,6 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-
 import com.forgeessentials.playerlogger.entity.ActionBlock;
 import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
 import com.forgeessentials.playerlogger.entity.BlockData;
@@ -52,10 +49,6 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class PlayerLogger extends ServerEventHandler {
-
-    private Session session;
-
-    private SessionFactory sessionFactory;
 
     private EntityManagerFactory entityManagerFactory;
 
@@ -75,11 +68,6 @@ public class PlayerLogger extends ServerEventHandler {
         transactionIndex = 0;
         playerCache.clear();
         blockCache.clear();
-
-        if (session != null && session.isOpen())
-            session.close();
-        if (sessionFactory != null && !sessionFactory.isClosed())
-            sessionFactory.close();
 
         if (em != null && em.isOpen())
             em.close();
@@ -119,22 +107,6 @@ public class PlayerLogger extends ServerEventHandler {
 
         entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_" + PlayerLoggerConfig.databaseType, properties);
         em = entityManagerFactory.createEntityManager();
-
-        sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
-        session = em.unwrap(Session.class);
-
-        // Configuration cfg = new Configuration();
-        // cfg.setProperties(properties);
-        // cfg.addPackage(Action.class.getPackage().getName());
-        // cfg.addAnnotatedClass(PlayerData.class);
-        // cfg.addAnnotatedClass(WorldData.class);
-        // cfg.addAnnotatedClass(BlockData.class);
-        // cfg.addAnnotatedClass(Action.class);
-        // cfg.addAnnotatedClass(ActionBlock.class);
-        // ServiceRegistry serviceRegistry = new
-        // StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
-        // sessionFactory = cfg.buildSessionFactory(serviceRegistry);
-        // session = sessionFactory.openSession();
     }
 
     // ============================================================
