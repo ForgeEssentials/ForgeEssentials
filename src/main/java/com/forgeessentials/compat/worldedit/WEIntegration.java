@@ -45,6 +45,20 @@ public class WEIntegration
             OutputHandler.felog.severe("You cannot run the FE integration tools for WorldEdit without installing WorldEdit Forge.");
             return false;
         }
+
+        else
+        {
+            try
+            {
+                Class.forName("com.sk89q.worldedit.forge.ForgePermissionsProvider");
+            }
+            catch (ClassNotFoundException e)
+            {
+                OutputHandler.felog.severe("ForgePermissionsProvider not found, are you using an old version of WorldEdit?");
+                OutputHandler.felog.severe("The FE integration tools for WorldEdit will not be loaded as your version of WorldEdit may be too old.");
+                return false;
+            }
+        }
         return true;
     }
 
