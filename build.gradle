@@ -116,6 +116,7 @@ dependencies {
     //datasaving
     myCompile 'com.h2database:h2:1.3.175'
     myCompile 'mysql:mysql-connector-java:5.1.22'
+    myCompile 'org.hibernate:hibernate-entitymanager:4.3.7.Final'
 
     // WE integration
     myCompile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.2-SNAPSHOT:dev'
