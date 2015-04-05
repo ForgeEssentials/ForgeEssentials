@@ -1,26 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
 	version="1.0">
-    <persistence-unit name="playerlogger_h2">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+	<persistence-unit name="playerlogger_h2">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+			<property name="hibernate.connection.url" value="jdbc:h2:playerlogger" />
+			<property name="hibernate.connection.username" value="forgeessentials" />
+			<property name="hibernate.connection.password" value="forgeessentials" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+		</properties>
+	</persistence-unit>
+	<persistence-unit name="playerlogger_mysql">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
+			<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/playerlogger" />
+			<property name="hibernate.connection.username" value="forgeessentials" />
+			<property name="hibernate.connection.password" value="forgeessentials" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+		</properties>
+	</persistence-unit>
+	<persistence-unit name="playerlogger_eclipselink_h2" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:h2:playerlogger" />
+            <property name="javax.persistence.jdbc.user" value="forgeessentials" />
+            <property name="javax.persistence.jdbc.password" value="forgeessentials" />
+            <property name="eclipselink.allow-zero-id" value="true"/>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="eclipselink.ddl-generation.output-mode" value="database" />
+		</properties>
+	</persistence-unit>
+    <persistence-unit name="playerlogger_eclipselink_mysql" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
-            <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
-            <property name="hibernate.connection.url" value="jdbc:h2:forgeessentials" />
-            <property name="hibernate.connection.username" value="forgeessentials" />
-            <property name="hibernate.connection.password" value="forgeessentials" />
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="playerlogger_mysql">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/forgeessentials" />
-            <property name="hibernate.connection.username" value="forgeessentials" />
-            <property name="hibernate.connection.password" value="forgeessentials" />
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/playerlogger" />
+            <property name="javax.persistence.jdbc.user" value="forgeessentials" />
+            <property name="javax.persistence.jdbc.password" value="forgeessentials" />
+            <property name="eclipselink.allow-zero-id" value="true"/>
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+            <property name="eclipselink.ddl-generation.output-mode" value="database" />
         </properties>
     </persistence-unit>
 </persistence>

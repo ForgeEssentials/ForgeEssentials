@@ -86,15 +86,10 @@ public class PlayerLogger extends ServerEventHandler {
         switch (PlayerLoggerConfig.databaseType)
         {
         case "h2":
-            properties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-            properties.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
             properties.setProperty("hibernate.connection.url", "jdbc:h2:" + PlayerLoggerConfig.databaseUrl);
             break;
         case "mysql":
-            properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-            properties.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-            properties.setProperty("hibernate.connection.url", "jdbc:mysql://" + PlayerLoggerConfig.databaseUrl);
-            // properties.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/forgeessentials");
+            properties.setProperty("hibernate.connection.url", "jdbc:mysql://" + PlayerLoggerConfig.databaseUrl); // e.g.: jdbc:mysql://localhost:3306/forgeessentials
             break;
         default:
             throw new RuntimeException("PlayerLogger database type must be either h2 or mysql.");
@@ -106,6 +101,7 @@ public class PlayerLogger extends ServerEventHandler {
         properties.setProperty("hibernate.format_sql", "false");
 
         entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_" + PlayerLoggerConfig.databaseType, properties);
+        //entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_eclipselink_" + PlayerLoggerConfig.databaseType, properties);
         em = entityManagerFactory.createEntityManager();
     }
 
