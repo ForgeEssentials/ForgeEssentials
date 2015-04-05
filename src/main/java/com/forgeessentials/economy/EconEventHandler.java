@@ -66,6 +66,10 @@ public class EconEventHandler extends ServerEventHandler
             if (e.afterZone.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERMPROP_DENYENTRY)
                     && e.afterZone.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER) != new UserIdent(e.entityPlayer).getUuid().toString())
             {
+                // TODO implement players not allowed to enter zone
+            }
+            if (e.afterZone.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERMPROP_ENTRYFEE) != "")
+            {
 
             }
         }

@@ -1172,6 +1172,38 @@ public final class FunctionHelper {
         }
     }
 
+	/**
+	 * Stitches a string together
+	 * User-readable: string, string
+	 * Non user-readable (use to save permprops, etc): string,string
+	 * To unstitch, you can use String.split.
+	 * @param toStitch String array to stitch
+	 * @param userReadable Whether the stitched string should be user-readable (can be harder to unstitch)
+	 * @return
+	 */
+	public static String stitchString(String[] toStitch, boolean userReadable)
+	{
+		String returned = "";
+
+		boolean first = true;
+		for (String string : toStitch)
+		{
+			if (userReadable)
+			{
+				returned = returned + (first ? string : ", " + string);
+			}
+
+			else
+			{
+				returned = returned + (first ? string : "," + string);
+			}
+
+			first = false;
+		}
+
+		return returned;
+	}
+
     /**
      * this code is present in Forge 1278, and should be removed in the 1.8 update of FE.
      */

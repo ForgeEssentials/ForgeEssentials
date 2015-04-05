@@ -3,6 +3,7 @@ package com.forgeessentials.core.environment;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.core.preloader.FELaunchHandler;
+import com.forgeessentials.util.FunctionHelper;
 import cpw.mods.fml.common.ICrashCallable;
 
 /**
@@ -19,14 +20,7 @@ public class FECrashCallable implements ICrashCallable
     @Override
     public String call() throws Exception
     {
-        String modules = "";
-
-        Boolean firstEntry = true;
-        for (String id : ModuleLauncher.getModuleList())
-        {
-            modules = modules + (firstEntry ? id : ", " + id);
-            firstEntry = false;
-        }
+        String modules = FunctionHelper.stitchString(ModuleLauncher.getModuleList().toArray(new String[]{}), true);
         String n = System.getProperty("line.separator");
         String returned =  "Build information: Build number is: " + VersionUtils.getBuildNumber(FELaunchHandler.jarLocation)
                 + ", Build hash is: " + VersionUtils.getBuildHash(FELaunchHandler.jarLocation)
