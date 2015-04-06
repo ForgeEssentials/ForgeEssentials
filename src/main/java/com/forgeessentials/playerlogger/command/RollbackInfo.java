@@ -41,14 +41,16 @@ public class RollbackInfo {
         this.setTime(new Date());
     }
     
-    public void stepBackward()
+    @SuppressWarnings("deprecation")
+	public void stepBackward()
     {
         timeStep *= timeStep < 0 ? 1.25 : -0.25;
         timeStep -= 1;
         getTime().setSeconds(getTime().getSeconds() + timeStep);
     }
     
-    public void stepForward()
+    @SuppressWarnings("deprecation")
+	public void stepForward()
     {
         timeStep *= timeStep > 0 ? 1.25 : -0.25;
         timeStep += 1;
@@ -72,7 +74,7 @@ public class RollbackInfo {
                     sendBlockChange(player, change, Blocks.air, 0);
                     System.out.println(CommandRollback.TIME_FORMAT.format(change.time) + " REMOVED " + change.block.name);
                 }
-                else if (change.type == ActionBlockType.BREAK)
+                else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
                 {
                     sendBlockChange(player, change, GameData.getBlockRegistry().getObject(change.block.name), change.metadata);
                     System.out.println(CommandRollback.TIME_FORMAT.format(change.time) + " RESTORED " + change.block.name + ":" + change.metadata);
@@ -89,7 +91,7 @@ public class RollbackInfo {
                     sendBlockChange(player, change, GameData.getBlockRegistry().getObject(change.block.name), change.metadata);
                     System.out.println(CommandRollback.TIME_FORMAT.format(change.time) + " REPLACED " + change.block.name);
                 }
-                else if (change.type == ActionBlockType.BREAK)
+                else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
                 {
                     sendBlockChange(player, change, Blocks.air, 0);
                     System.out.println(CommandRollback.TIME_FORMAT.format(change.time) + " REBROKE " + change.block.name + ":" + change.metadata);
@@ -110,7 +112,7 @@ public class RollbackInfo {
                 world.setBlockToAir(change.x, change.y, change.z);
                 System.out.println(change.time + " REMOVED " + change.block.name);
             }
-            else if (change.type == ActionBlockType.BREAK)
+            else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
             {
                 WorldServer world = DimensionManager.getWorld(change.world.id);
                 world.setBlock(change.x, change.y, change.z, GameData.getBlockRegistry().getObject(change.block.name), change.metadata, 3);

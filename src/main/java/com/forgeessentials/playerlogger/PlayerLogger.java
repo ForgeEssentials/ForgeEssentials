@@ -19,8 +19,12 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraft.world.ChunkPosition;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
@@ -38,6 +42,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.playerlogger.entity.ActionBlock;
 import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
+import com.forgeessentials.playerlogger.entity.ActionCommand;
 import com.forgeessentials.playerlogger.entity.Action_;
 import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.BlockData_;
@@ -52,7 +57,6 @@ import com.google.common.base.Charsets;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.registry.GameData;
 
 public class PlayerLogger extends ServerEventHandler {
@@ -166,21 +170,26 @@ public class PlayerLogger extends ServerEventHandler {
         transactionIndex = 0;
     }
 
+    protected PlayerData getPlayer(String uuid)
+    {
+        beginTransaction();
+        PlayerData data = getOneOrNullResult(buildSimpleQuery(PlayerData.class, PlayerData_.uuid, uuid));
+        if (data == null)
+        {
+            data = new PlayerData();
+            data.uuid = uuid;
+            em.persist(data);
+        }
+        commitTransaction();
+        return data;
+    }
+    
     protected PlayerData getPlayer(UUID uuid)
     {
         PlayerData data = playerCache.get(uuid);
         if (data != null)
             return data;
-
-        beginTransaction();
-        data = getOneOrNullResult(buildSimpleQuery(PlayerData.class, PlayerData_.uuid, uuid.toString()));
-        if (data == null)
-        {
-            data = new PlayerData();
-            data.uuid = uuid.toString();
-            em.persist(data);
-        }
-        commitTransaction();
+        data = getPlayer(uuid.toString());
         playerCache.put(uuid, data);
         return data;
     }
@@ -209,6 +218,24 @@ public class PlayerLogger extends ServerEventHandler {
         return getBlock(GameData.getBlockRegistry().getNameForObject(block));
     }
 
+    protected SerialBlob getTileEntityBlob(TileEntity entity) {
+        if (entity == null)
+        	return null;
+        NBTTagCompound nbt = new NBTTagCompound();
+        entity.writeToNBT(nbt);
+        nbt.setString("ENTITY_CLASS", entity.getClass().getName());
+        try
+        {
+            return new SerialBlob(nbt.toString().getBytes(Charsets.UTF_8));
+        }
+        catch (Exception ex)
+        {
+            OutputHandler.felog.severe(ex.toString());
+            ex.printStackTrace();
+        }
+    	return null;
+	}
+
     // ============================================================
     // Rollback
 
@@ -236,7 +263,7 @@ public class PlayerLogger extends ServerEventHandler {
     }
 
     // ============================================================
-    // Event listeners
+    // Block events
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void worldLoad(WorldEvent.Load e)
@@ -257,7 +284,6 @@ public class PlayerLogger extends ServerEventHandler {
     public void placeEvent(BlockEvent.PlaceEvent e)
     {
         beginTransaction();
-
         ActionBlock action = new ActionBlock();
         action.time = new Date();
         action.player = getPlayer(e.player.getPersistentID());
@@ -268,92 +294,139 @@ public class PlayerLogger extends ServerEventHandler {
         action.x = e.x;
         action.y = e.y;
         action.z = e.z;
-
         em.persist(action);
         commitTransaction();
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void multiPlaceEvent(BlockEvent.MultiPlaceEvent e)
+    {
+    	/*
+        beginTransaction();
+        ActionBlock action = new ActionBlock();
+        action.time = new Date();
+        action.player = getPlayer(e.player.getPersistentID());
+        action.world = em.getReference(WorldData.class, e.world.provider.dimensionId);
+        action.block = getBlock(e.block);
+        action.metadata = e.blockMetadata;
+        action.type = ActionBlockType.PLACE;
+        action.x = e.x;
+        action.y = e.y;
+        action.z = e.z;
+        em.persist(action);
+        commitTransaction();
+        */
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void breakEvent(BreakEvent e)
     {
         beginTransaction();
-
         ActionBlock action = new ActionBlock();
         action.time = new Date();
         action.player = getPlayer(e.getPlayer().getPersistentID());
         action.world = em.getReference(WorldData.class, e.world.provider.dimensionId);
         action.block = getBlock(e.block);
         action.metadata = e.blockMetadata;
+        action.entity = getTileEntityBlob(e.world.getTileEntity(e.x, e.y, e.z));
         action.type = ActionBlockType.BREAK;
         action.x = e.x;
         action.y = e.y;
         action.z = e.z;
-
-        TileEntity entity = e.world.getTileEntity(e.x, e.y, e.z);
-        if (entity != null)
-        {
-            NBTTagCompound nbt = new NBTTagCompound();
-            entity.writeToNBT(nbt);
-            nbt.setString("ENTITY_CLASS", entity.getClass().getName());
-            try
-            {
-                action.entity = new SerialBlob(nbt.toString().getBytes(Charsets.UTF_8));
-            }
-            catch (Exception ex)
-            {
-                OutputHandler.felog.severe(e.toString());
-                ex.printStackTrace();
-            }
-        }
-
         em.persist(action);
         commitTransaction();
     }
 
+    @SuppressWarnings("unchecked")
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+    public void explosionEvent(ExplosionEvent.Detonate e)
+    {
+        beginTransaction();
+        WorldData worldData = em.getReference(WorldData.class, e.world.provider.dimensionId);
+        for (ChunkPosition blockPos : (List<ChunkPosition>) e.explosion.affectedBlockPositions)
+        {
+	        ActionBlock action = new ActionBlock();
+	        action.time = new Date();
+	        action.world = worldData;
+	        action.block = getBlock(e.world.getBlock(blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ));
+	        action.metadata = e.world.getBlockMetadata(blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ);
+	        action.entity = getTileEntityBlob(e.world.getTileEntity(blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ));
+	        action.type = ActionBlockType.DETONATE;
+	        action.x = blockPos.chunkPosX;
+	        action.y = blockPos.chunkPosY;
+	        action.z = blockPos.chunkPosZ;
+	        em.persist(action);
+        }
+        commitTransaction();
+    }
+
+    // ============================================================
+    // Other events
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void commandEvent(CommandEvent e)
+	{
+        beginTransaction();
+        ActionCommand action = new ActionCommand();
+        action.time = new Date();
+        action.command = e.command.getCommandName();
+        if (e.sender instanceof EntityPlayer)
+        {
+        	EntityPlayer player = ((EntityPlayer) e.sender);
+            action.player = getPlayer(player.getPersistentID());
+            action.world = em.getReference(WorldData.class, player.worldObj.provider.dimensionId);
+            action.x = (int) player.posX;
+            action.y = (int) player.posY;
+            action.z = (int) player.posZ;
+        }
+        else if (e.sender instanceof TileEntityCommandBlock)
+        {
+        	TileEntityCommandBlock block = ((TileEntityCommandBlock) e.sender);
+            action.player = getPlayer("commandblock");
+            action.world = em.getReference(WorldData.class, block.getWorldObj().provider.dimensionId);
+            action.x = block.xCoord;
+            action.y = block.yCoord;
+            action.z = block.zCoord;
+        }
+        em.persist(action);
+        commitTransaction();
+	}
+
+    // ============================================================
+    // Player events
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent e)
+	{
+        // TODO
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
+	{
+        // TODO
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent e)
+	{
+        // TODO
+	}
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void attackEntityEvent(AttackEntityEvent e)
+	public void playerChangedDimensionEvent(PlayerEvent.PlayerChangedDimensionEvent e)
+	{
+        // TODO
+	}
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerChangedZoneEvent(PlayerChangedZone e)
     {
         // TODO
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void livingHurtEvent(LivingHurtEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void explosionEvent(ExplosionEvent.Start e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void multiPlaceEvent(BlockEvent.MultiPlaceEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerInteractEvent(PlayerInteractEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void entityInteractEvent(EntityInteractEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void checkSpawnEvent(CheckSpawn e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void specialSpawnEvent(SpecialSpawn e)
+    public void playerOpenContainerEvent(PlayerOpenContainerEvent e)
     {
         // TODO
     }
@@ -370,29 +443,46 @@ public class PlayerLogger extends ServerEventHandler {
         // TODO
     }
 
+    // ============================================================
+    // Interact events
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerOpenContainerEvent(PlayerOpenContainerEvent e)
+    public void attackEntityEvent(AttackEntityEvent e)
     {
         // TODO
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoginEvent(PlayerLoggedInEvent e)
+    public void livingHurtEvent(LivingHurtEvent e)
     {
         // TODO
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerChangedZoneEvent(PlayerChangedZone e)
+    public void playerInteractEvent(PlayerInteractEvent e)
     {
         // TODO
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
+    public void entityInteractEvent(EntityInteractEvent e)
     {
         // TODO
     }
 
+    // ============================================================
+    // Spawn events
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void checkSpawnEvent(CheckSpawn e)
+    {
+        // TODO
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void specialSpawnEvent(SpecialSpawn e)
+    {
+        // TODO
+    }
 
 }
