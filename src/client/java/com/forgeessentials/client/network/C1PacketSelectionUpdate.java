@@ -2,7 +2,7 @@ package com.forgeessentials.client.network;
 
 import io.netty.buffer.ByteBuf;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
+import com.forgeessentials.client.core.ClientProxy;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
@@ -25,7 +25,7 @@ public class C1PacketSelectionUpdate implements IMessageHandler<C1PacketSelectio
     @Override
     public void fromBytes(ByteBuf byteBuf)
     {
-        ForgeEssentialsClient.info.setSelection(
+        ClientProxy.setSelection(
             new Selection(
                 byteBuf.readInt(), 
                 byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble()) : null,
@@ -33,6 +33,9 @@ public class C1PacketSelectionUpdate implements IMessageHandler<C1PacketSelectio
     }
 
     @Override
-    public void toBytes(ByteBuf byteBuf){} // noop - receiving only
+    public void toBytes(ByteBuf byteBuf)
+    {
+        /* do noting */
+    }
 
 }

@@ -165,6 +165,7 @@ public class RollbackInfo {
         }
 
         @Override
+        @SuppressWarnings("deprecation")
         public void run()
         {
             rb.getTime().setSeconds(rb.getTime().getSeconds() - speed);

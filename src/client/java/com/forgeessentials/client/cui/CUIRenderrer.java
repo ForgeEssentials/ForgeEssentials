@@ -8,8 +8,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.core.PlayerInfoClient;
+import com.forgeessentials.client.core.ClientProxy;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
@@ -26,11 +25,10 @@ public class CUIRenderrer {
     public void render(RenderWorldLastEvent event)
     {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
-        PlayerInfoClient info = ForgeEssentialsClient.info;
-        if (player == null || info == null)
+        if (player == null)
             return;
         
-        Selection sel = info.getSelection();
+        Selection sel = ClientProxy.getSelection();
         if (sel == null || sel.getDimension() != FMLClientHandler.instance().getClient().thePlayer.dimension)
             return;
 
