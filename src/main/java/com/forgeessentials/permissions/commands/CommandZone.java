@@ -31,7 +31,7 @@ import com.forgeessentials.util.selections.SelectionHandler;
 public class CommandZone extends ForgeEssentialsCommandBase {
 
     public static final String PERM_NODE = "fe.perm.zone";
-    public static final String PERM_ALL = PERM_NODE + ".*";
+    public static final String PERM_ALL = PERM_NODE + Zone.ALL_PERMS;
     public static final String PERM_LIST = PERM_NODE + ".list";
     public static final String PERM_INFO = PERM_NODE + ".info";
     public static final String PERM_DEFINE = PERM_NODE + ".define";

@@ -34,3 +34,4 @@ CHANGELOG
 modlist.txt
 /build
 /bin
+/.apt_generated/

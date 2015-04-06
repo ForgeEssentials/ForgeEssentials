@@ -25,13 +25,13 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 	@Override
 	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
 	{
-	    PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this.getCommandName(), args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
+	    PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
 	}
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        CommandParserArgs arguments = new CommandParserArgs(this.getCommandName(), args, sender, true);
+        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
         PermissionCommandParser.parseGroupSpawn(arguments, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
         return arguments.tabCompletion;
     }
@@ -39,7 +39,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
 	@Override
 	public void processCommandConsole(ICommandSender sender, String[] args)
 	{
-        PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this.getCommandName(), args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
+        PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
 	}
 
 	@Override

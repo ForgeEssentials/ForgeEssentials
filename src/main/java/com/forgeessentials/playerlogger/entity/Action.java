@@ -13,10 +13,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.persistence.metamodel.StaticMetamodel;
 
 /**
  *
@@ -46,12 +49,23 @@ public class Action {
     @Column(name = "z")
     public int z;
 
-    //@Column(name = "world")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "dimension")
     public WorldData world;
 
-    //@Column(name = "player")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "player_id")
     public PlayerData player;
-
+    
+    @StaticMetamodel(Action.class)
+    public static class Meta {
+      public static volatile SingularAttribute<Action, Long> id;
+      public static volatile SingularAttribute<Action, Date> time;
+      public static volatile SingularAttribute<Action, Integer> x;
+      public static volatile SingularAttribute<Action, Integer> y;
+      public static volatile SingularAttribute<Action, Integer> z;
+      public static volatile SingularAttribute<Action, WorldData> world;
+      public static volatile SingularAttribute<Action, PlayerData> player;
+    }
+    
 }

@@ -2,6 +2,7 @@ package com.forgeessentials.playerlogger;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.playerlogger.command.CommandRollback;
 import com.forgeessentials.playerlogger.network.S2PacketPlayerLogger;
 import com.forgeessentials.playerlogger.network.S3PacketRollback;
 import com.forgeessentials.util.FunctionHelper;
@@ -16,7 +17,9 @@ import cpw.mods.fml.relauncher.Side;
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class)
 public class ModulePlayerLogger {
 
-    private PlayerLogger logger;
+    public static final String PERM = "fe.pl";
+
+    private static PlayerLogger logger;
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
@@ -36,33 +39,7 @@ public class ModulePlayerLogger {
     public void serverPreInit(FEModuleServerPreInitEvent e)
     {
         logger.loadDatabase();
-       
-        //FunctionHelper.registerServerCommand(new CommandPl());
-        //FunctionHelper.registerServerCommand(new CommandRollback());
-//        try
-//        {
-//            connection = DriverManager.getConnection(ModuleLogger.url, ModuleLogger.username, ModuleLogger.password);
-//            Statement s = connection.createStatement();
-//
-//            /*
-//             * if (DEBUG && false) { for (logEntry type : logTypes) { s.execute("DROP TABLE IF EXISTS " + type.getName()); } }
-//             */
-//
-//            for (LogType type : logTypes)
-//            {
-//                s.execute(type.getTableCreateSQL());
-//            }
-//
-//            s.close();
-//            eLogger = new EventLogger();
-//        }
-//        catch (SQLException e1)
-//        {
-//            OutputHandler.felog.info("Could not connect to database! Wrong credentials or no credentials!");
-//            OutputHandler.felog.info(e1.getMessage());
-//            e1.printStackTrace();
-//            ModuleLauncher.instance.unregister("PlayerLogger");
-//        }
+        new CommandRollback().register();
     }
 
     @SubscribeEvent
@@ -71,4 +48,9 @@ public class ModulePlayerLogger {
         logger.close();
     }
 
+    public static PlayerLogger getLogger()
+    {
+        return logger;
+    }
+    
 }

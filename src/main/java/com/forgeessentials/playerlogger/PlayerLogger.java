@@ -15,8 +15,10 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -33,10 +35,14 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.playerlogger.entity.ActionBlock;
 import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
+import com.forgeessentials.playerlogger.entity.Action_;
 import com.forgeessentials.playerlogger.entity.BlockData;
+import com.forgeessentials.playerlogger.entity.BlockData_;
 import com.forgeessentials.playerlogger.entity.PlayerData;
+import com.forgeessentials.playerlogger.entity.PlayerData_;
 import com.forgeessentials.playerlogger.entity.WorldData;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerChangedZone;
@@ -47,6 +53,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.registry.GameData;
 
 public class PlayerLogger extends ServerEventHandler {
 
@@ -96,9 +103,9 @@ public class PlayerLogger extends ServerEventHandler {
         }
         properties.setProperty("hibernate.connection.username", PlayerLoggerConfig.databaseUsername);
         properties.setProperty("hibernate.connection.password", PlayerLoggerConfig.databasePassword);
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.show_sql", "true");
-        properties.setProperty("hibernate.format_sql", "false");
+        //properties.setProperty("hibernate.hbm2ddl.auto", "update");
+        //properties.setProperty("hibernate.format_sql", "false");
+        //properties.setProperty("hibernate.show_sql", "true");
 
         entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_" + PlayerLoggerConfig.databaseType, properties);
         //entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_eclipselink_" + PlayerLoggerConfig.databaseType, properties);
@@ -114,6 +121,15 @@ public class PlayerLogger extends ServerEventHandler {
         CriteriaQuery<T> cQuery = cBuilder.createQuery(clazz);
         Root<T> cRoot = cQuery.from(clazz);
         cQuery.select(cRoot).where(cBuilder.equal(cRoot.get(fieldName), value));
+        return em.createQuery(cQuery);
+    }
+
+    protected <T,V> TypedQuery<T> buildSimpleQuery(Class<T> clazz, SingularAttribute<T, V> field, V value)
+    {
+        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<T> cQuery = cBuilder.createQuery(clazz);
+        Root<T> cRoot = cQuery.from(clazz);
+        cQuery.select(cRoot).where(cBuilder.equal(cRoot.get(field), value));
         return em.createQuery(cQuery);
     }
 
@@ -157,7 +173,7 @@ public class PlayerLogger extends ServerEventHandler {
             return data;
 
         beginTransaction();
-        data = getOneOrNullResult(buildSimpleQuery(PlayerData.class, "uuid", uuid.toString()));
+        data = getOneOrNullResult(buildSimpleQuery(PlayerData.class, PlayerData_.uuid, uuid.toString()));
         if (data == null)
         {
             data = new PlayerData();
@@ -176,7 +192,7 @@ public class PlayerLogger extends ServerEventHandler {
             return data;
 
         beginTransaction();
-        data = getOneOrNullResult(buildSimpleQuery(BlockData.class, "name", name));
+        data = getOneOrNullResult(buildSimpleQuery(BlockData.class, BlockData_.name, name));
         if (data == null)
         {
             data = new BlockData();
@@ -186,6 +202,37 @@ public class PlayerLogger extends ServerEventHandler {
         commitTransaction();
         blockCache.put(name, data);
         return data;
+    }
+
+    protected BlockData getBlock(Block block)
+    {
+        return getBlock(GameData.getBlockRegistry().getNameForObject(block));
+    }
+
+    // ============================================================
+    // Rollback
+
+    public List<ActionBlock> getBlockChangeSet(Selection area, Date startTime)
+    {
+        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
+        Root<ActionBlock> cRoot = cQuery.from(ActionBlock.class);
+        cQuery.select(cRoot);
+        cQuery.where(cBuilder.and(
+                cBuilder.greaterThanOrEqualTo(cRoot.get(Action_.time), cBuilder.literal(startTime)),
+                cBuilder.equal(cRoot.<Integer>get(Action_.world.getName()), cBuilder.literal(area.getDimension())),
+                cBuilder.between(cRoot.get(Action_.x), cBuilder.literal(area.getLowPoint().x), cBuilder.literal(area.getHighPoint().x)),
+                cBuilder.between(cRoot.get(Action_.y), cBuilder.literal(area.getLowPoint().y), cBuilder.literal(area.getHighPoint().y)),
+                cBuilder.between(cRoot.get(Action_.z), cBuilder.literal(area.getLowPoint().z), cBuilder.literal(area.getHighPoint().z))
+        ));
+        cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
+        TypedQuery<ActionBlock> query = em.createQuery(cQuery);
+
+        beginTransaction();
+        List<ActionBlock> changes = query.getResultList();
+        commitTransaction();
+        
+        return changes;
     }
 
     // ============================================================
@@ -215,7 +262,8 @@ public class PlayerLogger extends ServerEventHandler {
         action.time = new Date();
         action.player = getPlayer(e.player.getPersistentID());
         action.world = em.getReference(WorldData.class, e.world.provider.dimensionId);
-        action.block = getBlock(e.block.getUnlocalizedName());
+        action.block = getBlock(e.block);
+        action.metadata = e.blockMetadata;
         action.type = ActionBlockType.PLACE;
         action.x = e.x;
         action.y = e.y;
@@ -234,7 +282,8 @@ public class PlayerLogger extends ServerEventHandler {
         action.time = new Date();
         action.player = getPlayer(e.getPlayer().getPersistentID());
         action.world = em.getReference(WorldData.class, e.world.provider.dimensionId);
-        action.block = getBlock(e.block.getUnlocalizedName());
+        action.block = getBlock(e.block);
+        action.metadata = e.blockMetadata;
         action.type = ActionBlockType.BREAK;
         action.x = e.x;
         action.y = e.y;
@@ -344,5 +393,6 @@ public class PlayerLogger extends ServerEventHandler {
     {
         // TODO
     }
+
 
 }
