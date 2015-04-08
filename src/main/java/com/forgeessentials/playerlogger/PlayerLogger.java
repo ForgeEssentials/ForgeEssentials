@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,6 +26,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.world.ChunkPosition;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
@@ -92,7 +95,10 @@ public class PlayerLogger extends ServerEventHandler {
     public void loadDatabase()
     {
         close();
-
+        
+        // Set log level
+        Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
+        
         Properties properties = new Properties();
         switch (PlayerLoggerConfig.databaseType)
         {
@@ -301,21 +307,22 @@ public class PlayerLogger extends ServerEventHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void multiPlaceEvent(BlockEvent.MultiPlaceEvent e)
     {
-    	/*
-        beginTransaction();
-        ActionBlock action = new ActionBlock();
-        action.time = new Date();
-        action.player = getPlayer(e.player.getPersistentID());
-        action.world = em.getReference(WorldData.class, e.world.provider.dimensionId);
-        action.block = getBlock(e.block);
-        action.metadata = e.blockMetadata;
-        action.type = ActionBlockType.PLACE;
-        action.x = e.x;
-        action.y = e.y;
-        action.z = e.z;
-        em.persist(action);
-        commitTransaction();
-        */
+    	for (BlockSnapshot snapshot : e.getReplacedBlockSnapshots())
+    	{
+            beginTransaction();
+            ActionBlock action = new ActionBlock();
+            action.time = new Date();
+            action.player = getPlayer(e.player.getPersistentID());
+            action.world = em.getReference(WorldData.class, snapshot.world.provider.dimensionId);
+            action.block = getBlock(snapshot.blockIdentifier.toString());
+            action.metadata = snapshot.meta;
+            action.type = ActionBlockType.PLACE;
+            action.x = snapshot.x;
+            action.y = snapshot.y;
+            action.z = snapshot.z;
+            em.persist(action);
+            commitTransaction();
+    	}
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
