@@ -48,7 +48,7 @@ public class FEClassLoader
         runClassLoad(FEfolder, cl);
         checkLibs(cl);
 
-        if (FELaunchHandler.runtimeDeobfEnabled)
+        if (FELaunchHandler.runtimeDeobfEnabled && reExtract)
         {
             doActualExtract(mcLocation);
 
@@ -145,13 +145,10 @@ public class FEClassLoader
 
     public void doActualExtract(File mcLocation)
     {
-        System.out.println("[ForgeEssentials] Checking if we need to extract libraries");
-        if (reExtract)
-        {
-            System.out.println("[ForgeEssentials] Extracting libraries");
+        System.out.println("[ForgeEssentials] Extracting libraries");
 
             // clear old libs
-            File lib = new File(FEfolder, "lib/");
+        File lib = new File(FEfolder, "lib/");
             if (lib.exists())
             {
                 lib.delete();
@@ -183,7 +180,6 @@ public class FEClassLoader
             {
                 e.printStackTrace();
             }
-        }
     }
 
     /**
