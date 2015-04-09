@@ -111,7 +111,24 @@ public class FEClassLoader
 
     }
 
-    private static String[] compulsoryLibs = { "com.mysql.jdbc.Driver", "org.pircbotx.PircBotX", "org.h2.Driver" };
+    private static String[] compulsoryLibs = {
+            "com.mysql.jdbc.Driver",
+            "org.pircbotx.PircBotX",
+            "org.h2.Driver",
+
+            // PL
+            "antlr.Version",
+            "org.dom4j.Text",
+            "org.hibernate.annotations.common.Version",
+            "org.hibernate.Version",
+            "org.hibernate.jpa.AvailableSettings",
+            "javax.persistence.Version",
+            "org.jboss.jandex.Main",
+            "javassist.CtClass",
+            "org.jboss.logging.Logger",
+            "org.jboss.logging.annotations.Message",
+            "javax.transaction.Status"
+    };
 
     public void checkLibs(LaunchClassLoader cl)
     {
