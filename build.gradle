@@ -28,7 +28,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.4.0-beta6"
+version = "1.4.0-beta7"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
