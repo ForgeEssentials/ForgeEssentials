@@ -33,7 +33,7 @@ import com.forgeessentials.util.UserIdent;
 public class PermissionCommandParser {
 
     public static final String PERM = "fe.perm";
-    public static final String PERM_ALL = PERM + ".*";
+    public static final String PERM_ALL = PERM + Zone.ALL_PERMS;
     public static final String PERM_TEST = PERM + ".test";
     public static final String PERM_RELOAD = PERM + ".reload";
     public static final String PERM_SAVE = PERM + ".save";
@@ -884,7 +884,7 @@ public class PermissionCommandParser {
         
         if (arguments.args.isEmpty())
         {
-            if (arguments.command.equalsIgnoreCase("setspawn"))
+            if (arguments.command.getCommandName().equalsIgnoreCase("setspawn"))
             {
                 arguments.info("/setspawn here|clear|<x> <y> <z> <dim>: Set spawn location");
                 arguments.info("/setspawn bed (enable|disable): Enable/disable spawning at bed");

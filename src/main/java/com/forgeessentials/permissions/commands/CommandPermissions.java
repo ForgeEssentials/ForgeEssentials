@@ -53,7 +53,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        PermissionCommandParser.parseMain(new CommandParserArgs(this.getCommandName(), args, sender));
+        PermissionCommandParser.parseMain(new CommandParserArgs(this, args, sender));
     }
     
     @Override
@@ -67,7 +67,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBase {
     {
         try
         {
-            CommandParserArgs arguments = new CommandParserArgs(this.getCommandName(), args, sender, true);
+            CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
             PermissionCommandParser.parseMain(arguments);
             return arguments.tabCompletion;
         }

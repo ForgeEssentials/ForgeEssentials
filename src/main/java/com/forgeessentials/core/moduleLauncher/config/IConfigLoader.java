@@ -15,6 +15,7 @@ public interface IConfigLoader {
         @Override
         public void save(Configuration config)
         {
+            /* do nothing */
         }
     
         @Override
