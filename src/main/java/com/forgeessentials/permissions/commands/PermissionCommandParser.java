@@ -428,7 +428,7 @@ public class PermissionCommandParser {
                 break;
             case CLEAR:
                 zone.clearPlayerPermission(ident, permissionNode);
-                msg = "Cleared %s's acces to %s in zone %s";
+                msg = "Cleared %s's access to %s in zone %s";
                 break;
             case VALUE:
                 zone.setPlayerPermissionProperty(ident, permissionNode, value);
@@ -865,7 +865,7 @@ public class PermissionCommandParser {
                 break;
             case CLEAR:
                 zone.clearGroupPermission(group, permissionNode);
-                msg = "Cleared %s's acces to %s in zone %s";
+                msg = "Cleared %s's access to %s in zone %s";
                 break;
             case VALUE:
                 zone.setGroupPermissionProperty(group, permissionNode, value);

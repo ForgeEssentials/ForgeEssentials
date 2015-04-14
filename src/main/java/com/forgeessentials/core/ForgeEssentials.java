@@ -2,7 +2,6 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
-import com.forgeessentials.core.preloader.FELaunchHandler;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -12,12 +11,6 @@ import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
-import com.forgeessentials.util.selections.CommandDeselect;
-import com.forgeessentials.util.selections.CommandExpand;
-import com.forgeessentials.util.selections.CommandExpandY;
-import com.forgeessentials.util.selections.CommandPos;
-import com.forgeessentials.util.selections.CommandWand;
-import com.forgeessentials.util.selections.SelectionEventHandler;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
@@ -28,6 +21,7 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.network.S0PacketHandshake;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
+import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
@@ -39,6 +33,12 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.questioner.Questioner;
+import com.forgeessentials.util.selections.CommandDeselect;
+import com.forgeessentials.util.selections.CommandExpand;
+import com.forgeessentials.util.selections.CommandExpandY;
+import com.forgeessentials.util.selections.CommandPos;
+import com.forgeessentials.util.selections.CommandWand;
+import com.forgeessentials.util.selections.SelectionEventHandler;
 import com.forgeessentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.Mod;
@@ -203,6 +203,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
     
     protected void registerPermissions()
     {
+        APIRegistry.perms.registerPermission("mc.help", RegisteredPermValue.TRUE, "Help command");
+        
         // Teleport
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5", "Allow bypassing teleport cooldown");
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
