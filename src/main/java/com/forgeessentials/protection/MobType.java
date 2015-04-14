@@ -14,7 +14,7 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityVillager;
 
 public enum MobType {
-    BOSS, GOLEM, HOSTILE, PASSIVE, TAMED, TAMEABLE, VILLAGER, UNKNOWN;
+    BOSS, GOLEM, HOSTILE, PASSIVE, TAMED, TAMABLE, VILLAGER, UNKNOWN;
 
     public static MobType getMobType(EntityLiving entity)
     {
@@ -28,7 +28,7 @@ public enum MobType {
             return ((EntitySlime) entity).getSlimeSize() >= 2 ? MobType.HOSTILE : MobType.PASSIVE;
 
         if (entity instanceof EntityTameable)
-            return ((EntityTameable) entity).isTamed() ? MobType.TAMED : MobType.TAMEABLE;
+            return ((EntityTameable) entity).isTamed() ? MobType.TAMED : MobType.TAMABLE;
 
         // Check for other creatures
         if (entity instanceof EntityAnimal || entity instanceof EntityAmbientCreature || entity instanceof EntitySquid)
