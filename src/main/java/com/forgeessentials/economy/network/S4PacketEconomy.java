@@ -1,12 +1,14 @@
 package com.forgeessentials.economy.network;
 
-import com.forgeessentials.api.APIRegistry;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
+
+import com.forgeessentials.api.APIRegistry;
+
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class S4PacketEconomy implements IMessageHandler<S4PacketEconomy, IMessage>, IMessage
 {
@@ -30,8 +32,7 @@ public class S4PacketEconomy implements IMessageHandler<S4PacketEconomy, IMessag
 
     @Override public void toBytes(ByteBuf buf)
     {
-        buf.writeInt(APIRegistry.wallet.getWallet(player));
-
+        buf.writeLong(APIRegistry.wallet.getWallet(player));
     }
 
 }
