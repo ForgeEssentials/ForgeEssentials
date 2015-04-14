@@ -1,45 +1,35 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.commons.selections.WorldPoint;
+import java.util.ArrayList;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import java.util.ArrayList;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.google.gson.annotations.Expose;
 
-@SaveableObject
 public class Grave {
     
-    @UniqueLoadingKey
-    @SaveableField
     public String key;
 
-    @SaveableField
     public WorldPoint point;
 
-    @SaveableField
     public String owner;
 
-    @SaveableField
     public ItemStack[] inv;
 
-    @SaveableField
     public int xp;
 
-    @SaveableField
     public int protTime;
 
-    @SaveableField
     public boolean protEnable = true;
 
+    @Expose(serialize = false)
     private boolean opened;
 
+    @Expose(serialize = false)
 	private long startTime;
 
     public Grave(WorldPoint point, EntityPlayer player, ArrayList<EntityItem> drops, Deathchest deathchest)
@@ -65,25 +55,6 @@ public class Grave {
 
         deathchest.gravemap.put(point.toString(), this);
         startTime = System.currentTimeMillis();
-    }
-
-    private Grave(String key, Object point, Object owner, Object inv, Object xp, Object protTime, Object protEnable)
-    {
-        this.key = key;
-        this.point = (WorldPoint) point;
-        this.owner = (String) owner;
-        this.inv = inv != null ? (ItemStack[]) inv : new ItemStack[0];
-        this.xp = (Integer) xp;
-        this.protTime = (Integer) protTime;
-        this.protEnable = (Boolean) protEnable;
-        startTime = System.currentTimeMillis();
-    }
-
-    @Reconstructor
-    private static Grave reconstruct(IReconstructData tag)
-    {
-        return new Grave(tag.getUniqueKey(), tag.getFieldValue("point"), tag.getFieldValue("owner"), tag.getFieldValue("inv"), tag.getFieldValue("xp"),
-                tag.getFieldValue("protTime"), tag.getFieldValue("protEnable"));
     }
 
     public void checkGrave()

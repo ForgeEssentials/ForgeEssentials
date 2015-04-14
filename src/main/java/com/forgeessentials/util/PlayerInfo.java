@@ -233,6 +233,10 @@ public class PlayerInfo {
 
     public void KitCooldownTick()
     {
+        //TODO: Remove this after some time - only needed to be compatible with old save-data
+        if (kitCooldown == null)
+            kitCooldown = new HashMap<String, Integer>();
+        
         for (String key : kitCooldown.keySet())
         {
             if (kitCooldown.get(key) == 0)

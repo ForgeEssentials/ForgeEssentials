@@ -2,14 +2,9 @@ package com.forgeessentials.util;
 
 //Depreciated
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class BackupArea implements Serializable {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -6482215360941545829L;
+public class BackupArea {
     public ArrayList<BlockSaveable> before;
     public ArrayList<BlockSaveable> after;
 

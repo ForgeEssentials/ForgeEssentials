@@ -27,12 +27,14 @@ import com.google.gson.JsonSerializationContext;
 
 public class NBTTagCompoundType implements DataType<NBTTagCompound> {
 
-    @SuppressWarnings({ "unchecked", "null" })
+    //@SuppressWarnings({ "unchecked"})
     @Override
     public JsonElement serialize(NBTTagCompound src, Type typeOfSrc, JsonSerializationContext context)
     {
         JsonObject result = new JsonObject();
-        for (String tagName : (Set<String>) src.func_150296_c())
+        @SuppressWarnings("unchecked")
+        Set<String> tags = src.func_150296_c();
+        for (String tagName : tags)
         {
             NBTBase tag = src.getTag(tagName);
             NBTPrimitive tagPrimitive = (tag instanceof NBTPrimitive) ? (NBTPrimitive) tag : null;

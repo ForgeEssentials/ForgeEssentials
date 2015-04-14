@@ -1,32 +1,17 @@
 package com.forgeessentials.commons.selections;
 
-import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
+public class Point implements Comparable<Point> {
 
-@SaveableObject(SaveInline = true)
-public class Point implements Serializable, Comparable<Point> {
-	/**
-     *
-     */
-	private static final long serialVersionUID = 9058731447466825626L;
-
-	@SaveableField
 	public int x;
 
-	@SaveableField
 	public int y;
 
-	@SaveableField
 	public int z;
 
 	public Point(int x, int y, int z)
@@ -215,21 +200,6 @@ public class Point implements Serializable, Comparable<Point> {
 		{
 			y = 0;
 		}
-	}
-
-	@Reconstructor()
-	public static Point reconstruct(IReconstructData tag)
-	{
-		int x = (Integer) tag.getFieldValue("x");
-		int y = (Integer) tag.getFieldValue("y");
-		int z = (Integer) tag.getFieldValue("z");
-		return new Point(x, y, z);
-	}
-
-	@UniqueLoadingKey()
-	private String getLoadingField()
-	{
-		return toString();
 	}
 
 	@Override

@@ -7,32 +7,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-
 /**
- * Almost exactly like a Point, except with an additional dimension member so we
- * can tell things apart. (So we can get back to The End or Nether using /back)
- *
- * @author MysteriousAges
+ * Point which stores dimension as well
  */
-@SaveableObject(SaveInline = true)
-public class WorldPoint extends Point
-{
-    private static final long serialVersionUID = 5462406378573144189L;
-    
-    @SaveableField
+public class WorldPoint extends Point {
+
     protected int dim;
 
-    public static long getSerialversionuid()
-	{
-		return serialVersionUID;
-	}
-
-	public WorldPoint(int dimension, int x, int y, int z)
+    public WorldPoint(int dimension, int x, int y, int z)
     {
         super(x, y, z);
         dim = dimension;
@@ -50,23 +32,23 @@ public class WorldPoint extends Point
         dim = entity.dimension;
     }
 
-	public WorldPoint(int dim, Vec3 vector)
-	{
-		super(vector);
-		this.dim = dim;
-	}
+    public WorldPoint(int dim, Vec3 vector)
+    {
+        super(vector);
+        this.dim = dim;
+    }
 
-	public int getDimension()
-	{
-		return dim;
-	}
+    public int getDimension()
+    {
+        return dim;
+    }
 
     public void setDimension(int dim)
-	{
-		this.dim = dim;
-	}
+    {
+        this.dim = dim;
+    }
 
-	public int compareTo(WorldPoint p)
+    public int compareTo(WorldPoint p)
     {
         int diff = dim - p.dim;
 
@@ -87,54 +69,35 @@ public class WorldPoint extends Point
         return new WorldPoint(p.dim, p.getX(), p.getY(), p.getZ());
     }
 
-    @Reconstructor()
-    public static WorldPoint reconstruct(IReconstructData tag)
-    {
-        int x = (Integer) tag.getFieldValue("x");
-        int y = (Integer) tag.getFieldValue("y");
-        int z = (Integer) tag.getFieldValue("z");
-        int dim = (Integer) tag.getFieldValue("dim");
-        return new WorldPoint(dim, x, y, z);
-    }
-
-    @UniqueLoadingKey()
-    private String getLoadingField()
-    {
-        return "WorldPoint" + this;
-    }
-
     @Override
     public String toString()
     {
         return "[" + x + ", " + y + ", " + z + ", dim=" + dim + "]";
     }
 
-	private static final Pattern fromStringPattern = Pattern.compile("\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*dim\\s*=\\s*(-?\\d+)\\s*\\]\\s*");
+    private static final Pattern fromStringPattern = Pattern
+            .compile("\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*dim\\s*=\\s*(-?\\d+)\\s*\\]\\s*");
 
-	public static WorldPoint fromString(String value)
-	{
-		Matcher m = fromStringPattern.matcher(value);
-		if (m.matches())
-		{
-			try
-			{
-				return new WorldPoint(
-					Integer.parseInt(m.group(4)), 
-					Integer.parseInt(m.group(1)), 
-					Integer.parseInt(m.group(2)), 
-					Integer.parseInt(m.group(3)));
-			}
-			catch (NumberFormatException e)
-			{
-			    /* do nothing */
-			}
-		}
-		return null;
-	}
+    public static WorldPoint fromString(String value)
+    {
+        Matcher m = fromStringPattern.matcher(value);
+        if (m.matches())
+        {
+            try
+            {
+                return new WorldPoint(Integer.parseInt(m.group(4)), Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
+            }
+            catch (NumberFormatException e)
+            {
+                /* do nothing */
+            }
+        }
+        return null;
+    }
 
     public WarpPoint toWarpPoint(float pitch, float yaw)
     {
         return new WarpPoint(dim, x + 0.5, y, z + 0.5, pitch, yaw);
     }
-    
+
 }

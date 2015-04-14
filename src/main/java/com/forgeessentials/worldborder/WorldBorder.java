@@ -5,30 +5,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.data.v2.DataManager;
 
-@SaveableObject
 public class WorldBorder {
-    @UniqueLoadingKey
-    @SaveableField
+    
     public String zone;
 
-    @SaveableField
     public Point center;
 
-    @SaveableField
     public int rad;
 
-    @SaveableField
     public byte shapeByte;    // 1 = square, 2 = round.
 
-    @SaveableField
     public boolean enabled;
 
     /**
@@ -68,17 +57,6 @@ public class WorldBorder {
         rad = 0;
         shapeByte = 0;
         enabled = false;
-    }
-
-    @SuppressWarnings("boxing")
-    @Reconstructor
-    private static WorldBorder reconstruct(IReconstructData tag)
-    {
-        Point center = (Point) tag.getFieldValue("center");
-        int rad = (int) tag.getFieldValue("rad");
-        byte shape = (byte) tag.getFieldValue("shapeByte");
-        boolean enabled = (boolean) tag.getFieldValue("enabled");
-        return new WorldBorder(tag.getUniqueKey(), center, rad, shape, enabled);
     }
 
     public void check(EntityPlayerMP player)

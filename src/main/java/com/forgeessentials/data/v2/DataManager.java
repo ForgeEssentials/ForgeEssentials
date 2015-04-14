@@ -10,9 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.data.v2.types.UserIdentType;
@@ -69,7 +66,7 @@ public class DataManager implements ExclusionStrategy {
         DataManager.instance = instance;
     }
 
-    public static void addDataType(DataType type)
+    public static void addDataType(DataType<?> type)
     {
         serializers.put(type.getType(), type);
         deserializers.put(type.getType(), type);
@@ -169,9 +166,6 @@ public class DataManager implements ExclusionStrategy {
     @Override
     public boolean shouldSkipField(FieldAttributes f)
     {
-        if (f.getDeclaringClass().getAnnotation(SaveableObject.class) != null && f.getAnnotation(SaveableField.class) == null
-                && f.getAnnotation(UniqueLoadingKey.class) == null)
-            return true;
         Expose expose = f.getAnnotation(Expose.class);
         if (expose != null && (!expose.serialize() || !expose.deserialize()))
             return true;

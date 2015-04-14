@@ -155,7 +155,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
                     else
                     {
                         map.get(world.provider.dimensionId).setSpeed(parseIntWithMin(sender, args[2], 0));
-                        if (map.get(world.provider.dimensionId).source != sender)
+                        if (map.get(world.provider.dimensionId).sender != sender)
                         {
                             OutputHandler.chatError(sender, "Changed speed to " + args[2]);
                         }

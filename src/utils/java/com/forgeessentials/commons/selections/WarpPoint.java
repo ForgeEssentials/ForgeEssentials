@@ -1,33 +1,20 @@
 package com.forgeessentials.commons.selections;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 
-@SaveableObject(SaveInline = true)
 public class WarpPoint {
     
-    @SaveableField
     protected int dim;
 
-    @SaveableField
     protected float pitch;
 
-    @SaveableField
     protected float yaw;
 
-    @SaveableField
     protected double xd;
 
-    @SaveableField
     protected double yd;
 
-    @SaveableField
     protected double zd;
 
     public WarpPoint(int dimension, double x, double y, double z, float playerPitch, float playerYaw)
@@ -155,24 +142,6 @@ public class WarpPoint {
     public double getDistanceTo(Entity e)
     {
         return Math.sqrt((xd - e.posX) * (xd - e.posX) + (yd - e.posY) * (yd - e.posY) + (zd - e.posZ) * (zd - e.posZ));
-    }
-
-    @Reconstructor()
-    public static WarpPoint reconstruct(IReconstructData tag)
-    {
-        double x = (Double) tag.getFieldValue("xd");
-        double y = (Double) tag.getFieldValue("yd");
-        double z = (Double) tag.getFieldValue("zd");
-        int dim = (Integer) tag.getFieldValue("dim");
-        float pitch = (Float) tag.getFieldValue("pitch");
-        float yaw = (Float) tag.getFieldValue("yaw");
-        return new WarpPoint(dim, x, y, z, pitch, yaw);
-    }
-
-    @UniqueLoadingKey()
-    private String getLoadingField()
-    {
-        return "WarpPoint" + this;
     }
 
     @Override
