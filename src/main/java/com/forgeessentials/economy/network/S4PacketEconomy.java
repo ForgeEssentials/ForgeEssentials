@@ -1,4 +1,4 @@
-package com.forgeessentials.economy;
+package com.forgeessentials.economy.network;
 
 import com.forgeessentials.api.APIRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
