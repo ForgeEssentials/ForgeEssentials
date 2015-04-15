@@ -35,7 +35,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
 
     @Override
     @SuppressWarnings("unchecked")
-    protected RemoteResponse handleData(RemoteSession session, RemoteRequest<QueryPlayerHandler.Request> request)
+    protected RemoteResponse<QueryPlayerHandler.Response> handleData(RemoteSession session, RemoteRequest<QueryPlayerHandler.Request> request)
     {
         for (String flag : request.data.flags)
         {

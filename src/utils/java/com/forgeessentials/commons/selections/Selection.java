@@ -43,14 +43,14 @@ public class Selection extends WorldArea {
     public void setStart(Point start)
     {
         this.start = start;
-        start.validate();
+        start.validatePositiveY();
         redefine(this.start, end);
     }
 
     public void setEnd(Point end)
     {
         this.end = end;
-        end.validate();
+        end.validatePositiveY();
         redefine(start, this.end);
     }
 

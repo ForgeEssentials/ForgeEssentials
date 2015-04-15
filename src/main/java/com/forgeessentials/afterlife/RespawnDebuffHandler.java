@@ -1,20 +1,14 @@
 package com.forgeessentials.afterlife;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.UserIdent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.permissions.PermissionsManager;
-
-import java.util.ArrayList;
 
 public class RespawnDebuffHandler {
-    public static final String BYPASSPOTION = ModuleAfterlife.BASEPERM + ".bypassPotions";
-    public static final String BYPASSSTATS = ModuleAfterlife.BASEPERM + ".bypassStats";
-    public static ArrayList<PotionEffect> potionEffects;
-    public static int hp;
-    public static int food;
 
     public RespawnDebuffHandler()
     {
@@ -25,22 +19,19 @@ public class RespawnDebuffHandler {
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent e)
     {
         if (e.player.worldObj.isRemote)
-        {
             return;
-        }
-        EntityPlayer player = e.player;
-        if (!PermissionsManager.checkPermission(player, BYPASSPOTION))
-        {
-            for (PotionEffect effect : potionEffects)
-            {
-                player.addPotionEffect(effect);
-            }
-        }
-        if (!PermissionsManager.checkPermission(player, BYPASSSTATS))
-        {
-            player.getFoodStats().addStats(-1 * (20 - food), 0);
-            player.setHealth(hp);
-        }
+
+        String potionEffects = APIRegistry.perms.getUserPermissionProperty(new UserIdent(e.player), ModuleAfterlife.PERM_DEBUFFS);
+        if (potionEffects != null)
+            FunctionHelper.applyPotionEffects(e.player, potionEffects);
+
+        Integer respawnHP = FunctionHelper.tryParseInt(APIRegistry.perms.getUserPermissionProperty(new UserIdent(e.player), ModuleAfterlife.PERM_HP));
+        if (respawnHP != null)
+            e.player.setHealth(respawnHP);
+
+        Integer respawnFood = FunctionHelper.tryParseInt(APIRegistry.perms.getUserPermissionProperty(new UserIdent(e.player), ModuleAfterlife.PERM_FOOD));
+        if (respawnFood != null)
+            e.player.getFoodStats().addStats(-1 * (20 - respawnFood), 0);
     }
     
 }

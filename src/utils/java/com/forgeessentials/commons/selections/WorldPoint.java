@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 
 /**
  * Point which stores dimension as well
@@ -13,6 +14,10 @@ import net.minecraft.world.World;
 public class WorldPoint extends Point {
 
     protected int dim;
+    
+    protected World world;
+
+    // ------------------------------------------------------------
 
     public WorldPoint(int dimension, int x, int y, int z)
     {
@@ -23,13 +28,15 @@ public class WorldPoint extends Point {
     public WorldPoint(World world, int x, int y, int z)
     {
         super(x, y, z);
-        dim = world.provider.dimensionId;
+        this.dim = world.provider.dimensionId;
+        this.world = world;
     }
 
     public WorldPoint(Entity entity)
     {
         super(entity);
-        dim = entity.dimension;
+        this.dim = entity.dimension;
+        this.world = entity.worldObj;
     }
 
     public WorldPoint(int dim, Vec3 vector)
@@ -37,6 +44,18 @@ public class WorldPoint extends Point {
         super(vector);
         this.dim = dim;
     }
+
+    public WorldPoint(WorldPoint other)
+    {
+        this(other.dim, other.x, other.y, other.z);
+    }
+
+    public WorldPoint(WarpPoint other)
+    {
+        this(other.getDimension(), other.getBlockX(), other.getBlockY(), other.getBlockZ());
+    }
+
+    // ------------------------------------------------------------
 
     public int getDimension()
     {
@@ -48,31 +67,25 @@ public class WorldPoint extends Point {
         this.dim = dim;
     }
 
-    public int compareTo(WorldPoint p)
+    public World getWorld()
     {
-        int diff = dim - p.dim;
-
-        if (diff == 0)
-        {
-            diff = super.compareTo(p);
-        }
-        return diff;
+        if (world != null && world.provider.dimensionId != dim)
+            return world;
+        world = DimensionManager.getWorld(dim);
+        return world;
     }
 
-    public boolean equals(WorldPoint p)
+    public WarpPoint toWarpPoint(float rotationPitch, float rotationYaw)
     {
-        return dim == p.dim && super.equals(p);
+        return new WarpPoint(this, rotationPitch, rotationYaw);
     }
 
-    public WorldPoint copy(WorldPoint p)
-    {
-        return new WorldPoint(p.dim, p.getX(), p.getY(), p.getZ());
-    }
+    // ------------------------------------------------------------
 
     @Override
     public String toString()
     {
-        return "[" + x + ", " + y + ", " + z + ", dim=" + dim + "]";
+        return "[" + x + "," + y + "," + z + ",dim=" + dim + "]";
     }
 
     private static final Pattern fromStringPattern = Pattern
@@ -95,9 +108,25 @@ public class WorldPoint extends Point {
         return null;
     }
 
-    public WarpPoint toWarpPoint(float pitch, float yaw)
+    @Override
+    public boolean equals(Object object)
     {
-        return new WarpPoint(dim, x + 0.5, y, z + 0.5, pitch, yaw);
+        if (object instanceof WorldPoint)
+        {
+            WorldPoint p = (WorldPoint) object;
+            return dim == p.dim && x == p.x && y == p.y && z == p.z;
+        }
+        return false;
     }
+
+    @Override
+    public int hashCode() {
+        int h = 1 + x;
+        h = h * 31 + y;
+        h = h * 31 + z;
+        h = h * 31 + dim;
+        return h;
+    }
+
 
 }

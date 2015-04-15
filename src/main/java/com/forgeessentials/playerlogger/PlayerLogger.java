@@ -254,9 +254,9 @@ public class PlayerLogger extends ServerEventHandler {
         cQuery.where(cBuilder.and(
                 cBuilder.greaterThanOrEqualTo(cRoot.get(Action_.time), cBuilder.literal(startTime)),
                 cBuilder.equal(cRoot.<Integer>get(Action_.world.getName()), cBuilder.literal(area.getDimension())),
-                cBuilder.between(cRoot.get(Action_.x), cBuilder.literal(area.getLowPoint().x), cBuilder.literal(area.getHighPoint().x)),
-                cBuilder.between(cRoot.get(Action_.y), cBuilder.literal(area.getLowPoint().y), cBuilder.literal(area.getHighPoint().y)),
-                cBuilder.between(cRoot.get(Action_.z), cBuilder.literal(area.getLowPoint().z), cBuilder.literal(area.getHighPoint().z))
+                cBuilder.between(cRoot.get(Action_.x), cBuilder.literal(area.getLowPoint().getX()), cBuilder.literal(area.getHighPoint().getX())),
+                cBuilder.between(cRoot.get(Action_.y), cBuilder.literal(area.getLowPoint().getY()), cBuilder.literal(area.getHighPoint().getY())),
+                cBuilder.between(cRoot.get(Action_.z), cBuilder.literal(area.getLowPoint().getZ()), cBuilder.literal(area.getHighPoint().getZ()))
         ));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
         TypedQuery<ActionBlock> query = em.createQuery(cQuery);

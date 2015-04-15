@@ -52,7 +52,7 @@ public class TeleportHelper extends ServerEventHandler {
 
         public boolean check()
         {
-            if (playerPos.getDistanceTo(new WarpPoint(player)) > 0.2)
+            if (playerPos.distance(new WarpPoint(player)) > 0.2)
             {
                 OutputHandler.chatWarning(player, "Teleport cancelled.");
                 return true;

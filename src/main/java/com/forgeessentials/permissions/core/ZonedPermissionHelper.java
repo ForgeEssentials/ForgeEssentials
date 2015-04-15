@@ -168,8 +168,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         Set<String> perms = new TreeSet<String>();
         for (String perm : rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).keySet())
         {
-            if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
-                perms.add(perm);
+            if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                perm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
+            perms.add(perm);
         }
         return perms;
     }
