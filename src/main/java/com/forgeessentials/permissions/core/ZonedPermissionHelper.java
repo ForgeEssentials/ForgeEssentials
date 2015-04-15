@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -113,7 +112,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         }
 
         if (registeredPermission)
-            PermissionsListWriter.write(getRegisteredPermissions(), new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE));
+            PermissionsListWriter.write(rootZone, new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE));
 
         dirty = false;
         registeredPermission = false;
@@ -158,8 +157,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public PermissionList getRegisteredPermissions()
     {
         PermissionList perms = (PermissionList) rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).clone();
-        for (Entry<String, String> perm : rootZone.getGroupPermissions(Zone.GROUP_OPERATORS).entrySet())
-            perms.put(perm.getKey(), perm.getValue());
+        perms.putAll(rootZone.getGroupPermissions(Zone.GROUP_OPERATORS));
         return perms;
     }
 
