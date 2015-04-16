@@ -44,6 +44,7 @@ import com.forgeessentials.util.tasks.TaskRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.discovery.ASMDataTable;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -107,6 +108,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @SuppressWarnings("unused")
     private Questioner questioner;
 
+    public static ASMDataTable asmData;
+
     public ForgeEssentials()
     {
         // Check environment
@@ -116,10 +119,11 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
+        asmData = e.getAsmData();
+        
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
         OutputHandler.felog.info("Initializing ForgeEssentials version " + FEVERSION + " (configDir = " + FEDIR.getAbsolutePath() + ")");
         OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(FELaunchHandler.jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(FELaunchHandler.jarLocation));
-
 
         // Load configuration
         configManager = new ConfigManager(FEDIR, "main");

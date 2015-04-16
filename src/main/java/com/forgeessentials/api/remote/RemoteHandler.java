@@ -13,8 +13,6 @@ public interface RemoteHandler {
 
     public static final String MSG_EXCEPTION = "exception";
 
-    String getID();
-
     String getPermission();
 
     RemoteResponse<?> handle(RemoteSession session, JsonRemoteRequest request);

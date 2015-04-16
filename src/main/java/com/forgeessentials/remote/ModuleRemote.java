@@ -16,6 +16,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
@@ -39,6 +40,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
+import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
@@ -109,7 +111,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager, Exc
     {
         return false;
     }
-    
+
     /* ------------------------------------------------------------ */
 
     /**
@@ -123,12 +125,28 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager, Exc
         APIRegistry.perms.registerPermission(PERM_CONTROL, RegisteredPermValue.OP,
                 "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
 
-        new QueryPlayerHandler().register();
-        new PushChatHandler().register();
-        new QueryRemoteCapabilitiesHandler().register();
-        
-        new QueryPermissionsHandler().register();
-        new QueryRegisteredPermissionsHandler().register();
+        registerRemoteHandlers();
+    }
+
+    private void registerRemoteHandlers()
+    {
+        for (ASMData asm : ForgeEssentials.asmData.getAll(FERemoteHandler.class.getName()))
+        {
+            try
+            {
+                Class<?> clazz = Class.forName(asm.getClassName());
+                if (RemoteHandler.class.isAssignableFrom(clazz))
+                {
+                    RemoteHandler handler = (RemoteHandler) clazz.newInstance();
+                    FERemoteHandler annot = handler.getClass().getAnnotation(FERemoteHandler.class);
+                    APIRegistry.remoteManager.registerHandler(handler, annot.id());
+                }
+            }
+            catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
+            {
+                OutputHandler.felog.fine("Could not load FERemoteHandler " + asm.getClassName());
+            }
+        }
     }
 
     /**
@@ -237,9 +255,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager, Exc
      * @see com.forgeessentials.api.remote.RemoteManager#registerHandler(com.forgeessentials.api.remote.RemoteHandler)
      */
     @Override
-    public void registerHandler(RemoteHandler handler)
+    public void registerHandler(RemoteHandler handler, String id)
     {
-        final String id = handler.getID();
         if (handlers.containsKey(id))
             throw new IllegalArgumentException(String.format("Handler with ID \"%s\" already registerd", id));
 

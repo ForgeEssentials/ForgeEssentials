@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
@@ -18,9 +19,8 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
 import com.forgeessentials.util.UserIdent;
 
+@FERemoteHandler(id = "query_player")
 public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.Request> {
-
-    public static final String ID = "query_player";
 
     public static final String PERM = PERM_REMOTE + ".query.player";
     public static final String PERM_LOCATION = PERM + ".location";
@@ -28,7 +28,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
 
     public QueryPlayerHandler()
     {
-        super(ID, PERM, QueryPlayerHandler.Request.class);
+        super(PERM, QueryPlayerHandler.Request.class);
         APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Allows querying player data");
     }
 

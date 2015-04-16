@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
@@ -13,15 +14,14 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.ModuleRemote;
 import com.google.gson.JsonElement;
 
+@FERemoteHandler(id = "query_remote_capabilities")
 public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonElement> {
-
-    public static final String ID = "query_remote_capabilities";
 
     //public static final String PERM = PERM_REMOTE + ".query.remote.capabilities";
 
     public QueryRemoteCapabilitiesHandler()
     {
-        super(ID, null, JsonElement.class);
+        super(null, JsonElement.class);
         //APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows querying capabilities (allowed handlers - should ALWAYS be granted)");
     }
 
