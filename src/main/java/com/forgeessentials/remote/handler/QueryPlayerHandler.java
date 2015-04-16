@@ -12,7 +12,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
-import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
@@ -23,7 +22,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
 
     public static final String ID = "query_player";
 
-    public static final String PERM = RemoteHandler.PERM + ".query.player";
+    public static final String PERM = PERM_REMOTE + ".query.player";
     public static final String PERM_LOCATION = PERM + ".location";
     public static final String PERM_DETAIL = PERM + ".detail";
 

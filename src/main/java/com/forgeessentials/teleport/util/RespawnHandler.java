@@ -29,6 +29,7 @@ public class RespawnHandler {
         FMLCommonHandler.instance().bus().register(this);
     }
 
+    @SuppressWarnings("deprecation")
     public static WarpPoint getPlayerSpawn(EntityPlayer player, WarpPoint location)
     {
         UserIdent ident = new UserIdent(player);
@@ -73,12 +74,7 @@ public class RespawnHandler {
             {
                 WarpPoint p = getPlayerSpawn(player, null);
                 if (p != null)
-                {
                     FunctionHelper.teleportPlayer(player, p);
-                    player.posX = p.getX();
-                    player.posY = p.getY();
-                    player.posZ = p.getZ();
-                }
             }
         }
     }
@@ -92,12 +88,7 @@ public class RespawnHandler {
         
         WarpPoint p = getPlayerSpawn(e.player, lastDeathLocation);
         if (p != null)
-        {
             FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
-            e.player.posX = p.getX();
-            e.player.posY = p.getY();
-            e.player.posZ = p.getZ();
-        }
     }
 
 }

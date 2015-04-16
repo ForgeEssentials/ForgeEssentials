@@ -7,7 +7,7 @@ import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
  */
 public interface RemoteHandler {
 
-    public static final String PERM = "fe.remote";
+    public static final String PERM_REMOTE = "fe.remote";
 
     public static final String MSG_NO_PERMISSION = "no permission";
 
@@ -17,9 +17,10 @@ public interface RemoteHandler {
 
     String getPermission();
 
-    RemoteResponse handle(RemoteSession session, JsonRemoteRequest request);
+    RemoteResponse<?> handle(RemoteSession session, JsonRemoteRequest request);
 
     public static class RemoteException extends RuntimeException {
+        private static final long serialVersionUID = -1742976516313756832L;
 
         public RemoteException(String message)
         {
@@ -34,6 +35,7 @@ public interface RemoteHandler {
     }
 
     public static class PermissionException extends RemoteException {
+        private static final long serialVersionUID = 4094169554447919502L;
 
         public PermissionException()
         {

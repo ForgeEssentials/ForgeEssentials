@@ -6,7 +6,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
-import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteRequest.PushRequestData;
 import com.forgeessentials.api.remote.RemoteResponse;
@@ -19,7 +18,7 @@ public class PushChatHandler extends GenericRemoteHandler<PushRequestData> {
 
     public static final String ID = "push_chat";
 
-    public static final String PERM = RemoteHandler.PERM + ".push.chat";
+    public static final String PERM = PERM_REMOTE + ".push.chat";
 
     public PushChatHandler()
     {
@@ -29,7 +28,7 @@ public class PushChatHandler extends GenericRemoteHandler<PushRequestData> {
     }
 
     @Override
-    public synchronized RemoteResponse handleData(RemoteSession session, RemoteRequest<PushRequestData> request)
+    public synchronized RemoteResponse<String> handleData(RemoteSession session, RemoteRequest<PushRequestData> request)
     {
         if (hasPushSession(session) ^ !request.data.enable)
             error("chat push already " + (request.data.enable ? "enabled" : "disabled"));

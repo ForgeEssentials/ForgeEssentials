@@ -198,7 +198,7 @@ public class PermissionCommandParser {
                 if (CommandBase.doesStringStartWith(arguments.args.peek(), zone.getName()))
                     arguments.tabCompletion.add(zone.getName());
             }
-            for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
+            for (String perm : APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions())
             {
                 if (CommandBase.doesStringStartWith(arguments.args.peek(), perm))
                     arguments.tabCompletion.add(perm);
@@ -1067,7 +1067,7 @@ public class PermissionCommandParser {
     public static List<String> completePermission(String permission)
     {
         Set<String> result = new TreeSet<String>();
-        for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
+        for (String perm : APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions())
         {
             int nodeIndex = perm.indexOf('.', permission.length());
             if (nodeIndex >= 0)

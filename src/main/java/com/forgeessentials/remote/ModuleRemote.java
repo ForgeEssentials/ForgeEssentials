@@ -26,20 +26,26 @@ import com.forgeessentials.remote.command.CommandRemote;
 import com.forgeessentials.remote.handler.PushChatHandler;
 import com.forgeessentials.remote.handler.QueryPlayerHandler;
 import com.forgeessentials.remote.handler.QueryRemoteCapabilitiesHandler;
+import com.forgeessentials.remote.handler.permission.QueryPermissionsHandler;
+import com.forgeessentials.remote.handler.permission.QueryRegisteredPermissionsHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
-public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
+public class ModuleRemote extends ConfigLoaderBase implements RemoteManager, ExclusionStrategy {
 
-    public static class PasskeyMap extends HashMap<UserIdent, String> { /* default */
+    public static class PasskeyMap extends HashMap<UserIdent, String> {
+        private static final long serialVersionUID = -8268113844467318789L; /* default */
     };
 
     private static final String CONFIG_CAT = "Remote";
@@ -49,7 +55,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     public static final char[] PASSKEY_CHARS;
 
-    public static final String PERM = "fe.remote";
+    public static final String PERM = RemoteHandler.PERM_REMOTE;
     public static final String PERM_CONTROL = PERM + ".control";
 
     public static int passkeyLength = 6;
@@ -85,8 +91,25 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     protected PasskeyMap passkeys = new PasskeyMap();
 
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    /* ------------------------------------------------------------ */
 
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().setExclusionStrategies(this).create();
+
+    @Override
+    public boolean shouldSkipField(FieldAttributes f)
+    {
+        Expose expose = f.getAnnotation(Expose.class);
+        if (expose != null && (!expose.serialize() || !expose.deserialize()))
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean shouldSkipClass(Class<?> clazz)
+    {
+        return false;
+    }
+    
     /* ------------------------------------------------------------ */
 
     /**
@@ -103,6 +126,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         new QueryPlayerHandler().register();
         new PushChatHandler().register();
         new QueryRemoteCapabilitiesHandler().register();
+        
+        new QueryPermissionsHandler().register();
+        new QueryRegisteredPermissionsHandler().register();
     }
 
     /**

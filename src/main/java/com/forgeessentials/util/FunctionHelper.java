@@ -1289,7 +1289,6 @@ public final class FunctionHelper {
         ChatComponentTranslation ichat = new ChatComponentTranslation("");
         Matcher matcher = URL_PATTERN.matcher(string);
         int lastEnd = 0;
-        String remaining = string;
 
         // Find all urls
         while (matcher.find())

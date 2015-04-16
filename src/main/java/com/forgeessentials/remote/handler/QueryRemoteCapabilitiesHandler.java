@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
@@ -19,16 +17,16 @@ public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonEle
 
     public static final String ID = "query_remote_capabilities";
 
-    public static final String PERM = RemoteHandler.PERM + ".query.remote.capabilities";
+    //public static final String PERM = PERM_REMOTE + ".query.remote.capabilities";
 
     public QueryRemoteCapabilitiesHandler()
     {
-        super(ID, PERM, JsonElement.class);
-        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows querying capabilities (allowed handlers - should ALWAYS be granted)");
+        super(ID, null, JsonElement.class);
+        //APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows querying capabilities (allowed handlers - should ALWAYS be granted)");
     }
 
     @Override
-    protected RemoteResponse handleData(RemoteSession session, RemoteRequest<JsonElement> request)
+    protected RemoteResponse<QueryRemoteCapabilitiesHandler.Response> handleData(RemoteSession session, RemoteRequest<JsonElement> request)
     {
         Response response = new Response();
         for (Entry<String, RemoteHandler> handler : ModuleRemote.getInstance().getHandlers().entrySet())
