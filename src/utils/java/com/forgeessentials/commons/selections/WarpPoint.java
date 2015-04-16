@@ -204,11 +204,11 @@ public class WarpPoint {
 
     @Override
     public int hashCode() {
-        int h = 1 + Double.hashCode(xd);
-        h = h * 31 + Double.hashCode(yd);
-        h = h * 31 + Double.hashCode(zd);
-        h = h * 31 + Double.hashCode(pitch);
-        h = h * 31 + Double.hashCode(yaw);
+        int h = 1 + Double.valueOf(xd).hashCode();
+        h = h * 31 + Double.valueOf(yd).hashCode();
+        h = h * 31 + Double.valueOf(zd).hashCode();
+        h = h * 31 + Double.valueOf(pitch).hashCode();
+        h = h * 31 + Double.valueOf(yaw).hashCode();
         h = h * 31 + dim;
         return h;
     }
