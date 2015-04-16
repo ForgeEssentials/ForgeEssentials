@@ -104,6 +104,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public void save()
     {
+        dirty = false;
         if (persistenceProvider != null)
         {
             OutputHandler.felog.fine("Saving permissions...");
@@ -112,10 +113,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         }
 
         if (registeredPermission)
+        {
+            registeredPermission = false;
             PermissionsListWriter.write(rootZone, new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE));
-
-        dirty = false;
-        registeredPermission = false;
+        }
     }
 
     public boolean load()
@@ -373,7 +374,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent e)
     {
-        if (dirty && System.currentTimeMillis() - lastDirty > 1000)
+        if (dirty && System.currentTimeMillis() - lastDirty > 1000 * 60)
             save();
         // TODO: Detect manual changes to persistence backend
     }

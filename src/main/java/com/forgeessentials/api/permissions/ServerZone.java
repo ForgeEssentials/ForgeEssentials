@@ -238,16 +238,18 @@ public class ServerZone extends Zone {
     {
         if (!isFakePlayer(ident))
             registerPlayer(ident); 
-        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
-            return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
             groupSet = new TreeSet<String>();
             playerGroups.put(ident, groupSet);
         }
-        groupSet.add(group);
-        setDirty();
+        if (!groupSet.contains(group))
+        {
+            if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+                return false;
+            groupSet.add(group);
+        }
         return true;
     }
 

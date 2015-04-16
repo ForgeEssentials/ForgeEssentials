@@ -86,6 +86,7 @@ public class PermissionCommandParser {
             switch (arguments.args.remove().toLowerCase())
             {
             case "save":
+                ModulePermissions.permissionHelper.setDirty(false);
                 ModulePermissions.permissionHelper.save();
                 arguments.info("Permissions saved!");
                 break;
