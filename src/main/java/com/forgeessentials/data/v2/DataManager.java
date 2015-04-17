@@ -178,7 +178,7 @@ public class DataManager implements ExclusionStrategy {
         return false;
     }
 
-    private Gson getGson()
+    public Gson getGson()
     {
         if (gson == null || formatsChanged)
         {

@@ -8,6 +8,4 @@ public @interface FERemoteHandler {
 
     String id();
 
-    String permission() default "";
-
 }

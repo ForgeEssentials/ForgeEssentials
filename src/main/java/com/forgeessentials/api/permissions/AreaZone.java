@@ -7,6 +7,7 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.events.EventCancelledException;
+import com.google.gson.annotations.Expose;
 
 /**
  * {@link AreaZone} covers just a specific area in one world. It has higher priority than all other {@link Zone} types. Area zones can overlap. Priority is then
@@ -16,6 +17,7 @@ import com.forgeessentials.util.events.EventCancelledException;
  */
 public class AreaZone extends Zone implements Comparable<AreaZone> {
 
+    @Expose(serialize = false)
     private WorldZone worldZone;
 
     private String name;

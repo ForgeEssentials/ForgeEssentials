@@ -24,27 +24,18 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
-import com.forgeessentials.remote.handler.PushChatHandler;
-import com.forgeessentials.remote.handler.QueryPlayerHandler;
-import com.forgeessentials.remote.handler.QueryRemoteCapabilitiesHandler;
-import com.forgeessentials.remote.handler.permission.QueryPermissionsHandler;
-import com.forgeessentials.remote.handler.permission.QueryRegisteredPermissionsHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
 
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
-public class ModuleRemote extends ConfigLoaderBase implements RemoteManager, ExclusionStrategy {
+public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     public static class PasskeyMap extends HashMap<UserIdent, String> {
         private static final long serialVersionUID = -8268113844467318789L; /* default */
@@ -92,25 +83,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager, Exc
     protected Map<String, RemoteHandler> handlers = new HashMap<>();
 
     protected PasskeyMap passkeys = new PasskeyMap();
-
-    /* ------------------------------------------------------------ */
-
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().setExclusionStrategies(this).create();
-
-    @Override
-    public boolean shouldSkipField(FieldAttributes f)
-    {
-        Expose expose = f.getAnnotation(Expose.class);
-        if (expose != null && (!expose.serialize() || !expose.deserialize()))
-            return true;
-        return false;
-    }
-
-    @Override
-    public boolean shouldSkipClass(Class<?> clazz)
-    {
-        return false;
-    }
 
     /* ------------------------------------------------------------ */
 
@@ -179,7 +151,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager, Exc
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of the minecraft server").getString();
+        hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of the minecraft server. Use * to allow access from any address.").getString();
         port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
         useSSL = config.get(CONFIG_CAT, "use_ssl", false,
                 "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
@@ -205,7 +177,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager, Exc
             return;
         try
         {
-            if (hostname.equals("*"))
+            if (hostname.equals("*") || hostname.isEmpty())
                 hostname = "0.0.0.0";
             if (useSSL)
             {
@@ -358,7 +330,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager, Exc
     @Override
     public Gson getGson()
     {
-        return gson;
+        return DataManager.getInstance().getGson();
     }
 
     /**
