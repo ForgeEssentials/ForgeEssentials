@@ -1,9 +1,7 @@
 package com.forgeessentials.core.preloader.asm.mixins.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockBreakable;
 import net.minecraft.block.BlockPortal;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -23,12 +21,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Mixin(BlockPortal.class)
-public abstract class BlockPortal_01 extends BlockBreakable {
-
-    protected BlockPortal_01(String p_i45411_1_, Material p_i45411_2_, boolean p_i45411_3_)
-    {
-        super(p_i45411_1_, p_i45411_2_, p_i45411_3_);
-    }
+public abstract class BlockPortal_01 extends BlockPortal {
 
     @Override
     @Overwrite
@@ -78,10 +71,11 @@ public abstract class BlockPortal_01 extends BlockBreakable {
         return true;
     }
     
+    @Override
     @Overwrite
     public boolean func_150000_e(World p_150000_1_, int p_150000_2_, int p_150000_3_, int p_150000_4_)
     {
-        if (PortalManager.getInstance().getPortalAt(new WorldPoint(p_150000_1_, p_150000_2_, p_150000_3_, p_150000_4_)) == null)
+        if (PortalManager.getInstance() != null && PortalManager.getInstance().getPortalAt(new WorldPoint(p_150000_1_, p_150000_2_, p_150000_3_, p_150000_4_)) == null)
         {
             BlockPortalSize size = new BlockPortalSize(p_150000_1_, p_150000_2_, p_150000_3_, p_150000_4_, 1);
             BlockPortalSize size1 = new BlockPortalSize(p_150000_1_, p_150000_2_, p_150000_3_, p_150000_4_, 2);
