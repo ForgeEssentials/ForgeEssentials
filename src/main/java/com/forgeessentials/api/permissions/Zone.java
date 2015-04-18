@@ -343,7 +343,10 @@ public abstract class Zone {
         {
             getServerZone().registerPlayer(ident);
             PermissionList map = getOrCreatePlayerPermissions(ident);
-            map.put(permissionNode, value);
+            if (value == null)
+                map.remove(permissionNode);
+            else
+                map.put(permissionNode, value);
             setDirty();
             return true;
         }
@@ -537,7 +540,10 @@ public abstract class Zone {
         if (group != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, value)))
         {
             PermissionList map = getOrCreateGroupPermissions(group);
-            map.put(permissionNode, value);
+            if (value == null)
+                map.remove(permissionNode);
+            else
+                map.put(permissionNode, value);
             setDirty();
             return true;
         }

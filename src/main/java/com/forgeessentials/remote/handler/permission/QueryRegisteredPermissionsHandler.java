@@ -19,17 +19,9 @@ public class QueryRegisteredPermissionsHandler extends GenericRemoteHandler<Json
     }
 
     @Override
-    protected RemoteResponse<QueryRegisteredPermissionsHandler.Response> handleData(RemoteSession session, RemoteRequest<JsonElement> request)
+    protected RemoteResponse<Collection<String>> handleData(RemoteSession session, RemoteRequest<JsonElement> request)
     {
-        Response response = new Response();
-        response.permissions = APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions();
-        return new RemoteResponse<QueryRegisteredPermissionsHandler.Response>(request, response);
-    }
-
-    public static class Response {
-
-        public Collection<String> permissions;
-
+        return new RemoteResponse<Collection<String>>(request, APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
     }
 
 }
