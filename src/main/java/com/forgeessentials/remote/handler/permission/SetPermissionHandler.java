@@ -9,6 +9,7 @@ import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.util.UserIdent;
 
 @FERemoteHandler(id = "set_permission")
@@ -36,12 +37,16 @@ public class SetPermissionHandler extends GenericRemoteHandler<SetPermissionHand
         if (zone == null)
             error("Zone with ID %s not found", request.data.zoneId);
         
-        // TODO: CHECK PERMISSION !!!
-        
         if (request.data.user != null)
+        {
+            checkPermission(session, PermissionCommandParser.PERM_USER_PERMS);
             zone.setPlayerPermissionProperty(request.data.user, request.data.permission, request.data.value);
+        }
         else
+        {
+            checkPermission(session, PermissionCommandParser.PERM_GROUP_PERMS);
             zone.setGroupPermissionProperty(request.data.group, request.data.permission, request.data.value);
+        }
         
         return new RemoteResponse<Object>(request, null);
     }
