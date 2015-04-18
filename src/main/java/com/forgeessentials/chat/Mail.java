@@ -3,25 +3,14 @@ package com.forgeessentials.chat;
 import java.rmi.server.UID;
 import java.util.UUID;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-
-@SaveableObject
 public class Mail {
-    @UniqueLoadingKey
-    @SaveableField
+    
     private String key;
 
-    @SaveableField
     private String sender;
 
-    @SaveableField
     private String receiver;
 
-    @SaveableField
     private String message;
 
     public Mail(String key, UUID sender, UUID receiver, String message)
@@ -42,13 +31,6 @@ public class Mail {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
-    }
-
-    @Reconstructor
-    private static Mail reconstruct(IReconstructData tag)
-    {
-        return new Mail((String) tag.getFieldValue("key"), (String) tag.getFieldValue("sender"), (String) tag.getFieldValue("receiver"),
-                (String) tag.getFieldValue("message"));
     }
 
     public String getKey()

@@ -31,7 +31,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] vargs)
     {
-        CommandParserArgs args = new CommandParserArgs(getCommandName(), vargs, sender);
+        CommandParserArgs args = new CommandParserArgs(this, vargs, sender);
         parse(args);
     }
 
@@ -164,7 +164,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
     {
         try
         {
-            CommandParserArgs args = new CommandParserArgs(this.getCommandName(), vargs, sender, true);
+            CommandParserArgs args = new CommandParserArgs(this, vargs, sender, true);
             parse(args);
             return args.tabCompletion;
         }

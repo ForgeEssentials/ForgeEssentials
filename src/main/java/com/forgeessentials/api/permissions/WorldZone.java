@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.google.gson.annotations.Expose;
 
 /**
  * {@link WorldZone} covers the entirety of a world. Third lowest in priority with next being {@link ServerZone}.
@@ -18,6 +19,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
  */
 public class WorldZone extends Zone {
 
+    @Expose(serialize = false)
 	private ServerZone serverZone;
 
 	private int dimensionID;

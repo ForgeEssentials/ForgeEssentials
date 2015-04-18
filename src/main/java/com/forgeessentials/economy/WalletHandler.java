@@ -2,6 +2,7 @@ package com.forgeessentials.economy;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,19 +21,19 @@ public class WalletHandler implements IEconManager {
     private static HashMap<UUID, Wallet> wallets = new HashMap<UUID, Wallet>();
 
     @Override
-    public void addToWallet(int amountToAdd, UUID player)
+    public void addToWallet(long amountToAdd, UUID player)
     {
         wallets.get(player).amount = wallets.get(player).amount + amountToAdd;
     }
 
     @Override
-    public int getWallet(UUID player)
+    public long getWallet(UUID player)
     {
         return wallets.get(player).amount;
     }
 
     @Override
-    public boolean removeFromWallet(int amountToSubtract, UUID player)
+    public boolean removeFromWallet(long amountToSubtract, UUID player)
     {
         if (wallets.get(player).amount - amountToSubtract >= 0)
         {
@@ -43,42 +44,28 @@ public class WalletHandler implements IEconManager {
     }
 
     @Override
-    public void setWallet(int setAmount, EntityPlayer player)
+    public void setWallet(long setAmount, EntityPlayer player)
     {
         wallets.get(player.getUniqueID()).amount = setAmount;
     }
 
     @Override
-    public String currency(int amount)
+    public String currency(long amount)
     {
-        if (amount == 1)
-        {
-            return ModuleEconomy.currencySingular;
-        }
-        else
-        {
-            return ModuleEconomy.currencyPlural;
-        }
+        return amount == 1 ? ModuleEconomy.currencySingular : ModuleEconomy.currencyPlural;
     }
 
     @Override
     public String getMoneyString(UUID username)
     {
-        int am = getWallet(username);
-        return ModuleEconomy.formatCurrency(am);
-    }
-
-    private void saveWallet(Wallet wallet)
-    {
-        DataManager.getInstance().save(wallet, wallet.getUsername());
+        return ModuleEconomy.formatCurrency(getWallet(username));
     }
 
     @Override
     public void save()
     {
-        for (Wallet wallet : wallets.values()) {
-            saveWallet(wallet);
-        }
+        for (Entry<UUID, Wallet> wallet : wallets.entrySet())
+            DataManager.getInstance().save(wallet.getValue(), wallet.getKey().toString());
     }
 
     @Override
@@ -93,7 +80,9 @@ public class WalletHandler implements IEconManager {
         Wallet wallet = DataManager.getInstance().load(Wallet.class, event.player.getUniqueID().toString());
         if (wallet == null)
         {
-            wallet = new Wallet(event.player, ModuleEconomy.startbudget);
+            wallet = new Wallet(ModuleEconomy.startbudget);
+            // if (event.player.getEntityData().hasKey("FE-Economy"))
+            // wallet.amount = event.player.getEntityData().getInteger("FE-Economy");
         }
         wallets.put(event.player.getUniqueID(), wallet);
     }
@@ -101,10 +90,8 @@ public class WalletHandler implements IEconManager {
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if (wallets.containsKey(event.player.getUniqueID()))
-        {
-            Wallet wallet = wallets.remove(event.player.getUniqueID());
-            saveWallet(wallet);
-        }
+        Wallet wallet = wallets.remove(event.player.getUniqueID());
+        if (wallet != null)
+            DataManager.getInstance().save(wallet, event.player.getUniqueID().toString());
     }
 }

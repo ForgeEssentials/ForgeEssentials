@@ -1,5 +1,6 @@
 package com.forgeessentials.economy;
 
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.economy.plots.PlotManager;
@@ -24,12 +25,10 @@ public class EconEventHandler extends ServerEventHandler
             return;
         }
 
-        int xp = e.entityPlayer.getEntityData().getInteger("FEXPThreshold");
-        xp = xp + e.orb.xpValue;
-
+        int xp = e.entityPlayer.getEntityData().getInteger("FEXPThreshold") + e.orb.xpValue;
         if (xp >= threshold)
         {
-            APIRegistry.wallet.addToWallet(threshold, new UserIdent(e.entityPlayer).getUuid());
+            APIRegistry.wallet.addToWallet(threshold, e.entityPlayer.getPersistentID());
             e.entityPlayer.getEntityData().setInteger("FEXPThreshold", xp - threshold);
         }
     }

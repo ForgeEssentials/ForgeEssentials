@@ -13,6 +13,7 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -320,26 +321,20 @@ public class ProtectionEventHandler extends ServerEventHandler {
             e.setCanceled(true);
         }
     }
-
+    
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void checkSpawnEvent(CheckSpawn e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        if (e.entityLiving instanceof EntityPlayer)
+        if (!(e.entityLiving instanceof EntityLiving))
             return;
-
-        WorldPoint point = new WorldPoint(e.entityLiving);
-        String mobID = EntityList.getEntityString(e.entity);
-        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + mobID))
-        {
+        EntityLiving entity = (EntityLiving) e.entityLiving;
+        WorldPoint point = new WorldPoint(entity);
+        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + EntityList.getEntityString(entity)))
             e.setResult(Result.DENY);
-            OutputHandler.debug(mobID + " : DENIED");
-        }
-        else
-        {
-            OutputHandler.debug(mobID + " : ALLOWED");
-        }
+        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + ".type." + MobType.getMobType(entity).toString().toLowerCase()))
+            e.setResult(Result.DENY);
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
@@ -347,16 +342,14 @@ public class ProtectionEventHandler extends ServerEventHandler {
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        if (e.entityLiving instanceof EntityPlayer)
+        if (!(e.entityLiving instanceof EntityLiving))
             return;
-
-        WorldPoint point = new WorldPoint(e.entityLiving);
-        String mobID = EntityList.getEntityString(e.entity);
-
-        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + mobID))
-        {
+        EntityLiving entity = (EntityLiving) e.entityLiving;
+        WorldPoint point = new WorldPoint(entity);
+        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + EntityList.getEntityString(entity)))
             e.setResult(Result.DENY);
-        }
+        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + ".type." + MobType.getMobType(entity).toString().toLowerCase()))
+            e.setResult(Result.DENY);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

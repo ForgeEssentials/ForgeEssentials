@@ -12,9 +12,9 @@ public abstract class GenericRemoteHandler<T> extends AbstractRemoteHandler {
 
     private final Class<T> dataClass;
 
-    public GenericRemoteHandler(String id, String permission, Class<T> dataClass)
+    public GenericRemoteHandler(String permission, Class<T> dataClass)
     {
-        super(id, permission);
+        super(permission);
         this.dataClass = dataClass;
     }
 
@@ -31,10 +31,10 @@ public abstract class GenericRemoteHandler<T> extends AbstractRemoteHandler {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public RemoteResponse handle(RemoteSession session, JsonRemoteRequest request)
+    public RemoteResponse<?> handle(RemoteSession session, JsonRemoteRequest request)
     {
         if (request.data == null || dataClass.equals(JsonElement.class))
-            return handleData(session, (RemoteRequest) request);
+            return handleData(session, (RemoteRequest<T>) request);
         else
             return handleData(session, session.transformRemoteRequest(request, dataClass));
     }
@@ -42,6 +42,6 @@ public abstract class GenericRemoteHandler<T> extends AbstractRemoteHandler {
     /**
      * Handle request with deserialized payload
      */
-    protected abstract RemoteResponse handleData(RemoteSession session, RemoteRequest<T> request);
+    protected abstract RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<T> request);
 
 }

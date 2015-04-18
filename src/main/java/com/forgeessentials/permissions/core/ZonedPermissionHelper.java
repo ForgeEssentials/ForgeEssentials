@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -105,6 +104,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public void save()
     {
+        dirty = false;
         if (persistenceProvider != null)
         {
             OutputHandler.felog.fine("Saving permissions...");
@@ -113,10 +113,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         }
 
         if (registeredPermission)
-            PermissionsListWriter.write(getRegisteredPermissions(), new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE));
-
-        dirty = false;
-        registeredPermission = false;
+        {
+            registeredPermission = false;
+            PermissionsListWriter.write(rootZone, new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE));
+        }
     }
 
     public boolean load()
@@ -158,19 +158,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public PermissionList getRegisteredPermissions()
     {
         PermissionList perms = (PermissionList) rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).clone();
-        for (Entry<String, String> perm : rootZone.getGroupPermissions(Zone.GROUP_OPERATORS).entrySet())
-            perms.put(perm.getKey(), perm.getValue());
-        return perms;
-    }
-
-    public Set<String> enumRegisteredPermissions()
-    {
-        Set<String> perms = new TreeSet<String>();
-        for (String perm : rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).keySet())
-        {
-            if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
-                perms.add(perm);
-        }
+        perms.putAll(rootZone.getGroupPermissions(Zone.GROUP_OPERATORS));
         return perms;
     }
 
@@ -374,7 +362,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent e)
     {
-        if (dirty && System.currentTimeMillis() - lastDirty > 1000)
+        if (dirty && System.currentTimeMillis() - lastDirty > 1000 * 60)
             save();
         // TODO: Detect manual changes to persistence backend
     }

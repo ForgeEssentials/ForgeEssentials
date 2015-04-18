@@ -3,103 +3,80 @@ package com.forgeessentials.auth;
 import java.util.HashMap;
 import java.util.UUID;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.data.v2.DataManager;
 
-@SaveableObject
 public class PlayerPassData {
 
-    private static HashMap<UUID, PlayerPassData> datas = new HashMap<UUID, PlayerPassData>();
+    private static HashMap<UUID, PlayerPassData> cache = new HashMap<UUID, PlayerPassData>();
     
-    @UniqueLoadingKey
-    @SaveableField
-    public final String username;
-    
-    @SaveableField
-    public String password;
+    public final String password;
 
-    public PlayerPassData(UUID username, String password)
+    public PlayerPassData(String password)
     {
-        this.username = username.toString();
         this.password = password;
+    }
+
+    /**
+     * Checks, if a player is registered
+     * 
+     * @param userID
+     * @return
+     */
+    public static boolean isRegistered(UUID userID)
+    {
+        return getPassword(userID) != null;
+    }
+
+    /**
+     * Checks the password
+     *
+     * @param userID
+     * @param plainPassword
+     * @return success
+     */
+    public static boolean checkPassword(UUID userID, String plainPassword)
+    {
+        return ModuleAuth.encrypt(plainPassword).equals(getPassword(userID));
     }
 
     /**
      * Returns the PlayerPassData if it exists.
      *
-     * @param username
-     * @return
+     * @param userID
+     * @return encoded password
      */
-    public static PlayerPassData getData(UUID username)
+    private static String getPassword(UUID userID)
     {
-        PlayerPassData data = datas.get(username);
+        PlayerPassData data = cache.get(userID);
         if (data == null)
-        {
-            data = DataManager.getInstance().load(PlayerPassData.class, username.toString());
-        }
-        return data;
+            data = DataManager.getInstance().load(PlayerPassData.class, userID.toString());
+        return data == null ? null : data.password;
     }
 
     /**
      * Creates a PlayerPassData
      *
-     * @param username
-     * @return
+     * @param userID
+     * @param plainPassword
      */
-    public static void registerData(UUID username, String pass)
+    public static void setPassword(UUID userID, String plainPassword)
     {
-        PlayerPassData data = new PlayerPassData(username, pass);
-        data.save();
-        if (datas.get(data.username) != null)
+        if (plainPassword == null)
         {
-            datas.put(UUID.fromString(data.username), data);
+            DataManager.getInstance().delete(PlayerPassData.class, userID.toString());
+            cache.remove(userID);
+        }
+        else
+        {
+            PlayerPassData data = new PlayerPassData(ModuleAuth.encrypt(plainPassword));
+            DataManager.getInstance().save(data, userID.toString());
+            cache.put(userID, data);
         }
     }
 
-    /**
-     * Discards it.
-     * Usually onPlayerLogout
-     *
-     * @param username
-     * @return
-     */
-    public static void discardData(UUID username)
+    public static void removeFromCache(UUID userID)
     {
-        PlayerPassData data = datas.remove(username);
-        if (data != null)
-        {
-            data.save();
-        }
-    }
-
-    /**
-     * Completely removes the data.
-     *
-     * @param username
-     * @return
-     */
-    public static void deleteData(UUID username)
-    {
-        PlayerPassData data = datas.remove(username);
-        DataManager.getInstance().delete(PlayerPassData.class, username.toString());
-    }
-
-    @Reconstructor
-    private static PlayerPassData reconstruct(IReconstructData data)
-    {
-        String username = data.getUniqueKey();
-        String pass = (String) data.getFieldValue("password");
-
-        return new PlayerPassData(UUID.fromString(username), pass);
-    }
-
-    public void save()
-    {
-        DataManager.getInstance().save(this, username);
+        cache.remove(userID);
     }
 
 }

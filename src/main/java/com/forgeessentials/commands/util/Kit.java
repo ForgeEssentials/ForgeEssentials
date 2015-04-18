@@ -1,35 +1,24 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.permissions.PermissionsManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@SaveableObject
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.permissions.PermissionsManager;
+
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+
 public class Kit {
 	
-	@UniqueLoadingKey
-	@SaveableField
 	private String name;
 
-	@SaveableField
 	private Integer cooldown;
 
-	@SaveableField
 	private ItemStack[] items;
 
-	@SaveableField
 	private ItemStack[] armor;
 
 	public Kit(EntityPlayer player, String name, int cooldown)
@@ -65,37 +54,6 @@ public class Kit {
 		}
 
 		CommandDataManager.addKit(this);
-	}
-
-	private Kit(Object name, Object cooldown, Object items, Object armor)
-	{
-		this.name = (String) name;
-		this.cooldown = (Integer) cooldown;
-
-		this.items = new ItemStack[((Object[]) items).length];
-		this.armor = new ItemStack[4];
-
-		for (ItemStack is : (ItemStack[]) items)
-		{
-			for (int i = 0; i < ((ItemStack[]) items).length; i++)
-			{
-				this.items[i] = is;
-			}
-		}
-        for (ItemStack is : (ItemStack[]) armor)
-        {
-            if(is != null) {
-                // Armor slots seemed to be inverted
-                int atype = 3-((ItemArmor) is.getItem()).armorType;
-                this.armor[atype] = is;
-            }
-        }
-	}
-
-	@Reconstructor
-	private static Kit reconstruct(IReconstructData tag)
-	{
-		return new Kit(tag.getFieldValue("name"), tag.getFieldValue("cooldown"), tag.getFieldValue("items"), tag.getFieldValue("armor"));
 	}
 
 	public String getName()

@@ -6,30 +6,18 @@ import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.util.PlayerInfo;
 
-@SaveableObject
 public class AutoPromote {
     
-	@UniqueLoadingKey
-	@SaveableField
 	private int zone;
 
-	@SaveableField
 	private boolean enabled;
 
-	@SaveableField
 	private HashMap<String, String> promoteList;
 
-	@SaveableField
 	private boolean sendMsg;
 
-	@SaveableField
 	private String msg;
 
 	public AutoPromote(int zone, boolean enable)
@@ -82,25 +70,6 @@ public class AutoPromote {
 	public void setSendMsg(boolean sendMsg)
 	{
 		this.sendMsg = sendMsg;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Reconstructor
-	private static AutoPromote reconstruct(IReconstructData tag)
-	{
-		AutoPromote data = new AutoPromote((int) tag.getFieldValue("zone"), (Boolean) tag.getFieldValue("enable"));
-		try
-		{
-			data.promoteList = (HashMap<String, String>) tag.getFieldValue("promoteList");
-		}
-		catch (Exception e)
-		{
-		}
-		if (data.promoteList == null)
-		{
-			data.promoteList = new HashMap<String, String>();
-		}
-		return data;
 	}
 
 	public void tick(EntityPlayerMP player)

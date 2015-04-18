@@ -6,12 +6,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.commons.SaveableObject;
-
 /**
  * Immutable UserIdent (unchanging username and uuid) for maps
  */
-@SaveableObject(SaveInline = true)
 public class ImmutableUserIdent extends UserIdent {
 
     public ImmutableUserIdent(UUID uuid)

@@ -33,7 +33,7 @@ import com.forgeessentials.util.UserIdent;
 public class PermissionCommandParser {
 
     public static final String PERM = "fe.perm";
-    public static final String PERM_ALL = PERM + ".*";
+    public static final String PERM_ALL = PERM + Zone.ALL_PERMS;
     public static final String PERM_TEST = PERM + ".test";
     public static final String PERM_RELOAD = PERM + ".reload";
     public static final String PERM_SAVE = PERM + ".save";
@@ -86,6 +86,7 @@ public class PermissionCommandParser {
             switch (arguments.args.remove().toLowerCase())
             {
             case "save":
+                ModulePermissions.permissionHelper.setDirty(false);
                 ModulePermissions.permissionHelper.save();
                 arguments.info("Permissions saved!");
                 break;
@@ -197,7 +198,7 @@ public class PermissionCommandParser {
                 if (CommandBase.doesStringStartWith(arguments.args.peek(), zone.getName()))
                     arguments.tabCompletion.add(zone.getName());
             }
-            for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
+            for (String perm : APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions())
             {
                 if (CommandBase.doesStringStartWith(arguments.args.peek(), perm))
                     arguments.tabCompletion.add(perm);
@@ -428,7 +429,7 @@ public class PermissionCommandParser {
                 break;
             case CLEAR:
                 zone.clearPlayerPermission(ident, permissionNode);
-                msg = "Cleared %s's acces to %s in zone %s";
+                msg = "Cleared %s's access to %s in zone %s";
                 break;
             case VALUE:
                 zone.setPlayerPermissionProperty(ident, permissionNode, value);
@@ -865,7 +866,7 @@ public class PermissionCommandParser {
                 break;
             case CLEAR:
                 zone.clearGroupPermission(group, permissionNode);
-                msg = "Cleared %s's acces to %s in zone %s";
+                msg = "Cleared %s's access to %s in zone %s";
                 break;
             case VALUE:
                 zone.setGroupPermissionProperty(group, permissionNode, value);
@@ -884,7 +885,7 @@ public class PermissionCommandParser {
         
         if (arguments.args.isEmpty())
         {
-            if (arguments.command.equalsIgnoreCase("setspawn"))
+            if (arguments.command.getCommandName().equalsIgnoreCase("setspawn"))
             {
                 arguments.info("/setspawn here|clear|<x> <y> <z> <dim>: Set spawn location");
                 arguments.info("/setspawn bed (enable|disable): Enable/disable spawning at bed");
@@ -1066,7 +1067,7 @@ public class PermissionCommandParser {
     public static List<String> completePermission(String permission)
     {
         Set<String> result = new TreeSet<String>();
-        for (String perm : ModulePermissions.permissionHelper.enumRegisteredPermissions())
+        for (String perm : APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions())
         {
             int nodeIndex = perm.indexOf('.', permission.length());
             if (nodeIndex >= 0)

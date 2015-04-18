@@ -8,8 +8,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.core.PlayerInfoClient;
+import com.forgeessentials.client.core.ClientProxy;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
@@ -26,11 +25,10 @@ public class CUIRenderrer {
     public void render(RenderWorldLastEvent event)
     {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
-        PlayerInfoClient info = ForgeEssentialsClient.info;
-        if (player == null || info == null)
+        if (player == null)
             return;
         
-        Selection sel = info.getSelection();
+        Selection sel = ClientProxy.getSelection();
         if (sel == null || sel.getDimension() != FMLClientHandler.instance().getClient().thePlayer.dimension)
             return;
 
@@ -44,7 +42,7 @@ public class CUIRenderrer {
         {
             Point p = sel.getStart();
             GL11.glPushMatrix();
-            GL11.glTranslated(p.x - RenderManager.renderPosX + 0.5, p.y - RenderManager.renderPosY + 0.5, p.z - RenderManager.renderPosZ + 0.5);
+            GL11.glTranslated(p.getX() - RenderManager.renderPosX + 0.5, p.getY() - RenderManager.renderPosY + 0.5, p.getZ() - RenderManager.renderPosZ + 0.5);
             GL11.glScalef(0.96F, 0.96F, 0.96F);
             GL11.glColor3f(255, 0, 0);
             renderBox();
@@ -56,7 +54,7 @@ public class CUIRenderrer {
         {
             Point p = sel.getEnd();
             GL11.glPushMatrix();
-            GL11.glTranslated(p.x - RenderManager.renderPosX + 0.5, p.y - RenderManager.renderPosY + 0.5, p.z - RenderManager.renderPosZ + 0.5);
+            GL11.glTranslated(p.getX() - RenderManager.renderPosX + 0.5, p.getY() - RenderManager.renderPosY + 0.5, p.getZ() - RenderManager.renderPosZ + 0.5);
             GL11.glScalef(0.98F, 0.98F, 0.98F);
             GL11.glColor3f(0, 255, 0);
             renderBox();
@@ -70,7 +68,7 @@ public class CUIRenderrer {
             Point p2 = sel.getEnd();
             Point size = sel.getSize();
             GL11.glPushMatrix();
-            GL11.glTranslated((float) (p1.x + p2.x) / 2 - RenderManager.renderPosX + 0.5, (float) (p1.y + p2.y) / 2 - RenderManager.renderPosY + 0.5, (float) (p1.z + p2.z) / 2 - RenderManager.renderPosZ + 0.5);
+            GL11.glTranslated((float) (p1.getX() + p2.getX()) / 2 - RenderManager.renderPosX + 0.5, (float) (p1.getY() + p2.getY()) / 2 - RenderManager.renderPosY + 0.5, (float) (p1.getZ() + p2.getZ()) / 2 - RenderManager.renderPosZ + 0.5);
             GL11.glScalef(1 + size.getX(), 1 + size.getY(), 1 + size.getZ());
             GL11.glColor3f(0, 255, 255);
             renderBox();

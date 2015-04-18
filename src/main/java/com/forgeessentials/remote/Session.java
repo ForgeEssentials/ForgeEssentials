@@ -83,7 +83,6 @@ public class Session implements Runnable, RemoteSession {
      * @param message
      * @throws IOException
      */
-    @SuppressWarnings("unchecked")
     protected void processMessage(String message) throws IOException
     {
         try
@@ -147,7 +146,7 @@ public class Session implements Runnable, RemoteSession {
             // Handle request
             try
             {
-                RemoteResponse response = handler.handle(this, request);
+                RemoteResponse<?> response = handler.handle(this, request);
                 if (response != null)
                 {
                     response.rid = request.rid;
@@ -181,7 +180,7 @@ public class Session implements Runnable, RemoteSession {
      * @see com.forgeessentials.api.remote.RemoteSession#sendMessage(java.lang.Object)
      */
     @Override
-    public synchronized void sendMessage(RemoteResponse response) throws IOException
+    public synchronized void sendMessage(RemoteResponse<?> response) throws IOException
     {
         OutputStreamWriter ow = new OutputStreamWriter(socket.getOutputStream());
         ow.write(getGson().toJson(response) + SEPARATOR);
@@ -194,7 +193,7 @@ public class Session implements Runnable, RemoteSession {
      * @see com.forgeessentials.api.remote.RemoteSession#sendMessage(java.lang.Object)
      */
     @Override
-    public boolean trySendMessage(RemoteResponse response)
+    public boolean trySendMessage(RemoteResponse<?> response)
     {
         if (isClosed())
             return false;

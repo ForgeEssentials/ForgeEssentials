@@ -1,21 +1,12 @@
 package com.forgeessentials.teleport.util;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.commons.selections.WarpPoint;
 
-@SaveableObject
 public class PWarp {
     public static final String SEPERATOR = "#";
 
-    @UniqueLoadingKey
-    @SaveableField
     private String name;
 
-    @SaveableField
     private WarpPoint point;
 
     public PWarp(String username, String name, WarpPoint point)
@@ -44,10 +35,4 @@ public class PWarp {
         return point;
     }
 
-    @Reconstructor
-    private static PWarp reconstruct(IReconstructData tag)
-    {
-        return new PWarp(((String) tag.getFieldValue("name")).split(SEPERATOR)[0], ((String) tag.getFieldValue("name")).split(SEPERATOR)[1],
-                (WarpPoint) tag.getFieldValue("point"));
-    }
 }

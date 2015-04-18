@@ -23,6 +23,7 @@ import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.ImmutableUserIdent;
 import com.forgeessentials.util.UserIdent;
+import com.google.gson.annotations.Expose;
 
 /**
  * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being
@@ -32,16 +33,20 @@ import com.forgeessentials.util.UserIdent;
  */
 public class ServerZone extends Zone {
 
+    @Expose(serialize = false)
     private RootZone rootZone;
 
+    @Expose(serialize = false)
     private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
 
     private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
 
+    @Expose(serialize = false)
     private int maxZoneID;
 
     private Map<UserIdent, Set<String>> playerGroups = new HashMap<UserIdent, Set<String>>();
 
+    @Expose(serialize = false)
     private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
 
     // ------------------------------------------------------------
@@ -238,16 +243,18 @@ public class ServerZone extends Zone {
     {
         if (!isFakePlayer(ident))
             registerPlayer(ident); 
-        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
-            return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
             groupSet = new TreeSet<String>();
             playerGroups.put(ident, groupSet);
         }
-        groupSet.add(group);
-        setDirty();
+        if (!groupSet.contains(group))
+        {
+            if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+                return false;
+            groupSet.add(group);
+        }
         return true;
     }
 

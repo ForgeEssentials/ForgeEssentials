@@ -11,25 +11,21 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.util.FakePlayer;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-@SaveableObject(SaveInline = true)
 public class UserIdent {
 
-    @SaveableField
     protected UUID uuid;
 
-    @SaveableField
     protected String username;
 
+    @Expose(serialize = false)
     protected EntityPlayerMP player;
 
+    @Expose(serialize = false)
     protected GameProfile profile;
 
     public UserIdent(UUID uuid)
@@ -335,12 +331,6 @@ public class UserIdent {
     }
 
     // ------------------------------------------------------------
-
-    @Reconstructor
-    private static UserIdent reconstruct(IReconstructData tag)
-    {
-        return new UserIdent((UUID) tag.getFieldValue("uuid"), (String) tag.getFieldValue("username"));
-    }
 
     public static UserIdent fromString(String string)
     {

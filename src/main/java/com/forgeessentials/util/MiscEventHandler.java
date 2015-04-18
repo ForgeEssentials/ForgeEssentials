@@ -11,7 +11,7 @@ import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 public class MiscEventHandler {
     public static boolean MajoritySleep = false;
 
-    public static int majoritySleepThreshold = 50;
+    public static int majoritySleepThreshold;
     private static MiscEventHandler instance;
 
     public MiscEventHandler()

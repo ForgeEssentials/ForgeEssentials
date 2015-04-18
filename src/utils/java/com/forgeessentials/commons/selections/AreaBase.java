@@ -3,16 +3,10 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-
-@SaveableObject
 public class AreaBase {
 
-    @SaveableField
     protected Point high;
 
-    @SaveableField
     protected Point low;
 
     /**

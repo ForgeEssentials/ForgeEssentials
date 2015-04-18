@@ -17,7 +17,7 @@ public interface RemoteSession {
      * @throws SessionClosedException
      * @throws IOException
      */
-    void sendMessage(RemoteResponse response) throws IOException;
+    void sendMessage(RemoteResponse<?> response) throws IOException;
 
     /**
      * Sends a message to the client. Throws a {@link SessionClosedException}, if the session was already closed.
@@ -26,7 +26,7 @@ public interface RemoteSession {
      * @throws SessionClosedException
      * @throws IOException
      */
-    boolean trySendMessage(RemoteResponse response);
+    boolean trySendMessage(RemoteResponse<?> response);
 
     /**
      * Transforms a generic request into one with the correctly deserialized data
@@ -70,6 +70,7 @@ public interface RemoteSession {
      * Thrown, when a message should be sent to the remote-client, but the session was already terminated
      */
     public static class SessionClosedException extends Exception {
+        private static final long serialVersionUID = -7782278063344870691L;
 
         private final RemoteSession session;
 

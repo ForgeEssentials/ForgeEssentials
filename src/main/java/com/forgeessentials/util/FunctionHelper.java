@@ -108,6 +108,60 @@ public final class FunctionHelper {
 		}
 	}
 
+    /**
+     * Try to parse the string as integer or return null if failed
+     * 
+     * @param value
+     * @return
+     */
+    public static Integer tryParseInt(String value)
+    {
+        try
+        {
+            return Integer.parseInt(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Try to parse the string as float or return null if failed
+     * 
+     * @param value
+     * @return
+     */
+    public static Float tryParseFloat(String value)
+    {
+        try
+        {
+            return Float.parseFloat(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Try to parse the string as double or return null if failed
+     * 
+     * @param value
+     * @return
+     */
+    public static Double tryParseDouble(String value)
+    {
+        try
+        {
+            return Double.parseDouble(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
+
 	// ------------------------------------------------------------
 	
     /**
@@ -196,6 +250,49 @@ public final class FunctionHelper {
         return placeInWorld(world, x, y, z, 2);
     }
 
+    // ------------------------------------------------------------
+
+    /**
+     * Apply potion effects to the player
+     * 
+     * @param player
+     * @param effectString Comma separated list of id:duration:amplifier or id:duration tuples
+     */
+    public static void applyPotionEffects(EntityPlayer player, String effectString)
+    {
+        String[] effects = effectString.replaceAll("\\s", "").split(","); // example = 9:5:0
+        for (String poisonEffect : effects)
+        {
+            String[] effectValues = poisonEffect.split(":");
+            if (effectValues.length < 2)
+            {
+                OutputHandler.felog.warning("Too few arguments for potion effects");
+            }
+            else if (effectValues.length > 3)
+            {
+                OutputHandler.felog.warning("Too many arguments for potion effects");
+            }
+            else
+            {
+                try
+                {
+                    int potionID = Integer.parseInt(effectValues[0]);
+                    int effectDuration = Integer.parseInt(effectValues[1]);
+                    int amplifier = 0;
+                    if (effectValues.length == 3)
+                        amplifier = Integer.parseInt(effectValues[2]);
+                    player.addPotionEffect(new net.minecraft.potion.PotionEffect(potionID, effectDuration * 20, amplifier));
+                }
+                catch (NumberFormatException e)
+                {
+                    OutputHandler.felog.warning("Invalid potion ID:duration:amplifier data.");
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------------
+
     /**
      * Get player's looking-at spot.
      *
@@ -227,6 +324,8 @@ public final class FunctionHelper {
         return player.worldObj.rayTraceBlocks(pos1, pos2);
     }
 
+    // ------------------------------------------------------------
+    
 	/**
 	 * Gets a nice string with only needed elements. Max time is weeks
 	 *
@@ -1222,7 +1321,6 @@ public final class FunctionHelper {
         ChatComponentTranslation ichat = new ChatComponentTranslation("");
         Matcher matcher = URL_PATTERN.matcher(string);
         int lastEnd = 0;
-        String remaining = string;
 
         // Find all urls
         while (matcher.find())

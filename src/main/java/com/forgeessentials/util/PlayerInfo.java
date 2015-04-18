@@ -13,11 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -25,109 +20,68 @@ import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.NoPlayerInfoEvent;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.Expose;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@SaveableObject
 public class PlayerInfo {
 
     private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
 
     public static boolean persistSelections;
 
-    @SaveableField()
-    private UserIdent ident;
+    private final UserIdent ident;
 
-    @UniqueLoadingKey
-    private final String uuid_string;
-
-    // wand stuff
-    private String wandID;
-
-    private int wandDmg;
-
-    private boolean wandEnabled = false;
-
-    @SaveableField()
     private WarpPoint home;
 
-    @SaveableField()
     private WarpPoint lastTeleportOrigin;
 
-    @SaveableField()
     private WarpPoint lastDeathLocation;
-
-    // 0: Normal 1: World spawn 2: Bed 3: Home
-    @SaveableField()
-    private int spawnType;
-
-    private long lastTeleportTime = 0;
 
     private HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
 
-    // selection stuff
-    @SaveableField
     protected Point sel1;
 
-    @SaveableField
     protected Point sel2;
     
-    @SaveableField
     protected int selDim;
 
-    @SaveableField()
     private int timePlayed = 0;
 
-    private long loginTime = System.currentTimeMillis();
-
-    @SaveableField()
-    private long firstJoin = System.currentTimeMillis();
-
-    // undo and redo stuff
-    private Stack<BackupArea> undos = new Stack<BackupArea>();
-
-    private Stack<BackupArea> redos = new Stack<BackupArea>();
-
-    @SaveableField
     private Map<String, List<ItemStack>> inventoryGroups = new HashMap<>();
 
-    @SaveableField
     private String activeInventoryGroup = "default";
 
+    private long firstJoin = System.currentTimeMillis();
+
+    @Expose(serialize = false)
+    private long loginTime = System.currentTimeMillis();
+
+    @Expose(serialize = false)
+    private String wandID;
+
+    @Expose(serialize = false)
+    private int wandDmg;
+
+    @Expose(serialize = false)
+    private boolean wandEnabled = false;
+
+    @Expose(serialize = false)
+    private long lastTeleportTime = 0;
+
+    @Expose(serialize = false)
     private boolean hasFEClient = false;
 
-    protected PlayerInfo()
-    {
-        uuid_string = null;
-    }
+    // undo and redo stuff
+    @Expose(serialize = false)
+    private Stack<BackupArea> undos = new Stack<BackupArea>();
+
+    @Expose(serialize = false)
+    private Stack<BackupArea> redos = new Stack<BackupArea>();
 
     protected PlayerInfo(UUID uuid)
     {
         this.ident = new UserIdent(uuid);
-        this.uuid_string = uuid.toString();
-    }
-
-    @Reconstructor()
-    public static PlayerInfo reconstruct(IReconstructData tag)
-    {
-        UUID uuid = UUID.fromString(tag.getUniqueKey());
-        PlayerInfo info = new PlayerInfo(uuid);
-
-        if (persistSelections)
-        {
-            info.sel1 = ((Point) tag.getFieldValue("sel1"));
-            info.sel2 = ((Point) tag.getFieldValue("sel2"));
-        }
-
-        info.home = (WarpPoint) tag.getFieldValue("home");
-        info.lastTeleportOrigin = (WarpPoint) tag.getFieldValue("lastTeleportOrigin");
-        info.lastDeathLocation = (WarpPoint) tag.getFieldValue("lastDeathLocation");
-
-        info.spawnType = (Integer) tag.getFieldValue("spawnType");
-        info.timePlayed = (Integer) tag.getFieldValue("timePlayed");
-        info.firstJoin = (Long) tag.getFieldValue("firstJoin");
-
-        return info;
     }
 
     /**
@@ -136,7 +90,7 @@ public class PlayerInfo {
     public void save()
     {
         recalcTimePlayed();
-        DataManager.getInstance().save(this, uuid_string);
+        DataManager.getInstance().save(this, ident.getUuid().toString());
     }
 
     @SubscribeEvent
@@ -279,6 +233,10 @@ public class PlayerInfo {
 
     public void KitCooldownTick()
     {
+        //TODO: Remove this after some time - only needed to be compatible with old save-data
+        if (kitCooldown == null)
+            kitCooldown = new HashMap<String, Integer>();
+        
         for (String key : kitCooldown.keySet())
         {
             if (kitCooldown.get(key) == 0)

@@ -1,5 +1,13 @@
 package com.forgeessentials.economy;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -16,21 +24,16 @@ import com.forgeessentials.economy.commands.plots.CommandBuyPlot;
 import com.forgeessentials.economy.commands.plots.CommandListPlot;
 import com.forgeessentials.economy.commands.plots.CommandRemovePlot;
 import com.forgeessentials.economy.commands.plots.CommandSetPlot;
+import com.forgeessentials.economy.network.S4PacketEconomy;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Call the WalletHandler class when working with Economy
@@ -115,7 +118,7 @@ public class ModuleEconomy extends ConfigLoaderBase {
         config.get(CONFIG_CAT, "multiplier", 1).set(psfPrice);
     }
 
-    public static String formatCurrency(int amount)
+    public static String formatCurrency(long amount)
     {
         if (amount == 1)
         {

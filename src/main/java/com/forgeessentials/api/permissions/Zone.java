@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -575,6 +576,10 @@ public abstract class Zone {
         return false;
     }
 
+    // ------------------------------------------------------------
+    // -- Other
+    // ------------------------------------------------------------
+
     /**
      * Swaps the permissions of one zone with another one
      */
@@ -589,5 +594,27 @@ public abstract class Zone {
         playerPermissions = swapPlayerPermissions;
     }
 
+    /**
+     * List all permission nodes that have any kind of configuration in this zone
+     */
+    public Set<String> enumRegisteredPermissions()
+    {
+        Set<String> perms = new TreeSet<String>();
+        for (Entry<UserIdent, PermissionList> permList : playerPermissions.entrySet())
+            for (String perm : permList.getValue().keySet())
+            {
+                if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                    perm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
+                perms.add(perm);
+            }
+        for (Entry<String, PermissionList> permList : groupPermissions.entrySet())
+            for (String perm : permList.getValue().keySet())
+            {
+                if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                    perm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
+                perms.add(perm);
+            }
+        return perms;
+    }
 
 }

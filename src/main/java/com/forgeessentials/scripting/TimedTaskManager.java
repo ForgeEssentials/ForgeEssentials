@@ -1,8 +1,8 @@
 package com.forgeessentials.scripting;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -49,7 +49,7 @@ public class TimedTaskManager extends ForgeEssentialsCommandBase {
             {
                 command = command + args[i] + " ";
             }
-            TimedTask task = new TimedTask(args[2], command, args[1]);
+            TimedTask task = new TimedTask(Integer.parseInt(args[2]), command, args[1]);
             taskList.put(args[1], task);
             DataManager.getInstance().save(task, task.getName());
             OutputHandler.chatConfirmation(sender, "Added timed task " + args[1]);
@@ -64,11 +64,9 @@ public class TimedTaskManager extends ForgeEssentialsCommandBase {
         else if (args[0].equalsIgnoreCase("list"))
         {
             OutputHandler.chatNotification(sender, "Listing all registered timed tasks");
-            Iterator it = taskList.entrySet().iterator();
-            while (it.hasNext())
+            for (Entry<String, TimedTask> task : taskList.entrySet())
             {
-                Map.Entry pairs = (Map.Entry) it.next();
-                OutputHandler.chatNotification(sender, String.format("%s1 - %s2", pairs.getKey(), ((TimedTask) pairs.getValue()).getCommand()));
+                OutputHandler.chatNotification(sender, String.format("%s1 - %s2", task.getKey(), task.getValue().getCommand()));
             }
         }
 

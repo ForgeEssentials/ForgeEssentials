@@ -1,14 +1,16 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.util.UserIdent;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.util.UserIdent;
 
 public class InventoryGrave extends InventoryBasic {
+    
     private Grave grave;
 
     public InventoryGrave(Grave grave)
@@ -21,18 +23,10 @@ public class InventoryGrave extends InventoryBasic {
     public void openInventory()
     {
         for (int i = 0; i < getSizeInventory(); i++)
-        {
             setInventorySlotContents(i, (ItemStack) null);
-        }
-
         for (int i = 0; i < grave.inv.length; i++)
-        {
             if (grave.inv[i] != null)
-            {
                 setInventorySlotContents(i, grave.inv[i].copy());
-            }
-        }
-
         super.openInventory();
     }
 
@@ -49,15 +43,16 @@ public class InventoryGrave extends InventoryBasic {
             }
         }
         grave.inv = list.toArray(new ItemStack[list.size()]);
-
-        grave.checkGrave();
         grave.setOpen(false);
+        if (grave.inv.length == 0)
+            grave.remove(false);
         super.closeInventory();
     }
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player)
     {
-        return grave.canOpen(player);
+        return true;
     }
+    
 }

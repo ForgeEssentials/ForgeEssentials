@@ -1,10 +1,10 @@
 package com.forgeessentials.playerlogger.network;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class S2PacketPlayerLogger implements IMessageHandler<S2PacketPlayerLogger, IMessage>, IMessage {
 
@@ -28,6 +28,7 @@ public class S2PacketPlayerLogger implements IMessageHandler<S2PacketPlayerLogge
     @Override
     public void fromBytes(ByteBuf buf)
     {
+        /* do nothing */
     }
 
     @Override

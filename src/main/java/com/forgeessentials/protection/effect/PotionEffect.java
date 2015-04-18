@@ -2,10 +2,12 @@ package com.forgeessentials.protection.effect;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.forgeessentials.util.FunctionHelper;
+
 public class PotionEffect extends ZoneEffect {
 
     protected String potionEffects;
-    
+
     public PotionEffect(EntityPlayerMP player, int interval, String potionEffects)
     {
         super(player, interval, false);
@@ -15,13 +17,7 @@ public class PotionEffect extends ZoneEffect {
     @Override
     public void execute()
     {
-        String[] effects = potionEffects.replaceAll("\\s","").split(","); // example = 9:5:0
-        for (String poisonEffect : effects)
-        {
-            String[] effectValues = poisonEffect.split(":");
-            player.addPotionEffect(
-                    new net.minecraft.potion.PotionEffect(Integer.parseInt(effectValues[0]), Integer.parseInt(effectValues[1]) * 20, Integer.parseInt(effectValues[2])));
-        }
+        FunctionHelper.applyPotionEffects(player, potionEffects);
     }
 
 }

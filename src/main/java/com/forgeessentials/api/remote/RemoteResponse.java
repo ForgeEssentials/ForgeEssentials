@@ -44,32 +44,32 @@ public class RemoteResponse<T> {
         this.data = data;
     }
 
-    public static RemoteResponse<Object> error(String id, int rid, String message)
+    public static RemoteResponse<String> error(String id, int rid, String message)
     {
-        return new RemoteResponse<Object>(id, rid, false, message, null);
+        return new RemoteResponse<String>(id, rid, false, message, null);
     }
 
-    public static RemoteResponse<Object> error(RemoteRequest<?> request, String message)
+    public static RemoteResponse<String> error(RemoteRequest<?> request, String message)
     {
         return error(request.id, request.rid, message);
     }
 
-    public static RemoteResponse<Object> ok(String id, int rid, String message)
+    public static RemoteResponse<String> ok(String id, int rid, String message)
     {
-        return new RemoteResponse<Object>(id, rid, true, message, null);
+        return new RemoteResponse<String>(id, rid, true, message, null);
     }
 
-    public static RemoteResponse<Object> ok(RemoteRequest<?> request, String message)
+    public static RemoteResponse<String> ok(RemoteRequest<?> request, String message)
     {
         return ok(request.id, request.rid, message);
     }
 
-    public static RemoteResponse<Object> ok(String id, int rid)
+    public static RemoteResponse<String> ok(String id, int rid)
     {
         return ok(id, rid, "ok");
     }
 
-    public static RemoteResponse<Object> ok(RemoteRequest<?> request)
+    public static RemoteResponse<String> ok(RemoteRequest<?> request)
     {
         return ok(request.id, request.rid);
     }

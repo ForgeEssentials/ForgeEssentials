@@ -3,9 +3,11 @@ package com.forgeessentials.permissions.core;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.TreeSet;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.util.FunctionHelper;
@@ -14,23 +16,24 @@ public final class PermissionsListWriter {
 
     private static final String NEW_LINE = System.getProperty("line.separator");
 
-    public static void write(PermissionList permissions, File output)
+    public static void write(RootZone rootZone, File output)
     {
-//        if (output.exists())
-//            output.delete();
+        PermissionList defaultPerms = rootZone.getGroupPermissions(Zone.GROUP_DEFAULT);
+        PermissionList opPerms = rootZone.getGroupPermissions(Zone.GROUP_OPERATORS);
         
-        TreeSet<String> sortedPerms = new TreeSet<String>(permissions.keySet());
+        TreeMap<String, String> permissions = new TreeMap<>(opPerms);
+        permissions.putAll(defaultPerms);
 
         int permCount = 0;
         int permNameLength = 0;
-        for (String perm : sortedPerms)
+        for (String perm : permissions.keySet())
             if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
             {
                 permCount++;
                 permNameLength = Math.max(permNameLength, perm.length());
             }
         permNameLength += 2;
-
+        
         try
         {
             output.createNewFile();
@@ -45,41 +48,43 @@ public final class PermissionsListWriter {
                 writer.write("#// ------------------------------------------ \\\\#");
                 writer.newLine();
     
-                int lastPermLength = 0;
-                for (String perm : sortedPerms)
+                for (Entry<String, String> permission : permissions.entrySet())
                 {
-                    String value = permissions.get(perm);
-                    if (value == null)
-                        value = "";
+                    String perm = permission.getKey();
                     if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
                     {
-                        StringBuffer sb = new StringBuffer();
-                        String parentPerm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
-                        if (!permissions.containsKey(parentPerm)) {
+                        perm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
+                        String value = permissions.get(perm);
+                        if (value == null)
+                        {
+                            StringBuffer sb = new StringBuffer();
+                            sb.append(perm);
+                            for (int i = perm.length(); i <= permNameLength; i++)
+                                sb.append(' ');
+                            sb.append("# ");
+                            sb.append(permission.getValue());
                             sb.append(NEW_LINE);
-                            sb.append(parentPerm);
-                            lastPermLength = parentPerm.length();
-                        }
-                        for (; lastPermLength <= permNameLength; lastPermLength++)
-                            sb.append(' ');
-                        sb.append("# ");
-                        sb.append(value);
-                        writer.write(sb.toString());
-                    }
-                    else if (perm.endsWith(Zone.ALL_PERMS))
-                    {
-                        String parentPerm = perm.substring(0, perm.length() - Zone.PERMISSION_ASTERIX.length() - 1);
-                        if (!permissions.containsKey(parentPerm)) {
-                            writer.newLine();
-                            writer.write(parentPerm);
-                            lastPermLength = parentPerm.length();
+                            writer.write(sb.toString());
                         }
                     }
                     else
                     {
-                        writer.newLine();
-                        writer.write(perm);
-                        lastPermLength = perm.length();
+                        String description = permissions.get(perm + FEPermissions.DESCRIPTION_PROPERTY);
+                        String value = permission.getValue();
+                        String opValue = opPerms.get(perm);
+                        StringBuffer sb = new StringBuffer();
+                        sb.append(perm);
+                        for (int i = perm.length(); i <= permNameLength; i++)
+                            sb.append(' ');
+                        sb.append("# ");
+                        if (opValue != null)
+                            sb.append("(OP only: " + opValue + ") ");
+                        else
+                            sb.append("(default: " + value + ") ");
+                        if (description != null)
+                            sb.append(description);
+                        sb.append(NEW_LINE);
+                        writer.write(sb.toString());
                     }
                 }
             }

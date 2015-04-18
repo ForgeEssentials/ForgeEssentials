@@ -1,24 +1,21 @@
 package com.forgeessentials.afterlife;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.ArrayList;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
- * This module handles Deathchest and respawn debuffs.
- *
- * @author Dries007
+ * Module to handle death-chest and respawn debuffs.
  */
 
 @FEModule(name = "Afterlife", parentMod = ForgeEssentials.class)
@@ -27,71 +24,81 @@ public class ModuleAfterlife extends ConfigLoaderBase {
     @FEModule.Instance
     public static ModuleAfterlife instance;
 
-    public static final String BASEPERM = "fe.afterlife";
+    public static final String PERM = "fe.afterlife";
+    public static final String PERM_DEBUFFS = PERM + ".debuffs";
+    public static final String PERM_HP = PERM + ".hp";
+    public static final String PERM_FOOD = PERM + ".food";
 
-    public Deathchest deathchest;
+    public static final String PERM_DEATHCHEST = PERM + ".deathchest";
+    public static final String PERM_DEATHCHEST_XP = PERM_DEATHCHEST + ".xp";
+    public static final String PERM_DEATHCHEST_FENCE = PERM_DEATHCHEST + ".fence";
+    public static final String PERM_DEATHCHEST_SAFETIME = PERM_DEATHCHEST + ".safetime";
+    public static final String PERM_DEATHCHEST_BYPASS = PERM_DEATHCHEST + ".bypass";
+
+    public AfterlifeEventHandler deathchest;
 
     public RespawnDebuffHandler respawnDebuff;
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        deathchest = new Deathchest();
+        deathchest = new AfterlifeEventHandler();
         respawnDebuff = new RespawnDebuffHandler();
+        TileEntity.addMapping(FEskullTe.class, "FESkull");
     }
 
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        deathchest.load();
-        APIRegistry.perms.registerPermission(BASEPERM, RegisteredPermValue.OP);
+        Grave.loadAll();
+        
+        APIRegistry.perms.registerPermissionDescription(PERM, "Permissions for afterlife configuration");
+        APIRegistry.perms.registerPermissionDescription(PERM_DEBUFFS, "Potion effects to apply on respawn (comma separated list of id:duration:amplifier)");
+        APIRegistry.perms.registerPermissionDescription(PERM_HP, "Respawn HP");
+        APIRegistry.perms.registerPermissionDescription(PERM_FOOD, "Respawn food");
 
-        APIRegistry.perms.registerPermission(RespawnDebuffHandler.BYPASSPOTION, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(RespawnDebuffHandler.BYPASSSTATS, RegisteredPermValue.OP);
-
-        APIRegistry.perms.registerPermission(Deathchest.PERMISSION_BYPASS, null);
-        APIRegistry.perms.registerPermission(Deathchest.PERMISSION_MAKE, RegisteredPermValue.TRUE, "Allows graves to spawn, if a player dies");
-
-        APIRegistry.perms.registerPermissionProperty(Deathchest.PERMPROP_XP_MODIFIER, "0.25", "Ratio of XP that you want to allow someone to keep in a grave. 1 keeps all XP.");
-
-
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST, RegisteredPermValue.TRUE, "Allow creation of deathchests");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_FENCE, RegisteredPermValue.TRUE, "Put the skull on a spike");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_BYPASS, RegisteredPermValue.OP, "Bypass grave protection");
+        APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_XP, "0.25", "Ratio of XP that you want to allow someone to keep in a grave. 1 keeps all XP, 0 disables XP recovery.");
+        APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_SAFETIME, "300", "Time in seconds a grave is protected. After this time anyone can take all stuff");
     }
 
     @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
-        deathchest.save();
+        Grave.saveAll();
     }
 
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        OutputHandler.felog.finer("Loading Afterlife-module configuration");
-
-        String category = "Afterlife.DeathChest";
-        config.addCustomCategoryComment(category, "Permission needed:\n" + Deathchest.PERMISSION_MAKE);
-        Deathchest.enable = config.get(category, "Enable", true, "Enable the deathchest.").getBoolean(true);
-        Deathchest.enableXP = config.get(category, "EnableXP", true, "Gives xp when the skull is destoyed or emplyed").getBoolean(true);
-        Deathchest.enableFencePost = config.get(category, "enableFencePost", true, "Put the skull on a spike.").getBoolean(true);
-        Deathchest.protectionTime = config.get(category, "protectionTime", 300,
-                "Time in seconds a grave is protected. After this time anyone can take all stuff.").getInt();
-
-        category = "Afterlife.respawnStats";
-        config.addCustomCategoryComment(category, "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSSTATS);
-        RespawnDebuffHandler.hp = config.get(category, "hp", 20, "On respawn, respawn with X half hearts.").getInt();
-        RespawnDebuffHandler.food = config.get(category, "foodlvl", 20, "On respawn, respawn with X half whatevertheyare.").getInt();
-
-        category = "Afterlife.RespawnDebuffHandler";
-        config.addCustomCategoryComment(category, "Bypass permissions:\n" + RespawnDebuffHandler.BYPASSPOTION
-                + "\nFor more info on potions effects:\nhttp://www.minecraftwiki.net/wiki/Potion_effects");
-
-        RespawnDebuffHandler.potionEffects = new ArrayList<PotionEffect>();
-        String[] array = config.get(category, "potionEffects", new String[] { "4:150:1" }, "Format like this: 'ID:duration:amplifier'").getStringList();
-
-        for (String string : array)
-        {
-            String[] split = string.split(":");
-            RespawnDebuffHandler.potionEffects.add(new PotionEffect(Integer.parseInt(split[0]), Integer.parseInt(split[1]) * 20, Integer.parseInt(split[2])));
-        }
+        config.addCustomCategoryComment("Afterlife", //
+                "Afterlife configuration outdated." + //
+                "\n" + //
+                "\nFor afterlife configuration, use the new permission-properties \"/p global value fe.afterlife.<perm>\"." + //
+                "\nFollowing permissions are available:" + //
+                "\n - " + PERM_DEATHCHEST + //
+                "\n - " + PERM_DEATHCHEST_XP + //
+                "\n - " + PERM_DEATHCHEST_SAFETIME + //
+                "\n - " + PERM_DEATHCHEST_FENCE + //
+                "\n - " + PERM_DEATHCHEST_BYPASS + //
+                "\n" + //
+                "\n - " + PERM_DEBUFFS + //
+                "\n - " + PERM_HP + //
+                "\n - " + PERM_FOOD + //
+                "\n" + //
+                "\n For more information look at the wiki on github." //
+        );
+        
+        if (config.hasCategory("Afterlife.DeathChest"))
+            config.removeCategory(config.getCategory("Afterlife.DeathChest"));
+        
+        if (config.hasCategory("Afterlife.RespawnDebuffHandler"))
+            config.removeCategory(config.getCategory("Afterlife.RespawnDebuffHandler"));
+        
+        if (config.hasCategory("Afterlife.respawnStats"))
+            config.removeCategory(config.getCategory("Afterlife.respawnStats"));
     }
+    
 }
