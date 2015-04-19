@@ -2,14 +2,7 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WarpPoint;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,12 +10,19 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class CommandBed extends ForgeEssentialsCommandBase {
-    private WarpPoint sleepPoint;
 
     public CommandBed()
     {
@@ -58,39 +58,26 @@ public class CommandBed extends ForgeEssentialsCommandBase {
 
     private void tp(EntityPlayerMP player)
     {
-        ChunkCoordinates spawn = player.getBedLocation();
-        if (spawn != null)
+        World world = player.worldObj;
+        if (!world.provider.canRespawnHere())
+            world = DimensionManager.getWorld(0);
+
+        ChunkCoordinates spawn = player.getBedLocation(world.provider.dimensionId);
+        if (spawn == null && world.provider.dimensionId != 0)
         {
-            spawn = EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
-            if (spawn != null)
-            {
-                World world = player.worldObj;
-                if (!world.provider.canRespawnHere())
-                {
-                    world = DimensionManager.getWorld(0);
-                }
-                PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-                // Doesnt work
-                // FunctionHelper.setPlayer(player, new Point(spawn), world);
-                //player.playerNetServerHandler.setPlayerLocation(spawn.posX, spawn.posY, spawn.posZ, player.rotationYaw, player.rotationPitch);
-                if (sleepPoint != null)
-                {
-                    TeleportHelper.teleport(player, sleepPoint); //TeleportCenter responds with "Teleported." if successful
-                }
-                else
-                {
-                    OutputHandler.chatError(player, "You haven't slept in a bed yet.");
-                }
-            }
-            else
-            {
-                OutputHandler.chatError(player, "Your bed is obstructed.");
-            }
+            world = DimensionManager.getWorld(0);
+            spawn = player.getBedLocation(world.provider.dimensionId);
         }
-        else
-        {
-            OutputHandler.chatError(player, "No bed found.");
-        }
+        if (spawn == null)
+            throw new CommandException("No bed found.");
+
+        spawn = EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
+        if (spawn == null)
+            throw new CommandException("Your bed has been obstructed.");
+
+        PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
+        WarpPoint spawnPoint = new WarpPoint(world.provider.dimensionId, spawn, player.rotationPitch, player.rotationYaw);
+        TeleportHelper.teleport(player, spawnPoint);
     }
 
     @Override
@@ -141,23 +128,23 @@ public class CommandBed extends ForgeEssentialsCommandBase {
         return RegisteredPermValue.TRUE;
     }
 
-    @SubscribeEvent
-    public void getCoords(PlayerSleepInBedEvent e)
-    {
-        if (sleepPoint == null)
-        {
-            this.sleepPoint = new WarpPoint(e.entityPlayer.dimension, e.x, e.y, e.z, 0, 0);
-        }
-        else
-        {
-            this.sleepPoint.setX(e.x);
-            this.sleepPoint.setY(e.y);
-            this.sleepPoint.setZ(e.z);
-        }
-        e.setResult(null);
-        e.entityPlayer.playerLocation = new ChunkCoordinates(e.x, e.y, e.z);
-
-    }
+    // @SubscribeEvent
+    // public void getCoords(PlayerSleepInBedEvent e)
+    // {
+    // if (sleepPoint == null)
+    // {
+    // this.sleepPoint = new WarpPoint(e.entityPlayer.dimension, e.x, e.y, e.z, 0, 0);
+    // }
+    // else
+    // {
+    // this.sleepPoint.setX(e.x);
+    // this.sleepPoint.setY(e.y);
+    // this.sleepPoint.setZ(e.z);
+    // }
+    // e.setResult(null);
+    // e.entityPlayer.playerLocation = new ChunkCoordinates(e.x, e.y, e.z);
+    //
+    // }
 
     @Override
     public String getCommandUsage(ICommandSender sender)

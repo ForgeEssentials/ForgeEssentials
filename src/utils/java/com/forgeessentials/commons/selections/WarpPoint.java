@@ -1,11 +1,17 @@
 package com.forgeessentials.commons.selections;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 
 public class WarpPoint {
     
     protected int dim;
+
+    protected World world;
 
     protected float pitch;
 
@@ -28,15 +34,20 @@ public class WarpPoint {
         this.pitch = playerPitch;
         this.yaw = playerYaw;
     }
-
-    public WarpPoint(Point point, int dimension, float playerPitch, float playerYaw)
+    
+    public WarpPoint(int dimension, ChunkCoordinates location, float pitch, float yaw)
     {
-        this(dimension, point.getX(), point.getY(), point.getZ(), playerPitch, playerYaw);
+        this(dimension, location.posX + 0.5, location.posY, location.posZ + 0.5, pitch, yaw);
     }
 
-    public WarpPoint(WorldPoint point, float playerPitch, float playerYaw)
+    public WarpPoint(Point point, int dimension, float pitch, float yaw)
     {
-        this(point.getDimension(), point.getX() + 0.5, point.getY(), point.getZ() + 0.5, playerPitch, playerYaw);
+        this(dimension, point.getX(), point.getY(), point.getZ(), pitch, yaw);
+    }
+
+    public WarpPoint(WorldPoint point, float pitch, float yaw)
+    {
+        this(point.getDimension(), point.getX() + 0.5, point.getY(), point.getZ() + 0.5, pitch, yaw);
     }
 
     public WarpPoint(WorldPoint point)
@@ -60,7 +71,7 @@ public class WarpPoint {
     }
 
     // ------------------------------------------------------------
-    
+
     public int getDimension()
     {
         return dim;
@@ -109,6 +120,13 @@ public class WarpPoint {
     public void setDimension(int dim)
     {
         this.dim = dim;
+    }
+
+    public World getWorld()
+    {
+        if (world == null || world.provider.dimensionId != dim)
+            world = DimensionManager.getWorld(dim);
+        return world;
     }
 
     public void setX(double value)

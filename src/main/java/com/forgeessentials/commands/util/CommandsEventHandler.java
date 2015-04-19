@@ -1,15 +1,8 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.commands.CommandNoClip;
-import com.forgeessentials.commands.CommandVanish;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.PlayerInfo;
-import com.google.common.base.Strings;
-import com.google.common.collect.HashMultimap;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -23,8 +16,16 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.commands.CommandNoClip;
+import com.forgeessentials.commands.CommandVanish;
+import com.forgeessentials.util.FunctionHelper;
+import com.google.common.base.Strings;
+import com.google.common.collect.HashMultimap;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class CommandsEventHandler {
     
