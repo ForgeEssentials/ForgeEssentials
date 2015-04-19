@@ -18,6 +18,7 @@ import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoader
 import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
 import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
+import com.forgeessentials.permissions.commands.CommandPromote;
 import com.forgeessentials.permissions.commands.CommandZone;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
@@ -101,7 +102,8 @@ public class ModulePermissions extends ConfigLoaderBase {
         // Register commands
         new CommandZone().register();
         new CommandPermissions().register();
-        new CommandAutoPromote().register();
+        //new CommandAutoPromote().register();
+        new CommandPromote().register();
 
         // Register permissions
         registerPermissions();
