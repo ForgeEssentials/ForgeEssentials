@@ -9,6 +9,7 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -30,10 +31,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
         {
             WarpPoint home = PlayerInfo.getPlayerInfo(sender.getPersistentID()).getHome();
             if (home == null)
-            {
-                OutputHandler.chatError(sender, "No home set. Use \"/home set\" first.");
-                return;
-            }
+                throw new CommandException("No home set. Use \"/home set\" first.");
             EntityPlayerMP player = sender;
             PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
@@ -48,16 +46,10 @@ public class CommandHome extends ForgeEssentialsCommandBase {
                 if (args.length == 2)
                 {
                     if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_OTHER))
-                    {
-                        OutputHandler.chatError(sender, "You don't have the permission to access other players home.");
-                        return;
-                    }
+                        throw new CommandException("You don't have the permission to access other players home.");
                     player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
                     if (player == null)
-                    {
-                        OutputHandler.chatError(sender, "Player not found.");
-                        return;
-                    }
+                        throw new CommandException("Player %s not found.", args[1]);
                 }
                 else if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_SET))
                 {

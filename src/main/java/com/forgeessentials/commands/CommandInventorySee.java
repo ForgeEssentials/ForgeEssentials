@@ -11,6 +11,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.PlayerInvChest;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -42,7 +43,9 @@ public class CommandInventorySee extends FEcmdModuleCommands {
             return;
         }
         EntityPlayerMP player = sender;
-        EntityPlayerMP victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(args[0]);
+        EntityPlayerMP victim = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        if (victim == null)
+            throw new CommandException("Player %s not found.", args[0]);
 
         if (player.openContainer != player.inventoryContainer)
         {
