@@ -1,8 +1,5 @@
 package com.forgeessentials.afterlife;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
@@ -10,41 +7,35 @@ import net.minecraft.item.ItemStack;
 import com.forgeessentials.util.UserIdent;
 
 public class InventoryGrave extends InventoryBasic {
-    
+
     private Grave grave;
 
     public InventoryGrave(Grave grave)
     {
-        super(new UserIdent(grave.owner).getUsername() + "'s grave.", false, grave.getSize());
+        super(new UserIdent(grave.owner).getUsername() + "'s grave.", false, Math.min(36, ((grave.inventory.size() - 1) / 9 + 1) * 9));
         this.grave = grave;
     }
 
     @Override
     public void openInventory()
     {
+        grave.setOpen(true);
         for (int i = 0; i < getSizeInventory(); i++)
-            setInventorySlotContents(i, (ItemStack) null);
-        for (int i = 0; i < grave.inv.length; i++)
-            if (grave.inv[i] != null)
-                setInventorySlotContents(i, grave.inv[i].copy());
+            setInventorySlotContents(i, grave.inventory.size() > 0 ? grave.inventory.remove(0) : null);
         super.openInventory();
     }
 
     @Override
     public void closeInventory()
     {
-        List<ItemStack> list = new ArrayList<ItemStack>();
         for (int i = 0; i < getSizeInventory(); i++)
         {
             ItemStack is = getStackInSlot(i);
             if (is != null)
-            {
-                list.add(is);
-            }
+                grave.inventory.add(is);
         }
-        grave.inv = list.toArray(new ItemStack[list.size()]);
         grave.setOpen(false);
-        if (grave.inv.length == 0)
+        if (grave.inventory.size() == 0)
             grave.remove(false);
         super.closeInventory();
     }
@@ -54,5 +45,5 @@ public class InventoryGrave extends InventoryBasic {
     {
         return true;
     }
-    
+
 }
