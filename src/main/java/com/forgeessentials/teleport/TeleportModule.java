@@ -71,7 +71,6 @@ public class TeleportModule {
     public static List<TPAdata> tpaListToRemove = new ArrayList<TPAdata>();
     private static List<ForgeEssentialsCommandBase> commands = new ArrayList<ForgeEssentialsCommandBase>();
 
-    @SuppressWarnings("unused")
     private PortalManager portalManager;
 
     @SuppressWarnings("unused")
