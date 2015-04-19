@@ -7,13 +7,7 @@ import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S07PacketRespawn;
-import net.minecraft.network.play.server.S1DPacketEntityEffect;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.world.Teleporter;
-import net.minecraft.world.WorldServer;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WarpPoint;
@@ -23,7 +17,6 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
@@ -121,7 +114,7 @@ public class TeleportHelper extends ServerEventHandler {
         pi.setLastTeleportOrigin(new WarpPoint(player));
         pi.setLastTeleportTime(System.currentTimeMillis());
         if (player.dimension != point.getDimension())
-            transferPlayerToDimension(player, point.getDimension());
+            MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, point.getDimension());
         player.playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 0.1, point.getZ(), point.getYaw(), point.getPitch());
     }
     
@@ -147,37 +140,5 @@ public class TeleportHelper extends ServerEventHandler {
             }
         }
     }
-
-    public static void transferPlayerToDimension(EntityPlayerMP player, int dimId)
-    {
-        transferPlayerToDimension(player, dimId, MinecraftServer.getServer().worldServerForDimension(dimId).getDefaultTeleporter());
-    }
-
-    public static void transferPlayerToDimension(EntityPlayerMP player, int dimId, Teleporter teleporter)
-    {
-        ServerConfigurationManager confMan = MinecraftServer.getServer().getConfigurationManager();
-        int j = player.dimension;
-        WorldServer worldserver = confMan.getServerInstance().worldServerForDimension(player.dimension);
-        player.dimension = dimId;
-        WorldServer worldserver1 = confMan.getServerInstance().worldServerForDimension(player.dimension);
-        player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, worldserver1.difficultySetting, worldserver1.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
-        worldserver.removePlayerEntityDangerously(player);
-        player.isDead = false;
-        confMan.transferEntityToWorld(player, j, worldserver, worldserver1, teleporter);
-        confMan.func_72375_a(player, worldserver);
-        player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
-        player.theItemInWorldManager.setWorld(worldserver1);
-        confMan.updateTimeAndWeatherForPlayer(player, worldserver1);
-        confMan.syncPlayerInventory(player);
-        Iterator iterator = player.getActivePotionEffects().iterator();
-
-        while (iterator.hasNext())
-        {
-            PotionEffect potioneffect = (PotionEffect)iterator.next();
-            player.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(player.getEntityId(), potioneffect));
-        }
-        FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, j, dimId);
-    }
-
 
 }
