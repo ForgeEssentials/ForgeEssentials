@@ -1,6 +1,7 @@
 package com.forgeessentials.commands.util;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -11,6 +12,8 @@ import java.util.List;
 
 public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase {
 
+    public static final String COMMANDS_PERM = "fe.commands";
+    
     private boolean enabledForCmdBlock = true;
     private boolean enabledForConsole = true;
     private boolean enabledForPlayer = true;
@@ -82,7 +85,7 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase {
     @Override
     public String getPermissionNode()
     {
-        return "fe.commands." + getCommandName();
+        return COMMANDS_PERM + "." + getCommandName();
     }
 
     // ------------------------------------------------------------

@@ -1,6 +1,7 @@
 package com.forgeessentials.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +19,14 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.events.NoPlayerInfoEvent;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.annotations.Expose;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class PlayerInfo {
+public class PlayerInfo implements Loadable {
 
     private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
 
@@ -38,12 +40,12 @@ public class PlayerInfo {
 
     private WarpPoint lastDeathLocation;
 
-    private HashMap<String, Integer> kitCooldown = new HashMap<String, Integer>();
+    protected HashMap<String, Date> namedTimeout = new HashMap<String, Date>();
 
     protected Point sel1;
 
     protected Point sel2;
-    
+
     protected int selDim;
 
     private int timePlayed = 0;
@@ -78,6 +80,13 @@ public class PlayerInfo {
 
     @Expose(serialize = false)
     private Stack<BackupArea> redos = new Stack<BackupArea>();
+
+    @Override
+    public void afterLoad()
+    {
+        if (namedTimeout == null)
+            namedTimeout = new HashMap<String, Date>();
+    }
 
     protected PlayerInfo(UUID uuid)
     {
@@ -228,26 +237,46 @@ public class PlayerInfo {
     }
 
     // ----------------------------------------------
-    // ------------- Command stuff ------------------
+    // --------------- Timeouts ---------------------
     // ----------------------------------------------
 
-    public void KitCooldownTick()
+    /**
+     * Check, if a timeout passed
+     */
+    public boolean checkTimeout(String name)
     {
-        //TODO: Remove this after some time - only needed to be compatible with old save-data
-        if (kitCooldown == null)
-            kitCooldown = new HashMap<String, Integer>();
-        
-        for (String key : kitCooldown.keySet())
-        {
-            if (kitCooldown.get(key) == 0)
-            {
-                kitCooldown.remove(key);
-            }
-            else
-            {
-                kitCooldown.put(key, kitCooldown.get(key) - 1);
-            }
-        }
+        Date timeout = namedTimeout.get(name);
+        if (timeout == null)
+            return true;
+        if (timeout.after(new Date()))
+            return false;
+        namedTimeout.remove(name);
+        return true;
+    }
+
+    /**
+     * Get the remaining timeout in milliseconds
+     */
+    public long getRemainingTimeout(String name)
+    {
+        Date timeout = namedTimeout.get(name);
+        if (timeout == null)
+            return 0;
+        return timeout.getTime() - new Date().getTime();
+    }
+
+    /**
+     * Start a named timeout.
+     * Use {@link #checkTimeout(String)} to check if the timeout has passed.
+     * 
+     * @param name Unique name of the timeout
+     * @param milliseconds Timeout in milliseconds
+     */
+    public void startTimeout(String name, int milliseconds)
+    {
+        Date date = new Date();
+        date.setTime(date.getTime() + milliseconds);
+        namedTimeout.put(name, date);
     }
 
     // ----------------------------------------------
@@ -371,11 +400,6 @@ public class PlayerInfo {
         return back;
     }
 
-    public HashMap<String, Integer> getKitCooldown()
-    {
-        return kitCooldown;
-    }
-
     // ----------------------------------------------
 
     public WarpPoint getLastTeleportOrigin()
@@ -435,5 +459,6 @@ public class PlayerInfo {
     {
         return ImmutableMap.copyOf(playerInfoMap);
     }
+
 
 }

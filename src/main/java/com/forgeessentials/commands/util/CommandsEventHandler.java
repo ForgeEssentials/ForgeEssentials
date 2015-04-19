@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandsEventHandler {
-    public static final String BYPASS_KIT_COOLDOWN = "fe.TickHandlerCommands.BypassKitCooldown";
+    
     public static List<AFKdata> afkList = new ArrayList<AFKdata>();
     public static List<AFKdata> afkListToAdd = new ArrayList<AFKdata>();
     public static List<AFKdata> afkListToRemove = new ArrayList<AFKdata>();
@@ -184,14 +184,6 @@ public class CommandsEventHandler {
     @SubscribeEvent
     public void doServerTick(TickEvent.ServerTickEvent e)
     {
-	    /*
-         * Kit system
-         */
-        for (Object player : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
-        {
-            PlayerInfo.getPlayerInfo(((EntityPlayer) player).getPersistentID()).KitCooldownTick();
-        }
-
         /*
          * AFK system
          */

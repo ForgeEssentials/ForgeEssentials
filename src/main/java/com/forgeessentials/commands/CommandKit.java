@@ -11,7 +11,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.CommandDataManager;
-import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
 import com.forgeessentials.util.FunctionHelper;
@@ -24,6 +23,13 @@ import com.forgeessentials.util.OutputHandler;
  */
 
 public class CommandKit extends FEcmdModuleCommands {
+
+    public static final String PERM = COMMANDS_PERM + ".kit";
+    public static final String PERM_ADMIN = COMMANDS_PERM + ".admin";
+    public static final String PERM_BYPASS_COOLDOWN = PERM + ".bypasscooldown";
+
+    public static final String[] tabCompletionArg2 = new String[] { "set", "del" };
+
     @Override
     public String getCommandName()
     {
@@ -35,7 +41,7 @@ public class CommandKit extends FEcmdModuleCommands {
     {
         /*
          * Print kits
-		 */
+         */
         if (args.length == 0)
         {
             OutputHandler.chatNotification(sender, "Available kits:");
@@ -53,7 +59,7 @@ public class CommandKit extends FEcmdModuleCommands {
         }
         /*
          * Give kit
-		 */
+         */
         if (args.length == 1)
         {
             if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
@@ -74,9 +80,9 @@ public class CommandKit extends FEcmdModuleCommands {
             }
             return;
         }
-		/*
-		 * Make kit
-		 */
+        /*
+         * Make kit
+         */
         if (args[1].equalsIgnoreCase("set") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
             if (args.length == 3)
@@ -85,7 +91,8 @@ public class CommandKit extends FEcmdModuleCommands {
                 {
                     int cooldown = parseIntWithMin(sender, args[2], 0);
                     new Kit(sender, args[0].toLowerCase(), cooldown);
-                    OutputHandler.chatConfirmation(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
+                    OutputHandler.chatConfirmation(sender,
+                            "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
                 }
                 else
                 {
@@ -95,9 +102,9 @@ public class CommandKit extends FEcmdModuleCommands {
             }
         }
 
-		/*
-		 * Delete kit
-		 */
+        /*
+         * Delete kit
+         */
         if (args[1].equalsIgnoreCase("del") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
             if (args.length == 2)
@@ -115,9 +122,9 @@ public class CommandKit extends FEcmdModuleCommands {
             }
         }
 
-		/*
-		 * You're doing it wrong!
-		 */
+        /*
+         * You're doing it wrong!
+         */
         throw new WrongUsageException(getCommandUsage(sender));
     }
 
@@ -130,26 +137,23 @@ public class CommandKit extends FEcmdModuleCommands {
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".admin", RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(CommandsEventHandler.BYPASS_KIT_COOLDOWN, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_ADMIN, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, RegisteredPermValue.OP);
     }
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        if (args.length == 1)
+        if (args.length == 0)
         {
-            ArrayList<String> list = new ArrayList<String>();
-            list.addAll(CommandDataManager.kits.keySet());
-            list.add("set");
-            list.add("del");
-
-            return getListOfStringsFromIterableMatchingLastWord(args, list);
+            List<String> kits = new ArrayList<String>();
+            for (Kit kit : CommandDataManager.kits.values())
+                kits.add(kit.getName());
+            return getListOfStringsMatchingLastWord(args, kits);
         }
-        else
-        {
-        	throw new WrongUsageException(getCommandUsage(sender));
-        }
+        else if (args.length == 1)
+            return getListOfStringsMatchingLastWord(args, tabCompletionArg2);
+        return null;
     }
 
     @Override

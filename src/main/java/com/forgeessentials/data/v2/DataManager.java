@@ -126,7 +126,10 @@ public class DataManager implements ExclusionStrategy {
             return null;
         try (BufferedReader br = new BufferedReader(new FileReader(file)))
         {
-            return getGson().fromJson(br, clazz);
+            T obj = getGson().fromJson(br, clazz);
+            if (obj instanceof Loadable)
+                ((Loadable) obj).afterLoad();
+            return obj;
         }
         catch (JsonParseException e)
         {
