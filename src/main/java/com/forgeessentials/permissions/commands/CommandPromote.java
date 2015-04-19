@@ -12,6 +12,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
@@ -61,8 +62,11 @@ public class CommandPromote extends ForgeEssentialsCommandBase {
         if (!APIRegistry.perms.groupExists(groupName))
             throw new CommandException("Group %s does not exist", groupName);
 
+        if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(groupName, FEPermissions.GROUP_PROMOTION)))
+            throw new CommandException("Group %s is not available for promotion. Allow %s on the group first.", groupName, FEPermissions.GROUP_PROMOTION);
+
         for (GroupEntry group : APIRegistry.perms.getServerZone().getStoredPlayerGroups(ident))
-            if (APIRegistry.perms.checkGroupPermission(group.getGroup(), FEPermissions.GROUP_PROMOTION))
+            if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), FEPermissions.GROUP_PROMOTION)))
             {
                 APIRegistry.perms.removePlayerFromGroup(ident, group.getGroup());
                 OutputHandler.chatConfirmation(arguments.sender, String.format("Removed %s from group %s", ident.getUsernameOrUUID(), group));
