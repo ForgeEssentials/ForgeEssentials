@@ -45,7 +45,8 @@ public class ModulePlayerLogger {
     @SubscribeEvent
     public void serverStopped(FEModuleServerStoppedEvent e)
     {
-        logger.close();
+        if (logger != null)
+            logger.close();
     }
 
     public static PlayerLogger getLogger()
