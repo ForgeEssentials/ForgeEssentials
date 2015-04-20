@@ -382,7 +382,7 @@ public class FlatfileProvider extends ZonePersistenceProvider {
 
                 // Load permissions
                 PermissionList permissions = zone.getOrCreatePlayerPermissions(ident);
-                for (Entry permission : p.entrySet())
+                for (Entry<?, ?> permission : p.entrySet())
                 {
                     permissions.put((String) permission.getKey(), (String) permission.getValue());
                 }
@@ -410,7 +410,7 @@ public class FlatfileProvider extends ZonePersistenceProvider {
 
                 // Load permissions
                 PermissionList permissions = zone.getOrCreateGroupPermissions(groupName);
-                for (Entry permission : p.entrySet())
+                for (Entry<?, ?> permission : p.entrySet())
                 {
                     permissions.put((String) permission.getKey(), (String) permission.getValue());
                 }

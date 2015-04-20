@@ -1,7 +1,5 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -10,9 +8,15 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.config.Configuration;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public final class OutputHandler extends ConfigLoaderBase {
 	
@@ -21,6 +25,66 @@ public final class OutputHandler extends ConfigLoaderBase {
     private static EnumChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
 
     public static final String CONFIG_CAT = "Core.Output";
+
+    // ------------------------------------------------------------
+
+    public static IChatComponent confirmation(String message)
+    {
+        IChatComponent msg = new ChatComponentText(FunctionHelper.formatColors(message));
+        msg.getChatStyle().setColor(chatConfirmationColor);
+        return msg;
+    }
+
+    public static IChatComponent notification(String message)
+    {
+        IChatComponent msg = new ChatComponentText(FunctionHelper.formatColors(message));
+        msg.getChatStyle().setColor(chatNotificationColor);
+        return msg;
+    }
+
+    public static IChatComponent warning(String message)
+    {
+        IChatComponent msg = new ChatComponentText(FunctionHelper.formatColors(message));
+        msg.getChatStyle().setColor(chatWarningColor);
+        return msg;
+    }
+
+    public static IChatComponent error(String message)
+    {
+        IChatComponent msg = new ChatComponentText(FunctionHelper.formatColors(message));
+        msg.getChatStyle().setColor(chatErrorColor);
+        return msg;
+    }
+
+    // ------------------------------------------------------------
+
+    public static void confirmation(ICommandSender sender, String message)
+    {
+        sender.addChatMessage(confirmation(message));
+    }
+
+    public static void notification(ICommandSender sender, String message)
+    {
+        sender.addChatMessage(notification(message));
+    }
+
+    public static void warning(ICommandSender sender, String message)
+    {
+        sender.addChatMessage(warning(message));
+    }
+
+    public static void error(ICommandSender sender, String message)
+    {
+        sender.addChatMessage(error(message));
+    }
+
+    public static void broadcast(IChatComponent message)
+    {
+        for (Object player : FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
+            ((ICommandSender) player).addChatMessage(message);
+    }
+
+    // ------------------------------------------------------------
 
     /**
      * actually sends the color-formatted message to the sender
@@ -44,7 +108,7 @@ public final class OutputHandler extends ConfigLoaderBase {
      */
     public static void chatError(ICommandSender sender, String msg)
     {
-    	if(sender instanceof EntityPlayer)
+    	if (sender instanceof EntityPlayer)
     		chatColored(sender, msg, chatErrorColor);
     	else
     		sendMessage(sender, msg);
@@ -90,18 +154,6 @@ public final class OutputHandler extends ConfigLoaderBase {
     	else
     		sendMessage(sender, "NOTICE: " + msg);
 	}
-
-    /**
-     * Use this to throw errors that can continue without crashing the server.
-     *
-     * @param level
-     * @param message
-     * @param error
-     */
-    public static void exception(java.util.logging.Level level, String message, Throwable error)
-    {
-        felog.log(Level.toLevel(level.getName()), message, error);
-    }
 
     /**
      * outputs a string to the console if the code is in MCP

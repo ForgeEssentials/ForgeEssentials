@@ -128,24 +128,6 @@ public class CommandBed extends ForgeEssentialsCommandBase {
         return RegisteredPermValue.TRUE;
     }
 
-    // @SubscribeEvent
-    // public void getCoords(PlayerSleepInBedEvent e)
-    // {
-    // if (sleepPoint == null)
-    // {
-    // this.sleepPoint = new WarpPoint(e.entityPlayer.dimension, e.x, e.y, e.z, 0, 0);
-    // }
-    // else
-    // {
-    // this.sleepPoint.setX(e.x);
-    // this.sleepPoint.setY(e.y);
-    // this.sleepPoint.setZ(e.z);
-    // }
-    // e.setResult(null);
-    // e.entityPlayer.playerLocation = new ChunkCoordinates(e.x, e.y, e.z);
-    //
-    // }
-
     @Override
     public String getCommandUsage(ICommandSender sender)
     {

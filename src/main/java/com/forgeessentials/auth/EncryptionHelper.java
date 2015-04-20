@@ -5,7 +5,8 @@ import com.forgeessentials.util.OutputHandler;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.logging.Level;
+
+import org.apache.logging.log4j.Level;
 
 public class EncryptionHelper {
     private static final SecureRandom rand = new SecureRandom();
@@ -42,7 +43,7 @@ public class EncryptionHelper {
         }
         catch (Throwable t)
         {
-            OutputHandler.exception(Level.SEVERE, "Unable to hash password", t);
+            OutputHandler.felog.log(Level.ERROR, "Unable to hash password", t);
         }
 
         return "";

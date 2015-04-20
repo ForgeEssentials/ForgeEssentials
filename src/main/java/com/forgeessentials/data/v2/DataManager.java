@@ -57,7 +57,7 @@ public class DataManager implements ExclusionStrategy {
     public static DataManager getInstance()
     {
         if (instance == null)
-            throw new NullPointerException();
+            throw new RuntimeException("Tried to access DataManager before its initialization");
         return instance;
     }
 

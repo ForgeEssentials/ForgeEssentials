@@ -1,6 +1,7 @@
 package com.forgeessentials.backup;
 
 import com.forgeessentials.util.OutputHandler;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -10,7 +11,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
+
+import org.apache.logging.log4j.Level;
 
 public class WorldSaver {
     public static String start;
@@ -60,7 +62,7 @@ public class WorldSaver {
             }
             catch (MinecraftException e1)
             {
-                OutputHandler.exception(Level.SEVERE, String.format(failed, name), e1);
+                OutputHandler.felog.log(Level.ERROR, String.format(failed, name), e1);
                 ModuleBackup.msg(String.format(failed, name));
             }
             world.levelSaving = bl;

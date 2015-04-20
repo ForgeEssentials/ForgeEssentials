@@ -16,11 +16,11 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
-import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandPromote;
 import com.forgeessentials.permissions.commands.CommandZone;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
+import com.forgeessentials.permissions.core.PermissionScheduler;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.permissions.persistence.JsonProvider;
@@ -52,11 +52,14 @@ public class ModulePermissions extends ConfigLoaderBase {
     private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath() + "/permissions",
             false);
 
+    private PermissionScheduler permissionScheduler;
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preLoad(FEModulePreInitEvent e)
     {
         // Create permission manager
         permissionHelper = new ZonedPermissionHelper();
+        permissionScheduler = new PermissionScheduler();
         APIRegistry.perms = permissionHelper;
         PermissionsManager.setPermProvider(permissionHelper);
         
@@ -98,18 +101,18 @@ public class ModulePermissions extends ConfigLoaderBase {
         }
         }
         permissionHelper.load();
+        permissionScheduler.loadAll();
+        registerPermissions();
+        registerCommands();
+        //autoPromoteManager = new AutoPromoteManager();
+    }
 
-        // Register commands
+    public void registerCommands()
+    {
         new CommandZone().register();
         new CommandPermissions().register();
         //new CommandAutoPromote().register();
         new CommandPromote().register();
-
-        // Register permissions
-        registerPermissions();
-
-        // Load auto-promote manager
-        autoPromoteManager = new AutoPromoteManager();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -121,9 +124,9 @@ public class ModulePermissions extends ConfigLoaderBase {
     @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
-        autoPromoteManager.stop();
+        //autoPromoteManager.stop();
         permissionHelper.save();
-        // permissionHelper.clear();
+        permissionScheduler.saveAll();
     }
 
     private static void registerPermissions()
