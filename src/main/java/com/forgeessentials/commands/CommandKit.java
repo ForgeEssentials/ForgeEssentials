@@ -3,9 +3,15 @@ package com.forgeessentials.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.NoPlayerInfoEvent;
+import com.forgeessentials.util.questioner.Questioner;
+import com.forgeessentials.util.questioner.Questioner.IReplyHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -24,6 +30,14 @@ import com.forgeessentials.util.OutputHandler;
  */
 
 public class CommandKit extends FEcmdModuleCommands {
+
+    protected String kitForNewPlayers;
+
+    public CommandKit()
+    {
+        APIRegistry.getFEEventBus().register(this);
+    }
+
     @Override
     public String getCommandName()
     {
@@ -79,17 +93,23 @@ public class CommandKit extends FEcmdModuleCommands {
 		 */
         if (args[1].equalsIgnoreCase("set") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
-            if (args.length == 3)
+            if (args.length == 2)
             {
                 if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
                 {
-                    int cooldown = parseIntWithMin(sender, args[2], 0);
+                    int cooldown = -1;
+                    if (args.length == 3)
+                    {
+                        cooldown = parseIntWithMin(sender, args[2], 0);
+                    }
                     new Kit(sender, args[0].toLowerCase(), cooldown);
                     OutputHandler.chatConfirmation(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
                 }
                 else
                 {
-                    OutputHandler.chatError(sender, "This kit already exists.");
+                    //OutputHandler.chatError(sender, "This kit already exists.");
+                    Questioner.addtoQuestionQueue(sender, "A kit by the name of " + args[0].toLowerCase() + "already exists. Type /yes if you wish to overwrite it, /no to cancel this operation.",
+                            new HandleKitOverrides(sender, args));
                 }
                 return;
             }
@@ -162,6 +182,52 @@ public class CommandKit extends FEcmdModuleCommands {
     public String getCommandUsage(ICommandSender sender)
     {
         return "/kit [name] OR [name] [set|del] <cooldown> Allows you to receive free kits which are pre-defined by the server owner.";
+    }
+
+    @Override
+    public void loadConfig(Configuration config, String category)
+    {
+        super.loadConfig(config, category);
+        kitForNewPlayers = config.get(category, "kitForNewPlayers", "", "Name of kit to issue to new players. If this is left blank, it will be ignored.").getString();
+    }
+
+    @SubscribeEvent
+    public void checkKitExistence(FEModuleServerPostInitEvent e)
+    {
+        if (!CommandDataManager.kits.containsKey(kitForNewPlayers))
+            kitForNewPlayers = null;
+    }
+
+    @SubscribeEvent
+    public void issueWelcomeKit(NoPlayerInfoEvent e)
+    {
+        CommandDataManager.kits.get(kitForNewPlayers).giveKit(e.entityPlayer);
+    }
+
+    static class HandleKitOverrides implements IReplyHandler
+    {
+        private static String[] args;
+        private static EntityPlayerMP sender;
+        private HandleKitOverrides(EntityPlayerMP sender, String[] args)
+        {
+            this.args = args;
+            this.sender = sender;
+        }
+
+        @Override
+        public void replyReceived(boolean status)
+        {
+            if (status)
+            {
+                int cooldown = -1;
+                if (args.length == 3)
+                {
+                    cooldown = parseIntWithMin(sender, args[2], 0);
+                }
+                new Kit(sender, args[0].toLowerCase(), cooldown);
+                OutputHandler.chatConfirmation(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
+            }
+        }
     }
 
 }
