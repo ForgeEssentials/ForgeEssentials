@@ -106,7 +106,7 @@ public class CommandKit extends FEcmdModuleCommands {
                     int cooldown = -1;
                     if (args.length == 3)
                     {
-                        cooldown = parseIntWithMin(sender, args[2], 0);
+                        cooldown = parseIntWithMin(sender, args[2], -1);
                     }
                     new Kit(sender, args[0].toLowerCase(), cooldown);
                     OutputHandler.chatConfirmation(sender,
@@ -210,8 +210,11 @@ public class CommandKit extends FEcmdModuleCommands {
 
     static class HandleKitOverrides implements IReplyHandler
     {
-        private static String[] args;
-        private static EntityPlayerMP sender;
+        
+        private String[] args;
+        
+        private EntityPlayerMP sender;
+        
         private HandleKitOverrides(EntityPlayerMP sender, String[] args)
         {
             this.args = args;
@@ -226,12 +229,13 @@ public class CommandKit extends FEcmdModuleCommands {
                 int cooldown = -1;
                 if (args.length == 3)
                 {
-                    cooldown = parseIntWithMin(sender, args[2], 0);
+                    cooldown = parseIntWithMin(sender, args[2], -1);
                 }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
                 OutputHandler.chatConfirmation(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
             }
         }
+        
     }
 
 }
