@@ -75,7 +75,7 @@ public class BackupConfig extends ConfigLoaderBase {
         /*
          * Subcat autoRemove
          */
-        config.addCustomCategoryComment(AUTOREMOVE, "Settings for the autoremoval of old backups");
+        config.addCustomCategoryComment(AUTOREMOVE, "Settings for the autoremoval of old backups. Some settings may not work, use with caution.");
 
         enableAutoRemove = config.get(AUTOREMOVE, "enable", true, "Automaticly remove old backups").getBoolean(true);
         minimunFreeSpace = config.get(AUTOREMOVE, "minimunFreeSpace", -1,

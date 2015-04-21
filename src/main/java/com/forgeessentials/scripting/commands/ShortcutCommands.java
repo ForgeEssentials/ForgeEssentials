@@ -79,9 +79,7 @@ public class ShortcutCommands {
         String main = "shortcuts";
 
         String general = main + ".general";
-        config.addCustomCategoryComment(general, "Add a name to the 'list' list and use 'fereload' to genarate a new config category.  Separate by new line without commas.");
-        names.addAll(
-                Arrays.asList(config.get(general, "list", new String[] { "fly" }, "Add names here and reload to add templates you can edit.").getStringList()));
+        config.addCustomCategoryComment(general, "Add a name to the 'list' list and use /feinfo reload to generate a new config category.  Separate by new line without commas.");
 
         // remove unused config categorys
         ArrayList<String> cats = new ArrayList<String>(config.getCategoryNames());
