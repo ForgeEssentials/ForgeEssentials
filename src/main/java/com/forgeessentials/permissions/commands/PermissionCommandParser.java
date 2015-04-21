@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -25,6 +24,7 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
@@ -160,12 +160,12 @@ public class PermissionCommandParser {
             {
             case "zones":
                 if (arguments.senderPlayer == null)
-                    throw new CommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                    throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 listZones(arguments.senderPlayer, new WorldPoint(arguments.senderPlayer));
                 break;
             case "perms":
                 if (arguments.senderPlayer == null)
-                    throw new CommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                    throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 listUserPermissions(arguments.sender, new UserIdent(arguments.senderPlayer), true);
                 break;
             case "users":
@@ -184,11 +184,11 @@ public class PermissionCommandParser {
     public static void parseTest(CommandParserArgs arguments)
     {
         if (arguments.args.isEmpty())
-            throw new CommandException("Missing permission argument!");
+            throw new TranslatedCommandException("Missing permission argument!");
         if (arguments.senderPlayer == null)
-            throw new CommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_TEST))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         if (arguments.isTabCompletion)
         {
@@ -229,7 +229,7 @@ public class PermissionCommandParser {
     public static void parseUser(CommandParserArgs arguments)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_USER))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         if (arguments.args.isEmpty())
         {
@@ -350,14 +350,14 @@ public class PermissionCommandParser {
             parseUserPermissions(arguments, ident, zone, PermissionAction.VALUE);
             break;
         default:
-            throw new CommandException(FEPermissions.MSG_INVALID_SYNTAX);
+            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
     }
 
     public static void parseUserPrefixSuffix(CommandParserArgs arguments, UserIdent ident, Zone zone, boolean isSuffix)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_USER_FIX))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         if (arguments.isTabCompletion)
             return;
 
@@ -388,9 +388,9 @@ public class PermissionCommandParser {
     public static void parseUserPermissions(CommandParserArgs arguments, UserIdent ident, Zone zone, PermissionAction type)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_USER_PERMS))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         if (arguments.args.isEmpty())
-            throw new CommandException("Missing permission argument!");
+            throw new TranslatedCommandException("Missing permission argument!");
 
         // Apply permissions
         while (!arguments.args.isEmpty())
@@ -444,7 +444,7 @@ public class PermissionCommandParser {
     public static void parseUserSpawn(CommandParserArgs arguments, UserIdent ident, Zone zone)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_USER_SPAWN))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         if (arguments.args.isEmpty())
         {
             arguments.info("/feperm user " + ident.getUsernameOrUUID() + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
@@ -464,13 +464,13 @@ public class PermissionCommandParser {
         {
         case "here":
             if (arguments.senderPlayer == null)
-                throw new CommandException("[here] cannot be used from console.");
+                throw new TranslatedCommandException("[here] cannot be used from console.");
             point = new WorldPoint(arguments.senderPlayer);
             break;
         case "bed":
         {
             if (arguments.args.isEmpty())
-                throw new CommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             String val = arguments.args.peek().toLowerCase();
             if (val.equals("true") | val.equals("enable"))
             {
@@ -489,7 +489,7 @@ public class PermissionCommandParser {
             break;
         default:
             if (arguments.args.size() < 3)
-                throw new CommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             try
             {
                 int x = CommandBase.parseInt(arguments.sender, loc);
@@ -604,7 +604,7 @@ public class PermissionCommandParser {
     public static void parseGroup(CommandParserArgs arguments)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         if (arguments.args.isEmpty())
         {
@@ -668,7 +668,7 @@ public class PermissionCommandParser {
     public static void parseGlobal(CommandParserArgs arguments)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         parseGroupInner(arguments, Zone.GROUP_DEFAULT, null);
     }
 
@@ -787,14 +787,14 @@ public class PermissionCommandParser {
             parseGroupPermissions(arguments, group, zone, PermissionAction.VALUE);
             break;
         default:
-            throw new CommandException(FEPermissions.MSG_INVALID_SYNTAX);
+            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
     }
 
     public static void parseGroupPrefixSuffix(CommandParserArgs arguments, String group, Zone zone, boolean isSuffix)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP_FIX))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         if (arguments.isTabCompletion)
             return;
 
@@ -825,9 +825,9 @@ public class PermissionCommandParser {
     public static void parseGroupPermissions(CommandParserArgs arguments, String group, Zone zone, PermissionAction type)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP_PERMS))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         if (arguments.args.isEmpty())
-            throw new CommandException("Missing permission argument!");
+            throw new TranslatedCommandException("Missing permission argument!");
 
         // Apply permissions
         while (!arguments.args.isEmpty())
@@ -881,7 +881,7 @@ public class PermissionCommandParser {
     public static void parseGroupSpawn(CommandParserArgs arguments, String group, Zone zone)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP_SPAWN))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         
         if (arguments.args.isEmpty())
         {
@@ -910,13 +910,13 @@ public class PermissionCommandParser {
         {
         case "here":
             if (arguments.senderPlayer == null)
-                throw new CommandException("[here] cannot be used from console.");
+                throw new TranslatedCommandException("[here] cannot be used from console.");
             point = new WorldPoint(arguments.senderPlayer);
             break;
         case "bed":
         {
             if (arguments.args.isEmpty())
-                throw new CommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             String val = arguments.args.peek().toLowerCase();
             if (val.equals("true") | val.equals("enable"))
             {
@@ -935,7 +935,7 @@ public class PermissionCommandParser {
             break;
         default:
             if (arguments.args.size() < 3)
-                throw new CommandException("Too few arguments!");
+                throw new TranslatedCommandException("Too few arguments!");
             try
             {
                 int x = CommandBase.parseInt(arguments.sender, loc);
@@ -967,7 +967,7 @@ public class PermissionCommandParser {
     public static void parseGroupPriority(CommandParserArgs arguments, String group)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP_PERMS))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         if (arguments.args.isEmpty())
         {
             arguments.info("Priority for group " + group + ": " + APIRegistry.perms.getGroupPermissionProperty(group, FEPermissions.GROUP_PRIORITY));
@@ -988,7 +988,7 @@ public class PermissionCommandParser {
     public static void parseGroupInclude(CommandParserArgs arguments, String group, boolean isParent)
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP_PERMS))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
@@ -1121,7 +1121,7 @@ public class PermissionCommandParser {
     public static void listUserPermissions(ICommandSender sender, UserIdent ident, boolean showGroupPerms)
     {
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST_PERMS))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         OutputHandler.chatNotification(sender, ident.getUsernameOrUUID() + " permissions:");
 
@@ -1215,7 +1215,7 @@ public class PermissionCommandParser {
     public static void listGroups(ICommandSender sender)
     {
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST_GROUPS))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         OutputHandler.chatNotification(sender, "Groups:");
         for (String group : APIRegistry.perms.getServerZone().getGroups())
@@ -1225,7 +1225,7 @@ public class PermissionCommandParser {
     public static void listUsers(ICommandSender sender)
     {
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST_USERS))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         OutputHandler.chatNotification(sender, "Known players:");
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())

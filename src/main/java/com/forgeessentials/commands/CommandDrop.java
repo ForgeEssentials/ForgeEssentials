@@ -1,9 +1,7 @@
 package com.forgeessentials.commands;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -17,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -42,12 +41,13 @@ public class CommandDrop extends FEcmdModuleCommands {
         return "/drop <X> <Y> <Z> <ItemID> <Meta> <Qty>";
     }
 
+    @SuppressWarnings("deprecation")
     @Override
 	public void processCommand(ICommandSender sender, String[] args)
     {
         if (args.length != 6)
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
         Object var3 = null;
         int var4 = (int) this.func_82368_a(sender, 0.0D, args[0]);
@@ -186,11 +186,11 @@ public class CommandDrop extends FEcmdModuleCommands {
         }
         else
         {
-            throw new CommandException("No viable container found to put item in.");
+            throw new TranslatedCommandException("No viable container found to put item in.");
         }
         if (var9 > 0)
         {
-            throw new CommandException("Not enough room for items.");
+            throw new TranslatedCommandException("Not enough room for items.");
         }
         OutputHandler.chatConfirmation(sender, "Items dropped into container.");
     }

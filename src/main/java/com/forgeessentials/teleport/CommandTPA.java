@@ -2,11 +2,13 @@ package com.forgeessentials.teleport;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -90,9 +92,9 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         {
             TeleportModule.tpaListToAdd.add(new TPAdata(sender, receiver, false));
 
-            OutputHandler.chatNotification(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
+            OutputHandler.chatNotification(sender, Translator.format("Teleport request sent to %s", receiver.getCommandSenderName()));
             OutputHandler.chatNotification(receiver,
-                    String.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.", sender.getCommandSenderName()));
+                    Translator.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.", sender.getCommandSenderName()));
         }
     }
 

@@ -90,7 +90,7 @@ public class TeleportHelper extends ServerEventHandler {
             long cooldownDuration = (pi.getLastTeleportTime() + teleportCooldown) - System.currentTimeMillis();
             if (cooldownDuration >= 0)
             {
-                OutputHandler.chatNotification(player, String.format("Cooldown still active. %d seconds to go.", cooldownDuration / 1000));
+                OutputHandler.chatNotification(player, Translator.format("Cooldown still active. %d seconds to go.", cooldownDuration / 1000));
                 return;
             }
         }
@@ -105,7 +105,7 @@ public class TeleportHelper extends ServerEventHandler {
 
         // Setup timed teleport
         tpInfos.put(player.getPersistentID(), new TeleportInfo(player, point, teleportWarmup * 1000));
-        OutputHandler.chatNotification(player, String.format("Teleporting. Please stand still for %s.", FunctionHelper.parseTime(teleportWarmup)));
+        OutputHandler.chatNotification(player, Translator.format("Teleporting. Please stand still for %s.", FunctionHelper.parseTime(teleportWarmup)));
     }
     
     public static void doTeleport(EntityPlayerMP player, WarpPoint point)

@@ -13,6 +13,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
@@ -92,7 +93,7 @@ public class Command extends ForgeEssentialsCommandBase {
                     break;
                 }
             }
-            OutputHandler.chatNotification(sender, c + String.format("--- Page %1$d of %2$d ---", page, pages));
+            OutputHandler.chatNotification(sender, c + Translator.format("--- Page %1$d of %2$d ---", page, pages));
             return;
         }
 
@@ -105,7 +106,7 @@ public class Command extends ForgeEssentialsCommandBase {
             }
             if (!ModuleTickets.categories.contains(args[1]))
             {
-                OutputHandler.chatError(sender, String.format("message.error.illegalCategory", args[1]));
+                OutputHandler.chatError(sender, Translator.format("message.error.illegalCategory", args[1]));
                 return;
             }
             String msg = "";
@@ -116,7 +117,7 @@ public class Command extends ForgeEssentialsCommandBase {
             msg = msg.substring(1);
             Ticket t = new Ticket(sender, args[1], msg);
             ModuleTickets.ticketList.add(t);
-            OutputHandler.chatNotification(sender, c + String.format("message.confim.ticketPost", t.id));
+            OutputHandler.chatNotification(sender, c + Translator.format("message.confim.ticketPost", t.id));
             return;
         }
 
@@ -140,7 +141,7 @@ public class Command extends ForgeEssentialsCommandBase {
             }
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
             ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
-            OutputHandler.chatConfirmation(sender, c + String.format("Your ticket has been posted. ID: %d", id));
+            OutputHandler.chatConfirmation(sender, c + Translator.format("Your ticket has been posted. ID: %d", id));
         }
     }
 

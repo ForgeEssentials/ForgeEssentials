@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.UUID;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -16,6 +15,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
@@ -104,7 +104,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
 
         Selection area = SelectionHandler.selectionProvider.getSelection(args.senderPlayer);
         if (area == null)
-            throw new CommandException("No selection available. Please select a region first.");
+            throw new TranslatedCommandException("No selection available. Please select a region first.");
         
         RollbackInfo rb = new RollbackInfo(args.senderPlayer, area);
         rollbacks.put(args.senderPlayer.getPersistentID(), rb);
@@ -123,7 +123,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
 
         RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
         if (rb == null)
-            throw new CommandException("No rollback in progress. Start with /rollback first.");
+            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
         
         if (backward)
             rb.stepBackward();
@@ -143,7 +143,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
         
         RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
         if (rb == null)
-            throw new CommandException("No rollback in progress. Start with /rollback first.");
+            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
         
         rb.confirm();
         OutputHandler.chatConfirmation(args.sender, "Successfully restored changes");
@@ -153,7 +153,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
     {
         RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
         if (rb == null)
-            throw new CommandException("No rollback in progress.");
+            throw new TranslatedCommandException("No rollback in progress.");
         
         rb.cancel();
         OutputHandler.chatConfirmation(args.sender, "Cancelled active rollback");
@@ -174,7 +174,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
 
         RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
         if (rb == null)
-            throw new CommandException("No rollback in progress. Start with /rollback first.");
+            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
         
         if (rb.task != null)
         {
@@ -205,9 +205,9 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
 
         RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
         if (rb == null)
-            throw new CommandException("No rollback in progress. Start with /rollback first.");
+            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
         if (rb.task == null)
-            throw new CommandException("No playback running");
+            throw new TranslatedCommandException("No playback running");
         
         rb.task.cancel();
         rb.task = null;

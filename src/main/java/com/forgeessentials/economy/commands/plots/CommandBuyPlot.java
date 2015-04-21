@@ -1,25 +1,25 @@
 package com.forgeessentials.economy.commands.plots;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.economy.Offer;
-import com.forgeessentials.economy.plots.TransactionHandler;
-import com.forgeessentials.util.questioner.Questioner;
-import com.forgeessentials.util.questioner.QuestionData;
-import net.minecraft.command.CommandException;
+import java.util.UUID;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.economy.ModuleEconomy;
+import com.forgeessentials.economy.Offer;
 import com.forgeessentials.economy.plots.PlotManager;
+import com.forgeessentials.economy.plots.TransactionHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
-
-import java.util.UUID;
+import com.forgeessentials.util.questioner.QuestionData;
+import com.forgeessentials.util.questioner.Questioner;
 
 // This class only allows people to offer to buy plots. Actual transaction is done in CommandSellPlot.
 public class CommandBuyPlot extends ForgeEssentialsCommandBase{
@@ -33,7 +33,7 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
             AreaZone plot = (AreaZone) APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
             if (!plot.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM))
             {
-                throw new CommandException("No such plot!");
+                throw new TranslatedCommandException("No such plot!");
             }
             EntityPlayer seller = UserIdent.getPlayerByUuid(UUID.fromString(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER)));
             if (args[1] != null)
@@ -49,7 +49,7 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase{
             // check if the player can afford it...
             if (!(APIRegistry.wallet.getWallet(new UserIdent(buyer).getUuid()) < value))
             {
-                throw new CommandException("You can't afford that!");
+                throw new TranslatedCommandException("You can't afford that!");
             }
 
             Offer<AreaZone> item = new Offer<AreaZone>(buyer, seller, plot, value);

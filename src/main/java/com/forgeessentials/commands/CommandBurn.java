@@ -2,8 +2,8 @@ package com.forgeessentials.commands;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -11,6 +11,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -42,9 +43,7 @@ public class CommandBurn extends FEcmdModuleCommands {
                     player.setFire(15);
                 }
                 else
-                {
-                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                }
+                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
             }
         }
         else if (args.length == 2)
@@ -63,14 +62,12 @@ public class CommandBurn extends FEcmdModuleCommands {
                     OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
                 }
                 else
-                {
-                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                }
+                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
             }
         }
         else
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 
@@ -89,9 +86,7 @@ public class CommandBurn extends FEcmdModuleCommands {
             OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
         }
         else
-        {
-            OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-        }
+            throw new CommandException("Player %s does not exist, or is not online.", args[0]);
     }
 
     @Override

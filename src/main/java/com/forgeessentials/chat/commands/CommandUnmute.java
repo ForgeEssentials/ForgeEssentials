@@ -1,8 +1,11 @@
 package com.forgeessentials.chat.commands;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,15 +42,12 @@ public class CommandUnmute extends ForgeEssentialsCommandBase {
         {
             EntityPlayer receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (receiver == null)
-            {
-                OutputHandler.chatError(receiver, String.format("Player %s does not exist, or is not online.", args[0]));
-                return;
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
             NBTTagCompound tag = receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
             tag.setBoolean("mute", false);
             receiver.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
-            OutputHandler.chatError(sender, String.format("command.unmute.youMuted", args[0]));
-            OutputHandler.chatError(receiver, String.format("command.unmute.muted", sender.getCommandSenderName()));
+            OutputHandler.chatError(sender, Translator.format("You unmuted %s.", args[0]));
+            OutputHandler.chatError(receiver, Translator.format("You were unmuted by %s.", sender.getCommandSenderName()));
         }
     }
 

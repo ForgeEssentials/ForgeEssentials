@@ -1,8 +1,11 @@
 package com.forgeessentials.commands.admin;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.command.ICommandSender;
@@ -59,14 +62,12 @@ public class CommandDoAs extends FEcmdModuleCommands {
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player != null)
         {
-            OutputHandler.chatWarning(player, String.format("Player %s is attempting to issue a command as you.", sender.getCommandSenderName()));
+            OutputHandler.chatWarning(player, Translator.format("Player %s is attempting to issue a command as you.", sender.getCommandSenderName()));
             FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, cmd.toString());
-            OutputHandler.chatConfirmation(sender, String.format("Successfully issued command as %s", args[0]));
+            OutputHandler.chatConfirmation(sender, Translator.format("Successfully issued command as %s", args[0]));
         }
         else
-        {
-            OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-        }
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
     }
 
     @Override

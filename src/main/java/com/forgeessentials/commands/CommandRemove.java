@@ -3,11 +3,12 @@ package com.forgeessentials.commands;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -47,7 +48,7 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
         else
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
 
         List<EntityItem> entityList = sender.worldObj.getEntitiesWithinAABB(EntityItem.class,
@@ -61,7 +62,7 @@ public class CommandRemove extends FEcmdModuleCommands {
             counter++;
             entity.setDead();
         }
-        OutputHandler.chatConfirmation(sender, String.format("%d items removed.", counter));
+        OutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
     }
 
     @SuppressWarnings("unchecked")
@@ -83,9 +84,7 @@ public class CommandRemove extends FEcmdModuleCommands {
             }
         }
         else
-        {
-        	throw new WrongUsageException(getCommandUsage(sender));
-        }
+        	throw new TranslatedCommandException(getCommandUsage(sender));
 
         List<EntityItem> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(EntityItem.class,
                 AxisAlignedBB.getBoundingBox(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY() + radius + 1,
@@ -98,7 +97,7 @@ public class CommandRemove extends FEcmdModuleCommands {
             counter++;
             entity.setDead();
         }
-        OutputHandler.chatConfirmation(sender, String.format("%d items removed.", counter));
+        OutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
     }
 
     @Override

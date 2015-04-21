@@ -1,9 +1,11 @@
 package com.forgeessentials.teleport.util;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class TPAdata {
@@ -42,13 +44,13 @@ public class TPAdata {
             TeleportModule.tpaListToRemove.add(this);
             if (tphere)
             {
-                OutputHandler.chatWarning(receiver, String.format("TPA from %s timed out.", sender.getCommandSenderName()));
-                OutputHandler.chatWarning(sender, String.format("TPA to %s timed out.", receiver.getCommandSenderName()));
+                OutputHandler.chatWarning(receiver, Translator.format("TPA from %s timed out.", sender.getCommandSenderName()));
+                OutputHandler.chatWarning(sender, Translator.format("TPA to %s timed out.", receiver.getCommandSenderName()));
             }
             else
             {
-                OutputHandler.chatWarning(receiver, String.format("TPA from %s timed out", sender.getCommandSenderName()));
-                OutputHandler.chatWarning(sender, String.format("TPA to %s timed out.", receiver.getCommandSenderName()));
+                OutputHandler.chatWarning(receiver, Translator.format("TPA from %s timed out", sender.getCommandSenderName()));
+                OutputHandler.chatWarning(sender, Translator.format("TPA to %s timed out.", receiver.getCommandSenderName()));
             }
         }
     }

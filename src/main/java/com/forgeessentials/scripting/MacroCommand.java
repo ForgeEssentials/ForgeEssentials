@@ -1,12 +1,5 @@
 package com.forgeessentials.scripting;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
-import com.google.common.io.Files;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +8,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.FunctionHelper;
+import com.google.common.io.Files;
 
 public class MacroCommand extends ForgeEssentialsCommandBase
 {
@@ -40,7 +41,7 @@ public class MacroCommand extends ForgeEssentialsCommandBase
         catch (IOException e)
         {
             e.printStackTrace();
-            throw new CommandException("Error running macro!");
+            throw new TranslatedCommandException("Error running macro!");
         }
 
     }

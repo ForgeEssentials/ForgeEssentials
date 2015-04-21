@@ -2,7 +2,6 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,6 +15,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
@@ -46,9 +46,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
                 tp(player);
             }
             else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
         {
@@ -69,11 +67,11 @@ public class CommandBed extends ForgeEssentialsCommandBase {
             spawn = player.getBedLocation(world.provider.dimensionId);
         }
         if (spawn == null)
-            throw new CommandException("No bed found.");
+            throw new TranslatedCommandException("No bed found.");
 
         spawn = EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
         if (spawn == null)
-            throw new CommandException("Your bed has been obstructed.");
+            throw new TranslatedCommandException("Your bed has been obstructed.");
 
         PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
         WarpPoint spawnPoint = new WarpPoint(world.provider.dimensionId, spawn, player.rotationPitch, player.rotationYaw);
@@ -91,9 +89,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
                 tp(player);
             }
             else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
     }
 

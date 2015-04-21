@@ -16,6 +16,7 @@ import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TickTaskHandler;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
@@ -148,8 +149,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @EventHandler
     public void load(FMLInitializationEvent e)
     {
-        // MinecraftForge.EVENT_BUS.register(this);
-        // FMLCommonHandler.instance().bus().register(this);
+        Translator.load();
 
         // other stuff
         factory = new ForgeEssentialsEventFactory();
@@ -240,6 +240,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
     public void serverStopped(FMLServerStoppedEvent e)
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerStoppedEvent(e));
+        Translator.save();
     }
 
     @Override

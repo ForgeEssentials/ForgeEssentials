@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -12,6 +11,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -68,7 +68,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         }
         else if (args.length != 3)
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
 
         if (names.containsKey(args[1]))
@@ -97,9 +97,7 @@ public class CommandPotion extends FEcmdModuleCommands {
                 player.addPotionEffect(eff);
             }
             else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
     }
 
@@ -115,9 +113,7 @@ public class CommandPotion extends FEcmdModuleCommands {
             ampl = parseIntWithMin(sender, args[3], 0);
         }
         else if (args.length != 3)
-        {
-        	throw new WrongUsageException(getCommandUsage(sender));
-        }
+        	throw new TranslatedCommandException(getCommandUsage(sender));
 
         dur = parseIntWithMin(sender, args[2], 0) * 20;
         PotionEffect eff = new PotionEffect(ID, dur, ampl);
@@ -129,9 +125,7 @@ public class CommandPotion extends FEcmdModuleCommands {
             player.addPotionEffect(eff);
         }
         else
-        {
-            OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-        }
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
     }
 
     @Override

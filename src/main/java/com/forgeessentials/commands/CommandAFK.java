@@ -15,6 +15,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.AFKdata;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandAFK extends FEcmdModuleCommands {
@@ -51,7 +52,7 @@ public class CommandAFK extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         CommandsEventHandler.afkListToAdd.add(new AFKdata(sender));
-        OutputHandler.chatConfirmation(sender, String.format("Stand still for %d seconds.", warmup));
+        OutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
     }
 
     @Override
@@ -73,7 +74,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
             OutputHandler.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    String.format(inMessage, afkData.player.getDisplayName()));
+                    Translator.format(inMessage, afkData.player.getDisplayName()));
         }
         else
         {
@@ -90,7 +91,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
             OutputHandler.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    String.format(outMessage, afkData.player.getDisplayName()));
+                    Translator.format(outMessage, afkData.player.getDisplayName()));
         }
         else
         {

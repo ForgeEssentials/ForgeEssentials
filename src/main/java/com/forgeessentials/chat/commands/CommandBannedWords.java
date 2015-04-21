@@ -4,8 +4,10 @@ import com.forgeessentials.chat.ChatFormatter;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Preconditions;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -35,7 +37,7 @@ public class CommandBannedWords extends ForgeEssentialsCommandBase
                 {
                     ChatFormatter.bannedWords.add(Preconditions.checkNotNull(args[1]));
                     ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_CATEGORY);
-                    OutputHandler.chatNotification(sender, String.format("Added word %s to banned list", args[1]));
+                    OutputHandler.chatNotification(sender, Translator.format("Added word %s to banned list", args[1]));
                 }
                 catch (NullPointerException e)
                 {
@@ -47,7 +49,7 @@ public class CommandBannedWords extends ForgeEssentialsCommandBase
                 {
                     ChatFormatter.bannedWords.remove(Preconditions.checkNotNull(args[1]));
                     ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_CATEGORY);
-                    OutputHandler.chatNotification(sender, String.format("Removed word %s from banned list", args[1]));
+                    OutputHandler.chatNotification(sender, Translator.format("Removed word %s from banned list", args[1]));
                 }
                 catch (NullPointerException e)
                 {

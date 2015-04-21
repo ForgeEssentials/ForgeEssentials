@@ -2,19 +2,20 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WarpPoint;
-
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandHome extends ForgeEssentialsCommandBase {
 
@@ -31,7 +32,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
         {
             WarpPoint home = PlayerInfo.getPlayerInfo(sender.getPersistentID()).getHome();
             if (home == null)
-                throw new CommandException("No home set. Use \"/home set\" first.");
+                throw new TranslatedCommandException("No home set. Use \"/home set\" first.");
             EntityPlayerMP player = sender;
             PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
@@ -46,23 +47,22 @@ public class CommandHome extends ForgeEssentialsCommandBase {
                 if (args.length == 2)
                 {
                     if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_OTHER))
-                        throw new CommandException("You don't have the permission to access other players home.");
+                        throw new TranslatedCommandException("You don't have the permission to access other players home.");
                     player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
                     if (player == null)
-                        throw new CommandException("Player %s not found.", args[1]);
+                        throw new TranslatedCommandException("Player %s not found.", args[1]);
                 }
                 else if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_SET))
-                {
-                    OutputHandler.chatError(sender, "You don't have the permission to set your home location.");
-                    return;
-                }
+                    throw new TranslatedCommandException("You don't have the permission to set your home location.");
 
                 WarpPoint p = new WarpPoint(sender);
                 PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 info.setHome(p);
                 info.save();
-                OutputHandler.chatConfirmation(sender, String.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
+                OutputHandler.chatConfirmation(sender, Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
             }
+            else
+                throw new TranslatedCommandException("Unknown subcommand");
         }
     }
 

@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.core.misc.TickTaskHandler;
 import com.forgeessentials.core.misc.TickTaskHandler.TickTask;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandButcherTickTask implements TickTask {
@@ -214,7 +215,7 @@ public class CommandButcherTickTask implements TickTask {
     @Override
     public void onComplete()
     {
-        OutputHandler.chatConfirmation(sender, String.format("%s mobs killed.", killCount));
+        OutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.forgeessentials.teleport;
 
 import com.forgeessentials.commons.selections.Point;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,10 +11,12 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandTphere extends ForgeEssentialsCommandBase {
@@ -43,9 +46,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
                 TeleportHelper.teleport(player, new WarpPoint(target));
             }
             else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
         {

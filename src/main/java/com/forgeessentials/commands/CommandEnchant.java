@@ -22,6 +22,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandEnchant extends FEcmdModuleCommands {
@@ -128,10 +129,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 			ench = Enchantment.enchantmentsList[var4];
 		}
 		if (ench == null)
-		{
-			OutputHandler.chatError(sender, String.format("'%s' is not a recognized enchantment.", args[0]));
-			return;
-		}
+		    throw new TranslatedCommandException("'%s' is not a recognized enchantment.", args[0]);
 
 		int lvl = ench.getMaxLevel();
 		if (args.length >= 2)

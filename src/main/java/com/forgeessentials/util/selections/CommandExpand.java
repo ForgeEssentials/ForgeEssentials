@@ -2,7 +2,6 @@ package com.forgeessentials.util.selections;
 
 //Depreciated
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -10,6 +9,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandExpand extends ForgeEssentialsCommandBase {
@@ -205,7 +205,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
         }
         else
         {
-            throw new CommandException(getCommandUsage(player));
+            throw new TranslatedCommandException(getCommandUsage(player));
         }
     }
 

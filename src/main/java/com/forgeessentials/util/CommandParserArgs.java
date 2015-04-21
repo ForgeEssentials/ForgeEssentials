@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,6 +18,7 @@ import net.minecraftforge.permissions.PermissionContext;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 
 /**
  *
@@ -104,7 +104,7 @@ public class CommandParserArgs {
             if (userIdent != null)
                 return userIdent;
             else
-                throw new CommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         }
         else
         {
@@ -112,7 +112,7 @@ public class CommandParserArgs {
             if (name.equalsIgnoreCase("_ME_"))
             {
                 if (senderPlayer == null)
-                    throw new CommandException("_ME_ cannot be used in console.");
+                    throw new TranslatedCommandException("_ME_ cannot be used in console.");
                 return new UserIdent(senderPlayer);
             }
             else
@@ -141,7 +141,7 @@ public class CommandParserArgs {
     public void checkPermission(String perm)
     {
         if (!isTabCompletion && sender != null && !APIRegistry.perms.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(command), perm))
-            throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
     }
 
 

@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.commands.CommandKit;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -69,7 +70,7 @@ public class Kit {
             long timeout = pi.getRemainingTimeout("KIT_" + name);
             if (timeout > 0)
             {
-                OutputHandler.chatWarning(player, String.format("Kit cooldown active, %s to go!", FunctionHelper.parseTime(timeout / 1000)));
+                OutputHandler.chatWarning(player, Translator.format("Kit cooldown active, %s to go!", FunctionHelper.parseTime(timeout / 1000)));
                 return;
             }
             pi.startTimeout("KIT_" + name, cooldown * 1000);

@@ -20,6 +20,7 @@ import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
@@ -230,7 +231,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     public void registerHandler(RemoteHandler handler, String id)
     {
         if (handlers.containsKey(id))
-            throw new IllegalArgumentException(String.format("Handler with ID \"%s\" already registerd", id));
+            throw new IllegalArgumentException(Translator.format("Handler with ID \"%s\" already registerd", id));
 
         handlers.put(id, handler);
         String perm = handler.getPermission();

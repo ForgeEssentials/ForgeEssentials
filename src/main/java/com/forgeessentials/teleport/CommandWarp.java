@@ -2,15 +2,16 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
-import com.forgeessentials.commons.selections.WarpPoint;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.teleport.util.Warp;
 import com.forgeessentials.util.OutputHandler;
@@ -126,9 +127,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                     TeleportHelper.teleport(player, warp.getPoint());
                 }
                 else
-                {
-                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                }
+                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
             }
             else
             {

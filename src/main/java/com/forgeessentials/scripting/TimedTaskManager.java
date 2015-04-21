@@ -8,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.OutputHandler;
 
@@ -66,7 +67,7 @@ public class TimedTaskManager extends ForgeEssentialsCommandBase {
             OutputHandler.chatNotification(sender, "Listing all registered timed tasks");
             for (Entry<String, TimedTask> task : taskList.entrySet())
             {
-                OutputHandler.chatNotification(sender, String.format("%s1 - %s2", task.getKey(), task.getValue().getCommand()));
+                OutputHandler.chatNotification(sender, Translator.format("%s1 - %s2", task.getKey(), task.getValue().getCommand()));
             }
         }
 

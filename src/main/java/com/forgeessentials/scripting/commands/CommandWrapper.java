@@ -1,14 +1,14 @@
 package com.forgeessentials.scripting.commands;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import java.util.List;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 
 public class CommandWrapper extends ForgeEssentialsCommandBase {
 	
@@ -37,7 +37,7 @@ public class CommandWrapper extends ForgeEssentialsCommandBase {
             }
             else
             {
-            	throw new CommandException("Error in this shortcut (" + this.name + "). The command sepcified in the config is no FE command.");
+            	throw new TranslatedCommandException("Error in this shortcut (" + this.name + "). The command sepcified in the config is no FE command.");
             }
         }
 		return command;

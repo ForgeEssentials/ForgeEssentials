@@ -1,14 +1,9 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import net.minecraft.block.BlockButton;
 import net.minecraft.block.BlockLever;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -16,6 +11,11 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandPush extends FEcmdModuleCommands {
 	
@@ -36,7 +36,7 @@ public class CommandPush extends FEcmdModuleCommands {
     {
         if (args.length != 3)
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
         else
         {
@@ -70,7 +70,7 @@ public class CommandPush extends FEcmdModuleCommands {
             if ((var7.getBlock(var3, var4, var5) == Blocks.air || !((var7.getBlock(var3, var4, var5)) instanceof BlockButton))
                     && !(((var7.getBlock(var3, var4, var5)) instanceof BlockLever)))
             {
-                throw new CommandException("Button/Lever Not Found");
+                throw new TranslatedCommandException("Button/Lever Not Found");
             }
             else
             {
@@ -86,7 +86,7 @@ public class CommandPush extends FEcmdModuleCommands {
         EntityPlayerMP playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getCommandSenderName());
         if (args.length != 3)
         {
-            throw new WrongUsageException("/push <X> <Y> <Z>", new Object[0]);
+            throw new TranslatedCommandException("/push <X> <Y> <Z>", new Object[0]);
         }
         else
         {
@@ -103,7 +103,7 @@ public class CommandPush extends FEcmdModuleCommands {
             if ((var7.getBlock(var3, var4, var5) == Blocks.air || !((var7.getBlock(var3, var4, var5)) instanceof BlockButton))
                     && !(((var7.getBlock(var3, var4, var5)) instanceof BlockLever)))
             {
-                throw new CommandException("Button/Lever Not Found");
+                throw new TranslatedCommandException("Button/Lever Not Found");
             }
             else
             {

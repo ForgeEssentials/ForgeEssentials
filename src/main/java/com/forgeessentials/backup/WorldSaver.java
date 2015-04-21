@@ -9,6 +9,7 @@ import net.minecraft.world.WorldServer;
 
 import org.apache.logging.log4j.Level;
 
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -49,7 +50,7 @@ public class WorldSaver {
         if (backupWorlds.contains(id))
         {
             isSaving = true;
-            ModuleBackup.msg(String.format(start, name));
+            ModuleBackup.msg(Translator.format(start, name));
             boolean bl = world.levelSaving;
             world.levelSaving = false;
             try
@@ -59,12 +60,12 @@ public class WorldSaver {
             catch (MinecraftException e1)
             {
                 OutputHandler.felog.log(Level.ERROR, String.format(failed, name), e1);
-                ModuleBackup.msg(String.format(failed, name));
+                ModuleBackup.msg(Translator.format(failed, name));
             }
             world.levelSaving = bl;
             backupWorlds.remove(id);
             isSaving = false;
-            ModuleBackup.msg(String.format(done, name));
+            ModuleBackup.msg(Translator.format(done, name));
         }
     }
 }

@@ -1,19 +1,22 @@
 package com.forgeessentials.scripting.commands;
 
-import com.forgeessentials.core.environment.CommandSetChecker;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Set;
+import com.forgeessentials.core.environment.CommandSetChecker;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 /**
  * This system allows someone to make shortcut commands.
@@ -139,7 +142,7 @@ public class ShortcutCommands {
                 }
                 else
                 {
-                    throw new CommandException("commands.generic.syntax");
+                    throw new TranslatedCommandException("commands.generic.syntax");
                 }
             }
             else if (arg.equalsIgnoreCase("$oArg"))

@@ -7,9 +7,9 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent
 import com.forgeessentials.util.events.NoPlayerInfoEvent;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.Questioner.IReplyHandler;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -19,6 +19,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
@@ -145,7 +146,7 @@ public class CommandKit extends FEcmdModuleCommands {
         /*
          * You're doing it wrong!
          */
-        throw new WrongUsageException(getCommandUsage(sender));
+        throw new TranslatedCommandException(getCommandUsage(sender));
     }
 
     @Override

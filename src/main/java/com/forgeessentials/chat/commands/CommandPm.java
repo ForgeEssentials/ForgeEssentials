@@ -1,8 +1,11 @@
 package com.forgeessentials.chat.commands;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -65,10 +68,8 @@ public class CommandPm extends ForgeEssentialsCommandBase {
             {
                 EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (receiver == null)
-                {
-                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                    return;
-                }
+                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+                
                 CommandMsg.clearReply(receiver.getCommandSenderName());
                 CommandMsg.addReply(receiver.getCommandSenderName(), sender.getCommandSenderName());
                 String senderMessage =
@@ -131,17 +132,13 @@ public class CommandPm extends ForgeEssentialsCommandBase {
             {
                 EntityPlayerMP target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (target == null)
-                {
-                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                    return;
-                }
+                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+
                 if (persistentMessage.containsKey(sender.getCommandSenderName()))
-                {
                     persistentMessage.remove(sender.getCommandSenderName());
-                }
                 persistentMessage.put(sender.getCommandSenderName(), target.getCommandSenderName());
 
-                OutputHandler.chatConfirmation(sender, String.format("Persistent message to %s enabled.", target.getCommandSenderName()));
+                OutputHandler.chatConfirmation(sender, Translator.format("Persistent message to %s enabled.", target.getCommandSenderName()));
             }
             return;
         }
@@ -182,16 +179,12 @@ public class CommandPm extends ForgeEssentialsCommandBase {
             {
                 EntityPlayer target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (target == null)
-                {
-                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                    return;
-                }
+                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+
                 if (persistentMessage.containsKey(sender.getCommandSenderName()))
-                {
                     persistentMessage.remove(sender.getCommandSenderName());
-                }
                 persistentMessage.put(sender.getCommandSenderName(), target.getCommandSenderName());
-                OutputHandler.chatConfirmation(sender, String.format("Persistent message to %s enabled.", target.getCommandSenderName()));
+                OutputHandler.chatConfirmation(sender, Translator.format("Persistent message to %s enabled.", target.getCommandSenderName()));
             }
             return;
         }
@@ -199,36 +192,31 @@ public class CommandPm extends ForgeEssentialsCommandBase {
         {
             EntityPlayer receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (receiver == null)
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            
+            CommandMsg.clearReply(receiver.getCommandSenderName());
+            CommandMsg.addReply(receiver.getCommandSenderName(), "server");
+            if (persistentMessage.containsKey("server"))
             {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                return;
+                persistentMessage.remove("server");
             }
-            else
+            persistentMessage.put(sender.getCommandSenderName(), receiver.getCommandSenderName());
+            OutputHandler.chatConfirmation(sender, "Persistent message to " + receiver.getCommandSenderName() + " enabled.");
+            String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
+            String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + " -> me ] "
+                    + EnumChatFormatting.GRAY;
+            for (int i = 1; i < args.length; i++)
             {
-                CommandMsg.clearReply(receiver.getCommandSenderName());
-                CommandMsg.addReply(receiver.getCommandSenderName(), "server");
-                if (persistentMessage.containsKey("server"))
+                receiverMessage += args[i];
+                senderMessage += args[i];
+                if (i != args.length - 1)
                 {
-                    persistentMessage.remove("server");
+                    receiverMessage += " ";
+                    senderMessage += " ";
                 }
-                persistentMessage.put(sender.getCommandSenderName(), receiver.getCommandSenderName());
-                OutputHandler.chatConfirmation(sender, "Persistent message to " + receiver.getCommandSenderName() + " enabled.");
-                String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
-                String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + " -> me ] "
-                        + EnumChatFormatting.GRAY;
-                for (int i = 1; i < args.length; i++)
-                {
-                    receiverMessage += args[i];
-                    senderMessage += args[i];
-                    if (i != args.length - 1)
-                    {
-                        receiverMessage += " ";
-                        senderMessage += " ";
-                    }
-                }
-                OutputHandler.sendMessage(sender, senderMessage);
-                OutputHandler.sendMessage(receiver, receiverMessage);
             }
+            OutputHandler.sendMessage(sender, senderMessage);
+            OutputHandler.sendMessage(receiver, receiverMessage);
         }
     }
 

@@ -1,6 +1,5 @@
 package com.forgeessentials.economy.commands.plots;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -10,6 +9,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.OutputHandler;
@@ -41,7 +41,7 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
             {
                 if (!APIRegistry.wallet.removeFromWallet(price, new UserIdent(player).getUuid()))
                 {
-                    throw new CommandException("You can't afford to set this plot!");
+                    throw new TranslatedCommandException("You can't afford to set this plot!");
                 }
             }
 
@@ -57,7 +57,7 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
         }
         catch (EventCancelledException e)
         {
-            throw new CommandException("Something went wrong - couldn't create plot");
+            throw new TranslatedCommandException("Something went wrong - couldn't create plot");
         }
     }
 

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
@@ -14,6 +12,8 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
@@ -41,7 +41,7 @@ public class CommandPromote extends ForgeEssentialsCommandBase {
             return;
 
         if (arguments.isEmpty())
-            throw new WrongUsageException("Wrong syntax. Use \"/promote <player> <group>\"");
+            throw new TranslatedCommandException("Wrong syntax. Use \"/promote <player> <group>\"");
 
         if (arguments.isTabCompletion)
         {
@@ -57,26 +57,26 @@ public class CommandPromote extends ForgeEssentialsCommandBase {
 
         String groupName = arguments.remove();
         if (!arguments.isEmpty())
-            throw new WrongUsageException("Wrong syntax. Use Syntax is \"/promote <player> <group>\"");
+            throw new TranslatedCommandException("Wrong syntax. Use Syntax is \"/promote <player> <group>\"");
 
         if (!APIRegistry.perms.groupExists(groupName))
-            throw new CommandException("Group %s does not exist", groupName);
+            throw new TranslatedCommandException("Group %s does not exist", groupName);
 
         if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(groupName, FEPermissions.GROUP_PROMOTION)))
-            throw new CommandException("Group %s is not available for promotion. Allow %s on the group first.", groupName, FEPermissions.GROUP_PROMOTION);
+            throw new TranslatedCommandException("Group %s is not available for promotion. Allow %s on the group first.", groupName, FEPermissions.GROUP_PROMOTION);
 
         for (GroupEntry group : APIRegistry.perms.getServerZone().getStoredPlayerGroups(ident))
             if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), FEPermissions.GROUP_PROMOTION)))
             {
                 APIRegistry.perms.removePlayerFromGroup(ident, group.getGroup());
-                OutputHandler.chatConfirmation(arguments.sender, String.format("Removed %s from group %s", ident.getUsernameOrUUID(), group));
+                OutputHandler.chatConfirmation(arguments.sender, Translator.format("Removed %s from group %s", ident.getUsernameOrUUID(), group));
                 if (ident.hasPlayer())
-                    OutputHandler.chatConfirmation(ident.getPlayer(), String.format("You have been removed from the %s group", group));
+                    OutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been removed from the %s group", group));
             }
         APIRegistry.perms.addPlayerToGroup(ident, groupName);
-        OutputHandler.chatConfirmation(arguments.sender, String.format("Added %s to group %s", ident.getUsernameOrUUID(), groupName));
+        OutputHandler.chatConfirmation(arguments.sender, Translator.format("Added %s to group %s", ident.getUsernameOrUUID(), groupName));
         if (ident.hasPlayer())
-            OutputHandler.chatConfirmation(ident.getPlayer(), String.format("You have been added to the %s group", groupName));
+            OutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been added to the %s group", groupName));
     }
 
     @Override

@@ -1,16 +1,11 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.CommandButcherTickTask;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
@@ -18,7 +13,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 
 public class CommandButcher extends FEcmdModuleCommands {
     
@@ -79,7 +77,7 @@ public class CommandButcher extends FEcmdModuleCommands {
         if (!argsStack.isEmpty())
         {
             if (argsStack.size() < 3)
-                throw new CommandException("Improper syntax: <radius> [type] [x y z] [world]");
+                throw new TranslatedCommandException("Improper syntax: <radius> [type] [x y z] [world]");
             x = parseDouble(sender, argsStack.remove(), sender.posX);
             y = parseDouble(sender, argsStack.remove(), sender.posY);
             z = parseDouble(sender, argsStack.remove(), sender.posZ);
@@ -89,7 +87,7 @@ public class CommandButcher extends FEcmdModuleCommands {
         {
             world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
             if (world == null)
-                throw new CommandException("The specified dimension does not exist");
+                throw new TranslatedCommandException("The specified dimension does not exist");
         }
         
         AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
@@ -123,7 +121,7 @@ public class CommandButcher extends FEcmdModuleCommands {
         if (!argsStack.isEmpty())
         {
             if (argsStack.size() < 3)
-            	throw new WrongUsageException(getCommandUsage(sender));
+            	throw new TranslatedCommandException(getCommandUsage(sender));
             x = parseInt(sender, argsStack.remove());
             y = parseInt(sender, argsStack.remove());
             z = parseInt(sender, argsStack.remove());
@@ -139,14 +137,14 @@ public class CommandButcher extends FEcmdModuleCommands {
                 z = cb.zCoord;
             }
             else
-            	throw new WrongUsageException(getCommandUsage(sender));
+            	throw new TranslatedCommandException(getCommandUsage(sender));
         }
 
         if (!argsStack.isEmpty())
         {
             world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
             if (world == null)
-                throw new CommandException("This dimension does not exist");
+                throw new TranslatedCommandException("This dimension does not exist");
         }
         AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
         CommandButcherTickTask.schedule(sender, world, mobType, pool, radius);

@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.util.PWarp;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.OutputHandler;
@@ -153,19 +154,19 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 
 					if (args.length == 2)
 					{
-						OutputHandler.chatConfirmation(sender, String.format("The current limit is %s.", getLimit(target)));
+						OutputHandler.chatConfirmation(sender, Translator.format("The current limit is %s.", getLimit(target)));
 					}
 					else
 					{
 						setLimit(target, parseIntWithMin(sender, args[2], -1));
-						OutputHandler.chatConfirmation(sender, String.format("Limit changed to %s.", getLimit(target)));
+						OutputHandler.chatConfirmation(sender, Translator.format("Limit changed to %s.", getLimit(target)));
 					}
 
 				}
 			}
 			else if (args[0].equalsIgnoreCase("limit"))
 			{
-				OutputHandler.chatConfirmation(sender, String.format("The current limit is %s.", getLimit(sender)));
+				OutputHandler.chatConfirmation(sender, Translator.format("The current limit is %s.", getLimit(sender)));
 			}
 		}
 		TeleportDataManager.privateWarps.put(sender.getPersistentID().toString(), map);

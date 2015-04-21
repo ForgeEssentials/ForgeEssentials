@@ -14,6 +14,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -162,32 +163,27 @@ public class CommandMsg extends ForgeEssentialsCommandBase {
         {
             EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (receiver == null)
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            
+            clearReply(receiver.getCommandSenderName());
+            clearReply("server");
+            addReply(receiver.getCommandSenderName(), "server");
+            addReply("server", receiver.getCommandSenderName());
+            String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
+            String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + " -> me ] "
+                    + EnumChatFormatting.GRAY;
+            for (int i = 1; i < args.length; i++)
             {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                return;
-            }
-            else
-            {
-                clearReply(receiver.getCommandSenderName());
-                clearReply("server");
-                addReply(receiver.getCommandSenderName(), "server");
-                addReply("server", receiver.getCommandSenderName());
-                String senderMessage = "[ me -> " + receiver.getCommandSenderName() + "] ";
-                String receiverMessage = EnumChatFormatting.GOLD + "[" + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + " -> me ] "
-                        + EnumChatFormatting.GRAY;
-                for (int i = 1; i < args.length; i++)
+                receiverMessage += args[i];
+                senderMessage += args[i];
+                if (i != args.length - 1)
                 {
-                    receiverMessage += args[i];
-                    senderMessage += args[i];
-                    if (i != args.length - 1)
-                    {
-                        receiverMessage += " ";
-                        senderMessage += " ";
-                    }
+                    receiverMessage += " ";
+                    senderMessage += " ";
                 }
-                OutputHandler.sendMessage(sender, senderMessage);
-                OutputHandler.sendMessage(receiver, receiverMessage);
             }
+            OutputHandler.sendMessage(sender, senderMessage);
+            OutputHandler.sendMessage(receiver, receiverMessage);
         }
     }
 
