@@ -149,7 +149,7 @@ public class CommandPotion extends FEcmdModuleCommands {
         }
         else if (args.length == 2)
         {
-            return getListOfStringsFromIterableMatchingLastWord(args, names.keySet());
+            return getListOfStringsMatchingLastWord(args, names.keySet());
         }
         else
         {

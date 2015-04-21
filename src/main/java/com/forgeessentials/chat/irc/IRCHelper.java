@@ -27,7 +27,7 @@ import org.pircbotx.hooks.events.QuitEvent;
 
 import java.io.IOException;
 
-public class IRCHelper extends ListenerAdapter implements Listener {
+public class IRCHelper extends ListenerAdapter<PircBotX> implements Listener<PircBotX> {
 
     public static int port;
     public static String server, name, channel, password, serverPass;
@@ -196,7 +196,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     
     // IRC events
     @Override
-    public void onPrivateMessage(PrivateMessageEvent e)
+    public void onPrivateMessage(PrivateMessageEvent<PircBotX> e)
     {
         // Good
         String raw = e.getMessage().trim();
@@ -224,7 +224,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     }
 
     @Override
-    public void onMessage(MessageEvent e)
+    public void onMessage(MessageEvent<PircBotX> e)
     {
         if (!e.getUser().getNick().equalsIgnoreCase(name))
         {
@@ -243,7 +243,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     }
 
     @Override
-    public void onQuit(QuitEvent e)
+    public void onQuit(QuitEvent<PircBotX> e)
     {
         if (!suppressEvents)
         {
@@ -255,7 +255,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     }
 
     @Override
-    public void onKick(KickEvent e)
+    public void onKick(KickEvent<PircBotX> e)
     {
         if (!suppressEvents)
         {
@@ -273,7 +273,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     }
 
     @Override
-    public void onNickChange(NickChangeEvent e)
+    public void onNickChange(NickChangeEvent<PircBotX> e)
     {
         if (!suppressEvents)
         {
@@ -285,7 +285,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	 * @see org.pircbotx.hooks.ListenerAdapter#onJoin(org.pircbotx.hooks.events.JoinEvent)
 	 */
 	@Override
-	public void onJoin(JoinEvent e) throws Exception 
+	public void onJoin(JoinEvent<PircBotX> e) throws Exception 
 	{
 		if ( !suppressEvents )
 		{
@@ -298,7 +298,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	 * @see org.pircbotx.hooks.ListenerAdapter#onPart(org.pircbotx.hooks.events.PartEvent)
 	 */
 	@Override
-	public void onPart(PartEvent e) throws Exception 
+	public void onPart(PartEvent<PircBotX> e) throws Exception 
 	{
 		if ( !suppressEvents )
 		{
@@ -311,7 +311,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	 * @see org.pircbotx.hooks.ListenerAdapter#onConnect(org.pircbotx.hooks.events.ConnectEvent)
 	 */
 	@Override
-	public void onConnect(ConnectEvent event) throws Exception 
+	public void onConnect(ConnectEvent<PircBotX> event) throws Exception 
 	{
 		if ( !suppressEvents )
 		{
@@ -324,7 +324,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	 * @see org.pircbotx.hooks.ListenerAdapter#onDisconnect(org.pircbotx.hooks.events.DisconnectEvent)
 	 */
 	@Override
-	public void onDisconnect(DisconnectEvent event) throws Exception 
+	public void onDisconnect(DisconnectEvent<PircBotX> event) throws Exception 
 	{
 		if ( !suppressEvents )
 		{

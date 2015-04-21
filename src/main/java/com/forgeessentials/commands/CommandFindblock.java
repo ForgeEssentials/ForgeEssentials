@@ -70,13 +70,11 @@ public class CommandFindblock extends FEcmdModuleCommands {
     {
         if (args.length == 1)
         {
-            List names = new ArrayList<String>();
-
+            List<String> names = new ArrayList<String>();
             for (Item i : GameData.getItemRegistry().typeSafeIterable()){
                 names.add(i.getUnlocalizedName());
             }
-
-            return getListOfStringsFromIterableMatchingLastWord(args, names);
+            return getListOfStringsMatchingLastWord(args, names);
         }
         else if (args.length == 2)
         {

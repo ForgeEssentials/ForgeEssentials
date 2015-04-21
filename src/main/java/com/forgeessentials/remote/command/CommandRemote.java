@@ -56,6 +56,15 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
             String arg = args.remove();
             switch (arg)
             {
+            case "help":
+            {
+                args.info("/remote start: Start remote server (= enable)");
+                args.info("/remote stop: Stop remote server (= disable)");
+                args.info("/remote regen [player]: Generate new passkey");
+                args.info("/remote block <player>: Block player from remote, until he generates a new passkey");
+                args.info("/remote kick <player>: Kick player accessing remote right now");
+                return;
+            }
             case "regen":
             {
                 UserIdent ident = args.parsePlayer();

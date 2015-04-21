@@ -230,7 +230,6 @@ public class CommandWB extends ForgeEssentialsCommandBase {
 		return "fe.worldborder.admin";
 	}
 
-	@SuppressWarnings("unchecked")
     @Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
@@ -247,7 +246,7 @@ public class CommandWB extends ForgeEssentialsCommandBase {
 			{
 				list.add("" + i);
 			}
-			return getListOfStringsFromIterableMatchingLastWord(args, list);
+			return getListOfStringsMatchingLastWord(args, list);
 		}
 		// Options
 		if (args.length == 2)

@@ -62,6 +62,7 @@ public class ModuleChat {
     
     private MailSystem mailsystem;
     
+    @SuppressWarnings("unused")
     private PlayerEventHandler ircPlayerHandler;
 
     @SuppressWarnings("unused")

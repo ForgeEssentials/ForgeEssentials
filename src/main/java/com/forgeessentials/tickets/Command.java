@@ -156,7 +156,6 @@ public class Command extends ForgeEssentialsCommandBase {
         return ModuleTickets.PERMBASE + ".command";
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
@@ -167,7 +166,7 @@ public class Command extends ForgeEssentialsCommandBase {
 
         if (args.length == 2 && args[0].equalsIgnoreCase("new"))
         {
-            return getListOfStringsFromIterableMatchingLastWord(args, ModuleTickets.categories);
+            return getListOfStringsMatchingLastWord(args, ModuleTickets.categories);
         }
 
         if (args.length == 2 && (args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("del")))
@@ -177,7 +176,7 @@ public class Command extends ForgeEssentialsCommandBase {
             {
                 list.add("" + t.id);
             }
-            return getListOfStringsFromIterableMatchingLastWord(args, list);
+            return getListOfStringsMatchingLastWord(args, list);
         }
         return null;
     }

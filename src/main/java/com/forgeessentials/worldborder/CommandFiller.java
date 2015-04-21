@@ -171,7 +171,6 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
@@ -188,7 +187,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
             {
                 list.add(Integer.toString(i));
             }
-            return getListOfStringsFromIterableMatchingLastWord(args, list);
+            return getListOfStringsMatchingLastWord(args, list);
         }
         if (args.length == 2)
         {

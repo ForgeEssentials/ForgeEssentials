@@ -187,7 +187,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         }
         else if (args.length == 2)
         {
-            return getListOfStringsFromIterableMatchingLastWord(args, names);
+            return getListOfStringsMatchingLastWord(args, names);
         }
         else if (args.length == 3)
         {

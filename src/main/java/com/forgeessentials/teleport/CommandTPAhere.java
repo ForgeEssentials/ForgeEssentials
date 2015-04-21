@@ -109,7 +109,6 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
         return TeleportModule.PERM_TPAHERE;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
     {
@@ -119,7 +118,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
             list.add("accept");
             list.add("decline");
             list.addAll(Arrays.asList(MinecraftServer.getServer().getAllUsernames()));
-            return getListOfStringsFromIterableMatchingLastWord(args, list);
+            return getListOfStringsMatchingLastWord(args, list);
         }
         else
         {

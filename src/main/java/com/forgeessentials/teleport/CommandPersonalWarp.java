@@ -221,7 +221,6 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		return "fe.teleport." + getCommandName();
 	}
 
-    @SuppressWarnings("unchecked")
     @Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
@@ -248,7 +247,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 //				zone = APIRegistry.perms.getZone(zone.parent);
 //			}
 //
-//			return getListOfStringsFromIterableMatchingLastWord(args, list);
+//			return getListOfStringsMatchingLastWord(args, list);
 //		}
 		if (args.length == 2)
 		{
@@ -256,7 +255,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 			{
 				TeleportDataManager.privateWarps.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
 			}
-			return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.privateWarps.get(sender.getCommandSenderName()).keySet());
+			return getListOfStringsMatchingLastWord(args, TeleportDataManager.privateWarps.get(sender.getCommandSenderName()).keySet());
 		}
 		return null;
 	}

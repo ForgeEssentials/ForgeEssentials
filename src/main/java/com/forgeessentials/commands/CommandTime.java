@@ -159,7 +159,6 @@ public class CommandTime extends FEcmdModuleCommands {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
     @Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

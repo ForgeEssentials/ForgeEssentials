@@ -14,7 +14,7 @@ public class SelectionHandler
         {
             try
             {
-                Class weprovider = Class.forName("com.forgeessentials.compat.worldedit.WESelectionHandler");
+                Class<?> weprovider = Class.forName("com.forgeessentials.compat.worldedit.WESelectionHandler");
                 return (ISelectionProvider) weprovider.newInstance();
             }
             catch (ClassNotFoundException | InstantiationException | IllegalAccessException e3)

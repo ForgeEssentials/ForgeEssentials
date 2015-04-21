@@ -155,13 +155,12 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         return TeleportModule.PERM_WARP;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1)
         {
-            return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.warps.keySet());
+            return getListOfStringsMatchingLastWord(args, TeleportDataManager.warps.keySet());
         }
         else if (args.length == 2)
         {

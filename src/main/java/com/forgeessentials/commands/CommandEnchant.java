@@ -111,7 +111,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 			{
 				if (StatCollector.translateToLocal(enchL.getName()).replaceAll(" ", "").equalsIgnoreCase(args[0]))
 				{
-					Map map = EnchantmentHelper.getEnchantments(var6);
+					Map<?, ?> map = EnchantmentHelper.getEnchantments(var6);
 					if (map.containsKey(enchL.effectId))
 					{
 						map.remove(enchL.effectId);
@@ -154,7 +154,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 			for (Enchantment ench : Enchantment.enchantmentsList)
 				if (ench != null)
 					temp.add(ench.getName().replaceAll("enchantment.", ""));
-			return getListOfStringsFromIterableMatchingLastWord(args, temp);
+			return getListOfStringsMatchingLastWord(args, temp);
 		}
 		return null;
 	}

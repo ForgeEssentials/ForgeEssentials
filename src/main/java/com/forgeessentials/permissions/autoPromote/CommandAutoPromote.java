@@ -253,7 +253,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsFromIterableMatchingLastWord(args, getZoneNames());
+			return getListOfStringsMatchingLastWord(args, getZoneNames());
 		}
 		if (args.length == 2)
 		{
@@ -289,7 +289,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 					AutoPromoteManager.instance().promoteMap.put(zone.getId(), new AutoPromote(zone.getId(), false));
 					ap = AutoPromoteManager.instance().promoteMap.get(zone.toString());
 				}
-				return getListOfStringsFromIterableMatchingLastWord(args, ap.getList());
+				return getListOfStringsMatchingLastWord(args, ap.getList());
 			}
 			catch (Exception e)
 			{
@@ -309,7 +309,7 @@ public class CommandAutoPromote extends ForgeEssentialsCommandBase {
 				{
 					zone = APIRegistry.perms.getServerZone();
 				}
-				return getListOfStringsFromIterableMatchingLastWord(args, APIRegistry.perms.getServerZone().getGroups());
+				return getListOfStringsMatchingLastWord(args, APIRegistry.perms.getServerZone().getGroups());
 			}
 			catch (Exception e)
 			{
