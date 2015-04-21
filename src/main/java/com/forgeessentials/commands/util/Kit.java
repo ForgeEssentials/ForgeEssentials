@@ -88,7 +88,10 @@ public class Kit {
                     couldNotGiveItems |= !player.inventory.addItemStackToInventory(ItemStack.copyItemStack(armor[i]));
         
         if (couldNotGiveItems)
+        {
             OutputHandler.chatError(player, "Could not give some kit items.");
+            return;
+        }
         
         OutputHandler.chatConfirmation(player, "Kit dropped.");
     }
