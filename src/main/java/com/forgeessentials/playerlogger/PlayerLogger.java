@@ -72,6 +72,8 @@ public class PlayerLogger extends ServerEventHandler {
 
     private Map<String, BlockData> blockCache = new HashMap<>();
 
+    private Map<Block, BlockData> blockTypeCache = new HashMap<>();
+
     private Map<UUID, PlayerData> playerCache = new HashMap<>();
 
     /**
@@ -221,7 +223,12 @@ public class PlayerLogger extends ServerEventHandler {
 
     protected BlockData getBlock(Block block)
     {
-        return getBlock(GameData.getBlockRegistry().getNameForObject(block));
+        BlockData data = blockTypeCache.get(block);
+        if (data != null)
+            return data;
+        data = getBlock(GameData.getBlockRegistry().getNameForObject(block));
+        blockTypeCache.put(block, data);
+        return data;
     }
 
     protected SerialBlob getTileEntityBlob(TileEntity entity) {
