@@ -1,6 +1,7 @@
 package com.forgeessentials.scripting.commands;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
@@ -74,6 +75,7 @@ public class CommandWrapper extends ForgeEssentialsCommandBase {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {

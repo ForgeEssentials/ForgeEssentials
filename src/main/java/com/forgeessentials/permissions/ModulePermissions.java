@@ -15,7 +15,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandPromote;
 import com.forgeessentials.permissions.commands.CommandZone;
@@ -42,8 +41,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ModulePermissions extends ConfigLoaderBase {
 
     private static final String CONFIG_CAT = "Permissions";
-
-    public static AutoPromoteManager autoPromoteManager;
 
     public static ZonedPermissionHelper permissionHelper;
 
@@ -104,7 +101,6 @@ public class ModulePermissions extends ConfigLoaderBase {
         permissionScheduler.loadAll();
         registerPermissions();
         registerCommands();
-        //autoPromoteManager = new AutoPromoteManager();
     }
 
     public void registerCommands()
@@ -124,7 +120,6 @@ public class ModulePermissions extends ConfigLoaderBase {
     @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
-        //autoPromoteManager.stop();
         permissionHelper.save();
         permissionScheduler.saveAll();
     }
