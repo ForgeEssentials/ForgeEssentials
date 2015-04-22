@@ -207,7 +207,7 @@ public class CommandKit extends FEcmdModuleCommands {
     public void issueWelcomeKit(NoPlayerInfoEvent e)
     {
         Kit kit = CommandDataManager.kits.get(kitForNewPlayers);
-        if (!(kit == null))
+        if (kit != null)
         {
             kit.giveKit(e.entityPlayer);
         }
