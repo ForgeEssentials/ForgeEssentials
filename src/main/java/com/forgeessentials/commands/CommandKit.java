@@ -206,7 +206,11 @@ public class CommandKit extends FEcmdModuleCommands {
     @SubscribeEvent
     public void issueWelcomeKit(NoPlayerInfoEvent e)
     {
-        CommandDataManager.kits.get(kitForNewPlayers).giveKit(e.entityPlayer);
+        Kit kit = CommandDataManager.kits.get(kitForNewPlayers);
+        if (!(kit == null))
+        {
+            kit.giveKit(e.entityPlayer);
+        }
     }
 
     static class HandleKitOverrides implements IReplyHandler
