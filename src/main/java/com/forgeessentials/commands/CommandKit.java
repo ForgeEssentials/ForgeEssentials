@@ -100,7 +100,7 @@ public class CommandKit extends FEcmdModuleCommands {
          */
         if (args[1].equalsIgnoreCase("set") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
-            if (args.length == 2)
+            if (args.length >= 2)
             {
                 if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
                 {
