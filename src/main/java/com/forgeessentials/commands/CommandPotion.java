@@ -71,16 +71,10 @@ public class CommandPotion extends FEcmdModuleCommands {
         	throw new TranslatedCommandException(getCommandUsage(sender));
         }
 
-        if (names.containsKey(args[1]))
-        {
-            ID = names.get(args[1]);
-        }
-        else
-        {
-            OutputHandler.chatError(sender, "That potion effect was not found.");
-            return;
-        }
-
+        if (!names.containsKey(args[1]))
+            throw new TranslatedCommandException("That potion effect was not found.");
+        
+        ID = names.get(args[1]);
         dur = parseIntWithMin(sender, args[2], 0) * 20;
 
         PotionEffect eff = new PotionEffect(ID, dur, ampl);

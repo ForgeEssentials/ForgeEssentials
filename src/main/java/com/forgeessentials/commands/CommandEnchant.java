@@ -37,10 +37,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 	{
 		ItemStack var6 = sender.getCurrentEquippedItem();
 		if (var6 == null)
-		{
-			OutputHandler.chatError(sender, "You are not holding a valid item.");
-			return;
-		}
+		    throw new TranslatedCommandException("You are not holding a valid item.");
 
 		if (args.length == 0)
 		{

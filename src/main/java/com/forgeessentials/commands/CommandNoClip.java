@@ -7,6 +7,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.network.S5PacketNoclip;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
@@ -41,10 +42,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 	public void processCommandPlayer(EntityPlayerMP player, String[] args)
 	{
         if(!player.capabilities.isFlying && !player.noClip)
-		{
-			OutputHandler.chatError(player, "You must be flying.");
-			return;
-		}
+            throw new TranslatedCommandException("You must be flying.");
 		
 		if(args.length == 0)
 		{

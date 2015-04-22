@@ -96,10 +96,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player);
 
         if (mop == null)
-        {
-            OutputHandler.chatError(player, "You must first look at the ground!");
-            return;
-        }
+            throw new TranslatedCommandException("You must first look at the ground!");
 
         x = mop.blockX;
         y = mop.blockY;
@@ -107,10 +104,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
         WorldPoint point = new WorldPoint(player.dimension, x, y, z);
         if (!APIRegistry.perms.checkUserPermission(new UserIdent(player), point, getPermissionNode()))
-        {
-            OutputHandler.chatError(player, "Insufficient permissions.");
-            return;
-        }
+            throw new TranslatedCommandException("Insufficient permissions.");
 
         if (type == 1)
         {

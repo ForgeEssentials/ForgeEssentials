@@ -4,6 +4,7 @@ import com.forgeessentials.chat.ChatFormatter;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Preconditions;
@@ -53,7 +54,7 @@ public class CommandBannedWords extends ForgeEssentialsCommandBase
                 }
                 catch (NullPointerException e)
                 {
-                    OutputHandler.chatError(sender, "You need to specify a word to unban!");
+                    throw new TranslatedCommandException("You need to specify a word to unban!");
                 }
                 break;
             }

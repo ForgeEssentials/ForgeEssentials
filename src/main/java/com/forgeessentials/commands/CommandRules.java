@@ -238,11 +238,7 @@ public class CommandRules extends FEcmdModuleCommands {
         }
 
         if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
-        {
-            OutputHandler.chatError(sender,
-                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-            return;
-        }
+            throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
 
         int index;
 

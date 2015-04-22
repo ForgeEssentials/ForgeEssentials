@@ -35,23 +35,15 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        if (args.length == 1)
-        {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
-                EntityPlayerMP target = sender;
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-                playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-                TeleportHelper.teleport(player, new WarpPoint(target));
-            }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-        }
-        else
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
-        }
+        if (args.length != 1)
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player>");
+        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        if (player == null)
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+        EntityPlayerMP target = sender;
+        PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
+        playerInfo.setLastTeleportOrigin(new WarpPoint(player));
+        TeleportHelper.teleport(player, new WarpPoint(target));
     }
 
     @Override

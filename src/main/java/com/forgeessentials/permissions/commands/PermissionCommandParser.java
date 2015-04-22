@@ -25,6 +25,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
@@ -1105,7 +1106,7 @@ public class PermissionCommandParser {
 
             if (!(sender instanceof EntityPlayerMP))
             {
-                OutputHandler.chatError(sender, "Cannot identify zones by name from console!");
+                OutputHandler.chatError(sender, Translator.translate("Cannot identify zones by name from console!"));
                 return null;
             }
 

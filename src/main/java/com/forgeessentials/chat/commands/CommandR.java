@@ -2,8 +2,10 @@ package com.forgeessentials.chat.commands;
 
 import com.forgeessentials.chat.irc.IRCHelper;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -29,18 +31,13 @@ public class CommandR extends ForgeEssentialsCommandBase {
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 0)
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: " + "/r <message>");
-            return;
-        }
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: " + "/r <message>");
+
         if (args.length > 0)
         {
             String target = CommandMsg.getPlayerReply(sender.getCommandSenderName());
             if (target == null)
-            {
-                OutputHandler.chatError(sender, "You have no previous recorded message recipient.");
-                return;
-            }
+                throw new TranslatedCommandException("No target to reply to");
             if (target.equalsIgnoreCase("server"))
             {
                 String senderMessage = EnumChatFormatting.GOLD + "[ me -> " + EnumChatFormatting.DARK_PURPLE + "Server" + EnumChatFormatting.GOLD + "] "
@@ -81,7 +78,7 @@ public class CommandR extends ForgeEssentialsCommandBase {
                 }
                 catch (Exception e)
                 {
-                    OutputHandler.chatError(sender, "Unable to send message to: " + target);
+                    throw new TranslatedCommandException("Unable to send message to: " + target);
                 }
             }
             else
@@ -118,18 +115,13 @@ public class CommandR extends ForgeEssentialsCommandBase {
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
         if (args.length == 0)
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /msg <player> <message>");
-            return;
-        }
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: /msg <player> <message>");
+
         if (args.length > 0)
         {
             String target = CommandMsg.getPlayerReply("server");
             if (target == null)
-            {
-                OutputHandler.chatError(sender, "You have no previous recorded message recipient.");
-                return;
-            }
+                throw new TranslatedCommandException("No target to reply to");
             EntityPlayer receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (receiver == null)
             {

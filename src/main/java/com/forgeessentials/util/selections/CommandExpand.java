@@ -30,10 +30,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
     {
         Selection sel = SelectionHandler.selectionProvider.getSelection(player);
         if (sel == null)
-        {
-            OutputHandler.chatError(player, "Invalid previous selection.");
-            return;
-        }
+            throw new TranslatedCommandException("Invalid selection.");
         
         if (args.length == 1)
         {
@@ -126,8 +123,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
                 }
                 catch (Exception ex)
                 {
-                    OutputHandler.chatError(player, "Neither " + args[0] + " or " + args[1] + " is a number.");
-                    return;
+                    throw new TranslatedCommandException("Neither %s or %s is a number", args[0], args[1]);
                 }
             }
             if (args[0].equalsIgnoreCase("north") || args[1].equalsIgnoreCase("north"))
@@ -197,9 +193,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
                 }
             }
             else
-            {
-                OutputHandler.chatError(player, "Invalid Direction");
-            }
+                throw new TranslatedCommandException("Invalid Direction");
             OutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
             return;
         }

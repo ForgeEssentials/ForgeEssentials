@@ -39,7 +39,7 @@ public class CommandBind extends FEcmdModuleCommands {
         }
         else if (sender.inventory.getCurrentItem() == null)
         {
-            OutputHandler.chatError(sender, "You are not holding a valid item.");
+            throw new TranslatedCommandException("You are not holding a valid item.");
         }
         else
         {

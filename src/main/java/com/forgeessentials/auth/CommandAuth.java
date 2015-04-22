@@ -90,7 +90,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
                 }
                 else
                 {
-                    OutputHandler.chatError(sender, "Login failed.");
+                    throw new TranslatedCommandException("Login failed.");
                 }
 
                 return;
@@ -103,10 +103,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
                     throw new TranslatedCommandException("Player %s is already registered!", sender.getPersistentID());
 
                 if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineReg)
-                {
-                    OutputHandler.chatError(sender, "Registrations have been disabled.");
-                    return;
-                }
+                    throw new TranslatedCommandException("Registrations have been disabled.");
 
                 PlayerPassData.setPassword(sender.getPersistentID(), args[1]);
                 OutputHandler.chatConfirmation(sender, "Registration successful.");
@@ -115,10 +112,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
 
             // stop if unlogged.
             if (!ModuleAuth.hasSession.contains(sender.getPersistentID()))
-            {
-                OutputHandler.chatError(sender, "Login required. Try /auth help.");
-                return;
-            }
+                throw new TranslatedCommandException("Login required. Try /auth help.");
 
             // check for players.. all the rest of these should be greated than 1.
             UUID userID = UserIdent.getUuidByUsername(args[1]);
@@ -186,10 +180,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
         else if (args.length == 3)
         {
             if (!ModuleAuth.hasSession.contains(sender.getPersistentID()))
-            {
-                OutputHandler.chatError(sender, "Login required. Try /auth help.");
-                return;
-            }
+                throw new TranslatedCommandException("Login required. Try /auth help.");
 
             // parse changePass
             if (args[0].equalsIgnoreCase("changepass"))

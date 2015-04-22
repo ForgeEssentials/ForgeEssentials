@@ -87,8 +87,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             stopRollback(args);
             break;
         default:
-            OutputHandler.chatError(args.sender, "Unknown subcommand");
-            break;
+            throw new TranslatedCommandException("Unknown subcommand");
         }
     }
 

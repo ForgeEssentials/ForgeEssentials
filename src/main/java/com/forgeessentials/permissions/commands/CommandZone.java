@@ -101,8 +101,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                 parseEntryExitMessage(sender, worldZone, args, arg.equals("entry"));
                 break;
             default:
-                OutputHandler.chatError(sender, "Unknown command argument");
-                break;
+                throw new TranslatedCommandException("Unknown command argument");
             }
         }
     }

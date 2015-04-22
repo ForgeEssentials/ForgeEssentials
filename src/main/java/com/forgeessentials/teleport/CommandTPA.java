@@ -2,6 +2,7 @@ package com.forgeessentials.teleport;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.util.OutputHandler;
@@ -31,10 +32,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 0)
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /tpa [player] <player|<x> <y> <z>|accept|decline>");
-            return;
-        }
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: /tpa [player] <player|<x> <y> <z>|accept|decline>");
 
         if (args[0].equalsIgnoreCase("accept"))
         {
@@ -77,11 +75,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         }
 
         if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_TPA_SENDREQUEST))
-        {
-            OutputHandler.chatError(sender,
-                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-            return;
-        }
+            throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
 
         EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (receiver == null)

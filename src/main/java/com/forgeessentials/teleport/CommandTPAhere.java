@@ -2,6 +2,7 @@ package com.forgeessentials.teleport;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.util.OutputHandler;
@@ -29,10 +30,7 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 0)
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /tpahere [player] <player|<x> <y> <z>|accept|decline>");
-            return;
-        }
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: /tpahere [player] <player|<x> <y> <z>|accept|decline>");
 
         if (args[0].equalsIgnoreCase("accept"))
         {
@@ -72,26 +70,18 @@ public class CommandTPAhere extends ForgeEssentialsCommandBase {
         }
 
         if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_TPAHERE_SENDREQUEST))
-        {
-            OutputHandler.chatError(sender,
-                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-            return;
-        }
+            throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
 
         EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (receiver == null)
-        {
-            OutputHandler.chatError(sender, args[0] + " not found.");
-        }
-        else
-        {
-            TeleportModule.tpaListToAdd.add(new TPAdata(sender, receiver, true));
+            throw new TranslatedCommandException("Player %s not found", args[0]);
 
-            OutputHandler.chatNotification(sender, Translator.format("Teleport request sent to %s", receiver.getCommandSenderName()));
-            OutputHandler.chatNotification(receiver,
-                    Translator.format("Received teleport request from %s. Enter '/tpahere accept' to accept, '/tpahere decline' to decline.",
-                            sender.getCommandSenderName()));
-        }
+        TeleportModule.tpaListToAdd.add(new TPAdata(sender, receiver, true));
+
+        OutputHandler.chatNotification(sender, Translator.format("Teleport request sent to %s", receiver.getCommandSenderName()));
+        OutputHandler.chatNotification(receiver,
+                Translator.format("Received teleport request from %s. Enter '/tpahere accept' to accept, '/tpahere decline' to decline.",
+                        sender.getCommandSenderName()));
     }
 
     @Override

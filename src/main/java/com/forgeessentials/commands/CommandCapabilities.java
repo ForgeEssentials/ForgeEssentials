@@ -77,14 +77,9 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         }
         else if (args.length == 2)
         {
-            if (sender instanceof EntityPlayer)
-            {
-                if (!PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
-                {
-                    OutputHandler.chatError(sender, "You don't have permissions for that.");
-                    return;
-                }
-            }
+            if (sender instanceof EntityPlayer && !PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+                throw new TranslatedCommandException("You don't have permissions for that.");
+
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
@@ -114,14 +109,8 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         }
         else if (args.length == 3)
         {
-            if (sender instanceof EntityPlayer)
-            {
-                if (!PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
-                {
-                    OutputHandler.chatError(sender, "You don't have permissions for that.");
-                    return;
-                }
-            }
+            if (sender instanceof EntityPlayer && !PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+                throw new TranslatedCommandException("You don't have permissions for that.");
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {

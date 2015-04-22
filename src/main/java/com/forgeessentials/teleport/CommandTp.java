@@ -15,6 +15,7 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -151,7 +152,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 		}
 		else
 		{
-			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
+			OutputHandler.chatError(sender, Translator.translate("Improper syntax. Please try this instead:"));
 			OutputHandler.chatNotification(sender, getCommandUsage(sender));
 		}
 	}

@@ -6,6 +6,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandExpandY extends ForgeEssentialsCommandBase {
@@ -26,10 +27,7 @@ public class CommandExpandY extends ForgeEssentialsCommandBase {
 	{
 	    Selection sel = SelectionHandler.selectionProvider.getSelection(player);
 		if (sel == null)
-		{
-			OutputHandler.chatError(player, "Invalid selection.");
-			return;
-		}
+		    throw new TranslatedCommandException("Invalid selection.");
 		SelectionHandler.selectionProvider.setStart(player, sel.getStart().setY(0));
 		SelectionHandler.selectionProvider.setEnd(player, sel.getEnd().setY(255));
 		OutputHandler.chatConfirmation(player, "Selection expanded from bottom to top.");

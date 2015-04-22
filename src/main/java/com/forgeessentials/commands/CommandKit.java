@@ -77,23 +77,11 @@ public class CommandKit extends FEcmdModuleCommands {
          */
         if (args.length == 1)
         {
-            if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
-            {
-                if (PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
-                {
-                    CommandDataManager.kits.get(args[0].toLowerCase()).giveKit(sender);
-                }
-                else
-                {
-                    OutputHandler.chatError(sender,
-                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-                }
-            }
-            else
-            {
-                OutputHandler.chatError(sender, "Kit doesn't exist - either make it or try another kit?");
-            }
-            return;
+            if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
+                throw new TranslatedCommandException("Kit %s does not exist.", args[0]);
+            if (!PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
+                throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
+            CommandDataManager.kits.get(args[0].toLowerCase()).giveKit(sender);
         }
         /*
          * Make kit
@@ -115,7 +103,6 @@ public class CommandKit extends FEcmdModuleCommands {
                 }
                 else
                 {
-                    //OutputHandler.chatError(sender, "This kit already exists.");
                     Questioner.addtoQuestionQueue(sender, "A kit by the name of " + args[0].toLowerCase() + "already exists. Type /yes if you wish to overwrite it, /no to cancel this operation.",
                             new HandleKitOverrides(sender, args));
                 }
@@ -130,16 +117,10 @@ public class CommandKit extends FEcmdModuleCommands {
         {
             if (args.length == 2)
             {
-                if (CommandDataManager.kits.containsKey(args[0].toLowerCase()))
-                {
-                    CommandDataManager.removeKit(CommandDataManager.kits.get(args[0].toLowerCase()));
-                    OutputHandler.chatConfirmation(sender, "Kit removed.");
-                }
-                else
-                {
-                    OutputHandler.chatError(sender, "Kit doesn't exist - either make it or try another kit?");
-                }
-                return;
+                if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
+                    throw new TranslatedCommandException("Kit %s does not exist.", args[0]);
+                CommandDataManager.removeKit(CommandDataManager.kits.get(args[0].toLowerCase()));
+                OutputHandler.chatConfirmation(sender, "Kit removed.");
             }
         }
 

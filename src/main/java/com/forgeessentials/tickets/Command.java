@@ -13,6 +13,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -56,17 +57,13 @@ public class Command extends ForgeEssentialsCommandBase {
             {
                 usage += "|del <id>";
             }
-            OutputHandler.chatError(sender, "Usage: /ticket <" + usage + ">");
-            return;
+            throw new TranslatedCommandException("Usage: /ticket <" + usage + ">");
         }
 
         if (args[0].equalsIgnoreCase("view") && permcheck(sender, "view"))
         {
             if (args.length != 2)
-            {
-                OutputHandler.chatError(sender, "Usage: /ticket view <id>");
-                return;
-            }
+                throw new TranslatedCommandException("Usage: /ticket view <id>");
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
             Ticket t = ModuleTickets.getID(id);
             OutputHandler.chatNotification(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
@@ -100,15 +97,10 @@ public class Command extends ForgeEssentialsCommandBase {
         if (args[0].equalsIgnoreCase("new") && permcheck(sender, "new"))
         {
             if (args.length < 3)
-            {
-                OutputHandler.chatError(sender, "Usage: /ticket new <category> <message ...>");
-                return;
-            }
+                throw new TranslatedCommandException("Usage: /ticket new <category> <message ...>");
             if (!ModuleTickets.categories.contains(args[1]))
-            {
-                OutputHandler.chatError(sender, Translator.format("message.error.illegalCategory", args[1]));
-                return;
-            }
+                throw new TranslatedCommandException("message.error.illegalCategory", args[1]);
+            
             String msg = "";
             for (String var : FunctionHelper.dropFirstString(FunctionHelper.dropFirstString(args)))
             {
@@ -124,10 +116,7 @@ public class Command extends ForgeEssentialsCommandBase {
         if (args[0].equalsIgnoreCase("tp") && permcheck(sender, "tp"))
         {
             if (args.length != 2)
-            {
-                OutputHandler.chatError(sender, "Usage: /ticket tp <id>");
-                return;
-            }
+                throw new TranslatedCommandException("Usage: /ticket tp <id>");
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
             TeleportHelper.teleport((EntityPlayerMP) sender, ModuleTickets.getID(id).point);
         }
@@ -135,10 +124,7 @@ public class Command extends ForgeEssentialsCommandBase {
         if (args[0].equalsIgnoreCase("del") && permcheck(sender, "admin"))
         {
             if (args.length != 2)
-            {
-                OutputHandler.chatError(sender, "Usage: /ticket del <id>");
-                return;
-            }
+                throw new TranslatedCommandException("Usage: /ticket del <id>");
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
             ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
             OutputHandler.chatConfirmation(sender, c + Translator.format("Your ticket has been posted. ID: %d", id));

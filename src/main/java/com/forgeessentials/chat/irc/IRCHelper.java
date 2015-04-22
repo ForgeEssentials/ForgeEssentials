@@ -5,6 +5,7 @@ import com.forgeessentials.chat.irc.commands.ircCommands;
 import com.forgeessentials.util.ConnectionMonitor;
 import com.forgeessentials.util.OutputHandler;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
@@ -177,15 +178,15 @@ public class IRCHelper extends ListenerAdapter<PircBotX> implements Listener<Pir
         }
         catch (NickAlreadyInUseException e)
         {
-            OutputHandler.chatError(sender, "Reconnection failed - the assigned nick is already in use. Try again in a few minutes.");
+            throw new CommandException("Reconnection failed - the assigned nick is already in use. Try again in a few minutes.");
         }
         catch (IOException e)
         {
-            OutputHandler.chatError(sender, "Reconnection failed - could not reach the IRC server.");
+            throw new CommandException("Reconnection failed - could not reach the IRC server.");
         }
         catch (IrcException e)
         {
-            OutputHandler.chatError(sender, "Reconnection failed - server actively refused it, or you are already connected to the server. Error is: " + e.getMessage());
+            throw new CommandException("Reconnection failed - server actively refused it, or you are already connected to the server. Error is: " + e.getMessage());
         }
     }
 
