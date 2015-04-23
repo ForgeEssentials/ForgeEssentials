@@ -1,4 +1,4 @@
-package com.forgeessentials.scripting;
+package com.forgeessentials.scripting.command;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,15 +10,16 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.scripting.TimedTask;
 import com.forgeessentials.util.OutputHandler;
 
-public class TimedTaskManager extends ForgeEssentialsCommandBase {
+public class CommandTimedTask extends ForgeEssentialsCommandBase {
 
     private static Map<String, TimedTask> taskList = new HashMap<String, TimedTask>();
 
     private static final String syntax = "/timedtask [add|remove|list] <interval> <name> <command> Regularily run a command as the console. Not to be abused.";
 
-    public TimedTaskManager()
+    public CommandTimedTask()
     {
         taskList = DataManager.getInstance().loadAll(TimedTask.class);
     }

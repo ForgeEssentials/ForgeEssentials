@@ -19,7 +19,6 @@ public class TimedTask extends TimerTask {
         this.interval = interval;
         this.command = command;
         this.name = name;
-
         TaskRegistry.registerRecurringTask(this, 0, 0, interval, 0, 0, 0, interval, 0);
     }
 

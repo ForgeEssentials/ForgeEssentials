@@ -97,6 +97,12 @@ public class DataManager implements ExclusionStrategy {
         }
     }
 
+    public void saveAll(Map<?, ?> dataMap)
+    {
+        for (Entry<?, ?> element : dataMap.entrySet())
+            save(element.getValue(), element.getKey().toString());
+    }
+
     public boolean delete(Class<?> clazz, String key)
     {
         File file = getTypeFile(clazz, key);
@@ -210,5 +216,6 @@ public class DataManager implements ExclusionStrategy {
     {
         return new File(getTypePath(clazz), key + ".json");
     }
+
 
 }
