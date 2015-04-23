@@ -60,7 +60,6 @@ public class CommandKit extends FEcmdModuleCommands {
         if (args.length == 0)
         {
             OutputHandler.chatNotification(sender, "Available kits:");
-
             String msg = "";
             for (Kit kit : CommandDataManager.kits.values())
             {
@@ -82,38 +81,37 @@ public class CommandKit extends FEcmdModuleCommands {
             if (!PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
                 throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
             CommandDataManager.kits.get(args[0].toLowerCase()).giveKit(sender);
+            return;
         }
+        
         /*
          * Make kit
          */
-        if (args[1].equalsIgnoreCase("set") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
+        if (args.length >= 2 && args[1].equalsIgnoreCase("set") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
-            if (args.length >= 2)
+            if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
             {
-                if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
+                int cooldown = -1;
+                if (args.length == 3)
                 {
-                    int cooldown = -1;
-                    if (args.length == 3)
-                    {
-                        cooldown = parseIntWithMin(sender, args[2], -1);
-                    }
-                    new Kit(sender, args[0].toLowerCase(), cooldown);
-                    OutputHandler.chatConfirmation(sender,
-                            "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
+                    cooldown = parseIntWithMin(sender, args[2], -1);
                 }
-                else
-                {
-                    Questioner.addtoQuestionQueue(sender, "A kit by the name of " + args[0].toLowerCase() + "already exists. Type /yes if you wish to overwrite it, /no to cancel this operation.",
-                            new HandleKitOverrides(sender, args));
-                }
-                return;
+                new Kit(sender, args[0].toLowerCase(), cooldown);
+                OutputHandler.chatConfirmation(sender,
+                        "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
             }
+            else
+            {
+                Questioner.addtoQuestionQueue(sender, "A kit by the name of " + args[0].toLowerCase() + "already exists. Type /yes if you wish to overwrite it, /no to cancel this operation.",
+                        new HandleKitOverrides(sender, args));
+            }
+            return;
         }
 
         /*
          * Delete kit
          */
-        if (args[1].equalsIgnoreCase("del") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
+        if (args.length == 2 && args[1].equalsIgnoreCase("del") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
             if (args.length == 2)
             {
