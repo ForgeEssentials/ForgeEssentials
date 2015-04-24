@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
@@ -13,6 +12,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.util.OutputHandler;
@@ -57,20 +58,20 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
         Queue<String> args = new LinkedList<>(Arrays.asList(argsArray));
 
         if (args.isEmpty())
-            throw new CommandException("Missing world argument.");
+            throw new TranslatedCommandException("Missing world argument.");
 
         String worldName = args.remove();
         if (args.isEmpty())
         {
             if (player == null)
-                throw new CommandException("Missing player-name argument.");
+                throw new TranslatedCommandException("Missing player-name argument.");
         }
         else
         {
             String playerName = args.remove();
             player = UserIdent.getPlayerByMatchOrUsername(sender, playerName);
             if (player == null)
-                throw new CommandException("Could not find player " + playerName);
+                throw new TranslatedCommandException("Could not find player " + playerName);
         }
 
         double x = Math.floor(player.posX) + 0.5;
@@ -79,7 +80,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
         if (!args.isEmpty())
         {
             if (args.size() < 3)
-                throw new CommandException("Too few arguments for location.");
+                throw new TranslatedCommandException("Too few arguments for location.");
             x = parseDouble(sender, args.remove());
             y = parseDouble(sender, args.remove());
             z = parseDouble(sender, args.remove());
@@ -88,11 +89,11 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
         Multiworld multiworld = ModuleMultiworld.getMultiworldManager().getMultiworld(worldName);
         WorldServer world = multiworld != null ? multiworld.getWorldServer() : APIRegistry.namedWorldHandler.getWorld(worldName);
         if (world == null)
-            throw new CommandException("Could not find world " + worldName);
+            throw new TranslatedCommandException("Could not find world " + worldName);
         int dimId = world.provider.dimensionId;
 
         //if (dimId < 0 || dimId == 1)
-        //    throw new CommandException("You are not allowed to teleport to that dimension");
+        //    throw new TranslatedCommandException("You are not allowed to teleport to that dimension");
 
         String msg = "Teleporting to ";
         if (multiworld == null)
@@ -117,7 +118,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
         {
             msg += multiworld.getName();
         }
-        msg += String.format(" at [%.0f, %.0f, %.0f]", x, y, z);
+        msg = Translator.format(msg + " at [%.0f, %.0f, %.0f]", x, y, z);
         OutputHandler.chatConfirmation(player, msg);
         Multiworld.teleport(player, world, x, y, z, true);
     }

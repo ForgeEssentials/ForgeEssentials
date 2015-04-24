@@ -2,11 +2,14 @@ package com.forgeessentials.teleport;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,10 +32,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 0)
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /tpa [player] <player|<x> <y> <z>|accept|decline>");
-            return;
-        }
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: /tpa [player] <player|<x> <y> <z>|accept|decline>");
 
         if (args[0].equalsIgnoreCase("accept"))
         {
@@ -75,11 +75,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         }
 
         if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_TPA_SENDREQUEST))
-        {
-            OutputHandler.chatError(sender,
-                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-            return;
-        }
+            throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
 
         EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (receiver == null)
@@ -90,9 +86,9 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         {
             TeleportModule.tpaListToAdd.add(new TPAdata(sender, receiver, false));
 
-            OutputHandler.chatNotification(sender, String.format("Teleport request sent to %s", receiver.getCommandSenderName()));
+            OutputHandler.chatNotification(sender, Translator.format("Teleport request sent to %s", receiver.getCommandSenderName()));
             OutputHandler.chatNotification(receiver,
-                    String.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.", sender.getCommandSenderName()));
+                    Translator.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.", sender.getCommandSenderName()));
         }
     }
 
@@ -108,7 +104,6 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         return TeleportModule.PERM_TPA;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
     {
@@ -118,7 +113,7 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
             list.add("accept");
             list.add("decline");
             list.addAll(Arrays.asList(MinecraftServer.getServer().getAllUsernames()));
-            return getListOfStringsFromIterableMatchingLastWord(args, list);
+            return getListOfStringsMatchingLastWord(args, list);
         }
         else
         {

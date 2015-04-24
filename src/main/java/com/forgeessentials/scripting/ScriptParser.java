@@ -1,78 +1,197 @@
 package com.forgeessentials.scripting;
 
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
 
-public class ScriptParser
-{
-    public static void run(File macroFile, ICommandSender sender, String[] args) throws IOException
+import com.forgeessentials.util.OutputHandler;
+
+public class ScriptParser {
+
+    public static interface ScriptMethod {
+        public boolean process(ICommandSender sender, String[] args);
+    }
+
+    public static interface ScriptArgument {
+        public String process(ICommandSender sender);
+    }
+
+    private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@(\\w+)(.*)");
+
+    public static String[] processArguments(ICommandSender sender, String[] actionArgs, List<String> args)
     {
-        ArrayList<String> scripts = new ArrayList<String>();
-        ArrayList<String> scriptargs = new ArrayList<>();
-
-        OutputHandler.felog.info("Reading command script file " + macroFile.getAbsolutePath());
-        FileInputStream stream = new FileInputStream(macroFile);
-        InputStreamReader streamReader = new InputStreamReader(stream);
-        BufferedReader reader = new BufferedReader(streamReader);
-        String read = reader.readLine();
-        while (read != null)
+        for (int i = 0; i < actionArgs.length; i++)
         {
-            // ignore the comment things...
-            if (read.startsWith("#"))
-            {
-                read = reader.readLine();
+            Matcher matcher = ARGUMENT_PATTERN.matcher(actionArgs[i]);
+            if (!matcher.matches())
                 continue;
-            }
+            String modifier = matcher.group(1).toLowerCase();
+            String rest = matcher.group(2);
 
-            // expected syntax: $ <arg number> <argCode>
-            if (read.startsWith("$"))
+            ScriptArgument argument = ScriptArguments.get(modifier);
+            if (argument != null)
             {
-                String[] argCode = FunctionHelper.dropFirstString(read.split(" "));
-                int order = Integer.parseInt(argCode[0]);
-                scriptargs.add(order, argCode[1]);
+                actionArgs[i] = argument.process(sender) + rest;
             }
-
-            read = read.replaceAll("%p", sender.getCommandSenderName());
-
-            if (sender instanceof EntityPlayerMP)
+            else
             {
-                EntityPlayerMP player = (EntityPlayerMP) sender;
-
-                read = read.replaceAll("%px", Integer.toString(player.getPlayerCoordinates().posX));
-                read = read.replaceAll("%py", Integer.toString(player.getPlayerCoordinates().posY));
-                read = read.replaceAll("%pz", Integer.toString(player.getPlayerCoordinates().posZ));
+                try
+                {
+                    int idx = Integer.parseInt(modifier);
+                    if (args == null || idx >= args.size())
+                        throw new MissingArgumentException("Missing argument @%d", idx);
+                    actionArgs[i] = args.get(idx) + rest;
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new SyntaxException("Unknown argument modifier \"%s\"", modifier);
+                }
             }
+        }
+        return actionArgs;
+    }
 
-            for (int i = 0; i < scriptargs.size(); i++) {
-                read = read.replaceAll("%" + scriptargs.get(i), args[i]);
+    public static void run(List<String> script)
+    {
+        run(script, null);
+    }
+
+    public static void run(List<String> script, ICommandSender sender)
+    {
+        run(script, sender, null);
+    }
+
+    public static boolean run(List<String> script, ICommandSender sender, List<String> args)
+    {
+        for (String action : script)
+            if (!run(action, sender, args))
+                return false;
+        return true;
+    }
+
+    public static boolean run(String action, ICommandSender sender, List<String> argumentValues)
+    {
+        String[] args = action.split(" ", 2);
+        String cmd = args[0].toLowerCase();
+        args = args.length > 1 ? args[1].split(" ") : new String[0];
+        args = processArguments(sender, args, argumentValues);
+
+        if (cmd.length() > 1 && cmd.charAt(0) == '/')
+        {
+            // Run command
+            cmd = cmd.substring(1);
+            boolean ignorePermissions = cmd.equals("p") || cmd.equals("feperm");
+            ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
+            mcCommand.processCommand(ignorePermissions ? MinecraftServer.getServer() : sender, args);
+        }
+        else if (cmd.length() > 2 && cmd.charAt(0) == '?' && cmd.charAt(1) == '/')
+        {
+            // Run command silently (execution won't fail if command fails)
+            cmd = cmd.substring(2);
+            boolean ignorePermissions = cmd.equals("p") || cmd.equals("feperm");
+            ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
+            try
+            {
+                mcCommand.processCommand(ignorePermissions ? MinecraftServer.getServer() : sender, args);
             }
+            catch (CommandException e)
+            {
+                OutputHandler.felog.info(String.format("Silent script command /%s %s failed: %s", cmd, StringUtils.join(args, " "), e.getMessage()));
+            }
+        }
+        else if (cmd.length() > 2 && cmd.charAt(0) == '$' && cmd.charAt(1) == '/')
+        {
+            // Run command as server
+            cmd = cmd.substring(2);
+            ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
+            try
+            {
+                mcCommand.processCommand(MinecraftServer.getServer(), args);
+            }
+            catch (CommandException e)
+            {
+                OutputHandler.felog.info(String.format("Silent script command /%s %s failed: %s", cmd, StringUtils.join(args, " "), e.getMessage()));
+            }
+        }
+        else
+        {
+            ScriptMethod method = ScriptMethods.get(cmd);
+            if (method == null)
+                throw new ScriptException("Unknown script method \"%s\"", cmd);
+            return method.process(sender, args);
+        }
+        return true;
+    }
 
-            scripts.add(read);
+    public static class ScriptException extends RuntimeException {
 
-            // read the next string
-            read = reader.readLine();
-
-            reader.close();
-            streamReader.close();
-            stream.close();
+        public ScriptException()
+        {
+            super();
         }
 
-        for (Object s : scripts.toArray())
+        public ScriptException(String message)
         {
-            String s1 = s.toString();
-            MinecraftServer.getServer().getCommandManager().executeCommand(sender, s1);
-            OutputHandler.chatNotification(sender, "Successfully run command scripts for " + sender.getCommandSenderName());
+            super(message);
+        }
+
+        public ScriptException(String message, Object... args)
+        {
+            super(String.format(message, args));
         }
 
     }
+
+    public static class MissingArgumentException extends ScriptException {
+
+        public MissingArgumentException(String message, Object... args)
+        {
+            super(message, args);
+        }
+
+    }
+
+    public static class SyntaxException extends ScriptException {
+
+        public SyntaxException(String message, Object... args)
+        {
+            super(message, args);
+        }
+
+    }
+
+    public static class MissingPlayerException extends ScriptException {
+
+        public MissingPlayerException()
+        {
+            super("Missing player for @player argument");
+        }
+
+    }
+
+    public static class MissingPermissionException extends ScriptException {
+
+        public final String permission;
+
+        public MissingPermissionException(String permission, String message)
+        {
+            super(message);
+            this.permission = permission;
+        }
+
+        public MissingPermissionException(String permission, String message, Object... args)
+        {
+            super(message, args);
+            this.permission = permission;
+        }
+
+    }
+
 }

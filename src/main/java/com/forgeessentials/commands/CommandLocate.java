@@ -1,12 +1,13 @@
 package com.forgeessentials.commands;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -31,7 +32,7 @@ public class CommandLocate extends FEcmdModuleCommands {
     {
         if (args.length != 1)
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
         else
         {
@@ -43,7 +44,7 @@ public class CommandLocate extends FEcmdModuleCommands {
             else
             {
                 OutputHandler.chatConfirmation(sender,
-                        String.format("%1$s is at %2$d, %3$d, %4$d in dim %5$d with gamemode %6$s", player.getCommandSenderName(), (int) player.posX,
+                        Translator.format("%1$s is at %2$d, %3$d, %4$d in dim %5$d with gamemode %6$s", player.getCommandSenderName(), (int) player.posX,
                                 (int) player.posY,
                                 (int) player.posZ, player.dimension, player.theItemInWorldManager.getGameType().getName()));
             }
@@ -65,7 +66,7 @@ public class CommandLocate extends FEcmdModuleCommands {
         }
         else
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 

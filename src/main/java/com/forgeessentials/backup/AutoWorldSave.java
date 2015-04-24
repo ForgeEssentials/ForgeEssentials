@@ -6,8 +6,6 @@ import java.util.TimerTask;
 
 public class AutoWorldSave extends TimerTask {
 
-    public AutoWorldSave(){}
-
     @Override
     public void run()
     {
@@ -19,7 +17,7 @@ public class AutoWorldSave extends TimerTask {
             }
             catch (InterruptedException e)
             {
-                break;
+                return;
             }
         }
 

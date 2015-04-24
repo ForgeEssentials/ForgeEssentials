@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandItemPermission extends ForgeEssentialsCommandBase {
@@ -21,10 +22,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBase {
     {
         ItemStack stack = sender.getCurrentEquippedItem();
         if (stack == null)
-        {
-            OutputHandler.chatError(sender, "No item equipped!");
-            return;
-        }
+            throw new TranslatedCommandException("No item equipped!");
         OutputHandler.chatNotification(sender, stack.getUnlocalizedName() + "." + stack.getItemDamage());
     }
 

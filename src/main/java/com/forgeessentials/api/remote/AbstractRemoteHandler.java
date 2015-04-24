@@ -37,6 +37,11 @@ public abstract class AbstractRemoteHandler implements RemoteHandler {
         throw new RemoteException(message);
     }
 
+    public static void error(String message, Object... args) 
+    {
+        throw new RemoteException(message, args);
+    }
+
     protected synchronized void addPushSession(RemoteSession session)
     {
         pushSessions.add(session);

@@ -1,16 +1,20 @@
 package com.forgeessentials.backup;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.world.MinecraftException;
+import net.minecraft.world.WorldServer;
+
+import org.apache.logging.log4j.Level;
+
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
 
 public class WorldSaver {
     public static String start;
@@ -19,21 +23,16 @@ public class WorldSaver {
 
     private static boolean isSaving;
 
-    private static ConcurrentLinkedQueue<Integer> worlds = new ConcurrentLinkedQueue<Integer>();
+    private static Set<Integer> backupWorlds = new HashSet<Integer>();
 
     public WorldSaver()
     {
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    public static void addWorldNeedsSave(World world)
-    {
-        worlds.add(world.provider.dimensionId);
-    }
-
     public static void addWorldNeedsSave(int id)
     {
-        worlds.add(id);
+        backupWorlds.add(id);
     }
 
     public static boolean isSaving()
@@ -48,10 +47,10 @@ public class WorldSaver {
         // it needs saving. save it.
         String name = world.provider.getDimensionName();
         int id = world.provider.dimensionId;
-        if (worlds.contains(id))
+        if (backupWorlds.contains(id))
         {
             isSaving = true;
-            ModuleBackup.msg(String.format(start, name));
+            ModuleBackup.msg(Translator.format(start, name));
             boolean bl = world.levelSaving;
             world.levelSaving = false;
             try
@@ -60,17 +59,13 @@ public class WorldSaver {
             }
             catch (MinecraftException e1)
             {
-                OutputHandler.exception(Level.SEVERE, String.format(failed, name), e1);
-                ModuleBackup.msg(String.format(failed, name));
+                OutputHandler.felog.log(Level.ERROR, String.format(failed, name), e1);
+                ModuleBackup.msg(Translator.format(failed, name));
             }
             world.levelSaving = bl;
-
-            while (worlds.remove(id))
-            {
-                //just do nothing and remoev them ALL
-            }
+            backupWorlds.remove(id);
             isSaving = false;
-            ModuleBackup.msg(String.format(done, name));
+            ModuleBackup.msg(Translator.format(done, name));
         }
     }
 }

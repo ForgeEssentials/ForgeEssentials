@@ -2,7 +2,6 @@ package com.forgeessentials.commands;
 
 import java.util.List;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
@@ -11,6 +10,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.PlayerInvChest;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -35,14 +36,16 @@ public class CommandInventorySee extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args[0] == null)
-            throw new CommandException("You need to specify a player!");
+            throw new TranslatedCommandException("You need to specify a player!");
 
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
             return;
         }
         EntityPlayerMP player = sender;
-        EntityPlayerMP victim = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(args[0]);
+        EntityPlayerMP victim = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        if (victim == null)
+            throw new TranslatedCommandException("Player %s not found.", args[0]);
 
         if (player.openContainer != player.inventoryContainer)
         {

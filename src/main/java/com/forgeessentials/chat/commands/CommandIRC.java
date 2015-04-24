@@ -1,10 +1,10 @@
 package com.forgeessentials.chat.commands;
 
-import com.forgeessentials.chat.irc.IRCHelper;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.chat.irc.IRCHelper;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandIRC extends ForgeEssentialsCommandBase {
 

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -31,6 +30,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
@@ -237,11 +238,7 @@ public class CommandRules extends FEcmdModuleCommands {
         }
 
         if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
-        {
-            OutputHandler.chatError(sender,
-                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-            return;
-        }
+            throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
 
         int index;
 
@@ -250,7 +247,7 @@ public class CommandRules extends FEcmdModuleCommands {
             index = parseIntBounded(sender, args[1], 1, rules.size());
 
             rules.remove(index - 1);
-            OutputHandler.chatConfirmation(sender, String.format("Rule # %s removed", args[1]));
+            OutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
         }
         else if (args[0].equalsIgnoreCase("add"))
         {
@@ -261,7 +258,7 @@ public class CommandRules extends FEcmdModuleCommands {
             }
             newRule = FunctionHelper.formatColors(newRule);
             rules.add(newRule);
-            OutputHandler.chatConfirmation(sender, String.format("Rule added as # %s.", args[1]));
+            OutputHandler.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
         }
         else if (args[0].equalsIgnoreCase("move"))
         {
@@ -274,12 +271,12 @@ public class CommandRules extends FEcmdModuleCommands {
             if (index < rules.size())
             {
                 rules.add(index - 1, temp);
-                OutputHandler.chatConfirmation(sender, String.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
+                OutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
             }
             else
             {
                 rules.add(temp);
-                OutputHandler.chatConfirmation(sender, String.format("Rule # %1$s moved to last position.", args[1]));
+                OutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to last position.", args[1]));
             }
         }
         else if (args[0].equalsIgnoreCase("change"))
@@ -293,12 +290,10 @@ public class CommandRules extends FEcmdModuleCommands {
             }
             newRule = FunctionHelper.formatColors(newRule);
             rules.set(index - 1, newRule);
-            OutputHandler.chatConfirmation(sender, String.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+            OutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
         else
-        {
-            throw new CommandException(getCommandUsage(sender));
-        }
+            throw new TranslatedCommandException(getCommandUsage(sender));
         saveRules();
     }
 
@@ -336,7 +331,7 @@ public class CommandRules extends FEcmdModuleCommands {
             index = parseIntBounded(sender, args[1], 1, rules.size());
 
             rules.remove(index - 1);
-            OutputHandler.chatConfirmation(sender, String.format("Rule # %s removed", args[1]));
+            OutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
         }
         else if (args[0].equalsIgnoreCase("add"))
         {
@@ -347,7 +342,7 @@ public class CommandRules extends FEcmdModuleCommands {
             }
             newRule = FunctionHelper.formatColors(newRule);
             rules.add(newRule);
-            OutputHandler.chatConfirmation(sender, String.format("Rule added as # %s.", args[1]));
+            OutputHandler.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
         }
         else if (args[0].equalsIgnoreCase("move"))
         {
@@ -360,12 +355,12 @@ public class CommandRules extends FEcmdModuleCommands {
             if (index < rules.size())
             {
                 rules.add(index - 1, temp);
-                OutputHandler.chatConfirmation(sender, String.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
+                OutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
             }
             else
             {
                 rules.add(temp);
-                OutputHandler.chatConfirmation(sender, String.format("Rule # %1$s moved to last position.", args[1]));
+                OutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to last position.", args[1]));
             }
         }
         else if (args[0].equalsIgnoreCase("change"))
@@ -379,11 +374,11 @@ public class CommandRules extends FEcmdModuleCommands {
             }
             newRule = FunctionHelper.formatColors(newRule);
             rules.set(index - 1, newRule);
-            OutputHandler.chatConfirmation(sender, String.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+            OutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
         else
         {
-            throw new CommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
         saveRules();
     }

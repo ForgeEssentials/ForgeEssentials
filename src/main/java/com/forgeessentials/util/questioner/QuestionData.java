@@ -1,9 +1,9 @@
 package com.forgeessentials.util.questioner;
 
+import net.minecraft.command.ICommandSender;
+
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.questioner.Questioner.IReplyHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class QuestionData {
     private ICommandSender target;

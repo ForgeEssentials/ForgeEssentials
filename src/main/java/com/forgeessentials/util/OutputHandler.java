@@ -1,18 +1,20 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.config.Configuration;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 
 public final class OutputHandler extends ConfigLoaderBase {
 	
@@ -21,6 +23,30 @@ public final class OutputHandler extends ConfigLoaderBase {
     private static EnumChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
 
     public static final String CONFIG_CAT = "Core.Output";
+
+    // ------------------------------------------------------------
+
+    public static IChatComponent confirmation(String message)
+    {
+        return colorize(new ChatComponentText(FunctionHelper.formatColors(message)), chatConfirmationColor);
+    }
+
+    public static IChatComponent notification(String message)
+    {
+        return colorize(new ChatComponentText(FunctionHelper.formatColors(message)), chatNotificationColor);
+    }
+
+    public static IChatComponent warning(String message)
+    {
+        return colorize(new ChatComponentText(FunctionHelper.formatColors(message)), chatWarningColor);
+    }
+
+    public static IChatComponent error(String message)
+    {
+        return colorize(new ChatComponentText(FunctionHelper.formatColors(message)), chatErrorColor);
+    }
+
+    // ------------------------------------------------------------
 
     /**
      * actually sends the color-formatted message to the sender
@@ -44,7 +70,7 @@ public final class OutputHandler extends ConfigLoaderBase {
      */
     public static void chatError(ICommandSender sender, String msg)
     {
-    	if(sender instanceof EntityPlayer)
+    	if (sender instanceof EntityPlayer)
     		chatColored(sender, msg, chatErrorColor);
     	else
     		sendMessage(sender, msg);
@@ -92,18 +118,6 @@ public final class OutputHandler extends ConfigLoaderBase {
 	}
 
     /**
-     * Use this to throw errors that can continue without crashing the server.
-     *
-     * @param level
-     * @param message
-     * @param error
-     */
-    public static void exception(java.util.logging.Level level, String message, Throwable error)
-    {
-        felog.log(Level.toLevel(level.getName()), message, error);
-    }
-
-    /**
      * outputs a string to the console if the code is in MCP
      *
      * @param msg message to be outputted
@@ -125,39 +139,32 @@ public final class OutputHandler extends ConfigLoaderBase {
      */
     public static void sendMessage(ICommandSender recipient, String message)
     {
-        recipient.addChatMessage(createFromText(message));
+        recipient.addChatMessage(new ChatComponentText(message));
     }
 
     /**
-     * Sends a global chat message.
+     * Sends a message to all clients
      *
-     * @param configurationManager The configuration manager used to send the message.
-     * @param message              The message to send.
+     * @param message              The message to send
      */
-    public static void sendMessage(ServerConfigurationManager configurationManager, String message)
+    public static void broadcast(IChatComponent message)
     {
-        configurationManager.sendChatMsg(createFromText(message));
-    }
-
-    public static IChatComponent createFromText(String string)
-    {
-        ChatComponentText component = new ChatComponentText(string);
-        return component;
+        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
     }
 
     /**
      * Processes an IChatComponent and adds formatting to it.
      *
-     * @param toColour
-     * @param colour
+     * @param toColor
+     * @param color
      * @param others
      * @return
      */
-    public static IChatComponent colourize(IChatComponent toColour, EnumChatFormatting colour)
+    public static IChatComponent colorize(IChatComponent toColor, EnumChatFormatting color)
     {
-        ChatStyle style = new ChatStyle().setColor(colour);
-        toColour.setChatStyle(style);
-        return toColour;
+        ChatStyle style = new ChatStyle().setColor(color);
+        toColor.setChatStyle(style);
+        return toColor;
     }
     
     public static void setConfirmationColor(String color)

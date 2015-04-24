@@ -8,6 +8,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -24,50 +25,41 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        if (args.length == 2)
+        if (args.length != 2)
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amountRequested>");
+        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        if (player == null)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player == null)
-            {
-                OutputHandler.chatError(sender, args[0] + " not found!");
-            }
-            else
-            {
-                int amount = parseIntWithMin(sender, args[1], 0);
-                OutputHandler.chatConfirmation(sender,
-                        "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.getCommandSenderName() + ".");
-                OutputHandler.chatConfirmation(player,
-                        "You have been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.getCommandSenderName() + ".");
-            }
+            OutputHandler.chatError(sender, args[0] + " not found!");
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amountRequested>");
+            int amount = parseIntWithMin(sender, args[1], 0);
+            OutputHandler.chatConfirmation(sender,
+                    "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.getCommandSenderName() + ".");
+            OutputHandler.chatConfirmation(player,
+                    "You have been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.getCommandSenderName() + ".");
         }
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        if (args.length == 2)
+        if (args.length != 2)
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amountRequested>");
+        
+        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        if (player == null)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player == null)
-            {
-                OutputHandler.chatError(sender, args[0] + " not found!");
-            }
-            else
-            {
-                int amount = parseIntWithMin(sender, args[1], 0);
-                OutputHandler.chatConfirmation(sender,
-                        "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.getCommandSenderName() + ".");
-                OutputHandler.chatConfirmation(player,
-                        "You been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.getCommandSenderName() + ".");
-            }
+            OutputHandler.chatError(sender, args[0] + " not found!");
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amountRequested>");
+            int amount = parseIntWithMin(sender, args[1], 0);
+            OutputHandler.chatConfirmation(sender,
+                    "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.getCommandSenderName() + ".");
+            OutputHandler.chatConfirmation(player,
+                    "You been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.getCommandSenderName() + ".");
         }
     }
 

@@ -246,6 +246,7 @@ public class AuthEventHandler {
     {
         ModuleAuth.hasSession.remove(e.player.getPersistentID());
         PlayerPassData.removeFromCache(e.player.getPersistentID());
+        counter = counter - 1;
     }
 
 }

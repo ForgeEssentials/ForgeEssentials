@@ -17,6 +17,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S02PacketChat;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.BufferedReader;
@@ -177,7 +178,7 @@ public class ModuleServerVote {
     {
         if (!ConfigServerVote.msgAll.equals(""))
         {
-            player.playerNetServerHandler.sendPacket(new S02PacketChat(OutputHandler.createFromText(FunctionHelper.formatColors(ConfigServerVote.msgAll
+            player.playerNetServerHandler.sendPacket(new S02PacketChat(new ChatComponentText(FunctionHelper.formatColors(ConfigServerVote.msgAll
                     .replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
         }
 

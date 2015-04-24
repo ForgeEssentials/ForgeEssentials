@@ -7,127 +7,90 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager;
 
+import com.forgeessentials.commands.CommandKit;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 public class Kit {
-	
-	private String name;
 
-	private Integer cooldown;
+    private String name;
 
-	private ItemStack[] items;
+    private int cooldown;
 
-	private ItemStack[] armor;
+    private ItemStack[] items;
 
-	public Kit(EntityPlayer player, String name, int cooldown)
-	{
-		this.cooldown = cooldown;
-		this.name = name;
+    private ItemStack[] armor;
 
-		List<ItemStack> inventory = new ArrayList<ItemStack>();
+    public Kit(EntityPlayer player, String name, int cooldown)
+    {
+        this.cooldown = cooldown;
+        this.name = name;
 
-		for (int i = 0; i < player.inventory.mainInventory.length; i++)
-		{
-			if (player.inventory.mainInventory[i] != null)
-			{
-				inventory.add(player.inventory.mainInventory[i]);
-			}
-		}
-
-		this.items = new ItemStack[inventory.size()];
-
-		for (int i = 0; i < inventory.size(); i++)
-		{
-			this.items[i] = inventory.get(i);
-		}
-
+        List<ItemStack> collapsedInventory = new ArrayList<ItemStack>();
+        for (int i = 0; i < player.inventory.mainInventory.length; i++)
+            if (player.inventory.mainInventory[i] != null)
+                collapsedInventory.add(player.inventory.mainInventory[i]);
+        items = collapsedInventory.toArray(new ItemStack[collapsedInventory.size()]);
+        
         armor = new ItemStack[player.inventory.armorInventory.length];
+        for (int i = 0; i < 4; i++)
+            if (player.inventory.armorInventory[i] != null)
+                armor[i] = player.inventory.armorInventory[i].copy();
 
-		for (int i = 0; i < 4; i++)
-		{
-			if (player.inventory.armorInventory[i] != null)
-			{
-				this.armor[i] = player.inventory.armorInventory[i].copy();
-			}
-		}
+        CommandDataManager.addKit(this);
+    }
 
-		CommandDataManager.addKit(this);
-	}
+    public String getName()
+    {
+        return name;
+    }
 
-	public String getName()
-	{
-		return name;
-	}
+    public int getCooldown()
+    {
+        return cooldown;
+    }
 
-	public Integer getCooldown()
-	{
-		return cooldown;
-	}
+    public ItemStack[] getItems()
+    {
+        return items;
+    }
 
-	public ItemStack[] getItems()
-	{
-		return items;
-	}
+    public ItemStack[] getArmor()
+    {
+        return armor;
+    }
 
-	public ItemStack[] getArmor()
-	{
-		return armor;
-	}
+    public void giveKit(EntityPlayer player)
+    {
+        if (!PermissionsManager.checkPermission(player, CommandKit.PERM_BYPASS_COOLDOWN) && cooldown > 0)
+        {
+            PlayerInfo pi = PlayerInfo.getPlayerInfo(player.getPersistentID());
+            long timeout = pi.getRemainingTimeout("KIT_" + name);
+            if (timeout > 0)
+            {
+                OutputHandler.chatWarning(player, Translator.format("Kit cooldown active, %s to go!", FunctionHelper.parseTime(timeout / 1000)));
+                return;
+            }
+            pi.startTimeout("KIT_" + name, cooldown * 1000);
+        }
 
-	public void giveKit(EntityPlayer player)
-	{
-		if (PlayerInfo.getPlayerInfo(player.getPersistentID()).getKitCooldown().containsKey(getName()))
-		{
-			OutputHandler.chatWarning(
-					player,
-					"Kit cooldown active, %c seconds to go!".replaceAll("%c",
-							"" + FunctionHelper.parseTime(PlayerInfo.getPlayerInfo(player.getPersistentID()).getKitCooldown().get(getName()))));
-		}
-		else
-		{
-			if (!PermissionsManager.checkPermission(player, CommandsEventHandler.BYPASS_KIT_COOLDOWN))
-			{
-				PlayerInfo.getPlayerInfo(player.getPersistentID()).getKitCooldown().put(getName(), getCooldown());
-			}
+        boolean couldNotGiveItems = false;
+        
+        for (ItemStack stack : items)
+            couldNotGiveItems |= !player.inventory.addItemStackToInventory(ItemStack.copyItemStack(stack));
 
-			/*
-			 * Main inv.
-			 */
+        for (int i = 0; i < 4; i++)
+            if (armor[i] != null)
+                if (player.inventory.armorInventory[i] == null)
+                    player.inventory.armorInventory[i] = armor[i];
+                else
+                    couldNotGiveItems |= !player.inventory.addItemStackToInventory(ItemStack.copyItemStack(armor[i]));
+        
+        if (couldNotGiveItems)
+            OutputHandler.chatError(player, Translator.translate("Could not give some kit items."));
+        OutputHandler.chatConfirmation(player, "Kit dropped.");
+    }
 
-			for (ItemStack stack : getItems())
-			{
-				if (player.inventory.addItemStackToInventory(ItemStack.copyItemStack(stack)))
-				{
-					System.out.println(stack.getDisplayName());
-				}
-				else
-				{
-					System.out.println("Couldn't give " + stack.getDisplayName());
-				}
-			}
-
-			/*
-			 * Armor
-			 */
-			for (int i = 0; i < 4; i++)
-			{
-				if (getArmor()[i] != null)
-				{
-					ItemStack stack = getArmor()[i];
-					if (player.inventory.armorInventory[i] == null)
-					{
-						player.inventory.armorInventory[i] = stack;
-					}
-					else
-					{
-						player.inventory.addItemStackToInventory(ItemStack.copyItemStack(stack));
-					}
-				}
-			}
-
-			OutputHandler.chatConfirmation(player, "Kit dropped.");
-		}
-	}
 }

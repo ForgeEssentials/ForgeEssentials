@@ -3,7 +3,6 @@ package com.forgeessentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -12,7 +11,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -30,37 +29,23 @@ public class CommandRepair extends FEcmdModuleCommands {
         if (args.length == 0)
         {
             ItemStack item = sender.getHeldItem();
-
             if (item == null)
-            {
-                OutputHandler.chatError(sender, "You are not holding a reparable item.");
-            }
-
+                throw new TranslatedCommandException("You are not holding a reparable item.");
             item.setItemDamage(0);
-
         }
         else if (args.length == 1 && PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
+            if (player == null)
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
-                ItemStack item = player.getHeldItem();
-
-                if (item != null)
-                {
-                    item.setItemDamage(0);
-                }
-
-            }
-            else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+            ItemStack item = player.getHeldItem();
+            if (item != null)
+                item.setItemDamage(0);
         }
         else
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 
@@ -83,14 +68,10 @@ public class CommandRepair extends FEcmdModuleCommands {
 
             }
             else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-        {
-        	throw new WrongUsageException(getCommandUsage(sender));
-        }
+        	throw new TranslatedCommandException(getCommandUsage(sender));
     }
 
     @Override

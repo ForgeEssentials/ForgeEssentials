@@ -37,7 +37,6 @@ import com.forgeessentials.commands.CommandRepair;
 import com.forgeessentials.commands.CommandRules;
 import com.forgeessentials.commands.CommandSmite;
 import com.forgeessentials.commands.CommandTime;
-import com.forgeessentials.commands.CommandVanish;
 import com.forgeessentials.commands.CommandVirtualchest;
 import com.forgeessentials.commands.CommandWeather;
 import com.forgeessentials.commands.admin.CommandDoAs;

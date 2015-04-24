@@ -70,7 +70,11 @@ public class PlayerLogger extends ServerEventHandler {
 
     private int transactionIndex;
 
+    private Map<Integer, WorldData> worldCache = new HashMap<>();
+
     private Map<String, BlockData> blockCache = new HashMap<>();
+
+    private Map<Block, BlockData> blockTypeCache = new HashMap<>();
 
     private Map<UUID, PlayerData> playerCache = new HashMap<>();
 
@@ -176,6 +180,16 @@ public class PlayerLogger extends ServerEventHandler {
         transactionIndex = 0;
     }
 
+    protected WorldData getWorld(int dimensionId)
+    {
+        WorldData data = worldCache.get(dimensionId);
+        if (data != null)
+            return data;
+        data = em.getReference(WorldData.class, dimensionId);
+        worldCache.put(dimensionId, data);
+        return data;
+    }
+
     protected PlayerData getPlayer(String uuid)
     {
         beginTransaction();
@@ -221,7 +235,12 @@ public class PlayerLogger extends ServerEventHandler {
 
     protected BlockData getBlock(Block block)
     {
-        return getBlock(GameData.getBlockRegistry().getNameForObject(block));
+        BlockData data = blockTypeCache.get(block);
+        if (data != null)
+            return data;
+        data = getBlock(GameData.getBlockRegistry().getNameForObject(block));
+        blockTypeCache.put(block, data);
+        return data;
     }
 
     protected SerialBlob getTileEntityBlob(TileEntity entity) {
@@ -293,7 +312,7 @@ public class PlayerLogger extends ServerEventHandler {
         ActionBlock action = new ActionBlock();
         action.time = new Date();
         action.player = getPlayer(e.player.getPersistentID());
-        action.world = em.getReference(WorldData.class, e.world.provider.dimensionId);
+        action.world = getWorld(e.world.provider.dimensionId);
         action.block = getBlock(e.block);
         action.metadata = e.blockMetadata;
         action.type = ActionBlockType.PLACE;
@@ -313,7 +332,7 @@ public class PlayerLogger extends ServerEventHandler {
             ActionBlock action = new ActionBlock();
             action.time = new Date();
             action.player = getPlayer(e.player.getPersistentID());
-            action.world = em.getReference(WorldData.class, snapshot.world.provider.dimensionId);
+            action.world = getWorld(snapshot.world.provider.dimensionId);
             action.block = getBlock(snapshot.blockIdentifier.toString());
             action.metadata = snapshot.meta;
             action.type = ActionBlockType.PLACE;
@@ -332,7 +351,7 @@ public class PlayerLogger extends ServerEventHandler {
         ActionBlock action = new ActionBlock();
         action.time = new Date();
         action.player = getPlayer(e.getPlayer().getPersistentID());
-        action.world = em.getReference(WorldData.class, e.world.provider.dimensionId);
+        action.world = getWorld(e.world.provider.dimensionId);
         action.block = getBlock(e.block);
         action.metadata = e.blockMetadata;
         action.entity = getTileEntityBlob(e.world.getTileEntity(e.x, e.y, e.z));
@@ -349,7 +368,7 @@ public class PlayerLogger extends ServerEventHandler {
     public void explosionEvent(ExplosionEvent.Detonate e)
     {
         beginTransaction();
-        WorldData worldData = em.getReference(WorldData.class, e.world.provider.dimensionId);
+        WorldData worldData = getWorld(e.world.provider.dimensionId);
         for (ChunkPosition blockPos : (List<ChunkPosition>) e.explosion.affectedBlockPositions)
         {
 	        ActionBlock action = new ActionBlock();
@@ -381,7 +400,7 @@ public class PlayerLogger extends ServerEventHandler {
         {
         	EntityPlayer player = ((EntityPlayer) e.sender);
             action.player = getPlayer(player.getPersistentID());
-            action.world = em.getReference(WorldData.class, player.worldObj.provider.dimensionId);
+            action.world = getWorld(player.worldObj.provider.dimensionId);
             action.x = (int) player.posX;
             action.y = (int) player.posY;
             action.z = (int) player.posZ;
@@ -390,7 +409,7 @@ public class PlayerLogger extends ServerEventHandler {
         {
         	TileEntityCommandBlock block = ((TileEntityCommandBlock) e.sender);
             action.player = getPlayer("commandblock");
-            action.world = em.getReference(WorldData.class, block.getWorldObj().provider.dimensionId);
+            action.world = getWorld(block.getWorldObj().provider.dimensionId);
             action.x = block.xCoord;
             action.y = block.yCoord;
             action.z = block.zCoord;

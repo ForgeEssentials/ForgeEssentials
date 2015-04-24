@@ -57,7 +57,7 @@ public class DataManager implements ExclusionStrategy {
     public static DataManager getInstance()
     {
         if (instance == null)
-            throw new NullPointerException();
+            throw new RuntimeException("Tried to access DataManager before its initialization");
         return instance;
     }
 
@@ -97,6 +97,12 @@ public class DataManager implements ExclusionStrategy {
         }
     }
 
+    public void saveAll(Map<?, ?> dataMap)
+    {
+        for (Entry<?, ?> element : dataMap.entrySet())
+            save(element.getValue(), element.getKey().toString());
+    }
+
     public boolean delete(Class<?> clazz, String key)
     {
         File file = getTypeFile(clazz, key);
@@ -126,7 +132,10 @@ public class DataManager implements ExclusionStrategy {
             return null;
         try (BufferedReader br = new BufferedReader(new FileReader(file)))
         {
-            return getGson().fromJson(br, clazz);
+            T obj = getGson().fromJson(br, clazz);
+            if (obj instanceof Loadable)
+                ((Loadable) obj).afterLoad();
+            return obj;
         }
         catch (JsonParseException e)
         {
@@ -207,5 +216,6 @@ public class DataManager implements ExclusionStrategy {
     {
         return new File(getTypePath(clazz), key + ".json");
     }
+
 
 }

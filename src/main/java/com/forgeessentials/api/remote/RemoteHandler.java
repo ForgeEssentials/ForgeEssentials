@@ -25,6 +25,11 @@ public interface RemoteHandler {
             super(message);
         }
 
+        public RemoteException(String message, Object... args)
+        {
+            super(String.format(message, args));
+        }
+
         public RemoteException()
         {
             super(MSG_EXCEPTION);

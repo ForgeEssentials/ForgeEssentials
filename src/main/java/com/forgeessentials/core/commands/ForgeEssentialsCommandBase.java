@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -14,13 +13,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraftforge.fe.server.CommandHandlerForge;
 import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-import net.minecraftforge.fe.server.CommandHandlerForge;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.UserIdent;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase {
@@ -44,12 +44,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        throw new CommandException(String.format("Command %s is not implemented for players", getCommandName()));
+        throw new TranslatedCommandException("Command %s is not implemented for players", getCommandName());
     }
 
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        throw new CommandException(String.format("Command %s is not implemented for console", getCommandName()));
+        throw new TranslatedCommandException("Command %s is not implemented for console", getCommandName());
     }
 
     public void processCommandBlock(CommandBlockLogic block, String[] args)
@@ -96,7 +96,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
             if (s.getClassName().equals(className))
             {
                 if (s.getClassName().equals(methodName))
-                    throw new CommandException(msg);
+                    throw new TranslatedCommandException(msg);
                 break;
             }
         // Just return false instead of an exception

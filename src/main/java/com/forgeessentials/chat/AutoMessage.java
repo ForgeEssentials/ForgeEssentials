@@ -3,6 +3,7 @@ package com.forgeessentials.chat;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.tasks.TaskRegistry;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -37,7 +38,7 @@ public class AutoMessage implements Runnable {
     {
         if (server.getAllUsernames().length != 0 && enable && !msg.isEmpty())
         {
-            OutputHandler.sendMessage(server.getConfigurationManager(), msg.get(currentMsgID));
+            OutputHandler.broadcast(new ChatComponentText(msg.get(currentMsgID)));
 
             if (random)
             {

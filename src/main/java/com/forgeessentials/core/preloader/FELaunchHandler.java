@@ -1,9 +1,11 @@
 package com.forgeessentials.core.preloader;
 
 import com.forgeessentials.core.preloader.classloading.FEClassLoader;
+
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
+
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
@@ -13,9 +15,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class FELaunchHandler implements ITweaker
-{
-    public static File mcLocation, jarLocation;
+public class FELaunchHandler implements ITweaker {
+    
+    public static File mcLocation;
+    
+    public static File jarLocation;
+    
     public static boolean runtimeDeobfEnabled;
 
     public FELaunchHandler()
@@ -30,12 +35,13 @@ public class FELaunchHandler implements ITweaker
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
     {
-        this.mcLocation = gameDir;
-        this.jarLocation = findJarFile();
-        this.runtimeDeobfEnabled = (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+        mcLocation = gameDir;
+        jarLocation = findJarFile();
+        runtimeDeobfEnabled = (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void injectIntoClassLoader(LaunchClassLoader launchClassLoader)
     {
         new FEClassLoader().extractLibs(mcLocation, launchClassLoader);
@@ -45,38 +51,47 @@ public class FELaunchHandler implements ITweaker
         launchClassLoader.registerTransformer("com.forgeessentials.core.preloader.asm.FEAccessTransformer");
 
         // inject ourselves as a mod
-        try {
+        try
+        {
             System.out.println("Force-reinjecting ForgeEssentials mod container");
             Class<?> coreModManager = Class.forName("cpw.mods.fml.relauncher.CoreModManager");
             Method mdGetLoadedCoremods = coreModManager.getDeclaredMethod("getLoadedCoremods");
             mdGetLoadedCoremods.setAccessible(true);
-            List<String> loadedCoremods = (List<String>)mdGetLoadedCoremods.invoke(null);
-            loadedCoremods.remove(this.jarLocation.getName());
+            List<String> loadedCoremods = (List<String>) mdGetLoadedCoremods.invoke(null);
+            loadedCoremods.remove(jarLocation.getName());
 
             Method mdGetReparsedCoremods = coreModManager.getDeclaredMethod("getReparseableCoremods");
             mdGetReparsedCoremods.setAccessible(true);
-            List<String> reparsedCoremods = (List<String>)mdGetReparsedCoremods.invoke(null);
-            reparsedCoremods.add(this.jarLocation.getName());
-        } catch (Exception ex) {
+            List<String> reparsedCoremods = (List<String>) mdGetReparsedCoremods.invoke(null);
+            reparsedCoremods.add(jarLocation.getName());
+        }
+        catch (Exception ex)
+        {
             ex.printStackTrace();
         }
     }
 
     @Override
-    public String getLaunchTarget() {
+    public String getLaunchTarget()
+    {
         return "net.minecraft.client.main.Main";
     }
 
     @Override
-    public String[] getLaunchArguments() {
-        return new String[]{};
+    public String[] getLaunchArguments()
+    {
+        return new String[] {};
     }
 
-    private File findJarFile() {
+    private File findJarFile()
+    {
         URI uri = null;
-        try {
+        try
+        {
             uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-        } catch (URISyntaxException ex) {
+        }
+        catch (URISyntaxException ex)
+        {
             ex.printStackTrace();
         }
         return uri != null ? new File(uri) : null;

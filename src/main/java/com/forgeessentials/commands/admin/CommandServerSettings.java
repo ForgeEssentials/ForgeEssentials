@@ -175,7 +175,7 @@ public class CommandServerSettings extends FEcmdModuleCommands {
     {
         if (args.length == 1)
         {
-            return getListOfStringsFromIterableMatchingLastWord(args, options);
+            return getListOfStringsMatchingLastWord(args, options);
         }
         else
         {

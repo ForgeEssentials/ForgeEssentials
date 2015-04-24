@@ -1,7 +1,6 @@
 package com.forgeessentials.util.events;
 
 import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.economy.plots.PlotManager;
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.entity.player.EntityPlayer;
@@ -60,8 +59,9 @@ public class PlotEvent extends Event
      * player is set to the player paying the rent
      * amount is set to the amount of rent paid
      */
-    private static class RentPaid extends PlotEvent
+    public static class RentPaid extends PlotEvent
     {
+        
         public int rentAmount;
 
         private RentPaid(AreaZone plot, EntityPlayer player, int rentAmount)
@@ -69,6 +69,7 @@ public class PlotEvent extends Event
             super(plot, player);
             this.rentAmount = rentAmount;
         }
+
     }
 
     /**

@@ -122,7 +122,7 @@ public class TickTaskFill implements ITickTask {
         setupWriteChunkToNBT();
         TaskRegistry.registerTask(this);
 
-        OutputHandler.chatWarning(sender, "This filler will take about " + getETA() + " at current speed.");
+        OutputHandler.chatWarning(sender, String.format("This filler will take about %d at current speed", getETA()));
     }
 
     private String getETA()
@@ -290,7 +290,7 @@ public class TickTaskFill implements ITickTask {
     public void setSpeed(int speed)
     {
         this.speed = speed;
-        OutputHandler.chatWarning(sender, "Changed speed of filler " + dimID + " to " + speed);
+        OutputHandler.chatWarning(sender, String.format("Changed speed of filler %d to %d", dimID, speed));
     }
 
     /**

@@ -1,15 +1,15 @@
-[
-{
+[{
   "modid": "ForgeEssentials",
   "name": "Forge Essentials",
   "description": "A suite of server mods for Minecraft Forge",
-"version": "${version}",
+  "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "https://github.com/ForgeEssentials/ForgeEssentialsMain",
   "updateUrl": "",
   "authorList": [
 	"AbrarSyed",
 	"luacs1998",
+	"olee",
 	"dries007",
 	"Malkierian",
 	"and others"
@@ -21,5 +21,4 @@
   "parent":"",
   "dependencies": [
   ]
-}
-]
+}]

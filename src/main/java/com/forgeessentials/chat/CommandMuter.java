@@ -2,8 +2,6 @@ package com.forgeessentials.chat;
 
 import java.util.ArrayList;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.CommandEvent;
 
@@ -87,15 +85,4 @@ public class CommandMuter {
 
     }
 
-    private void handleSayCommand(String print, ICommandSender sender)
-    {
-        if (sender instanceof CommandBlockLogic)
-        {
-            if (!muteCmdBlocks)
-            {
-                IRCHelper.postIRC("[CommandBlock] " + print);
-            }
-        }
-        else IRCHelper.postIRC("[CONSOLE] " + print);
-    }
 }

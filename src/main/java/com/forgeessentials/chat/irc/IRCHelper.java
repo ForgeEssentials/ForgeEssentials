@@ -5,8 +5,9 @@ import com.forgeessentials.chat.irc.commands.ircCommands;
 import com.forgeessentials.util.ConnectionMonitor;
 import com.forgeessentials.util.OutputHandler;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
 import org.pircbotx.PircBotX;
@@ -27,7 +28,7 @@ import org.pircbotx.hooks.events.QuitEvent;
 
 import java.io.IOException;
 
-public class IRCHelper extends ListenerAdapter implements Listener {
+public class IRCHelper extends ListenerAdapter<PircBotX> implements Listener<PircBotX> {
 
     public static int port;
     public static String server, name, channel, password, serverPass;
@@ -151,7 +152,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     
     private static void postMinecraft(String message)
     {
-        OutputHandler.sendMessage(MinecraftServer.getServer().getConfigurationManager(), message);
+        OutputHandler.broadcast(new ChatComponentText(message));
     }
 
     public static void shutdown()
@@ -177,15 +178,15 @@ public class IRCHelper extends ListenerAdapter implements Listener {
         }
         catch (NickAlreadyInUseException e)
         {
-            OutputHandler.chatError(sender, "Reconnection failed - the assigned nick is already in use. Try again in a few minutes.");
+            throw new CommandException("Reconnection failed - the assigned nick is already in use. Try again in a few minutes.");
         }
         catch (IOException e)
         {
-            OutputHandler.chatError(sender, "Reconnection failed - could not reach the IRC server.");
+            throw new CommandException("Reconnection failed - could not reach the IRC server.");
         }
         catch (IrcException e)
         {
-            OutputHandler.chatError(sender, "Reconnection failed - server actively refused it, or you are already connected to the server. Error is: " + e.getMessage());
+            throw new CommandException("Reconnection failed - server actively refused it, or you are already connected to the server. Error is: " + e.getMessage());
         }
     }
 
@@ -196,7 +197,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     
     // IRC events
     @Override
-    public void onPrivateMessage(PrivateMessageEvent e)
+    public void onPrivateMessage(PrivateMessageEvent<PircBotX> e)
     {
         // Good
         String raw = e.getMessage().trim();
@@ -224,7 +225,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     }
 
     @Override
-    public void onMessage(MessageEvent e)
+    public void onMessage(MessageEvent<PircBotX> e)
     {
         if (!e.getUser().getNick().equalsIgnoreCase(name))
         {
@@ -243,7 +244,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     }
 
     @Override
-    public void onQuit(QuitEvent e)
+    public void onQuit(QuitEvent<PircBotX> e)
     {
         if (!suppressEvents)
         {
@@ -255,7 +256,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     }
 
     @Override
-    public void onKick(KickEvent e)
+    public void onKick(KickEvent<PircBotX> e)
     {
         if (!suppressEvents)
         {
@@ -273,7 +274,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
     }
 
     @Override
-    public void onNickChange(NickChangeEvent e)
+    public void onNickChange(NickChangeEvent<PircBotX> e)
     {
         if (!suppressEvents)
         {
@@ -285,7 +286,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	 * @see org.pircbotx.hooks.ListenerAdapter#onJoin(org.pircbotx.hooks.events.JoinEvent)
 	 */
 	@Override
-	public void onJoin(JoinEvent e) throws Exception 
+	public void onJoin(JoinEvent<PircBotX> e) throws Exception 
 	{
 		if ( !suppressEvents )
 		{
@@ -298,7 +299,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	 * @see org.pircbotx.hooks.ListenerAdapter#onPart(org.pircbotx.hooks.events.PartEvent)
 	 */
 	@Override
-	public void onPart(PartEvent e) throws Exception 
+	public void onPart(PartEvent<PircBotX> e) throws Exception 
 	{
 		if ( !suppressEvents )
 		{
@@ -311,7 +312,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	 * @see org.pircbotx.hooks.ListenerAdapter#onConnect(org.pircbotx.hooks.events.ConnectEvent)
 	 */
 	@Override
-	public void onConnect(ConnectEvent event) throws Exception 
+	public void onConnect(ConnectEvent<PircBotX> event) throws Exception 
 	{
 		if ( !suppressEvents )
 		{
@@ -324,7 +325,7 @@ public class IRCHelper extends ListenerAdapter implements Listener {
 	 * @see org.pircbotx.hooks.ListenerAdapter#onDisconnect(org.pircbotx.hooks.events.DisconnectEvent)
 	 */
 	@Override
-	public void onDisconnect(DisconnectEvent event) throws Exception 
+	public void onDisconnect(DisconnectEvent<PircBotX> event) throws Exception 
 	{
 		if ( !suppressEvents )
 		{

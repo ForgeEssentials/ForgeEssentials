@@ -70,7 +70,7 @@ public class SQLProvider extends ZonePersistenceProvider {
             return sb.toString();
         }
 
-        public String createSelectStatement(Collection fields)
+        public String createSelectStatement(Collection<?> fields)
         {
             for (Object f : fields)
                 if (!columns.containsKey(f))

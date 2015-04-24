@@ -2,15 +2,16 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
-import com.forgeessentials.commons.selections.WarpPoint;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.teleport.util.Warp;
 import com.forgeessentials.util.OutputHandler;
@@ -44,26 +45,15 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 1)
         {
-            if (TeleportDataManager.warps.containsKey(args[0].toLowerCase()))
-            {
-                if (PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
-                {
-                    Warp warp = TeleportDataManager.warps.get(args[0].toLowerCase());
-                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-                    playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
-                    CommandBack.justDied.remove(sender.getPersistentID());
-                    TeleportHelper.teleport(sender, warp.getPoint());
-                }
-                else
-                {
-                    OutputHandler.chatError(sender,
-                            "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-                }
-            }
-            else
-            {
-                OutputHandler.chatError(sender, "That warp doesn't exist!");
-            }
+            if (!TeleportDataManager.warps.containsKey(args[0].toLowerCase()))
+                throw new TranslatedCommandException("That warp doesn't exist!");
+            if (!PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
+                throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
+            Warp warp = TeleportDataManager.warps.get(args[0].toLowerCase());
+            PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
+            playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
+            CommandBack.justDied.remove(sender.getPersistentID());
+            TeleportHelper.teleport(sender, warp.getPoint());
         }
         else if (args.length == 2)
         {
@@ -72,17 +62,13 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                 if (args[0].equalsIgnoreCase("set"))
                 {
                     if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
-                    {
-                        OutputHandler.chatError(sender, "That warp already exists. Use '/warp del <name>' to delete.");
-                    }
+                        throw new TranslatedCommandException("That warp already exists. Use '/warp del <name>' to delete.");
                     else
                     {
                         Warp warp = new Warp(args[1].toLowerCase(), new WarpPoint(sender.dimension, sender.posX, sender.posY, sender.posZ, sender.rotationPitch, sender.rotationYaw));
                         TeleportDataManager.addWarp(warp);
                         if (!TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
-                            {
-                                OutputHandler.chatError(sender, "Could not make warp! This is an error!");
-                            }
+                            throw new TranslatedCommandException("Could not make warp! This is an error!");
                         else OutputHandler.chatConfirmation(sender, "Done!");
                     }
                 }
@@ -94,19 +80,14 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                         OutputHandler.chatConfirmation(sender, "Done!");
                     }
                     else
-                    {
-                        OutputHandler.chatError(sender, "That warp doesn't exist!");
-                    }
+                        throw new TranslatedCommandException("That warp doesn't exist!");
                 }
                 else
-                {
-                    OutputHandler.chatError(sender, "Improper syntax. Please try this instead: [name] OR <set|del> <name> ");
-                }
+                    throw new TranslatedCommandException("Improper syntax. Please try this instead: [name] OR <set|del> <name> ");
             }
             else
             {
-                OutputHandler.chatError(sender,
-                        "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
+                throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
             }
         }
     }
@@ -126,9 +107,7 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
                     TeleportHelper.teleport(player, warp.getPoint());
                 }
                 else
-                {
-                    OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-                }
+                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
             }
             else
             {
@@ -155,13 +134,12 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
         return TeleportModule.PERM_WARP;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1)
         {
-            return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.warps.keySet());
+            return getListOfStringsMatchingLastWord(args, TeleportDataManager.warps.keySet());
         }
         else if (args.length == 2)
         {

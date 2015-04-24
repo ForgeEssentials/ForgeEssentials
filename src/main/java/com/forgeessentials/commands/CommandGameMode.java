@@ -2,8 +2,8 @@ package com.forgeessentials.commands;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.StatCollector;
@@ -12,6 +12,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -60,9 +61,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
 				}
 			}
 			else
-			{
-				throw new WrongUsageException("commands.gamemode.usage");
-			}
+				throw new CommandException("commands.gamemode.usage");
 		}
 	}
 
@@ -73,12 +72,12 @@ public class CommandGameMode extends FEcmdModuleCommands {
 		switch (args.length)
 		{
 		case 0:
-			throw new WrongUsageException("commands.gamemode.usage");
+			throw new CommandException("commands.gamemode.usage");
 		case 1:
 			gm = getGameTypeFromString(args[0]);
 			if (gm != null)
 			{
-				throw new WrongUsageException("commands.gamemode.usage");
+				throw new CommandException("commands.gamemode.usage");
 			}
 			else
 			{
@@ -96,7 +95,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
 			}
 			else
 			{
-				throw new WrongUsageException("commands.gamemode.usage");
+				throw new CommandException("commands.gamemode.usage");
 			}
 			break;
 		}
@@ -112,7 +111,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
 		EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
 		if (player == null)
 		{
-			OutputHandler.chatError(sender, String.format("Unable to find player: %1$s.", target));
+			OutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
 			return;
 		}
 		setGameMode(sender, target, player.capabilities.isCreativeMode ? WorldSettings.GameType.SURVIVAL : WorldSettings.GameType.CREATIVE);
@@ -123,7 +122,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
 		EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
 		if (player == null)
 		{
-			OutputHandler.chatError(sender, String.format("Unable to find player: %1$s.", target));
+			OutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
 			return;
 		}
 		setGameMode(sender, player, mode);
@@ -134,7 +133,7 @@ public class CommandGameMode extends FEcmdModuleCommands {
 		target.setGameType(mode);
 		target.fallDistance = 0.0F;
 		String modeName = StatCollector.translateToLocal("gameMode." + mode.getName());
-		OutputHandler.chatNotification(sender, String.format("%1$s's gamemode was changed to %2$s.", target.getCommandSenderName(), modeName));
+		OutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getCommandSenderName(), modeName));
 	}
 
 	private WorldSettings.GameType getGameTypeFromString(String string)

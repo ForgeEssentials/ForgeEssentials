@@ -51,6 +51,7 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.Environment;
+import com.forgeessentials.core.misc.Translator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -332,17 +333,17 @@ public final class FunctionHelper {
 	 * @param timeInSec
 	 * @return Time in string format
 	 */
-	public static String parseTime(int timeInSec)
+	public static String parseTime(long timeInSec)
 	{
 		String uptime = "";
-		int weeks = timeInSec / (86400 * 7);
-		int remainder = timeInSec % (86400 * 7);
-		int days = remainder / 86400;
+		long weeks = timeInSec / (86400 * 7);
+		long remainder = timeInSec % (86400 * 7);
+		long days = remainder / 86400;
 		remainder = timeInSec % 86400;
-		int hours = remainder / 3600;
+		long hours = remainder / 3600;
 		remainder = timeInSec % 3600;
-		int minutes = remainder / 60;
-		int seconds = remainder % 60;
+		long minutes = remainder / 60;
+		long seconds = remainder % 60;
 
 		if (weeks != 0)
 		{
@@ -413,7 +414,7 @@ public final class FunctionHelper {
 			}
 			catch (NumberFormatException e)
 			{
-				throw new NumberFormatException(String.format("%s param was not recognized as number. Please try again.", pair[1]));
+				throw new NumberFormatException(Translator.format("%s param was not recognized as number. Please try again.", pair[1]));
 			}
 		}
 		return new ImmutablePair<String, Integer>(ID, meta);
@@ -543,7 +544,6 @@ public final class FunctionHelper {
 	public static String getCurrentTimeString()
 	{
 		Calendar c = Calendar.getInstance();
-
         return String.format("%02d:%02d", c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
 	}
 

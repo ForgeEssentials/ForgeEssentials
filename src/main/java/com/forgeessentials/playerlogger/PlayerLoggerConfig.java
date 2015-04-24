@@ -19,7 +19,7 @@ public class PlayerLoggerConfig extends ConfigLoaderBase {
     {
         config.addCustomCategoryComment(CAT, "PlayerLogger config");
         databaseType = config.get(CAT, "DB_type", "h2", "Database type. Available types are h2 and mysql.").getString();
-        databaseUrl = config.get(CAT, "DB_url", "playerlogger", "Database url. Filename for H2 or server address for MySql (e.g., \"localhost:3306/forgeessentials\").").getString();
+        databaseUrl = config.get(CAT, "DB_url", "ForgeEssentials/playerlogger", "Database url. Filename for H2 or server address for MySql (e.g., \"localhost:3306/forgeessentials\").").getString();
         databaseUsername = config.get(CAT, "DB_user", "forgeessentials", "Database type. Available types are h2 and mysql.").getString();
         databasePassword = config.get(CAT, "DB_password", "forgeessentials", "Database type. Available types are h2 and mysql.").getString();
     }
@@ -29,7 +29,7 @@ public class PlayerLoggerConfig extends ConfigLoaderBase {
     {
         config.addCustomCategoryComment(CAT, "Configure the backup system.");
         config.get(CAT, "DB_type", "h2", "Database type. Available types are h2 and mysql.").set(databaseType);
-        config.get(CAT, "DB_url", "playerlogger", "Database url. Filename for H2 or server address for MySql.").set(databaseUrl);
+        config.get(CAT, "DB_url", "ForgeEssentials/playerlogger", "Database url. Filename for H2 or server address for MySql.").set(databaseUrl);
         config.get(CAT, "DB_user", "forgeessentials", "Database type. Available types are h2 and mysql.").set(databaseUsername);
         config.get(CAT, "DB_password", "forgeessentials", "Database type. Available types are h2 and mysql.").set(databasePassword);
     }

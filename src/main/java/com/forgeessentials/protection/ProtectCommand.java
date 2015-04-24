@@ -1,17 +1,20 @@
 package com.forgeessentials.protection;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 public class ProtectCommand extends ForgeEssentialsCommandBase{
-    @Override public void processCommand(ICommandSender var1, String[] var2)
+    
+    @Override public void processCommand(ICommandSender player, String[] var2)
     {
         switch(var2.length)
         {
         case 0:
-            OutputHandler.chatNotification(var1, "List of settings: gamemode");
+            OutputHandler.chatNotification(player, "List of settings: gamemode");
             break;
         /*
         case 3:
@@ -32,8 +35,7 @@ public class ProtectCommand extends ForgeEssentialsCommandBase{
             */
 
         default:
-            OutputHandler.chatError(var1, "Command syntax is wrong. Try " + getCommandUsage(var1));
-            break;
+            throw new TranslatedCommandException("Syntax error. Try %s", getCommandUsage(player));
         }
     }
 

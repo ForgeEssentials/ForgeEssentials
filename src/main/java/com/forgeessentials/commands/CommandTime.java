@@ -2,9 +2,7 @@ package com.forgeessentials.commands;
 
 import java.util.List;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -14,6 +12,8 @@ import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.WeatherTimeData;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
@@ -94,7 +94,7 @@ public class CommandTime extends FEcmdModuleCommands {
 	{
 		if (args.length == 0)
 		{
-			throw new WrongUsageException(getCommandUsage(sender));
+			throw new TranslatedCommandException(getCommandUsage(sender));
 		}
 
 		switch (args[0]) {
@@ -109,17 +109,17 @@ public class CommandTime extends FEcmdModuleCommands {
 			}
             WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
             wt.freezeTime = world.getWorldTime();
-			return String.format("Set time to %s.", args[1]);
+			return Translator.format("Set time to %s.", args[1]);
 		}
 		case "add":
 		{
 			if (args.length == 1) {
-				throw new CommandException("Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
+				throw new TranslatedCommandException("Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
 			}
 			world.setWorldTime(world.getWorldTime() + parseInt(sender, args[1]));
             WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
             wt.freezeTime = world.getWorldTime();
-			return String.format("Added %d to the current time.", args[1]);
+			return Translator.format("Added %d to the current time.", args[1]);
 
 		}
 		case "freeze":
@@ -141,14 +141,14 @@ public class CommandTime extends FEcmdModuleCommands {
 				} else if (args[1].equalsIgnoreCase("night")) {
 					wt.day = false;
 				} else {
-					throw new CommandException("Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
+					throw new TranslatedCommandException("Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
 				}
 			}
-			return String.format("Locked time to %s.", args[1]);
+			return Translator.format("Locked time to %s.", args[1]);
 		}
 		default:
 		{
-			throw new WrongUsageException(getCommandUsage(sender));
+			throw new TranslatedCommandException(getCommandUsage(sender));
 		}
 		}
 	}
@@ -159,7 +159,6 @@ public class CommandTime extends FEcmdModuleCommands {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
     @Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{

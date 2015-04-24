@@ -29,18 +29,22 @@ public class RespawnHandler {
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    @SuppressWarnings("deprecation")
     public static WarpPoint getPlayerSpawn(EntityPlayer player, WarpPoint location)
     {
         UserIdent ident = new UserIdent(player);
         if (location == null)
             location = new WarpPoint(player);
         
-        if (APIRegistry.perms.checkUserPermission(ident, FEPermissions.SPAWN_BED) && player.getBedLocation() != null)
+        if (APIRegistry.perms.checkUserPermission(ident, FEPermissions.SPAWN_BED))
         {
-            ChunkCoordinates spawn = player.getBedLocation();
-            EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
-            return new WarpPoint(player.dimension, spawn.posX, spawn.posY, spawn.posZ, player.cameraYaw, player.cameraPitch);
+            ChunkCoordinates spawn = player.getBedLocation(player.dimension);
+            if (spawn != null)
+                spawn = EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
+            if (spawn != null)
+            {
+                // Bed seems OK, so just return null to let default MC code handle respawn
+                return null;
+            }
         }
         
         String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null, GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN_LOC, true);
@@ -51,6 +55,7 @@ public class RespawnHandler {
                 return new WarpPoint(point, player.cameraYaw, player.cameraPitch);
         }
         
+        // No spawn set - let default MC code handle respawn
         return null;
     }
 

@@ -1,18 +1,13 @@
 package com.forgeessentials.perftools;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import java.text.DecimalFormat;
+
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
-import net.minecraftforge.server.command.ForgeCommand;
-
-import java.text.DecimalFormat;
 
 public class CommandServerPerf extends ForgeEssentialsCommandBase
 {

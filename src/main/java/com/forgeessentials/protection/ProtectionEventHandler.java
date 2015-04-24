@@ -44,6 +44,7 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
 import com.forgeessentials.protection.effect.PotionEffect;
@@ -225,7 +226,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         if (stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE)) == GameType.CREATIVE
                 && stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, point, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
         {
-            OutputHandler.chatError(e.player, "Cannot place block outside creative area");
+            OutputHandler.chatError(e.player, Translator.translate("Cannot place block outside creative area"));
             e.setCanceled(true);
         }
     }
@@ -300,8 +301,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             // If entity is in creative area, but player not, deny interaction
             e.useBlock = DENY;
             if (e.action != LEFT_CLICK_BLOCK)
-                OutputHandler.chatError(e.entityPlayer, "Cannot interact with creative area if not in creative mode.");
-            return;
+                OutputHandler.chatError(e.entityPlayer, Translator.translate("Cannot interact with creative area if not in creative mode."));
         }
     }
 

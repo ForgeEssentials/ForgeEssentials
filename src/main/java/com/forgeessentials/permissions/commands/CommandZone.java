@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionContext;
@@ -23,6 +22,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.EventCancelledException;
@@ -101,8 +101,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                 parseEntryExitMessage(sender, worldZone, args, arg.equals("entry"));
                 break;
             default:
-                OutputHandler.chatError(sender, "Unknown command argument");
-                break;
+                throw new TranslatedCommandException("Unknown command argument");
             }
         }
     }
@@ -199,11 +198,11 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
         if (worldZone == null)
         {
-            throw new CommandException("No world found");
+            throw new TranslatedCommandException("No world found");
         }
         if (args.isEmpty())
         {
-            throw new CommandException("Missing arguments!");
+            throw new TranslatedCommandException("Missing arguments!");
         }
         if (tabCompleteMode && args.size() == 1)
         {
@@ -223,11 +222,11 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         AreaZone zone = getAreaZone(worldZone, zoneName);
         if (!redefine && zone != null)
         {
-            throw new CommandException(String.format("Area \"%s\" already exists!", zoneName));
+            throw new TranslatedCommandException(String.format("Area \"%s\" already exists!", zoneName));
         }
         else if (redefine && zone == null)
         {
-            throw new CommandException(String.format("Area \"%s\" does not exist!", zoneName));
+            throw new TranslatedCommandException(String.format("Area \"%s\" does not exist!", zoneName));
         }
 
         if (tabCompleteMode)
@@ -251,12 +250,12 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         
         if (!(sender instanceof EntityPlayerMP))
         {
-            throw new CommandException("Command not usable from console. Try /zone set <name> <coords> instead");
+            throw new TranslatedCommandException("Command not usable from console. Try /zone set <name> <coords> instead");
         }
         
         area = SelectionHandler.selectionProvider.getSelection((EntityPlayerMP) sender);
         if (area == null)
-            throw new CommandException("No selection available. Please select a region first.");
+            throw new TranslatedCommandException("No selection available. Please select a region first.");
 
         PermissionContext context = new PermissionContext();
         context.setCommandSender(sender);
@@ -264,7 +263,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         context.setTargetLocationEnd(area.getHighPoint().toVec3());
         if (!PermissionsManager.checkPermission(context, PERM_DEFINE))
         {
-            throw new CommandException("You don't have the permission to define an area.");
+            throw new TranslatedCommandException("You don't have the permission to define an area.");
         }
 
         if (redefine && zone != null)
@@ -299,11 +298,11 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         }
         if (worldZone == null)
         {
-            throw new CommandException("No world found");
+            throw new TranslatedCommandException("No world found");
         }
         if (args.isEmpty())
         {
-            throw new CommandException("Missing arguments!");
+            throw new TranslatedCommandException("Missing arguments!");
         }
         if (tabCompleteMode)
         {
@@ -337,14 +336,14 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         }
         
         if (!(sender instanceof EntityPlayerMP))
-            throw new CommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
         EntityPlayerMP player = (EntityPlayerMP) sender;
         
         if (worldZone == null)
-            throw new CommandException("No world found");
+            throw new TranslatedCommandException("No world found");
 
         if (args.isEmpty())
-            throw new CommandException("Missing arguments!");
+            throw new TranslatedCommandException("Missing arguments!");
 
         if (tabCompleteMode)
         {
@@ -389,17 +388,17 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
         if (worldZone == null)
         {
-            throw new CommandException("No world found");
+            throw new TranslatedCommandException("No world found");
         }
         if (args.isEmpty())
         {
-            throw new CommandException("Missing arguments!");
+            throw new TranslatedCommandException("Missing arguments!");
         }
         String zoneName = args.remove();
         AreaZone zone = getAreaZone(worldZone, zoneName);
         if (zone == null)
         {
-            throw new CommandException(String.format("Area \"%s\" does not exist!", zoneName));
+            throw new TranslatedCommandException(String.format("Area \"%s\" does not exist!", zoneName));
         }
 
         if (args.isEmpty())

@@ -28,6 +28,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.core.misc.TickTaskHandler;
 import com.forgeessentials.core.misc.TickTaskHandler.TickTask;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandButcherTickTask implements TickTask {
@@ -90,7 +92,7 @@ public class CommandButcherTickTask implements TickTask {
         }
         catch (IllegalArgumentException e)
         {
-            OutputHandler.chatError(sender, "Unknown mob type. Mob types are " + StringUtils.join(CommandButcherTickTask.ButcherMobType.values(), ", "));
+            throw new TranslatedCommandException("Unknown mob type. Mob types are " + StringUtils.join(CommandButcherTickTask.ButcherMobType.values(), ", "));
         }
     }
 
@@ -214,7 +216,7 @@ public class CommandButcherTickTask implements TickTask {
     @Override
     public void onComplete()
     {
-        OutputHandler.chatConfirmation(sender, String.format("%s mobs killed.", killCount));
+        OutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
     }
 
     @Override

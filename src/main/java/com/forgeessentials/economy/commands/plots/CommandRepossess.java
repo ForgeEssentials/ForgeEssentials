@@ -1,19 +1,20 @@
 package com.forgeessentials.economy.commands.plots;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.AreaZone;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.plots.PlotManager;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.events.PlotEvent;
-import net.minecraft.command.CommandException;
+import java.util.UUID;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.UUID;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.economy.plots.PlotManager;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.util.events.PlotEvent;
 
 public class CommandRepossess extends ForgeEssentialsCommandBase
 {
@@ -23,7 +24,7 @@ public class CommandRepossess extends ForgeEssentialsCommandBase
         AreaZone plot = (AreaZone) APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
         if (!plot.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM))
         {
-            throw new CommandException("No such plot!");
+            throw new TranslatedCommandException("No such plot!");
         }
         EntityPlayer newowner = UserIdent.getPlayerByUsername(args[1]);
         EntityPlayer oldowner = UserIdent.getPlayerByUuid(UUID.fromString(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER)));

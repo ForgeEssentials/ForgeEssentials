@@ -2,7 +2,6 @@ package com.forgeessentials.util.selections;
 
 //Depreciated
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -10,6 +9,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandExpand extends ForgeEssentialsCommandBase {
@@ -30,10 +30,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
     {
         Selection sel = SelectionHandler.selectionProvider.getSelection(player);
         if (sel == null)
-        {
-            OutputHandler.chatError(player, "Invalid previous selection.");
-            return;
-        }
+            throw new TranslatedCommandException("Invalid selection.");
         
         if (args.length == 1)
         {
@@ -126,8 +123,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
                 }
                 catch (Exception ex)
                 {
-                    OutputHandler.chatError(player, "Neither " + args[0] + " or " + args[1] + " is a number.");
-                    return;
+                    throw new TranslatedCommandException("Neither %s or %s is a number", args[0], args[1]);
                 }
             }
             if (args[0].equalsIgnoreCase("north") || args[1].equalsIgnoreCase("north"))
@@ -197,15 +193,13 @@ public class CommandExpand extends ForgeEssentialsCommandBase {
                 }
             }
             else
-            {
-                OutputHandler.chatError(player, "Invalid Direction");
-            }
+                throw new TranslatedCommandException("Invalid Direction");
             OutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
             return;
         }
         else
         {
-            throw new CommandException(getCommandUsage(player));
+            throw new TranslatedCommandException(getCommandUsage(player));
         }
     }
 

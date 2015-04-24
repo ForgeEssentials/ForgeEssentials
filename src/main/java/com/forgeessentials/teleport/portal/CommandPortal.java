@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Queue;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -13,6 +12,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.NamedWorldArea;
 import com.forgeessentials.util.NamedWorldPoint;
 import com.forgeessentials.util.OutputHandler;
@@ -86,7 +87,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
             listPortals(sender, args);
             break;
         default:
-            throw new CommandException("Unknown subcommand " + subcommand);
+            throw new TranslatedCommandException("Unknown subcommand " + subcommand);
         }
     }
 
@@ -100,7 +101,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
 
         String name = args.remove();
         if (!recreate && PortalManager.getInstance().portals.containsKey(name))
-            throw new CommandException("Portal by that name already exists. Use recreate!");
+            throw new TranslatedCommandException("Portal by that name already exists. Use recreate!");
 
         boolean frame = true;
         if (!args.isEmpty())
@@ -122,7 +123,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
         if (!args.isEmpty())
         {
             if (args.size() < 3)
-                throw new CommandException("Expected arguments [x y z]");
+                throw new TranslatedCommandException("Expected arguments [x y z]");
             int x = parseInt(sender, args.remove());
             int y = parseInt(sender, args.remove());
             int z = parseInt(sender, args.remove());
@@ -134,15 +135,15 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
 
         Selection selection = SelectionHandler.selectionProvider.getSelection(sender);
         if (selection == null || !selection.isValid())
-            throw new CommandException("Missing selection");
+            throw new TranslatedCommandException("Missing selection");
         
         Point size = selection.getSize();
         if (size.getX() > 0 && size.getY() > 0 && size.getZ() > 0)
-            throw new CommandException("Portal selection must be flat in one axis");
+            throw new TranslatedCommandException("Portal selection must be flat in one axis");
         
         Portal portal = new Portal(new NamedWorldArea(selection.getDimension(), selection), target, frame);
         PortalManager.getInstance().add(name, portal);
-        OutputHandler.chatConfirmation(sender, String.format("Created new portal leading to %s", target.toString()));
+        OutputHandler.chatConfirmation(sender, Translator.format("Created new portal leading to %s", target.toString()));
     }
 
     private static void parseTarget(EntityPlayerMP sender, Queue<String> args)
@@ -156,13 +157,13 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
 
         String name = args.remove();
         if (!PortalManager.getInstance().portals.containsKey(name))
-            throw new CommandException("Portal by that name does not exist.");
+            throw new TranslatedCommandException("Portal by that name does not exist.");
 
         NamedWorldPoint target = new NamedWorldPoint(sender);
         if (!args.isEmpty())
         {
             if (args.size() < 3)
-                throw new CommandException("Expected arguments [x y z]");
+                throw new TranslatedCommandException("Expected arguments [x y z]");
             int x = parseInt(sender, args.remove());
             int y = parseInt(sender, args.remove());
             int z = parseInt(sender, args.remove());
@@ -173,7 +174,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
         }
         
         PortalManager.getInstance().get(name).target = target;
-        OutputHandler.chatConfirmation(sender, String.format("Set target for portal %s to %s", name, target.toString()));
+        OutputHandler.chatConfirmation(sender, Translator.format("Set target for portal %s to %s", name, target.toString()));
     }
 
     private static void parseDelete(EntityPlayerMP sender, Queue<String> args)
@@ -186,7 +187,7 @@ public class CommandPortal extends ForgeEssentialsCommandBase {
 
         String name = args.remove();
         if (!PortalManager.getInstance().portals.containsKey(name))
-            throw new CommandException("Portal by that name does not exist.");
+            throw new TranslatedCommandException("Portal by that name does not exist.");
 
         PortalManager.getInstance().remove(name);
         OutputHandler.chatConfirmation(sender, "Deleted portal " + name);

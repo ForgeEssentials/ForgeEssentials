@@ -1,16 +1,16 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.CommandDataManager;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.WeatherTimeData;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.CommandDataManager;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.util.WeatherTimeData;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandWeather extends FEcmdModuleCommands {
 
@@ -60,7 +60,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 	{
 		if (args.length == 0)
 		{
-			throw new WrongUsageException(getCommandUsage(sender));
+			throw new TranslatedCommandException(getCommandUsage(sender));
 		}
 		WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
 		wt.weatherSpecified = true;
@@ -84,7 +84,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 				}
 				else
 				{
-					throw new WrongUsageException(getCommandUsage(sender));
+					throw new TranslatedCommandException(getCommandUsage(sender));
 				}
 			}
 			CommandDataManager.WTmap.put(wt.dimID, wt);
@@ -109,7 +109,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 				}
 				else
 				{
-					throw new WrongUsageException(getCommandUsage(sender));
+					throw new TranslatedCommandException(getCommandUsage(sender));
 				}
 			}
 			CommandDataManager.WTmap.put(wt.dimID, wt);
@@ -123,7 +123,7 @@ public class CommandWeather extends FEcmdModuleCommands {
 		}
 		else
 		{
-			throw new WrongUsageException(getCommandUsage(sender));
+			throw new TranslatedCommandException(getCommandUsage(sender));
 		}
 	}
 

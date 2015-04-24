@@ -1,5 +1,6 @@
 package com.forgeessentials.afterlife;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class Grave {
 
     protected UUID owner;
 
-    protected ItemStack[] inv;
+    protected List<ItemStack> inventory = new ArrayList<ItemStack>();
 
     protected int xp;
 
@@ -92,18 +93,10 @@ public class Grave {
             point.setY(point.getY() + 1);
         }
         
-        inv = new ItemStack[drops.size()];
         for (int i = 0; i < drops.size(); i++)
-            inv[i] = drops.get(i).getEntityItem().copy();
+            inventory.add(drops.get(i).getEntityItem().copy());
 
         FEskullTe.createPlayerSkull(player, player.worldObj, point.getX(), point.getY(), point.getZ());
-    }
-
-    public int getSize()
-    {
-        if (inv == null)
-            return 0;
-        return inv.length % 9 == 0 ? inv.length : (inv.length / 9 + 1) * 9;
     }
 
     public void update()
@@ -169,18 +162,16 @@ public class Grave {
         player.openContainer = new ContainerChest(player.inventory, invGrave);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addCraftingToCrafters(player);
-
-        setOpen(true);
     }
 
     protected void dropItems()
     {
-        for (ItemStack is : inv)
+        for (ItemStack is : inventory)
         {
             EntityItem entity = new EntityItem(point.getWorld(), point.getX(), point.getY(), point.getZ(), is);
             point.getWorld().spawnEntityInWorld(entity);
         }
-        inv = new ItemStack[0];
+        inventory.clear();
     }
 
     public void remove(boolean dropItems)

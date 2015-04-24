@@ -1,6 +1,8 @@
 package com.forgeessentials.economy.commands;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.api.APIRegistry;
@@ -62,7 +64,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                     offeredItem = CommandBase.getItemByText(sender, itemName);
                 }
                 catch(NumberFormatException e) {
-                    offeredItem = (Item)GameData.getItemRegistry().getObject(itemName);
+                    offeredItem = GameData.getItemRegistry().getObject(itemName);
                 }
 
                 if (offeredItem != null)
@@ -113,30 +115,20 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                             }
                         }
                         MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
-                        OutputHandler.chatConfirmation(player, String.format("That cost you %d x %s. Your balance is %s.",
+                        OutputHandler.chatConfirmation(player, Translator.format("That cost you %d x %s. Your balance is %s.",
                                 amount, target.getDisplayName(), APIRegistry.wallet.getMoneyString(player.getPersistentID())));
                     }
                     else
-                    {
-                        //this should be removed
-                        OutputHandler.chatError(player, "You don't have the requested item in your inventory!");
-                    }
+                        throw new TranslatedCommandException("You don't have the requested item in your inventory!");
                 }
                 else
-                {
-                    OutputHandler.chatError(sender, String.format("Item %s was not found.", itemName));
-                }
+                    throw new TranslatedCommandException("Item %s was not found.", itemName);
             }
             else
-            {
-                //this should be removed
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <['amount'x]item[:'meta']> <command [args]>");
-        }
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <['amount'x]item[:'meta']> <command [args]>");
     }
 
     @Override
