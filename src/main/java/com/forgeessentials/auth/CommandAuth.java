@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -87,6 +89,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
                     // login worked
                     ModuleAuth.hasSession.add(sender.getPersistentID());
                     OutputHandler.chatConfirmation(sender, "Login successful.");
+                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent(sender));
                 }
                 else
                 {

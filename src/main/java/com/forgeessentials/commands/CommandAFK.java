@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.forgeessentials.util.events.FEPlayerEvent.PlayerNotAFKEvent;
+import com.forgeessentials.util.events.FEPlayerEvent.PlayerWentAFKEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -80,6 +82,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         {
             OutputHandler.chatConfirmation(afkData.player, selfInMessage);
         }
+        APIRegistry.getFEEventBus().post(new PlayerNotAFKEvent(afkData.player));
     }
 
     public void makeAFK(AFKdata afkData)
@@ -97,6 +100,7 @@ public class CommandAFK extends FEcmdModuleCommands {
         {
             OutputHandler.chatConfirmation(afkData.player, selfOutMessage);
         }
+        APIRegistry.getFEEventBus().post(new PlayerWentAFKEvent(afkData.player));
     }
 
     @Override
