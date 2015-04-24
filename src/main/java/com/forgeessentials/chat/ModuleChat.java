@@ -239,7 +239,7 @@ public class ModuleChat {
         {
             String format = FunctionHelper.formatColors(welcomeNewPlayerMsg);
             format = FunctionHelper.replaceAllIgnoreCase(format, "%username", e.entityPlayer.getCommandSenderName());
-            OutputHandler.sendMessageToAll(new ChatComponentText(format));
+            OutputHandler.broadcast(new ChatComponentText(format));
         }
     }
 

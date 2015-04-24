@@ -1,23 +1,17 @@
 package com.forgeessentials.scripting;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.api.APIRegistry;
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 
 public class ScriptParser {
 
@@ -27,249 +21,6 @@ public class ScriptParser {
 
     public static interface ScriptArgument {
         public String process(ICommandSender sender);
-    }
-
-    public static Map<String, ScriptMethod> scriptMethods = new HashMap<>();
-
-    public static Map<String, ScriptArgument> scriptArguments = new HashMap<>();
-
-    static
-    {
-        ScriptMethod function = new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                OutputHandler.chatConfirmation(sender, StringUtils.join(args, " "));
-                return true;
-            }
-        };
-        scriptMethods.put("echo", function);
-        scriptMethods.put("confirm", function);
-
-        scriptMethods.put("notify", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                OutputHandler.chatNotification(sender, StringUtils.join(args, " "));
-                return true;
-            }
-        });
-        scriptMethods.put("warn", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                OutputHandler.chatWarning(sender, StringUtils.join(args, " "));
-                return true;
-            }
-        });
-        scriptMethods.put("error", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                OutputHandler.chatError(sender, StringUtils.join(args, " "));
-                return true;
-            }
-        });
-        scriptMethods.put("fail", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                OutputHandler.chatError(sender, StringUtils.join(args, " "));
-                return false;
-            }
-        });
-        scriptMethods.put("confirmall", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                OutputHandler.sendMessageToAll(OutputHandler.confirmation(StringUtils.join(args, " ")));
-                return true;
-            }
-        });
-        scriptMethods.put("notifyall", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                OutputHandler.sendMessageToAll(OutputHandler.notification(StringUtils.join(args, " ")));
-                return true;
-            }
-        });
-        scriptMethods.put("warnall", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                OutputHandler.sendMessageToAll(OutputHandler.warning(StringUtils.join(args, " ")));
-                return true;
-            }
-        });
-        scriptMethods.put("errorall", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                OutputHandler.sendMessageToAll(OutputHandler.error(StringUtils.join(args, " ")));
-                return true;
-            }
-        });
-        scriptMethods.put("failall", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                OutputHandler.sendMessageToAll(OutputHandler.error(StringUtils.join(args, " ")));
-                return false;
-            }
-        });
-        scriptMethods.put("permcheck", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                if (sender == null || !(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                if (args.length < 1)
-                    throw new ScriptException("Missing argument for permcheck");
-                if (!APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
-                    throw new MissingPermissionException(args[0], args.length > 1 ? StringUtils.join(Arrays.copyOfRange(args, 1, args.length)) : "");
-                return true;
-            }
-        });
-        scriptMethods.put("permchecksilent", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                if (sender == null || !(sender instanceof EntityPlayerMP))
-                    return false;
-                if (args.length < 1)
-                    throw new ScriptException("Invalid argument count for permcheck");
-                if (!APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
-                    return false;
-                return true;
-            }
-        });
-        scriptMethods.put("!permcheck", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                if (sender == null || !(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                if (args.length < 1)
-                    throw new ScriptException("Missing argument for permcheck");
-                if (APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
-                    throw new MissingPermissionException(args[0], args.length > 1 ? StringUtils.join(Arrays.copyOfRange(args, 1, args.length)) : "");
-                return true;
-            }
-        });
-        scriptMethods.put("!permchecksilent", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                if (sender == null || !(sender instanceof EntityPlayerMP))
-                    return false;
-                if (args.length != 1)
-                    throw new ScriptException("Invalid argument count for permcheck");
-                if (APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
-                    return false;
-                return true;
-            }
-        });
-
-        // Script arguments
-
-        scriptArguments.put("player", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                return sender.getCommandSenderName();
-            }
-        });
-        scriptArguments.put("x", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                return Integer.toString((int) ((EntityPlayerMP) sender).posX);
-            }
-        });
-        scriptArguments.put("y", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                return Integer.toString((int) ((EntityPlayerMP) sender).posY);
-            }
-        });
-        scriptArguments.put("z", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                return Integer.toString((int) ((EntityPlayerMP) sender).posZ);
-            }
-        });
-        scriptArguments.put("xd", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                return Double.toString(((EntityPlayerMP) sender).posX);
-            }
-        });
-        scriptArguments.put("yd", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                return Double.toString(((EntityPlayerMP) sender).posY);
-            }
-        });
-        scriptArguments.put("zd", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                return Double.toString(((EntityPlayerMP) sender).posZ);
-            }
-        });
-        scriptArguments.put("dim", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                return Integer.toString(((EntityPlayerMP) sender).dimension);
-            }
-        });
-        scriptArguments.put("health", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                return Float.toString(((EntityPlayerMP) sender).getHealth());
-            }
-        });
-        scriptArguments.put("food", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                return Integer.toString(((EntityPlayerMP) sender).getFoodStats().getFoodLevel());
-            }
-        });
-        scriptArguments.put("saturation", new ScriptArgument() {
-            @Override
-            public String process(ICommandSender sender)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                return Float.toString(((EntityPlayerMP) sender).getFoodStats().getSaturationLevel());
-            }
-        });
     }
 
     private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@(\\w+)(.*)");
@@ -284,7 +35,7 @@ public class ScriptParser {
             String modifier = matcher.group(1).toLowerCase();
             String rest = matcher.group(2);
 
-            ScriptArgument argument = scriptArguments.get(modifier);
+            ScriptArgument argument = ScriptArguments.get(modifier);
             if (argument != null)
             {
                 actionArgs[i] = argument.process(sender) + rest;
@@ -371,7 +122,7 @@ public class ScriptParser {
         }
         else
         {
-            ScriptMethod method = scriptMethods.get(cmd);
+            ScriptMethod method = ScriptMethods.get(cmd);
             if (method == null)
                 throw new ScriptException("Unknown script method \"%s\"", cmd);
             return method.process(sender, args);

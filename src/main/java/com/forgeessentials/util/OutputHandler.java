@@ -3,7 +3,6 @@ package com.forgeessentials.util;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
@@ -17,8 +16,6 @@ import org.apache.logging.log4j.Logger;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public final class OutputHandler extends ConfigLoaderBase {
 	
     public static LogWrapper felog = new LogWrapper(LogManager.getLogger("ForgeEssentials"));
@@ -31,22 +28,22 @@ public final class OutputHandler extends ConfigLoaderBase {
 
     public static IChatComponent confirmation(String message)
     {
-        return colourize(new ChatComponentText(FunctionHelper.formatColors(message)), chatConfirmationColor);
+        return colorize(new ChatComponentText(FunctionHelper.formatColors(message)), chatConfirmationColor);
     }
 
     public static IChatComponent notification(String message)
     {
-        return colourize(new ChatComponentText(FunctionHelper.formatColors(message)), chatNotificationColor);
+        return colorize(new ChatComponentText(FunctionHelper.formatColors(message)), chatNotificationColor);
     }
 
     public static IChatComponent warning(String message)
     {
-        return colourize(new ChatComponentText(FunctionHelper.formatColors(message)), chatWarningColor);
+        return colorize(new ChatComponentText(FunctionHelper.formatColors(message)), chatWarningColor);
     }
 
     public static IChatComponent error(String message)
     {
-        return colourize(new ChatComponentText(FunctionHelper.formatColors(message)), chatErrorColor);
+        return colorize(new ChatComponentText(FunctionHelper.formatColors(message)), chatErrorColor);
     }
 
     // ------------------------------------------------------------
@@ -146,12 +143,11 @@ public final class OutputHandler extends ConfigLoaderBase {
     }
 
     /**
-     * Sends a global chat message.
+     * Sends a message to all clients
      *
-     * @param configurationManager The configuration manager used to send the message.
-     * @param message              The message to send.
+     * @param message              The message to send
      */
-    public static void sendMessageToAll(IChatComponent message)
+    public static void broadcast(IChatComponent message)
     {
         MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
     }
@@ -159,16 +155,16 @@ public final class OutputHandler extends ConfigLoaderBase {
     /**
      * Processes an IChatComponent and adds formatting to it.
      *
-     * @param toColour
-     * @param colour
+     * @param toColor
+     * @param color
      * @param others
      * @return
      */
-    public static IChatComponent colourize(IChatComponent toColour, EnumChatFormatting colour)
+    public static IChatComponent colorize(IChatComponent toColor, EnumChatFormatting color)
     {
-        ChatStyle style = new ChatStyle().setColor(colour);
-        toColour.setChatStyle(style);
-        return toColour;
+        ChatStyle style = new ChatStyle().setColor(color);
+        toColor.setChatStyle(style);
+        return toColor;
     }
     
     public static void setConfirmationColor(String color)

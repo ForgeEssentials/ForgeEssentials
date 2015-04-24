@@ -8,7 +8,6 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -58,7 +57,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
             try
             {
                 int id = parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
-                OutputHandler.sendMessageToAll(new ChatComponentText(AutoMessage.msg.get(id)));
+                OutputHandler.broadcast(new ChatComponentText(AutoMessage.msg.get(id)));
                 return;
             }
             catch (Exception e)

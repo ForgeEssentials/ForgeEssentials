@@ -15,6 +15,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
@@ -22,6 +23,7 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.scripting.ScriptParser;
 import com.forgeessentials.scripting.ScriptParser.MissingArgumentException;
+import com.forgeessentials.scripting.ScriptParser.MissingPermissionException;
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.util.OutputHandler;
@@ -237,6 +239,10 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
         catch (MissingArgumentException e)
         {
             throw new TranslatedCommandException("Error in script of pattern command %s", name);
+        }
+        catch (MissingPermissionException e)
+        {
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         }
         catch (ScriptException e)
         {

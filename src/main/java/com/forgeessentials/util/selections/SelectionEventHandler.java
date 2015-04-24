@@ -48,7 +48,7 @@ public class SelectionEventHandler extends ServerEventHandler {
         {
             SelectionHandler.selectionProvider.setStart((EntityPlayerMP) event.entityPlayer, point);
             IChatComponent format = new ChatComponentText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
-            player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
+            player.addChatMessage(OutputHandler.colorize(format, EnumChatFormatting.DARK_PURPLE));
             event.setCanceled(true);
         }
         // right Click
@@ -56,7 +56,7 @@ public class SelectionEventHandler extends ServerEventHandler {
         {
             SelectionHandler.selectionProvider.setEnd((EntityPlayerMP) event.entityPlayer, point);
             IChatComponent format = new ChatComponentText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
-            player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
+            player.addChatMessage(OutputHandler.colorize(format, EnumChatFormatting.DARK_PURPLE));
             event.setCanceled(true);
         }
     }

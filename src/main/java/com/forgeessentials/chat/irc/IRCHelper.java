@@ -7,7 +7,6 @@ import com.forgeessentials.util.OutputHandler;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -153,7 +152,7 @@ public class IRCHelper extends ListenerAdapter<PircBotX> implements Listener<Pir
     
     private static void postMinecraft(String message)
     {
-        OutputHandler.sendMessageToAll(new ChatComponentText(message));
+        OutputHandler.broadcast(new ChatComponentText(message));
     }
 
     public static void shutdown()
