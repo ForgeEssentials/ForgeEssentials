@@ -8,6 +8,7 @@ import java.util.Set;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -238,7 +239,8 @@ public class ModuleChat {
         {
             String format = FunctionHelper.formatColors(welcomeNewPlayerMsg);
             format = FunctionHelper.replaceAllIgnoreCase(format, "%username", e.entityPlayer.getCommandSenderName());
-            OutputHandler.sendMessage(MinecraftServer.getServer().getConfigurationManager(), format);        }
+            OutputHandler.sendMessageToAll(new ChatComponentText(format));
+        }
     }
 
 }

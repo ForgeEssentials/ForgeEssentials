@@ -41,7 +41,7 @@ public class ModuleBackup {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (server != null)
             OutputHandler.sendMessage(server, "[ForgeEssentials] " + msg);
-        OutputHandler.broadcast(OutputHandler.notification("[ForgeEssentials] " + msg));
+        OutputHandler.sendMessageToAll(OutputHandler.notification("[ForgeEssentials] " + msg));
     }
 
     @SubscribeEvent

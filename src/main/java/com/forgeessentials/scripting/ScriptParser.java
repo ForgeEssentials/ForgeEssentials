@@ -82,7 +82,7 @@ public class ScriptParser {
             @Override
             public boolean process(ICommandSender sender, String[] args)
             {
-                OutputHandler.broadcast(OutputHandler.confirmation(StringUtils.join(args, " ")));
+                OutputHandler.sendMessageToAll(OutputHandler.confirmation(StringUtils.join(args, " ")));
                 return true;
             }
         });
@@ -90,7 +90,7 @@ public class ScriptParser {
             @Override
             public boolean process(ICommandSender sender, String[] args)
             {
-                OutputHandler.broadcast(OutputHandler.notification(StringUtils.join(args, " ")));
+                OutputHandler.sendMessageToAll(OutputHandler.notification(StringUtils.join(args, " ")));
                 return true;
             }
         });
@@ -98,7 +98,7 @@ public class ScriptParser {
             @Override
             public boolean process(ICommandSender sender, String[] args)
             {
-                OutputHandler.broadcast(OutputHandler.warning(StringUtils.join(args, " ")));
+                OutputHandler.sendMessageToAll(OutputHandler.warning(StringUtils.join(args, " ")));
                 return true;
             }
         });
@@ -106,7 +106,7 @@ public class ScriptParser {
             @Override
             public boolean process(ICommandSender sender, String[] args)
             {
-                OutputHandler.broadcast(OutputHandler.error(StringUtils.join(args, " ")));
+                OutputHandler.sendMessageToAll(OutputHandler.error(StringUtils.join(args, " ")));
                 return true;
             }
         });
@@ -114,7 +114,7 @@ public class ScriptParser {
             @Override
             public boolean process(ICommandSender sender, String[] args)
             {
-                OutputHandler.broadcast(OutputHandler.error(StringUtils.join(args, " ")));
+                OutputHandler.sendMessageToAll(OutputHandler.error(StringUtils.join(args, " ")));
                 return false;
             }
         });

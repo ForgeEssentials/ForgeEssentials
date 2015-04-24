@@ -2,6 +2,7 @@ package com.forgeessentials.util;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
@@ -30,58 +31,22 @@ public final class OutputHandler extends ConfigLoaderBase {
 
     public static IChatComponent confirmation(String message)
     {
-        IChatComponent msg = new ChatComponentText(FunctionHelper.formatColors(message));
-        msg.getChatStyle().setColor(chatConfirmationColor);
-        return msg;
+        return colourize(new ChatComponentText(FunctionHelper.formatColors(message)), chatConfirmationColor);
     }
 
     public static IChatComponent notification(String message)
     {
-        IChatComponent msg = new ChatComponentText(FunctionHelper.formatColors(message));
-        msg.getChatStyle().setColor(chatNotificationColor);
-        return msg;
+        return colourize(new ChatComponentText(FunctionHelper.formatColors(message)), chatNotificationColor);
     }
 
     public static IChatComponent warning(String message)
     {
-        IChatComponent msg = new ChatComponentText(FunctionHelper.formatColors(message));
-        msg.getChatStyle().setColor(chatWarningColor);
-        return msg;
+        return colourize(new ChatComponentText(FunctionHelper.formatColors(message)), chatWarningColor);
     }
 
     public static IChatComponent error(String message)
     {
-        IChatComponent msg = new ChatComponentText(FunctionHelper.formatColors(message));
-        msg.getChatStyle().setColor(chatErrorColor);
-        return msg;
-    }
-
-    // ------------------------------------------------------------
-
-    public static void confirmation(ICommandSender sender, String message)
-    {
-        sender.addChatMessage(confirmation(message));
-    }
-
-    public static void notification(ICommandSender sender, String message)
-    {
-        sender.addChatMessage(notification(message));
-    }
-
-    public static void warning(ICommandSender sender, String message)
-    {
-        sender.addChatMessage(warning(message));
-    }
-
-    public static void error(ICommandSender sender, String message)
-    {
-        sender.addChatMessage(error(message));
-    }
-
-    public static void broadcast(IChatComponent message)
-    {
-        for (Object player : FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
-            ((ICommandSender) player).addChatMessage(message);
+        return colourize(new ChatComponentText(FunctionHelper.formatColors(message)), chatErrorColor);
     }
 
     // ------------------------------------------------------------
@@ -177,7 +142,7 @@ public final class OutputHandler extends ConfigLoaderBase {
      */
     public static void sendMessage(ICommandSender recipient, String message)
     {
-        recipient.addChatMessage(createFromText(message));
+        recipient.addChatMessage(new ChatComponentText(message));
     }
 
     /**
@@ -186,15 +151,9 @@ public final class OutputHandler extends ConfigLoaderBase {
      * @param configurationManager The configuration manager used to send the message.
      * @param message              The message to send.
      */
-    public static void sendMessage(ServerConfigurationManager configurationManager, String message)
+    public static void sendMessageToAll(IChatComponent message)
     {
-        configurationManager.sendChatMsg(createFromText(message));
-    }
-
-    public static IChatComponent createFromText(String string)
-    {
-        ChatComponentText component = new ChatComponentText(string);
-        return component;
+        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
     }
 
     /**

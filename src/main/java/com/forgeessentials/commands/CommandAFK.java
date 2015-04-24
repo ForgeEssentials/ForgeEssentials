@@ -9,6 +9,7 @@ import com.forgeessentials.util.events.FEPlayerEvent.PlayerWentAFKEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -75,8 +76,7 @@ public class CommandAFK extends FEcmdModuleCommands {
 
         if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
-            OutputHandler.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    Translator.format(inMessage, afkData.player.getDisplayName()));
+            OutputHandler.sendMessageToAll(new ChatComponentText(Translator.format(inMessage, afkData.player.getDisplayName())));
         }
         else
         {
@@ -93,8 +93,7 @@ public class CommandAFK extends FEcmdModuleCommands {
 
         if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
-            OutputHandler.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    Translator.format(outMessage, afkData.player.getDisplayName()));
+            OutputHandler.sendMessageToAll(new ChatComponentText(Translator.format(outMessage, afkData.player.getDisplayName())));
         }
         else
         {

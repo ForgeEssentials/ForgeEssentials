@@ -119,9 +119,9 @@ public class PermissionScheduler extends ServerEventHandler {
 
             schedule.state = desiredState;
             if (schedule.state && schedule.onMessage != null)
-                OutputHandler.broadcast(OutputHandler.confirmation(schedule.onMessage));
+                OutputHandler.sendMessageToAll(OutputHandler.confirmation(schedule.onMessage));
             if (!schedule.state && schedule.offMessage != null)
-                OutputHandler.broadcast(OutputHandler.confirmation(schedule.offMessage));
+                OutputHandler.sendMessageToAll(OutputHandler.confirmation(schedule.offMessage));
         }
     }
 
