@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 @Cancelable
-public class PlayerMoveEvent extends PlayerEvent {
+public class PlayerMoveEvent extends FEPlayerEvent {
     public final WarpPoint before;
     public final WarpPoint after;
 

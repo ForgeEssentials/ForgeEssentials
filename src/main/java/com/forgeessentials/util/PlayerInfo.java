@@ -20,7 +20,7 @@ import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
-import com.forgeessentials.util.events.NoPlayerInfoEvent;
+import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.annotations.Expose;
 

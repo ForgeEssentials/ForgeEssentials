@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.NoPlayerInfoEvent;
+import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.Questioner.IReplyHandler;
 
