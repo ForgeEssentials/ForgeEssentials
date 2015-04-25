@@ -8,7 +8,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.selections.SelectionHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -29,7 +29,7 @@ public class CUIComms
     public static final String[] worldEditSelectionCommands = new String[] { "/pos1", "/pos2", "/sel", "/desel", "/hpos1", "/hpos2", "/chunk", "/expand",
             "/contract", "/outset", "/inset", "/shift" };
 
-    protected List<PlayerInfo> updatedSelectionPlayers = new ArrayList<PlayerInfo>();
+    protected List<EntityPlayerMP> updatedSelectionPlayers = new ArrayList<>();
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void checkWECommands(CommandEvent e)
@@ -41,7 +41,7 @@ public class CUIComms
             {
                 if (cmd.equals(weCmd))
                 {
-                    updatedSelectionPlayers.add(PlayerInfo.getPlayerInfo((EntityPlayerMP) e.sender));
+                    updatedSelectionPlayers.add((EntityPlayerMP) e.sender);
                     return;
                 }
             }
@@ -51,10 +51,8 @@ public class CUIComms
     @SubscribeEvent
     public void serverTick(TickEvent.ServerTickEvent e)
     {
-        for (PlayerInfo pi : updatedSelectionPlayers)
-        {
-            pi.sendSelectionUpdate();
-        }
+        for (EntityPlayerMP player : updatedSelectionPlayers)
+            SelectionHandler.sendUpdate(player);
         updatedSelectionPlayers.clear();
     }
 
@@ -63,9 +61,7 @@ public class CUIComms
     {
         //if (ModuleLauncher.getModuleList().contains("WEIntegration") && FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
         if (FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
-        {
-            updatedSelectionPlayers.add(PlayerInfo.getPlayerInfo(event.entityPlayer));
-        }
+            updatedSelectionPlayers.add((EntityPlayerMP) event.entityPlayer);
     }
 
 }

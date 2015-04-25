@@ -298,7 +298,7 @@ public class ServerZone extends Zone {
     }
 
     @Override
-    public SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident)
+    public SortedSet<GroupEntry> getStoredPlayerGroupEntries(UserIdent ident)
     {
         registerPlayer(ident);
         Set<String> pgs = playerGroups.get(ident);
@@ -311,7 +311,7 @@ public class ServerZone extends Zone {
 
     public SortedSet<GroupEntry> getAdditionalPlayerGroups(UserIdent ident)
     {
-        SortedSet<GroupEntry> result = getStoredPlayerGroups(ident);
+        SortedSet<GroupEntry> result = getStoredPlayerGroupEntries(ident);
         if (ident != null)
         {
             if (ident.hasGameProfile() && !ident.isFakePlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getGameProfile()))
@@ -369,7 +369,7 @@ public class ServerZone extends Zone {
         if (ident != null)
             for (Zone z : getZonesAt(ident))
                 if (!(z instanceof ServerZone))
-                    result.addAll(z.getStoredPlayerGroups(ident));
+                    result.addAll(z.getStoredPlayerGroupEntries(ident));
         return includeGroups(result);
     }
 
@@ -428,6 +428,7 @@ public class ServerZone extends Zone {
                 result.add(zone);
         result.add(w);
         result.add(this);
+        result.add(rootZone);
         return result;
     }
 

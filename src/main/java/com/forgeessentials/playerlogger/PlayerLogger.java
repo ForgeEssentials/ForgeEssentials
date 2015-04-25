@@ -84,8 +84,10 @@ public class PlayerLogger extends ServerEventHandler {
     public void close()
     {
         transactionIndex = 0;
-        playerCache.clear();
+        worldCache.clear();
         blockCache.clear();
+        blockTypeCache.clear();
+        playerCache.clear();
 
         if (em != null && em.isOpen())
             em.close();

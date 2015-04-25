@@ -24,7 +24,6 @@ import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.selections.SelectionHandler;
 
@@ -368,7 +367,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         SelectionHandler.selectionProvider.setStart(player, area.getLowPoint());
         SelectionHandler.selectionProvider.setEnd(player, area.getHighPoint());
         SelectionHandler.selectionProvider.setDimension(player, worldZone.getDimensionID());
-        PlayerInfo.getPlayerInfo(player).sendSelectionUpdate();
+        SelectionHandler.sendUpdate(player);
         OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been selected.", zoneName));
     }
 

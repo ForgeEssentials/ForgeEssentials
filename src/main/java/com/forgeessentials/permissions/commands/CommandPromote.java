@@ -65,7 +65,7 @@ public class CommandPromote extends ForgeEssentialsCommandBase {
         if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(groupName, FEPermissions.GROUP_PROMOTION)))
             throw new TranslatedCommandException("Group %s is not available for promotion. Allow %s on the group first.", groupName, FEPermissions.GROUP_PROMOTION);
 
-        for (GroupEntry group : APIRegistry.perms.getServerZone().getStoredPlayerGroups(ident))
+        for (GroupEntry group : APIRegistry.perms.getServerZone().getStoredPlayerGroupEntries(ident))
             if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), FEPermissions.GROUP_PROMOTION)))
             {
                 APIRegistry.perms.removePlayerFromGroup(ident, group.getGroup());

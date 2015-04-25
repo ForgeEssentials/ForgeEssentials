@@ -679,7 +679,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident)
     {
-        return getServerZone().getStoredPlayerGroups(ident);
+        return getServerZone().getStoredPlayerGroupEntries(ident);
     }
     
     // --------------------------------------------------------

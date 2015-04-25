@@ -208,10 +208,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
         if (wallet == null)
             wallet = DataManager.getInstance().load(PlayerWallet.class, ident.getOrGenerateUuid().toString());
         if (wallet == null)
-        {
             wallet = new PlayerWallet(FunctionHelper.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_STARTBUDGET), 0));
-            wallets.put(ident, wallet);
-        }
+        wallets.put(ident, wallet);
         return wallet;
     }
 
@@ -233,7 +231,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     @Override
     public String toString(long amount)
     {
-        return Long.toString(amount) + currency(amount);
+        return Long.toString(amount) + " " + currency(amount);
     }
 
     /* ------------------------------------------------------------ */

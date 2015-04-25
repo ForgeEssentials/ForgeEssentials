@@ -530,7 +530,7 @@ public class PermissionCommandParser {
                 arguments.confirm(String.format("Groups for player %s (without includes):", ident.getUsernameOrUUID()));
             else
                 arguments.confirm(String.format("Groups for player %s (without includes) in %s:", ident.getUsernameOrUUID(), zone.getName()));
-            for (GroupEntry g : zone.getStoredPlayerGroups(ident))
+            for (GroupEntry g : zone.getStoredPlayerGroupEntries(ident))
             {
                 arguments.confirm("  " + g);
             }

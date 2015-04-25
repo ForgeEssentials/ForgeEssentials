@@ -4,10 +4,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
+import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.ISelectionProvider;
+import com.forgeessentials.util.selections.SelectionHandler;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.Vector;
@@ -19,7 +21,8 @@ import com.sk89q.worldedit.regions.selector.CylinderRegionSelector;
 import com.sk89q.worldedit.regions.selector.EllipsoidRegionSelector;
 import com.sk89q.worldedit.regions.selector.Polygonal2DRegionSelector;
 
-public class WESelectionHandler implements ISelectionProvider {
+public class WESelectionHandler implements ISelectionProvider
+{
 
     public WESelectionHandler()
     {
@@ -42,9 +45,8 @@ public class WESelectionHandler implements ISelectionProvider {
             {
                 Vector wepos1 = rs.getPrimaryPosition();
                 Vector wepos2 = rs.isDefined() ? rs.getRegion().getPos2() : null;
-                return new Selection(world,
-                        new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()),
-                        wepos2 == null ? null : new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null : new Point(
+                        wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
             }
             catch (IncompleteRegionException e)
             {
@@ -58,9 +60,8 @@ public class WESelectionHandler implements ISelectionProvider {
             {
                 Vector wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
                 Vector wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
-                return new Selection(world,
-                        new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()),
-                        wepos2 == null ? null : new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null : new Point(
+                        wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
             }
             catch (IncompleteRegionException e)
             {
@@ -74,14 +75,15 @@ public class WESelectionHandler implements ISelectionProvider {
             {
                 Vector wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
                 Vector wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
-                return new Selection(world,
-                        new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()),
-                        wepos2 == null ? null : new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
-                //Vector c = ellipsoid.getCenter();
-                //Vector r = ellipsoid.getRadius();
-                //return new Selection(world, 
-                //        new Point(c.getBlockX() - r.getBlockX(), c.getBlockY() - r.getBlockY(), c.getBlockZ() - r.getBlockZ()), 
-                //        new Point(c.getBlockX() + r.getBlockX(), c.getBlockY() + r.getBlockY(), c.getBlockZ() + r.getBlockZ()));
+                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null : new Point(
+                        wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                // Vector c = ellipsoid.getCenter();
+                // Vector r = ellipsoid.getRadius();
+                // return new Selection(world,
+                // new Point(c.getBlockX() - r.getBlockX(), c.getBlockY() - r.getBlockY(), c.getBlockZ() -
+                // r.getBlockZ()),
+                // new Point(c.getBlockX() + r.getBlockX(), c.getBlockY() + r.getBlockY(), c.getBlockZ() +
+                // r.getBlockZ()));
             }
             catch (IncompleteRegionException e)
             {
@@ -95,14 +97,13 @@ public class WESelectionHandler implements ISelectionProvider {
             {
                 Vector wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
                 Vector wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
-                return new Selection(world,
-                        new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()),
-                        wepos2 == null ? null : new Point(wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
-                //Vector c = cyl.getCenter();
-                //Vector2D r = cyl.getRadius();
-                //return new Selection(world, 
-                //        new Point(c.getBlockX() - r.getBlockX(), cyl.getMinimumY(), c.getBlockZ() - r.getBlockZ()), 
-                //        new Point(c.getBlockX() + r.getBlockX(), cyl.getMaximumY(), c.getBlockZ() + r.getBlockZ()));
+                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null : new Point(
+                        wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                // Vector c = cyl.getCenter();
+                // Vector2D r = cyl.getRadius();
+                // return new Selection(world,
+                // new Point(c.getBlockX() - r.getBlockX(), cyl.getMinimumY(), c.getBlockZ() - r.getBlockZ()),
+                // new Point(c.getBlockX() + r.getBlockX(), cyl.getMaximumY(), c.getBlockZ() + r.getBlockZ()));
             }
             catch (IncompleteRegionException e)
             {
@@ -116,7 +117,8 @@ public class WESelectionHandler implements ISelectionProvider {
     public void setDimension(EntityPlayerMP player, int dim)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
-        session.getRegionSelector(session.getSelectionWorld()).setWorld(ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(dim)));
+        ForgeWorld world = ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(dim));
+        session.getRegionSelector(world).setWorld(world);
     }
 
     @Override
@@ -131,6 +133,18 @@ public class WESelectionHandler implements ISelectionProvider {
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         session.getRegionSelector(session.getSelectionWorld()).selectSecondary(new Vector(end.getX(), end.getY(), end.getZ()), null);
+    }
+
+    @Override
+    public void select(EntityPlayerMP player, int dimension, AreaBase area)
+    {
+        LocalSession session = ForgeWorldEdit.inst.getSession(player);
+        ForgeWorld world = ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(dimension));
+        RegionSelector selector = session.getRegionSelector(world);
+        selector.setWorld(world);
+        selector.selectPrimary(new Vector(area.getLowPoint().getX(), area.getLowPoint().getY(), area.getLowPoint().getZ()), null);
+        selector.selectPrimary(new Vector(area.getHighPoint().getX(), area.getHighPoint().getY(), area.getHighPoint().getZ()), null);
+        SelectionHandler.sendUpdate(player);
     }
 
 }

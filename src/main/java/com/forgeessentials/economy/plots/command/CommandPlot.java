@@ -12,6 +12,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.Plot;
+import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
@@ -54,7 +55,7 @@ public class CommandPlot extends ParserCommandBase
         return false;
     }
 
-    public static final String[] mainCommands = new String[] { "define", "select", "list", "own", "market", "buysel", "limits", "buy", "sell", };
+    public static final String[] mainCommands = new String[] { "define", "claim", "select", "list", "own", "market", "buysel", "limits", "buy", "sell", };
 
     @Override
     public void parse(final CommandParserArgs arguments)
@@ -72,7 +73,9 @@ public class CommandPlot extends ParserCommandBase
             return;
         }
 
-        arguments.tabComplete(mainCommands);
+        if (arguments.tabComplete(mainCommands))
+            return;
+
         String subcmd = arguments.remove().toLowerCase();
         switch (subcmd)
         {
@@ -86,7 +89,7 @@ public class CommandPlot extends ParserCommandBase
             parseList(arguments);
             break;
         case "select":
-            arguments.error("Not yet implemented");
+            parseSelect(arguments);
             break;
         case "own":
             arguments.error("Not yet implemented");
@@ -122,11 +125,15 @@ public class CommandPlot extends ParserCommandBase
         Selection selection = SelectionHandler.selectionProvider.getSelection(arguments.senderPlayer);
         if (selection == null || !selection.isValid())
             throw new TranslatedCommandException("Need a valid selection to define a plot");
-        
+
         try
         {
             Plot.define(selection, arguments.userIdent);
             arguments.confirm(Translator.translate("Plot created!"));
+        }
+        catch (PlotRedefinedException e)
+        {
+            throw new TranslatedCommandException("There is already a plot defined in this area");
         }
         catch (EventCancelledException e)
         {
@@ -157,10 +164,24 @@ public class CommandPlot extends ParserCommandBase
             wallet.withdraw(price);
             arguments.confirm(Translator.translate("Plot created!"));
         }
+        catch (PlotRedefinedException e)
+        {
+            throw new TranslatedCommandException("There is already a plot defined in this area");
+        }
         catch (EventCancelledException e)
         {
             throw new TranslatedCommandException("Plot creation cancelled");
         }
+    }
+
+    public void parseSelect(CommandParserArgs arguments)
+    {
+        Plot plot = Plot.getPlot(new WorldPoint(arguments.senderPlayer));
+        if (plot == null)
+            throw new TranslatedCommandException("There is no plot at this position");
+
+        SelectionHandler.selectionProvider.select(arguments.senderPlayer, plot.getZone().getWorldZone().getDimensionID(), plot.getZone().getArea());
+        arguments.confirm("Selected plot");
     }
 
     public static void parseList(CommandParserArgs arguments)

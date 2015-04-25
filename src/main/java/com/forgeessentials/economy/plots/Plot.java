@@ -1,5 +1,6 @@
 package com.forgeessentials.economy.plots;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,10 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
@@ -41,7 +44,7 @@ public class Plot
         this.owner = owner;
     }
 
-    public Zone getZone()
+    public AreaZone getZone()
     {
         return zone;
     }
@@ -63,7 +66,7 @@ public class Plot
         OwnerChanged event = new PlotEvent.OwnerChanged(this, owner);
         if (owner != null)
             zone.removePlayerFromGroup(owner, PlotManager.GROUP_PLOT_OWNER);
-        
+
         // Set new owner
         owner = newOwner;
         if (owner == null)
@@ -75,9 +78,30 @@ public class Plot
         APIRegistry.getFEEventBus().post(event);
     }
 
+    public String getOwnerName()
+    {
+        if (owner == null)
+            return SERVER_OWNER;
+        else
+            return owner.getUsernameOrUUID();
+    }
+
     public String getName()
     {
-        return zone.getGroupPermission(GROUP, PlotManager.PERM_NAME).replaceAll("@p", owner.getUsernameOrUUID());
+        String name = zone.getGroupPermission(GROUP, PlotManager.PERM_NAME);
+        if (name == null)
+            name = APIRegistry.perms.getGroupPermissionProperty(GROUP, PlotManager.PERM_NAME);
+        if (name == null)
+            return null;
+        return name.replaceAll("@p", owner.getUsernameOrUUID());
+    }
+
+    public String getNameNotNull()
+    {
+        String name = getName();
+        if (name != null)
+            return name;
+        return "<unnamed>";
     }
 
     public WorldPoint getPlotCenter()
@@ -139,22 +163,91 @@ public class Plot
 
     /* ------------------------------------------------------------ */
 
+    public static boolean isPlot(AreaZone zone)
+    {
+        return plots.containsKey(zone.getId());
+    }
+
+    public static boolean isColumnMode(int dimension)
+    {
+        ServerZone s = APIRegistry.perms.getServerZone();
+        List<Zone> zones = new ArrayList<>();
+        zones.add(s.getWorldZone(dimension));
+        zones.add(s);
+        zones.add(s.getRootZone());
+        String permValue = s.getPermissionProperty(zones, null, Arrays.asList(GROUP), PlotManager.PERM_COLUMN);
+        return APIRegistry.perms.checkBooleanPermission(permValue);
+    }
+
+    /**
+     * Gets the size that counts for price / limit calculation. Depending on whether the column flag is set or not, this
+     * is the area or volume of the plot.
+     * 
+     * @return accounted size
+     */
+    public static long getAccountedSize(WorldArea area)
+    {
+        boolean columnMode = isColumnMode(area.getDimension());
+        return columnMode ? area.getXLength() * area.getZLength() : area.getXLength() * area.getYLength() * area.getZLength();
+    }
+
+    public static long getCalculatedPrice(WorldArea area)
+    {
+        String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP, area.getCenter(), PlotManager.PERM_PRICE);
+        if (priceStr == null)
+            return 0;
+        double pricePerUnit = FunctionHelper.parseDoubleDefault(priceStr, 0);
+        if (pricePerUnit == 0)
+            return 0;
+        return (long) (getAccountedSize(area) * pricePerUnit);
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public static Plot getPlot(int zoneId)
+    {
+        return plots.get(zoneId);
+    }
+
+    public static Plot getPlot(WorldPoint point)
+    {
+        List<Zone> zones = APIRegistry.perms.getServerZone().getZonesAt(point);
+        for (Zone zone : zones)
+        {
+            Plot plot = plots.get(zone.getId());
+            if (plot != null)
+                return plot;
+        }
+        return null;
+    }
+
+    public static Collection<Plot> getPlots()
+    {
+        return plots.values();
+    }
+
+    /* ------------------------------------------------------------ */
+
     private static void registerPlot(Plot plot)
     {
         plots.put(plot.getZone().getId(), plot);
     }
 
-    public static Plot define(WorldArea area, UserIdent owner) throws EventCancelledException
+    public static Plot define(WorldArea area, UserIdent owner) throws EventCancelledException, PlotRedefinedException
     {
         WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(area.getDimension());
+        for (AreaZone zone : worldZone.getAreaZones())
+            if (isPlot(zone) && zone.getArea().contains(area))
+                throw new PlotRedefinedException();
 
-        // TODO: Check for exisiting plot
+        if (isColumnMode(area.getDimension()))
+            area = new WorldArea(area.getDimension(), area.getHighPoint().setY(MinecraftServer.getServer().getBuildLimit()), area.getLowPoint().setY(0));
 
         AreaZone zone = new AreaZone(worldZone, "_PLOT_" + (APIRegistry.perms.getServerZone().getMaxZoneID() + 1), area);
         Plot plot = new Plot(zone, owner);
         registerPlot(plot);
         zone.setHidden(true);
-        zone.setGroupPermissionProperty(GROUP, PlotManager.PERM_NAME, owner == null ? SERVER_OWNER : owner.getOrGenerateUuid().toString());
+        zone.setGroupPermissionProperty(GROUP, PlotManager.PERM_OWNER, owner == null ? SERVER_OWNER : owner.getOrGenerateUuid().toString());
         if (owner != null)
             zone.addPlayerToGroup(owner, PlotManager.GROUP_PLOT_OWNER);
         return plot;
@@ -172,50 +265,8 @@ public class Plot
             }
     }
 
-    public static Plot getPlot(int zoneId)
+    public static class PlotRedefinedException extends Exception
     {
-        return plots.get(zoneId);
-    }
-
-    public static Collection<Plot> getPlots()
-    {
-        return plots.values();
-    }
-
-    public static Plot getPlot(WorldPoint point)
-    {
-        List<Zone> zones = APIRegistry.perms.getServerZone().getZonesAt(point);
-        for (Zone zone : zones)
-        {
-            Plot plot = plots.get(zone.getId());
-            if (plot != null)
-                return plot;
-        }
-        return null;
-    }
-
-    /**
-     * Gets the size that counts for price / limit calculation. Depending on whether the column flag is set or not, this
-     * is the area or volume of the plot.
-     * 
-     * @return accounted size
-     */
-    public static long getAccountedSize(WorldArea area)
-    {
-        String permValue = APIRegistry.perms.getPermission(null, null, area, Arrays.asList(GROUP), PlotManager.PERM_PRICE, true);
-        boolean columnMode = APIRegistry.perms.checkBooleanPermission(permValue);
-        return columnMode ? area.getXLength() * area.getZLength() : area.getXLength() * area.getYLength() * area.getZLength();
-    }
-
-    public static long getCalculatedPrice(WorldArea area)
-    {
-        String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP, area.getCenter(), PlotManager.PERM_PRICE);
-        if (priceStr == null)
-            return 0;
-        double pricePerUnit = FunctionHelper.parseDoubleDefault(priceStr, 0);
-        if (pricePerUnit == 0)
-            return 0;
-        return (long) (getAccountedSize(area) * pricePerUnit);
     }
 
 }

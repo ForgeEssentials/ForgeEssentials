@@ -429,7 +429,7 @@ public abstract class Zone
             return false;
         Set<String> groups = getPlayerGroups(ident);
         groups.add(group);
-        APIRegistry.perms.setPlayerPermissionProperty(ident, FEPermissions.PLAYER_GROUPS, StringUtils.join(groups, ","));
+        setPlayerPermissionProperty(ident, FEPermissions.PLAYER_GROUPS, StringUtils.join(groups, ","));
         return true;
     }
 
@@ -447,9 +447,22 @@ public abstract class Zone
     /**
      * Return a list of the user's groups in this zone
      */
-    public SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident)
+    public Set<String> getStoredPlayerGroups(UserIdent ident)
     {
-        SortedSet<GroupEntry> result = new TreeSet<GroupEntry>();
+        Set<String> result = new HashSet<>();
+        String groupsStr = getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
+        if (groupsStr != null && !groupsStr.isEmpty())
+            for (String group : groupsStr.replace(" ", "").split(","))
+                result.add(group);
+        return result;
+    }
+
+    /**
+     * Return a list of the user's groups in this zone
+     */
+    public SortedSet<GroupEntry> getStoredPlayerGroupEntries(UserIdent ident)
+    {
+        SortedSet<GroupEntry> result = new TreeSet<>();
         String groupsStr = getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
         if (groupsStr != null && !groupsStr.isEmpty())
             for (String group : groupsStr.replace(" ", "").split(","))
