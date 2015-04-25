@@ -1,8 +1,9 @@
 package com.forgeessentials.auth.lists;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.UserIdent;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 

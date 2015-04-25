@@ -21,7 +21,7 @@ import com.forgeessentials.teleport.util.PWarp;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
     

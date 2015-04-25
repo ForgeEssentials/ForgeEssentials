@@ -36,6 +36,7 @@ import com.forgeessentials.api.permissions.ServerZone.PermissionDebugger;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -44,7 +45,6 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -406,7 +406,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         zones.add(rootZone.getServerZone());
         zones.add(rootZone);
 
-        return getServerZone().getPermission(zones, ident, groups, permissionNode, isProperty);
+        if (isProperty)
+            return getServerZone().getPermissionProperty(zones, ident, groups, permissionNode);
+        else
+            return getServerZone().getPermission(zones, ident, groups, permissionNode, false);
     }
 
     // ------------------------------------------------------------
@@ -781,7 +784,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public String getUserPermissionProperty(UserIdent ident, Zone zone, String permissionNode)
     {
-        return getServerZone().getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
+        return getServerZone().getPermissionProperty(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode);
     }
 
     // ------------------------------------------------------------
@@ -789,13 +792,13 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public String getGroupPermissionProperty(String group, String permissionNode)
     {
-        return getServerZone().getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, true);
+        return getServerZone().getPermissionProperty(getGlobalZones(), null, Arrays.asList(group), permissionNode);
     }
 
     @Override
     public String getGroupPermissionProperty(String group, Zone zone, String permissionNode)
     {
-        return getServerZone().getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, true);
+        return getServerZone().getPermissionProperty(getGlobalZones(zone), null, Arrays.asList(group), permissionNode);
     }
 
     @Override
@@ -813,7 +816,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public String getGroupPermissionProperty(String group, WorldPoint point, String permissionNode)
     {
-        return getServerZone().getPermission(getServerZone().getZonesAt(point), null, Arrays.asList(group), permissionNode, true);
+        return getServerZone().getPermissionProperty(getServerZone().getZonesAt(point), null, Arrays.asList(group), permissionNode);
     }
 
     @Override

@@ -3,61 +3,57 @@ package com.forgeessentials.economy.commands.plots;
 import java.util.UUID;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.Offer;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.plots.TransactionHandler;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.questioner.QuestionData;
 import com.forgeessentials.util.questioner.Questioner;
 
 // This class only allows people to offer to buy plots. Actual transaction is done in CommandSellPlot.
-public class CommandBuyPlot extends ForgeEssentialsCommandBase{
+public class CommandBuyPlot extends ForgeEssentialsCommandBase
+{
 
     @Override
     public void processCommandPlayer(EntityPlayerMP buyer, String[] args)
     {
         if (args.length < 1)
             throw new TranslatedCommandException("Incorrect syntax. Try this instead: <plotName> <amount>");
-        
-        int value;
+
+        long value;
         AreaZone plot = (AreaZone) APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
         if (!plot.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM))
         {
             throw new TranslatedCommandException("No such plot!");
         }
-        EntityPlayer seller = UserIdent.getPlayerByUuid(UUID.fromString(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER)));
+        EntityPlayerMP seller = UserIdent.getPlayerByUuid(UUID.fromString(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER)));
         if (args[1] != null)
         {
-            value = Integer.parseInt(args[1]);
+            value = Long.parseLong(args[1]);
         }
         else
         {
-            value = Integer.parseInt(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_VALUE));
-            OutputHandler.chatNotification(buyer, "No value specified. Will use current valuation of plot, which is " + ModuleEconomy.formatCurrency(value));
+            value = Long.parseLong(plot.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_VALUE));
+            OutputHandler.chatNotification(buyer, "No value specified. Will use current valuation of plot, which is " + APIRegistry.economy.currency(value));
         }
 
-        // check if the player can afford it...
-        if (!(APIRegistry.wallet.getWallet(new UserIdent(buyer).getUuid()) < value))
-        {
+        Wallet buyerWallet = APIRegistry.economy.getWallet(new UserIdent(buyer));
+        if (!buyerWallet.withdraw(value))
             throw new TranslatedCommandException("You can't afford that!");
-        }
 
         Offer<AreaZone> item = new Offer<AreaZone>(buyer, seller, plot, value);
-
-        Questioner.addToQuestionQueue(new QuestionData(seller,
-                "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for " + ModuleEconomy.formatCurrency(value)
-                        + ". Type /yes to accept, /no to deny. This offer will expire in " + PlotManager.timeout + " seconds.",
+        Questioner.addToQuestionQueue(new QuestionData(seller, "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for "
+                + APIRegistry.economy.currency(value) + ". Type /yes to accept, /no to deny. This offer will expire in " + PlotManager.timeout + " seconds.",
                 new TransactionHandler(item), PlotManager.timeout));
         PlotManager.pendingOffers.put(plot.getName(), item);
     }

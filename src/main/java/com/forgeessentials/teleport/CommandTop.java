@@ -3,7 +3,7 @@ package com.forgeessentials.teleport;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;

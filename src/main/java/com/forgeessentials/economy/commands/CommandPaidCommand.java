@@ -1,11 +1,9 @@
 package com.forgeessentials.economy.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,10 +11,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.OutputHandler;
 
-public class CommandPaidCommand extends ForgeEssentialsCommandBase {
+public class CommandPaidCommand extends ForgeEssentialsCommandBase
+{
     @Override
     public String getCommandName()
     {
@@ -29,42 +32,22 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
         return Arrays.asList("pc", "pcmd");
     }
 
-    /*
-     * Expected structure: "/paidcommand <player> <amount> <command [args]>"
-     */
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public String getPermissionNode()
     {
-        System.out.print(sender);
-        if (args.length >= 3)
-        {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
-                int amount = parseIntWithMin(sender, args[1], 0);
-                if (APIRegistry.wallet.getWallet(player.getPersistentID()) >= amount)
-                {
-                    APIRegistry.wallet.removeFromWallet(amount, player.getPersistentID());
-                    // Do command
+        return null;
+    }
 
-                    StringBuilder cmd = new StringBuilder(args.toString().length());
-                    for (int i = 2; i < args.length; i++)
-                    {
-                        cmd.append(args[i]);
-                        cmd.append(" ");
-                    }
+    @Override
+    public RegisteredPermValue getDefaultPermission()
+    {
+        return null;
+    }
 
-                    MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
-                    OutputHandler.chatConfirmation(player, Translator.format("That cost you %d %s", amount, APIRegistry.wallet.currency(amount)));
-                }
-                else
-                    throw new TranslatedCommandException("You can't afford that!!");
-            }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-        }
-        else
-            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amount> <command [args]>");
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/paidcommand <player> <amount> <command [args]>";
     }
 
     @Override
@@ -74,29 +57,34 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return null;
-    }
-
-    @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
         return false;
     }
 
+    /*
+     * Expected structure: "/paidcommand <player> <amount> <command [args]>"
+     */
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public void processCommandConsole(ICommandSender sender, String[] args)
     {
-
-        return "/paidcommand <player> <amount> <command [args]>";
-    }
-
-    @Override
-    public RegisteredPermValue getDefaultPermission()
-    {
-
-        return null;
+        if (args.length >= 3)
+        {
+            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            if (player != null)
+            {
+                int amount = parseIntWithMin(sender, args[1], 0);
+                if (!APIRegistry.economy.getWallet(player).withdraw(amount))
+                    throw new TranslatedCommandException("You can't afford that!");
+                args = Arrays.copyOfRange(args, 2, args.length);
+                MinecraftServer.getServer().getCommandManager().executeCommand(sender, StringUtils.join(args, " "));
+                OutputHandler.chatConfirmation(player, Translator.format("That cost you %d %s", amount, APIRegistry.economy.currency(amount)));
+            }
+            else
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+        }
+        else
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amount> <command [args]>");
     }
 
 }

@@ -9,8 +9,8 @@ import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
-import com.forgeessentials.util.UserIdent;
 
 @FERemoteHandler(id = "set_permission")
 public class SetPermissionHandler extends GenericRemoteHandler<SetPermissionHandler.Request> {

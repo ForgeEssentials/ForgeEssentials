@@ -12,7 +12,7 @@ import java.util.Set;
 import javax.net.ssl.SSLContext;
 
 import com.forgeessentials.api.remote.RemoteResponse;
-import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.commons.UserIdent;
 
 /**
  *

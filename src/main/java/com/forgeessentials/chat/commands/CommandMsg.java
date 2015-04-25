@@ -13,10 +13,10 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IRCHelper;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 
 public class CommandMsg extends ForgeEssentialsCommandBase {
     private static Map<String, String> playerReply;

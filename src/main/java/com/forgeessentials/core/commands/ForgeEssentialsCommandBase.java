@@ -20,8 +20,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.UserIdent;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase {
 

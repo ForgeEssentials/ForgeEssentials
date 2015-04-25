@@ -47,6 +47,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -120,6 +121,24 @@ public final class FunctionHelper {
         try
         {
             return Integer.parseInt(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Try to parse the string as long or return null if failed
+     * 
+     * @param value
+     * @return
+     */
+    public static Long tryParseLong(String value)
+    {
+        try
+        {
+            return Long.parseLong(value);
         }
         catch (NumberFormatException e)
         {
@@ -1270,38 +1289,6 @@ public final class FunctionHelper {
             }
         }
     }
-
-	/**
-	 * Stitches a string together
-	 * User-readable: string, string
-	 * Non user-readable (use to save permprops, etc): string,string
-	 * To unstitch, you can use String.split.
-	 * @param toStitch String array to stitch
-	 * @param userReadable Whether the stitched string should be user-readable (can be harder to unstitch)
-	 * @return
-	 */
-	public static String stitchString(String[] toStitch, boolean userReadable)
-	{
-		String returned = "";
-
-		boolean first = true;
-		for (String string : toStitch)
-		{
-			if (userReadable)
-			{
-				returned = returned + (first ? string : ", " + string);
-			}
-
-			else
-			{
-				returned = returned + (first ? string : "," + string);
-			}
-
-			first = false;
-		}
-
-		return returned;
-	}
 
     /**
      * this code is present in Forge 1278, and should be removed in the 1.8 update of FE.

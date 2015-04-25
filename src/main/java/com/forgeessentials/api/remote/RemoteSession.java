@@ -3,7 +3,7 @@ package com.forgeessentials.api.remote;
 import java.io.IOException;
 
 import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
-import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.commons.UserIdent;
 
 /**
  *

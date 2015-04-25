@@ -17,13 +17,15 @@ import net.minecraftforge.permissions.PermissionContext;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
 /**
  *
  */
-public class CommandParserArgs {
+public class CommandParserArgs
+{
 
     public final ICommand command;
     public final Queue<String> args;
@@ -49,10 +51,16 @@ public class CommandParserArgs {
         this(command, args, sender, false);
     }
 
-    public void info(String message)
+    public void confirm(String message)
     {
         if (!isTabCompletion)
             OutputHandler.chatConfirmation(sender, message);
+    }
+
+    public void notify(String message)
+    {
+        if (!isTabCompletion)
+            OutputHandler.chatNotification(sender, message);
     }
 
     public void warn(String message)
@@ -140,10 +148,10 @@ public class CommandParserArgs {
 
     public void checkPermission(String perm)
     {
-        if (!isTabCompletion && sender != null && !APIRegistry.perms.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(command), perm))
+        if (!isTabCompletion && sender != null
+                && !APIRegistry.perms.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(command), perm))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
     }
-
 
     public boolean tabComplete(String[] completionList)
     {

@@ -7,7 +7,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 
 import java.util.ArrayList;

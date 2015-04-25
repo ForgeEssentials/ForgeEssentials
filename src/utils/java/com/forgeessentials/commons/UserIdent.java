@@ -1,4 +1,4 @@
-package com.forgeessentials.util;
+package com.forgeessentials.commons;
 
 import java.util.List;
 import java.util.UUID;
@@ -121,7 +121,7 @@ public class UserIdent {
         this.player = ident.player;
         this.username = ident.username;
         this.profile = ident.profile;
-        
+
         if (player == null)
         {
             if (uuid != null)
@@ -150,7 +150,7 @@ public class UserIdent {
         }
     }
 
-    // ------------------------------------------------------------
+    /* ------------------------------------------------------------ */
 
     public void identifyUser()
     {
@@ -221,7 +221,7 @@ public class UserIdent {
         return profile != null;
     }
 
-    // ------------------------------------------------------------
+    /* ------------------------------------------------------------ */
 
     public UUID getUuid()
     {
@@ -257,6 +257,12 @@ public class UserIdent {
         return username == null ? uuid.toString() : username;
     }
 
+    /**
+     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that
+     * there is always a UUID available.
+     * 
+     * @return
+     */
     public UUID getOrGenerateUuid()
     {
         if (uuid != null)
@@ -269,7 +275,7 @@ public class UserIdent {
         return UUID.nameUUIDFromBytes(username.getBytes());
     }
 
-    // ------------------------------------------------------------
+    /* ------------------------------------------------------------ */
 
     @Override
     public String toString()
@@ -330,7 +336,7 @@ public class UserIdent {
         }
     }
 
-    // ------------------------------------------------------------
+    /* ------------------------------------------------------------ */
 
     public static UserIdent fromString(String string)
     {

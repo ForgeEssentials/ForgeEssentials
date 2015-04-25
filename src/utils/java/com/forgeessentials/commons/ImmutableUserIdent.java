@@ -1,4 +1,4 @@
-package com.forgeessentials.util;
+package com.forgeessentials.commons;
 
 import java.util.UUID;
 

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.ServerZone;
-import com.forgeessentials.util.UserIdent;
+import com.forgeessentials.commons.UserIdent;
 
 public abstract class ZonePersistenceProvider {
 

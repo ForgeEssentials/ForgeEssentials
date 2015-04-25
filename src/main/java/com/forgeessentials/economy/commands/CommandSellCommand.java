@@ -1,13 +1,8 @@
 package com.forgeessentials.economy.commands;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.api.APIRegistry;
+import java.util.Arrays;
+import java.util.List;
 
-import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,10 +12,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.OutputHandler;
 
-public class CommandSellCommand extends ForgeEssentialsCommandBase {
+import cpw.mods.fml.common.registry.GameData;
+
+public class CommandSellCommand extends ForgeEssentialsCommandBase
+{
+
     @Override
     public String getCommandName()
     {
@@ -31,6 +34,36 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
     public List<String> getCommandAliases()
     {
         return Arrays.asList("sc", "scmd");
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return null;
+    }
+
+    @Override
+    public RegisteredPermValue getDefaultPermission()
+    {
+        return null;
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/sellcommand <player> <['amount'x]item[:'meta']> <command [args]>";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean canPlayerUseCommand(EntityPlayer player)
+    {
+        return false;
     }
 
     /*
@@ -60,10 +93,12 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
 
                 // get item
                 Item offeredItem = null;
-                try {
+                try
+                {
                     offeredItem = CommandBase.getItemByText(sender, itemName);
                 }
-                catch(NumberFormatException e) {
+                catch (NumberFormatException e)
+                {
                     offeredItem = GameData.getItemRegistry().getObject(itemName);
                 }
 
@@ -96,7 +131,6 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                     if (found)
                     {
                         // Do command
-
                         StringBuilder cmd = new StringBuilder(args.toString().length());
                         if (hasMeta)
                         {
@@ -115,8 +149,10 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
                             }
                         }
                         MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
-                        OutputHandler.chatConfirmation(player, Translator.format("That cost you %d x %s. Your balance is %s.",
-                                amount, target.getDisplayName(), APIRegistry.wallet.getMoneyString(player.getPersistentID())));
+                        OutputHandler.chatConfirmation(
+                                player,
+                                Translator.format("That cost you %d x %s. Your balance is %s.", amount, target.getDisplayName(),
+                                        APIRegistry.economy.getWallet(player).toString()));
                     }
                     else
                         throw new TranslatedCommandException("You don't have the requested item in your inventory!");
@@ -129,38 +165,6 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase {
         }
         else
             throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <['amount'x]item[:'meta']> <command [args]>");
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return null;
-    }
-
-    @Override
-    public boolean canPlayerUseCommand(EntityPlayer player)
-    {
-        return false;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-
-        return "/sellcommand <player> <['amount'x]item[:'meta']> <command [args]>";
-    }
-
-    @Override
-    public RegisteredPermValue getDefaultPermission()
-    {
-
-        return null;
     }
 
 }

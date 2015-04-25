@@ -46,7 +46,7 @@ public class ScriptParser {
                 {
                     int idx = Integer.parseInt(modifier);
                     if (args == null || idx >= args.size())
-                        throw new MissingArgumentException("Missing argument @%d", idx);
+                        throw new SyntaxException("Missing argument @%d", idx);
                     actionArgs[i] = args.get(idx) + rest;
                 }
                 catch (NumberFormatException e)
@@ -124,7 +124,7 @@ public class ScriptParser {
         {
             ScriptMethod method = ScriptMethods.get(cmd);
             if (method == null)
-                throw new ScriptException("Unknown script method \"%s\"", cmd);
+                throw new SyntaxException("Unknown script method \"%s\"", cmd);
             return method.process(sender, args);
         }
         return true;
@@ -145,15 +145,6 @@ public class ScriptParser {
         public ScriptException(String message, Object... args)
         {
             super(String.format(message, args));
-        }
-
-    }
-
-    public static class MissingArgumentException extends ScriptException {
-
-        public MissingArgumentException(String message, Object... args)
-        {
-            super(message, args);
         }
 
     }

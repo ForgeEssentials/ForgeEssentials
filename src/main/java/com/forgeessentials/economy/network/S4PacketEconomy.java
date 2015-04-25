@@ -1,8 +1,7 @@
 package com.forgeessentials.economy.network;
 
 import io.netty.buffer.ByteBuf;
-
-import java.util.UUID;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.api.APIRegistry;
 
@@ -13,27 +12,29 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 public class S4PacketEconomy implements IMessageHandler<S4PacketEconomy, IMessage>, IMessage
 {
 
-    @Override public IMessage onMessage(S4PacketEconomy message, MessageContext ctx)
+    private EntityPlayerMP player;
+
+    @Override
+    public IMessage onMessage(S4PacketEconomy message, MessageContext ctx)
     {
-        return new S4PacketEconomy(ctx.getServerHandler().playerEntity.getPersistentID());
+        return new S4PacketEconomy(ctx.getServerHandler().playerEntity);
     }
 
-    private UUID player;
-
-    public S4PacketEconomy(){}
-
-    public S4PacketEconomy(UUID player)
+    public S4PacketEconomy(EntityPlayerMP player)
     {
         this.player = player;
     }
 
     @Override
-    public void fromBytes(ByteBuf buf){}
-
-    @Override public void toBytes(ByteBuf buf)
+    public void fromBytes(ByteBuf buf)
     {
-        buf.writeLong(APIRegistry.wallet.getWallet(player));
+        /* do nothing */
+    }
+
+    @Override
+    public void toBytes(ByteBuf buf)
+    {
+        buf.writeLong(APIRegistry.economy.getWallet(player).get());
     }
 
 }
-

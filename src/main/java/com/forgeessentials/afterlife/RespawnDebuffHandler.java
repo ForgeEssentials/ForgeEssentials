@@ -1,8 +1,8 @@
 package com.forgeessentials.afterlife;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
