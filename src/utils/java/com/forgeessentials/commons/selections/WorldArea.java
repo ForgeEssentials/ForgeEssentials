@@ -42,7 +42,7 @@ public class WorldArea extends AreaBase
     }
 
     @Override
-    public Point getCenter()
+    public WorldPoint getCenter()
     {
         return new WorldPoint(dim, (high.x + low.x) / 2, (high.y + low.y) / 2, (high.z + low.z) / 2);
     }

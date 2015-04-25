@@ -686,7 +686,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // -- Permission checking
     // ------------------------------------------------------------
 
-    protected boolean checkBooleanPermission(String permissionValue)
+    public boolean checkBooleanPermission(String permissionValue)
     {
         if (permissionValue == null)
         {

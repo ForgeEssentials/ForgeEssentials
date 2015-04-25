@@ -6,19 +6,14 @@ import java.util.Map;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.Offer;
-import com.forgeessentials.economy.plots.command.CommandBuyPlot;
-import com.forgeessentials.economy.plots.command.CommandListPlot;
-import com.forgeessentials.economy.plots.command.CommandRemovePlot;
-import com.forgeessentials.economy.plots.command.CommandSetPlot;
+import com.forgeessentials.economy.plots.command.CommandPlot;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.PlayerChangedZone;
-import com.forgeessentials.util.events.PlotEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -34,14 +29,25 @@ public class PlotManager extends ServerEventHandler
 
     // Basic plot permissions
     public static final String PERM = ModuleEconomy.PERM + ".plot";
-    public static final String PERM_COMMAND = PERM + ".command";
     public static final String PERM_PRICE = PERM + ".price";
     public static final String PERM_COLUMN = PERM + ".column";
-    public static final String PERM_ADMIN = PERM + ".admin";
+    //public static final String PERM_ADMIN = PERM + ".admin";
+
+    public static final String PERM_COMMAND = PERM + ".command";
+    public static final String PERM_DEFINE = PERM_COMMAND + ".define";
+    public static final String PERM_CLAIM = PERM_COMMAND + ".claim";
+    public static final String PERM_DELETE = PERM_COMMAND + ".delete";
+    public static final String PERM_BUY = PERM_COMMAND + ".buy";
+    public static final String PERM_SELL = PERM_COMMAND + ".sell";
+    
+    public static final String PERM_LIST = PERM_COMMAND + ".list";
+    public static final String PERM_LIST_OWN = PERM_LIST + ".own";
+    public static final String PERM_LIST_ALL = PERM_LIST + ".all";
+    public static final String PERM_LIST_SALE = PERM_LIST + ".sale";
 
     // Maximum number and total size of plots a user is allowed to claim
     public static final String PERM_LIMIT = PERM + ".limit";
-    public static final String PERM_LIMIT_NUM = PERM_LIMIT + ".count";
+    public static final String PERM_LIMIT_COUNT = PERM_LIMIT + ".count";
     public static final String PERM_LIMIT_SIZE = PERM_LIMIT + ".size";
 
     // Maximum and minimum size a plot can be
@@ -56,9 +62,13 @@ public class PlotManager extends ServerEventHandler
     public static final String PERM_FEE_TIMEOUT = PERM_DATA + ".fee.timeout";
     public static final String PERM_SELL_PRICE = PERM_DATA + ".price";
 
+    /* ------------------------------------------------------------ */
+
     public static Map<String, Offer<AreaZone>> pendingOffers = new HashMap<>();
 
     public static int timeout = 120;
+
+    /* ------------------------------------------------------------ */
 
     public static void serverStarting()
     {
@@ -68,10 +78,7 @@ public class PlotManager extends ServerEventHandler
 
     private static void registerCommands()
     {
-        FunctionHelper.registerServerCommand(new CommandBuyPlot());
-        FunctionHelper.registerServerCommand(new CommandRemovePlot());
-        FunctionHelper.registerServerCommand(new CommandSetPlot());
-        FunctionHelper.registerServerCommand(new CommandListPlot());
+        FunctionHelper.registerServerCommand(new CommandPlot());
     }
 
     private static void registerPermissions()
@@ -83,9 +90,18 @@ public class PlotManager extends ServerEventHandler
         // APIRegistry.perms.registerPermissionPropertyOp(PERM_PRICE, "0");
         APIRegistry.perms.registerPermission(PERM_COLUMN, RegisteredPermValue.TRUE,
                 "If true, all plots will always extend from bottom to top of the world. Price will only depend on X and Z dimensions.");
-        APIRegistry.perms.registerPermission(PERM_ADMIN, RegisteredPermValue.OP, "Makes a player a plot admin, who can configure plots");
 
-        APIRegistry.perms.registerPermissionProperty(PERM_LIMIT_NUM, "20", "Maximum number of plots a player can claim");
+        APIRegistry.perms.registerPermission(PERM_COMMAND, RegisteredPermValue.TRUE, "Plot management command");
+        APIRegistry.perms.registerPermission(PERM_DEFINE, RegisteredPermValue.OP, "Allows to define plots without paying");
+        APIRegistry.perms.registerPermission(PERM_CLAIM, RegisteredPermValue.TRUE, "Allows to claim plots in exchange for money");
+        APIRegistry.perms.registerPermission(PERM_BUY, RegisteredPermValue.TRUE, "Allows buying plots");
+        APIRegistry.perms.registerPermission(PERM_SELL, RegisteredPermValue.TRUE, "Allows selling plots");
+        
+        APIRegistry.perms.registerPermission(PERM_LIST_ALL, RegisteredPermValue.OP, "List all plots");
+        APIRegistry.perms.registerPermission(PERM_LIST_OWN, RegisteredPermValue.TRUE, "List own plots");
+        APIRegistry.perms.registerPermission(PERM_LIST_SALE, RegisteredPermValue.TRUE, "List plots open for sale");
+
+        APIRegistry.perms.registerPermissionProperty(PERM_LIMIT_COUNT, "20", "Maximum number of plots a player can claim");
         APIRegistry.perms.registerPermissionDescription(PERM_LIMIT_SIZE, "Maximum total size of all plots a player can claim");
 
         APIRegistry.perms.registerPermissionProperty(PERM_SIZE_MIN, "3", "Minimum size of one plot axis");
@@ -98,34 +114,12 @@ public class PlotManager extends ServerEventHandler
         APIRegistry.perms.registerPermissionDescription(PERM_SELL_PRICE, "Price that the plot can be bought for by other players (sell offer)");
     }
 
+    /* ------------------------------------------------------------ */
+
     @SubscribeEvent
     public void permissionAfterLoadEvent(PermissionEvent.AfterLoad event)
     {
-        Plot.registerPlots();
-    }
-
-    @SubscribeEvent
-    public void onPlotSet(PlotEvent.Define e)
-    {
-        e.plot.addPlayerToGroup(new UserIdent(e.player), PlotManager.GROUP_PLOT_OWNER);
-    }
-
-    @SubscribeEvent
-    public void onOwnerAdd(PlotEvent.OwnerSet e)
-    {
-        e.plot.addPlayerToGroup(new UserIdent(e.player), PlotManager.GROUP_PLOT_OWNER);
-    }
-
-    @SubscribeEvent
-    public void onOwnerUnset(PlotEvent.OwnerUnset e)
-    {
-        e.plot.removePlayerFromGroup(new UserIdent(e.player), PlotManager.GROUP_PLOT_OWNER);
-    }
-
-    @SubscribeEvent
-    public void onRentDefault(PlotEvent.RentDefaulted e)
-    {
-        e.plot.removePlayerFromGroup(new UserIdent(e.player), PlotManager.GROUP_PLOT_OWNER);
+        Plot.loadPlots();
     }
 
     @SubscribeEvent

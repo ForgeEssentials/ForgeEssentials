@@ -244,4 +244,10 @@ public class CommandParserArgs
 
     }
 
+    public void requirePlayer()
+    {
+        if (senderPlayer == null)
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+    }
+
 }

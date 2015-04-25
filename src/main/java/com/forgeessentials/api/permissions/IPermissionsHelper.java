@@ -31,6 +31,14 @@ public interface IPermissionsHelper extends IPermissionsProvider {
     // ---------------------------------------------------------------------------
     // -- Permissions
     // ---------------------------------------------------------------------------
+    
+    /**
+     * Converts a string permission into a boolean value
+     * 
+     * @param permissionValue
+     * @return
+     */
+    public boolean checkBooleanPermission(String permissionValue);
 
     String getPermission(UserIdent ident, WorldPoint point, WorldArea area, Collection<String> groups, String permissionNode, boolean isProperty);
 

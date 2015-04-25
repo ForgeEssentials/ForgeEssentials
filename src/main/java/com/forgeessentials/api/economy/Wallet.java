@@ -1,6 +1,7 @@
 package com.forgeessentials.api.economy;
 
-public interface Wallet {
+public interface Wallet
+{
 
     public long get();
 
@@ -9,6 +10,14 @@ public interface Wallet {
     public void add(long amount);
 
     public void add(double amount);
+
+    /**
+     * Checks, if the wallet has enough currency in it to cover the withdraw
+     * 
+     * @param value
+     * @return
+     */
+    public boolean covers(long value);
 
     public boolean withdraw(long value);
 

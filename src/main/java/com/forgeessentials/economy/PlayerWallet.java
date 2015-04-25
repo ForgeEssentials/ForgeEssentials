@@ -26,6 +26,14 @@ public class PlayerWallet implements Wallet
     {
         this.amount = value;
     }
+    
+    @Override
+    public boolean covers(long value)
+    {
+        if (amount < value)
+            return false;
+        return true;
+    }
 
     @Override
     public boolean withdraw(long value)
@@ -56,5 +64,6 @@ public class PlayerWallet implements Wallet
     {
         return APIRegistry.economy.toString(amount);
     }
+
 
 }
