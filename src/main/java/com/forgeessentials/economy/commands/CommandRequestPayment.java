@@ -14,7 +14,8 @@ import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandRequestPayment extends ForgeEssentialsCommandBase {
+public class CommandRequestPayment extends ForgeEssentialsCommandBase
+{
 
     @Override
     public String getCommandName()
@@ -47,7 +48,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
     {
         if (args.length != 2)
             throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amountRequested>");
-        
+
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
         {

@@ -61,6 +61,11 @@ public class WorldPoint extends Point {
         this(other.dim, other.x, other.y, other.z);
     }
 
+    public WorldPoint(int dimension, Point point)
+    {
+        this(dimension, point.x, point.y, point.z);
+    }
+
     public WorldPoint(WarpPoint other)
     {
         this(other.getDimension(), other.getBlockX(), other.getBlockY(), other.getBlockZ());

@@ -24,11 +24,9 @@ import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 
 /**
- * Zones are used to store permissions in a tree-like hierarchy. Each zone has
- * it's own set of group- and player-permissions. Zones are stored in a tree
- * structure with fixed levels. Priorities for permissions are based on the
- * level of each zone in the tree. The following list shows the structure of the
- * tree:
+ * Zones are used to store permissions in a tree-like hierarchy. Each zone has it's own set of group- and
+ * player-permissions. Zones are stored in a tree structure with fixed levels. Priorities for permissions are based on
+ * the level of each zone in the tree. The following list shows the structure of the tree:
  * 
  * <pre>
  * {@link RootZone} &gt; {@link ServerZone} &gt; {@link WorldZone} &gt; {@link AreaZone}
@@ -37,7 +35,8 @@ import com.forgeessentials.commons.selections.WorldPoint;
  * 
  * @author Olee
  */
-public abstract class Zone {
+public abstract class Zone
+{
 
     public static final String GROUP_DEFAULT = "_ALL_";
     public static final String GROUP_GUESTS = "_GUESTS_";
@@ -49,7 +48,8 @@ public abstract class Zone {
     public static final String PERMISSION_TRUE = "true";
     public static final String ALL_PERMS = "." + PERMISSION_ASTERIX;
 
-    public static class PermissionList extends HashMap<String, String> {
+    public static class PermissionList extends HashMap<String, String>
+    {
         private static final long serialVersionUID = 1L;
 
         public List<String> toList()
@@ -176,6 +176,12 @@ public abstract class Zone {
         return id;
     }
 
+    @Override
+    public int hashCode()
+    {
+        return id;
+    }
+
     /**
      * Checks, whether the player is in the zone.
      * 
@@ -235,8 +241,7 @@ public abstract class Zone {
     }
 
     /**
-     * Checks, if the zone is hidden. Returns false for all zones except
-     * {@link AreaZone}s
+     * Checks, if the zone is hidden. Returns false for all zones except {@link AreaZone}s
      */
     public boolean isHidden()
     {
@@ -256,8 +261,7 @@ public abstract class Zone {
     }
 
     /**
-     * Gets the player permissions for the specified player, or null if not
-     * present.
+     * Gets the player permissions for the specified player, or null if not present.
      * 
      * @param ident
      */
@@ -267,8 +271,7 @@ public abstract class Zone {
     }
 
     /**
-     * Gets the player permissions for the specified player. If no
-     * permission-map is present, a new one is created.
+     * Gets the player permissions for the specified player. If no permission-map is present, a new one is created.
      * 
      * @param ident
      */
@@ -386,9 +389,8 @@ public abstract class Zone {
     }
 
     /**
-     * Revalidates all UserIdent fields in playerPermissions to replace those
-     * which were hashed based on their playername. This function should always
-     * be called as soon as a player connects to the server.
+     * Revalidates all UserIdent fields in playerPermissions to replace those which were hashed based on their
+     * playername. This function should always be called as soon as a player connects to the server.
      */
     public void updatePlayerIdents()
     {
@@ -422,7 +424,8 @@ public abstract class Zone {
 
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
-        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+        if (APIRegistry.getFEEventBus()
+                .post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
             return false;
         Set<String> groups = getPlayerGroups(ident);
         groups.add(group);
@@ -432,7 +435,8 @@ public abstract class Zone {
 
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
-        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+        if (APIRegistry.getFEEventBus().post(
+                new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
             return false;
         Set<String> groups = getPlayerGroups(ident);
         groups.remove(group);
@@ -466,8 +470,7 @@ public abstract class Zone {
     }
 
     /**
-     * Gets the group permissions for the specified group, or null if not
-     * present.
+     * Gets the group permissions for the specified group, or null if not present.
      * 
      * @param group
      */
@@ -477,8 +480,7 @@ public abstract class Zone {
     }
 
     /**
-     * Gets the group permissions for the specified group. If no permission-map
-     * is present, a new one is created.
+     * Gets the group permissions for the specified group. If no permission-map is present, a new one is created.
      * 
      * @param group
      */
@@ -573,7 +575,8 @@ public abstract class Zone {
         if (group != null)
         {
             PermissionList map = getGroupPermissions(group);
-            if (map != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
+            if (map != null
+                    && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
             {
                 map.remove(permissionNode);
                 return true;

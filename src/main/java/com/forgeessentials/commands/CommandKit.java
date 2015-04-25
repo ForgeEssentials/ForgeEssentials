@@ -102,7 +102,7 @@ public class CommandKit extends FEcmdModuleCommands {
             }
             else
             {
-                Questioner.addtoQuestionQueue(sender, "A kit by the name of " + args[0].toLowerCase() + "already exists. Type /yes if you wish to overwrite it, /no to cancel this operation.",
+                Questioner.addToQuestionQueue(sender, "A kit by the name of " + args[0].toLowerCase() + "already exists. Type /yes if you wish to overwrite it, /no to cancel this operation.",
                         new HandleKitOverrides(sender, args));
             }
             return;

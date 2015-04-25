@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -169,6 +170,78 @@ public class CommandParserArgs
             return false;
         tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList);
         return true;
+    }
+
+    public int parseInt()
+    {
+        checkTabCompletion();
+        String value = remove();
+        try
+        {
+            return Integer.parseInt(value);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new TranslatedCommandException("Invalid number: %s", value);
+        }
+    }
+
+    public long parseLong()
+    {
+        checkTabCompletion();
+        String value = remove();
+        try
+        {
+            return Long.parseLong(value);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new TranslatedCommandException("Invalid number: %s", value);
+        }
+    }
+
+    public Float parseFloat()
+    {
+        checkTabCompletion();
+        String value = remove();
+        try
+        {
+            return Float.parseFloat(value);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new TranslatedCommandException("Invalid number: %s", value);
+        }
+    }
+
+    public Double parseDouble()
+    {
+        checkTabCompletion();
+        String value = remove();
+        try
+        {
+            return Double.parseDouble(value);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new TranslatedCommandException("Invalid number: %s", value);
+        }
+    }
+
+    public void checkTabCompletion()
+    {
+        if (isTabCompletion && size() == 1)
+            throw new CancelParsingException();
+    }
+
+    public static class CancelParsingException extends CommandException
+    {
+
+        public CancelParsingException()
+        {
+            super("");
+        }
+
     }
 
 }

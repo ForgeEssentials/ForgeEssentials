@@ -1,4 +1,4 @@
-package com.forgeessentials.economy.commands.plots;
+package com.forgeessentials.economy.plots.command;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;

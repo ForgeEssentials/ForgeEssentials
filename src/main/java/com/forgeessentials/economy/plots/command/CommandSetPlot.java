@@ -1,4 +1,4 @@
-package com.forgeessentials.economy.commands.plots;
+package com.forgeessentials.economy.plots.command;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;

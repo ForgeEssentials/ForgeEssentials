@@ -1,4 +1,4 @@
-package com.forgeessentials.economy.commands.plots;
+package com.forgeessentials.economy.plots.command;
 
 import java.util.UUID;
 
@@ -22,7 +22,7 @@ public class CommandRepossess extends ForgeEssentialsCommandBase
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
         AreaZone plot = (AreaZone) APIRegistry.perms.getZoneById(PlotManager.PLOT_NAME_ID + args[0]);
-        if (!plot.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERM))
+        if (!plot.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PERM))
         {
             throw new TranslatedCommandException("No such plot!");
         }

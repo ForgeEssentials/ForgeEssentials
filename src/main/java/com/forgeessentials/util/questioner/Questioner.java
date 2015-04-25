@@ -26,7 +26,7 @@ public class Questioner extends ServerEventHandler {
         queue.put(question.getTarget().getCommandSenderName(), question);
     }
 
-    public static void addtoQuestionQueue(ICommandSender target, String question, IReplyHandler runnable)
+    public static void addToQuestionQueue(ICommandSender target, String question, IReplyHandler runnable)
     {
         addToQuestionQueue(new QuestionData(target, question, runnable, defaultTime));
     }
@@ -78,7 +78,7 @@ public class Questioner extends ServerEventHandler {
 
     public static interface IReplyHandler
     {
-        public void replyReceived(boolean status);
+        public void replyReceived(boolean ok);
     }
 
 }
