@@ -5,9 +5,9 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.ServerZone;
-import com.forgeessentials.commons.UserIdent;
 
 public abstract class ZonePersistenceProvider {
 

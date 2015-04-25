@@ -1,4 +1,4 @@
-package com.forgeessentials.commons;
+package com.forgeessentials.api;
 
 import java.util.List;
 import java.util.UUID;
@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.util.FakePlayer;
 
-import com.forgeessentials.api.APIRegistry;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 

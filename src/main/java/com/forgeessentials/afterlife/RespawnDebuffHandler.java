@@ -1,7 +1,7 @@
 package com.forgeessentials.afterlife;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;

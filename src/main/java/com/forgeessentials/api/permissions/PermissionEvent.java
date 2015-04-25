@@ -1,6 +1,6 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.api.UserIdent;
 
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;

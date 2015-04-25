@@ -10,7 +10,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.ServerChatEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.FunctionHelper;
 import com.google.common.base.Strings;

@@ -1,7 +1,7 @@
 package com.forgeessentials.chat.commands;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.irc.IRCHelper;
-import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;

@@ -8,9 +8,9 @@ import net.minecraft.inventory.ContainerChest;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.PlayerInvChest;
-import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
 import cpw.mods.fml.common.FMLCommonHandler;

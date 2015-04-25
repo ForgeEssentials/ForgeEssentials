@@ -1,7 +1,7 @@
 package com.forgeessentials.auth.lists;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 import net.minecraft.command.ICommandSender;

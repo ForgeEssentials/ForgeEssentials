@@ -2,7 +2,7 @@ package com.forgeessentials.api.economy;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.api.UserIdent;
 
 public interface Economy
 {

@@ -9,9 +9,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.Offer;
 import com.forgeessentials.economy.commands.plots.CommandBuyPlot;

@@ -2,7 +2,7 @@ package com.forgeessentials.core.misc;
 
 import net.minecraft.command.CommandException;
 
-import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.api.UserIdent;
 
 public class TranslatedCommandException extends CommandException
 {

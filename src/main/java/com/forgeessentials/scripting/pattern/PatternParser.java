@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import net.minecraft.command.ICommandSender;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.scripting.pattern.Pattern.PatternMatchException;
 

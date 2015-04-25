@@ -17,7 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.ConnectionMonitor;

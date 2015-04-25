@@ -19,8 +19,8 @@ import net.minecraftforge.common.util.FakePlayer;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.ImmutableUserIdent;
-import com.forgeessentials.commons.UserIdent;
+import com.forgeessentials.api.ImmutableUserIdent;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.google.gson.annotations.Expose;
