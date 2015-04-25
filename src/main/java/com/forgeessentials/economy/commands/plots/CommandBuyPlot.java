@@ -14,6 +14,7 @@ import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.economy.Offer;
+import com.forgeessentials.economy.ModuleEconomy.CantAffordException;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.plots.TransactionHandler;
 import com.forgeessentials.util.OutputHandler;
@@ -49,7 +50,7 @@ public class CommandBuyPlot extends ForgeEssentialsCommandBase
 
         Wallet buyerWallet = APIRegistry.economy.getWallet(new UserIdent(buyer));
         if (!buyerWallet.withdraw(value))
-            throw new TranslatedCommandException("You can't afford that!");
+            throw new CantAffordException();
 
         Offer<AreaZone> item = new Offer<AreaZone>(buyer, seller, plot, value);
         Questioner.addToQuestionQueue(new QuestionData(seller, "Player " + buyer.getDisplayName() + " offered to purchase plot " + plot.getName() + " for "

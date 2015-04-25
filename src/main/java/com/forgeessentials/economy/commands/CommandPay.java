@@ -2,6 +2,7 @@ package com.forgeessentials.economy.commands;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -59,8 +60,15 @@ public class CommandPay extends ForgeEssentialsCommandBase
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender);
-        parse(arguments);
+        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
+        try
+        {
+            parse(arguments);
+        }
+        catch (CommandException e)
+        {
+            return null;
+        }
         return arguments.tabCompletion;
     }
 
@@ -69,6 +77,8 @@ public class CommandPay extends ForgeEssentialsCommandBase
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Player needed");
         UserIdent player = arguments.parsePlayer();
+        if (player == null)
+            return;
 
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing value");
@@ -77,6 +87,9 @@ public class CommandPay extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("Invalid number");
         if (amount < 1)
             throw new TranslatedCommandException("Invalid number");
+        
+        if (arguments.isTabCompletion)
+            return;
 
         Wallet sender = APIRegistry.economy.getWallet(arguments.userIdent);
         if (!sender.withdraw(amount))

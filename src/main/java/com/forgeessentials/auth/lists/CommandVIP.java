@@ -20,11 +20,11 @@ public class CommandVIP extends ForgeEssentialsCommandBase {
     {
         if (args.length >= 2 && args[0].equalsIgnoreCase("add"))
         {
-            APIRegistry.perms.setPlayerPermission(new UserIdent(args[1]), "fe.auth.vip", true);
+            APIRegistry.perms.setPlayerPermission(new UserIdent(args[1], sender), "fe.auth.vip", true);
         }
         else if (args.length >= 2 && args[0].equalsIgnoreCase("remove"))
         {
-            APIRegistry.perms.setPlayerPermission(new UserIdent(args[1]), "fe.auth.vip", false);
+            APIRegistry.perms.setPlayerPermission(new UserIdent(args[1], sender), "fe.auth.vip", false);
         }
     }
 

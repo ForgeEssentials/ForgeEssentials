@@ -3,19 +3,22 @@ package com.forgeessentials.economy.commands;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.economy.ModuleEconomy;
+import com.forgeessentials.economy.ModuleEconomy.CantAffordException;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandPaidCommand extends ForgeEssentialsCommandBase
@@ -47,7 +50,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/paidcommand <player> <amount> <command [args]>";
+        return "/paidcommand <player> <amount> <command...>";
     }
 
     @Override
@@ -63,28 +66,28 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
     }
 
     /*
-     * Expected structure: "/paidcommand <player> <amount> <command [args]>"
+     * Expected structure: "/paidcommand <player> <amount> <command...>"
      */
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        if (args.length >= 3)
-        {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
-                int amount = parseIntWithMin(sender, args[1], 0);
-                if (!APIRegistry.economy.getWallet(player).withdraw(amount))
-                    throw new TranslatedCommandException("You can't afford that!");
-                args = Arrays.copyOfRange(args, 2, args.length);
-                MinecraftServer.getServer().getCommandManager().executeCommand(sender, StringUtils.join(args, " "));
-                OutputHandler.chatConfirmation(player, Translator.format("That cost you %d %s", amount, APIRegistry.economy.currency(amount)));
-            }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-        }
-        else
-            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amount> <command [args]>");
+        if (args.length < 3)
+            throw new InvalidSyntaxException(getCommandUsage(sender));
+
+        UserIdent ident = new UserIdent(args[0], sender);
+        if (!ident.hasUUID())
+            throw new PlayerNotFoundException();
+
+        int amount = parseIntWithMin(sender, args[1], 0);
+        Wallet wallet = APIRegistry.economy.getWallet(ident);
+        if (!wallet.withdraw(amount))
+            throw new CantAffordException();
+
+        args = Arrays.copyOfRange(args, 2, args.length);
+        MinecraftServer.getServer().getCommandManager().executeCommand(sender, StringUtils.join(args, " "));
+
+        OutputHandler.chatConfirmation(sender, Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
+        ModuleEconomy.confirmNewWalletAmount(ident, wallet);
     }
 
 }

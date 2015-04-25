@@ -72,8 +72,6 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 UserIdent ident = args.parsePlayer();
                 if (ident == null)
                     return;
-                if (!ident.hasUUID())
-                    throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUUID());
                 if (!ident.equals(args.userIdent))
                     args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isTabCompletion)

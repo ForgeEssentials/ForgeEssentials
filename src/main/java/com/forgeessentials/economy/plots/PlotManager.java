@@ -118,17 +118,17 @@ public class PlotManager extends ServerEventHandler
     @SubscribeEvent
     public void onZoneChange(PlayerChangedZone e)
     {
-        if (e.afterZone.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_ISPLOT))
-        {
-            if (e.afterZone.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERMPROP_DENYENTRY)
-                    && e.afterZone.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER) != new UserIdent(e.entityPlayer).getUuid().toString())
-            {
-                // TODO implement players not allowed to enter zone
-            }
-            if (e.afterZone.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERMPROP_ENTRYFEE) != "")
-            {
-
-            }
-        }
+//        if (e.afterZone.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_ISPLOT))
+//        {
+//            if (e.afterZone.checkGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERMPROP_DENYENTRY)
+//                    && e.afterZone.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_OWNER) != new UserIdent(e.entityPlayer).getUuid().toString())
+//            {
+//                // TODO implement players not allowed to enter zone
+//            }
+//            if (e.afterZone.getGroupPermission(Zone.GROUP_DEFAULT, PlotManager.PLOT_PERMPROP_ENTRYFEE) != "")
+//            {
+//
+//            }
+//        }
     }
 }

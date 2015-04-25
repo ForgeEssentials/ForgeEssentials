@@ -2,6 +2,7 @@ package com.forgeessentials.economy.commands;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -59,8 +60,15 @@ public class CommandWallet extends ForgeEssentialsCommandBase
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender);
-        parse(arguments);
+        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
+        try
+        {
+            parse(arguments);
+        }
+        catch (CommandException e)
+        {
+            return null;
+        }
         return arguments.tabCompletion;
     }
 
@@ -75,6 +83,8 @@ public class CommandWallet extends ForgeEssentialsCommandBase
         }
 
         UserIdent player = arguments.parsePlayer();
+        if (player == null)
+            return;
         Wallet wallet = APIRegistry.economy.getWallet(player);
 
         if (arguments.isEmpty())

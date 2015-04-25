@@ -188,7 +188,7 @@ public final class ScriptMethods
                 Wallet dst = null;
                 if (args.length == 2)
                 {
-                    UserIdent dstIdent = new UserIdent(args[1]);
+                    UserIdent dstIdent = new UserIdent(args[1], sender);
                     if (!dstIdent.hasUUID())
                         throw new ScriptException("Player %s not found", args[1]);
                     dst = APIRegistry.economy.getWallet(dstIdent);

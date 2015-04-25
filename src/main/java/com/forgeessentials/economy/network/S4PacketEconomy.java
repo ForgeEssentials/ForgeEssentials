@@ -20,6 +20,10 @@ public class S4PacketEconomy implements IMessageHandler<S4PacketEconomy, IMessag
         return new S4PacketEconomy(ctx.getServerHandler().playerEntity);
     }
 
+    public S4PacketEconomy()
+    {
+    }
+
     public S4PacketEconomy(EntityPlayerMP player)
     {
         this.player = player;

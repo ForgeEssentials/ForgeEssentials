@@ -9,6 +9,7 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -16,18 +17,23 @@ import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.economy.Economy;
+import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
+import com.forgeessentials.economy.commands.CommandSell;
 import com.forgeessentials.economy.commands.CommandSellCommand;
 import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.network.S4PacketEconomy;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -96,6 +102,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     {
         FunctionHelper.registerServerCommand(new CommandWallet());
         FunctionHelper.registerServerCommand(new CommandPay());
+        FunctionHelper.registerServerCommand(new CommandSell());
         FunctionHelper.registerServerCommand(new CommandPaidCommand());
         FunctionHelper.registerServerCommand(new CommandSellCommand());
 
@@ -121,6 +128,51 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     public static void saveWallet(UUID uuid, PlayerWallet wallet)
     {
         DataManager.getInstance().save(wallet, uuid.toString());
+    }
+
+    public static void confirmNewWalletAmount(UserIdent ident, Wallet wallet)
+    {
+        if (ident.hasPlayer())
+            OutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have now %s", wallet.toString()));
+    }
+
+    public static Long getItemPrice(Item item, UserIdent ident)
+    {
+        if (item instanceof ItemBlock)
+        {
+            String id = GameData.getBlockRegistry().getNameForObject(((ItemBlock) item).field_150939_a);
+            return FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, ModuleEconomy.PERM_VALUE_BLOCK + "." + id));
+        }
+        else
+        {
+            String id = GameData.getItemRegistry().getNameForObject(item);
+            return FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, ModuleEconomy.PERM_VALUE_ITEM + "." + id));
+        }
+    }
+
+    public static int tryRemoveItems(EntityPlayerMP player, ItemStack itemStack, int amount)
+    {
+        int foundStacks = 0;
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+        {
+            ItemStack stack = player.inventory.mainInventory[slot];
+            if (stack != null && stack.getItem() == itemStack.getItem()
+                    && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
+                foundStacks += stack.stackSize;
+        }
+        foundStacks = amount = Math.min(foundStacks, amount);
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+        {
+            ItemStack stack = player.inventory.mainInventory[slot];
+            if (stack != null && stack.getItem() == itemStack.getItem()
+                    && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
+            {
+                int removeCount = Math.min(stack.stackSize, foundStacks);
+                player.inventory.decrStackSize(slot, removeCount);
+                foundStacks -= removeCount;
+            }
+        }
+        return amount;
     }
 
     /* ------------------------------------------------------------ */
@@ -186,6 +238,18 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
 
     /* ------------------------------------------------------------ */
 
+    public static String getItemPricePermission(Item item)
+    {
+        String id = GameData.getBlockRegistry().getNameForObject(item);
+        return PERM_VALUE_ITEM + "." + id;
+    }
+
+    public static String getBlockPricePermission(Item item)
+    {
+        String id = GameData.getBlockRegistry().getNameForObject(item);
+        return PERM_VALUE_BLOCK + "." + id;
+    }
+
     @Override
     public void load(Configuration config, boolean isReload)
     {
@@ -200,7 +264,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
                 defaultValue = oldCategory.get(item.getUnlocalizedName()).getInt(DEFAULT_ITEM_PRICE);
                 oldCategory.remove(item.getUnlocalizedName());
             }
-            String id = GameData.getBlockRegistry().getNameForObject(item);
+            String id = GameData.getItemRegistry().getNameForObject(item);
             APIRegistry.perms.registerPermissionProperty(PERM_VALUE_ITEM + "." + id, Integer.toString(config.get(CATEGORY_ITEM, id, defaultValue).getInt()));
         }
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
@@ -231,4 +295,13 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
         return false;
     }
 
+    /* ------------------------------------------------------------ */
+
+    public static class CantAffordException extends TranslatedCommandException
+    {
+        public CantAffordException()
+        {
+            super("You can't afford that");
+        }
+    }
 }

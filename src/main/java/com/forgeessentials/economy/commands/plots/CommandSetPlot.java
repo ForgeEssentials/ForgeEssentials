@@ -11,6 +11,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.economy.ModuleEconomy.CantAffordException;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.EventCancelledException;
@@ -39,7 +40,7 @@ public class CommandSetPlot extends ForgeEssentialsCommandBase
             if (!PermissionsManager.checkPermission(player, getPermissionNode() + ".free"))
             {
                 if (!APIRegistry.economy.getWallet(player).withdraw(price))
-                    throw new TranslatedCommandException("You can't afford that!");
+                    throw new CantAffordException();
             }
 
             AreaZone zone = new AreaZone(APIRegistry.perms.getServerZone().getWorldZone(player.worldObj), PlotManager.PLOT_NAME_ID + args[0],

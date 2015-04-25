@@ -34,7 +34,7 @@ public class CommandParserArgs
     public final UserIdent userIdent;
     public final boolean isTabCompletion;
 
-    public List<String> tabCompletion = null;
+    public List<String> tabCompletion;
 
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion)
     {
@@ -44,6 +44,8 @@ public class CommandParserArgs
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
         this.userIdent = (senderPlayer == null) ? null : new UserIdent(senderPlayer);
         this.isTabCompletion = isTabCompletion;
+        if (isTabCompletion)
+            tabCompletion = new ArrayList<>();
     }
 
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender)
@@ -102,6 +104,11 @@ public class CommandParserArgs
 
     public UserIdent parsePlayer()
     {
+        return parsePlayer(true);
+    }
+
+    public UserIdent parsePlayer(boolean mustExist)
+    {
         if (isTabCompletion && size() == 1)
         {
             tabCompletion = completePlayer(peek());
@@ -125,7 +132,10 @@ public class CommandParserArgs
             }
             else
             {
-                return new UserIdent(name, sender);
+                UserIdent ident = new UserIdent(name, sender);
+                if (mustExist && !ident.hasUUID())
+                    throw new TranslatedCommandException("Player %s not found", name);
+                return ident;
             }
         }
     }
