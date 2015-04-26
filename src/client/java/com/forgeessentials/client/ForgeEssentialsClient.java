@@ -1,7 +1,12 @@
 package com.forgeessentials.client;
 
-import com.forgeessentials.client.core.PlayerInfoClient;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.forgeessentials.client.util.DummyProxy;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -12,19 +17,11 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.Map;
 
 @Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = "%VERSION%", guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true)
 public class ForgeEssentialsClient {
 
     public static Logger feclientlog;
-
-    @SideOnly(Side.CLIENT)
-    public static PlayerInfoClient info;
 
     @SidedProxy(clientSide = "com.forgeessentials.client.core.ClientProxy", serverSide = "com.forgeessentials.client.util.DummyProxy")
     public static DummyProxy proxy;
@@ -46,7 +43,6 @@ public class ForgeEssentialsClient {
             serverHasFE = true;
             feclientlog.info("The server is running ForgeEssentials.");
         }
-
         return true;
     }
 

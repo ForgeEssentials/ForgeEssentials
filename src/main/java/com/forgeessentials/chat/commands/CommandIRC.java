@@ -1,9 +1,10 @@
 package com.forgeessentials.chat.commands;
 
-import com.forgeessentials.chat.irc.IRCHelper;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.chat.irc.IRCHelper;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandIRC extends ForgeEssentialsCommandBase {
 
@@ -16,15 +17,19 @@ public class CommandIRC extends ForgeEssentialsCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        if (args[0].equalsIgnoreCase("reconnect"))
+        if (args.length == 1)
         {
-            IRCHelper.reconnect(sender);
+            if (args[0].equalsIgnoreCase("reconnect"))
+            {
+                IRCHelper.reconnect(sender);
+            }
+            else if (args[0].equalsIgnoreCase("disconnect"))
+            {
+                IRCHelper.shutdown();
+            }
         }
-        else if (args[0].equalsIgnoreCase("disconnect"))
-        {
-            IRCHelper.shutdown();
-        }
-        else if (args[0].equalsIgnoreCase("staus"))
+
+        else
         {
             IRCHelper.status(sender);
         }

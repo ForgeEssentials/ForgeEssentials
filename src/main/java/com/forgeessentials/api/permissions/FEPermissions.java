@@ -26,13 +26,15 @@ public final class FEPermissions {
 
 	public static final String PREFIX = FE_INTERNAL + ".prefix";
 	public static final String SUFFIX = FE_INTERNAL + ".suffix";
-    public static final String SPAWN = FE_INTERNAL + ".spawn";
+    public static final String SPAWN_LOC = FE_INTERNAL + ".spawn.location";
+    public static final String SPAWN_BED = FE_INTERNAL + ".spawn.bed";
 
 	public static final String GROUP = FE_INTERNAL + ".group";
     public static final String GROUP_ID = GROUP + ".id";
 	public static final String GROUP_PRIORITY = GROUP + ".priority";
     public static final String GROUP_INCLUDES = GROUP + ".includes";
     public static final String GROUP_PARENTS = GROUP + ".parents";
+    public static final String GROUP_PROMOTION = GROUP + ".promotion";
 
 	public static final int GROUP_PRIORITY_DEFAULT = 20;
 

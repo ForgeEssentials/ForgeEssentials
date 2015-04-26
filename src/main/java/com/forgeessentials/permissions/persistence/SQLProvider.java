@@ -70,7 +70,7 @@ public class SQLProvider extends ZonePersistenceProvider {
             return sb.toString();
         }
 
-        public String createSelectStatement(Collection fields)
+        public String createSelectStatement(Collection<?> fields)
         {
             for (Object f : fields)
                 if (!columns.containsKey(f))
@@ -370,7 +370,7 @@ public class SQLProvider extends ZonePersistenceProvider {
                 if (!ident.hasUUID())
                     continue;
                 Map<String, Object> fieldsAndValues = new HashMap<>();
-                fieldsAndValues.put("uuid", ident.getUuid().toString());
+                fieldsAndValues.put("uuid", ident.getOrGenerateUuid().toString());
                 if (ident.hasUsername())
                     fieldsAndValues.put("name", ident.getUsername());
                 db.createStatement().executeUpdate(TABLES.get(TABLE_USER).createInsertOrReplace(fieldsAndValues));
@@ -426,7 +426,7 @@ public class SQLProvider extends ZonePersistenceProvider {
                 for (Entry<String, String> perm : user.getValue().entrySet())
                 {
                     Map<String, Object> fieldsAndValues = new HashMap<>();
-                    fieldsAndValues.put("user", user.getKey().getUuid().toString());
+                    fieldsAndValues.put("user", user.getKey().getOrGenerateUuid().toString());
                     fieldsAndValues.put("zone_id", zone.getId());
                     fieldsAndValues.put("permission", perm.getKey());
                     fieldsAndValues.put("value", perm.getValue());

@@ -11,26 +11,22 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.util.FakePlayer;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
+import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-@SaveableObject(SaveInline = true)
 public class UserIdent {
 
-    @SaveableField
-    private UUID uuid;
+    protected UUID uuid;
 
-    @SaveableField
-    private String username;
+    protected String username;
 
-    private EntityPlayerMP player;
+    @Expose(serialize = false)
+    protected EntityPlayerMP player;
 
-    private GameProfile profile;
+    @Expose(serialize = false)
+    protected GameProfile profile;
 
     public UserIdent(UUID uuid)
     {
@@ -119,32 +115,84 @@ public class UserIdent {
         }
     }
 
-    // ------------------------------------------------------------
-
-    public void identifyUser()
+    public UserIdent(UserIdent ident)
     {
-        if (uuid == null)
+        this.uuid = ident.uuid;
+        this.player = ident.player;
+        this.username = ident.username;
+        this.profile = ident.profile;
+        
+        if (player == null)
         {
-            uuid = getUuidByUsername(username);
+            if (uuid != null)
+                player = getPlayerByUuid(uuid);
+            else if (username != null)
+                player = getPlayerByUsername(username);
+            else if (profile != null)
+                player = getPlayerByUuid(profile.getId());
         }
-        else if (username == null || profile == null)
+
+        if (profile == null && uuid != null)
         {
             profile = getGameProfileByUuid(uuid);
             if (profile != null)
                 username = profile.getName();
         }
-        if (player == null && uuid != null)
+
+        if (uuid == null)
         {
-            player = getPlayerByUuid(uuid);
+            if (profile != null)
+                uuid = profile.getId();
+            else if (player != null)
+                uuid = player.getPersistentID();
+            else if (username != null)
+                uuid = getUuidByUsername(username);
+        }
+    }
+
+    // ------------------------------------------------------------
+
+    public void identifyUser()
+    {
+        if (player == null)
+        {
+            if (uuid != null)
+                player = getPlayerByUuid(uuid);
+            else if (username != null)
+                player = getPlayerByUsername(username);
+            else if (profile != null)
+                player = getPlayerByUuid(profile.getId());
+        }
+
+        if (profile == null && uuid != null)
+        {
+            profile = getGameProfileByUuid(uuid);
+            if (profile != null)
+                username = profile.getName();
+        }
+
+        if (uuid == null)
+        {
+            if (profile != null)
+                uuid = profile.getId();
+            else if (player != null)
+                uuid = player.getPersistentID();
+            else if (username != null)
+                uuid = getUuidByUsername(username);
         }
     }
 
     public void updateUsername()
     {
-        username = getUsernameByUuid(uuid);
+        if (profile != null)
+            username = profile.getName();
+        else if (player != null)
+            username = player.getCommandSenderName();
+        else if (uuid != null)
+            username = getUsernameByUuid(uuid);
     }
 
-    public boolean wasValidUUID()
+    public boolean uncheckedHasUUID()
     {
         return uuid != null;
     }
@@ -177,25 +225,29 @@ public class UserIdent {
 
     public UUID getUuid()
     {
-        identifyUser();
+        if (uuid == null)
+            identifyUser();
         return uuid;
     }
 
     public String getUsername()
     {
-        identifyUser();
+        if (username == null)
+            identifyUser();
         return username;
     }
 
     public EntityPlayerMP getPlayer()
     {
-        identifyUser();
+        if (player == null)
+            identifyUser();
         return player;
     }
 
     public GameProfile getGameProfile()
     {
-        identifyUser();
+        if (profile == null)
+            identifyUser();
         return profile;
     }
 
@@ -203,6 +255,18 @@ public class UserIdent {
     {
         identifyUser();
         return username == null ? uuid.toString() : username;
+    }
+
+    public UUID getOrGenerateUuid()
+    {
+        if (uuid != null)
+            return uuid;
+        return getNameUuid();
+    }
+
+    public UUID getNameUuid()
+    {
+        return UUID.nameUUIDFromBytes(username.getBytes());
     }
 
     // ------------------------------------------------------------
@@ -217,16 +281,7 @@ public class UserIdent {
     @Override
     public int hashCode()
     {
-        identifyUser();
-        if (uuid == null)
-        {
-            // throw new PlayerNotFoundException();
-            return username.hashCode();
-        }
-        else
-        {
-            return uuid.hashCode();
-        }
+        return getOrGenerateUuid().hashCode();
     }
 
     @Override
@@ -277,12 +332,6 @@ public class UserIdent {
 
     // ------------------------------------------------------------
 
-    @Reconstructor
-    private static UserIdent reconstruct(IReconstructData tag)
-    {
-        return new UserIdent((UUID) tag.getFieldValue("uuid"), (String) tag.getFieldValue("username"));
-    }
-
     public static UserIdent fromString(String string)
     {
         if (string.charAt(0) != '(' || string.charAt(string.length() - 1) != ')' || string.indexOf('|') < 0)
@@ -302,7 +351,7 @@ public class UserIdent {
         if (profile != null)
             return profile.getName();
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
-            if (ident.getUuid().equals(uuid))
+            if (ident.hasUUID() && ident.getUuid().equals(uuid))
                 return ident.getUsername();
         return null;
     }

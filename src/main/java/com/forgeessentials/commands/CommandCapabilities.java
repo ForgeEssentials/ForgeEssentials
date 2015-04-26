@@ -2,12 +2,14 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -48,7 +50,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
     {
         if (args.length > 3)
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
 
         if (args.length == 0)
@@ -61,7 +63,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                OutputHandler.chatNotification(sender, String.format("Capabilities for %s:", player.getCommandSenderName()));
+                OutputHandler.chatNotification(sender, Translator.format("Capabilities for %s:", player.getCommandSenderName()));
                 OutputHandler.chatNotification(sender, names.get(0) + " = " + player.capabilities.disableDamage);
                 OutputHandler.chatNotification(sender, names.get(1) + " = " + player.capabilities.isFlying);
                 OutputHandler.chatNotification(sender, names.get(2) + " = " + player.capabilities.allowFlying);
@@ -75,14 +77,9 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         }
         else if (args.length == 2)
         {
-            if (sender instanceof EntityPlayer)
-            {
-                if (!PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
-                {
-                    OutputHandler.chatError(sender, "You don't have permissions for that.");
-                    return;
-                }
-            }
+            if (sender instanceof EntityPlayer && !PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+                throw new TranslatedCommandException("You don't have permissions for that.");
+
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
@@ -107,22 +104,13 @@ public class CommandCapabilities extends FEcmdModuleCommands {
                     OutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
                 }
                 else
-                {
-                    OutputHandler.chatError(sender, String.format("Capability '%s' unknown.", args[1]));
-                    return;
-                }
+                    throw new CommandException("Capability '%s' unknown.", args[1]);
             }
         }
         else if (args.length == 3)
         {
-            if (sender instanceof EntityPlayer)
-            {
-                if (!PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
-                {
-                    OutputHandler.chatError(sender, "You don't have permissions for that.");
-                    return;
-                }
-            }
+            if (sender instanceof EntityPlayer && !PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+                throw new TranslatedCommandException("You don't have permissions for that.");
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
@@ -157,10 +145,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
                     OutputHandler.chatNotification(sender, names.get(4) + " = " + player.capabilities.allowEdit);
                 }
                 else
-                {
-                    OutputHandler.chatError(sender, String.format("command.capabilities.capabilityUnknown", args[1]));
-                    return;
-                }
+                    throw new CommandException("command.capabilities.capabilityUnknown", args[1]);
                 player.sendPlayerAbilities();
             }
         }
@@ -187,7 +172,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
         }
         else if (args.length == 2)
         {
-            return getListOfStringsFromIterableMatchingLastWord(args, names);
+            return getListOfStringsMatchingLastWord(args, names);
         }
         else if (args.length == 3)
         {

@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
-import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
@@ -70,9 +69,9 @@ public class PortalManager extends ServerEventHandler {
         WorldPoint before = e.before.toWorldPoint();
         for (Portal portal : portals.values())
         {
-            if (portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
+            if (!portal.hasFrame() && portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
             {
-                TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, new WarpPoint(portal.target, e.entityPlayer.rotationPitch,
+                TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, portal.target.toWarpPoint(e.entityPlayer.rotationPitch,
                         e.entityPlayer.rotationYaw));
             }
         }
@@ -84,12 +83,17 @@ public class PortalManager extends ServerEventHandler {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
+        Portal portal = getPortalAt(point);
+        if (portal != null && portal.hasFrame())
+            e.setCanceled(true);
+    }
+
+    public Portal getPortalAt(WorldPoint point)
+    {
         for (Portal portal : portals.values())
             if (portal.getPortalArea().contains(point))
-            {
-                e.setCanceled(true);
-                break;
-            }
+                return portal;
+        return null;
     }
 
     // @SubscribeEvent
@@ -123,9 +127,14 @@ public class PortalManager extends ServerEventHandler {
     // }
     // }
 
+    public Portal get(String name)
+    {
+        return portals.get(name);
+    }
+
     public void remove(String name)
     {
-        portals.remove(name);
+        destroyPortalFrame(portals.remove(name));
         DataManager.getInstance().delete(Portal.class, name);
     }
 
@@ -138,16 +147,31 @@ public class PortalManager extends ServerEventHandler {
 
     private static void buildPortalFrame(Portal portal)
     {
+        if (!portal.hasFrame())
+            return;
         World world = DimensionManager.getWorld(portal.getPortalArea().getDimension());
         if (world != null)
         {
             for (int ix = portal.getPortalArea().getLowPoint().getX(); ix <= portal.getPortalArea().getHighPoint().getX(); ix++)
                 for (int iy = portal.getPortalArea().getLowPoint().getY(); iy <= portal.getPortalArea().getHighPoint().getY(); iy++)
                     for (int iz = portal.getPortalArea().getLowPoint().getZ(); iz <= portal.getPortalArea().getHighPoint().getZ(); iz++)
-                        if (world.getBlock(ix, iy, iz) != Blocks.glass_pane)
-                        {
-                            world.setBlock(ix, iy, iz, Blocks.glass_pane);
-                        }
+                        if (world.getBlock(ix, iy, iz) != Blocks.portal)
+                            world.setBlock(ix, iy, iz, Blocks.portal);
+        }
+    }
+
+    private static void destroyPortalFrame(Portal portal)
+    {
+        if (!portal.hasFrame())
+            return;
+        World world = DimensionManager.getWorld(portal.getPortalArea().getDimension());
+        if (world != null)
+        {
+            for (int ix = portal.getPortalArea().getLowPoint().getX(); ix <= portal.getPortalArea().getHighPoint().getX(); ix++)
+                for (int iy = portal.getPortalArea().getLowPoint().getY(); iy <= portal.getPortalArea().getHighPoint().getY(); iy++)
+                    for (int iz = portal.getPortalArea().getLowPoint().getZ(); iz <= portal.getPortalArea().getHighPoint().getZ(); iz++)
+                        if (world.getBlock(ix, iy, iz) == Blocks.portal)
+                            world.setBlock(ix, iy, iz, Blocks.air);
         }
     }
 

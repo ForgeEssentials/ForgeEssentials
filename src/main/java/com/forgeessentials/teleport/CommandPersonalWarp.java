@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.util.PWarp;
 import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.OutputHandler;
@@ -66,106 +68,77 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		{
 			if (args.length == 1)
 			{
-				if (map.containsKey(args[0]))
-				{
-					PWarp warp = map.get(args[0]);
-					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-					playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
-					CommandBack.justDied.remove(sender.getPersistentID());
-					TeleportHelper.teleport(sender, warp.getPoint());
-				}
-				else
-				{
-					OutputHandler.chatError(sender, "That personal warp doesn't exist!");
-				}
+				if (!map.containsKey(args[0]))
+				    throw new TranslatedCommandException("That personal warp doesn't exist!");
+				PWarp warp = map.get(args[0]);
+				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
+				playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
+				CommandBack.justDied.remove(sender.getPersistentID());
+				TeleportHelper.teleport(sender, warp.getPoint());
 			}
 			else if (args[0].equalsIgnoreCase("add"))
 			{
 				if (args.length == 1)
-                {
-                    OutputHandler.chatError(sender, "You must specify a warp name!");
-                    return;
-                }
-
-                if (!map.containsKey(args[1]))
+				    throw new TranslatedCommandException("You must specify a warp name!");
+                if (map.containsKey(args[1]))
+				    throw new TranslatedCommandException("That personal warp already exists.");
+                
+				Integer prop = APIRegistry.perms.getUserPermissionPropertyInt(new UserIdent(sender), PERM_LIMIT_PROP);
+				if (prop == null || prop == -1)
 				{
-					Integer prop = APIRegistry.perms.getUserPermissionPropertyInt(new UserIdent(sender), PERM_LIMIT_PROP);
-					if (prop == null || prop == -1)
-					{
-						map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
-						OutputHandler.chatConfirmation(sender, "Personal warp sucessfully added.");
-					}
-					else if (map.size() < prop)
-					{
-						map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
-						OutputHandler.chatConfirmation(sender, "Personal warp sucessfully added.");
-					}
-					else
-					{
-						OutputHandler.chatError(sender, "You have reached your limit.");
-					}
+					map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
+					OutputHandler.chatConfirmation(sender, "Personal warp sucessfully added.");
+				}
+				else if (map.size() < prop)
+				{
+					map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
+					OutputHandler.chatConfirmation(sender, "Personal warp sucessfully added.");
 				}
 				else
-				{
-					OutputHandler.chatError(sender, "That personal warp already exists.");
-				}
+				    throw new TranslatedCommandException("You have reached your limit.");
 			}
 			else if (args[0].equalsIgnoreCase("remove"))
 			{
                 if (args[1] == null)
-                {
-                    OutputHandler.chatError(sender, "You must specify a warp name!");
-                    return;
-                }
-
-                if (map.containsKey(args[1]))
-				{
-					TeleportDataManager.removePWarp(map.get(args[1]));
-					map.remove(args[1]);
-					OutputHandler.chatConfirmation(sender, "Personal warp sucessfully removed.");
-				}
-				else
-				{
-					OutputHandler.chatError(sender, "That personal warp doesn't exist!");
-				}
+                    throw new TranslatedCommandException("You must specify a warp name!");
+                if (!map.containsKey(args[1]))
+				    throw new TranslatedCommandException("That personal warp doesn't exist!");
+                
+				TeleportDataManager.removePWarp(map.get(args[1]));
+				map.remove(args[1]);
+				OutputHandler.chatConfirmation(sender, "Personal warp sucessfully removed.");
 			}
 			else if (args[0].equalsIgnoreCase("limit") && PermissionsManager.checkPermission(sender, PERM_SET_LIMIT))
 			{
 				if (args.length == 1)
+				    throw new TranslatedCommandException("Specify a group or player. (-1 means no limit.)");
+				String target;
+				if (APIRegistry.perms.groupExists(args[1]))
 				{
-					OutputHandler.chatError(sender, "Specify a group or player. (-1 means no limit.)");
+					target = "g:" + args[1];
+				}
+				else if (args[1].equalsIgnoreCase("me"))
+				{
+					target = "p:" + sender.getCommandSenderName();
 				}
 				else
 				{
-					String target;
-					if (APIRegistry.perms.groupExists(args[1]))
-					{
-						target = "g:" + args[1];
-					}
-					else if (args[1].equalsIgnoreCase("me"))
-					{
-						target = "p:" + sender.getCommandSenderName();
-					}
-					else
-					{
-						target = "p:" + UserIdent.getPlayerByMatchOrUsername(sender, args[1]).getCommandSenderName();
-					}
+					target = "p:" + UserIdent.getPlayerByMatchOrUsername(sender, args[1]).getCommandSenderName();
+				}
 
-					if (args.length == 2)
-					{
-						OutputHandler.chatConfirmation(sender, String.format("The current limit is %s.", getLimit(target)));
-					}
-					else
-					{
-						setLimit(target, parseIntWithMin(sender, args[2], -1));
-						OutputHandler.chatConfirmation(sender, String.format("Limit changed to %s.", getLimit(target)));
-					}
-
+				if (args.length == 2)
+				{
+					OutputHandler.chatConfirmation(sender, Translator.format("The current limit is %s.", getLimit(target)));
+				}
+				else
+				{
+					setLimit(target, parseIntWithMin(sender, args[2], -1));
+					OutputHandler.chatConfirmation(sender, Translator.format("Limit changed to %s.", getLimit(target)));
 				}
 			}
 			else if (args[0].equalsIgnoreCase("limit"))
 			{
-				OutputHandler.chatConfirmation(sender, String.format("The current limit is %s.", getLimit(sender)));
+				OutputHandler.chatConfirmation(sender, Translator.format("The current limit is %s.", getLimit(sender)));
 			}
 		}
 		TeleportDataManager.privateWarps.put(sender.getPersistentID().toString(), map);
@@ -221,7 +194,6 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 		return "fe.teleport." + getCommandName();
 	}
 
-    @SuppressWarnings("unchecked")
     @Override
 	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
@@ -248,7 +220,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 //				zone = APIRegistry.perms.getZone(zone.parent);
 //			}
 //
-//			return getListOfStringsFromIterableMatchingLastWord(args, list);
+//			return getListOfStringsMatchingLastWord(args, list);
 //		}
 		if (args.length == 2)
 		{
@@ -256,7 +228,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 			{
 				TeleportDataManager.privateWarps.put(sender.getCommandSenderName(), new HashMap<String, PWarp>());
 			}
-			return getListOfStringsFromIterableMatchingLastWord(args, TeleportDataManager.privateWarps.get(sender.getCommandSenderName()).keySet());
+			return getListOfStringsMatchingLastWord(args, TeleportDataManager.privateWarps.get(sender.getCommandSenderName()).keySet());
 		}
 		return null;
 	}

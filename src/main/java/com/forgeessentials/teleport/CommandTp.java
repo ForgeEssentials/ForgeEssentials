@@ -1,6 +1,5 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.commons.selections.Point;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,13 +10,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WarpPoint;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -53,9 +55,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				TeleportHelper.teleport(player, new WarpPoint(target));
 			}
 			else
-			{
-				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-			}
+			    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 		}
 		else if (args.length == 2 && PermissionsManager.checkPermission(sender, TeleportModule.PERM_TP_OTHERS))
 		{
@@ -73,23 +73,19 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 					FunctionHelper.teleportPlayer(player, point);
 				}
 				else
-				{
-					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[1]));
-					return;
-				}
+				    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[1]);
 			}
 			else
-			{
-				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-				return;
-			}
+			    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 		}
 		else if (args.length >= 3)
 		{
 			if (args.length == 3)
 			{
 				EntityPlayerMP player = sender;
-				double x = parseDouble(sender, args[0]), y = parseDouble(sender, args[1]), z = parseDouble(sender, args[2]);
+				double x = func_110666_a(sender, player.posX, args[0]);
+				double y = func_110666_a(sender, player.posY, args[1]);
+				double z = func_110666_a(sender, player.posZ, args[2]);
 				PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 				playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 				TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
@@ -99,25 +95,21 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 				if (player != null)
 				{
-					double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);
+	                double x = func_110666_a(sender, player.posX, args[1]);
+	                double y = func_110666_a(sender, player.posY, args[2]);
+	                double z = func_110666_a(sender, player.posZ, args[3]);
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 					TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
 				}
 				else
-				{
-					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-				}
+					throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 			}
 			else
-			{
-				OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /tp [player] <player|<x> <y> <z>>");
-			}
+			    throw new TranslatedCommandException("Improper syntax. Please try this instead: /tp [player] <player|<x> <y> <z>>");
 		}
 		else
-		{
-			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: /tp [player] <player|<x> <y> <z>>");
-		}
+		    throw new TranslatedCommandException("Improper syntax. Please try this instead: /tp [player] <player|<x> <y> <z>>");
 	}
 
 	@Override
@@ -140,16 +132,10 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 					TeleportHelper.teleport(player, new WarpPoint(target));
 				}
 				else
-				{
-					OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[1]));
-					return;
-				}
+					throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[1]);
 			}
 			else
-			{
-				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-				return;
-			}
+				throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 		}
 		else if (args.length == 4)
 		{
@@ -162,13 +148,11 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 				TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
 			}
 			else
-			{
-				OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-			}
+			    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 		}
 		else
 		{
-			OutputHandler.chatError(sender, "Improper syntax. Please try this instead: ");
+			OutputHandler.chatError(sender, Translator.translate("Improper syntax. Please try this instead:"));
 			OutputHandler.chatNotification(sender, getCommandUsage(sender));
 		}
 	}

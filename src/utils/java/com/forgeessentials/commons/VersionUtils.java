@@ -13,9 +13,11 @@ public class VersionUtils
         {
             if (source != null)
             {
-                JarFile jar = new JarFile(source);
-                Manifest manifest = jar.getManifest();
-                return manifest.getMainAttributes().getValue("Build-Number");
+                try (JarFile jar = new JarFile(source))
+                {
+                    Manifest manifest = jar.getManifest();
+                    return manifest.getMainAttributes().getValue("Build-Number");
+                }
             }
         }
         catch (IOException e1)
@@ -31,9 +33,11 @@ public class VersionUtils
         {
             if (source != null)
             {
-                JarFile jar = new JarFile(source);
-                Manifest manifest = jar.getManifest();
-                return manifest.getMainAttributes().getValue("BuildID");
+                try (JarFile jar = new JarFile(source))
+                {
+                    Manifest manifest = jar.getManifest();
+                    return manifest.getMainAttributes().getValue("BuildID");
+                }
             }
         }
         catch (IOException e1)

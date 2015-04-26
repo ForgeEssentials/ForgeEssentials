@@ -122,7 +122,7 @@ public class ModuleProtection {
         {
             return item.getItemStackDisplayName(new ItemStack(item));
         }
-        catch (Exception e)
+        catch (Exception | NoClassDefFoundError e)
         {
             return item.getUnlocalizedName();
         }
@@ -138,8 +138,8 @@ public class ModuleProtection {
 
         // ----------------------------------------
         // Other
-        APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE, "Allow PvP");
-        APIRegistry.perms.registerPermissionProperty(PERM_GAMEMODE, "-1", "Force gamemode (-1 = none, 0 = survival, 1 = creative, 2 = adventure)");
+        APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE, "If denied for at least one of two fighting players, PvP will be disabled");
+        APIRegistry.perms.registerPermissionProperty(PERM_GAMEMODE, "-1", "Force gamemode (-1 = none / default, 0 = survival, 1 = creative, 2 = adventure)");
         APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default", "Inventory group property - can be set to any identifier to separate inventories for certain regions");
         APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE, "Allow interacting with entities (villagers, dogs, horses)");
         APIRegistry.perms.registerPermission(PERM_EXPLOSION, RegisteredPermValue.TRUE, "(global) Allows explosions.");
@@ -161,14 +161,19 @@ public class ModuleProtection {
         // ----------------------------------------
         // Register mobs
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN + Zone.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "(global) Allow spawning of mobs");
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow natural spawning of mobs (random spawn in the dark)");
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow forced spawning of mobs (spawners, spawn-eggs)");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow natural spawning of mobs (random spawn)");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow forced spawning of mobs (mob-spawners)");
         for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
             {
                 APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), RegisteredPermValue.TRUE);
                 APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getKey(), RegisteredPermValue.TRUE);
             }
+        for (MobType mobType : MobType.values())
+        {
+            APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + ".type." + mobType.toString().toLowerCase(), RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + ".type." + mobType.toString().toLowerCase(), RegisteredPermValue.TRUE);
+        }
 
         // ----------------------------------------
         // Register items

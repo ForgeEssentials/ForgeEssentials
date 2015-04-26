@@ -2,12 +2,12 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -44,7 +44,7 @@ public class CommandHeal extends FEcmdModuleCommands {
         }
         else
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 
@@ -59,14 +59,10 @@ public class CommandHeal extends FEcmdModuleCommands {
                 heal(player);
             }
             else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-        {
-        	throw new WrongUsageException(getCommandUsage(sender));
-        }
+            throw new TranslatedCommandException(getCommandUsage(sender));
     }
 
     public void heal(EntityPlayer target)

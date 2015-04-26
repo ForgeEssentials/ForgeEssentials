@@ -28,9 +28,9 @@ public class DataIntLocation {
     public DataIntLocation(WorldPoint point)
     {
         dim = point.getDimension();
-        x = point.x;
-        y = point.y;
-        z = point.z;
+        x = point.getX();
+        y = point.getY();
+        z = point.getZ();
     }
 
 }

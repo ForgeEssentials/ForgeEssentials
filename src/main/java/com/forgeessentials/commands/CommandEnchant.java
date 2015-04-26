@@ -22,6 +22,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandEnchant extends FEcmdModuleCommands {
@@ -36,10 +37,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 	{
 		ItemStack var6 = sender.getCurrentEquippedItem();
 		if (var6 == null)
-		{
-			OutputHandler.chatError(sender, "You are not holding a valid item.");
-			return;
-		}
+		    throw new TranslatedCommandException("You are not holding a valid item.");
 
 		if (args.length == 0)
 		{
@@ -111,7 +109,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 			{
 				if (StatCollector.translateToLocal(enchL.getName()).replaceAll(" ", "").equalsIgnoreCase(args[0]))
 				{
-					Map map = EnchantmentHelper.getEnchantments(var6);
+					Map<?, ?> map = EnchantmentHelper.getEnchantments(var6);
 					if (map.containsKey(enchL.effectId))
 					{
 						map.remove(enchL.effectId);
@@ -128,10 +126,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 			ench = Enchantment.enchantmentsList[var4];
 		}
 		if (ench == null)
-		{
-			OutputHandler.chatError(sender, String.format("'%s' is not a recognized enchantment.", args[0]));
-			return;
-		}
+		    throw new TranslatedCommandException("'%s' is not a recognized enchantment.", args[0]);
 
 		int lvl = ench.getMaxLevel();
 		if (args.length >= 2)
@@ -154,7 +149,7 @@ public class CommandEnchant extends FEcmdModuleCommands {
 			for (Enchantment ench : Enchantment.enchantmentsList)
 				if (ench != null)
 					temp.add(ench.getName().replaceAll("enchantment.", ""));
-			return getListOfStringsFromIterableMatchingLastWord(args, temp);
+			return getListOfStringsMatchingLastWord(args, temp);
 		}
 		return null;
 	}

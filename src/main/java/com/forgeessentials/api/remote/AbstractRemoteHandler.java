@@ -11,33 +11,19 @@ import com.forgeessentials.api.APIRegistry;
  */
 public abstract class AbstractRemoteHandler implements RemoteHandler {
 
-    private final String id;
-
     private final String permission;
 
     protected Set<RemoteSession> pushSessions = new HashSet<>();
 
-    public AbstractRemoteHandler(String id, String permission)
+    public AbstractRemoteHandler(String permission)
     {
-        this.id = id;
         this.permission = permission;
-    }
-
-    @Override
-    public String getID()
-    {
-        return id;
     }
 
     @Override
     public String getPermission()
     {
         return permission;
-    }
-
-    public void register()
-    {
-        APIRegistry.remoteManager.registerHandler(this);
     }
 
     public static void checkPermission(RemoteSession session, String permission)
@@ -49,6 +35,11 @@ public abstract class AbstractRemoteHandler implements RemoteHandler {
     public static void error(String message)
     {
         throw new RemoteException(message);
+    }
+
+    public static void error(String message, Object... args) 
+    {
+        throw new RemoteException(message, args);
     }
 
     protected synchronized void addPushSession(RemoteSession session)

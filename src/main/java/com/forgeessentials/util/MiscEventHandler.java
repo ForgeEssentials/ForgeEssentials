@@ -10,6 +10,8 @@ import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 
 public class MiscEventHandler {
     public static boolean MajoritySleep = false;
+
+    public static int majoritySleepThreshold;
     private static MiscEventHandler instance;
 
     public MiscEventHandler()
@@ -37,6 +39,10 @@ public class MiscEventHandler {
 
         if (MajoritySleep && FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
+            WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
+            if (world.getWorldInfo().getWorldTime() % 24000L < 12000L){
+                return;
+            }
             int playersT = FMLCommonHandler.instance().getMinecraftServerInstance().getCurrentPlayerCount();
             int playersS = 1;
             for (Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
@@ -50,9 +56,8 @@ public class MiscEventHandler {
 
             float percent = playersS * 100.0f / playersT;
             OutputHandler.felog.finer("Players sleeping: " + percent + "%");
-            if (percent > 50)
+            if (percent > majoritySleepThreshold)
             {
-                WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
                 long time = world.getWorldInfo().getWorldTime() + 24000L;
                 world.getWorldInfo().setWorldTime(time - time % 24000L);
 

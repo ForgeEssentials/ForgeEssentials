@@ -9,6 +9,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -24,68 +25,49 @@ public class CommandPay extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        if (args.length == 2)
-        {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player == null)
-            {
-                OutputHandler.chatError(sender, args[0] + " not found!");
-            }
-            else if (player == sender)
-            {
-                OutputHandler.chatError(sender, "You can't pay yourself!");
-            }
-            else
-            {
-                int amount = parseIntWithMin(sender, args[1], 0);
-                if (APIRegistry.wallet.getWallet(sender.getPersistentID()) >= amount)
-                {
-                    APIRegistry.wallet.removeFromWallet(amount, sender.getPersistentID());
-                    APIRegistry.wallet.addToWallet(amount, player.getPersistentID());
-                    OutputHandler.chatConfirmation(sender,
-                            "You have payed " + player.getCommandSenderName() + " " + amount + " " + APIRegistry.wallet.currency(amount));
-                    OutputHandler.chatConfirmation(player,
-                            "You have been payed " + amount + " " + APIRegistry.wallet.currency(amount) + " by " + sender.getCommandSenderName());
-                }
-                else
-                {
-                    OutputHandler.chatError(sender, "You can't afford that!!");
-                }
-            }
-        }
-        else
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amount>");
-        }
+        if (args.length != 2)
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amount>");
+        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        if (player == null)
+            throw new TranslatedCommandException("Player %s not found!", args[0]);
+
+        if (player == sender)
+            throw new TranslatedCommandException("You can't pay yourself!");
+
+        int amount = parseIntWithMin(sender, args[1], 0);
+        if (APIRegistry.wallet.getWallet(sender.getPersistentID()) < amount)
+            throw new TranslatedCommandException("You can't afford that!!");
+        APIRegistry.wallet.removeFromWallet(amount, sender.getPersistentID());
+        APIRegistry.wallet.addToWallet(amount, player.getPersistentID());
+        OutputHandler.chatConfirmation(sender,
+                "You have payed " + player.getCommandSenderName() + " " + amount + " " + APIRegistry.wallet.currency(amount));
+        OutputHandler.chatConfirmation(player,
+                "You have been payed " + amount + " " + APIRegistry.wallet.currency(amount) + " by " + sender.getCommandSenderName());
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        if (args.length == 2)
+        if (args.length != 2)
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amount>");
+        
+        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        if (PlayerSelector.hasArguments(args[0]))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (PlayerSelector.hasArguments(args[0]))
-            {
-                player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            }
-            if (player == null)
-            {
-                OutputHandler.chatError(sender, args[0] + " not found!");
-            }
-            else
-            {
-                int amount = parseIntWithMin(sender, args[1], 0);
-                APIRegistry.wallet.addToWallet(amount, player.getPersistentID());
-                OutputHandler
-                        .chatConfirmation(sender, "You have payed " + player.getCommandSenderName() + " " + amount + " " + APIRegistry.wallet.currency(amount));
-                OutputHandler.chatConfirmation(player,
-                        "You have been payed " + amount + " " + APIRegistry.wallet.currency(amount) + " by " + sender.getCommandSenderName());
-            }
+            player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        }
+        if (player == null)
+        {
+            OutputHandler.chatError(sender, args[0] + " not found!");
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amount>");
+            int amount = parseIntWithMin(sender, args[1], 0);
+            APIRegistry.wallet.addToWallet(amount, player.getPersistentID());
+            OutputHandler
+                    .chatConfirmation(sender, "You have payed " + player.getCommandSenderName() + " " + amount + " " + APIRegistry.wallet.currency(amount));
+            OutputHandler.chatConfirmation(player,
+                    "You have been payed " + amount + " " + APIRegistry.wallet.currency(amount) + " by " + sender.getCommandSenderName());
         }
     }
 

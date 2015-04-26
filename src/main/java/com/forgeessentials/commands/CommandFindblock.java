@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
@@ -12,6 +11,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -48,7 +48,7 @@ public class CommandFindblock extends FEcmdModuleCommands {
     {
         if (args.length < 2)
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
         String id = args[0];
         int meta = parseInt(sender, args[1]);
@@ -70,13 +70,11 @@ public class CommandFindblock extends FEcmdModuleCommands {
     {
         if (args.length == 1)
         {
-            List names = new ArrayList<String>();
-
+            List<String> names = new ArrayList<String>();
             for (Item i : GameData.getItemRegistry().typeSafeIterable()){
                 names.add(i.getUnlocalizedName());
             }
-
-            return getListOfStringsFromIterableMatchingLastWord(args, names);
+            return getListOfStringsMatchingLastWord(args, names);
         }
         else if (args.length == 2)
         {
@@ -92,7 +90,7 @@ public class CommandFindblock extends FEcmdModuleCommands {
         }
         else
         {
-        	throw new WrongUsageException(getCommandUsage(sender));
+        	throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 

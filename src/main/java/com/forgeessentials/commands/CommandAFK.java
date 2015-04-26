@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.forgeessentials.util.events.FEPlayerEvent.PlayerNotAFKEvent;
+import com.forgeessentials.util.events.FEPlayerEvent.PlayerWentAFKEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -15,6 +18,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.AFKdata;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandAFK extends FEcmdModuleCommands {
@@ -51,7 +55,7 @@ public class CommandAFK extends FEcmdModuleCommands {
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         CommandsEventHandler.afkListToAdd.add(new AFKdata(sender));
-        OutputHandler.chatConfirmation(sender, String.format("Stand still for %d seconds.", warmup));
+        OutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
     }
 
     @Override
@@ -72,13 +76,13 @@ public class CommandAFK extends FEcmdModuleCommands {
 
         if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
-            OutputHandler.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    String.format(inMessage, afkData.player.getDisplayName()));
+            OutputHandler.sendMessageToAll(new ChatComponentText(Translator.format(inMessage, afkData.player.getDisplayName())));
         }
         else
         {
             OutputHandler.chatConfirmation(afkData.player, selfInMessage);
         }
+        APIRegistry.getFEEventBus().post(new PlayerNotAFKEvent(afkData.player));
     }
 
     public void makeAFK(AFKdata afkData)
@@ -89,13 +93,13 @@ public class CommandAFK extends FEcmdModuleCommands {
 
         if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
         {
-            OutputHandler.sendMessage(MinecraftServer.getServer().getConfigurationManager(),
-                    String.format(outMessage, afkData.player.getDisplayName()));
+            OutputHandler.sendMessageToAll(new ChatComponentText(Translator.format(outMessage, afkData.player.getDisplayName())));
         }
         else
         {
             OutputHandler.chatConfirmation(afkData.player, selfOutMessage);
         }
+        APIRegistry.getFEEventBus().post(new PlayerWentAFKEvent(afkData.player));
     }
 
     @Override

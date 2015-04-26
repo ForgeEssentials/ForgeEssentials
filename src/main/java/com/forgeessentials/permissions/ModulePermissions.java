@@ -15,11 +15,11 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.permissions.autoPromote.AutoPromoteManager;
-import com.forgeessentials.permissions.autoPromote.CommandAutoPromote;
 import com.forgeessentials.permissions.commands.CommandPermissions;
+import com.forgeessentials.permissions.commands.CommandPromote;
 import com.forgeessentials.permissions.commands.CommandZone;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
+import com.forgeessentials.permissions.core.PermissionScheduler;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.permissions.persistence.JsonProvider;
@@ -42,8 +42,6 @@ public class ModulePermissions extends ConfigLoaderBase {
 
     private static final String CONFIG_CAT = "Permissions";
 
-    public static AutoPromoteManager autoPromoteManager;
-
     public static ZonedPermissionHelper permissionHelper;
 
     private String persistenceBackend = "flatfile";
@@ -51,11 +49,14 @@ public class ModulePermissions extends ConfigLoaderBase {
     private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath() + "/permissions",
             false);
 
+    private PermissionScheduler permissionScheduler;
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preLoad(FEModulePreInitEvent e)
     {
         // Create permission manager
         permissionHelper = new ZonedPermissionHelper();
+        permissionScheduler = new PermissionScheduler();
         APIRegistry.perms = permissionHelper;
         PermissionsManager.setPermProvider(permissionHelper);
         
@@ -97,17 +98,17 @@ public class ModulePermissions extends ConfigLoaderBase {
         }
         }
         permissionHelper.load();
+        permissionScheduler.loadAll();
+        registerPermissions();
+        registerCommands();
+    }
 
-        // Register commands
+    public void registerCommands()
+    {
         new CommandZone().register();
         new CommandPermissions().register();
-        new CommandAutoPromote().register();
-
-        // Register permissions
-        registerPermissions();
-
-        // Load auto-promote manager
-        autoPromoteManager = new AutoPromoteManager();
+        //new CommandAutoPromote().register();
+        new CommandPromote().register();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -119,9 +120,8 @@ public class ModulePermissions extends ConfigLoaderBase {
     @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
-        autoPromoteManager.stop();
         permissionHelper.save();
-        // permissionHelper.clear();
+        permissionScheduler.saveAll();
     }
 
     private static void registerPermissions()
@@ -135,6 +135,7 @@ public class ModulePermissions extends ConfigLoaderBase {
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PRIORITY, "Group priority");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_INCLUDES, "Groups that are included using the included group's priority");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PARENTS, "Groups that are included using the including group's priority");
+        APIRegistry.perms.registerPermission(FEPermissions.GROUP_PROMOTION, RegisteredPermValue.FALSE, "Unlock this group for promotion with /promote");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER, "Player information");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_GROUPS, "Comma separated list of player groups");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_NAME, "Player name");
@@ -143,7 +144,8 @@ public class ModulePermissions extends ConfigLoaderBase {
         APIRegistry.perms.registerPermissionDescription(FEPermissions.SUFFIX, "Suffix property node");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_ENTRY_MESSAGE, "Zone entry message");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_EXIT_MESSAGE, "Zone exit message");
-        APIRegistry.perms.registerPermissionProperty(FEPermissions.SPAWN, "bed", "Player spawn property");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.SPAWN_LOC, "Player spawn location property");
+        APIRegistry.perms.registerPermission(FEPermissions.SPAWN_BED, RegisteredPermValue.TRUE, "Player spawn at bed if available");
 
         APIRegistry.perms.registerPermissionDescription(CommandZone.PERM_NODE, "Permission nodes for area-management command");
         APIRegistry.perms.registerPermission(CommandZone.PERM_ALL, RegisteredPermValue.OP);
@@ -170,9 +172,9 @@ public class ModulePermissions extends ConfigLoaderBase {
                 "Allow listing all permissions affecting current user");
 
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_TEST, RegisteredPermValue.TRUE, "Allow testing permission nodes");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_RELOAD, RegisteredPermValue.TRUE, "Allow reloading changed permission files");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_SAVE, RegisteredPermValue.TRUE, "Allow force-saving permission files");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_DEBUG, RegisteredPermValue.OP, "Allow using permission-debug command");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_RELOAD, RegisteredPermValue.OP, "Allow reloading changed permission files");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_SAVE, RegisteredPermValue.OP, "Allow force-saving permission files");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_DEBUG, RegisteredPermValue.TRUE, "Allow using permission-debug command");
 
         // Other
         APIRegistry.perms.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);

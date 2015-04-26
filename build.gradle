@@ -28,14 +28,16 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.4.0-beta6"
+version = "1.4.0-beta7"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 project.ext.build = '0'
 if (System.getenv('BUILD_NUMBER') != null)
-project.ext.build = System.getenv('BUILD_NUMBER')
+    project.ext.build = System.getenv('BUILD_NUMBER')
+
+evaluationDependsOn('Mixin')
 
 import org.ajoberstar.grgit.Grgit
 
@@ -54,12 +56,24 @@ minecraft {
     runDir = "rundir"
     ext.forgeVersion = "10.13.2.1258"
 
-    replaceIn "com/forgeessentials/core/preloader/FEModContainer.java"
+    replaceIn "com/forgeessentials/core/ForgeEssentials.java"
     replace "%VERSION%", project.version
 
     replaceIn "com/forgeessentials/client/ForgeEssentialsClient.java"
     replace "%VERSION%", project.version
+
+    //srgExtra "PK: org/spongepowered/asm com/forgeessentials/repackage/org_spongepowered/asm"
 }
+
+def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + 'mixins.srg'
+
+afterEvaluate {
+    tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
+    tasks.compileUtilsJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
+    tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
+
+}
+
 
 configurations {
     serverLibs
@@ -89,6 +103,10 @@ repositories {
         name = "sk89q"
         url = "http://maven.sk89q.com/repo/"
     }
+    maven {
+        name = "sponge"
+        url = "http://repo.spongepowered.org/maven/"
+    }
 }
 
 dependencies {
@@ -98,13 +116,26 @@ dependencies {
     //datasaving
     myCompile 'com.h2database:h2:1.3.175'
     myCompile 'mysql:mysql-connector-java:5.1.22'
+    myCompile 'org.hibernate:hibernate-entitymanager:4.3.7.Final'
+    myCompile 'org.hibernate:hibernate-jpamodelgen:4.3.7.Final'
+    //myCompile 'org.eclipse.persistence:eclipselink:2.6.0'
 
     // WE integration
     myCompile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.2-SNAPSHOT:dev'
 
+    // mixins
+    //myCompile 'org.spongepowered:mixin:0.1-SNAPSHOT'
+
+    //shade 'org.spongepowered:mixin:0.1-SNAPSHOT'
+
+    myCompile project('Mixin')
+
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
     serverLibs 'mysql:mysql-connector-java:5.1.22'
+    serverLibs 'org.hibernate:hibernate-entitymanager:4.3.7.Final'
+    //serverLibs 'org.eclipse.persistence:eclipselink:2.6.0'
+    
     includeMod files('lib/worldedit-forge-mc1.7.10-6.0.2-SNAPSHOT-dist.jar')
 }
 
@@ -136,13 +167,17 @@ jar {
     classifier = 'server'
     appendix = project.minecraft.version
     manifest {
-        attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader",
-                "FMLCorePluginContainsFMLMod": "true",
+        attributes(
                 "BuildID": project.ext.gitCommitHash,
-        "Build-Number": project.ext.build)
+                "Build-Number": project.ext.build,
+                "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
+                "TweakOrder": "10000"
+        )
     }
 
-
+    from(project("Mixin").sourceSets.main.output) {
+        include "org/spongepowered/asm/**"
+    }
 }
 
 javadoc {
@@ -163,6 +198,8 @@ processResources {
     }
 }
 
+reobf.addExtraSrgFile mixinSrg
+
 //client
 task clientJar(dependsOn: "jar", type: Jar) {
     from sourceSets.client.output
@@ -181,7 +218,7 @@ task clientJar(dependsOn: "jar", type: Jar) {
 
 //core DEOBF use for development
 
-// to use: declare dependency com.forgeessentials:forgeessentials:<version>:deobf
+// to use: declare dependency com.forgeessentials:forgeessentials:<version>:
 task deobfJar(dependsOn: "jar", type: Jar) {
     from project.sourceSets.main.output
     include "**"
@@ -192,13 +229,24 @@ task deobfJar(dependsOn: "jar", type: Jar) {
     from project.sourceSets.utils.output
     include "**"
 
-    manifest {
-        attributes("FMLCorePlugin": "com.forgeessentials.core.preloader.FEPreLoader",
-                "FMLCorePluginContainsFMLMod": "true",
-                "BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
+    from project.sourceSets.client.output
+    include "com/forgeessentials/**"
+    // config guis won't work, but who cares, anyway?
+
+    from(project("Mixin").sourceSets.main.output) {
+        include "org/spongepowered/asm/**"
     }
-    classifier = 'deobf'
-    appendix = project.minecraft.version
+
+    manifest {
+        attributes(
+                "BuildID": project.ext.gitCommitHash,
+                "Build-Number": project.ext.build,
+                "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
+                "TweakOrder": "10000"
+        )
+        classifier = 'deobf'
+        appendix = project.minecraft.version
+    }
 }
 
 task sourceJar(type: Jar) {

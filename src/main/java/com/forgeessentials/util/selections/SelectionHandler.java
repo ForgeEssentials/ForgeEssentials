@@ -14,27 +14,15 @@ public class SelectionHandler
         {
             try
             {
-                Class weprovider = Class.forName("com.forgeessentials.compat.worldedit.WESelectionHandler");
+                Class<?> weprovider = Class.forName("com.forgeessentials.compat.worldedit.WESelectionHandler");
                 return (ISelectionProvider) weprovider.newInstance();
             }
-            catch (ClassNotFoundException e1)
+            catch (ClassNotFoundException | InstantiationException | IllegalAccessException e3)
             {
                 OutputHandler.felog.warning("There was a problem starting the WorldEdit selection provider. Switching to FE's own provider.");
-                return new PlayerInfoSelectionProvider();
             }
-            catch (InstantiationException e2)
-            {
-                OutputHandler.felog.warning("There was a problem starting the WorldEdit selection provider. Switching to FE's own provider.");
-                return new PlayerInfoSelectionProvider();
-            }
-            catch (IllegalAccessException e3)
-            {
-                OutputHandler.felog.warning("There was a problem starting the WorldEdit selection provider. Switching to FE's own provider.");
-                return new PlayerInfoSelectionProvider();
-            }
-
         }
-
         return new PlayerInfoSelectionProvider();
     }
+
 }

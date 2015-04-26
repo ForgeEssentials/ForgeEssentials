@@ -27,12 +27,14 @@ import com.google.gson.JsonSerializationContext;
 
 public class NBTTagCompoundType implements DataType<NBTTagCompound> {
 
-    @SuppressWarnings({ "unchecked", "null" })
+    //@SuppressWarnings({ "unchecked"})
     @Override
     public JsonElement serialize(NBTTagCompound src, Type typeOfSrc, JsonSerializationContext context)
     {
         JsonObject result = new JsonObject();
-        for (String tagName : (Set<String>) src.func_150296_c())
+        @SuppressWarnings("unchecked")
+        Set<String> tags = src.func_150296_c();
+        for (String tagName : tags)
         {
             NBTBase tag = src.getTag(tagName);
             NBTPrimitive tagPrimitive = (tag instanceof NBTPrimitive) ? (NBTPrimitive) tag : null;
@@ -122,8 +124,8 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound> {
             case 11:
             {
                 JsonArray jsonArray = new JsonArray();
-                NBTTagByteArray tagByteArray = (NBTTagByteArray) tag;
-                for (byte value : tagByteArray.func_150292_c())
+                NBTTagIntArray tagByteArray = (NBTTagIntArray) tag;
+                for (int value : tagByteArray.func_150302_c())
                 {
                     jsonArray.add(new JsonPrimitive(value));
                 }
@@ -196,11 +198,11 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound> {
                     if (tagData.getValue().isJsonArray())
                     {
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
-                        int[] byteArray = new int[jsonArray.size()];
+                        int[] intArray = new int[jsonArray.size()];
                         int index = 0;
                         for (JsonElement el : jsonArray)
-                            byteArray[index++] = (int) context.deserialize(el, Integer.class);
-                        result.setTag(tagName, new NBTTagIntArray(byteArray));
+                            intArray[index++] = (int) context.deserialize(el, Integer.class);
+                        result.setTag(tagName, new NBTTagIntArray(intArray));
                     }
                     else
                     {

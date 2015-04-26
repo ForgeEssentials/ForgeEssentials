@@ -1,19 +1,19 @@
 package com.forgeessentials.compat.worldedit;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.PlayerInfo;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.util.PlayerInfo;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 // i said no, but olee is a shithead -.-
 // temporary until i can get around to proper implementation of WECUI protocol
@@ -58,10 +58,11 @@ public class CUIComms
         updatedSelectionPlayers.clear();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (ModuleLauncher.getModuleList().contains("WEIntegration") && FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
+        //if (ModuleLauncher.getModuleList().contains("WEIntegration") && FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
         {
             updatedSelectionPlayers.add(PlayerInfo.getPlayerInfo(event.entityPlayer));
         }

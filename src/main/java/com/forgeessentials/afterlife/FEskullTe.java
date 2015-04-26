@@ -1,11 +1,12 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WorldPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.world.World;
+
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.UserIdent;
 
 public class FEskullTe extends TileEntitySkull {
 
@@ -27,14 +28,12 @@ public class FEskullTe extends TileEntitySkull {
     public void invalidate()
     {
         super.invalidate();
-
-        WorldPoint point = new WorldPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord);
-        Grave grave = ModuleAfterlife.instance.deathchest.gravemap.get(point.toString());
+        WorldPoint point = new WorldPoint(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+        Grave grave = Grave.graves.get(point.toString());
         if (grave == null)
-        {
             return;
-        }
-        if (grave.protEnable)
+        
+        if (grave.isProtected)
         {
             UserIdent owner = new UserIdent(grave.owner);
             if (owner.hasPlayer())
@@ -45,7 +44,8 @@ public class FEskullTe extends TileEntitySkull {
         }
         else
         {
-            ModuleAfterlife.instance.deathchest.removeGrave(grave, true);
+            grave.remove(true);
         }
     }
+    
 }

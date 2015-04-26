@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldType;
@@ -16,6 +15,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.multiworld.MultiworldException;
@@ -129,7 +129,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             break;
 
         default:
-            throw new CommandException("Unknown subcommand: " + mainArg);
+            throw new TranslatedCommandException("Unknown subcommand: " + mainArg);
         }
     }
 
@@ -146,7 +146,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
 
         // Get the world name
         if (args.isEmpty())
-            throw new CommandException("Missing name argument");
+            throw new TranslatedCommandException("Missing name argument");
         String name = args.remove().toLowerCase();
 
         // Display usage if requested
@@ -194,7 +194,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         }
 
         if (!args.isEmpty())
-            throw new CommandException("Too many arguments");
+            throw new TranslatedCommandException("Too many arguments");
 
         if (tabCompleteMode)
             return;
@@ -210,7 +210,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         }
         catch (MultiworldException e)
         {
-            throw new CommandException(e.type.error);
+            throw new TranslatedCommandException(e.type.error);
         }
     }
 
@@ -227,7 +227,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
             return;
         }
         if (args.isEmpty())
-            throw new CommandException("Too few arguments!");
+            throw new TranslatedCommandException("Too few arguments!");
 
         if (!tabCompleteMode && !PermissionsManager.checkPermission(permissionContext, ModuleMultiworld.PERM_DELETE))
         {
@@ -237,7 +237,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
 
         Multiworld world = ModuleMultiworld.getMultiworldManager().getMultiworld(args.peek());
         if (world == null)
-            throw new CommandException("Multiworld " + args.peek() + " does not exist!");
+            throw new TranslatedCommandException("Multiworld " + args.peek() + " does not exist!");
 
         ModuleMultiworld.getMultiworldManager().deleteWorld(world);
         info("Deleted Multiworld #" + args.peek());

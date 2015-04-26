@@ -1,10 +1,13 @@
 package com.forgeessentials.teleport;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
+
 import cpw.mods.fml.common.FMLCommonHandler;
+
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -36,14 +39,10 @@ public class CommandTop extends ForgeEssentialsCommandBase {
                 top(player);
             }
             else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
-        }
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player>");
     }
 
     @Override
@@ -57,14 +56,10 @@ public class CommandTop extends ForgeEssentialsCommandBase {
                 top(player);
             }
             else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player>");
-        }
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player>");
     }
 
     public void top(EntityPlayer player)

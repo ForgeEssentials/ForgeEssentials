@@ -1,13 +1,16 @@
 package com.forgeessentials.client.network;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
+import io.netty.buffer.ByteBuf;
+
+import com.forgeessentials.client.core.ClientProxy;
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.Selection;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 
 @SideOnly(Side.CLIENT)
 public class C1PacketSelectionUpdate implements IMessageHandler<C1PacketSelectionUpdate, IMessage>, IMessage
@@ -22,35 +25,17 @@ public class C1PacketSelectionUpdate implements IMessageHandler<C1PacketSelectio
     @Override
     public void fromBytes(ByteBuf byteBuf)
     {
-        if (byteBuf.readBoolean())
-        {
-            double x = byteBuf.readDouble();
-            double y = byteBuf.readDouble();
-            double z = byteBuf.readDouble();
-
-            ForgeEssentialsClient.info.setPoint1(new Point(x, y, z));
-        }
-        else
-        {
-            ForgeEssentialsClient.info.setPoint1(null);
-        }
-
-        // podouble 2 available
-        if (byteBuf.readBoolean())
-        {
-            double x = byteBuf.readDouble();
-            double y = byteBuf.readDouble();
-            double z = byteBuf.readDouble();
-
-            ForgeEssentialsClient.info.setPoint2(new Point(x, y, z));
-        }
-        else
-        {
-            ForgeEssentialsClient.info.setPoint2(null);
-        }
+        ClientProxy.setSelection(
+            new Selection(
+                byteBuf.readInt(), 
+                byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble()) : null,
+                byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble()) : null));
     }
 
     @Override
-    public void toBytes(ByteBuf byteBuf){} // noop - receiving only
+    public void toBytes(ByteBuf byteBuf)
+    {
+        /* do noting */
+    }
 
 }

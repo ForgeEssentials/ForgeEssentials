@@ -13,6 +13,7 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -43,6 +44,7 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
 import com.forgeessentials.protection.effect.PotionEffect;
@@ -224,7 +226,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         if (stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE)) == GameType.CREATIVE
                 && stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, point, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
         {
-            OutputHandler.chatError(e.player, "Cannot place block outside creative area");
+            OutputHandler.chatError(e.player, Translator.translate("Cannot place block outside creative area"));
             e.setCanceled(true);
         }
     }
@@ -299,8 +301,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             // If entity is in creative area, but player not, deny interaction
             e.useBlock = DENY;
             if (e.action != LEFT_CLICK_BLOCK)
-                OutputHandler.chatError(e.entityPlayer, "Cannot interact with creative area if not in creative mode.");
-            return;
+                OutputHandler.chatError(e.entityPlayer, Translator.translate("Cannot interact with creative area if not in creative mode."));
         }
     }
 
@@ -320,26 +321,20 @@ public class ProtectionEventHandler extends ServerEventHandler {
             e.setCanceled(true);
         }
     }
-
+    
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void checkSpawnEvent(CheckSpawn e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        if (e.entityLiving instanceof EntityPlayer)
+        if (!(e.entityLiving instanceof EntityLiving))
             return;
-
-        WorldPoint point = new WorldPoint(e.entityLiving);
-        String mobID = EntityList.getEntityString(e.entity);
-        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + mobID))
-        {
+        EntityLiving entity = (EntityLiving) e.entityLiving;
+        WorldPoint point = new WorldPoint(entity);
+        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + EntityList.getEntityString(entity)))
             e.setResult(Result.DENY);
-            OutputHandler.debug(mobID + " : DENIED");
-        }
-        else
-        {
-            OutputHandler.debug(mobID + " : ALLOWED");
-        }
+        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + ".type." + MobType.getMobType(entity).toString().toLowerCase()))
+            e.setResult(Result.DENY);
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
@@ -347,16 +342,14 @@ public class ProtectionEventHandler extends ServerEventHandler {
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        if (e.entityLiving instanceof EntityPlayer)
+        if (!(e.entityLiving instanceof EntityLiving))
             return;
-
-        WorldPoint point = new WorldPoint(e.entityLiving);
-        String mobID = EntityList.getEntityString(e.entity);
-
-        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + mobID))
-        {
+        EntityLiving entity = (EntityLiving) e.entityLiving;
+        WorldPoint point = new WorldPoint(entity);
+        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + EntityList.getEntityString(entity)))
             e.setResult(Result.DENY);
-        }
+        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + ".type." + MobType.getMobType(entity).toString().toLowerCase()))
+            e.setResult(Result.DENY);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

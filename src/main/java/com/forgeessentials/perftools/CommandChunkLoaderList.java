@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -17,7 +16,7 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.collect.HashMultimap;
 
@@ -197,7 +196,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
                 options.add(mod.getName());
             }
 
-            return getListOfStringsFromIterableMatchingLastWord(args, options);
+            return getListOfStringsMatchingLastWord(args, options);
         }
         return null;
     }

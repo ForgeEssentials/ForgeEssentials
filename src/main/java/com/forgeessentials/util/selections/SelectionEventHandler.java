@@ -1,18 +1,20 @@
 package com.forgeessentials.util.selections;
 
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.selections.SelectionHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.events.ServerEventHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class SelectionEventHandler extends ServerEventHandler {
 
@@ -44,16 +46,16 @@ public class SelectionEventHandler extends ServerEventHandler {
         // left Click
         if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
         {
-            SelectionHandler.selectionProvider.setPoint1((EntityPlayerMP) event.entityPlayer, point);
-            IChatComponent format = OutputHandler.createFromText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
+            SelectionHandler.selectionProvider.setStart((EntityPlayerMP) event.entityPlayer, point);
+            IChatComponent format = new ChatComponentText("Pos1 set to " + event.x + ", " + event.y + ", " + event.z);
             player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
             event.setCanceled(true);
         }
         // right Click
         else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
         {
-            SelectionHandler.selectionProvider.setPoint2((EntityPlayerMP) event.entityPlayer, point);
-            IChatComponent format = OutputHandler.createFromText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
+            SelectionHandler.selectionProvider.setEnd((EntityPlayerMP) event.entityPlayer, point);
+            IChatComponent format = new ChatComponentText("Pos2 set to " + event.x + ", " + event.y + ", " + event.z);
             player.addChatMessage(OutputHandler.colourize(format, EnumChatFormatting.DARK_PURPLE));
             event.setCanceled(true);
         }

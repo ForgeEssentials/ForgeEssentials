@@ -2,7 +2,6 @@ package com.forgeessentials.util.selections;
 
 //Depreciated
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,6 +13,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -31,6 +32,13 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
+		if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
+        {
+            OutputHandler.chatNotification(sender, "WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
+            OutputHandler.chatNotification(sender, "Please refer to http://wiki.sk89q.com/wiki/WorldEdit/Selection for more info.");
+            return;
+        }
+
 		// Get the wand item (or hands)
 		Item wandItem;
 		String wandId, wandName;
@@ -62,7 +70,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
 
 		// Check for permissions
 		if (!checkCommandPermission(sender))
-		    throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+		    throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
 		if (args.length > 0 && !rebind) {
 			Pair<String, Integer> data = FunctionHelper.parseIdAndMetaFromString(args[0], false);

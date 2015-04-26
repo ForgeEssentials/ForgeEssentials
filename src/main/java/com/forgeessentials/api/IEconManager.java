@@ -1,9 +1,9 @@
 package com.forgeessentials.api;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.util.Map;
 import java.util.UUID;
+
+import net.minecraft.entity.player.EntityPlayer;
 
 public interface IEconManager {
 
@@ -13,7 +13,7 @@ public interface IEconManager {
      * @param amountToAdd
      * @param player
      */
-    public void addToWallet(int amountToAdd, UUID player);
+    public void addToWallet(long amountToAdd, UUID player);
 
     /**
      * get the ammount of money the player has
@@ -21,7 +21,7 @@ public interface IEconManager {
      * @param player
      * @return
      */
-    public int getWallet(UUID player);
+    public long getWallet(UUID player);
 
     /**
      * Remove a set amount from a target's Wallet
@@ -30,7 +30,7 @@ public interface IEconManager {
      * @param amountToSubtract
      * @param player
      */
-    public boolean removeFromWallet(int amountToSubtract, UUID player);
+    public boolean removeFromWallet(long amountToSubtract, UUID player);
 
     /**
      * Set the target's Wallet to the specified amount
@@ -38,14 +38,14 @@ public interface IEconManager {
      * @param setAmount
      * @param player
      */
-    public void setWallet(int setAmount, EntityPlayer player);
+    public void setWallet(long setAmount, EntityPlayer player);
 
     /**
      * Gets the singular or plural term of the currency used
      *
      * @param amount
      */
-    public String currency(int amount);
+    public String currency(long amount);
 
     /**
      * Gets a combo of getWallet + currency

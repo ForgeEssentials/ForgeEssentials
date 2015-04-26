@@ -2,7 +2,10 @@ package com.forgeessentials.economy.commands;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,27 +23,18 @@ public class CommandSetWallet extends ForgeEssentialsCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        if (args.length == 1)
-        {
-            EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(args[0]);
-            int amountToSet = Integer.parseInt(args[1]);
+        if (args.length != 2)
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amount>");
+        
+        EntityPlayer player = FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().func_152612_a(args[0]);
+        int amountToSet = Integer.parseInt(args[1]);
 
-            if (player == null)
-            {
-                OutputHandler.chatError(sender, "Player does not exist, or is not online.");
-            }
-            else
-            {
-                APIRegistry.wallet.setWallet(amountToSet, player);
-
-                OutputHandler.chatConfirmation(sender, "Wallet set to: " + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
-                OutputHandler.chatNotification(player, "Your wallet was set to " + APIRegistry.wallet.getMoneyString(player.getPersistentID()));
-            }
-        }
-        else
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amount>");
-        }
+        if (player == null)
+            throw new TranslatedCommandException("Player does not exist, or is not online.");
+        
+        APIRegistry.wallet.setWallet(amountToSet, player);
+        OutputHandler.chatConfirmation(sender, Translator.format("Wallet set to %s", APIRegistry.wallet.getMoneyString(player.getPersistentID())));
+        OutputHandler.chatNotification(player, Translator.format("Your wallet was set to %s", APIRegistry.wallet.getMoneyString(player.getPersistentID())));
     }
 
     @Override

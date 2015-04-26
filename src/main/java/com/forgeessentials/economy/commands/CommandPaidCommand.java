@@ -2,8 +2,11 @@ package com.forgeessentials.economy.commands;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -52,24 +55,16 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase {
                     }
 
                     MinecraftServer.getServer().getCommandManager().executeCommand(sender, cmd.toString());
-                    OutputHandler.chatConfirmation(player, "That cost you " + amount + " " + APIRegistry.wallet.currency(amount));
+                    OutputHandler.chatConfirmation(player, Translator.format("That cost you %d %s", amount, APIRegistry.wallet.currency(amount)));
                 }
                 else
-                {
-                    OutputHandler.chatError(player, "You can't afford that!!");
-                }
+                    throw new TranslatedCommandException("You can't afford that!!");
             }
             else
-            {
-                //this should be removed
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-        {
-            //this should be removed
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amount> <command [args]>");
-        }
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amount> <command [args]>");
     }
 
     @Override

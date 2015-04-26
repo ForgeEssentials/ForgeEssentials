@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -21,13 +23,18 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -44,6 +51,7 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.Environment;
+import com.forgeessentials.core.misc.Translator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -100,6 +108,60 @@ public final class FunctionHelper {
 			return defaultValue;
 		}
 	}
+
+    /**
+     * Try to parse the string as integer or return null if failed
+     * 
+     * @param value
+     * @return
+     */
+    public static Integer tryParseInt(String value)
+    {
+        try
+        {
+            return Integer.parseInt(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Try to parse the string as float or return null if failed
+     * 
+     * @param value
+     * @return
+     */
+    public static Float tryParseFloat(String value)
+    {
+        try
+        {
+            return Float.parseFloat(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Try to parse the string as double or return null if failed
+     * 
+     * @param value
+     * @return
+     */
+    public static Double tryParseDouble(String value)
+    {
+        try
+        {
+            return Double.parseDouble(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
 
 	// ------------------------------------------------------------
 	
@@ -189,6 +251,49 @@ public final class FunctionHelper {
         return placeInWorld(world, x, y, z, 2);
     }
 
+    // ------------------------------------------------------------
+
+    /**
+     * Apply potion effects to the player
+     * 
+     * @param player
+     * @param effectString Comma separated list of id:duration:amplifier or id:duration tuples
+     */
+    public static void applyPotionEffects(EntityPlayer player, String effectString)
+    {
+        String[] effects = effectString.replaceAll("\\s", "").split(","); // example = 9:5:0
+        for (String poisonEffect : effects)
+        {
+            String[] effectValues = poisonEffect.split(":");
+            if (effectValues.length < 2)
+            {
+                OutputHandler.felog.warning("Too few arguments for potion effects");
+            }
+            else if (effectValues.length > 3)
+            {
+                OutputHandler.felog.warning("Too many arguments for potion effects");
+            }
+            else
+            {
+                try
+                {
+                    int potionID = Integer.parseInt(effectValues[0]);
+                    int effectDuration = Integer.parseInt(effectValues[1]);
+                    int amplifier = 0;
+                    if (effectValues.length == 3)
+                        amplifier = Integer.parseInt(effectValues[2]);
+                    player.addPotionEffect(new net.minecraft.potion.PotionEffect(potionID, effectDuration * 20, amplifier));
+                }
+                catch (NumberFormatException e)
+                {
+                    OutputHandler.felog.warning("Invalid potion ID:duration:amplifier data.");
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------------
+
     /**
      * Get player's looking-at spot.
      *
@@ -220,23 +325,25 @@ public final class FunctionHelper {
         return player.worldObj.rayTraceBlocks(pos1, pos2);
     }
 
+    // ------------------------------------------------------------
+    
 	/**
 	 * Gets a nice string with only needed elements. Max time is weeks
 	 *
 	 * @param timeInSec
 	 * @return Time in string format
 	 */
-	public static String parseTime(int timeInSec)
+	public static String parseTime(long timeInSec)
 	{
 		String uptime = "";
-		int weeks = timeInSec / (86400 * 7);
-		int remainder = timeInSec % (86400 * 7);
-		int days = remainder / 86400;
+		long weeks = timeInSec / (86400 * 7);
+		long remainder = timeInSec % (86400 * 7);
+		long days = remainder / 86400;
 		remainder = timeInSec % 86400;
-		int hours = remainder / 3600;
+		long hours = remainder / 3600;
 		remainder = timeInSec % 3600;
-		int minutes = remainder / 60;
-		int seconds = remainder % 60;
+		long minutes = remainder / 60;
+		long seconds = remainder % 60;
 
 		if (weeks != 0)
 		{
@@ -307,7 +414,7 @@ public final class FunctionHelper {
 			}
 			catch (NumberFormatException e)
 			{
-				throw new NumberFormatException(String.format("%s param was not recognized as number. Please try again.", pair[1]));
+				throw new NumberFormatException(Translator.format("%s param was not recognized as number. Please try again.", pair[1]));
 			}
 		}
 		return new ImmutablePair<String, Integer>(ID, meta);
@@ -437,7 +544,6 @@ public final class FunctionHelper {
 	public static String getCurrentTimeString()
 	{
 		Calendar c = Calendar.getInstance();
-
         return String.format("%02d:%02d", c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
 	}
 
@@ -1134,6 +1240,90 @@ public final class FunctionHelper {
         {
             ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(command);
         }
+    }
+
+    public static void findSafeY(EntityPlayer player)
+    {
+        int x = (int)player.posX;
+        int y = (int)player.posY;
+        int z = (int)player.posZ;
+        World w = player.worldObj;
+        if(w.getBlock(x, y, z) == Blocks.air)
+        {
+            if(w.getBlock(x, y + 1, z) == Blocks.air || w.getBlock(x, y - 1, z) == Blocks.air)
+                return;
+        }
+        else if(w.getBlock(x, y - 1, z) == Blocks.air && w.getBlock(x, y-2, z) == Blocks.air)
+        {
+            return;
+        }
+        else
+        {
+            while(y < 256)
+            {
+                if(w.getBlock(x, y, z) == Blocks.air && w.getBlock(x, y + 1, z) == Blocks.air)
+                {
+                    player.setPositionAndUpdate(player.posX, y, player.posZ);
+                    return;
+                }
+                y++;
+            }
+        }
+    }
+
+    /**
+     * this code is present in Forge 1278, and should be removed in the 1.8 update of FE.
+     */
+
+    static final Pattern URL_PATTERN = Pattern.compile(
+            //         schema                          ipv4            OR           namespace                 port     path         ends
+            //   |-----------------|        |-------------------------|  |----------------------------|    |---------| |--|   |---------------|
+            "((?:[a-z0-9]{2,}:\\/\\/)?(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[-\\w_\\.]{1,}\\.[a-z]{2,}?))(?::[0-9]{1,5})?.*?(?=[!\"\u00A7 \n]|$))",
+            Pattern.CASE_INSENSITIVE);
+
+    public static ChatComponentTranslation newChatWithLinks(String string)
+    {
+        // Includes ipv4 and domain pattern
+        // Matches an ip (xx.xxx.xx.xxx) or a domain (something.com) with or
+        // without a protocol or path.
+        ChatComponentTranslation ichat = new ChatComponentTranslation("");
+        Matcher matcher = URL_PATTERN.matcher(string);
+        int lastEnd = 0;
+
+        // Find all urls
+        while (matcher.find())
+        {
+            int start = matcher.start();
+            int end = matcher.end();
+
+            // Append the previous left overs.
+            ichat.appendText(string.substring(lastEnd, start));
+            lastEnd = end;
+            String url = string.substring(start, end);
+            IChatComponent link = new ChatComponentText(url);
+
+            try
+            {
+                // Add schema so client doesn't crash.
+                if ((new URI(url)).getScheme() == null)
+                    url = "http://" + url;
+            }
+            catch (URISyntaxException e)
+            {
+                // Bad syntax bail out!
+                ichat.appendText(url);
+                continue;
+            }
+
+            // Set the click event and append the link.
+            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
+            link.getChatStyle().setChatClickEvent(click);
+            ichat.appendSibling(link);
+        }
+
+        // Append the rest of the message.
+        ichat.appendText(string.substring(lastEnd));
+        return ichat;
     }
 
 }

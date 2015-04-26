@@ -2,18 +2,23 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.commons.selections.WarpPoint;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+
 public class CommandHome extends ForgeEssentialsCommandBase {
+
     @Override
     public String getCommandName()
     {
@@ -27,28 +32,37 @@ public class CommandHome extends ForgeEssentialsCommandBase {
         {
             WarpPoint home = PlayerInfo.getPlayerInfo(sender.getPersistentID()).getHome();
             if (home == null)
-            {
-                OutputHandler.chatError(sender, "No home set. Try this: [here|x, y, z]");
-            }
-            else
+                throw new TranslatedCommandException("No home set. Use \"/home set\" first.");
+            EntityPlayerMP player = sender;
+            PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
+            playerInfo.setLastTeleportOrigin(new WarpPoint(player));
+            CommandBack.justDied.remove(player.getPersistentID());
+            TeleportHelper.teleport(player, home);
+        }
+        else
+        {
+            if (args[0].equalsIgnoreCase("set"))
             {
                 EntityPlayerMP player = sender;
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-                playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-                CommandBack.justDied.remove(player.getPersistentID());
-                TeleportHelper.teleport(player, home);
-            }
-        }
-        else if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_SET))
-        {
-            if (args.length >= 1 && (args[0].equals("here") || args[0].equals("set")))
-            {
+                if (args.length == 2)
+                {
+                    if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_OTHER))
+                        throw new TranslatedCommandException("You don't have the permission to access other players home.");
+                    player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
+                    if (player == null)
+                        throw new TranslatedCommandException("Player %s not found.", args[1]);
+                }
+                else if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_SET))
+                    throw new TranslatedCommandException("You don't have the permission to set your home location.");
+
                 WarpPoint p = new WarpPoint(sender);
-                PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
+                PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 info.setHome(p);
                 info.save();
-                OutputHandler.chatConfirmation(sender, String.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
+                OutputHandler.chatConfirmation(sender, Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
             }
+            else
+                throw new TranslatedCommandException("Unknown subcommand");
         }
     }
 
@@ -95,4 +109,5 @@ public class CommandHome extends ForgeEssentialsCommandBase {
             return null;
         }
     }
+
 }

@@ -50,6 +50,7 @@ public class TeleportModule {
 
     public static final String PERM_HOME = "fe.teleport.home.set";
     public static final String PERM_HOME_SET = "fe.teleport.home.set";
+    public static final String PERM_HOME_OTHER = "fe.teleport.home.other";
     
     public static final String PERM_BED = "fe.teleport.bed";
     public static final String PERM_BED_OTHERS = "fe.teleport.bed.others";
@@ -71,7 +72,6 @@ public class TeleportModule {
     public static List<TPAdata> tpaListToRemove = new ArrayList<TPAdata>();
     private static List<ForgeEssentialsCommandBase> commands = new ArrayList<ForgeEssentialsCommandBase>();
 
-    @SuppressWarnings("unused")
     private PortalManager portalManager;
 
     @SuppressWarnings("unused")
@@ -119,7 +119,11 @@ public class TeleportModule {
         APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, RegisteredPermValue.TRUE, "Allow returning to the last death location with back-command");
         APIRegistry.perms.registerPermission(PERM_BACK_ONTP, RegisteredPermValue.TRUE, "Allow returning to the last location before teleport with back-command");
         APIRegistry.perms.registerPermission(PERM_BED_OTHERS, RegisteredPermValue.OP, "Allow teleporting to other player's bed location");
+        
+        APIRegistry.perms.registerPermission(PERM_HOME, RegisteredPermValue.TRUE, "Allow usage of /home");
         APIRegistry.perms.registerPermission(PERM_HOME_SET, RegisteredPermValue.TRUE, "Allow setting of home location");
+        APIRegistry.perms.registerPermission(PERM_HOME_OTHER, RegisteredPermValue.OP, "Allow setting other players home location");
+        
         APIRegistry.perms.registerPermission(PERM_SPAWN_OTHERS, RegisteredPermValue.OP, "Allow setting other player's spawn");
         APIRegistry.perms.registerPermission(PERM_TOP_OTHERS, RegisteredPermValue.OP);
         APIRegistry.perms.registerPermission(PERM_TPA_SENDREQUEST, RegisteredPermValue.TRUE, "Allow sending teleport-to requests");

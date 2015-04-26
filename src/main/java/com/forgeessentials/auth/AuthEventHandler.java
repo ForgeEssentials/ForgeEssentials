@@ -2,7 +2,6 @@ package com.forgeessentials.auth;
 
 import java.util.UUID;
 
-import cpw.mods.fml.common.eventhandler.Event.Result;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -15,7 +14,6 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.util.OutputHandler;
@@ -212,9 +210,7 @@ public class AuthEventHandler {
         {
             return;
         }
-        PlayerPassData data = PlayerPassData.getData(e.player.getPersistentID());
-
-        if (data == null)
+        if (!PlayerPassData.isRegistered(e.player.getPersistentID()))
         {
             OutputHandler.chatError(e.player, "Registration required. Try /auth help.");
         }
@@ -249,7 +245,8 @@ public class AuthEventHandler {
     public void onLogout(PlayerEvent.PlayerLoggedOutEvent e)
     {
         ModuleAuth.hasSession.remove(e.player.getPersistentID());
-        PlayerPassData.discardData(e.player.getPersistentID());
+        PlayerPassData.removeFromCache(e.player.getPersistentID());
+        counter = counter - 1;
     }
 
 }

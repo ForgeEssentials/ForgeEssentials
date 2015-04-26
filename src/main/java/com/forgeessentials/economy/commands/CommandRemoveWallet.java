@@ -10,6 +10,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -31,56 +32,34 @@ public class CommandRemoveWallet extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        if (args.length == 2)
-        {
-            EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            int amountToSubtract = Integer.parseInt(args[1]);
+        if (args.length != 2)
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amounttoremove>");
+        EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        int amountToSubtract = Integer.parseInt(args[1]);
 
-            if (player == null)
-            {
-                OutputHandler.chatError(sender, "Player does not exist, or is not online.");
-            }
-            else
-            {
-                APIRegistry.wallet.removeFromWallet(amountToSubtract, player.getPersistentID());
-
-                if (sender != player)
-                {
-                    OutputHandler.chatConfirmation(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
-                }
-                OutputHandler.chatNotification(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");
-            }
-        }
-        else
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amounttoremove>");
-        }
+        if (player == null)
+            throw new TranslatedCommandException("Player does not exist, or is not online.");
+        
+        APIRegistry.wallet.removeFromWallet(amountToSubtract, player.getPersistentID());
+        if (sender != player)
+            OutputHandler.chatConfirmation(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
+        OutputHandler.chatNotification(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        if (args.length == 2)
-        {
-            EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            int amountToSubtract = Integer.parseInt(args[1]);
+        if (args.length != 2)
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amounttoremove>");
+        EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        int amountToSubtract = Integer.parseInt(args[1]);
 
-            if (player == null)
-            {
-                OutputHandler.chatError(sender, "Player does not exist, or is not online.");
-            }
-            else
-            {
-                APIRegistry.wallet.removeFromWallet(amountToSubtract, player.getPersistentID());
-
-                OutputHandler.chatConfirmation(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
-                OutputHandler.chatNotification(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");
-            }
-        }
-        else
-        {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <player> <amounttoremove>");
-        }
+        if (player == null)
+            throw new TranslatedCommandException("Player does not exist, or is not online.");
+        
+        APIRegistry.wallet.removeFromWallet(amountToSubtract, player.getPersistentID());
+        OutputHandler.chatConfirmation(sender, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from the wallet.");
+        OutputHandler.chatNotification(player, amountToSubtract + " " + APIRegistry.wallet.currency(amountToSubtract) + " was removed from your wallet.");
     }
 
     @Override

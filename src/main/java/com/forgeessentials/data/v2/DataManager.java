@@ -10,9 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.data.v2.types.UserIdentType;
@@ -60,7 +57,7 @@ public class DataManager implements ExclusionStrategy {
     public static DataManager getInstance()
     {
         if (instance == null)
-            throw new NullPointerException();
+            throw new RuntimeException("Tried to access DataManager before its initialization");
         return instance;
     }
 
@@ -69,7 +66,7 @@ public class DataManager implements ExclusionStrategy {
         DataManager.instance = instance;
     }
 
-    public static void addDataType(DataType type)
+    public static void addDataType(DataType<?> type)
     {
         serializers.put(type.getType(), type);
         deserializers.put(type.getType(), type);
@@ -98,6 +95,12 @@ public class DataManager implements ExclusionStrategy {
         {
             Throwables.propagate(e);
         }
+    }
+
+    public void saveAll(Map<?, ?> dataMap)
+    {
+        for (Entry<?, ?> element : dataMap.entrySet())
+            save(element.getValue(), element.getKey().toString());
     }
 
     public boolean delete(Class<?> clazz, String key)
@@ -129,7 +132,10 @@ public class DataManager implements ExclusionStrategy {
             return null;
         try (BufferedReader br = new BufferedReader(new FileReader(file)))
         {
-            return getGson().fromJson(br, clazz);
+            T obj = getGson().fromJson(br, clazz);
+            if (obj instanceof Loadable)
+                ((Loadable) obj).afterLoad();
+            return obj;
         }
         catch (JsonParseException e)
         {
@@ -169,9 +175,6 @@ public class DataManager implements ExclusionStrategy {
     @Override
     public boolean shouldSkipField(FieldAttributes f)
     {
-        if (f.getDeclaringClass().getAnnotation(SaveableObject.class) != null && f.getAnnotation(SaveableField.class) == null
-                && f.getAnnotation(UniqueLoadingKey.class) == null)
-            return true;
         Expose expose = f.getAnnotation(Expose.class);
         if (expose != null && (!expose.serialize() || !expose.deserialize()))
             return true;
@@ -184,7 +187,7 @@ public class DataManager implements ExclusionStrategy {
         return false;
     }
 
-    private Gson getGson()
+    public Gson getGson()
     {
         if (gson == null || formatsChanged)
         {
@@ -213,5 +216,6 @@ public class DataManager implements ExclusionStrategy {
     {
         return new File(getTypePath(clazz), key + ".json");
     }
+
 
 }

@@ -3,7 +3,6 @@ package com.forgeessentials.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -11,6 +10,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 
@@ -32,18 +33,16 @@ public class CommandKill extends FEcmdModuleCommands {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-                OutputHandler.chatError(player, "You were killed. You probably deserved it.");
+                player.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
+                OutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
         {
-            sender.attackEntityFrom(DamageSource.outOfWorld, 1000);
-            OutputHandler.chatError(sender, "You were killed. You probably deserved it.");
+            sender.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
+            OutputHandler.chatError(sender, Translator.translate("You were killed. You probably deserved it."));
         }
     }
 
@@ -55,18 +54,14 @@ public class CommandKill extends FEcmdModuleCommands {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                player.attackEntityFrom(DamageSource.outOfWorld, 1000);
-                OutputHandler.chatError(player, "You were killed. You probably deserved it.");
+                player.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
+                OutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-        {
-        	throw new WrongUsageException(getCommandUsage(sender));
-        }
+            throw new TranslatedCommandException(getCommandUsage(sender));
     }
 
     @Override

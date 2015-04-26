@@ -1,12 +1,12 @@
 package com.forgeessentials.economy;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.util.events.PlotEvent;
-import com.forgeessentials.util.events.ServerEventHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.permissions.PermissionsManager;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.events.ServerEventHandler;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EconEventHandler extends ServerEventHandler
 {
@@ -21,12 +21,10 @@ public class EconEventHandler extends ServerEventHandler
             return;
         }
 
-        int xp = e.entityPlayer.getEntityData().getInteger("FEXPThreshold");
-        xp = xp + e.orb.xpValue;
-
+        int xp = e.entityPlayer.getEntityData().getInteger("FEXPThreshold") + e.orb.xpValue;
         if (xp >= threshold)
         {
-            APIRegistry.wallet.addToWallet(threshold, new UserIdent(e.entityPlayer).getUuid());
+            APIRegistry.wallet.addToWallet(threshold, e.entityPlayer.getPersistentID());
             e.entityPlayer.getEntityData().setInteger("FEXPThreshold", xp - threshold);
         }
     }

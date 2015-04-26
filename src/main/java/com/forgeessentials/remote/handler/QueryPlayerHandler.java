@@ -11,31 +11,30 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
-import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
 import com.forgeessentials.util.UserIdent;
 
+@FERemoteHandler(id = "query_player")
 public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.Request> {
 
-    public static final String ID = "query_player";
-
-    public static final String PERM = RemoteHandler.PERM + ".query.player";
+    public static final String PERM = PERM_REMOTE + ".query.player";
     public static final String PERM_LOCATION = PERM + ".location";
     public static final String PERM_DETAIL = PERM + ".detail";
 
     public QueryPlayerHandler()
     {
-        super(ID, PERM, QueryPlayerHandler.Request.class);
+        super(PERM, QueryPlayerHandler.Request.class);
         APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Allows querying player data");
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected RemoteResponse handleData(RemoteSession session, RemoteRequest<QueryPlayerHandler.Request> request)
+    protected RemoteResponse<QueryPlayerHandler.Response> handleData(RemoteSession session, RemoteRequest<QueryPlayerHandler.Request> request)
     {
         for (String flag : request.data.flags)
         {

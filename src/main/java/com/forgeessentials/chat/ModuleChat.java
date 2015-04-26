@@ -1,5 +1,17 @@
 package com.forgeessentials.chat;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Set;
+
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.commands.CommandAutoMessage;
 import com.forgeessentials.chat.commands.CommandBannedWords;
@@ -24,24 +36,19 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Map;
-import java.util.Set;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
 public class ModuleChat {
     
     public static final String CONFIG_CATEGORY = "Chat";
+
+    public static boolean welcomeNewPlayers;
+    public static String welcomeNewPlayerMsg;
     
     @FEModule.ModuleDir
     public static File moduleDir;
@@ -56,6 +63,7 @@ public class ModuleChat {
     
     private MailSystem mailsystem;
     
+    @SuppressWarnings("unused")
     private PlayerEventHandler ircPlayerHandler;
 
     @SuppressWarnings("unused")
@@ -70,11 +78,9 @@ public class ModuleChat {
         MinecraftForge.EVENT_BUS.register(new ChatFormatter());
         MinecraftForge.EVENT_BUS.register(new CommandMuter());
 
-        if (!IRCHelper.suppressEvents && connectToIRC)
+        if (connectToIRC)
         {
             ircPlayerHandler = new PlayerEventHandler();
-            MinecraftForge.EVENT_BUS.register(ircPlayerHandler);
-            FMLCommonHandler.instance().bus().register(ircPlayerHandler);
             MinecraftForge.EVENT_BUS.register(new IRCChatFormatter());
         }
     }
@@ -159,12 +165,12 @@ public class ModuleChat {
     {
         MailSystem.SaveAll();
 
-        chatLog.close();
-        cmdLog.close();
+        if (chatLog != null)
+            chatLog.close();
+        if (cmdLog != null)
+            cmdLog.close();
         if (connectToIRC)
-        {
             IRCHelper.shutdown();
-        }
     }
 
     private static void removeTell(MinecraftServer server)
@@ -223,6 +229,17 @@ public class ModuleChat {
             {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerFirstJoin(NoPlayerInfoEvent e)
+    {
+        if (welcomeNewPlayers)
+        {
+            String format = FunctionHelper.formatColors(welcomeNewPlayerMsg);
+            format = FunctionHelper.replaceAllIgnoreCase(format, "%username", e.entityPlayer.getCommandSenderName());
+            OutputHandler.sendMessageToAll(new ChatComponentText(format));
         }
     }
 

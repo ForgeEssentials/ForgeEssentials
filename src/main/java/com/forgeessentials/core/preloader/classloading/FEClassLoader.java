@@ -1,6 +1,7 @@
 package com.forgeessentials.core.preloader.classloading;
 
-import com.forgeessentials.core.preloader.FEPreLoader;
+import com.forgeessentials.core.preloader.FELaunchHandler;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -29,7 +30,7 @@ public class FEClassLoader
 
     private boolean reExtract;
 
-    public void extractLibs(File mcLocation)
+    public void extractLibs(File mcLocation, LaunchClassLoader cl)
     {
         FEfolder = new File(mcLocation, "ForgeEssentials/");
         if (!FEfolder.exists())
@@ -43,53 +44,24 @@ public class FEClassLoader
             reExtract = true;
         }
 
-        if (FEPreLoader.runtimeDeobfEnabled)
+        //verify if we can find the current files
+        runClassLoad(FEfolder, cl);
+        checkLibs(cl);
+
+        if (FELaunchHandler.runtimeDeobfEnabled && reExtract)
         {
+            doActualExtract(mcLocation);
 
-            System.out.println("[ForgeEssentials] Checking if we need to extract libraries");
-            if (reExtract)
-            {
-                System.out.println("[ForgeEssentials] Extracting libraries");
+            // after remediation, re-verify files
 
-                // clear old libs
-                File lib = new File(FEfolder, "lib/");
-                if (lib.exists())
-                {
-                    lib.delete();
-                }
+            runClassLoad(FEfolder, cl);
+            checkLibs(cl);
 
-                try
-                {
-                    ZipInputStream zin = new ZipInputStream(getClass().getResourceAsStream("/libraries.zip"));
-                    ZipEntry entry;
-                    String name, dir;
-                    while ((entry = zin.getNextEntry()) != null)
-                    {
-                        name = entry.getName();
-                        if (entry.isDirectory())
-                        {
-                            mkdirs(mcLocation, name);
-                            continue;
-                        }
-                        dir = dirpart(name);
-                        if (dir != null)
-                            mkdirs(mcLocation, dir);
-
-                        extractFile(zin, mcLocation, name);
-                    }
-                    zin.close();
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-            }
         }
-        runClassLoad(FEfolder);
 
     }
 
-    public void runClassLoad(File root)
+    public void runClassLoad(File root, LaunchClassLoader cl)
     {
         File lib = new File(root, "lib/");
         if (!lib.exists())
@@ -104,7 +76,7 @@ public class FEClassLoader
                 try
                 {
 
-                    FEPreLoader.classLoader.addURL(f.toURI().toURL());
+                    cl.addURL(f.toURI().toURL());
                     System.out.println("[ForgeEssentials] Loaded library file " + f.getAbsolutePath());
                 }
                 catch (MalformedURLException e)
@@ -127,7 +99,7 @@ public class FEClassLoader
             {
                 try
                 {
-                    FEPreLoader.classLoader.addURL(f.toURI().toURL());
+                    cl.addURL(f.toURI().toURL());
                 }
                 catch (MalformedURLException e)
                 {
@@ -137,19 +109,35 @@ public class FEClassLoader
         }
         System.out.println("[ForgeEssentials] Loaded " + module.listFiles().length + " modules");
 
-        checkLibs();
     }
 
-    private static String[] compulsoryLibs = { "com.mysql.jdbc.Driver", "org.pircbotx.PircBotX", "org.h2.Driver" };
+    private static String[] compulsoryLibs = {
+            "com.mysql.jdbc.Driver",
+            "org.pircbotx.PircBotX",
+            "org.h2.Driver",
 
-    public void checkLibs()
+            // PL
+            "antlr.Version",
+            "org.dom4j.Text",
+            "org.hibernate.annotations.common.Version",
+            "org.hibernate.Version",
+            "org.hibernate.jpa.AvailableSettings",
+            "javax.persistence.Version",
+            "org.jboss.jandex.Main",
+            "javassist.CtClass",
+            "org.jboss.logging.Logger",
+            "org.jboss.logging.annotations.Message",
+            "javax.transaction.Status"
+    };
+
+    public void checkLibs(LaunchClassLoader cl)
     {
         List<String> erroredLibs = new ArrayList<String>();
         for (String clazz : compulsoryLibs)
         {
             try
             {
-                Class.forName(clazz);
+                cl.findClass(clazz);
                 System.out.println("[ForgeEssentials] Found library " + clazz);
             }
             catch (ClassNotFoundException cnfe)
@@ -164,11 +152,51 @@ public class FEClassLoader
             {
                 System.err.println(error);
             }
-            System.err.println("[ForgeEssentials] Delete the 'lib' folder in your ForgeEssentials folder to fix this.");
+            System.err.println("[ForgeEssentials] We will now re-extract the missing library files.");
+            reExtract = true;
 
-            throw new RuntimeException("[ForgeEssentials] You are missing one or more library files. See your FML log for details.");
+            //throw new RuntimeException("[ForgeEssentials] You are missing one or more library files. See your FML log for details.");
         }
 
+    }
+
+    public void doActualExtract(File mcLocation)
+    {
+        System.out.println("[ForgeEssentials] Extracting libraries");
+
+            // clear old libs
+        File lib = new File(FEfolder, "lib/");
+            if (lib.exists())
+            {
+                lib.delete();
+            }
+
+            try
+            {
+                ZipInputStream zin = new ZipInputStream(getClass().getResourceAsStream("/libraries.zip"));
+                ZipEntry entry;
+                String name, dir;
+                while ((entry = zin.getNextEntry()) != null)
+                {
+                    name = entry.getName();
+                    System.out.println("[ForgeEssentials] Now extracting file " + name);
+                    if (entry.isDirectory())
+                    {
+                        mkdirs(mcLocation, name);
+                        continue;
+                    }
+                    dir = dirpart(name);
+                    if (dir != null)
+                        mkdirs(mcLocation, dir);
+
+                    extractFile(zin, mcLocation, name);
+                }
+                zin.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
     }
 
     /**

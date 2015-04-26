@@ -1,23 +1,25 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.teleport.util.RespawnHandler;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WarpPoint;
-import cpw.mods.fml.common.FMLCommonHandler;
 import java.util.List;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionContext;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.teleport.util.RespawnHandler;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.UserIdent;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandSpawn extends ForgeEssentialsCommandBase {
 
@@ -34,18 +36,18 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 		{
 			if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_SPAWN_OTHERS))
 			{
-				throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+				throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 			}
 			EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 			if (player == null)
 			{
-				throw new CommandException(String.format("Player %s does not exist, or is not online.", args[0]));
+				throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 			}
 
 			WarpPoint point = RespawnHandler.getPlayerSpawn(player, null);
 			if (point == null)
 			{
-				throw new CommandException("There is no spawnpoint set for that player.");
+				throw new TranslatedCommandException("There is no spawnpoint set for that player.");
 			}
 
 			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
@@ -59,7 +61,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 			WarpPoint point = RespawnHandler.getPlayerSpawn(player, null);
 			if (point == null)
 			{
-				throw new CommandException("There is no spawnpoint set for that player.");
+				throw new TranslatedCommandException("There is no spawnpoint set for that player.");
 			}
 
 			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
@@ -73,23 +75,23 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 	{
 		if (args.length < 1)
 		{
-			throw new CommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+			throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
 		}
 
 		if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(this), TeleportModule.PERM_SPAWN_OTHERS))
 		{
-			throw new CommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+			throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 		}
 		EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 		if (player == null)
 		{
-			throw new CommandException(String.format("Player %s does not exist, or is not online.", args[0]));
+			throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 		}
 
 		WarpPoint point = RespawnHandler.getPlayerSpawn(player, null);
 		if (point == null)
 		{
-			throw new CommandException("There is no spawnpoint set for that player.");
+			throw new TranslatedCommandException("There is no spawnpoint set for that player.");
 		}
 
 		PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));

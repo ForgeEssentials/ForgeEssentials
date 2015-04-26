@@ -19,11 +19,6 @@ import net.minecraft.world.chunk.storage.RegionFileCache;
 import net.minecraft.world.gen.ChunkProviderServer;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
@@ -38,61 +33,43 @@ import com.forgeessentials.util.tasks.TaskRegistry;
  * @author gnif
  */
 
-@SaveableObject
 public class TickTaskFill implements ITickTask {
 
-    @SaveableField
+    public ICommandSender sender;
+
     public int speed = 1;
 
-    public WorldBorder border;
+    private String dimID;
 
-    @UniqueLoadingKey
-    @SaveableField
-    String dimID;
+    private long ticks = 0L;
 
-    boolean isComplete = false;
+    private long todo = 0L;
 
-    WorldServer world;
+    private WorldBorder border;
 
-    int minX;
-    int minZ;
+    private boolean isComplete = false;
 
-    int maxX;
-    int maxZ;
+    private WorldServer world;
 
-    int centerX;
-    int centerZ;
-
-    int rad;
-
-    @SaveableField
-    long ticks = 0L;
-
-    @SaveableField
-    long todo = 0L;
-
-    MinecraftServer server = MinecraftServer.getServer();
-
-    ICommandSender source;
-
-    boolean stopped = false;
-
-    @SaveableField
     private int X;
-
-    @SaveableField
     private int Z;
 
-    Method writeChunkToNBT = null;
+    private int minX;
+    private int minZ;
 
-    private TickTaskFill(IReconstructData tag)
-    {
-        X = (Integer) tag.getFieldValue("X");
-        Z = (Integer) tag.getFieldValue("Z");
-        speed = (Integer) tag.getFieldValue("speed");
-        ticks = (Long) tag.getFieldValue("ticks");
-        todo = (Long) tag.getFieldValue("todo");
-    }
+    private int maxX;
+    private int maxZ;
+
+    private int centerX;
+    private int centerZ;
+
+    private int rad;
+
+    private MinecraftServer server = MinecraftServer.getServer();
+
+    private boolean stopped = false;
+
+    private Method writeChunkToNBT = null;
 
     public TickTaskFill(WorldServer worldToFill, ICommandSender sender, boolean restart)
     {
@@ -105,7 +82,7 @@ public class TickTaskFill implements ITickTask {
             return;
         }
 
-        source = sender;
+        this.sender = sender;
         world = worldToFill;
         border = ModuleWorldBorder.getBorder(APIRegistry.perms.getServerZone().getWorldZone(world).getName(), false);
         if (border == null || border.shapeByte == 0 || border.rad == 0)
@@ -133,7 +110,7 @@ public class TickTaskFill implements ITickTask {
             TickTaskFill saved = DataManager.getInstance().load(TickTaskFill.class, Integer.toString(worldToFill.provider.dimensionId));
             if (saved != null)
             {
-                OutputHandler.chatWarning(source, "Found a stopped filler. Will resume that one.");
+                OutputHandler.chatWarning(sender, "Found a stopped filler. Will resume that one.");
                 X = saved.X;
                 Z = saved.Z;
                 speed = saved.speed;
@@ -145,13 +122,7 @@ public class TickTaskFill implements ITickTask {
         setupWriteChunkToNBT();
         TaskRegistry.registerTask(this);
 
-        OutputHandler.chatWarning(source, "This filler will take about " + getETA() + " at current speed.");
-    }
-
-    @Reconstructor
-    private static TickTaskFill reconstruct(IReconstructData tag)
-    {
-        return new TickTaskFill(tag);
+        OutputHandler.chatWarning(sender, String.format("This filler will take about %d at current speed", getETA()));
     }
 
     private String getETA()
@@ -173,7 +144,7 @@ public class TickTaskFill implements ITickTask {
 
         if (ticks % (20 * 25) == 0)
         {
-            OutputHandler.chatNotification(source, "Filler for " + dimID + ": " + getStatus());
+            OutputHandler.chatNotification(sender, "Filler for " + dimID + ": " + getStatus());
         }
 
         for (int i = 0; i < speed; i++)
@@ -282,7 +253,7 @@ public class TickTaskFill implements ITickTask {
         }
         if (!stopped)
         {
-            OutputHandler.chatWarning(source, "Filler finished after " + ticks + " ticks.");
+            OutputHandler.chatWarning(sender, "Filler finished after " + ticks + " ticks.");
             System.out.print("Removed filler? :" + DataManager.getInstance().delete(TickTaskFill.class, dimID));
         }
         CommandFiller.map.remove(Integer.parseInt(dimID));
@@ -307,7 +278,7 @@ public class TickTaskFill implements ITickTask {
         stopped = true;
         isComplete = true;
         DataManager.getInstance().save(this, dimID);
-        OutputHandler.chatWarning(source, "Filler stopped after " + ticks + " ticks. Still to do: " + todo + " chuncks.");
+        OutputHandler.chatWarning(sender, "Filler stopped after " + ticks + " ticks. Still to do: " + todo + " chuncks.");
         System.gc();
     }
 
@@ -319,7 +290,7 @@ public class TickTaskFill implements ITickTask {
     public void setSpeed(int speed)
     {
         this.speed = speed;
-        OutputHandler.chatWarning(source, "Changed speed of filler " + dimID + " to " + speed);
+        OutputHandler.chatWarning(sender, String.format("Changed speed of filler %d to %d", dimID, speed));
     }
 
     /**

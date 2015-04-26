@@ -1,16 +1,16 @@
 package com.forgeessentials.economy.commands;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
-import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.economy.ModuleEconomy;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.UserIdent;
 
 public class CommandSell extends ForgeEssentialsCommandBase
 {

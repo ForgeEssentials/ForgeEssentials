@@ -1,5 +1,15 @@
 package com.forgeessentials.backup;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Timer;
+
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -7,20 +17,9 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Timer;
 
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class)
 public class ModuleBackup {
@@ -37,34 +36,12 @@ public class ModuleBackup {
 
     public static void msg(String msg)
     {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        if (!BackupConfig.enableMsg)
-        {
+        if (!BackupConfig.enableMsg || msg == null || msg.isEmpty())
             return;
-        }
-        try
-        {
-            if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            {
-                OutputHandler.felog.info(msg);
-            }
-            else
-            {
-                OutputHandler.sendMessage(server, "[ForgeEssentials] " + msg);
-            }
-            ServerConfigurationManager manager = server.getConfigurationManager();
-            for (String username : manager.getAllUsernames())
-            {
-                EntityPlayerMP player = manager.func_152612_a(username);
-                if (PermissionsManager.checkPermission(player, "fe.backup.msg"))
-                {
-                    OutputHandler.chatNotification(player, "[ForgeEssentials] " + msg);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-        }
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (server != null)
+            OutputHandler.sendMessage(server, "[ForgeEssentials] " + msg);
+        OutputHandler.sendMessageToAll(OutputHandler.notification("[ForgeEssentials] " + msg));
     }
 
     @SubscribeEvent

@@ -1,18 +1,12 @@
 package com.forgeessentials.commons.selections;
 
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SaveableObject
 public class AreaBase {
 
-    @SaveableField
     protected Point high;
 
-    @SaveableField
     protected Point low;
 
     /**
@@ -188,7 +182,7 @@ public class AreaBase {
         }
         else
         {
-            return new Selection(getMinPoint(low, area.low), getMaxPoint(high, area.high));
+            return new AreaBase(getMinPoint(low, area.low), getMaxPoint(high, area.high));
         }
     }
 
@@ -200,7 +194,7 @@ public class AreaBase {
 
     public AreaBase copy()
     {
-        return new Selection(low, high);
+        return new AreaBase(low, high);
     }
 
     @Override

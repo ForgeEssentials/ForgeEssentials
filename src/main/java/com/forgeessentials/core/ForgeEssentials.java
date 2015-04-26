@@ -9,27 +9,20 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.compat.CompatReiMinimap;
-import com.forgeessentials.core.commands.CommandFEDebug;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.HelpFixer;
-import com.forgeessentials.util.selections.CommandDeselect;
-import com.forgeessentials.util.selections.CommandExpand;
-import com.forgeessentials.util.selections.CommandExpandY;
-import com.forgeessentials.util.selections.CommandPos;
-import com.forgeessentials.util.selections.CommandWand;
-import com.forgeessentials.util.selections.SelectionEventHandler;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TickTaskHandler;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.network.S0PacketHandshake;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
-import com.forgeessentials.core.preloader.FEModContainer;
-import com.forgeessentials.core.preloader.FEPreLoader;
+import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
@@ -41,11 +34,18 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.questioner.Questioner;
+import com.forgeessentials.util.selections.CommandDeselect;
+import com.forgeessentials.util.selections.CommandExpand;
+import com.forgeessentials.util.selections.CommandExpandY;
+import com.forgeessentials.util.selections.CommandPos;
+import com.forgeessentials.util.selections.CommandWand;
+import com.forgeessentials.util.selections.SelectionEventHandler;
 import com.forgeessentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.discovery.ASMDataTable;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -61,12 +61,14 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = FEModContainer.version, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = ForgeEssentials.FEVERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
 public class ForgeEssentials extends ConfigLoaderBase {
 
     public static final String CONFIG_CAT = "Core";
     public static final String CONFIG_CAT_MISC = "Core.Misc";
     public static final String CONFIG_CAT_MODULES = "Core.Modules";
+
+    public static final String FEVERSION = "%VERSION%";
 
     @Instance(value = "ForgeEssentials")
     public static ForgeEssentials instance;
@@ -107,6 +109,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @SuppressWarnings("unused")
     private Questioner questioner;
 
+    public static ASMDataTable asmData;
+
     public ForgeEssentials()
     {
         // Check environment
@@ -116,10 +120,11 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
+        asmData = e.getAsmData();
+        
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
-        OutputHandler.felog.info("Initializing ForgeEssentials version " + FEModContainer.version + " (configDir = " + FEDIR.getAbsolutePath() + ")");
-        OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(FEPreLoader.jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(FEPreLoader.jarLocation));
-
+        OutputHandler.felog.info("Initializing ForgeEssentials version " + FEVERSION + " (configDir = " + FEDIR.getAbsolutePath() + ")");
+        OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(FELaunchHandler.jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(FELaunchHandler.jarLocation));
 
         // Load configuration
         configManager = new ConfigManager(FEDIR, "main");
@@ -144,8 +149,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @EventHandler
     public void load(FMLInitializationEvent e)
     {
-        // MinecraftForge.EVENT_BUS.register(this);
-        // FMLCommonHandler.instance().bus().register(this);
+        Translator.load();
 
         // other stuff
         factory = new ForgeEssentialsEventFactory();
@@ -181,13 +185,12 @@ public class ForgeEssentials extends ConfigLoaderBase {
         e.registerServerCommand(new HelpFixer());
 
         new CommandFEInfo().register();
-        new CommandFEDebug().register();
+        new CommandWand().register();
 
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
             new CommandPos(1).register();
             new CommandPos(2).register();
-            new CommandWand().register();
             new CommandDeselect().register();
             new CommandExpand().register();
             new CommandExpandY().register();
@@ -204,6 +207,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
     
     protected void registerPermissions()
     {
+        APIRegistry.perms.registerPermission("mc.help", RegisteredPermValue.TRUE, "Help command");
+        
         // Teleport
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5", "Allow bypassing teleport cooldown");
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
@@ -235,6 +240,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
     public void serverStopped(FMLServerStoppedEvent e)
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerStoppedEvent(e));
+        Translator.save();
     }
 
     @Override
@@ -257,7 +263,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
                 "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
         PlayerInfo.persistSelections = config.get(CONFIG_CAT, "persistSelections", false,
                 "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.").getBoolean(false);
-        MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If +50% of players sleep, make it day.").getBoolean(true);
+        MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If a majority of players sleep, make it day.").getBoolean(true);
+        MiscEventHandler.majoritySleepThreshold = config.get(CONFIG_CAT_MISC, "MajoritySleepThreshold", 50, "Define the percentage of players that constitutes a majority for MajoritySleep to kick in.").getInt(50);
     }
 
     public static ConfigManager getConfigManager()

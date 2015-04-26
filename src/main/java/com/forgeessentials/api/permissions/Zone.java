@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.ImmutableUserIdent;
 import com.forgeessentials.util.UserIdent;
 
 /**
@@ -40,6 +42,7 @@ public abstract class Zone {
     public static final String GROUP_DEFAULT = "_ALL_";
     public static final String GROUP_GUESTS = "_GUESTS_";
     public static final String GROUP_OPERATORS = "_OPS_";
+    public static final String GROUP_FAKEPLAYERS = "_FAKEPLAYERS_";
 
     public static final String PERMISSION_ASTERIX = "*";
     public static final String PERMISSION_FALSE = "false";
@@ -156,9 +159,9 @@ public abstract class Zone {
 
     private int id;
 
-    private Map<UserIdent, PermissionList> playerPermissions = new HashMap<UserIdent, PermissionList>();
+    protected Map<UserIdent, PermissionList> playerPermissions = new HashMap<UserIdent, PermissionList>();
 
-    private Map<String, PermissionList> groupPermissions = new HashMap<String, PermissionList>();
+    protected Map<String, PermissionList> groupPermissions = new HashMap<String, PermissionList>();
 
     public Zone(int id)
     {
@@ -275,6 +278,7 @@ public abstract class Zone {
         if (map == null)
         {
             map = new PermissionList();
+            ident = new ImmutableUserIdent(ident);
             playerPermissions.put(ident, map);
         }
         return playerPermissions.get(ident);
@@ -339,7 +343,10 @@ public abstract class Zone {
         {
             getServerZone().registerPlayer(ident);
             PermissionList map = getOrCreatePlayerPermissions(ident);
-            map.put(permissionNode, value);
+            if (value == null)
+                map.remove(permissionNode);
+            else
+                map.put(permissionNode, value);
             setDirty();
             return true;
         }
@@ -385,27 +392,19 @@ public abstract class Zone {
      */
     public void updatePlayerIdents()
     {
-        // TODO: TEST updatePlayerIdents !!!
-        // To do so add a permission by playername of user who is not connected
-        // When he joins an event needs to be fired that triggers this function
-        // It should update the map entry then
+        Map<UserIdent, PermissionList> toAdd = new HashMap<>();
         for (Iterator<Map.Entry<UserIdent, PermissionList>> iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
         {
-            Map.Entry<UserIdent, PermissionList> entry = iterator.next();
-            if (!entry.getKey().wasValidUUID())
+            Map.Entry<UserIdent, PermissionList> player = iterator.next();
+            getServerZone().registerPlayer(player.getKey());
+            UserIdent ident = new ImmutableUserIdent(player.getKey());
+            if (ident.hashCode() != player.getKey().hashCode())
             {
-                if (entry.getKey().hasUUID())
-                {
-                    iterator.remove();
-                    playerPermissions.put(entry.getKey(), entry.getValue());
-                }
+                iterator.remove();
+                toAdd.put(ident, player.getValue());
             }
-            else
-            {
-                entry.getKey().updateUsername();
-            }
-            getServerZone().registerPlayer(entry.getKey());
         }
+        playerPermissions.putAll(toAdd);
     }
 
     // ------------------------------------------------------------
@@ -541,7 +540,10 @@ public abstract class Zone {
         if (group != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, value)))
         {
             PermissionList map = getOrCreateGroupPermissions(group);
-            map.put(permissionNode, value);
+            if (value == null)
+                map.remove(permissionNode);
+            else
+                map.put(permissionNode, value);
             setDirty();
             return true;
         }
@@ -580,6 +582,10 @@ public abstract class Zone {
         return false;
     }
 
+    // ------------------------------------------------------------
+    // -- Other
+    // ------------------------------------------------------------
+
     /**
      * Swaps the permissions of one zone with another one
      */
@@ -594,5 +600,27 @@ public abstract class Zone {
         playerPermissions = swapPlayerPermissions;
     }
 
+    /**
+     * List all permission nodes that have any kind of configuration in this zone
+     */
+    public Set<String> enumRegisteredPermissions()
+    {
+        Set<String> perms = new TreeSet<String>();
+        for (Entry<UserIdent, PermissionList> permList : playerPermissions.entrySet())
+            for (String perm : permList.getValue().keySet())
+            {
+                if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                    perm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
+                perms.add(perm);
+            }
+        for (Entry<String, PermissionList> permList : groupPermissions.entrySet())
+            for (String perm : permList.getValue().keySet())
+            {
+                if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                    perm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
+                perms.add(perm);
+            }
+        return perms;
+    }
 
 }

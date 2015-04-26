@@ -18,6 +18,7 @@ import com.forgeessentials.multiworld.WorldServerMultiworld;
  */
 public class GenLayerMultiworldBiome extends GenLayer {
     
+    @SuppressWarnings("unchecked")
     protected List<BiomeEntry>[] biomes = new ArrayList[BiomeManager.BiomeType.values().length];
 
     public GenLayerMultiworldBiome(long seed, GenLayer parent, WorldServerMultiworld currentMultiworld)

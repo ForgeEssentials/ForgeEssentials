@@ -2,7 +2,7 @@ package com.forgeessentials.core.environment;
 
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.commons.VersionUtils;
-import com.forgeessentials.core.preloader.FEPreLoader;
+import com.forgeessentials.core.preloader.FELaunchHandler;
 import cpw.mods.fml.common.ICrashCallable;
 
 /**
@@ -28,8 +28,8 @@ public class FECrashCallable implements ICrashCallable
             firstEntry = false;
         }
         String n = System.getProperty("line.separator");
-        String returned =  "Build information: Build number is: " + VersionUtils.getBuildNumber(FEPreLoader.jarLocation)
-                + ", Build hash is: " + VersionUtils.getBuildHash(FEPreLoader.jarLocation)
+        String returned =  "Build information: Build number is: " + VersionUtils.getBuildNumber(FELaunchHandler.jarLocation)
+                + ", Build hash is: " + VersionUtils.getBuildHash(FELaunchHandler.jarLocation)
                 + ", Modules loaded: " + modules;
 
         if (Environment.hasCauldron)

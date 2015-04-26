@@ -1,135 +1,126 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.commons.IReconstructData;
-import com.forgeessentials.commons.SaveableObject;
-import com.forgeessentials.commons.SaveableObject.Reconstructor;
-import com.forgeessentials.commons.SaveableObject.SaveableField;
-import com.forgeessentials.commons.SaveableObject.UniqueLoadingKey;
-import com.forgeessentials.commons.selections.WorldPoint;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import java.util.ArrayList;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
+import com.google.gson.annotations.Expose;
 
-@SaveableObject
 public class Grave {
-    
-    @UniqueLoadingKey
-    @SaveableField
-    public String key;
 
-    @SaveableField
-    public WorldPoint point;
+    public static Map<Point, Grave> graves = new HashMap<Point, Grave>();
 
-    @SaveableField
-    public String owner;
+    protected WorldPoint point;
 
-    @SaveableField
-    public ItemStack[] inv;
+    protected UUID owner;
 
-    @SaveableField
-    public int xp;
+    protected List<ItemStack> inventory = new ArrayList<ItemStack>();
 
-    @SaveableField
-    public int protTime;
+    protected int xp;
 
-    @SaveableField
-    public boolean protEnable = true;
+    protected int protTime;
 
+    protected boolean hasFencePost;
+
+    protected boolean isProtected = true;
+
+    @Expose(serialize = false)
     private boolean opened;
 
-	private long startTime;
+    @Expose(serialize = false)
+    private long lastTick;
 
-    public Grave(WorldPoint point, EntityPlayer player, ArrayList<EntityItem> drops, Deathchest deathchest)
+    public static void createGrave(EntityPlayer player, List<EntityItem> drops)
     {
-        key = point.toString();
-        this.point = point;
-        owner = player.getPersistentID().toString();
+        if (!PermissionsManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST))
+            return;
         
-        if (Deathchest.enableXP)
+        if (player.posY < 0)
         {
-            xp = player.experienceLevel;
+            OutputHandler.chatWarning(player, "No deathchest for you as you fell out of the world!");
+            return;
+        }
 
+        int xp = 0;
+        Double xpModifier = FunctionHelper.tryParseDouble(APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_XP));
+        if (xpModifier != null)
+        {
+            xp = (int) (player.experienceLevel * xpModifier);
             player.experienceLevel = 0;
             player.experienceTotal = 0;
         }
-        inv = new ItemStack[drops.size()];
+        
+        // Create no grave if no experience / items available
+        if (xp <= 0 && drops.isEmpty())
+            return;
+
+        Grave grave = new Grave(player, drops, xp);
+        graves.put(grave.point, grave);
+    }
+
+    public Grave(EntityPlayer player, List<EntityItem> drops, int xp)
+    {
+        this.xp = xp;
+        this.owner = player.getPersistentID();
+        this.hasFencePost = PermissionsManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_FENCE);
+        this.lastTick = System.currentTimeMillis();
+        this.protTime = FunctionHelper.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_SAFETIME), 0);
+        if (protTime <= 0)
+            isProtected = false;
+
+        point = new WorldPoint(player);
+        point.setY(FunctionHelper.placeInWorld(player.worldObj, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1));
+        if (hasFencePost)
+        {
+            player.worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.fence);
+            point.setY(point.getY() + 1);
+        }
+        
         for (int i = 0; i < drops.size(); i++)
+            inventory.add(drops.get(i).getEntityItem().copy());
+
+        FEskullTe.createPlayerSkull(player, player.worldObj, point.getX(), point.getY(), point.getZ());
+    }
+
+    public void update()
+    {
+        if (isProtected)
         {
-            inv[i] = drops.get(i).getEntityItem().copy();
-        }
-
-        protTime = Deathchest.protectionTime;
-
-        deathchest.gravemap.put(point.toString(), this);
-        startTime = System.currentTimeMillis();
-    }
-
-    private Grave(String key, Object point, Object owner, Object inv, Object xp, Object protTime, Object protEnable)
-    {
-        this.key = key;
-        this.point = (WorldPoint) point;
-        this.owner = (String) owner;
-        this.inv = inv != null ? (ItemStack[]) inv : new ItemStack[0];
-        this.xp = (Integer) xp;
-        this.protTime = (Integer) protTime;
-        this.protEnable = (Boolean) protEnable;
-        startTime = System.currentTimeMillis();
-    }
-
-    @Reconstructor
-    private static Grave reconstruct(IReconstructData tag)
-    {
-        return new Grave(tag.getUniqueKey(), tag.getFieldValue("point"), tag.getFieldValue("owner"), tag.getFieldValue("inv"), tag.getFieldValue("xp"),
-                tag.getFieldValue("protTime"), tag.getFieldValue("protEnable"));
-    }
-
-    public void checkGrave()
-    {
-        if (inv.length == 0)
-        {
-            ModuleAfterlife.instance.deathchest.removeGrave(this, true);
-        }
-    }
-
-    public int getSize()
-    {
-        if (inv == null)
-        {
-            return 0;
-        }
-        return inv.length % 9 == 0 ? inv.length : (inv.length / 9 + 1) * 9;
-    }
-
-    public void tick()
-    {
-        if ((System.currentTimeMillis() - startTime) / 1000L > protTime)
-        {
-            protEnable = false;
+            long currentTimeMillis = System.currentTimeMillis();
+            protTime -= currentTimeMillis - lastTick;
+            lastTick = currentTimeMillis;
+            if (protTime < 0)
+                isProtected = false;
         }
     }
 
     public boolean canOpen(EntityPlayer player)
     {
-        if (!protEnable)
-        {
+        if (opened)
+            return false;
+        if (!isProtected)
             return true;
-        }
-        if (player.getUniqueID().toString().equals(owner))
-        {
+        if (player.getUniqueID().equals(owner))
             return true;
-        }
-        if (PermissionsManager.checkPermission(player, Deathchest.PERMISSION_BYPASS))
-        {
+        if (PermissionsManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS))
             return true;
-        }
-        if (!opened)
-        {
-            return true;
-        }
-
         return false;
     }
 
@@ -143,8 +134,73 @@ public class Grave {
         return opened;
     }
 
-	public void setSaveProtTime()
-	{
-		protTime -= (System.currentTimeMillis() - startTime) / 1000L;
-	}
+    public WorldPoint getPosition()
+    {
+        return point;
+    }
+
+    public void interact(EntityPlayerMP player)
+    {
+        if (!canOpen(player))
+        {
+            OutputHandler.chatWarning(player, "This grave is still under divine protection.");
+            return;
+        }
+
+        if (xp > 0)
+        {
+            player.addExperienceLevel(xp);
+            xp = 0;
+        }
+
+        InventoryGrave invGrave = new InventoryGrave(this);
+
+        if (player.openContainer != player.inventoryContainer)
+            player.closeScreen();
+        player.getNextWindowId();
+        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, invGrave.getInventoryName(), invGrave.getSizeInventory(), true));
+        player.openContainer = new ContainerChest(player.inventory, invGrave);
+        player.openContainer.windowId = player.currentWindowId;
+        player.openContainer.addCraftingToCrafters(player);
+    }
+
+    protected void dropItems()
+    {
+        for (ItemStack is : inventory)
+        {
+            EntityItem entity = new EntityItem(point.getWorld(), point.getX(), point.getY(), point.getZ(), is);
+            point.getWorld().spawnEntityInWorld(entity);
+        }
+        inventory.clear();
+    }
+
+    public void remove(boolean dropItems)
+    {
+        if (dropItems)
+            dropItems();
+        
+        point.getWorld().setBlock(point.getX(), point.getY(), point.getZ(), Blocks.air);
+        if (hasFencePost && point.getWorld().getBlock(point.getX(), point.getY() - 1, point.getZ()) == Blocks.fence)
+            point.getWorld().setBlock(point.getX(), point.getY() - 1, point.getZ(), Blocks.air);
+        
+        DataManager.getInstance().delete(Grave.class, point.toString());
+        graves.remove(point);
+    }
+
+    public static void loadAll()
+    {
+        graves.clear();
+        for (Grave grave : DataManager.getInstance().loadAll(Grave.class).values())
+            graves.put(grave.getPosition(), grave);
+    }
+
+    public static void saveAll()
+    {
+        for (Grave grave : graves.values())
+        {
+            grave.update();
+            DataManager.getInstance().save(grave, grave.getPosition().toString());
+        }
+    }
+
 }

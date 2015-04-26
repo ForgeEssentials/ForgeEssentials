@@ -11,6 +11,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandNickname extends ForgeEssentialsCommandBase {
@@ -52,28 +53,23 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
         }
         else if (args.length == 2)
         {
-            if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
+            if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
+                throw new TranslatedCommandException("You don't have permissions for that.");
+            EntityPlayerMP player = getPlayer(sender, args[0]);
+            if (args[1].equalsIgnoreCase("del"))
             {
-                EntityPlayerMP player = getPlayer(sender, args[0]);
-                if (args[1].equalsIgnoreCase("del"))
-                {
-                    player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
-                    OutputHandler.chatConfirmation(sender, "Nickname of player " + args[0] + " removed");
-                }
-                else
-                {
-                    player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
-                    OutputHandler.chatConfirmation(sender, "Nickname of player " + args[0] + " set to " + args[1]);
-                }
+                player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
+                OutputHandler.chatConfirmation(sender, "Nickname of player " + args[0] + " removed");
             }
             else
             {
-                OutputHandler.chatError(sender, "You don't have permissions for that.");
+                player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", args[1]);
+                OutputHandler.chatConfirmation(sender, "Nickname of player " + args[0] + " set to " + args[1]);
             }
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <username> [nickname|del]");
         }
     }
 
@@ -100,12 +96,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase {
             }
             else
             {
-                OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
+                throw new TranslatedCommandException("Improper syntax. Please try this instead: <username> [nickname|del]");
             }
         }
         else
         {
-            OutputHandler.chatError(sender, "Improper syntax. Please try this instead: <username> [nickname|del]");
+            throw new TranslatedCommandException("Improper syntax. Please try this instead: <username> [nickname|del]");
         }
     }
 

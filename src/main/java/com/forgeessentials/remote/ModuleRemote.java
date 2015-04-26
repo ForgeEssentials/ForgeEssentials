@@ -16,30 +16,30 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
-import com.forgeessentials.remote.handler.PushChatHandler;
-import com.forgeessentials.remote.handler.QueryPlayerHandler;
-import com.forgeessentials.remote.handler.QueryRemoteCapabilitiesHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
+import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
-    public static class PasskeyMap extends HashMap<UserIdent, String> { /* default */
+    public static class PasskeyMap extends HashMap<UserIdent, String> {
+        private static final long serialVersionUID = -8268113844467318789L; /* default */
     };
 
     private static final String CONFIG_CAT = "Remote";
@@ -49,7 +49,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     public static final char[] PASSKEY_CHARS;
 
-    public static final String PERM = "fe.remote";
+    public static final String PERM = RemoteHandler.PERM_REMOTE;
     public static final String PERM_CONTROL = PERM + ".control";
 
     public static int passkeyLength = 6;
@@ -85,8 +85,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     protected PasskeyMap passkeys = new PasskeyMap();
 
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
     /* ------------------------------------------------------------ */
 
     /**
@@ -100,9 +98,28 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         APIRegistry.perms.registerPermission(PERM_CONTROL, RegisteredPermValue.OP,
                 "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
 
-        new QueryPlayerHandler().register();
-        new PushChatHandler().register();
-        new QueryRemoteCapabilitiesHandler().register();
+        registerRemoteHandlers();
+    }
+
+    private void registerRemoteHandlers()
+    {
+        for (ASMData asm : ForgeEssentials.asmData.getAll(FERemoteHandler.class.getName()))
+        {
+            try
+            {
+                Class<?> clazz = Class.forName(asm.getClassName());
+                if (RemoteHandler.class.isAssignableFrom(clazz))
+                {
+                    RemoteHandler handler = (RemoteHandler) clazz.newInstance();
+                    FERemoteHandler annot = handler.getClass().getAnnotation(FERemoteHandler.class);
+                    APIRegistry.remoteManager.registerHandler(handler, annot.id());
+                }
+            }
+            catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
+            {
+                OutputHandler.felog.fine("Could not load FERemoteHandler " + asm.getClassName());
+            }
+        }
     }
 
     /**
@@ -135,7 +152,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of the minecraft server").getString();
+        hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of the minecraft server. Use * to allow access from any address.").getString();
         port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
         useSSL = config.get(CONFIG_CAT, "use_ssl", false,
                 "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
@@ -161,7 +178,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
             return;
         try
         {
-            if (hostname.equals("*"))
+            if (hostname.equals("*") || hostname.isEmpty())
                 hostname = "0.0.0.0";
             if (useSSL)
             {
@@ -211,11 +228,10 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
      * @see com.forgeessentials.api.remote.RemoteManager#registerHandler(com.forgeessentials.api.remote.RemoteHandler)
      */
     @Override
-    public void registerHandler(RemoteHandler handler)
+    public void registerHandler(RemoteHandler handler, String id)
     {
-        final String id = handler.getID();
         if (handlers.containsKey(id))
-            throw new IllegalArgumentException(String.format("Handler with ID \"%s\" already registerd", id));
+            throw new IllegalArgumentException(Translator.format("Handler with ID \"%s\" already registerd", id));
 
         handlers.put(id, handler);
         String perm = handler.getPermission();
@@ -315,7 +331,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     @Override
     public Gson getGson()
     {
-        return gson;
+        return DataManager.getInstance().getGson();
     }
 
     /**

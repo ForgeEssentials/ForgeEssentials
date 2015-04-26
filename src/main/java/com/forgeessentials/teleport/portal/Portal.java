@@ -13,16 +13,19 @@ public class Portal {
     protected NamedWorldArea portalArea;
     
     protected NamedWorldPoint target;
+    
+    protected boolean frame = true;
 
-    public Portal(NamedWorldArea portalArea, NamedWorldPoint target)
+    public Portal(NamedWorldArea portalArea, NamedWorldPoint target, boolean frame)
     {
         this.portalArea = portalArea;
         this.target = target;
+        this.frame = frame;
     }
 
-    public Portal(WorldArea portalArea, WorldPoint target)
+    public Portal(WorldArea portalArea, WorldPoint target, boolean frame)
     {
-        this(new NamedWorldArea(portalArea), new NamedWorldPoint(target));
+        this(new NamedWorldArea(portalArea), new NamedWorldPoint(target), frame);
     }
 
     public NamedWorldArea getPortalArea()
@@ -45,4 +48,14 @@ public class Portal {
         this.target = target;
     }
 
+    public boolean hasFrame()
+    {
+        return frame;
+    }
+
+    public void setFrame(boolean frame)
+    {
+        this.frame = frame;
+    }
+    
 }

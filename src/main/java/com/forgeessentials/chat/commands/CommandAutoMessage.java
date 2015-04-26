@@ -4,10 +4,13 @@ import com.forgeessentials.chat.AutoMessage;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import java.util.Arrays;
@@ -46,8 +49,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
             }
             catch (Exception e)
             {
-                OutputHandler.chatError(sender, "You have to select a message to broadcast next. Options: " + AutoMessage.msg.size());
-                return;
+                throw new TranslatedCommandException("You have to select a message to broadcast next. Options: %s", AutoMessage.msg.size());
             }
         }
 
@@ -56,14 +58,12 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
             try
             {
                 int id = parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
-                OutputHandler.sendMessage(FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager(),
-                        AutoMessage.msg.get(id));
+                OutputHandler.sendMessageToAll(new ChatComponentText(AutoMessage.msg.get(id)));
                 return;
             }
             catch (Exception e)
             {
-                OutputHandler.chatError(sender, "You have to select a message to broadcast. Options: " + AutoMessage.msg.size());
-                return;
+                throw new TranslatedCommandException("You have to select a message to broadcast. Options: %s", AutoMessage.msg.size());
             }
         }
 
@@ -84,8 +84,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
             catch (Exception e)
             {
                 e.printStackTrace();
-                OutputHandler.chatError(sender, "Dafuq?");
-                return;
+                throw new TranslatedCommandException("Dafuq?");
             }
         }
 
@@ -100,8 +99,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
             }
             catch (Exception e)
             {
-                OutputHandler.chatError(sender, "You have to select a message to remove. Options: " + AutoMessage.msg.size());
-                return;
+                throw new TranslatedCommandException("You have to select a message to remove. Options: %s", AutoMessage.msg.size());
             }
         }
     }

@@ -8,11 +8,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -56,6 +53,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 /**
  * 
@@ -69,9 +67,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     protected ZonePersistenceProvider persistenceProvider;
 
-    protected Timer persistenceTimer;
-
     protected boolean dirty = true;
+
+    protected long lastDirty = 0;
 
     protected boolean registeredPermission = true;
 
@@ -99,25 +97,6 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // -- Persistence
     // ------------------------------------------------------------
 
-    class PersistenceTask extends TimerTask {
-
-        @Override
-        public void run()
-        {
-            if (persistenceProvider == null)
-                return;
-            if (dirty)
-            {
-                save();
-            }
-            else
-            {
-                // TODO: Detect manual changes to persistence backend
-            }
-        }
-
-    }
-
     public void setPersistenceProvider(ZonePersistenceProvider persistenceProvider)
     {
         this.persistenceProvider = persistenceProvider;
@@ -125,18 +104,19 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public void save()
     {
+        dirty = false;
         if (persistenceProvider != null)
         {
-            OutputHandler.felog.info("Saving permissions...");
+            OutputHandler.felog.fine("Saving permissions...");
             APIRegistry.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
         }
 
         if (registeredPermission)
-            PermissionsListWriter.write(getRegisteredPermissions(), new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE));
-
-        dirty = false;
-        registeredPermission = false;
+        {
+            registeredPermission = false;
+            PermissionsListWriter.write(rootZone, new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE));
+        }
     }
 
     public boolean load()
@@ -167,11 +147,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public void setDirty(boolean registeredPermission)
     {
         this.dirty = true;
+        this.lastDirty = System.currentTimeMillis();
         this.registeredPermission |= registeredPermission;
-        if (persistenceTimer != null)
-            persistenceTimer.cancel();
-        persistenceTimer = new Timer("permission persistence timer", true);
-        persistenceTimer.schedule(new PersistenceTask(), 2000);
     }
 
     // ------------------------------------------------------------
@@ -181,19 +158,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public PermissionList getRegisteredPermissions()
     {
         PermissionList perms = (PermissionList) rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).clone();
-        for (Entry<String, String> perm : rootZone.getGroupPermissions(Zone.GROUP_OPERATORS).entrySet())
-            perms.put(perm.getKey(), perm.getValue());
-        return perms;
-    }
-
-    public Set<String> enumRegisteredPermissions()
-    {
-        Set<String> perms = new TreeSet<String>();
-        for (String perm : rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).keySet())
-        {
-            if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
-                perms.add(perm);
-        }
+        perms.putAll(rootZone.getGroupPermissions(Zone.GROUP_OPERATORS));
         return perms;
     }
 
@@ -301,6 +266,15 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
             e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[OPERATOR]");
         }
+        if (!e.serverZone.groupExists(Zone.GROUP_FAKEPLAYERS))
+        {
+            // Configure FakePlayer group
+            // It can either use allow-all or inherit the permissions of another (OPs) group
+            e.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, FEPermissions.GROUP, true);
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_FAKEPLAYERS, FEPermissions.GROUP_PRIORITY, "15");
+            e.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, Zone.PERMISSION_ASTERIX, true);
+            //e.serverZone.groupParentAdd(Zone.GROUP_FAKEPLAYERS, Zone.GROUP_OPERATORS);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -385,6 +359,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         sender.addChatMessage(msg);
     }
 
+    @SubscribeEvent
+    public void serverTickEvent(TickEvent.ServerTickEvent e)
+    {
+        if (dirty && System.currentTimeMillis() - lastDirty > 1000 * 60)
+            save();
+        // TODO: Detect manual changes to persistence backend
+    }
+    
     // ------------------------------------------------------------
     // -- Core permission handling
     // ------------------------------------------------------------
@@ -696,8 +678,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         return getServerZone().getStoredPlayerGroups(ident);
     }
-
-    // ------------------------------------------------------------
+    
+    // --------------------------------------------------------
     // -- Permission checking
     // ------------------------------------------------------------
 

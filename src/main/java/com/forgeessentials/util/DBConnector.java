@@ -1,15 +1,17 @@
 package com.forgeessentials.util;
 
 import com.google.common.base.Throwables;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Level;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.logging.Level;
 
 public class DBConnector {
     EnumDBType loadedType;
@@ -191,7 +193,7 @@ public class DBConnector {
         }
         catch (Exception e)
         {
-            OutputHandler.exception(Level.WARNING, "[FE+SQL] " + name + " In-House check failed, going to default.", e);
+            OutputHandler.felog.log(Level.WARN, "[FE+SQL] " + name + " In-House check failed, going to default.", e);
         }
 
         try

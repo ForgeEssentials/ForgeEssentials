@@ -1,20 +1,20 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.commons.selections.WarpPoint;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import java.util.HashMap;
 import java.util.List;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.PlayerInfo;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 public class CommandTppos extends ForgeEssentialsCommandBase {
 
     /**
@@ -44,7 +44,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
         }
         else
         {
-            throw new CommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 

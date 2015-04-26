@@ -60,6 +60,9 @@ public class ConfigChat extends ConfigLoaderBase {
         chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat)
                 .getString();
 
+        ModuleChat.welcomeNewPlayers = config.get("Chat", "welcomeNewPlayers", true, "Post a welcome message when a new player joins the server.").getBoolean();
+        ModuleChat.welcomeNewPlayerMsg = config.get("Chat", "welcomeNewPlayerMsg", "Welcome %username to the server!", "Welcome messages for new players. Can be colour formatted. Insert %username for the player's username.").getString();
+
         config.addCustomCategoryComment("Chat.gm", "\"%gm\" gets replaced by the values below");
         ChatFormatter.gmS = config.get("Chat.gm", "Survival", "[Sur]").getString();
         ChatFormatter.gmC = config.get("Chat.gm", "Creative", "[Cre]").getString();

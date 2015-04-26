@@ -34,26 +34,29 @@ public class RespawnHandler {
         UserIdent ident = new UserIdent(player);
         if (location == null)
             location = new WarpPoint(player);
-        String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null, GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN, true);
-        WorldPoint point = null;
-        if (spawnProperty == null)
-            return null;
-        if (spawnProperty.equalsIgnoreCase("bed"))
+        
+        if (APIRegistry.perms.checkUserPermission(ident, FEPermissions.SPAWN_BED))
         {
-            if (player.getBedLocation() != null)
+            ChunkCoordinates spawn = player.getBedLocation(player.dimension);
+            if (spawn != null)
+                spawn = EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
+            if (spawn != null)
             {
-                ChunkCoordinates spawn = player.getBedLocation();
-                EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
-                point = new WorldPoint(player.dimension, spawn.posX, spawn.posY, spawn.posZ);
+                // Bed seems OK, so just return null to let default MC code handle respawn
+                return null;
             }
         }
-        else
+        
+        String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null, GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN_LOC, true);
+        if (spawnProperty != null)
         {
-            point = WorldPoint.fromString(spawnProperty);
+            WorldPoint point = WorldPoint.fromString(spawnProperty);
+            if (point != null)
+                return new WarpPoint(point, player.cameraYaw, player.cameraPitch);
         }
-        if (point == null)
-            return null;
-        return new WarpPoint(point, player.cameraYaw, player.cameraPitch);
+        
+        // No spawn set - let default MC code handle respawn
+        return null;
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -76,12 +79,7 @@ public class RespawnHandler {
             {
                 WarpPoint p = getPlayerSpawn(player, null);
                 if (p != null)
-                {
                     FunctionHelper.teleportPlayer(player, p);
-                    player.posX = p.getX();
-                    player.posY = p.getY();
-                    player.posZ = p.getZ();
-                }
             }
         }
     }
@@ -95,12 +93,7 @@ public class RespawnHandler {
         
         WarpPoint p = getPlayerSpawn(e.player, lastDeathLocation);
         if (p != null)
-        {
             FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
-            e.player.posX = p.getX();
-            e.player.posY = p.getY();
-            e.player.posZ = p.getZ();
-        }
     }
 
 }

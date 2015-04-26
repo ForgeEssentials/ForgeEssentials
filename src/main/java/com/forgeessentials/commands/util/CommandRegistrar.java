@@ -38,7 +38,6 @@ import com.forgeessentials.commands.CommandRepair;
 import com.forgeessentials.commands.CommandRules;
 import com.forgeessentials.commands.CommandSmite;
 import com.forgeessentials.commands.CommandTime;
-import com.forgeessentials.commands.CommandVanish;
 import com.forgeessentials.commands.CommandVirtualchest;
 import com.forgeessentials.commands.CommandWeather;
 import com.forgeessentials.commands.admin.CommandDoAs;
@@ -83,7 +82,7 @@ public class CommandRegistrar {
         cmdList.add(new CommandWeather());
         cmdList.add(new CommandBind());
         cmdList.add(new CommandRename());
-        cmdList.add(new CommandVanish());
+        //cmdList.add(new CommandVanish());
         cmdList.add(new CommandPush());
         cmdList.add(new CommandDrop());
         cmdList.add(new CommandPulse());

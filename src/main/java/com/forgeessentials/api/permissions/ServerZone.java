@@ -7,19 +7,23 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.ImmutableUserIdent;
 import com.forgeessentials.util.UserIdent;
+import com.google.gson.annotations.Expose;
 
 /**
  * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being
@@ -29,16 +33,20 @@ import com.forgeessentials.util.UserIdent;
  */
 public class ServerZone extends Zone {
 
+    @Expose(serialize = false)
     private RootZone rootZone;
 
+    @Expose(serialize = false)
     private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
 
     private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
 
+    @Expose(serialize = false)
     private int maxZoneID;
 
     private Map<UserIdent, Set<String>> playerGroups = new HashMap<UserIdent, Set<String>>();
 
+    @Expose(serialize = false)
     private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
 
     // ------------------------------------------------------------
@@ -233,17 +241,20 @@ public class ServerZone extends Zone {
     @Override
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
-        registerPlayer(ident);
-        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
-            return false;
+        if (!isFakePlayer(ident))
+            registerPlayer(ident); 
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
             groupSet = new TreeSet<String>();
             playerGroups.put(ident, groupSet);
         }
-        groupSet.add(group);
-        setDirty();
+        if (!groupSet.contains(group))
+        {
+            if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+                return false;
+            groupSet.add(group);
+        }
         return true;
     }
 
@@ -265,6 +276,25 @@ public class ServerZone extends Zone {
     public Map<UserIdent, Set<String>> getPlayerGroups()
     {
         return playerGroups;
+    }
+
+    public Map<String, Set<UserIdent>> getGroupPlayers()
+    {
+        Map<String, Set<UserIdent>> groupPlayers = new HashMap<String, Set<UserIdent>>();
+        for (Entry<UserIdent, Set<String>> player : playerGroups.entrySet())
+        {
+            for (String group : player.getValue())
+            {
+                Set<UserIdent> players = groupPlayers.get(group);
+                if (players == null)
+                {
+                    players = new HashSet<UserIdent>();
+                    groupPlayers.put(group, players);
+                }
+                players.add(player.getKey());
+            }
+        }
+        return groupPlayers;
     }
 
     @Override
@@ -442,11 +472,20 @@ public class ServerZone extends Zone {
     }
 
     // ------------------------------------------------------------
+    
+    public boolean isFakePlayer(UserIdent ident)
+    {
+        return ident.hasPlayer() && ident.getPlayer() instanceof FakePlayer;
+    }
 
     public void registerPlayer(UserIdent ident)
     {
         if (ident != null)
+        {
             knownPlayers.add(ident);
+            if (isFakePlayer(ident))
+                addPlayerToGroup(ident, GROUP_FAKEPLAYERS);
+        }
     }
 
     public Set<UserIdent> getKnownPlayers()
@@ -454,6 +493,26 @@ public class ServerZone extends Zone {
         return knownPlayers;
     }
 
+    @Override
+    public void updatePlayerIdents()
+    {
+        Map<UserIdent, PermissionList> toAdd = new HashMap<>();
+        for (Iterator<Map.Entry<UserIdent, PermissionList>> iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
+        {
+            Map.Entry<UserIdent, PermissionList> player = iterator.next();
+            getServerZone().registerPlayer(player.getKey());
+            UserIdent ident = new ImmutableUserIdent(player.getKey());
+            if (ident.hashCode() != player.getKey().hashCode())
+            {
+                iterator.remove();
+                toAdd.put(ident, player.getValue());
+                if (playerGroups.containsKey(player.getKey()))
+                    playerGroups.put(ident, playerGroups.remove(player.getKey()));
+            }
+        }
+        playerPermissions.putAll(toAdd);
+    }
+    
     // ------------------------------------------------------------
 
     public String getPermission(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String permissionNode, boolean isProperty)

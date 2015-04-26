@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 public interface RemoteManager {
 
-    void registerHandler(RemoteHandler handler);
+    void registerHandler(RemoteHandler handler, String id);
 
     RemoteHandler getHandler(String id);
 
@@ -19,7 +19,7 @@ public interface RemoteManager {
          * com.forgeessentials.api.remote.RemoteManager#registerHandler(com.forgeessentials.api.remote.RemoteHandler)
          */
         @Override
-        public void registerHandler(RemoteHandler handler)
+        public void registerHandler(RemoteHandler handler, String id)
         {
             /* do nothing */
         }

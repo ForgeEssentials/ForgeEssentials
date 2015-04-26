@@ -2,7 +2,6 @@ package com.forgeessentials.util.selections;
 
 //Depreciated
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
@@ -10,12 +9,12 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.UserIdent;
-import com.forgeessentials.commons.selections.WorldPoint;
 
 public class CommandPos extends ForgeEssentialsCommandBase {
     private int type;
@@ -46,11 +45,11 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
                 if (type == 1)
                 {
-                    SelectionHandler.selectionProvider.setPoint1(player,new Point(x, y, z));
+                    SelectionHandler.selectionProvider.setStart(player, new Point(x, y, z));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setPoint2(player,new Point(x, y, z));
+                    SelectionHandler.selectionProvider.setEnd(player, new Point(x, y, z));
                 }
 
                 OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -59,7 +58,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
             }
             else
             {
-                throw new CommandException(getCommandUsage(player));
+                throw new TranslatedCommandException(getCommandUsage(player));
             }
         }
 
@@ -67,7 +66,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         {
             if (args.length < 3)
             {
-                throw new CommandException(getCommandUsage(player));
+                throw new TranslatedCommandException(getCommandUsage(player));
             }
 
             try
@@ -78,16 +77,16 @@ public class CommandPos extends ForgeEssentialsCommandBase {
             }
             catch (NumberFormatException e)
             {
-                throw new CommandException(getCommandUsage(player));
+                throw new TranslatedCommandException(getCommandUsage(player));
             }
 
             if (type == 1)
             {
-                SelectionHandler.selectionProvider.setPoint1(player,new Point(x, y, z));
+                SelectionHandler.selectionProvider.setStart(player, new Point(x, y, z));
             }
             else
             {
-                SelectionHandler.selectionProvider.setPoint2(player,new Point(x, y, z));
+                SelectionHandler.selectionProvider.setEnd(player, new Point(x, y, z));
             }
 
             OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -97,10 +96,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(player);
 
         if (mop == null)
-        {
-            OutputHandler.chatError(player, "You must first look at the ground!");
-            return;
-        }
+            throw new TranslatedCommandException("You must first look at the ground!");
 
         x = mop.blockX;
         y = mop.blockY;
@@ -108,18 +104,15 @@ public class CommandPos extends ForgeEssentialsCommandBase {
 
         WorldPoint point = new WorldPoint(player.dimension, x, y, z);
         if (!APIRegistry.perms.checkUserPermission(new UserIdent(player), point, getPermissionNode()))
-        {
-            OutputHandler.chatError(player, "Insufficient permissions.");
-            return;
-        }
+            throw new TranslatedCommandException("Insufficient permissions.");
 
         if (type == 1)
         {
-            SelectionHandler.selectionProvider.setPoint1(player, point);
+            SelectionHandler.selectionProvider.setStart(player, point);
         }
         else
         {
-            SelectionHandler.selectionProvider.setPoint2(player, point);
+            SelectionHandler.selectionProvider.setEnd(player, point);
         }
 
         OutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
