@@ -1,7 +1,9 @@
 package com.forgeessentials.util;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
@@ -12,11 +14,17 @@ public class MiscEventHandler {
     public static boolean MajoritySleep = false;
 
     public static int majoritySleepThreshold;
+
+    public static boolean checkSpacesInNames;
     private static MiscEventHandler instance;
 
     public MiscEventHandler()
     {
         MinecraftForge.EVENT_BUS.register(this);
+        if (checkSpacesInNames)
+        {
+            FMLCommonHandler.instance().bus().register(this);
+        }
         instance = this;
     }
 
@@ -27,6 +35,16 @@ public class MiscEventHandler {
     public static MiscEventHandler instance()
     {
         return instance;
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void checkPlayerName(PlayerLoggedInEvent e)
+    {
+        String name = e.player.getDisplayName();
+        if (name.contains(" "))
+        {
+            ((EntityPlayerMP) e.player).playerNetServerHandler.kickPlayerFromServer("Invalid name. Please change your name.");
+        }
     }
 
     @SubscribeEvent
