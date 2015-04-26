@@ -143,7 +143,7 @@ public class WESelectionHandler implements ISelectionProvider
         RegionSelector selector = session.getRegionSelector(world);
         selector.setWorld(world);
         selector.selectPrimary(new Vector(area.getLowPoint().getX(), area.getLowPoint().getY(), area.getLowPoint().getZ()), null);
-        selector.selectPrimary(new Vector(area.getHighPoint().getX(), area.getHighPoint().getY(), area.getHighPoint().getZ()), null);
+        selector.selectSecondary(new Vector(area.getHighPoint().getX(), area.getHighPoint().getY(), area.getHighPoint().getZ()), null);
         SelectionHandler.sendUpdate(player);
     }
 

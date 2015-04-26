@@ -329,6 +329,11 @@ public class UserIdent {
             identifyUser();
             return other.equals(uuid);
         }
+        else if (other instanceof EntityPlayer)
+        {
+            identifyUser();
+            return ((EntityPlayer) other).getPersistentID().equals(uuid);
+        }
         else
         {
             return false;

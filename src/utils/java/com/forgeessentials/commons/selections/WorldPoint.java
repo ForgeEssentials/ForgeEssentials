@@ -83,6 +83,27 @@ public class WorldPoint extends Point {
         this.dim = dim;
     }
 
+    @Override
+    public WorldPoint setX(int x)
+    {
+        this.x = x;
+        return this;
+    }
+
+    @Override
+    public WorldPoint setY(int y)
+    {
+        this.y = y;
+        return this;
+    }
+
+    @Override
+    public WorldPoint setZ(int z)
+    {
+        this.z = z;
+        return this;
+    }
+
     public World getWorld()
     {
         if (world != null && world.provider.dimensionId != dim)

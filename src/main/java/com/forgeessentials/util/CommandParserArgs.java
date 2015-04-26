@@ -2,6 +2,7 @@ package com.forgeessentials.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -34,6 +35,7 @@ public class CommandParserArgs
     public final EntityPlayerMP senderPlayer;
     public final UserIdent userIdent;
     public final boolean isTabCompletion;
+    private final PermissionContext permissionContext;
 
     public List<String> tabCompletion;
 
@@ -47,6 +49,7 @@ public class CommandParserArgs
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
+        this.permissionContext = new PermissionContext().setCommandSender(sender).setCommand(command);
     }
 
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender)
@@ -159,12 +162,24 @@ public class CommandParserArgs
 
     public void checkPermission(String perm)
     {
-        if (!isTabCompletion && sender != null
-                && !APIRegistry.perms.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(command), perm))
+        if (!isTabCompletion && sender != null && !hasPermission(perm))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
     }
 
+    public boolean hasPermission(String perm)
+    {
+        return APIRegistry.perms.checkPermission(permissionContext, perm);
+    }
+
     public boolean tabComplete(String[] completionList)
+    {
+        if (!isTabCompletion || args.size() != 1)
+            return false;
+        tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList);
+        return true;
+    }
+
+    public boolean tabComplete(Collection<String> completionList)
     {
         if (!isTabCompletion || args.size() != 1)
             return false;

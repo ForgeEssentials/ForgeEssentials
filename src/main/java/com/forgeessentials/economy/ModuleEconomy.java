@@ -1,8 +1,6 @@
 package com.forgeessentials.economy;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -78,8 +76,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     protected PlotManager plotManager;
 
     protected HashMap<UserIdent, PlayerWallet> wallets = new HashMap<>();
-
-    protected List<Offer<ItemStack>> offers = new ArrayList<>();
 
     /* ------------------------------------------------------------ */
     /* Module events */
