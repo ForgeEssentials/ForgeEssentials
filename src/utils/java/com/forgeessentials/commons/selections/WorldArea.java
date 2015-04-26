@@ -41,6 +41,12 @@ public class WorldArea extends AreaBase
         this.dim = dimensionId;
     }
 
+    @Override
+    public WorldPoint getCenter()
+    {
+        return new WorldPoint(dim, (high.x + low.x) / 2, (high.y + low.y) / 2, (high.z + low.z) / 2);
+    }
+
 	public boolean contains(WorldPoint point)
     {
         if (point.dim == dim)

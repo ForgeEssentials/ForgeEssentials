@@ -8,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.Zone;
@@ -16,7 +17,6 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 
 public class CommandPromote extends ForgeEssentialsCommandBase {
 
@@ -65,7 +65,7 @@ public class CommandPromote extends ForgeEssentialsCommandBase {
         if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(groupName, FEPermissions.GROUP_PROMOTION)))
             throw new TranslatedCommandException("Group %s is not available for promotion. Allow %s on the group first.", groupName, FEPermissions.GROUP_PROMOTION);
 
-        for (GroupEntry group : APIRegistry.perms.getServerZone().getStoredPlayerGroups(ident))
+        for (GroupEntry group : APIRegistry.perms.getServerZone().getStoredPlayerGroupEntries(ident))
             if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), FEPermissions.GROUP_PROMOTION)))
             {
                 APIRegistry.perms.removePlayerFromGroup(ident, group.getGroup());

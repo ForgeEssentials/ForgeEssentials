@@ -1,10 +1,11 @@
 package com.forgeessentials.auth.lists;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.auth.AuthEventHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -45,11 +46,11 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase {
 		{
 			if (args[0].equalsIgnoreCase("add"))
 			{
-				APIRegistry.perms.getServerZone().setPlayerPermission(new UserIdent(args[1]), "fe.auth.whitelist", true);
+				APIRegistry.perms.getServerZone().setPlayerPermission(new UserIdent(args[1], sender), "fe.auth.whitelist", true);
 			}
 			else if (args[0].equalsIgnoreCase("remove"))
 			{
-				APIRegistry.perms.getServerZone().setPlayerPermission(new UserIdent(args[1]), "fe.auth.whitelist", false);
+				APIRegistry.perms.getServerZone().setPlayerPermission(new UserIdent(args[1], sender), "fe.auth.whitelist", false);
 			}
 		}
 	}

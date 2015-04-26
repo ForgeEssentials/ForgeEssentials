@@ -15,6 +15,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
@@ -26,7 +27,6 @@ import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoader
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
@@ -90,6 +90,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     /**
      * Register remote module and basic handlers
      */
+    @SuppressWarnings("deprecation")
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
@@ -112,7 +113,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
                 {
                     RemoteHandler handler = (RemoteHandler) clazz.newInstance();
                     FERemoteHandler annot = handler.getClass().getAnnotation(FERemoteHandler.class);
-                    APIRegistry.remoteManager.registerHandler(handler, annot.id());
+                    registerHandler(handler, annot.id());
                 }
             }
             catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)

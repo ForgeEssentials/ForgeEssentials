@@ -1,10 +1,10 @@
 package com.forgeessentials.commands;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;

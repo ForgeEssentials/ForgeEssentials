@@ -1,8 +1,8 @@
 package com.forgeessentials.util.questioner;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.command.ICommandSender;
 
@@ -11,35 +11,12 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public class Questioner extends ServerEventHandler {
-    
-    private static Map<String, QuestionData> queue = new HashMap<String, QuestionData>();
-    
-    private static ArrayList<String> removeQueue = new ArrayList<String>();
-    
-    private static ArrayList<String> playerQueue = new ArrayList<String>();
+public class Questioner extends ServerEventHandler
+{
 
-    public static int defaultTime = 120;
+    private static Map<ICommandSender, QuestionData> questions = new HashMap<>();
 
-    public static void addToQuestionQueue(QuestionData question)
-    {
-        queue.put(question.getTarget().getCommandSenderName(), question);
-    }
-
-    public static void addtoQuestionQueue(ICommandSender target, String question, IReplyHandler runnable)
-    {
-        addToQuestionQueue(new QuestionData(target, question, runnable, defaultTime));
-    }
-
-    public static void abort(QuestionData questionData)
-    {
-        removeQueue.add(questionData.getTarget().getCommandSenderName());
-    }
-
-    public static void questionDone(QuestionData questionData)
-    {
-        removeQueue.add(questionData.getTarget().getCommandSenderName());
-    }
+    public static int DEFAULT_TIMEOUT = 120;
 
     public Questioner()
     {
@@ -48,37 +25,58 @@ public class Questioner extends ServerEventHandler {
         new CommandQuestioner(false).register();
     }
 
+    public static synchronized void add(QuestionData question) throws QuestionerStillActiveException
+    {
+        if (questions.containsKey(question.getTarget()))
+            throw new QuestionerStillActiveException();
+        questions.put(question.getTarget(), question);
+        question.sendQuestion();
+    }
+
+    public static void add(ICommandSender target, String question, QuestionerCallback callback, int timeout, ICommandSender source)
+            throws QuestionerStillActiveException
+    {
+        add(new QuestionData(target, question, callback, timeout, source));
+    }
+
+    public static void add(ICommandSender target, String question, QuestionerCallback callback, int timeout) throws QuestionerStillActiveException
+    {
+        add(target, question, callback, timeout, null);
+    }
+
+    public static void add(ICommandSender target, String question, QuestionerCallback callback) throws QuestionerStillActiveException
+    {
+        add(target, question, callback, DEFAULT_TIMEOUT);
+    }
+
+    public static synchronized void answer(ICommandSender target, Boolean answer)
+    {
+        QuestionData question = questions.remove(target);
+        if (question != null)
+            question.doAnswer(answer);
+    }
+
+    public static void cancel(ICommandSender target)
+    {
+        answer(target, null);
+    }
+
+    public static void confirm(ICommandSender target)
+    {
+        answer(target, true);
+    }
+
+    public static void deny(ICommandSender target)
+    {
+        answer(target, false);
+    }
+
     @SubscribeEvent
-    public void tickStart(TickEvent.ServerTickEvent e)
+    public void tickStart(TickEvent.ServerTickEvent event)
     {
-        for (QuestionData data : queue.values())
-        {
-            data.count();
-        }
-        for (String name : removeQueue)
-        {
-            queue.remove(name);
-            playerQueue.remove(name);
-        }
-        removeQueue.clear();
-
-    }
-
-    public static void processAnswer(ICommandSender player, boolean affirmative)
-    {
-        if (playerQueue.contains(player.getCommandSenderName()))
-        {
-            for (Object dataObject : queue.values())
-            {
-                QuestionData data = (QuestionData) dataObject;
-                data.doAnswer(affirmative);
-            }
-        }
-    }
-
-    public static interface IReplyHandler
-    {
-        public void replyReceived(boolean status);
+        for (Entry<ICommandSender, QuestionData> question : questions.entrySet())
+            if (question.getValue().isTimeout())
+                cancel(question.getKey());
     }
 
 }

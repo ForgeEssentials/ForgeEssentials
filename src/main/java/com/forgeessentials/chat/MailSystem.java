@@ -6,9 +6,9 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

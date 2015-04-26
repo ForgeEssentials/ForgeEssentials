@@ -14,10 +14,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
@@ -311,22 +310,6 @@ public class PlayerInfo implements Loadable {
     public void setSelDim(int dimension)
     {
         selDim = dimension;
-    }
-
-    public void clearSelection()
-    {
-        if (!ModuleLauncher.getModuleList().contains("WEIntegration"))
-        {
-            sel1 = null;
-            sel2 = null;
-            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(ident.getPlayer()), ident.getPlayer());
-        }
-    }
-
-    public void sendSelectionUpdate()
-    {
-        if (ident.hasPlayer())
-            FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(ident.getPlayer()), ident.getPlayer());
     }
 
     // ----------------------------------------------

@@ -2,6 +2,7 @@ package com.forgeessentials.util.selections;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commons.selections.Selection;
@@ -29,7 +30,7 @@ public class CommandExpandY extends ForgeEssentialsCommandBase {
 		if (sel == null)
 		    throw new TranslatedCommandException("Invalid selection.");
 		SelectionHandler.selectionProvider.setStart(player, sel.getStart().setY(0));
-		SelectionHandler.selectionProvider.setEnd(player, sel.getEnd().setY(255));
+		SelectionHandler.selectionProvider.setEnd(player, sel.getEnd().setY(MinecraftServer.getServer().getBuildLimit()));
 		OutputHandler.chatConfirmation(player, "Selection expanded from bottom to top.");
 	}
 

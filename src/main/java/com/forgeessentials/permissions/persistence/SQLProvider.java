@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.ServerZone;
@@ -28,7 +29,6 @@ import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.google.common.base.Throwables;
 
 public class SQLProvider extends ZonePersistenceProvider {

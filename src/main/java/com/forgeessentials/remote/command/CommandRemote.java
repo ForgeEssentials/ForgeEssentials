@@ -11,6 +11,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -18,7 +19,6 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.UserIdent;
 
 public class CommandRemote extends ForgeEssentialsCommandBase {
 
@@ -60,11 +60,11 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
             {
             case "help":
             {
-                args.info("/remote start: Start remote server (= enable)");
-                args.info("/remote stop: Stop remote server (= disable)");
-                args.info("/remote regen [player]: Generate new passkey");
-                args.info("/remote block <player>: Block player from remote, until he generates a new passkey");
-                args.info("/remote kick <player>: Kick player accessing remote right now");
+                args.confirm("/remote start: Start remote server (= enable)");
+                args.confirm("/remote stop: Stop remote server (= disable)");
+                args.confirm("/remote regen [player]: Generate new passkey");
+                args.confirm("/remote block <player>: Block player from remote, until he generates a new passkey");
+                args.confirm("/remote kick <player>: Kick player accessing remote right now");
                 return;
             }
             case "regen":
@@ -72,14 +72,12 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 UserIdent ident = args.parsePlayer();
                 if (ident == null)
                     return;
-                if (!ident.hasUUID())
-                    throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUUID());
                 if (!ident.equals(args.userIdent))
                     args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isTabCompletion)
                     return;
                 ModuleRemote.getInstance().setPasskey(ident, ModuleRemote.getInstance().generatePasskey());
-                args.info("Generated new passkey");
+                args.confirm("Generated new passkey");
                 showPasskey(args, ident);
                 return;
             }
@@ -94,7 +92,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 if (args.isTabCompletion)
                     return;
                 ModuleRemote.getInstance().setPasskey(ident, null);
-                args.info(Translator.format("User %s has been blocked from remote until he generates a new passkey", ident.getUsernameOrUUID()));
+                args.confirm(Translator.format("User %s has been blocked from remote until he generates a new passkey", ident.getUsernameOrUUID()));
                 return;
             }
             case "kick":
@@ -110,11 +108,11 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 RemoteSession session = ModuleRemote.getInstance().getServer().getSession(ident);
                 if (session == null)
                 {
-                    args.info(Translator.format("User %s is not logged in on remote", ident.getUsernameOrUUID()));
+                    args.confirm(Translator.format("User %s is not logged in on remote", ident.getUsernameOrUUID()));
                     return;
                 }
                 session.close("kick", 0);
-                args.info(Translator.format("User %s has been kicked from remote", ident.getUsernameOrUUID()));
+                args.confirm(Translator.format("User %s has been kicked from remote", ident.getUsernameOrUUID()));
                 return;
             }
             case "start":
@@ -126,9 +124,9 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                     throw new TranslatedCommandException("Server already running on port " + ModuleRemote.getInstance().getPort());
                 ModuleRemote.getInstance().startServer();
                 if (ModuleRemote.getInstance().getServer() == null)
-                    args.info("Error starting remote server");
+                    args.confirm("Error starting remote server");
                 else
-                    args.info("Server started");
+                    args.confirm("Server started");
                 return;
             }
             case "stop":
@@ -139,7 +137,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 if (ModuleRemote.getInstance().getServer() == null)
                     throw new TranslatedCommandException("Server not running");
                 ModuleRemote.getInstance().stopServer();
-                args.info("Server stopped");
+                args.confirm("Server stopped");
                 return;
             }
             default:

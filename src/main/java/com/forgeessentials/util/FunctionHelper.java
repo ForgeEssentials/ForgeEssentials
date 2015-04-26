@@ -45,6 +45,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.commons.selections.Point;
@@ -67,26 +68,47 @@ public final class FunctionHelper {
 
     public static final EventBus FE_INTERNAL_EVENTBUS = APIRegistry.getFEEventBus();
 
-	/**
-	 * Try to parse integer or return defaultValue on failure
-	 * 
-	 * @param value
-	 * @param defaultValue
-	 * @return parsed integer or default value
-	 */
-	public static int parseIntDefault(String value, int defaultValue)
-	{
-		if (value == null)
-			return defaultValue;
-		try
-		{
-			return Integer.parseInt(value);
-		}
-		catch (NumberFormatException e)
-		{
-			return defaultValue;
-		}
-	}
+    /**
+     * Try to parse integer or return defaultValue on failure
+     * 
+     * @param value
+     * @param defaultValue
+     * @return parsed integer or default value
+     */
+    public static int parseIntDefault(String value, int defaultValue)
+    {
+        if (value == null)
+            return defaultValue;
+        try
+        {
+            return Integer.parseInt(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Try to parse long or return defaultValue on failure
+     * 
+     * @param value
+     * @param defaultValue
+     * @return parsed long or default value
+     */
+    public static long parseLongDefault(String value, long defaultValue)
+    {
+        if (value == null)
+            return defaultValue;
+        try
+        {
+            return Long.parseLong(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return defaultValue;
+        }
+    }
 
 	/**
 	 * Try to parse double or return defaultValue on failure
@@ -120,6 +142,24 @@ public final class FunctionHelper {
         try
         {
             return Integer.parseInt(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Try to parse the string as long or return null if failed
+     * 
+     * @param value
+     * @return
+     */
+    public static Long tryParseLong(String value)
+    {
+        try
+        {
+            return Long.parseLong(value);
         }
         catch (NumberFormatException e)
         {

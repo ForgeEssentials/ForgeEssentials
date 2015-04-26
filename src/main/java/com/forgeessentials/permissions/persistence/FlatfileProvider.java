@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.ServerZone;
@@ -29,7 +30,6 @@ import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 
 public class FlatfileProvider extends ZonePersistenceProvider {
 

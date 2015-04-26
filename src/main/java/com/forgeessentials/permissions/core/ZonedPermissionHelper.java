@@ -26,6 +26,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
@@ -44,7 +45,6 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -406,7 +406,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         zones.add(rootZone.getServerZone());
         zones.add(rootZone);
 
-        return getServerZone().getPermission(zones, ident, groups, permissionNode, isProperty);
+        if (isProperty)
+            return getServerZone().getPermissionProperty(zones, ident, groups, permissionNode);
+        else
+            return getServerZone().getPermission(zones, ident, groups, permissionNode, false);
     }
 
     // ------------------------------------------------------------
@@ -676,14 +679,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident)
     {
-        return getServerZone().getStoredPlayerGroups(ident);
+        return getServerZone().getStoredPlayerGroupEntries(ident);
     }
     
     // --------------------------------------------------------
     // -- Permission checking
     // ------------------------------------------------------------
 
-    protected boolean checkBooleanPermission(String permissionValue)
+    public boolean checkBooleanPermission(String permissionValue)
     {
         if (permissionValue == null)
         {
@@ -781,7 +784,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public String getUserPermissionProperty(UserIdent ident, Zone zone, String permissionNode)
     {
-        return getServerZone().getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
+        return getServerZone().getPermissionProperty(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode);
     }
 
     // ------------------------------------------------------------
@@ -789,13 +792,13 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public String getGroupPermissionProperty(String group, String permissionNode)
     {
-        return getServerZone().getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, true);
+        return getServerZone().getPermissionProperty(getGlobalZones(), null, Arrays.asList(group), permissionNode);
     }
 
     @Override
     public String getGroupPermissionProperty(String group, Zone zone, String permissionNode)
     {
-        return getServerZone().getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, true);
+        return getServerZone().getPermissionProperty(getGlobalZones(zone), null, Arrays.asList(group), permissionNode);
     }
 
     @Override
@@ -813,7 +816,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public String getGroupPermissionProperty(String group, WorldPoint point, String permissionNode)
     {
-        return getServerZone().getPermission(getServerZone().getZonesAt(point), null, Arrays.asList(group), permissionNode, true);
+        return getServerZone().getPermissionProperty(getServerZone().getZonesAt(point), null, Arrays.asList(group), permissionNode);
     }
 
     @Override

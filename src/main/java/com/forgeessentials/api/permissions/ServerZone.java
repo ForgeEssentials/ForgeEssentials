@@ -19,10 +19,10 @@ import net.minecraftforge.common.util.FakePlayer;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.ImmutableUserIdent;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.ImmutableUserIdent;
-import com.forgeessentials.util.UserIdent;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -242,7 +242,7 @@ public class ServerZone extends Zone {
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
         if (!isFakePlayer(ident))
-            registerPlayer(ident); 
+            registerPlayer(ident);
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
@@ -298,7 +298,7 @@ public class ServerZone extends Zone {
     }
 
     @Override
-    public SortedSet<GroupEntry> getStoredPlayerGroups(UserIdent ident)
+    public SortedSet<GroupEntry> getStoredPlayerGroupEntries(UserIdent ident)
     {
         registerPlayer(ident);
         Set<String> pgs = playerGroups.get(ident);
@@ -311,7 +311,7 @@ public class ServerZone extends Zone {
 
     public SortedSet<GroupEntry> getAdditionalPlayerGroups(UserIdent ident)
     {
-        SortedSet<GroupEntry> result = getStoredPlayerGroups(ident);
+        SortedSet<GroupEntry> result = getStoredPlayerGroupEntries(ident);
         if (ident != null)
         {
             if (ident.hasGameProfile() && !ident.isFakePlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getGameProfile()))
@@ -369,7 +369,7 @@ public class ServerZone extends Zone {
         if (ident != null)
             for (Zone z : getZonesAt(ident))
                 if (!(z instanceof ServerZone))
-                    result.addAll(z.getStoredPlayerGroups(ident));
+                    result.addAll(z.getStoredPlayerGroupEntries(ident));
         return includeGroups(result);
     }
 
@@ -428,6 +428,7 @@ public class ServerZone extends Zone {
                 result.add(zone);
         result.add(w);
         result.add(this);
+        result.add(rootZone);
         return result;
     }
 
@@ -472,7 +473,7 @@ public class ServerZone extends Zone {
     }
 
     // ------------------------------------------------------------
-    
+
     public boolean isFakePlayer(UserIdent ident)
     {
         return ident.hasPlayer() && ident.getPlayer() instanceof FakePlayer;
@@ -512,7 +513,7 @@ public class ServerZone extends Zone {
         }
         playerPermissions.putAll(toAdd);
     }
-    
+
     // ------------------------------------------------------------
 
     public String getPermission(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String permissionNode, boolean isProperty)
@@ -599,6 +600,65 @@ public class ServerZone extends Zone {
 
         if (rootZone.permissionDebugger != null)
             rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE);
+        return null;
+    }
+
+    public String getPermissionProperty(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String node)
+    {
+        // Check player permissions
+        if (ident != null)
+        {
+            for (Zone zone : zones)
+            {
+                String result = zone.getPlayerPermission(ident, node);
+                if (result != null)
+                {
+                    if (rootZone.permissionDebugger != null)
+                        rootZone.permissionDebugger.debugPermission(zone, ident, null, node, node, result);
+                    return result;
+                }
+            }
+        }
+
+        // Check group permissions
+        // Add default group
+        if (groups != null)
+        {
+            // Lowest order: group hierarchy
+            // (e.g. ADMIN, MEMBER, _OPS_, _ALL_)
+            for (String group : groups)
+            {
+                // Second order: zones
+                // (e.g. area, world, server, root)
+                for (Zone zone : zones)
+                {
+                    // First order: nodes
+                    // (e.g. fe.commands.time, fe.commands.time.*, fe.commands.*, fe.*, *)
+                    String result = zone.getGroupPermission(group, node);
+                    if (result != null)
+                    {
+                        if (rootZone.permissionDebugger != null)
+                            rootZone.permissionDebugger.debugPermission(zone, null, group, node, node, result);
+                        return result;
+                    }
+                }
+            }
+        }
+
+        // Check group permissions
+        for (Zone zone : zones)
+        {
+            String result = zone.getGroupPermission(GROUP_DEFAULT, node);
+            if (result != null)
+            {
+                if (rootZone.permissionDebugger != null)
+                    rootZone.permissionDebugger.debugPermission(zone, null, GROUP_DEFAULT, node, node, result);
+                return result;
+            }
+        }
+
+        if (rootZone.permissionDebugger != null)
+            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, PERMISSION_TRUE);
         return null;
     }
 

@@ -6,7 +6,8 @@ import java.util.List;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.questioner.Questioner;
-import com.forgeessentials.util.questioner.Questioner.IReplyHandler;
+import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.command.ICommandSender;
@@ -20,6 +21,7 @@ import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
@@ -29,14 +31,14 @@ import com.forgeessentials.util.OutputHandler;
  * @author Dries007
  */
 
-public class CommandKit extends FEcmdModuleCommands {
+public class CommandKit extends FEcmdModuleCommands
+{
 
     public static final String PERM = COMMANDS_PERM + ".kit";
     public static final String PERM_ADMIN = COMMANDS_PERM + ".admin";
     public static final String PERM_BYPASS_COOLDOWN = PERM + ".bypasscooldown";
 
     public static final String[] tabCompletionArg2 = new String[] { "set", "del" };
-
 
     protected String kitForNewPlayers;
 
@@ -79,11 +81,12 @@ public class CommandKit extends FEcmdModuleCommands {
             if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
                 throw new TranslatedCommandException("Kit %s does not exist.", args[0]);
             if (!PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
-                throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
+                throw new TranslatedCommandException(
+                        "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
             CommandDataManager.kits.get(args[0].toLowerCase()).giveKit(sender);
             return;
         }
-        
+
         /*
          * Make kit
          */
@@ -97,13 +100,18 @@ public class CommandKit extends FEcmdModuleCommands {
                     cooldown = parseIntWithMin(sender, args[2], -1);
                 }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
-                OutputHandler.chatConfirmation(sender,
-                        "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
+                OutputHandler.chatConfirmation(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
             }
             else
             {
-                Questioner.addtoQuestionQueue(sender, "A kit by the name of " + args[0].toLowerCase() + "already exists. Type /yes if you wish to overwrite it, /no to cancel this operation.",
-                        new HandleKitOverrides(sender, args));
+                try
+                {
+                    Questioner.add(sender, Translator.format("Kit %s already exists. overwrite?", args[0].toLowerCase()), new HandleKitOverrides(sender, args));
+                }
+                catch (QuestionerStillActiveException e)
+                {
+                    throw new QuestionerStillActiveException.CommandException();
+                }
             }
             return;
         }
@@ -172,7 +180,8 @@ public class CommandKit extends FEcmdModuleCommands {
     public void loadConfig(Configuration config, String category)
     {
         super.loadConfig(config, category);
-        kitForNewPlayers = config.get(category, "kitForNewPlayers", "", "Name of kit to issue to new players. If this is left blank, it will be ignored.").getString();
+        kitForNewPlayers = config.get(category, "kitForNewPlayers", "", "Name of kit to issue to new players. If this is left blank, it will be ignored.")
+                .getString();
     }
 
     @SubscribeEvent
@@ -192,13 +201,13 @@ public class CommandKit extends FEcmdModuleCommands {
         }
     }
 
-    static class HandleKitOverrides implements IReplyHandler
+    static class HandleKitOverrides implements QuestionerCallback
     {
-        
+
         private String[] args;
-        
+
         private EntityPlayerMP sender;
-        
+
         private HandleKitOverrides(EntityPlayerMP sender, String[] args)
         {
             this.args = args;
@@ -206,9 +215,9 @@ public class CommandKit extends FEcmdModuleCommands {
         }
 
         @Override
-        public void replyReceived(boolean status)
+        public void respond(Boolean response)
         {
-            if (status)
+            if (response != null && response == true)
             {
                 int cooldown = -1;
                 if (args.length == 3)
@@ -219,7 +228,7 @@ public class CommandKit extends FEcmdModuleCommands {
                 OutputHandler.chatConfirmation(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
             }
         }
-        
+
     }
 
 }

@@ -1,38 +1,36 @@
 package com.forgeessentials.util.questioner;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+
 public class CommandQuestioner extends ForgeEssentialsCommandBase
 {
-    public boolean status;
+    private final boolean type;
 
-    public CommandQuestioner(boolean status)
+    public CommandQuestioner(boolean type)
     {
-        this.status = status;
+        this.type = type;
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public String getCommandName()
     {
-        Questioner.processAnswer(sender, status);
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
+        if (type)
+            return "yes";
+        else
+            return "no";
     }
 
     @Override
     public List<String> getCommandAliases()
     {
         ArrayList<String> list = new ArrayList<String>();
-        if (status)
+        if (type)
         {
             list.add("accept");
             list.add("allow");
@@ -60,16 +58,24 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        if (status) return "yes";
-        return "no";
+        if (type)
+            return "/yes Reply yes to a question.";
+        else
+            return "/no Reply no to a question.";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public boolean canConsoleUseCommand()
     {
-        if (status) return "/yes Reply yes to a question.";
-        return "/no Reply no to a question.";
+        return true;
     }
+
+    @Override
+    public void processCommand(ICommandSender sender, String[] args)
+    {
+        Questioner.answer(sender, type);
+    }
+    
 }

@@ -1,48 +1,124 @@
 package com.forgeessentials.util.questioner;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.questioner.Questioner.IReplyHandler;
 
-public class QuestionData {
+public class QuestionData
+{
+
     private ICommandSender target;
-    private int waitTime;
+
+    private ICommandSender source;
+
+    private String question;
+
+    private int timeout;
+
     private long startTime;
 
-    private IReplyHandler processAnswer;
+    private QuestionerCallback callback;
 
-    public QuestionData(ICommandSender target, String question, IReplyHandler runnable, int timeout)
+    public QuestionData(ICommandSender target, String question, QuestionerCallback callback, int timeout, ICommandSender source)
     {
         this.target = target;
-        startTime = System.currentTimeMillis();
-        processAnswer = runnable;
-        waitTime = timeout;
+        this.timeout = timeout;
+        this.callback = callback;
+        this.source = source;
+        this.question = question;
+        this.startTime = System.currentTimeMillis();
+    }
 
+    public void sendQuestion()
+    {
         OutputHandler.sendMessage(target, question);
+        sendYesNoMessage();
     }
 
-    public int getTimeout()
+    public void sendYesNoMessage()
     {
-        return waitTime;
+        IChatComponent yesMessage = new ChatComponentText("/yes");
+        yesMessage.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/yes"));
+        yesMessage.getChatStyle().setColor(EnumChatFormatting.RED);
+        yesMessage.getChatStyle().setUnderlined(true);
+
+        IChatComponent noMessage = new ChatComponentText("/no");
+        noMessage.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/no"));
+        noMessage.getChatStyle().setColor(EnumChatFormatting.RED);
+        noMessage.getChatStyle().setUnderlined(true);
+
+        IChatComponent yesNoMessage = new ChatComponentText("Type ");
+        yesNoMessage.appendSibling(yesMessage);
+        yesNoMessage.appendSibling(new ChatComponentText(" or "));
+        yesNoMessage.appendSibling(noMessage);
+        yesNoMessage.appendSibling(new ChatComponentText(" " + Translator.format("(timeout: %d)", timeout)));
+        
+        target.addChatMessage(yesNoMessage);
     }
 
-    public void count()
+    protected void doAnswer(Boolean answer)
     {
-        if ((System.currentTimeMillis() - startTime) / 1000L > waitTime)
-        {
-            Questioner.abort(this);
-        }
+        callback.respond(answer);
     }
 
-    public void doAnswer(boolean affirmative)
+    public void confirm()
     {
-        processAnswer.replyReceived(affirmative);
-        Questioner.questionDone(this);
+        Questioner.confirm(target);
+        // TODO: Maybe send a message, because it was not confirmed through user interaction?
     }
+
+    public void deny()
+    {
+        Questioner.deny(target);
+        // TODO: Maybe send a message, because it was not denied through user interaction?
+    }
+
+    public void cancel()
+    {
+        Questioner.cancel(target);
+        // TODO: Maybe send a message, because it was not canceled through user interaction?
+    }
+
+    /* ------------------------------------------------------------ */
 
     public ICommandSender getTarget()
     {
         return target;
     }
+
+    public ICommandSender getSource()
+    {
+        return source;
+    }
+
+    public String getQuestion()
+    {
+        return question;
+    }
+
+    public int getTimeout()
+    {
+        return timeout;
+    }
+
+    public long getStartTime()
+    {
+        return startTime;
+    }
+
+    public QuestionerCallback getCallback()
+    {
+        return callback;
+    }
+
+    public boolean isTimeout()
+    {
+        return (System.currentTimeMillis() - startTime) / 1000L > timeout;
+    }
+
 }

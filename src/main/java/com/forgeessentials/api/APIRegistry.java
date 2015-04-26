@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.forgeessentials.api.economy.Economy;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.remote.AbstractRemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
@@ -19,7 +20,7 @@ public class APIRegistry {
     /**
      * Use this to call API functions available in the economy module.
      */
-    public static IEconManager wallet;
+    public static Economy economy;
 
     /**
      * Use to call API functions from the permissions module.
@@ -36,6 +37,7 @@ public class APIRegistry {
      * This manager allows registering custom {@link AbstractRemoteHandler}s for remote-module. Please be careful to use unique
      * names in your handlers for {@link AbstractRemoteHandler#getID()}
      */
+    @Deprecated
     public static RemoteManager remoteManager = new RemoteManager.DefaultRemoteHandlerManager();
 
     /**

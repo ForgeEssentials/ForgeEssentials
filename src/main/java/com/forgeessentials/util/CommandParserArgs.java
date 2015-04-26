@@ -2,6 +2,7 @@ package com.forgeessentials.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,6 +18,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionContext;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -23,7 +26,8 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 /**
  *
  */
-public class CommandParserArgs {
+public class CommandParserArgs
+{
 
     public final ICommand command;
     public final Queue<String> args;
@@ -31,8 +35,9 @@ public class CommandParserArgs {
     public final EntityPlayerMP senderPlayer;
     public final UserIdent userIdent;
     public final boolean isTabCompletion;
+    private final PermissionContext permissionContext;
 
-    public List<String> tabCompletion = null;
+    public List<String> tabCompletion;
 
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion)
     {
@@ -42,6 +47,9 @@ public class CommandParserArgs {
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
         this.userIdent = (senderPlayer == null) ? null : new UserIdent(senderPlayer);
         this.isTabCompletion = isTabCompletion;
+        if (isTabCompletion)
+            tabCompletion = new ArrayList<>();
+        this.permissionContext = new PermissionContext().setCommandSender(sender).setCommand(command);
     }
 
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender)
@@ -49,10 +57,16 @@ public class CommandParserArgs {
         this(command, args, sender, false);
     }
 
-    public void info(String message)
+    public void confirm(String message)
     {
         if (!isTabCompletion)
             OutputHandler.chatConfirmation(sender, message);
+    }
+
+    public void notify(String message)
+    {
+        if (!isTabCompletion)
+            OutputHandler.chatNotification(sender, message);
     }
 
     public void warn(String message)
@@ -94,6 +108,11 @@ public class CommandParserArgs {
 
     public UserIdent parsePlayer()
     {
+        return parsePlayer(true);
+    }
+
+    public UserIdent parsePlayer(boolean mustExist)
+    {
         if (isTabCompletion && size() == 1)
         {
             tabCompletion = completePlayer(peek());
@@ -117,7 +136,10 @@ public class CommandParserArgs {
             }
             else
             {
-                return new UserIdent(name, sender);
+                UserIdent ident = new UserIdent(name, sender);
+                if (mustExist && !ident.hasUUID())
+                    throw new TranslatedCommandException("Player %s not found", name);
+                return ident;
             }
         }
     }
@@ -140,10 +162,14 @@ public class CommandParserArgs {
 
     public void checkPermission(String perm)
     {
-        if (!isTabCompletion && sender != null && !APIRegistry.perms.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(command), perm))
+        if (!isTabCompletion && sender != null && !hasPermission(perm))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
     }
 
+    public boolean hasPermission(String perm)
+    {
+        return APIRegistry.perms.checkPermission(permissionContext, perm);
+    }
 
     public boolean tabComplete(String[] completionList)
     {
@@ -151,6 +177,92 @@ public class CommandParserArgs {
             return false;
         tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList);
         return true;
+    }
+
+    public boolean tabComplete(Collection<String> completionList)
+    {
+        if (!isTabCompletion || args.size() != 1)
+            return false;
+        tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList);
+        return true;
+    }
+
+    public int parseInt()
+    {
+        checkTabCompletion();
+        String value = remove();
+        try
+        {
+            return Integer.parseInt(value);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new TranslatedCommandException("Invalid number: %s", value);
+        }
+    }
+
+    public long parseLong()
+    {
+        checkTabCompletion();
+        String value = remove();
+        try
+        {
+            return Long.parseLong(value);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new TranslatedCommandException("Invalid number: %s", value);
+        }
+    }
+
+    public Float parseFloat()
+    {
+        checkTabCompletion();
+        String value = remove();
+        try
+        {
+            return Float.parseFloat(value);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new TranslatedCommandException("Invalid number: %s", value);
+        }
+    }
+
+    public Double parseDouble()
+    {
+        checkTabCompletion();
+        String value = remove();
+        try
+        {
+            return Double.parseDouble(value);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new TranslatedCommandException("Invalid number: %s", value);
+        }
+    }
+
+    public void checkTabCompletion()
+    {
+        if (isTabCompletion && size() == 1)
+            throw new CancelParsingException();
+    }
+
+    public static class CancelParsingException extends CommandException
+    {
+
+        public CancelParsingException()
+        {
+            super("");
+        }
+
+    }
+
+    public void requirePlayer()
+    {
+        if (senderPlayer == null)
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
 }

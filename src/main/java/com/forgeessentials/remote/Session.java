@@ -8,6 +8,7 @@ import java.net.Socket;
 import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler.PermissionException;
 import com.forgeessentials.api.remote.RemoteRequest;
@@ -15,7 +16,6 @@ import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 

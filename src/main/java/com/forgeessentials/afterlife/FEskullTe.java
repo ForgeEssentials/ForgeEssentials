@@ -5,8 +5,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.world.World;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.UserIdent;
 
 public class FEskullTe extends TileEntitySkull {
 

@@ -12,11 +12,11 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.commands.CommandPm;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.google.common.base.Strings;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;

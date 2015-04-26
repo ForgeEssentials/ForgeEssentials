@@ -2,8 +2,8 @@ package com.forgeessentials.data.v2.types;
 
 import java.lang.reflect.Type;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.data.v2.DataManager.DataType;
-import com.forgeessentials.util.UserIdent;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

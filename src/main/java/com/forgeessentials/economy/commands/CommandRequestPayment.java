@@ -7,14 +7,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandRequestPayment extends ForgeEssentialsCommandBase {
+public class CommandRequestPayment extends ForgeEssentialsCommandBase
+{
 
     @Override
     public String getCommandName()
@@ -36,9 +37,9 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
         {
             int amount = parseIntWithMin(sender, args[1], 0);
             OutputHandler.chatConfirmation(sender,
-                    "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.getCommandSenderName() + ".");
+                    "You have requested " + amount + APIRegistry.economy.currency(amount) + " from " + player.getCommandSenderName() + ".");
             OutputHandler.chatConfirmation(player,
-                    "You have been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.getCommandSenderName() + ".");
+                    "You have been requested to play " + amount + APIRegistry.economy.currency(amount) + " by " + player.getCommandSenderName() + ".");
         }
     }
 
@@ -47,7 +48,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
     {
         if (args.length != 2)
             throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amountRequested>");
-        
+
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
         {
@@ -57,9 +58,9 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase {
         {
             int amount = parseIntWithMin(sender, args[1], 0);
             OutputHandler.chatConfirmation(sender,
-                    "You have requested " + amount + APIRegistry.wallet.currency(amount) + " from " + player.getCommandSenderName() + ".");
+                    "You have requested " + amount + APIRegistry.economy.currency(amount) + " from " + player.getCommandSenderName() + ".");
             OutputHandler.chatConfirmation(player,
-                    "You been requested to play " + amount + APIRegistry.wallet.currency(amount) + " by " + player.getCommandSenderName() + ".");
+                    "You been requested to play " + amount + APIRegistry.economy.currency(amount) + " by " + player.getCommandSenderName() + ".");
         }
     }
 

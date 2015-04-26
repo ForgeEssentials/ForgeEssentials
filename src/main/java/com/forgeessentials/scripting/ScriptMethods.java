@@ -12,14 +12,18 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.economy.Wallet;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.scripting.ScriptParser.MissingPermissionException;
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
-import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
+import com.forgeessentials.scripting.ScriptParser.SyntaxException;
+import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 
-public final class ScriptMethods {
+public final class ScriptMethods
+{
 
     public static Map<String, ScriptMethod> scriptMethods = new HashMap<>();
 
@@ -143,10 +147,10 @@ public final class ScriptMethods {
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            if (sender == null || !(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
             if (args.length < 1)
-                throw new ScriptException("Missing argument for permcheck");
+                throw new SyntaxException("Missing argument for permcheck");
             if (!APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
                 throw new MissingPermissionException(args[0], args.length > 1 ? StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ") : "");
             return true;
@@ -157,13 +161,51 @@ public final class ScriptMethods {
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            if (sender == null || !(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof EntityPlayerMP))
                 return false;
             if (args.length < 1)
-                throw new ScriptException("Invalid argument count for permcheck");
+                throw new SyntaxException("Invalid argument count for permcheck");
             if (!APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
                 return false;
             return true;
+        }
+    };
+
+    public static final ScriptMethod pay = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            if (args.length < 1)
+                throw new SyntaxException("Missing amount for pay command");
+            if (args.length > 2)
+                throw new SyntaxException("Too many arguments");
+            try
+            {
+                long amount = Long.parseLong(args[0]);
+                Wallet src = APIRegistry.economy.getWallet((EntityPlayerMP) sender);
+                Wallet dst = null;
+                if (args.length == 2)
+                {
+                    UserIdent dstIdent = new UserIdent(args[1], sender);
+                    if (!dstIdent.hasUUID())
+                        throw new ScriptException("Player %s not found", args[1]);
+                    dst = APIRegistry.economy.getWallet(dstIdent);
+                }
+                if (!src.withdraw(amount))
+                {
+                    OutputHandler.chatError(sender, Translator.translate("You can't afford that!"));
+                    return false;
+                }
+                if (dst != null)
+                    dst.add(amount);
+                return true;
+            }
+            catch (NumberFormatException e)
+            {
+                return false;
+            }
         }
     };
 
@@ -177,10 +219,10 @@ public final class ScriptMethods {
             @Override
             public boolean process(ICommandSender sender, String[] args)
             {
-                if (sender == null || !(sender instanceof EntityPlayerMP))
+                if (!(sender instanceof EntityPlayerMP))
                     throw new MissingPlayerException();
                 if (args.length < 1)
-                    throw new ScriptException("Missing argument for permcheck");
+                    throw new SyntaxException("Missing argument for permcheck");
                 if (APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
                     throw new MissingPermissionException(args[0], args.length > 1 ? StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ") : "");
                 return true;
@@ -191,10 +233,10 @@ public final class ScriptMethods {
             @Override
             public boolean process(ICommandSender sender, String[] args)
             {
-                if (sender == null || !(sender instanceof EntityPlayerMP))
+                if (!(sender instanceof EntityPlayerMP))
                     return false;
                 if (args.length != 1)
-                    throw new ScriptException("Invalid argument count for permcheck");
+                    throw new SyntaxException("Invalid argument count for permcheck");
                 if (APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
                     return false;
                 return true;

@@ -8,12 +8,12 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskPulseHelper;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.UserIdent;
 import com.forgeessentials.util.tasks.TaskRegistry;
 
 public class CommandPulse extends FEcmdModuleCommands {

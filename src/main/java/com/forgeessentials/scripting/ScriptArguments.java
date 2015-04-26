@@ -217,6 +217,7 @@ public final class ScriptArguments {
     static
     {
         registerAll();
+        add("p", player);
     }
 
 }

@@ -7,9 +7,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permissions.IPermissionsProvider;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.UserIdent;
 
 /**
  * {@link IPermissionsHelper} is the primary access-point to the permissions-system.
@@ -31,6 +31,14 @@ public interface IPermissionsHelper extends IPermissionsProvider {
     // ---------------------------------------------------------------------------
     // -- Permissions
     // ---------------------------------------------------------------------------
+    
+    /**
+     * Converts a string permission into a boolean value
+     * 
+     * @param permissionValue
+     * @return
+     */
+    public boolean checkBooleanPermission(String permissionValue);
 
     String getPermission(UserIdent ident, WorldPoint point, WorldArea area, Collection<String> groups, String permissionNode, boolean isProperty);
 
