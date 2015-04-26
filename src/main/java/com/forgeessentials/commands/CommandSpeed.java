@@ -14,7 +14,7 @@ public class CommandSpeed extends FEcmdModuleCommands
     public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
         OutputHandler.chatWarning(player, "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
-        if (args.length == 1)
+        if (args.length >= 1)
         {
             //float speed = Float.parseFloat(args[0]);
 
@@ -27,7 +27,7 @@ public class CommandSpeed extends FEcmdModuleCommands
 
             float speed = 0.05F;
 
-            int multiplier = Integer.parseInt(args[0]);
+            int multiplier = parseInt(player, args[0]);
 
             if (multiplier >= 10)
             {
@@ -60,6 +60,6 @@ public class CommandSpeed extends FEcmdModuleCommands
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/speed [player] <speed> Set or change the player's speed.";
+        return "/speed <speed> Set or change the player's speed.";
     }
 }
