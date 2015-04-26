@@ -3,6 +3,8 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.annotations.Expose;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
@@ -16,6 +18,7 @@ public class WorldPoint extends Point {
 
     protected int dim;
     
+    @Expose(serialize = false)
     protected World world;
 
     // ------------------------------------------------------------
