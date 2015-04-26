@@ -14,6 +14,15 @@ public class C6PacketSpeed implements IMessage, IMessageHandler<C6PacketSpeed, I
     public void fromBytes(ByteBuf buf)
     {
         float speed = buf.readFloat();
+
+        // special reset code
+        if (speed == 0.0F)
+        {
+            FMLClientHandler.instance().getClientPlayerEntity().capabilities.setPlayerWalkSpeed(0.05F);
+            FMLClientHandler.instance().getClientPlayerEntity().capabilities.setFlySpeed(0.1F);
+            FMLClientHandler.instance().getClientPlayerEntity().sendPlayerAbilities();
+            return;
+        }
         FMLClientHandler.instance().getClientPlayerEntity().capabilities.setPlayerWalkSpeed(speed);
         FMLClientHandler.instance().getClientPlayerEntity().capabilities.setFlySpeed(speed);
         FMLClientHandler.instance().getClientPlayerEntity().sendPlayerAbilities();
