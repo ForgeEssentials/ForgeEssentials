@@ -68,26 +68,47 @@ public final class FunctionHelper {
 
     public static final EventBus FE_INTERNAL_EVENTBUS = APIRegistry.getFEEventBus();
 
-	/**
-	 * Try to parse integer or return defaultValue on failure
-	 * 
-	 * @param value
-	 * @param defaultValue
-	 * @return parsed integer or default value
-	 */
-	public static int parseIntDefault(String value, int defaultValue)
-	{
-		if (value == null)
-			return defaultValue;
-		try
-		{
-			return Integer.parseInt(value);
-		}
-		catch (NumberFormatException e)
-		{
-			return defaultValue;
-		}
-	}
+    /**
+     * Try to parse integer or return defaultValue on failure
+     * 
+     * @param value
+     * @param defaultValue
+     * @return parsed integer or default value
+     */
+    public static int parseIntDefault(String value, int defaultValue)
+    {
+        if (value == null)
+            return defaultValue;
+        try
+        {
+            return Integer.parseInt(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Try to parse long or return defaultValue on failure
+     * 
+     * @param value
+     * @param defaultValue
+     * @return parsed long or default value
+     */
+    public static long parseLongDefault(String value, long defaultValue)
+    {
+        if (value == null)
+            return defaultValue;
+        try
+        {
+            return Long.parseLong(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return defaultValue;
+        }
+    }
 
 	/**
 	 * Try to parse double or return defaultValue on failure

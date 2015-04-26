@@ -34,7 +34,7 @@ import com.forgeessentials.util.events.PlotEvent.OwnerChanged;
 public class Plot
 {
 
-    private static final String GROUP_DEFAULT = Zone.GROUP_DEFAULT;
+    public static final String GROUP_ALL = Zone.GROUP_DEFAULT;
     public static final String GROUP_PLOT_OWNER = "PLOT_OWNER";
     public static final String GROUP_PLOT_USER = "PLOT_USER";
 
@@ -57,8 +57,13 @@ public class Plot
     public static final String PERM_SELL = PERM_COMMAND + ".sell";
 
     public static final String PERM_SET = PERM_COMMAND + ".set";
-    public static final String PERM_SET_BUILD = PERM_SET + ".build";
-    public static final String PERM_SET_INTERACT = PERM_SET + ".interact";
+    public static final String PERM_SET_PRICE = PERM_COMMAND + ".price";
+    public static final String PERM_SET_FEE = PERM_COMMAND + ".fee";
+
+    public static final String PERM_PERMS = PERM_COMMAND + ".perms";
+    public static final String PERM_PERMS_BUILD = PERM_SET + ".build";
+    public static final String PERM_PERMS_INTERACT = PERM_SET + ".interact";
+    public static final String PERM_PERMS_CHEST = PERM_SET + ".chest";
 
     public static final String PERM_LIST = PERM_COMMAND + ".list";
     public static final String PERM_LIST_OWN = PERM_LIST + ".own";
@@ -130,9 +135,9 @@ public class Plot
         // Set new owner
         owner = newOwner;
         if (owner == null)
-            zone.clearGroupPermission(GROUP_DEFAULT, PERM_OWNER);
+            zone.clearGroupPermission(GROUP_ALL, PERM_OWNER);
         else
-            zone.setGroupPermissionProperty(GROUP_DEFAULT, PERM_OWNER, owner.getOrGenerateUuid().toString());
+            zone.setGroupPermissionProperty(GROUP_ALL, PERM_OWNER, owner.getOrGenerateUuid().toString());
         if (owner != null)
             zone.addPlayerToGroup(newOwner, GROUP_PLOT_OWNER);
         APIRegistry.getFEEventBus().post(event);
@@ -148,9 +153,9 @@ public class Plot
 
     public String getName()
     {
-        String name = zone.getGroupPermission(GROUP_DEFAULT, PERM_NAME);
+        String name = zone.getGroupPermission(GROUP_ALL, PERM_NAME);
         if (name == null)
-            name = APIRegistry.perms.getGroupPermissionProperty(GROUP_DEFAULT, PERM_NAME);
+            name = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, PERM_NAME);
         if (name == null)
             return null;
         return name.replaceAll("@p", owner.getUsernameOrUUID());
@@ -178,13 +183,13 @@ public class Plot
     public long getAccountedSize()
     {
         AreaBase area = zone.getArea();
-        boolean columnMode = APIRegistry.perms.checkGroupPermission(GROUP_DEFAULT, zone, PERM_PRICE);
+        boolean columnMode = APIRegistry.perms.checkGroupPermission(GROUP_ALL, zone, PERM_PRICE);
         return columnMode ? area.getXLength() * area.getZLength() : area.getXLength() * area.getYLength() * area.getZLength();
     }
 
     public long getCalculatedPrice()
     {
-        String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP_DEFAULT, getPlotCenter(), PERM_PRICE);
+        String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, getPlotCenter(), PERM_PRICE);
         if (priceStr == null)
             return 0;
         double pricePerUnit = FunctionHelper.parseDoubleDefault(priceStr, 0);
@@ -195,25 +200,15 @@ public class Plot
 
     public long getPrice()
     {
-        try
-        {
-            String price = zone.getGroupPermission(GROUP_DEFAULT, PERM_SELL_PRICE);
-            if (price == null)
-                return -1;
-            return Long.parseLong(price);
-        }
-        catch (NumberFormatException e)
-        {
-            return -1;
-        }
+        return FunctionHelper.parseLongDefault(zone.getGroupPermission(GROUP_ALL, PERM_SELL_PRICE), -1);
     }
 
-    public void setPrice(int price)
+    public void setPrice(long value)
     {
-        if (price < 0)
-            zone.setGroupPermissionProperty(GROUP_DEFAULT, PERM_SELL_PRICE, Long.toString(price));
+        if (value < 0)
+            zone.clearGroupPermission(GROUP_ALL, PERM_SELL_PRICE);
         else
-            zone.clearGroupPermission(GROUP_DEFAULT, PERM_SELL_PRICE);
+            zone.setGroupPermissionProperty(GROUP_ALL, PERM_SELL_PRICE, Long.toString(value));
     }
 
     public boolean isForSale()
@@ -221,9 +216,39 @@ public class Plot
         return getPrice() >= 0;
     }
 
+    /* ------------------------------------------------------------ */
+
+    public int getFee()
+    {
+        return Math.max(0, FunctionHelper.parseIntDefault(zone.getGroupPermission(GROUP_ALL, PERM_FEE), 0));
+    }
+
+    public void setFee(int value)
+    {
+        if (value < 0)
+            zone.setGroupPermissionProperty(GROUP_ALL, PERM_FEE, Long.toString(value));
+        else
+            zone.clearGroupPermission(GROUP_ALL, PERM_FEE);
+    }
+
+    public int getFeeTimeout()
+    {
+        return Math.max(0, FunctionHelper.parseIntDefault(zone.getGroupPermission(GROUP_ALL, PERM_FEE_TIMEOUT), 0));
+    }
+
+    public void setFeeTimeout(int minutes)
+    {
+        if (minutes <= 0)
+            zone.setGroupPermissionProperty(GROUP_ALL, PERM_FEE_TIMEOUT, Long.toString(minutes));
+        else
+            zone.clearGroupPermission(GROUP_ALL, PERM_FEE_TIMEOUT);
+    }
+
+    /* ------------------------------------------------------------ */
+
     public void setDefaultPermissions()
     {
-        zone.setGroupPermissionProperty(GROUP_DEFAULT, PERM_OWNER, owner == null ? SERVER_OWNER : owner.getOrGenerateUuid().toString());
+        zone.setGroupPermissionProperty(GROUP_ALL, PERM_OWNER, owner == null ? SERVER_OWNER : owner.getOrGenerateUuid().toString());
         if (owner != null)
             zone.addPlayerToGroup(owner, GROUP_PLOT_OWNER);
 
@@ -232,15 +257,15 @@ public class Plot
         zone.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_USE + Zone.ALL_PERMS, true);
         zone.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, true);
 
-        //zone.setGroupPermission(GROUP_PLOT_USER, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
-        //zone.setGroupPermission(GROUP_PLOT_USER, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
+        // zone.setGroupPermission(GROUP_PLOT_USER, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
+        // zone.setGroupPermission(GROUP_PLOT_USER, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
         zone.setGroupPermission(GROUP_PLOT_USER, ModuleProtection.PERM_USE + Zone.ALL_PERMS, true);
         zone.setGroupPermission(GROUP_PLOT_USER, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, true);
 
-        zone.setGroupPermission(GROUP_DEFAULT, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
-        zone.setGroupPermission(GROUP_DEFAULT, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
-        zone.setGroupPermission(GROUP_DEFAULT, ModuleProtection.PERM_USE + Zone.ALL_PERMS, false);
-        zone.setGroupPermission(GROUP_DEFAULT, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
+        zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
+        zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
+        zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_USE + Zone.ALL_PERMS, false);
+        zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
         // zone.setGroupPermission(GROUP_DEFAULT, ModuleProtection.PERM_INTERACT_ENTITY, true);
     }
 
@@ -278,7 +303,7 @@ public class Plot
         zones.add(s.getWorldZone(dimension));
         zones.add(s);
         zones.add(s.getRootZone());
-        String permValue = s.getPermissionProperty(zones, null, Arrays.asList(GROUP_DEFAULT), PERM_COLUMN);
+        String permValue = s.getPermissionProperty(zones, null, Arrays.asList(GROUP_ALL), PERM_COLUMN);
         return APIRegistry.perms.checkBooleanPermission(permValue);
     }
 
@@ -296,7 +321,7 @@ public class Plot
 
     public static long getCalculatedPrice(WorldArea area)
     {
-        String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP_DEFAULT, area.getCenter(), PERM_PRICE);
+        String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, area.getCenter(), PERM_PRICE);
         if (priceStr == null)
             return 0;
         double pricePerUnit = FunctionHelper.parseDoubleDefault(priceStr, 0);
@@ -360,7 +385,7 @@ public class Plot
         for (Zone zone : APIRegistry.perms.getZones())
             if (zone instanceof AreaZone)
             {
-                String ownerId = zone.getGroupPermission(GROUP_DEFAULT, PERM_OWNER);
+                String ownerId = zone.getGroupPermission(GROUP_ALL, PERM_OWNER);
                 if (ownerId != null)
                     registerPlot(new Plot((AreaZone) zone, ownerId.equals(SERVER_OWNER) ? null : new UserIdent(ownerId)));
             }
@@ -403,8 +428,11 @@ public class Plot
         perms.registerPermission(PERM_LIST_SALE, RegisteredPermValue.TRUE, "List plots open for sale");
 
         perms.registerPermission(PERM_SET, RegisteredPermValue.OP, "Control plot settings");
-        perms.registerPermission(PERM_SET_BUILD, RegisteredPermValue.OP, "Control build permissions");
-        perms.registerPermission(PERM_SET_INTERACT, RegisteredPermValue.OP, "Control interaction permissions");
+
+        perms.registerPermission(PERM_PERMS, RegisteredPermValue.OP, "Control plot settings");
+        perms.registerPermission(PERM_PERMS_BUILD, RegisteredPermValue.OP, "Control build permissions");
+        perms.registerPermission(PERM_PERMS_INTERACT, RegisteredPermValue.OP, "Control interaction permissions");
+        perms.registerPermission(PERM_PERMS_CHEST, RegisteredPermValue.OP, "Control chest permissions");
 
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SET, true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SELL, true);
@@ -421,6 +449,5 @@ public class Plot
     public static class PlotRedefinedException extends Exception
     {
     }
-
 
 }

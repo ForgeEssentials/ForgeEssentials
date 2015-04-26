@@ -874,6 +874,8 @@ public class PermissionCommandParser {
             }
             if (msg != null)
                 arguments.confirm(String.format(msg, group, permissionNode, zone.getName()));
+            if (type == PermissionAction.VALUE)
+                return;
         }
     }
 

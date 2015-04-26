@@ -19,10 +19,6 @@ import com.forgeessentials.util.NamedWorldPoint;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 
-/**
- * @author Olee
- *
- */
 public class CommandPortal extends ForgeEssentialsCommandBase {
 
     public static final String PERM = "fe.teleport.portal";
