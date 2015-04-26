@@ -55,9 +55,6 @@ public class EventInjector implements IMixinConfigPlugin
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo)
     {
-        if (mixinClassName.contains("com.forgeessentials.preloader.asm.mixins"))
-        {
-            injectedPatches.add(mixinInfo.getName());
-        }
+        injectedPatches.add(mixinInfo.getName());
     }
 }
