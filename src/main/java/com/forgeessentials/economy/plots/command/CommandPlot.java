@@ -25,9 +25,9 @@ import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.EventCancelledException;
-import com.forgeessentials.util.questioner.QuestionData;
 import com.forgeessentials.util.questioner.Questioner;
-import com.forgeessentials.util.questioner.Questioner.IReplyHandler;
+import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 import com.forgeessentials.util.selections.SelectionHandler;
 
 public class CommandPlot extends ParserCommandBase
@@ -56,7 +56,7 @@ public class CommandPlot extends ParserCommandBase
             }
             return false;
         }
-        
+
         public static Collection<String> stringValues()
         {
             List<String> values = new ArrayList<>();
@@ -143,7 +143,7 @@ public class CommandPlot extends ParserCommandBase
             parseSet(arguments);
             break;
         case "buy":
-            parseBuy(arguments);
+            parseBuyStart(arguments);
             break;
         case "sell":
             arguments.error("Not yet implemented");
@@ -231,7 +231,7 @@ public class CommandPlot extends ParserCommandBase
                 throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
             }
         }
-        
+
         if (arguments.isTabCompletion)
             return;
 
@@ -264,7 +264,7 @@ public class CommandPlot extends ParserCommandBase
         for (Plot plot : plots)
             plot.printInfo(arguments.sender);
     }
-    
+
     public static void parseLimits(CommandParserArgs arguments)
     {
         String limitCount = APIRegistry.perms.getUserPermissionProperty(arguments.userIdent, Plot.PERM_LIMIT_COUNT);
@@ -301,10 +301,10 @@ public class CommandPlot extends ParserCommandBase
     private static void parseSet(CommandParserArgs arguments)
     {
         arguments.checkPermission(Plot.PERM_SET);
-        
+
     }
 
-    public static void parseBuy(final CommandParserArgs arguments)
+    public static void parseBuyStart(final CommandParserArgs arguments)
     {
         final Plot plot = Plot.getPlot(new WorldPoint(arguments.senderPlayer));
         if (plot == null)
@@ -312,58 +312,88 @@ public class CommandPlot extends ParserCommandBase
 
         final long plotPrice = plot.getCalculatedPrice();
         final long sellPrice = plot.getPrice();
-
-        long buyPrice = 0;
+        final long buyPrice;
         if (!arguments.isEmpty())
         {
             buyPrice = arguments.parseLong();
             if (sellPrice >= 0 && sellPrice < buyPrice)
-                buyPrice = sellPrice;
+                arguments.notify(Translator.format("%s is above the plots default price of %s", APIRegistry.economy.toString(buyPrice),
+                        APIRegistry.economy.toString(sellPrice)));
         }
         else
         {
-            if (sellPrice < plotPrice)
+            if (sellPrice >= 0)
                 buyPrice = sellPrice;
             else
                 buyPrice = plotPrice;
-            arguments.notify(Translator.format("No price specified. Using listed plot price of %s.", APIRegistry.economy.toString(buyPrice)));
         }
+        final String buyPriceStr = APIRegistry.economy.toString(buyPrice);
 
-        if (sellPrice < 0 || sellPrice > buyPrice)
-        {
-            final long price = buyPrice;
-            final String priceStr = APIRegistry.economy.toString(buyPrice);
-
-            String message = Translator.format("Player %s wants to buy your plot \"%s\" for %s.", //
-                    arguments.senderPlayer.getCommandSenderName(), plot.getName(), priceStr);
-            if (buyPrice < sellPrice)
-                message += " §c" + Translator.format("This is below the price of %s you set up!", APIRegistry.economy.toString(sellPrice));
-            if (buyPrice < plotPrice)
-                message += " §c" + Translator.format("This is below the plots value of %s!", APIRegistry.economy.toString(sellPrice));
-            message += " " + Translator.format("Type /yes to accept or /no to decline (timeout: %d).", 120);
-            // TODO: ^ make timeout configurable
-
-            IReplyHandler handler = new IReplyHandler() {
-                @Override
-                public void replyReceived(boolean ok)
+        QuestionerCallback handler = new QuestionerCallback() {
+            @Override
+            public void respond(Boolean response)
+            {
+                if (response == null)
                 {
-                    if (ok)
+                    arguments.error("Buy request timed out");
+                    return;
+                }
+                if (response == false) {
+                    arguments.error("Canceled");
+                    return;
+                }
+                if (sellPrice < 0 || sellPrice > buyPrice)
+                {
+                    String message = Translator.format("Player %s wants to buy your plot \"%s\" for %s.", //
+                            arguments.senderPlayer.getCommandSenderName(), plot.getName(), buyPriceStr);
+                    if (buyPrice < sellPrice)
+                        message += " \u00a7c" + Translator.format("This is below the price of %s you set up!", APIRegistry.economy.toString(sellPrice));
+                    if (buyPrice < plotPrice)
+                        message += " \u00a7c" + Translator.format("This is below the plots value of %s!", APIRegistry.economy.toString(sellPrice));
+
+                    QuestionerCallback handler = new QuestionerCallback() {
+                        @Override
+                        public void respond(Boolean response)
+                        {
+                            if (response == null)
+                            {
+                                arguments.error(Translator.format("%s did not respond to your buy request", plot.getOwner().getUsernameOrUUID()));
+                            }
+                            else if (response == true)
+                            {
+                                buyPlot(arguments, plot, plotPrice);
+                            }
+                            else if (response == false)
+                            {
+                                arguments.error(Translator.format("%s declined to sell you plot \"%s\" for %s", //
+                                        plot.getOwner().getUsernameOrUUID(), plot.getName(), buyPriceStr));
+                            }
+                        }
+                    };
+                    try
                     {
-                        buyPlot(arguments, plot, price);
+                        Questioner.add(plot.getOwner().getPlayer(), message, handler, 20);
+                        // TODO: ^ make timeout configurable
                     }
-                    else
+                    catch (QuestionerStillActiveException e)
                     {
-                        arguments.error(Translator.format("%s declined to sell you plot \"%s\" for %s", //
-                                plot.getOwner().getUsernameOrUUID(), plot.getName(), priceStr));
+                        throw new QuestionerStillActiveException.CommandException();
                     }
                 }
-            };
-            Questioner.addToQuestionQueue(new QuestionData(plot.getOwner().getPlayer(), message, handler, 120));
-            // TODO: ^ make timeout configurable
-        }
-        else
+                else
+                {
+                    buyPlot(arguments, plot, buyPrice);
+                }
+            }
+        };
+        try
         {
-            buyPlot(arguments, plot, buyPrice);
+            String message = Translator.format("Really buy this plot for %s", buyPriceStr);
+            Questioner.add(arguments.sender, message, handler, 30);
+        }
+        catch (QuestionerStillActiveException e)
+        {
+            throw new QuestionerStillActiveException.CommandException();
         }
     }
 
@@ -380,8 +410,11 @@ public class CommandPlot extends ParserCommandBase
         {
             Wallet sellerWallet = APIRegistry.economy.getWallet(plot.getOwner());
             sellerWallet.add(price);
-            OutputHandler.chatConfirmation(plot.getOwner().getPlayer(), Translator.format("You sold plot \"%s\" to %s for %s", //
-                    plot.getName(), arguments.senderPlayer.getCommandSenderName(), priceStr));
+            if (plot.getOwner().hasPlayer()) {
+                OutputHandler.chatConfirmation(plot.getOwner().getPlayer(), Translator.format("You sold plot \"%s\" to %s for %s", //
+                        plot.getName(), arguments.senderPlayer.getCommandSenderName(), priceStr));
+                ModuleEconomy.confirmNewWalletAmount(plot.getOwner(), sellerWallet);
+            }
             arguments.confirm(Translator.format("%s sold plot \"%s\" to you for %s", //
                     plot.getOwner().getUsernameOrUUID(), plot.getName(), priceStr));
             ModuleEconomy.confirmNewWalletAmount(arguments.userIdent, buyerWallet);
@@ -392,6 +425,7 @@ public class CommandPlot extends ParserCommandBase
             ModuleEconomy.confirmNewWalletAmount(arguments.userIdent, buyerWallet);
         }
         plot.setOwner(arguments.userIdent);
+        plot.setPrice(-1);
     }
 
 }

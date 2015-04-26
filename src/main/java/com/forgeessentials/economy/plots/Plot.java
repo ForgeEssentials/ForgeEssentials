@@ -208,6 +208,14 @@ public class Plot
         }
     }
 
+    public void setPrice(int price)
+    {
+        if (price < 0)
+            zone.setGroupPermissionProperty(GROUP_DEFAULT, PERM_SELL_PRICE, Long.toString(price));
+        else
+            zone.clearGroupPermission(GROUP_DEFAULT, PERM_SELL_PRICE);
+    }
+
     public boolean isForSale()
     {
         return getPrice() >= 0;
@@ -254,6 +262,8 @@ public class Plot
             OutputHandler.chatNotification(sender, "  Not open for sale");
     }
 
+    /* ------------------------------------------------------------ */
+    /* Static plot management functions */
     /* ------------------------------------------------------------ */
 
     public static boolean isPlot(AreaZone zone)
@@ -411,5 +421,6 @@ public class Plot
     public static class PlotRedefinedException extends Exception
     {
     }
+
 
 }
