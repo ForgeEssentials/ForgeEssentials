@@ -38,7 +38,7 @@ public class AutoMessage implements Runnable {
     {
         if (server.getAllUsernames().length != 0 && enable && !msg.isEmpty())
         {
-            OutputHandler.sendMessageToAll(new ChatComponentText(msg.get(currentMsgID)));
+            OutputHandler.broadcast(new ChatComponentText(msg.get(currentMsgID)));
 
             if (random)
             {

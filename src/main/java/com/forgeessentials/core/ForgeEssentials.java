@@ -265,6 +265,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
                 "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.").getBoolean(false);
         MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If a majority of players sleep, make it day.").getBoolean(true);
         MiscEventHandler.majoritySleepThreshold = config.get(CONFIG_CAT_MISC, "MajoritySleepThreshold", 50, "Define the percentage of players that constitutes a majority for MajoritySleep to kick in.").getInt(50);
+        MiscEventHandler.checkSpacesInNames = config.get(CONFIG_CAT_MISC, "CheckSpacesInNames", true, "Check if a player's name contains spaces (can gum up some things in FE)").getBoolean();
     }
 
     public static ConfigManager getConfigManager()
