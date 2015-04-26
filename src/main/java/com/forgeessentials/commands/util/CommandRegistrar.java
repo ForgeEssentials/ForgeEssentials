@@ -2,6 +2,7 @@ package com.forgeessentials.commands.util;
 
 import java.util.ArrayList;
 
+import com.forgeessentials.commands.CommandSpeed;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.api.APIRegistry;
@@ -88,6 +89,7 @@ public class CommandRegistrar {
         cmdList.add(new CommandFindblock());
         cmdList.add(new CommandNoClip());
         cmdList.add(new CommandBubble());
+        cmdList.add(new CommandSpeed());
     }
 
     public static void commandConfigs(Configuration config)

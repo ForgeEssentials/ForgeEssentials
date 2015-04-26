@@ -11,6 +11,7 @@ import com.forgeessentials.client.network.C0PacketHandshake;
 import com.forgeessentials.client.network.C1PacketSelectionUpdate;
 import com.forgeessentials.client.network.C4PacketEconomy;
 import com.forgeessentials.client.network.C5PacketNoclip;
+import com.forgeessentials.client.network.C6PacketSpeed;
 import com.forgeessentials.client.util.DummyProxy;
 import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.commons.selections.Selection;
@@ -44,6 +45,7 @@ public class ClientProxy extends DummyProxy
         netHandler.registerMessage(C1PacketSelectionUpdate.class, C1PacketSelectionUpdate.class, 1, Side.CLIENT);
         netHandler.registerMessage(C4PacketEconomy.class, C4PacketEconomy.class, 4, Side.CLIENT);
         netHandler.registerMessage(C5PacketNoclip.class, C5PacketNoclip.class, 5, Side.CLIENT);
+        netHandler.registerMessage(C6PacketSpeed.class, C6PacketSpeed.class, 6, Side.CLIENT);
     }
     
     @Override
