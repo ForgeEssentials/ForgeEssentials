@@ -1,15 +1,21 @@
 package com.forgeessentials.scripting;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
+import net.minecraft.server.MinecraftServer;
 
 public final class ScriptArguments {
 
@@ -146,6 +152,65 @@ public final class ScriptArguments {
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
             return Float.toString(((EntityPlayerMP) sender).getFoodStats().getSaturationLevel());
+        }
+    };
+
+    public static ScriptArgument tps = new ScriptArgument() {
+        @Override public String process(ICommandSender sender)
+        {
+            return new DecimalFormat("#").format(FunctionHelper.getTPS());
+        }
+    };
+
+    public static ScriptArgument realTime = new ScriptArgument() {
+        @Override public String process(ICommandSender sender)
+        {
+            return FunctionHelper.getCurrentTimeString();
+        }
+    };
+
+    public static ScriptArgument realDate = new ScriptArgument() {
+        @Override public String process(ICommandSender sender)
+        {
+            return FunctionHelper.getCurrentDateString();
+        }
+    };
+
+    public static ScriptArgument worldTime = new ScriptArgument() {
+        @Override public String process(ICommandSender sender)
+        {
+            return new DecimalFormat("#").format(MinecraftServer.getServer().getEntityWorld().getWorldTime());
+        }
+    };
+
+    public static ScriptArgument noOfPlayersOnline = new ScriptArgument() {
+        @Override public String process(ICommandSender sender)
+        {
+            int online = 0;
+            try
+            {
+                online = MinecraftServer.getServer().getCurrentPlayerCount();
+            }
+            catch (Exception e)
+            {
+            }
+            return "" + online;
+        }
+    };
+
+    public static ScriptArgument serverUptime = new ScriptArgument() {
+        @Override public String process(ICommandSender sender)
+        {
+            RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
+            int secsIn = (int) (rb.getUptime() / 1000);
+            return FunctionHelper.parseTime(secsIn);
+        }
+    };
+
+    public static ScriptArgument uniquePlayers = new ScriptArgument() {
+        @Override public String process(ICommandSender sender)
+        {
+            return Integer.toString(APIRegistry.perms.getServerZone().getKnownPlayers().size());
         }
     };
 
