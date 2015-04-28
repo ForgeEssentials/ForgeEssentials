@@ -124,37 +124,37 @@ public class CommandCalculatePriceList extends ParserCommandBase
         {
             arguments.warn(String.format("Could not load %s. Using default values", priceFile.getName()));
 
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.cobblestone), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.deadbush), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.dirt), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.grass), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.ice), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.leaves), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.leaves2), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.mycelium), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.netherrack), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.sand), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.snow), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.stone), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.tallgrass), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.end_stone), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.glass), 1.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.gravel), 4.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.log), 32.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.log2), 32.0);
-            priceMap.putIfAbsent(Item.getItemFromBlock(Blocks.wool), 48.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.cobblestone), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.deadbush), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.dirt), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.grass), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.ice), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.leaves), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.leaves2), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.mycelium), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.netherrack), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.sand), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.snow), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.stone), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.tallgrass), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.end_stone), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.glass), 1.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.gravel), 4.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.log), 32.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.log2), 32.0);
+            priceMap.put(Item.getItemFromBlock(Blocks.wool), 48.0);
 
-            priceMap.putIfAbsent(Items.flint, 4.0);
-            priceMap.putIfAbsent(Items.clay_ball, 16.0);
-            priceMap.putIfAbsent(Items.coal, 32.0);
-            priceMap.putIfAbsent(Items.reeds, 32.0);
-            priceMap.putIfAbsent(Items.feather, 48.0);
-            priceMap.putIfAbsent(Items.redstone, 64.0);
-            priceMap.putIfAbsent(Items.gold_ingot, 227.0);
-            priceMap.putIfAbsent(Items.iron_ingot, 256.0);
-            priceMap.putIfAbsent(Items.glowstone_dust, 384.0);
-            priceMap.putIfAbsent(Items.blaze_rod, 1536.0);
-            priceMap.putIfAbsent(Items.diamond, 8192.0);
+            priceMap.put(Items.flint, 4.0);
+            priceMap.put(Items.clay_ball, 16.0);
+            priceMap.put(Items.coal, 32.0);
+            priceMap.put(Items.reeds, 32.0);
+            priceMap.put(Items.feather, 48.0);
+            priceMap.put(Items.redstone, 64.0);
+            priceMap.put(Items.gold_ingot, 227.0);
+            priceMap.put(Items.iron_ingot, 256.0);
+            priceMap.put(Items.glowstone_dust, 384.0);
+            priceMap.put(Items.blaze_rod, 1536.0);
+            priceMap.put(Items.diamond, 8192.0);
         }
 
         @SuppressWarnings("unchecked")
