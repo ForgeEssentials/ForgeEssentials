@@ -62,6 +62,7 @@ public class Plot
 
     public static final String PERM_PERMS = PERM_COMMAND + ".perms";
     public static final String PERM_PERMS_BUILD = PERM_SET + ".build";
+    public static final String PERM_PERMS_USE = PERM_SET + ".use";
     public static final String PERM_PERMS_INTERACT = PERM_SET + ".interact";
     public static final String PERM_PERMS_CHEST = PERM_SET + ".chest";
 
@@ -431,6 +432,7 @@ public class Plot
 
         perms.registerPermission(PERM_PERMS, RegisteredPermValue.OP, "Control plot settings");
         perms.registerPermission(PERM_PERMS_BUILD, RegisteredPermValue.OP, "Control build permissions");
+        perms.registerPermission(PERM_PERMS_USE, RegisteredPermValue.OP, "Control item usage permissions");
         perms.registerPermission(PERM_PERMS_INTERACT, RegisteredPermValue.OP, "Control interaction permissions");
         perms.registerPermission(PERM_PERMS_CHEST, RegisteredPermValue.OP, "Control chest permissions");
 

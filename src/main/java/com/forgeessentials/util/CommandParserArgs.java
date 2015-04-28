@@ -33,7 +33,7 @@ public class CommandParserArgs
     public final Queue<String> args;
     public final ICommandSender sender;
     public final EntityPlayerMP senderPlayer;
-    public final UserIdent userIdent;
+    public final UserIdent ident;
     public final boolean isTabCompletion;
     private final PermissionContext permissionContext;
 
@@ -45,7 +45,7 @@ public class CommandParserArgs
         this.args = new LinkedList<String>(Arrays.asList(args));
         this.sender = sender;
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
-        this.userIdent = (senderPlayer == null) ? null : new UserIdent(senderPlayer);
+        this.ident = (senderPlayer == null) ? null : new UserIdent(senderPlayer);
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
@@ -120,8 +120,8 @@ public class CommandParserArgs
         }
         if (isEmpty())
         {
-            if (userIdent != null)
-                return userIdent;
+            if (ident != null)
+                return ident;
             else
                 throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         }

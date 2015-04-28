@@ -179,7 +179,7 @@ public class CommandPlot extends ParserCommandBase
 
         try
         {
-            Plot.define(selection, arguments.userIdent);
+            Plot.define(selection, arguments.ident);
             arguments.confirm(Translator.translate("Plot created!"));
         }
         catch (PlotRedefinedException e)
@@ -205,13 +205,13 @@ public class CommandPlot extends ParserCommandBase
             throw new TranslatedCommandException("Need a valid selection to define a plot");
 
         long price = Plot.getCalculatedPrice(selection);
-        Wallet wallet = APIRegistry.economy.getWallet(arguments.userIdent);
+        Wallet wallet = APIRegistry.economy.getWallet(arguments.ident);
         if (!wallet.covers(price))
             throw new ModuleEconomy.CantAffordException();
 
         try
         {
-            Plot.define(selection, arguments.userIdent);
+            Plot.define(selection, arguments.ident);
             wallet.withdraw(price);
             arguments.confirm(Translator.format("Plot created for %s!", APIRegistry.economy.toString(price)));
         }
@@ -279,18 +279,18 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseLimits(CommandParserArgs arguments)
     {
-        String limitCount = APIRegistry.perms.getUserPermissionProperty(arguments.userIdent, Plot.PERM_LIMIT_COUNT);
+        String limitCount = APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT);
         if (limitCount == null || limitCount.isEmpty())
             limitCount = "infinite";
 
-        String limitSize = APIRegistry.perms.getUserPermissionProperty(arguments.userIdent, Plot.PERM_LIMIT_SIZE);
+        String limitSize = APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_SIZE);
         if (limitSize == null || limitSize.isEmpty())
             limitSize = "infinite";
 
         int usedCount = 0;
         long usedSize = 0;
         for (Plot plot : Plot.getPlots())
-            if (arguments.userIdent.equals(plot.getOwner()))
+            if (arguments.ident.equals(plot.getOwner()))
             {
                 usedCount++;
                 usedSize += plot.getAccountedSize();
@@ -563,7 +563,7 @@ public class CommandPlot extends ParserCommandBase
     public static void buyPlot(CommandParserArgs arguments, Plot plot, long price)
     {
         String priceStr = APIRegistry.economy.toString(price);
-        Wallet buyerWallet = APIRegistry.economy.getWallet(arguments.userIdent);
+        Wallet buyerWallet = APIRegistry.economy.getWallet(arguments.ident);
         if (!buyerWallet.withdraw(price))
         {
             arguments.error(Translator.translate("You can't afford that"));
@@ -581,14 +581,14 @@ public class CommandPlot extends ParserCommandBase
             }
             arguments.confirm(Translator.format("%s sold plot \"%s\" to you for %s", //
                     plot.getOwner().getUsernameOrUUID(), plot.getName(), priceStr));
-            ModuleEconomy.confirmNewWalletAmount(arguments.userIdent, buyerWallet);
+            ModuleEconomy.confirmNewWalletAmount(arguments.ident, buyerWallet);
         }
         else
         {
             arguments.confirm(Translator.format("You bought plot \"%s\" from the server for %s", plot.getName(), priceStr));
-            ModuleEconomy.confirmNewWalletAmount(arguments.userIdent, buyerWallet);
+            ModuleEconomy.confirmNewWalletAmount(arguments.ident, buyerWallet);
         }
-        plot.setOwner(arguments.userIdent);
+        plot.setOwner(arguments.ident);
         plot.setPrice(-1);
     }
 

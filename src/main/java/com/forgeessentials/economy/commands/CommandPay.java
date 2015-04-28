@@ -67,7 +67,7 @@ public class CommandPay extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        Wallet sender = APIRegistry.economy.getWallet(arguments.userIdent);
+        Wallet sender = APIRegistry.economy.getWallet(arguments.ident);
         if (!sender.withdraw(amount))
             throw new TranslatedCommandException("You do not have enough %s in your wallet", APIRegistry.economy.currency(2));
         arguments.confirm(Translator.format("You paid %s to %s. You now have %s", //

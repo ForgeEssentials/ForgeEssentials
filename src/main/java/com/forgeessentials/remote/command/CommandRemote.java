@@ -51,7 +51,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
         {
             if (!args.hasPlayer())
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            showPasskey(args, args.userIdent);
+            showPasskey(args, args.ident);
         }
         else
         {
@@ -72,7 +72,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 UserIdent ident = args.parsePlayer();
                 if (ident == null)
                     return;
-                if (!ident.equals(args.userIdent))
+                if (!ident.equals(args.ident))
                     args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isTabCompletion)
                     return;
