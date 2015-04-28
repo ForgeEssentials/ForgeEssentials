@@ -1,10 +1,12 @@
 package com.forgeessentials.protection;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.boss.EntityWither;
@@ -163,7 +165,8 @@ public class ModuleProtection {
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN + Zone.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "(global) Allow spawning of mobs");
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow natural spawning of mobs (random spawn)");
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow forced spawning of mobs (mob-spawners)");
-        for (Entry<String, Class<?>> e : (Set<Entry<String, Class<?>>>) EntityList.stringToClassMapping.entrySet())
+        
+        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.stringToClassMapping).entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
             {
                 APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), RegisteredPermValue.TRUE);
@@ -171,8 +174,10 @@ public class ModuleProtection {
             }
         for (MobType mobType : MobType.values())
         {
-            APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + ".type." + mobType.toString().toLowerCase(), RegisteredPermValue.TRUE);
-            APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + ".type." + mobType.toString().toLowerCase(), RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(mobType.getSpawnPermission(false), RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(mobType.getSpawnPermission(true), RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(mobType.getDamageByPermission(), RegisteredPermValue.TRUE);
+            APIRegistry.perms.registerPermission(mobType.getDamageToPermission(), RegisteredPermValue.TRUE);
         }
 
         // ----------------------------------------

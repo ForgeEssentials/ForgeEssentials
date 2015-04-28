@@ -95,12 +95,21 @@ public class ProtectionEventHandler extends ServerEventHandler {
         Entity target = e.target;
         WorldPoint targetPos = new WorldPoint(e.target);
 
-        String permission = ModuleProtection.PERM_DAMAGE_TO + "." + target.getClass().getSimpleName();
+        String permission = ModuleProtection.PERM_DAMAGE_TO + "." + EntityList.getEntityString(target);
         if (ModuleProtection.isDebugMode(source))
             OutputHandler.chatNotification(source, permission);
         if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
         {
             e.setCanceled(true);
+        }
+
+        permission = MobType.getMobType(target).getDamageToPermission();
+        if (ModuleProtection.isDebugMode(source))
+            OutputHandler.chatNotification(source, permission);
+        if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
+        {
+            e.setCanceled(true);
+            return;
         }
     }
 
@@ -132,7 +141,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             {
                 // non-player-entity -> player (mob)
                 Entity source = e.source.getEntity();
-                String permission = ModuleProtection.PERM_DAMAGE_BY + "." + source.getClass().getSimpleName();
+                String permission = ModuleProtection.PERM_DAMAGE_BY + "." + EntityList.getEntityString(source);
                 if (ModuleProtection.isDebugMode(target))
                     OutputHandler.chatNotification(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(new UserIdent(target), permission))
@@ -140,30 +149,10 @@ public class ProtectionEventHandler extends ServerEventHandler {
                     e.setCanceled(true);
                     return;
                 }
-            }
-        }
-
-        if (e.source.getEntity() instanceof EntityPlayer)
-        {
-            // player -> living
-            EntityPlayer source = (EntityPlayer) e.source.getEntity();
-            WorldPoint point = new WorldPoint(e.entityLiving);
-
-            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + e.entityLiving.getClass().getSimpleName();
-            if (ModuleProtection.isDebugMode(source))
-                OutputHandler.chatNotification(source, permission);
-            if (!APIRegistry.perms.checkUserPermission(new UserIdent(source), point, permission))
-            {
-                e.setCanceled(true);
-                return;
-            }
-
-            if (e.entityLiving instanceof EntityPlayer)
-            {
-                // player -> player
-                if (!APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayer) e.entityLiving), ModuleProtection.PERM_PVP)
-                        || !APIRegistry.perms.checkUserPermission(new UserIdent(source), ModuleProtection.PERM_PVP)
-                        || !APIRegistry.perms.checkUserPermission(new UserIdent(source), point, ModuleProtection.PERM_PVP))
+                permission = MobType.getMobType(source).getDamageByPermission();
+                if (ModuleProtection.isDebugMode(target))
+                    OutputHandler.chatNotification(target, permission);
+                if (!APIRegistry.perms.checkUserPermission(new UserIdent(target), permission))
                 {
                     e.setCanceled(true);
                     return;
@@ -313,7 +302,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
 
         UserIdent ident = new UserIdent(e.entityPlayer);
         WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
-        String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + e.target.getClass().getSimpleName();
+        String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(e.target);
         if (ModuleProtection.isDebugMode(e.entityPlayer))
             OutputHandler.chatNotification(e.entityPlayer, permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_INTERACT_ENTITY))
@@ -333,7 +322,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         WorldPoint point = new WorldPoint(entity);
         if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + EntityList.getEntityString(entity)))
             e.setResult(Result.DENY);
-        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + ".type." + MobType.getMobType(entity).toString().toLowerCase()))
+        if (!APIRegistry.perms.checkUserPermission(null, point, MobType.getMobType(entity).getSpawnPermission(false)))
             e.setResult(Result.DENY);
     }
 
@@ -348,7 +337,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         WorldPoint point = new WorldPoint(entity);
         if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + EntityList.getEntityString(entity)))
             e.setResult(Result.DENY);
-        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + ".type." + MobType.getMobType(entity).toString().toLowerCase()))
+        if (!APIRegistry.perms.checkUserPermission(null, point, MobType.getMobType(entity).getSpawnPermission(true)))
             e.setResult(Result.DENY);
     }
 

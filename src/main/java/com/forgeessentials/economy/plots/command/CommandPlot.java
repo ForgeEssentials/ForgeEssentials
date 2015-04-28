@@ -23,6 +23,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
+import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
@@ -397,7 +398,17 @@ public class CommandPlot extends ParserCommandBase
         plot.setFeeTimeout(timeout);
     }
 
-    private static void parsePerms(CommandParserArgs arguments, boolean userPerms)
+    private static void configurePlotPerms(CommandParserArgs arguments, Plot plot, boolean userPerms, String perm, boolean allow)
+    {
+        String group = userPerms ? Plot.GROUP_PLOT_USER : Plot.GROUP_ALL;
+        if (allow)
+            plot.getZone().clearGroupPermission(group, perm + Zone.ALL_PERMS);
+        else
+            plot.getZone().setGroupPermission(group, ModuleProtection.PERM_BREAK + ".tile.chest" + Zone.ALL_PERMS, allow);
+        plot.getZone().setGroupPermission(group, ModuleProtection.PERM_INTERACT + ".tile.chest" + Zone.ALL_PERMS, allow);
+    }
+
+    public static void parsePerms(CommandParserArgs arguments, boolean userPerms)
     {
         arguments.checkPermission(Plot.PERM_PERMS);
         Plot plot = getPlot(arguments.senderPlayer);
@@ -418,7 +429,7 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing argument");
         String allowDeny = arguments.remove().toLowerCase();
-        
+
         boolean allow;
         switch (allowDeny)
         {
@@ -436,31 +447,44 @@ public class CommandPlot extends ParserCommandBase
             throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
 
-        String msgStart = (allow ? "Allowed " : "Denied ") + (userPerms ? "users " : "guests ");
-        
+        String msgBase = (allow ? "Allowed " : "Denied ") + (userPerms ? "users " : "guests ");
+        String group = userPerms ? Plot.GROUP_PLOT_USER : Plot.GROUP_ALL;
+
         switch (perm)
         {
         case "build":
-            plot.getZone().setGroupPermission(Plot.GROUP_ALL, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, allow);
-            plot.getZone().setGroupPermission(Plot.GROUP_ALL, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, allow);
-            arguments.confirm(Translator.translate(msgStart + "to build"));
+            plot.getZone().setGroupPermission(group, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, allow);
+            plot.getZone().setGroupPermission(group, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, allow);
+            arguments.confirm(Translator.translate(msgBase + "to build"));
             break;
         case "use":
-            plot.getZone().setGroupPermission(Plot.GROUP_ALL, ModuleProtection.PERM_USE + Zone.ALL_PERMS, allow);
-            arguments.confirm(Translator.translate(msgStart + "to use items"));
+            plot.getZone().setGroupPermission(group, ModuleProtection.PERM_USE + Zone.ALL_PERMS, allow);
+            arguments.confirm(Translator.translate(msgBase + "to use items"));
             break;
         case "interact":
-            plot.getZone().setGroupPermission(Plot.GROUP_ALL, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, allow);
-            arguments.confirm(Translator.translate(msgStart + "to interact with objects"));
+            plot.getZone().setGroupPermission(group, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, allow);
+            arguments.confirm(Translator.translate(msgBase + "to interact with objects"));
             break;
         case "chest":
-            if (allow)
-                plot.getZone().clearGroupPermission(Plot.GROUP_ALL, ModuleProtection.PERM_BREAK + "tile.chest" + Zone.ALL_PERMS);
-            else
-                plot.getZone().setGroupPermission(Plot.GROUP_ALL, ModuleProtection.PERM_BREAK + "tile.chest" + Zone.ALL_PERMS, allow);
-            plot.getZone().setGroupPermission(Plot.GROUP_ALL, ModuleProtection.PERM_USE + "tile.chest" + Zone.ALL_PERMS, allow);
-            plot.getZone().setGroupPermission(Plot.GROUP_ALL, ModuleProtection.PERM_INTERACT + "tile.chest" + Zone.ALL_PERMS, allow);
-            arguments.confirm(Translator.translate(msgStart + "to interact with chests"));
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.PERM_BREAK + ".tile.chest.*", allow);
+            arguments.confirm(Translator.translate(msgBase + "to interact with chests"));
+            break;
+        case "button":
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.PERM_BREAK + ".tile.button.*", allow);
+            arguments.confirm(Translator.translate(msgBase + "to interact with buttons"));
+            break;
+        case "lever":
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.PERM_BREAK + ".tile.lever.*", allow);
+            arguments.confirm(Translator.translate(msgBase + "to interact with levers"));
+            break;
+        case "door":
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.PERM_BREAK + ".tile.doorWood.*", allow);
+            arguments.confirm(Translator.translate(msgBase + "to interact with doors"));
+            break;
+        case "animal":
+            configurePlotPerms(arguments, plot, userPerms, MobType.PASSIVE.getDamageToPermission(), allow);
+            configurePlotPerms(arguments, plot, userPerms, MobType.TAMED.getDamageToPermission(), allow);
+            arguments.confirm(Translator.translate(msgBase + "to hurt animals"));
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);

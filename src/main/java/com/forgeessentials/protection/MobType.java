@@ -1,6 +1,6 @@
 package com.forgeessentials.protection;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityGhast;
@@ -13,10 +13,26 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityVillager;
 
-public enum MobType {
+public enum MobType
+{
     BOSS, GOLEM, HOSTILE, PASSIVE, TAMED, TAMABLE, VILLAGER, UNKNOWN;
 
-    public static MobType getMobType(EntityLiving entity)
+    public String getDamageToPermission()
+    {
+        return ModuleProtection.PERM_DAMAGE_TO + "." + toString().toLowerCase();
+    }
+
+    public String getDamageByPermission()
+    {
+        return ModuleProtection.PERM_DAMAGE_BY + "." + toString().toLowerCase();
+    }
+
+    public String getSpawnPermission(boolean forced)
+    {
+        return (forced ? ModuleProtection.PERM_MOBSPAWN_FORCED : ModuleProtection.PERM_MOBSPAWN_NATURAL) + ".type." + toString().toLowerCase();
+    }
+
+    public static MobType getMobType(Entity entity)
     {
         if (entity instanceof EntityDragon || entity instanceof EntityWither)
             return MobType.BOSS;
