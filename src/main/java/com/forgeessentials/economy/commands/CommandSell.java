@@ -1,9 +1,6 @@
 package com.forgeessentials.economy.commands;
 
-import java.util.List;
-
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,7 +9,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
@@ -20,7 +17,7 @@ import com.forgeessentials.util.CommandParserArgs;
 
 import cpw.mods.fml.common.registry.GameData;
 
-public class CommandSell extends ForgeEssentialsCommandBase
+public class CommandSell extends ParserCommandBase
 {
 
     @Override
@@ -54,28 +51,7 @@ public class CommandSell extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
-    {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender);
-        parse(arguments);
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
-        try
-        {
-            parse(arguments);
-        }
-        catch (CommandException e)
-        {
-            return null;
-        }
-        return arguments.tabCompletion;
-    }
-
-    public void parse(CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -136,6 +112,9 @@ public class CommandSell extends ForgeEssentialsCommandBase
         Item item = CommandBase.getItemByText(arguments.senderPlayer, itemName);
         ItemStack itemStack = new ItemStack(item, amount, meta);
         long price = ModuleEconomy.getItemPrice(itemStack.getItem(), ident);
+        if (price <= 0)
+            throw new TranslatedCommandException("This item cannot be sold");
+        
         amount = ModuleEconomy.tryRemoveItems(arguments.senderPlayer, itemStack, amount);
 
         Wallet wallet = APIRegistry.economy.getWallet(ident);

@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -23,6 +21,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.economy.commands.CommandCalculatePriceList;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
 import com.forgeessentials.economy.commands.CommandSell;
@@ -61,13 +60,10 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     public static final String PERM_CURRENCY = PERM + ".currency";
     public static final String PERM_CURRENCY_SINGULAR = PERM_CURRENCY + ".singular";
 
-    public static final String PERM_VALUE = PERM + ".value";
-    public static final String PERM_VALUE_ITEM = PERM_VALUE + ".item";
-    public static final String PERM_VALUE_BLOCK = PERM_VALUE + ".block";
+    public static final String PERM_PRICE = PERM + ".price";
 
     public static final String CONFIG_CATEGORY = "Economy";
-    public static final String CATEGORY_ITEM = CONFIG_CATEGORY + Configuration.CATEGORY_SPLITTER + "ItemSellPrice";
-    public static final String CATEGORY_BLOCK = CONFIG_CATEGORY + Configuration.CATEGORY_SPLITTER + "BlockSellPrice";
+    public static final String CATEGORY_ITEM = CONFIG_CATEGORY + Configuration.CATEGORY_SPLITTER + "ItemPrices";
 
     public static final int DEFAULT_ITEM_PRICE = 1;
     public static final int DEFAULT_BLOCK_PRICE = 1;
@@ -103,6 +99,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
         new CommandPaidCommand().register();
         new CommandSellCommand().register();
         new CommandTrade().register();
+        new CommandCalculatePriceList().register();
 
         APIRegistry.perms.registerPermissionProperty(PERM_XP_MULTIPLIER, "1",
                 "XP to currency conversion rate (integer, a zombie drops around 5 XP, 0 to disable)");
@@ -132,20 +129,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     {
         if (ident.hasPlayer())
             OutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have now %s", wallet.toString()));
-    }
-
-    public static Long getItemPrice(Item item, UserIdent ident)
-    {
-        if (item instanceof ItemBlock)
-        {
-            String id = GameData.getBlockRegistry().getNameForObject(((ItemBlock) item).field_150939_a);
-            return FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, ModuleEconomy.PERM_VALUE_BLOCK + "." + id));
-        }
-        else
-        {
-            String id = GameData.getItemRegistry().getNameForObject(item);
-            return FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, ModuleEconomy.PERM_VALUE_ITEM + "." + id));
-        }
     }
 
     public static int tryRemoveItems(EntityPlayerMP player, ItemStack itemStack, int amount)
@@ -236,20 +219,17 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
 
     public static String getItemPricePermission(Item item)
     {
-        String id = GameData.getBlockRegistry().getNameForObject(item);
-        return PERM_VALUE_ITEM + "." + id;
+        return PERM_PRICE + "." + GameData.getBlockRegistry().getNameForObject(item);
     }
 
-    public static String getBlockPricePermission(Item item)
+    public static Long getItemPrice(Item item, UserIdent ident)
     {
-        String id = GameData.getBlockRegistry().getNameForObject(item);
-        return PERM_VALUE_BLOCK + "." + id;
+        return FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, getItemPricePermission(item)));
     }
 
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        // TODO: remove compatibility code
         ConfigCategory oldCategory = config.hasCategory("ItemTables") ? config.getCategory("ItemTables") : null;
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
         {
@@ -261,19 +241,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
                 oldCategory.remove(item.getUnlocalizedName());
             }
             String id = GameData.getItemRegistry().getNameForObject(item);
-            APIRegistry.perms.registerPermissionProperty(PERM_VALUE_ITEM + "." + id, Integer.toString(config.get(CATEGORY_ITEM, id, defaultValue).getInt()));
-        }
-        for (Block block : GameData.getBlockRegistry().typeSafeIterable())
-        {
-            int defaultValue = DEFAULT_BLOCK_PRICE;
-            // TODO: remove compatibility code
-            if (oldCategory != null && oldCategory.containsKey(block.getUnlocalizedName()))
-            {
-                defaultValue = oldCategory.get(block.getUnlocalizedName()).getInt(DEFAULT_BLOCK_PRICE);
-                oldCategory.remove(block.getUnlocalizedName());
-            }
-            String id = GameData.getBlockRegistry().getNameForObject(block);
-            APIRegistry.perms.registerPermissionProperty(PERM_VALUE_BLOCK + "." + id, Integer.toString(config.get(CATEGORY_BLOCK, id, defaultValue).getInt()));
+            APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + id, Integer.toString(config.get(CATEGORY_ITEM, id, defaultValue).getInt()));
         }
         if (oldCategory != null)
             config.removeCategory(oldCategory);
