@@ -80,7 +80,10 @@ public class CommandTrade extends ParserCommandBase
         final long price;
         if (arguments.isEmpty())
         {
-            price = ModuleEconomy.getItemPrice(itemStack.getItem(), arguments.ident);
+            Long p = ModuleEconomy.getItemPrice(itemStack, arguments.ident);
+            if (p == null)
+                throw new TranslatedCommandException("No default price available. Please specify price.");
+            price = p;
         }
         else
             price = arguments.parseLong();
@@ -144,6 +147,7 @@ public class CommandTrade extends ParserCommandBase
                                 APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize),
                                 arguments.sender.getCommandSenderName());
                     Questioner.add(buyer.getPlayer(), message, buyerHandler, 60);
+                    arguments.confirm(Translator.format("Waiting on %s...", buyer.getUsernameOrUUID()));
                 }
                 catch (QuestionerStillActiveException e)
                 {
@@ -160,7 +164,7 @@ public class CommandTrade extends ParserCommandBase
             else
                 message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.stackSize, itemStack.getDisplayName(),
                         APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize), buyer.getUsernameOrUUID());
-            Questioner.add(arguments.sender, message, sellerHandler, 30);
+            Questioner.add(arguments.sender, message, sellerHandler, 20);
         }
         catch (QuestionerStillActiveException e)
         {

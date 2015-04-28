@@ -217,14 +217,28 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
 
     /* ------------------------------------------------------------ */
 
-    public static String getItemPricePermission(Item item)
+    public static String getItemIdentifier(ItemStack itemStack)
     {
-        return PERM_PRICE + "." + GameData.getItemRegistry().getNameForObject(item);
+        String id = GameData.getItemRegistry().getNameForObject(itemStack.getItem());
+        if (itemStack.getItemDamage() == 0 || itemStack.getItemDamage() == 32767)
+            return id;
+        else
+            return id + ":" + itemStack.getItemDamage();
     }
 
-    public static Long getItemPrice(Item item, UserIdent ident)
+    public static String getItemPricePermission(ItemStack itemStack)
     {
-        return FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, getItemPricePermission(item)));
+        return PERM_PRICE + "." + getItemIdentifier(itemStack);
+    }
+
+    public static Long getItemPrice(ItemStack itemStack, UserIdent ident)
+    {
+        return FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, getItemPricePermission(itemStack)));
+    }
+
+    public static void setItemPrice(ItemStack itemStack, long price)
+    {
+        APIRegistry.perms.registerPermissionProperty(getItemPricePermission(itemStack), Long.toString(price));
     }
 
     @Override

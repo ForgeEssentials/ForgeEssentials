@@ -122,7 +122,7 @@ public class CommandSell extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        final Long price = ModuleEconomy.getItemPrice(itemStack.getItem(), arguments.ident);
+        final Long price = ModuleEconomy.getItemPrice(itemStack, arguments.ident);
         if (price == null || price <= 0)
             throw new TranslatedCommandException("This item cannot be sold");
 
@@ -139,6 +139,7 @@ public class CommandSell extends ParserCommandBase
                 }
                 else if (response == false)
                 {
+                    arguments.error("Sale canceled");
                     return;
                 }
 
@@ -167,7 +168,7 @@ public class CommandSell extends ParserCommandBase
         {
             String message = Translator.format("Sell %d x %s each for %s (total: %s)?", amount, itemStack.getDisplayName(),
                     APIRegistry.economy.toString(price), APIRegistry.economy.toString(amount * price));
-            Questioner.add(arguments.sender, message, handler, 60);
+            Questioner.add(arguments.sender, message, handler, 20);
         }
         catch (QuestionerStillActiveException e)
         {
