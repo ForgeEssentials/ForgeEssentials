@@ -6,8 +6,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -100,7 +103,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
 
         try (BufferedReader reader = new BufferedReader(new FileReader(priceFile)))
         {
-            Pattern pattern = Pattern.compile("I:\"([^\"]+)\"\\s*=\\s*(.*)");
+            Pattern pattern = Pattern.compile("\\s*I:\"([^\"]+)\"\\s*=\\s*(.*)");
             while (reader.ready())
             {
                 String line = reader.readLine();
@@ -158,17 +161,17 @@ public class CommandCalculatePriceList extends ParserCommandBase
         }
 
         @SuppressWarnings("unchecked")
-        List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
-
+        Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.smelting().getSmeltingList());
         @SuppressWarnings("unchecked")
-        Map<ItemStack, ItemStack> furnaceRecipes = FurnaceRecipes.smelting().getSmeltingList();
+        List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
 
         boolean changed;
         do
         {
             changed = false;
-            for (IRecipe recipe : recipes)
+            for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
             {
+                IRecipe recipe = iterator.next();
                 if (recipe.getRecipeOutput() == null)
                     continue;
 
@@ -189,30 +192,33 @@ public class CommandCalculatePriceList extends ParserCommandBase
                 {
                     price = getRecipePrice((ShapedOreRecipe) recipe, priceMap);
                 }
-                if (price <= 0)
-                    continue;
-                price /= recipe.getRecipeOutput().stackSize;
-
-                Double resultPrice = priceMap.get(recipe.getRecipeOutput().getItem());
-                if (resultPrice == null || price < resultPrice)
+                if (price > 0)
                 {
-                    priceMap.put(recipe.getRecipeOutput().getItem(), price);
-                    changed = true;
+                    iterator.remove();
+                    price /= recipe.getRecipeOutput().stackSize;
+                    Double resultPrice = priceMap.get(recipe.getRecipeOutput().getItem());
+                    if (resultPrice == null || price < resultPrice)
+                    {
+                        priceMap.put(recipe.getRecipeOutput().getItem(), price);
+                        changed = true;
+                    }
                 }
             }
 
-            for (Entry<ItemStack, ItemStack> recipe : furnaceRecipes.entrySet())
+            for (Iterator<Entry<ItemStack, ItemStack>> iterator = furnaceRecipes.entrySet().iterator(); iterator.hasNext();)
             {
+                Entry<ItemStack, ItemStack> recipe = iterator.next();
                 Double inPrice = priceMap.get(recipe.getKey().getItem());
-                if (inPrice == null)
-                    continue;
-                double outPrice = inPrice * recipe.getKey().stackSize / recipe.getValue().stackSize;
-
-                Double resultPrice = priceMap.get(recipe.getValue().getItem());
-                if (resultPrice == null || outPrice < resultPrice)
+                if (inPrice != null)
                 {
-                    priceMap.put(recipe.getValue().getItem(), outPrice);
-                    changed = true;
+                    iterator.remove();
+                    double outPrice = inPrice * recipe.getKey().stackSize / recipe.getValue().stackSize;
+                    Double resultPrice = priceMap.get(recipe.getValue().getItem());
+                    if (resultPrice == null || outPrice < resultPrice)
+                    {
+                        priceMap.put(recipe.getValue().getItem(), outPrice);
+                        changed = true;
+                    }
                 }
             }
 
@@ -226,7 +232,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                 priceMap.put(item, 0.0);
         }
         writeMap(priceMap, allPricesFile);
-        
+
         arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
     }
 
