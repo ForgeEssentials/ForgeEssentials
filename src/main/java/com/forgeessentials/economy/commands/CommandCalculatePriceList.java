@@ -239,7 +239,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                 String id = "I:\"" + GameData.getItemRegistry().getNameForObject(entry.getKey()) + "\"";
                 while (id.length() < 40)
                     id = id + ' ';
-                writer.write(id + "= " + Integer.toString((int) Math.floor(entry.getValue())) + "\n");
+                writer.write(id + "=" + Integer.toString((int) Math.floor(entry.getValue())) + "\n");
             }
         }
         catch (IOException e)

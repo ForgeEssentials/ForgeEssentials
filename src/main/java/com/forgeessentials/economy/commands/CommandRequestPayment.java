@@ -10,6 +10,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -37,9 +38,9 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
         {
             int amount = parseIntWithMin(sender, args[1], 0);
             OutputHandler.chatConfirmation(sender,
-                    "You have requested " + amount + APIRegistry.economy.currency(amount) + " from " + player.getCommandSenderName() + ".");
+                    Translator.format("You requested %s to pay %s", player.getCommandSenderName(), APIRegistry.economy.toString(amount)));
             OutputHandler.chatConfirmation(player,
-                    "You have been requested to play " + amount + APIRegistry.economy.currency(amount) + " by " + player.getCommandSenderName() + ".");
+                    Translator.format("You have been requested to pay %s by %s", APIRegistry.economy.toString(amount), sender.getCommandSenderName()));
         }
     }
 
@@ -58,9 +59,8 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
         {
             int amount = parseIntWithMin(sender, args[1], 0);
             OutputHandler.chatConfirmation(sender,
-                    "You have requested " + amount + APIRegistry.economy.currency(amount) + " from " + player.getCommandSenderName() + ".");
-            OutputHandler.chatConfirmation(player,
-                    "You been requested to play " + amount + APIRegistry.economy.currency(amount) + " by " + player.getCommandSenderName() + ".");
+                    Translator.format("You requested %s to pay %s", player.getCommandSenderName(), APIRegistry.economy.toString(amount)));
+            OutputHandler.chatConfirmation(player, Translator.format("You have been requested to pay %s by the server", APIRegistry.economy.toString(amount)));
         }
     }
 

@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 
 import com.forgeessentials.api.APIRegistry;
@@ -65,8 +66,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     public static final String CONFIG_CATEGORY = "Economy";
     public static final String CATEGORY_ITEM = CONFIG_CATEGORY + Configuration.CATEGORY_SPLITTER + "ItemPrices";
 
-    public static final int DEFAULT_ITEM_PRICE = 1;
-    public static final int DEFAULT_BLOCK_PRICE = 1;
+    public static final int DEFAULT_ITEM_PRICE = 0;
 
     /* ------------------------------------------------------------ */
 
@@ -219,7 +219,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
 
     public static String getItemPricePermission(Item item)
     {
-        return PERM_PRICE + "." + GameData.getBlockRegistry().getNameForObject(item);
+        return PERM_PRICE + "." + GameData.getItemRegistry().getNameForObject(item);
     }
 
     public static Long getItemPrice(Item item, UserIdent ident)
@@ -230,21 +230,27 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        ConfigCategory oldCategory = config.hasCategory("ItemTables") ? config.getCategory("ItemTables") : null;
-        for (Item item : GameData.getItemRegistry().typeSafeIterable())
+        if (config.hasCategory("ItemTables"))
         {
-            int defaultValue = DEFAULT_ITEM_PRICE;
-            // TODO: remove compatibility code
-            if (oldCategory != null && oldCategory.containsKey(item.getUnlocalizedName()))
+            ConfigCategory category = config.getCategory("ItemTables");
+            for (Entry<String, Property> entry : category.entrySet())
             {
-                defaultValue = oldCategory.get(item.getUnlocalizedName()).getInt(DEFAULT_ITEM_PRICE);
-                oldCategory.remove(item.getUnlocalizedName());
+                for (Item item : GameData.getItemRegistry().typeSafeIterable())
+                    if (entry.getKey().equals(item.getUnlocalizedName()))
+                    {
+                        String id = GameData.getItemRegistry().getNameForObject(item);
+                        config.get(CATEGORY_ITEM, id, DEFAULT_ITEM_PRICE).set(entry.getValue().getInt(DEFAULT_ITEM_PRICE));;
+                        break;
+                    }
             }
-            String id = GameData.getItemRegistry().getNameForObject(item);
-            APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + id, Integer.toString(config.get(CATEGORY_ITEM, id, defaultValue).getInt()));
+            config.removeCategory(category);
         }
-        if (oldCategory != null)
-            config.removeCategory(oldCategory);
+
+        ConfigCategory category = config.getCategory(CATEGORY_ITEM);
+        for (Entry<String, Property> entry : category.entrySet())
+        {
+            APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString(entry.getValue().getInt(DEFAULT_ITEM_PRICE)));
+        }
     }
 
     @Override
