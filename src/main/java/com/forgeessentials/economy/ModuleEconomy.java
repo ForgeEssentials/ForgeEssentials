@@ -27,6 +27,7 @@ import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
 import com.forgeessentials.economy.commands.CommandSell;
 import com.forgeessentials.economy.commands.CommandSellCommand;
+import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.network.S4PacketEconomy;
 import com.forgeessentials.economy.plots.PlotManager;
@@ -96,11 +97,12 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        FunctionHelper.registerServerCommand(new CommandWallet());
-        FunctionHelper.registerServerCommand(new CommandPay());
-        FunctionHelper.registerServerCommand(new CommandSell());
-        FunctionHelper.registerServerCommand(new CommandPaidCommand());
-        FunctionHelper.registerServerCommand(new CommandSellCommand());
+        new CommandWallet().register();
+        new CommandPay().register();
+        new CommandSell().register();
+        new CommandPaidCommand().register();
+        new CommandSellCommand().register();
+        new CommandTrade().register();
 
         APIRegistry.perms.registerPermissionProperty(PERM_XP_MULTIPLIER, "1",
                 "XP to currency conversion rate (integer, a zombie drops around 5 XP, 0 to disable)");
