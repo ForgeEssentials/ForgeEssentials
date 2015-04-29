@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
@@ -99,9 +102,9 @@ public class CommandPlot extends ParserCommandBase
         return false;
     }
 
-    public static final String[] completeMain = new String[] { "define", "claim", "list", "select", "set", "limits", "buy", "sell", };
+    public static final String[] completeMain = new String[] { "define", "claim", "list", "select", "set", "perms", "limits", "buy", "sell", };
     public static final String[] completeSet = new String[] { "price", "fee", };
-    public static final String[] completePerms = new String[] { "build", "interact", "use", "chest", };
+    public static final String[] completePerms = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
     public static final String[] completeTrueFalse = new String[] { "yes", "no", "true", "false", "allow", "deny", };
 
     @Override
@@ -404,8 +407,8 @@ public class CommandPlot extends ParserCommandBase
         if (allow)
             plot.getZone().clearGroupPermission(group, perm + Zone.ALL_PERMS);
         else
-            plot.getZone().setGroupPermission(group, ModuleProtection.PERM_BREAK + ".tile.chest" + Zone.ALL_PERMS, allow);
-        plot.getZone().setGroupPermission(group, ModuleProtection.PERM_INTERACT + ".tile.chest" + Zone.ALL_PERMS, allow);
+            plot.getZone().setGroupPermission(group, perm, allow);
+        plot.getZone().setGroupPermission(group, perm, allow);
     }
 
     public static void parsePerms(CommandParserArgs arguments, boolean userPerms)
@@ -414,9 +417,8 @@ public class CommandPlot extends ParserCommandBase
         Plot plot = getPlot(arguments.senderPlayer);
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.translate("/plot perms <type> true|false"));
-            arguments.confirm(Translator.translate("Controls what other players can do in your plot"));
-            arguments.confirm(Translator.translate("Possible perms: build, interact, chest"));
+            arguments.confirm(Translator.translate("/plot perms <type> true|false: Control what other players can do in a plot"));
+            arguments.confirm(Translator.format("Possible perms: %s", StringUtils.join(completePerms, ", ")));
             return;
         }
 
@@ -466,19 +468,23 @@ public class CommandPlot extends ParserCommandBase
             arguments.confirm(Translator.translate(msgBase + "to interact with objects"));
             break;
         case "chest":
-            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.PERM_BREAK + ".tile.chest.*", allow);
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.getBlockBreakPermission(Blocks.chest, 0) + Zone.ALL_PERMS, allow);
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.getBlockInteractPermission(Blocks.chest, 0) + Zone.ALL_PERMS, allow);
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.getBlockBreakPermission(Blocks.trapped_chest, 0) + Zone.ALL_PERMS, allow);
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.getBlockInteractPermission(Blocks.trapped_chest, 0) + Zone.ALL_PERMS, allow);
             arguments.confirm(Translator.translate(msgBase + "to interact with chests"));
             break;
         case "button":
-            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.PERM_BREAK + ".tile.button.*", allow);
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.getBlockInteractPermission(Blocks.wooden_button, 0) + Zone.ALL_PERMS, allow);
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.getBlockInteractPermission(Blocks.stone_button, 0) + Zone.ALL_PERMS, allow);
             arguments.confirm(Translator.translate(msgBase + "to interact with buttons"));
             break;
         case "lever":
-            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.PERM_BREAK + ".tile.lever.*", allow);
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.getBlockInteractPermission(Blocks.lever, 0) + Zone.ALL_PERMS, allow);
             arguments.confirm(Translator.translate(msgBase + "to interact with levers"));
             break;
         case "door":
-            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.PERM_BREAK + ".tile.doorWood.*", allow);
+            configurePlotPerms(arguments, plot, userPerms, ModuleProtection.getBlockInteractPermission(Blocks.wooden_door, 0) + Zone.ALL_PERMS, allow);
             arguments.confirm(Translator.translate(msgBase + "to interact with doors"));
             break;
         case "animal":

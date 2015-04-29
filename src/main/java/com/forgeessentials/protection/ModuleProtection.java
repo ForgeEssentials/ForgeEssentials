@@ -237,9 +237,9 @@ public class ModuleProtection
     @SubscribeEvent
     public void afterPermissionLoadEvent(PermissionEvent.AfterLoad event)
     {
-        if (!event.serverZone.checkGroupPermission(Zone.GROUP_DEFAULT, "fe.internal.newprotectionpermissions"))
+        if (event.serverZone.checkGroupPermission(Zone.GROUP_DEFAULT, "fe.internal.newprotectionpermissions") == null)
         {
-            CommandUpgradePermissions.upgradePermissions();
+            CommandUpgradePermissions.upgradePermissions(event.serverZone);
             event.serverZone.setGroupPermission(Zone.GROUP_DEFAULT, "fe.internal.newprotectionpermissions", true);
         }
     }
@@ -266,9 +266,17 @@ public class ModuleProtection
         return GameData.getBlockRegistry().getNameForObject(block);
     }
 
+    public static String getBlockPermission(Block block, int meta)
+    {
+        if (meta == 0 || meta == 32767)
+            return getBlockId(block);
+        else
+            return getBlockId(block) + "." + meta;
+    }
+
     public static String getBlockPermission(Block block, World world, int x, int y, int z)
     {
-        return getBlockId(block) + "." + block.getDamageValue(world, x, y, z);
+        return getBlockPermission(block, block.getDamageValue(world, x, y, z));
     }
 
     public static String getBlockBreakPermission(Block block, World world, int x, int y, int z)
@@ -284,6 +292,21 @@ public class ModuleProtection
     public static String getBlockInteractPermission(Block block, World world, int x, int y, int z)
     {
         return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(block, world, x, y, z);
+    }
+
+    public static String getBlockBreakPermission(Block block, int meta)
+    {
+        return ModuleProtection.PERM_BREAK + "." + getBlockPermission(block, meta);
+    }
+
+    public static String getBlockPlacePermission(Block block, int meta)
+    {
+        return ModuleProtection.PERM_PLACE + "." + getBlockPermission(block, meta);
+    }
+
+    public static String getBlockInteractPermission(Block block, int meta)
+    {
+        return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(block, meta);
     }
 
     /* ------------------------------------------------------------ */

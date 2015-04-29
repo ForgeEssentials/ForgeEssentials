@@ -13,6 +13,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
@@ -58,19 +59,19 @@ public class CommandUpgradePermissions extends ParserCommandBase {
     public void parse(CommandParserArgs arguments)
     {
         arguments.confirm("Upgrading permissions...");
-        upgradePermissions();
+        upgradePermissions(APIRegistry.perms.getServerZone());
         arguments.confirm("DONE!");
     }
 
-    public static void upgradePermissions()
+    public static void upgradePermissions(ServerZone serverZone)
     {
-        upgradePermissions(APIRegistry.perms.getServerZone());
-        for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
+        doUpgradePermissions(serverZone);
+        for (WorldZone wz : serverZone.getWorldZones().values())
         {
-            upgradePermissions(wz);
+            doUpgradePermissions(wz);
             for (AreaZone az : wz.getAreaZones())
             {
-                upgradePermissions(az);
+                doUpgradePermissions(az);
             }
         }
     }
@@ -101,7 +102,7 @@ public class CommandUpgradePermissions extends ParserCommandBase {
         return null;
     }
 
-    private static void upgradePermissions(Zone zone)
+    private static void doUpgradePermissions(Zone zone)
     {
         for (Entry<String, PermissionList> group : zone.getGroupPermissions().entrySet())
         {
