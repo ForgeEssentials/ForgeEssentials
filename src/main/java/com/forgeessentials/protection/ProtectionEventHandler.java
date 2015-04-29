@@ -66,7 +66,11 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 
-public class ProtectionEventHandler extends ServerEventHandler {
+public class ProtectionEventHandler extends ServerEventHandler
+{
+
+    /* ------------------------------------------------------------ */
+    /* Entity permissions */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void attackEntityEvent(AttackEntityEvent e)
@@ -88,6 +92,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
                     || !APIRegistry.perms.checkUserPermission(sourceIdent, new WorldPoint(target), ModuleProtection.PERM_PVP))
             {
                 e.setCanceled(true);
+                return;
             }
         }
 
@@ -101,6 +106,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
         {
             e.setCanceled(true);
+            return;
         }
 
         permission = MobType.getMobType(target).getDamageToPermission();
@@ -161,6 +167,27 @@ public class ProtectionEventHandler extends ServerEventHandler {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void entityInteractEvent(EntityInteractEvent e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+
+        UserIdent ident = new UserIdent(e.entityPlayer);
+        WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
+        String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(e.target);
+        if (ModuleProtection.isDebugMode(e.entityPlayer))
+            OutputHandler.chatNotification(e.entityPlayer, permission);
+        if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_INTERACT_ENTITY))
+        {
+            e.setCanceled(true);
+            return;
+        }
+    }
+
+    /* ------------------------------------------------------------ */
+    /* Block permissions */
+
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void breakEvent(BreakEvent e)
     {
@@ -168,31 +195,14 @@ public class ProtectionEventHandler extends ServerEventHandler {
             return;
 
         Block block = e.world.getBlock(e.x, e.y, e.z);
-        String permission = ModuleProtection.PERM_BREAK + "." + block.getUnlocalizedName() + "." + block.getDamageValue(e.world, e.x, e.y, e.z);
+        String permission = ModuleProtection.getBlockBreakPermission(block, e.world, e.x, e.y, e.z);
         if (ModuleProtection.isDebugMode(e.getPlayer()))
             OutputHandler.chatNotification(e.getPlayer(), permission);
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
         if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.getPlayer()), point, permission))
         {
             e.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void explosionEvent(ExplosionEvent.Start e)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-
-        int cx = (int) Math.floor(e.explosion.explosionX);
-        int cy = (int) Math.floor(e.explosion.explosionY);
-        int cz = (int) Math.floor(e.explosion.explosionZ);
-        WorldArea area = new WorldArea(e.world, 
-                new Point(cx - e.explosion.explosionSize, cy - e.explosion.explosionSize, cz - e.explosion.explosionSize), 
-                new Point(cx + e.explosion.explosionSize, cy + e.explosion.explosionSize, cz + e.explosion.explosionSize));
-        if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
-        {
-            e.setCanceled(true);
         }
     }
 
@@ -204,7 +214,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
 
         UserIdent ident = new UserIdent(e.player);
         Block block = e.world.getBlock(e.x, e.y, e.z);
-        String permission = ModuleProtection.PERM_PLACE + "." + block.getUnlocalizedName() + "." + block.getDamageValue(e.world, e.x, e.y, e.z);
+        String permission = ModuleProtection.getBlockPlacePermission(block, e.world, e.x, e.y, e.z);
         if (ModuleProtection.isDebugMode(e.player))
             OutputHandler.chatNotification(e.player, permission);
         WorldPoint point = new WorldPoint(e.player.dimension, e.x, e.y, e.z);
@@ -217,6 +227,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         {
             OutputHandler.chatError(e.player, Translator.translate("Cannot place block outside creative area"));
             e.setCanceled(true);
+            return;
         }
     }
 
@@ -229,7 +240,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         for (BlockSnapshot b : e.getReplacedBlockSnapshots())
         {
             Block block = e.world.getBlock(b.x, b.y, b.z);
-            String permission = ModuleProtection.PERM_PLACE + "." + block.getUnlocalizedName() + "." + block.getDamageValue(e.world, e.x, e.y, e.z);
+            String permission = ModuleProtection.getBlockPlacePermission(block, e.world, e.x, e.y, e.z);
             if (ModuleProtection.isDebugMode(e.player))
                 OutputHandler.chatNotification(e.player, permission);
             WorldPoint point = new WorldPoint(e.player.dimension, b.x, b.y, b.z);
@@ -238,6 +249,26 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 e.setCanceled(true);
                 return;
             }
+        }
+    }
+
+    /* ------------------------------------------------------------ */
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void explosionEvent(ExplosionEvent.Start e)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+
+        int cx = (int) Math.floor(e.explosion.explosionX);
+        int cy = (int) Math.floor(e.explosion.explosionY);
+        int cz = (int) Math.floor(e.explosion.explosionZ);
+        WorldArea area = new WorldArea(e.world, new Point(cx - e.explosion.explosionSize, cy - e.explosion.explosionSize, cz - e.explosion.explosionSize),
+                new Point(cx + e.explosion.explosionSize, cy + e.explosion.explosionSize, cz + e.explosion.explosionSize));
+        if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
+        {
+            e.setCanceled(true);
+            return;
         }
     }
 
@@ -266,7 +297,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         if (e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.LEFT_CLICK_BLOCK)
         {
             Block block = e.world.getBlock(e.x, e.y, e.z);
-            String permission = ModuleProtection.PERM_INTERACT + "." + block.getUnlocalizedName() + "." + block.getDamageValue(e.world, e.x, e.y, e.z);
+            String permission = ModuleProtection.getBlockInteractPermission(block, e.world, e.x, e.y, e.z);
             if (ModuleProtection.isDebugMode(e.entityPlayer))
                 OutputHandler.chatNotification(e.entityPlayer, permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
@@ -277,7 +308,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         ItemStack stack = e.entityPlayer.getCurrentEquippedItem();
         if (stack != null && !(stack.getItem() instanceof ItemBlock))
         {
-            String permission = ModuleProtection.PERM_USE + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
+            String permission = ModuleProtection.getItemUsePermission(stack);
             if (ModuleProtection.isDebugMode(e.entityPlayer))
                 OutputHandler.chatNotification(e.entityPlayer, permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
@@ -294,23 +325,8 @@ public class ProtectionEventHandler extends ServerEventHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void entityInteractEvent(EntityInteractEvent e)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            return;
+    /* ------------------------------------------------------------ */
 
-        UserIdent ident = new UserIdent(e.entityPlayer);
-        WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
-        String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(e.target);
-        if (ModuleProtection.isDebugMode(e.entityPlayer))
-            OutputHandler.chatNotification(e.entityPlayer, permission);
-        if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_INTERACT_ENTITY))
-        {
-            e.setCanceled(true);
-        }
-    }
-    
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void checkSpawnEvent(CheckSpawn e)
     {
@@ -321,9 +337,15 @@ public class ProtectionEventHandler extends ServerEventHandler {
         EntityLiving entity = (EntityLiving) e.entityLiving;
         WorldPoint point = new WorldPoint(entity);
         if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + EntityList.getEntityString(entity)))
+        {
             e.setResult(Result.DENY);
+            return;
+        }
         if (!APIRegistry.perms.checkUserPermission(null, point, MobType.getMobType(entity).getSpawnPermission(false)))
+        {
             e.setResult(Result.DENY);
+            return;
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
@@ -336,9 +358,15 @@ public class ProtectionEventHandler extends ServerEventHandler {
         EntityLiving entity = (EntityLiving) e.entityLiving;
         WorldPoint point = new WorldPoint(entity);
         if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + EntityList.getEntityString(entity)))
+        {
             e.setResult(Result.DENY);
+            return;
+        }
         if (!APIRegistry.perms.checkUserPermission(null, point, MobType.getMobType(entity).getSpawnPermission(true)))
+        {
             e.setResult(Result.DENY);
+            return;
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -391,7 +419,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             return;
         EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
         UserIdent ident = new UserIdent(player);
-        
+
         String inventoryGroup = APIRegistry.perms.getUserPermissionProperty(ident, e.afterPoint.toWorldPoint(), ModuleProtection.PERM_INVENTORY_GROUP);
 
         GameType lastGm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, e.beforePoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
@@ -411,7 +439,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
                 }
                 player.setGameType(gm);
             }
-            if (gm == GameType.CREATIVE) 
+            if (gm == GameType.CREATIVE)
                 inventoryGroup = "creative";
         }
 
@@ -422,9 +450,10 @@ public class ProtectionEventHandler extends ServerEventHandler {
         checkPlayerInventory(player);
     }
 
-    // ----------------------------------------
+    /* ------------------------------------------------------------ */
 
-    static class ZoneDeniedMessageHandler extends TimeoutHandler {
+    static class ZoneDeniedMessageHandler extends TimeoutHandler
+    {
 
         private final EntityPlayer player;
 
@@ -433,7 +462,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             super(4000);
             this.player = entityPlayer;
         }
-        
+
         @Override
         protected void doRun()
         {
@@ -494,9 +523,9 @@ public class ProtectionEventHandler extends ServerEventHandler {
         String potion = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION);
         if (potion != null && !potion.isEmpty())
         {
-           int interval = FunctionHelper.parseIntDefault(
+            int interval = FunctionHelper.parseIntDefault(
                     APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION_INTERVAL), 0);
-           effects.add(new PotionEffect(ident.getPlayer(), interval, potion));
+            effects.add(new PotionEffect(ident.getPlayer(), interval, potion));
         }
 
         if (effects.isEmpty())
@@ -528,7 +557,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         zoneDeniedMh.remove(e.player.getPersistentID());
     }
 
-    // ----------------------------------------
+    /* ------------------------------------------------------------ */
 
     public static GameType stringToGameType(String gm)
     {
@@ -572,7 +601,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
 
     public static boolean isInventoryItemBanned(EntityPlayer player, ItemStack stack)
     {
-        String permission = ModuleProtection.PERM_INVENTORY + "." + stack.getUnlocalizedName() + "." + stack.getItemDamage();
+        String permission = ModuleProtection.getItemInventoryPermission(stack);
         // if (ModuleProtection.isDebugMode(player))
         // OutputHandler.chatNotification(player, permission);
         return !APIRegistry.perms.checkUserPermission(new UserIdent(player), permission);
@@ -604,7 +633,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
             }
         }
     }
-    
+
     private ZoneDeniedMessageHandler getZoneDeniedMessageHandler(EntityPlayer entityPlayer)
     {
         ZoneDeniedMessageHandler mh = zoneDeniedMh.get(entityPlayer.getPersistentID());
@@ -615,7 +644,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
         }
         return mh;
     }
-    
+
     private List<ZoneEffect> getZoneEffects(UserIdent ident)
     {
         List<ZoneEffect> effects = zoneEffects.get(ident.getUuid());

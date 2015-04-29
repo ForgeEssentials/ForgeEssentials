@@ -36,6 +36,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
@@ -52,7 +53,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameData;
 
 @FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false)
-public class ModuleProtection {
+public class ModuleProtection
+{
 
     public final static String BASE_PERM = "fe.protection";
 
@@ -74,7 +76,7 @@ public class ModuleProtection {
     public final static String PERM_MOBSPAWN = BASE_PERM + ".mobspawn";
     public final static String PERM_MOBSPAWN_NATURAL = PERM_MOBSPAWN + ".natural";
     public final static String PERM_MOBSPAWN_FORCED = PERM_MOBSPAWN + ".forced";
-    
+
     public static final String ZONE = BASE_PERM + ".zone";
     public static final String ZONE_KNOCKBACK = ZONE + ".knockback";
     public static final String ZONE_DAMAGE = ZONE + ".damage";
@@ -142,7 +144,8 @@ public class ModuleProtection {
         // Other
         APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE, "If denied for at least one of two fighting players, PvP will be disabled");
         APIRegistry.perms.registerPermissionProperty(PERM_GAMEMODE, "-1", "Force gamemode (-1 = none / default, 0 = survival, 1 = creative, 2 = adventure)");
-        APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default", "Inventory group property - can be set to any identifier to separate inventories for certain regions");
+        APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default",
+                "Inventory group property - can be set to any identifier to separate inventories for certain regions");
         APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, RegisteredPermValue.TRUE, "Allow interacting with entities (villagers, dogs, horses)");
         APIRegistry.perms.registerPermission(PERM_EXPLOSION, RegisteredPermValue.TRUE, "(global) Allows explosions.");
 
@@ -163,9 +166,11 @@ public class ModuleProtection {
         // ----------------------------------------
         // Register mobs
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN + Zone.PERMISSION_ASTERIX, RegisteredPermValue.TRUE, "(global) Allow spawning of mobs");
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow natural spawning of mobs (random spawn)");
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "(global) Allow forced spawning of mobs (mob-spawners)");
-        
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + Zone.ALL_PERMS, RegisteredPermValue.TRUE,
+                "(global) Allow natural spawning of mobs (random spawn)");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, RegisteredPermValue.TRUE,
+                "(global) Allow forced spawning of mobs (mob-spawners)");
+
         for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.stringToClassMapping).entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
             {
@@ -183,11 +188,12 @@ public class ModuleProtection {
         // ----------------------------------------
         // Register items
         APIRegistry.perms.registerPermission(PERM_USE + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow using items");
-        APIRegistry.perms.registerPermission(PERM_INVENTORY + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow having item in inventory. Item will be dropped if not allowed.");
+        APIRegistry.perms.registerPermission(PERM_INVENTORY + Zone.ALL_PERMS, RegisteredPermValue.TRUE,
+                "Allow having item in inventory. Item will be dropped if not allowed.");
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
-                String itemPerm = "." + item.getUnlocalizedName() + Zone.ALL_PERMS;
+                String itemPerm = "." + getItemId(item) + Zone.ALL_PERMS;
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, RegisteredPermValue.TRUE, "USE " + getItemName(item));
                 APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, RegisteredPermValue.TRUE, "INVENTORY " + getItemName(item));
             }
@@ -196,10 +202,11 @@ public class ModuleProtection {
         // Register blocks
         APIRegistry.perms.registerPermission(PERM_BREAK + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow breaking blocks");
         APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow placing blocks");
-        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow interacting with blocks (button, chest, workbench)");
+        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, RegisteredPermValue.TRUE,
+                "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
-            String blockPerm = "." + block.getUnlocalizedName() + Zone.ALL_PERMS;
+            String blockPerm = "." + getBlockId(block) + Zone.ALL_PERMS;
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, RegisteredPermValue.TRUE, "BREAK " + block.getLocalizedName());
             APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, RegisteredPermValue.TRUE, "PLACE " + block.getLocalizedName());
             APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, RegisteredPermValue.TRUE, "INTERACT " + block.getLocalizedName());
@@ -210,11 +217,17 @@ public class ModuleProtection {
         APIRegistry.perms.registerPermissionDescription(ZONE, "Worldborder permissions");
         APIRegistry.perms.registerPermission(ZONE_KNOCKBACK, RegisteredPermValue.FALSE, "Deny players from entering this area");
         APIRegistry.perms.registerPermissionProperty(ZONE_DAMAGE, null, "Apply this amount of damage to players, if they are in this area");
-        APIRegistry.perms.registerPermissionProperty(ZONE_DAMAGE_INTERVAL, "1000", "Time interval in milliseconds for applying damage-effect. Zero = once only.");
+        APIRegistry.perms.registerPermissionProperty(ZONE_DAMAGE_INTERVAL, "1000",
+                "Time interval in milliseconds for applying damage-effect. Zero = once only.");
         APIRegistry.perms.registerPermissionProperty(ZONE_COMMAND, null, "Execute this command if a player enters the area");
         APIRegistry.perms.registerPermissionProperty(ZONE_COMMAND_INTERVAL, "0", "Time interval in milliseconds for executing command. Zero = once only.");
-        APIRegistry.perms.registerPermissionProperty(ZONE_POTION, null, "Apply potion effects to players who enter this area. Comma separated list of \"ID:duration:amplifier\" pairs. See http://www.minecraftwiki.net/wiki/Potion_effects#Parameters");
-        APIRegistry.perms.registerPermissionProperty(ZONE_POTION_INTERVAL, "2000", "Time interval in milliseconds for applying potion-effects. Zero = once only.");
+        APIRegistry.perms
+                .registerPermissionProperty(
+                        ZONE_POTION,
+                        null,
+                        "Apply potion effects to players who enter this area. Comma separated list of \"ID:duration:amplifier\" pairs. See http://www.minecraftwiki.net/wiki/Potion_effects#Parameters");
+        APIRegistry.perms.registerPermissionProperty(ZONE_POTION_INTERVAL, "2000",
+                "Time interval in milliseconds for applying potion-effects. Zero = once only.");
     }
 
     public static void enableDebugMode(EntityPlayer player)
@@ -230,6 +243,55 @@ public class ModuleProtection {
     public static boolean isDebugMode(EntityPlayer player)
     {
         return debugModePlayers.contains(player.getCommandSenderName());
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public static String getBlockId(Block block)
+    {
+        return block.getUnlocalizedName();
+    }
+
+    public static String getBlockPermission(Block block, World world, int x, int y, int z)
+    {
+        return getBlockId(block) + "." + block.getDamageValue(world, x, y, z);
+    }
+
+    public static String getBlockBreakPermission(Block block, World world, int x, int y, int z)
+    {
+        return ModuleProtection.PERM_BREAK + "." + getBlockPermission(block, world, x, y, z);
+    }
+
+    public static String getBlockPlacePermission(Block block, World world, int x, int y, int z)
+    {
+        return ModuleProtection.PERM_PLACE + "." + getBlockPermission(block, world, x, y, z);
+    }
+
+    public static String getBlockInteractPermission(Block block, World world, int x, int y, int z)
+    {
+        return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(block, world, x, y, z);
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public static String getItemId(Item item)
+    {
+        return item.getUnlocalizedName();
+    }
+
+    public static String getItemPermission(ItemStack stack)
+    {
+        return stack.getUnlocalizedName() + "." + stack.getItemDamage();
+    }
+
+    public static String getItemUsePermission(ItemStack stack)
+    {
+        return ModuleProtection.PERM_USE + "." + getItemPermission(stack);
+    }
+
+    public static String getItemInventoryPermission(ItemStack stack)
+    {
+        return ModuleProtection.PERM_INVENTORY + "." + getItemPermission(stack);
     }
 
 }
