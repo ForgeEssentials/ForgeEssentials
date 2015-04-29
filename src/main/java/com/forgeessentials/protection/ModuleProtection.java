@@ -295,7 +295,11 @@ public class ModuleProtection
 
     public static String getItemPermission(ItemStack stack)
     {
-        return stack.getUnlocalizedName() + "." + stack.getItemDamage();
+        int dmg = stack.getItemDamage();
+        if (dmg == 0 || dmg == 32767)
+            return stack.getUnlocalizedName();
+        else
+            return stack.getUnlocalizedName() + "." + dmg;
     }
 
     public static String getItemUsePermission(ItemStack stack)
