@@ -21,12 +21,12 @@ public class CommandProtectionDebug extends ForgeEssentialsCommandBase {
     {
         if (ModuleProtection.isDebugMode(sender))
         {
-            ModuleProtection.disableDebugMode(sender);
+            ModuleProtection.setDebugMode(sender, false);
             OutputHandler.chatConfirmation(sender, "Turned protection debug-mode OFF");
         }
         else
         {
-            ModuleProtection.enableDebugMode(sender);
+            ModuleProtection.setDebugMode(sender, true);
             OutputHandler.chatConfirmation(sender, "Turned protection debug-mode ON");
         }
     }

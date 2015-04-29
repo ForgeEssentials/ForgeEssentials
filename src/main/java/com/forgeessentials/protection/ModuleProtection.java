@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -45,7 +46,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.protection.commands.CommandUpgradePermissions;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
@@ -109,7 +110,9 @@ public class ModuleProtection
             DamageSource.fallingBlock, DamageSource.generic, DamageSource.inFire, DamageSource.inWall, DamageSource.lava, DamageSource.magic,
             DamageSource.onFire, DamageSource.outOfWorld, DamageSource.starve, DamageSource.wither };
 
-    public static Set<String> debugModePlayers = new HashSet<>();
+    public static Set<UUID> debugModePlayers = new HashSet<>();
+
+    /* ------------------------------------------------------------ */
 
     @SuppressWarnings("unused")
     private ProtectionEventHandler protectionHandler;
@@ -134,11 +137,12 @@ public class ModuleProtection
 
     @SuppressWarnings("unchecked")
     @SubscribeEvent
-    public void registerPermissions(FEModuleServerInitEvent ev)
+    public void registerPermissions(FEModuleServerInitEvent event)
     {
-        FunctionHelper.registerServerCommand(new CommandItemPermission());
-        FunctionHelper.registerServerCommand(new CommandProtectionDebug());
-        FunctionHelper.registerServerCommand(new ProtectCommand());
+        new CommandItemPermission().register();
+        new CommandProtectionDebug().register();
+        new ProtectCommand().register();
+        new CommandUpgradePermissions().register();
 
         // ----------------------------------------
         // Other
@@ -230,26 +234,26 @@ public class ModuleProtection
                 "Time interval in milliseconds for applying potion-effects. Zero = once only.");
     }
 
-    public static void enableDebugMode(EntityPlayer player)
-    {
-        debugModePlayers.add(player.getCommandSenderName());
-    }
+    /* ------------------------------------------------------------ */
 
-    public static void disableDebugMode(EntityPlayer player)
+    public static void setDebugMode(EntityPlayer player, boolean value)
     {
-        debugModePlayers.remove(player.getCommandSenderName());
+        if (value)
+            debugModePlayers.add(player.getPersistentID());
+        else
+            debugModePlayers.remove(player.getPersistentID());
     }
 
     public static boolean isDebugMode(EntityPlayer player)
     {
-        return debugModePlayers.contains(player.getCommandSenderName());
+        return debugModePlayers.contains(player.getPersistentID());
     }
 
     /* ------------------------------------------------------------ */
 
     public static String getBlockId(Block block)
     {
-        return block.getUnlocalizedName();
+        return GameData.getBlockRegistry().getNameForObject(block);
     }
 
     public static String getBlockPermission(Block block, World world, int x, int y, int z)
@@ -276,7 +280,7 @@ public class ModuleProtection
 
     public static String getItemId(Item item)
     {
-        return item.getUnlocalizedName();
+        return GameData.getItemRegistry().getNameForObject(item);
     }
 
     public static String getItemPermission(ItemStack stack)
