@@ -41,6 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -141,7 +142,6 @@ public class ModuleProtection
     {
         new CommandItemPermission().register();
         new CommandProtectionDebug().register();
-        new ProtectCommand().register();
         new CommandUpgradePermissions().register();
 
         // ----------------------------------------
@@ -232,6 +232,16 @@ public class ModuleProtection
                         "Apply potion effects to players who enter this area. Comma separated list of \"ID:duration:amplifier\" pairs. See http://www.minecraftwiki.net/wiki/Potion_effects#Parameters");
         APIRegistry.perms.registerPermissionProperty(ZONE_POTION_INTERVAL, "2000",
                 "Time interval in milliseconds for applying potion-effects. Zero = once only.");
+    }
+
+    @SubscribeEvent
+    public void afterPermissionLoadEvent(PermissionEvent.AfterLoad event)
+    {
+        if (!event.serverZone.checkGroupPermission(Zone.GROUP_DEFAULT, "fe.internal.newprotectionpermissions"))
+        {
+            CommandUpgradePermissions.upgradePermissions();
+            event.serverZone.setGroupPermission(Zone.GROUP_DEFAULT, "fe.internal.newprotectionpermissions", true);
+        }
     }
 
     /* ------------------------------------------------------------ */

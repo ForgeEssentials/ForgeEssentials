@@ -62,7 +62,7 @@ public class CommandUpgradePermissions extends ParserCommandBase {
         arguments.confirm("DONE!");
     }
 
-    public void upgradePermissions()
+    public static void upgradePermissions()
     {
         upgradePermissions(APIRegistry.perms.getServerZone());
         for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
