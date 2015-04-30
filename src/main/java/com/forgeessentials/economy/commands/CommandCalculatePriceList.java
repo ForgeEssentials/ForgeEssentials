@@ -26,10 +26,15 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.common.config.ConfigCategory;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+import net.minecraftforge.common.config.Property.Type;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.economy.ModuleEconomy;
@@ -61,7 +66,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/initprices";
+        return "/calcpricelist [save]: Generate (and optionally directly apply) new price list";
     }
 
     @Override
@@ -152,6 +157,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
             priceMap.put("minecraft:glowstone_dust", 384.0);
             priceMap.put("minecraft:blaze_rod", 1536.0);
             priceMap.put("minecraft:diamond", 8192.0);
+            priceMap.put("minecraft:emerald", 8192.0);
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(priceLogFile)))
@@ -227,7 +233,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
         }
 
         writeMap(priceMap, priceFile);
-        
+
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
         {
             String id = getItemId(item);
@@ -236,6 +242,18 @@ public class CommandCalculatePriceList extends ParserCommandBase
         }
         priceMapFull.putAll(priceMap);
         writeMap(priceMapFull, allPricesFile);
+
+        if (!arguments.isEmpty() && arguments.remove().equalsIgnoreCase("save"))
+        {
+            Configuration config = ForgeEssentials.getConfigManager().getConfig(ModuleEconomy.CONFIG_CATEGORY);
+            ConfigCategory category = config.getCategory(ModuleEconomy.CATEGORY_ITEM);
+            for (Entry<String, Double> entry : priceMap.entrySet())
+            {
+                category.put(entry.getKey(), new Property(entry.getKey(), Integer.toString((int) Math.floor(entry.getValue())), Type.INTEGER));
+                APIRegistry.perms.registerPermissionProperty(ModuleEconomy.PERM_PRICE + "." + entry.getKey(), Integer.toString((int) Math.floor(entry.getValue())));
+            }
+            config.save();
+        }
 
         arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
     }

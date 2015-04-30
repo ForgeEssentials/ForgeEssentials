@@ -106,6 +106,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
         APIRegistry.perms.registerPermissionProperty(PERM_CURRENCY, "coins", "Name of currency (plural)");
         APIRegistry.perms.registerPermissionProperty(PERM_CURRENCY_SINGULAR, "coin", "Name of currency (singular)");
         APIRegistry.perms.registerPermissionProperty(PERM_STARTBUDGET, "100", "Starting amount of money for players");
+        APIRegistry.perms.registerPermissionDescription(PERM_PRICE, "Default prices for items in economy");
 
         PlotManager.serverStarting();
     }
