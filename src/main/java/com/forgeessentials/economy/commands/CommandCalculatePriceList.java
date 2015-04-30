@@ -126,7 +126,25 @@ public class CommandCalculatePriceList extends ParserCommandBase
         {
             arguments.warn(String.format("Could not load %s. Using default values", priceFile.getName()));
 
-            priceMap.put("minecraft:cobblestone", 1.0);
+            priceMap.put("minecraft:wool", 48.0);
+            for (int i = 1; i <= 15; i++)
+                priceMap.put("minecraft:wool:" + i, 48.0);
+
+            priceMap.put("minecraft:log", 32.0);
+            for (int i = 1; i <= 6; i++)
+                priceMap.put("minecraft:log:" + i, 32.0);
+            priceMap.put("minecraft:log2", 32.0);
+            for (int i = 1; i <= 6; i++)
+                priceMap.put("minecraft:log2:" + i, 32.0);
+
+            priceMap.put("minecraft:red_flower", 16.0);
+            for (int i = 1; i <= 8; i++)
+                priceMap.put("minecraft:red_flower:" + i, 16.0);
+
+            priceMap.put("minecraft:dye", 8.0);
+            for (int i = 1; i <= 15; i++)
+                priceMap.put("minecraft:dye:" + i, 8.0);
+
             priceMap.put("minecraft:deadbush", 1.0);
             priceMap.put("minecraft:dirt", 1.0);
             priceMap.put("minecraft:grass", 1.0);
@@ -140,24 +158,64 @@ public class CommandCalculatePriceList extends ParserCommandBase
             priceMap.put("minecraft:stone", 1.0);
             priceMap.put("minecraft:tallgrass", 1.0);
             priceMap.put("minecraft:end_stone", 1.0);
-            priceMap.put("minecraft:glass", 1.0);
-            priceMap.put("minecraft:gravel", 4.0);
-            priceMap.put("minecraft:log", 32.0);
-            priceMap.put("minecraft:log2", 32.0);
-            priceMap.put("minecraft:wool", 48.0);
 
-            priceMap.put("minecraft:flint", 4.0);
-            priceMap.put("minecraft:clay_ball", 16.0);
-            priceMap.put("minecraft:coal", 32.0);
-            priceMap.put("minecraft:reeds", 32.0);
-            priceMap.put("minecraft:feather", 48.0);
-            priceMap.put("minecraft:redstone", 64.0);
-            priceMap.put("minecraft:gold_ingot", 227.0);
-            priceMap.put("minecraft:iron_ingot", 256.0);
-            priceMap.put("minecraft:glowstone_dust", 384.0);
+            priceMap.put("minecraft:apple", 128.0);
+            priceMap.put("minecraft:beef", 64.0);
             priceMap.put("minecraft:blaze_rod", 1536.0);
+            priceMap.put("minecraft:bone", 144.0);
+            priceMap.put("minecraft:brown_mushroom", 32.0);
+            priceMap.put("minecraft:cactus", 8.0);
+            priceMap.put("minecraft:chicken", 64.0);
+            priceMap.put("minecraft:clay_ball", 16.0);
+            priceMap.put("minecraft:coal", 128.0);
+            priceMap.put("minecraft:coal:1", 32.0);
+            priceMap.put("minecraft:cobblestone", 1.0);
+            priceMap.put("minecraft:cocoa", 128.0);
             priceMap.put("minecraft:diamond", 8192.0);
+            priceMap.put("minecraft:dye:4", 864.0);
             priceMap.put("minecraft:emerald", 8192.0);
+            priceMap.put("minecraft:feather", 48.0);
+            priceMap.put("minecraft:fish", 64.0);
+            priceMap.put("minecraft:flint", 4.0);
+            priceMap.put("minecraft:glass", 1.0);
+            priceMap.put("minecraft:glowstone_dust", 384.0);
+            priceMap.put("minecraft:gold_ingot", 225.0);
+            priceMap.put("minecraft:gravel", 4.0);
+            priceMap.put("minecraft:egg", 32.0);
+            priceMap.put("minecraft:ender_pearl", 1024.0);
+            priceMap.put("minecraft:ghast_tear", 4096.0);
+            priceMap.put("minecraft:gunpowder", 192.0);
+            priceMap.put("minecraft:iron_ingot", 256.0);
+            priceMap.put("minecraft:lava_bucket", 832.0);
+            priceMap.put("minecraft:leather", 64.0);
+            priceMap.put("minecraft:magma_cream", 792.0);
+            priceMap.put("minecraft:melon", 16.0);
+            priceMap.put("minecraft:melon_block", 144.0);
+            priceMap.put("minecraft:milk_bucket", 833.0);
+            priceMap.put("minecraft:obsidian", 64.0);
+            priceMap.put("minecraft:porkchop", 64.0);
+            priceMap.put("minecraft:pumpkin", 144.0);
+            priceMap.put("minecraft:red_mushroom", 32.0);
+            priceMap.put("minecraft:redstone", 64.0);
+            priceMap.put("minecraft:reeds", 32.0);
+            priceMap.put("minecraft:rotten_flesh", 24.0);
+            priceMap.put("minecraft:sapling", 32.0);
+            priceMap.put("minecraft:slime_ball", 24.0);
+            priceMap.put("minecraft:soul_sand", 49.0);
+            priceMap.put("minecraft:spider_eye", 128.0);
+            priceMap.put("minecraft:string", 16.0);
+            priceMap.put("minecraft:vine", 8.0);
+            priceMap.put("minecraft:water_bucket", 769.0);
+            priceMap.put("minecraft:waterlily", 16.0);
+            priceMap.put("minecraft:web", 12.0);
+            priceMap.put("minecraft:wheat", 24.0);
+            priceMap.put("minecraft:yellow_flower", 16.0);
+            
+            // TODO: Prices below mainly guessed - should evaluate if these are good defaults
+            priceMap.put("minecraft:potato", 16.0);
+            priceMap.put("minecraft:carrot", 16.0);
+            priceMap.put("minecraft:quartz", 128.0);
+            priceMap.put("minecraft:sponge", 256.0);
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(priceLogFile)))
@@ -250,12 +308,14 @@ public class CommandCalculatePriceList extends ParserCommandBase
             for (Entry<String, Double> entry : priceMap.entrySet())
             {
                 category.put(entry.getKey(), new Property(entry.getKey(), Integer.toString((int) Math.floor(entry.getValue())), Type.INTEGER));
-                APIRegistry.perms.registerPermissionProperty(ModuleEconomy.PERM_PRICE + "." + entry.getKey(), Integer.toString((int) Math.floor(entry.getValue())));
+                APIRegistry.perms.registerPermissionProperty(ModuleEconomy.PERM_PRICE + "." + entry.getKey(),
+                        Integer.toString((int) Math.floor(entry.getValue())));
             }
             config.save();
+        } else {
+            arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
+            arguments.confirm("You can also use [/" + getCommandName() + " save] to directly save the calculated prices");
         }
-
-        arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
     }
 
     private static void writeMap(Map<String, Double> priceMap, File file)
@@ -306,9 +366,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                     {
                         String id = ModuleEconomy.getItemIdentifier((ItemStack) stack);
                         priceMapFull.put(id, 0.0);
-                        Double p = priceMap.get(id);
-                        if (p != null && (itemPrice == null || p < itemPrice))
-                            itemPrice = p / ((ItemStack) stack).stackSize;
+                        itemPrice = priceMap.get(id);
                     }
                 }
                 else
@@ -317,8 +375,6 @@ public class CommandCalculatePriceList extends ParserCommandBase
                     String id = ModuleEconomy.getItemIdentifier(stack);
                     priceMapFull.put(id, 0.0);
                     itemPrice = priceMap.get(id);
-                    if (itemPrice != null)
-                        itemPrice /= stack.stackSize;
                 }
                 if (itemPrice == null)
                     return -1;
