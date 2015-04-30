@@ -86,7 +86,7 @@ public class CommandUpgradePermissions extends ParserCommandBase {
         id = match.group(1);
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
             if (id.equals(block.getUnlocalizedName()))
-                return GameData.getBlockRegistry().getNameForObject(block) + match.group(2);
+                return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.') + match.group(2);
         return null;
     }
 
@@ -98,7 +98,7 @@ public class CommandUpgradePermissions extends ParserCommandBase {
         id = match.group(1);
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (id.equals(item.getUnlocalizedName()))
-                return GameData.getItemRegistry().getNameForObject(item) + match.group(2);
+                return GameData.getItemRegistry().getNameForObject(item).replace(':', '.') + match.group(2);
         return null;
     }
 
@@ -110,7 +110,7 @@ public class CommandUpgradePermissions extends ParserCommandBase {
             for (Iterator<Map.Entry<String, String>> iterator = group.getValue().entrySet().iterator(); iterator.hasNext();)
             {
                 Entry<String, String> permission = iterator.next();
-                if (!permission.getKey().startsWith(ModuleProtection.BASE_PERM) || permission.getKey().contains(":"))
+                if (!permission.getKey().startsWith(ModuleProtection.BASE_PERM))
                     continue;
                 if (permission.getKey().startsWith(ModuleProtection.PERM_BREAK))
                 {

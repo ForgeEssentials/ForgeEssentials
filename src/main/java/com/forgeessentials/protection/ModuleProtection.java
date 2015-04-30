@@ -263,7 +263,7 @@ public class ModuleProtection
 
     public static String getBlockId(Block block)
     {
-        return GameData.getBlockRegistry().getNameForObject(block);
+        return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.');
     }
 
     public static String getBlockPermission(Block block, int meta)
@@ -313,7 +313,7 @@ public class ModuleProtection
 
     public static String getItemId(Item item)
     {
-        return GameData.getItemRegistry().getNameForObject(item);
+        return GameData.getItemRegistry().getNameForObject(item).replace(':', '.');
     }
 
     public static String getItemPermission(ItemStack stack)
