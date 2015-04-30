@@ -320,9 +320,9 @@ public class ModuleProtection
     {
         int dmg = stack.getItemDamage();
         if (dmg == 0 || dmg == 32767)
-            return stack.getUnlocalizedName();
+            return getItemId(stack.getItem());
         else
-            return stack.getUnlocalizedName() + "." + dmg;
+            return getItemId(stack.getItem()) + "." + dmg;
     }
 
     public static String getItemUsePermission(ItemStack stack)
