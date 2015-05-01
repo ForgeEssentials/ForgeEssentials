@@ -66,7 +66,6 @@ public class ModuleBackup {
         {
             timer.schedule(new AutoWorldSave(), BackupConfig.worldSaveInterval*60*1000, BackupConfig.worldSaveInterval*60*1000);
         }
-        makeReadme();
 
         APIRegistry.perms.registerPermission("fe.backup.msg", RegisteredPermValue.TRUE);
     }
@@ -92,38 +91,4 @@ public class ModuleBackup {
         }
     }
 
-    private static void makeReadme()
-    {
-        try
-        {
-            if (!baseFolder.exists())
-            {
-                baseFolder.mkdirs();
-            }
-            File file = new File(baseFolder, "README.txt");
-            if (file.exists())
-            {
-                return;
-            }
-            try (PrintWriter pw = new PrintWriter(file))
-            {
-                pw.println("############");
-                pw.println("## WARNING ##");
-                pw.println("############");
-                pw.println("");
-                pw.println("DON'T CHANGE ANYTHING IN THIS FOLDER.");
-                pw.println("IF YOU DO, AUTOREMOVE WILL SCREW UP.");
-                pw.println("");
-                pw.println("If you have problems with this, report an issue and don't put:");
-                pw.println("\"Yes, I read the readme\" in the issue or your message on github,");
-                pw.println("YOU WILL BE IGNORED.");
-                pw.println("- The FE Team");
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-    
 }
