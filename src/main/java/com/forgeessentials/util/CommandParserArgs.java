@@ -106,6 +106,7 @@ public class CommandParserArgs
         return senderPlayer != null;
     }
 
+    @Deprecated
     public UserIdent parsePlayer()
     {
         return parsePlayer(true);

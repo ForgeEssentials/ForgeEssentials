@@ -113,7 +113,7 @@ public class PermissionCommandParser
                         arguments.confirm("Permission saving disabled");
                         break;
                     default:
-                        break;
+                        throw new TranslatedCommandException.InvalidSyntaxException();
                     }
                 }
                 break;

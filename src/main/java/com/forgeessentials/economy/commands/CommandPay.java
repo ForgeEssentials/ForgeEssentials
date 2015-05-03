@@ -52,7 +52,7 @@ public class CommandPay extends ParserCommandBase
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Player needed");
-        UserIdent player = arguments.parsePlayer();
+        UserIdent player = arguments.parsePlayer(true);
         if (player == null)
             return;
 

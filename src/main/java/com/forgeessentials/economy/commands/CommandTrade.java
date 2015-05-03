@@ -61,7 +61,7 @@ public class CommandTrade extends ParserCommandBase
             return;
         }
 
-        final UserIdent buyer = arguments.parsePlayer();
+        final UserIdent buyer = arguments.parsePlayer(true);
         if (buyer == null)
             return;
         if (!buyer.hasPlayer())

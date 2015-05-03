@@ -82,7 +82,7 @@ public class CommandWallet extends ForgeEssentialsCommandBase
             return;
         }
 
-        UserIdent player = arguments.parsePlayer();
+        UserIdent player = arguments.parsePlayer(true);
         if (player == null)
             return;
         Wallet wallet = APIRegistry.economy.getWallet(player);

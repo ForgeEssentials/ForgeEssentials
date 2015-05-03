@@ -69,7 +69,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
             }
             case "regen":
             {
-                UserIdent ident = args.parsePlayer();
+                UserIdent ident = args.parsePlayer(false);
                 if (ident == null)
                     return;
                 if (!ident.equals(args.ident))
@@ -83,7 +83,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
             }
             case "block":
             {
-                UserIdent ident = args.parsePlayer();
+                UserIdent ident = args.parsePlayer(true);
                 if (ident == null)
                     return;
                 if (!ident.hasUUID())
@@ -97,7 +97,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
             }
             case "kick":
             {
-                UserIdent ident = args.parsePlayer();
+                UserIdent ident = args.parsePlayer(true);
                 if (ident == null)
                     return;
                 if (!ident.hasUUID())

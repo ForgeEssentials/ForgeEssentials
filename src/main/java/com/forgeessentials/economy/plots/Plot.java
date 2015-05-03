@@ -36,6 +36,7 @@ public class Plot
 
     public static final String GROUP_ALL = Zone.GROUP_DEFAULT;
     public static final String GROUP_PLOT_OWNER = "PLOT_OWNER";
+    public static final String GROUP_PLOT_MOD = "PLOT_MOD";
     public static final String GROUP_PLOT_USER = "PLOT_USER";
 
     public static final String SERVER_OWNER = "SERVER";
@@ -55,6 +56,7 @@ public class Plot
     public static final String PERM_DELETE = PERM_COMMAND + ".delete";
     public static final String PERM_BUY = PERM_COMMAND + ".buy";
     public static final String PERM_SELL = PERM_COMMAND + ".sell";
+    public static final String PERM_MODS = PERM_COMMAND + ".mods";
 
     public static final String PERM_SET = PERM_COMMAND + ".set";
     public static final String PERM_SET_PRICE = PERM_COMMAND + ".price";
@@ -247,27 +249,42 @@ public class Plot
 
     /* ------------------------------------------------------------ */
 
+    public void setPermission(String permission, boolean userPerm, boolean value)
+    {
+        if (!value)
+        {
+            zone.setGroupPermission(GROUP_PLOT_OWNER, permission, true);
+            zone.setGroupPermission(GROUP_PLOT_MOD, permission, true);
+            zone.setGroupPermission(userPerm ? GROUP_PLOT_USER : GROUP_ALL, permission, false);
+        }
+        else
+        {
+            // zone.clearGroupPermission(GROUP_PLOT_OWNER, permission);
+            zone.clearGroupPermission(userPerm ? GROUP_PLOT_USER : GROUP_ALL, permission);
+        }
+    }
+
     public void setDefaultPermissions()
     {
         zone.setGroupPermissionProperty(GROUP_ALL, PERM_OWNER, owner == null ? SERVER_OWNER : owner.getOrGenerateUuid().toString());
         if (owner != null)
             zone.addPlayerToGroup(owner, GROUP_PLOT_OWNER);
 
-        zone.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, true);
-        zone.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, true);
-        zone.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_USE + Zone.ALL_PERMS, true);
-        zone.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, true);
+        setPermission(ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false, false);
+        setPermission(ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false, false);
+        setPermission(ModuleProtection.PERM_USE + Zone.ALL_PERMS, false, false);
+        setPermission(ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false, false);
 
-        // zone.setGroupPermission(GROUP_PLOT_USER, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
-        // zone.setGroupPermission(GROUP_PLOT_USER, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
-        zone.setGroupPermission(GROUP_PLOT_USER, ModuleProtection.PERM_USE + Zone.ALL_PERMS, true);
-        zone.setGroupPermission(GROUP_PLOT_USER, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, true);
+        setPermission(ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, true, false);
+        setPermission(ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, true, true);
+        setPermission(ModuleProtection.PERM_USE + Zone.ALL_PERMS, true, true);
+        setPermission(ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, true, true);
 
         zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
         zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
         zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_USE + Zone.ALL_PERMS, false);
         zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
-        // zone.setGroupPermission(GROUP_DEFAULT, ModuleProtection.PERM_INTERACT_ENTITY, true);
+        //zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
     }
 
     public void printInfo(ICommandSender sender)
@@ -422,6 +439,7 @@ public class Plot
         perms.registerPermission(PERM_CLAIM, RegisteredPermValue.TRUE, "Allows to claim plots in exchange for money");
         perms.registerPermission(PERM_BUY, RegisteredPermValue.TRUE, "Allows buying plots");
         perms.registerPermission(PERM_SELL, RegisteredPermValue.OP, "Allows selling plots");
+        perms.registerPermission(PERM_MODS, RegisteredPermValue.OP, "Allows managing plot administrators");
 
         perms.registerPermission(PERM_LIST, RegisteredPermValue.TRUE, "Allows listing plots");
         perms.registerPermission(PERM_LIST_ALL, RegisteredPermValue.OP, "List all plots");
@@ -438,14 +456,8 @@ public class Plot
 
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SET, true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SELL, true);
-
-        // TODO: below permissions don't really have any use, because they are overwritten by the default deny
-        // permissions for _ALL_ in the plot... Thinking of a way to get this to work would be great...
-        root.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_BREAK, true);
-        root.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_PLACE, true);
-        root.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_USE, true);
-        root.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_INTERACT, true);
-        root.setGroupPermission(GROUP_PLOT_OWNER, ModuleProtection.PERM_INTERACT_ENTITY, true);
+        root.setGroupPermission(GROUP_PLOT_OWNER, PERM_PERMS, true);
+        root.setGroupPermission(GROUP_PLOT_OWNER, PERM_MODS, true);
     }
 
     public static class PlotRedefinedException extends Exception

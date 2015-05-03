@@ -36,7 +36,7 @@ public class CommandPromote extends ForgeEssentialsCommandBase {
             return;
         }
 
-        UserIdent ident = arguments.parsePlayer();
+        UserIdent ident = arguments.parsePlayer(false);
         if (ident == null)
             return;
 
