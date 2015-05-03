@@ -48,16 +48,16 @@ public class TeleportModule {
     public static final String PERM_SPAWN = "fe.teleport.spawn";
     public static final String PERM_SPAWN_OTHERS = "fe.teleport.spawn.others";
 
-    public static final String PERM_HOME = "fe.teleport.home.set";
-    public static final String PERM_HOME_SET = "fe.teleport.home.set";
-    public static final String PERM_HOME_OTHER = "fe.teleport.home.other";
+    public static final String PERM_HOME = "fe.teleport.home";
+    public static final String PERM_HOME_SET = PERM_HOME + ".set";
+    public static final String PERM_HOME_OTHER = PERM_HOME + ".other";
     
     public static final String PERM_BED = "fe.teleport.bed";
-    public static final String PERM_BED_OTHERS = "fe.teleport.bed.others";
+    public static final String PERM_BED_OTHERS = PERM_BED + ".others";
 
     public static final String PERM_BACK = "fe.teleport.back";
-    public static final String PERM_BACK_ONTP = "fe.teleport.back.ontp";
-    public static final String PERM_BACK_ONDEATH = "fe.teleport.back.ondeath";
+    public static final String PERM_BACK_ONTP = PERM_BACK + ".ontp";
+    public static final String PERM_BACK_ONDEATH = PERM_BACK + ".ondeath";
 
     public static final String PERM_TPAHERE = "fe.teleport.tpahere";
     public static final String PERM_TPAHERE_SENDREQUEST = "fe.teleport.tpahere.sendrequest";
