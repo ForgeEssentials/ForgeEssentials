@@ -31,7 +31,8 @@ import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
 
-public class PermissionCommandParser {
+public class PermissionCommandParser
+{
 
     public static final String PERM = "fe.perm";
     public static final String PERM_ALL = PERM + Zone.ALL_PERMS;
@@ -56,13 +57,14 @@ public class PermissionCommandParser {
     public static final String PERM_LIST_USERS = PERM_LIST + ".users";
     public static final String PERM_LIST_GROUPS = PERM_LIST + ".groups";
 
-    enum PermissionAction {
+    enum PermissionAction
+    {
         ALLOW, DENY, CLEAR, VALUE
     }
 
     // Variables for auto-complete
     private static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "reload", "save", "debug" }; // "export",
-                                                                                                                                     // "promote",
+                                                                                                                            // "promote",
     private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
     private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms" };
     private static final String[] parseGroupArgs = { "zone", "users", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
@@ -87,11 +89,38 @@ public class PermissionCommandParser {
             switch (arguments.args.remove().toLowerCase())
             {
             case "save":
-                ModulePermissions.permissionHelper.setDirty(false);
-                ModulePermissions.permissionHelper.save();
-                arguments.confirm("Permissions saved!");
+                arguments.checkPermission(PERM_SAVE);
+                arguments.tabComplete("disable", "enable");
+                if (arguments.isTabCompletion)
+                    return;
+                if (arguments.isEmpty())
+                {
+                    ModulePermissions.permissionHelper.setDirty(false);
+                    ModulePermissions.permissionHelper.save();
+                    arguments.confirm("Permissions saved!");
+                }
+                else
+                {
+                    String action = arguments.remove().toLowerCase();
+                    switch (action)
+                    {
+                    case "enable":
+                        ModulePermissions.permissionHelper.disableSave = false;
+                        arguments.confirm("Permission saving enabled");
+                        break;
+                    case "disable":
+                        ModulePermissions.permissionHelper.disableSave = true;
+                        arguments.confirm("Permission saving disabled");
+                        break;
+                    default:
+                        break;
+                    }
+                }
                 break;
             case "reload":
+                arguments.checkPermission(PERM_RELOAD);
+                if (arguments.isTabCompletion)
+                    return;
                 if (ModulePermissions.permissionHelper.load())
                     arguments.confirm("Successfully reloaded permissions");
                 else
@@ -883,7 +912,7 @@ public class PermissionCommandParser {
     {
         if (!arguments.isTabCompletion && !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_GROUP_SPAWN))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-        
+
         if (arguments.args.isEmpty())
         {
             if (arguments.command.getCommandName().equalsIgnoreCase("setspawn"))

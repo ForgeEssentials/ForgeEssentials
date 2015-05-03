@@ -171,7 +171,7 @@ public class CommandParserArgs
         return APIRegistry.perms.checkPermission(permissionContext, perm);
     }
 
-    public boolean tabComplete(String[] completionList)
+    public boolean tabComplete(String... completionList)
     {
         if (!isTabCompletion || args.size() != 1)
             return false;

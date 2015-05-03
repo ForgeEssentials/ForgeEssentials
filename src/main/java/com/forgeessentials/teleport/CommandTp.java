@@ -17,7 +17,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
@@ -70,7 +69,7 @@ public class CommandTp extends ForgeEssentialsCommandBase {
 					PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
 					playerInfo.setLastTeleportOrigin(new WarpPoint(player));
 					WarpPoint point = new WarpPoint(target);
-					FunctionHelper.teleportPlayer(player, point);
+					TeleportHelper.teleport(player, point);
 				}
 				else
 				    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[1]);

@@ -312,6 +312,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                         Integer.toString((int) Math.floor(entry.getValue())));
             }
             config.save();
+            arguments.confirm("Calculated and saved new price table");
         } else {
             arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
             arguments.confirm("You can also use [/" + getCommandName() + " save] to directly save the calculated prices");

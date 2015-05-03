@@ -77,6 +77,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public List<String> permissionDebugFilters = new ArrayList<>();
 
+    public boolean disableSave = false;
+
     // ------------------------------------------------------------
 
     public ZonedPermissionHelper()
@@ -104,6 +106,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public void save()
     {
+        if (disableSave)
+            return;
         dirty = false;
         if (persistenceProvider != null)
         {
@@ -686,6 +690,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // -- Permission checking
     // ------------------------------------------------------------
 
+    @Override
     public boolean checkBooleanPermission(String permissionValue)
     {
         if (permissionValue == null)
