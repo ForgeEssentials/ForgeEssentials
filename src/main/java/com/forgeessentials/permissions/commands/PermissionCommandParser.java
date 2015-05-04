@@ -306,7 +306,7 @@ public class PermissionCommandParser
             arguments.confirm(ident.getUsernameOrUUID() + "'s permissions in zone " + zone.getName() + ":");
             for (Entry<String, String> perm : zone.getPlayerPermissions(ident).entrySet())
             {
-                arguments.confirm("  " + perm.getKey() + " = " + perm.getValue());
+                arguments.confirm("  " + perm.getKey() + " = " + (perm.getValue() == null ? "null" + perm.getValue()));
             }
             return;
         }
