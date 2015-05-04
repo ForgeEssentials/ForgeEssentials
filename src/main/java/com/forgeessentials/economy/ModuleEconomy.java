@@ -210,7 +210,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
             // more than 1, so now it's absolute
             else if (value >= 1)
             {
-                walletData.add(value);
+                walletData.withdraw(value);
             }
         }
     }
