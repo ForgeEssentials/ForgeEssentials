@@ -10,6 +10,10 @@
 			<property name="hibernate.connection.username" value="forgeessentials" />
 			<property name="hibernate.connection.password" value="forgeessentials" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.jdbc.batch_size" value="30" />
+			<property name="hibernate.order_inserts" value="true" />
+			<property name="hibernate.order_updates" value="true" />
+			<property name="hibernate.jdbc.batch_versioned_data" value="true" />
 		</properties>
 	</persistence-unit>
 	<persistence-unit name="playerlogger_mysql">
@@ -21,6 +25,10 @@
 			<property name="hibernate.connection.username" value="forgeessentials" />
 			<property name="hibernate.connection.password" value="forgeessentials" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.jdbc.batch_size" value="30" />
+			<property name="hibernate.order_inserts" value="true" />
+			<property name="hibernate.order_updates" value="true" />
+			<property name="hibernate.jdbc.batch_versioned_data" value="true" />
 		</properties>
 	</persistence-unit>
 	<persistence-unit name="playerlogger_eclipselink_h2" transaction-type="RESOURCE_LOCAL">

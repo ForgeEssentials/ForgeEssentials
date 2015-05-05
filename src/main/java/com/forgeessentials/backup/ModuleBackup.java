@@ -1,7 +1,6 @@
 package com.forgeessentials.backup;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.util.Timer;
 
 import net.minecraft.server.MinecraftServer;

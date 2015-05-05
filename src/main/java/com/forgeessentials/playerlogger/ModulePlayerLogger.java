@@ -3,6 +3,7 @@ package com.forgeessentials.playerlogger;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.playerlogger.command.CommandRollback;
+import com.forgeessentials.playerlogger.command.CommandTestPlayerlogger;
 import com.forgeessentials.playerlogger.network.S2PacketPlayerLogger;
 import com.forgeessentials.playerlogger.network.S3PacketRollback;
 import com.forgeessentials.util.FunctionHelper;
@@ -40,6 +41,7 @@ public class ModulePlayerLogger {
     {
         logger.loadDatabase();
         new CommandRollback().register();
+        //new CommandTestPlayerlogger().register();
     }
 
     @SubscribeEvent
