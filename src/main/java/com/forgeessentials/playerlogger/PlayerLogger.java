@@ -135,16 +135,22 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @Override
     public synchronized void run()
     {
-        em.getTransaction().begin();
-        while (true)
+        try
         {
-            PlayerLoggerEvent<?> logEvent = eventQueue.poll();
-            if (logEvent == null)
-                break;
-            logEvent.process(em);
+            em.getTransaction().begin();
+            while (true)
+            {
+                PlayerLoggerEvent<?> logEvent = eventQueue.poll();
+                if (logEvent == null)
+                    break;
+                logEvent.process(em);
+            }
         }
-        em.getTransaction().commit();
-        em.clear();
+        finally
+        {
+            em.getTransaction().commit();
+            em.clear();
+        }
     }
 
     protected void startThread()
@@ -285,7 +291,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         em.getTransaction().begin();
         List<ActionBlock> changes = query.getResultList();
         em.getTransaction().commit();
-        
+
         return changes;
     }
 

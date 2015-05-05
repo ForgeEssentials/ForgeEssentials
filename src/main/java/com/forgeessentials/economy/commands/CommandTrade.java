@@ -124,7 +124,7 @@ public class CommandTrade extends ParserCommandBase
                         }
 
                         ItemStack currentItemStack = arguments.senderPlayer.getCurrentEquippedItem();
-                        if (!ItemStack.areItemStackTagsEqual(currentItemStack, itemStack))
+                        if (!ItemStack.areItemStacksEqual(currentItemStack, itemStack) || !ItemStack.areItemStackTagsEqual(currentItemStack, itemStack))
                             throw new TranslatedCommandException("You need to keep the item equipped until trade is finished!");
 
                         if (!buyerWallet.withdraw(price * itemStack.stackSize))

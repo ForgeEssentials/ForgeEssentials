@@ -59,7 +59,7 @@ public class CommandSell extends ParserCommandBase
         final ItemStack itemStack;
         final int amount;
         final int meta;
-        if (arguments.isEmpty())
+        if (arguments.isEmpty() || arguments.peek().equalsIgnoreCase("yes") || arguments.peek().equalsIgnoreCase("y"))
         {
             holdingItem = true;
             itemStack = arguments.senderPlayer.getCurrentEquippedItem();
