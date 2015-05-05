@@ -13,7 +13,6 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.PlayerInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -38,10 +37,7 @@ public class CommandTphere extends ForgeEssentialsCommandBase {
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-        EntityPlayerMP target = sender;
-        PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-        playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-        TeleportHelper.teleport(player, new WarpPoint(target));
+        TeleportHelper.teleport(player, new WarpPoint(sender));
     }
 
     @Override
