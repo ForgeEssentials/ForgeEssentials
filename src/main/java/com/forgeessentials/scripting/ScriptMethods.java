@@ -8,18 +8,22 @@ import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.DimensionManager;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.scripting.ScriptParser.MissingPermissionException;
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
 public final class ScriptMethods
@@ -167,6 +171,50 @@ public final class ScriptMethods
                 throw new SyntaxException("Invalid argument count for permcheck");
             if (!APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
                 return false;
+            return true;
+        }
+    };
+
+    public static final ScriptMethod teleport = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args)
+        {
+            if (args.length < 1)
+                throw new SyntaxException("Missing player argument for teleport");
+            if (args.length < 2)
+                throw new SyntaxException("Missing target argument for teleport");
+            UserIdent player = new UserIdent(args[1], sender);
+            if (!player.hasPlayer())
+                return false;
+            if (args.length == 2)
+            {
+                UserIdent target = new UserIdent(args[2], sender);
+                if (!target.hasPlayer())
+                    return false;
+                TeleportHelper.teleport(player.getPlayer(), new WarpPoint(target.getPlayer()));
+            }
+            else if (args.length == 4)
+            {
+                Integer x = FunctionHelper.tryParseInt(args[1]);
+                Integer y = FunctionHelper.tryParseInt(args[2]);
+                Integer z = FunctionHelper.tryParseInt(args[3]);
+                if (x == null || y == null || z == null)
+                    return false;
+                EntityPlayerMP p = player.getPlayer();
+                TeleportHelper.teleport(p, new WarpPoint(p.dimension, x, y, z, p.cameraPitch, p.cameraYaw));
+            }
+            else if (args.length == 5)
+            {
+                Integer x = FunctionHelper.tryParseInt(args[1]);
+                Integer y = FunctionHelper.tryParseInt(args[2]);
+                Integer z = FunctionHelper.tryParseInt(args[3]);
+                Integer dim = FunctionHelper.tryParseInt(args[4]);
+                if (x == null || y == null || z == null || dim == 0 || !DimensionManager.isDimensionRegistered(dim))
+                    return false;
+                EntityPlayerMP p = player.getPlayer();
+                TeleportHelper.teleport(p, new WarpPoint(dim, x, y, z, p.cameraPitch, p.cameraYaw));
+            } else
+                throw new SyntaxException("Incorrect number of arguments");
             return true;
         }
     };

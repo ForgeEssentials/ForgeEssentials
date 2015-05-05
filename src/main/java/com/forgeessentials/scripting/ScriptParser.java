@@ -13,13 +13,16 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.util.OutputHandler;
 
-public class ScriptParser {
+public class ScriptParser
+{
 
-    public static interface ScriptMethod {
+    public static interface ScriptMethod
+    {
         public boolean process(ICommandSender sender, String[] args);
     }
 
-    public static interface ScriptArgument {
+    public static interface ScriptArgument
+    {
         public String process(ICommandSender sender);
     }
 
@@ -122,15 +125,22 @@ public class ScriptParser {
         }
         else
         {
+            boolean canFail = false;
+            if (cmd.length() > 1 && cmd.charAt(0) == '?')
+            {
+                canFail = true;
+                cmd = cmd.substring(1);
+            }
             ScriptMethod method = ScriptMethods.get(cmd);
             if (method == null)
                 throw new SyntaxException("Unknown script method \"%s\"", cmd);
-            return method.process(sender, args);
+            return method.process(sender, args) | canFail;
         }
         return true;
     }
 
-    public static class ScriptException extends RuntimeException {
+    public static class ScriptException extends RuntimeException
+    {
 
         public ScriptException()
         {
@@ -149,7 +159,8 @@ public class ScriptParser {
 
     }
 
-    public static class SyntaxException extends ScriptException {
+    public static class SyntaxException extends ScriptException
+    {
 
         public SyntaxException(String message, Object... args)
         {
@@ -158,7 +169,8 @@ public class ScriptParser {
 
     }
 
-    public static class MissingPlayerException extends ScriptException {
+    public static class MissingPlayerException extends ScriptException
+    {
 
         public MissingPlayerException()
         {
@@ -167,7 +179,8 @@ public class ScriptParser {
 
     }
 
-    public static class MissingPermissionException extends ScriptException {
+    public static class MissingPermissionException extends ScriptException
+    {
 
         public final String permission;
 
