@@ -31,6 +31,7 @@ public class CommandTestPlayerlogger extends ParserCommandBase
         if (instance != null)
             FMLCommonHandler.instance().bus().unregister(instance);
         FMLCommonHandler.instance().bus().register(this);
+        instance = this;
     }
 
     @Override
@@ -80,14 +81,11 @@ public class CommandTestPlayerlogger extends ParserCommandBase
             int x = 0;
             int y = 200;
             int z = 0;
-            if (place)
-            {
-                ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(player.worldObj, x, y, z, Blocks.air, 0), ForgeDirection.DOWN);
-            }
-            else
-            {
-                MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(x, y, z, player.worldObj, Blocks.dirt, 0, player));
-            }
+            for (int i = 0; i < 300; i++)
+                if (place)
+                    ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(player.worldObj, x, y, z, Blocks.air, 0), ForgeDirection.DOWN);
+                else
+                    MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(x, y, z, player.worldObj, Blocks.dirt, 0, player));
             place = !place;
         }
     }

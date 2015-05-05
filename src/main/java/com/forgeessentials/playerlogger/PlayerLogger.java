@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,11 +22,8 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraft.world.ChunkPosition;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -38,20 +36,21 @@ import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.playerlogger.entity.ActionBlock;
-import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
-import com.forgeessentials.playerlogger.entity.ActionCommand;
 import com.forgeessentials.playerlogger.entity.Action_;
 import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.BlockData_;
 import com.forgeessentials.playerlogger.entity.PlayerData;
 import com.forgeessentials.playerlogger.entity.PlayerData_;
 import com.forgeessentials.playerlogger.entity.WorldData;
+import com.forgeessentials.playerlogger.event.LogEventBreak;
+import com.forgeessentials.playerlogger.event.LogEventCommand;
+import com.forgeessentials.playerlogger.event.LogEventExplosion;
+import com.forgeessentials.playerlogger.event.LogEventPlace;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -62,16 +61,14 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.registry.GameData;
 
-public class PlayerLogger extends ServerEventHandler
+public class PlayerLogger extends ServerEventHandler implements Runnable
 {
+
+    private Thread thread;
 
     private EntityManagerFactory entityManagerFactory;
 
     private EntityManager em;
-
-    private int transactionIndex;
-
-    private Map<Integer, Long> worldCache = new HashMap<>();
 
     private Map<String, Long> blockCache = new HashMap<>();
 
@@ -79,13 +76,17 @@ public class PlayerLogger extends ServerEventHandler
 
     private Map<UUID, Long> playerCache = new HashMap<>();
 
+    /* ------------------------------------------------------------ */
+
+    private ConcurrentLinkedQueue<PlayerLoggerEvent<?>> eventQueue = new ConcurrentLinkedQueue<PlayerLoggerEvent<?>>();
+
+    /* ------------------------------------------------------------ */
+
     /**
      * Closes any existing database connection and frees resources
      */
-    public void close()
+    protected void close()
     {
-        transactionIndex = 0;
-        worldCache.clear();
         blockCache.clear();
         blockTypeCache.clear();
         playerCache.clear();
@@ -97,9 +98,9 @@ public class PlayerLogger extends ServerEventHandler
     }
 
     /**
-     * 
+     * Initialize the database connection
      */
-    public void loadDatabase()
+    protected void loadDatabase()
     {
         close();
 
@@ -129,6 +130,29 @@ public class PlayerLogger extends ServerEventHandler
         // entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_eclipselink_" +
         // PlayerLoggerConfig.databaseType, properties);
         em = entityManagerFactory.createEntityManager();
+    }
+
+    @Override
+    public synchronized void run()
+    {
+        em.getTransaction().begin();
+        while (true)
+        {
+            PlayerLoggerEvent<?> logEvent = eventQueue.poll();
+            if (logEvent == null)
+                break;
+            logEvent.process(em);
+        }
+        em.getTransaction().commit();
+        em.clear();
+    }
+
+    protected void startThread()
+    {
+        if (thread != null && thread.isAlive())
+            return;
+        thread = new Thread(this);
+        thread.start();
     }
 
     // ============================================================
@@ -162,37 +186,19 @@ public class PlayerLogger extends ServerEventHandler
         throw new NonUniqueResultException();
     }
 
-    protected void beginTransaction()
+    protected void logEvent(PlayerLoggerEvent<?> event)
     {
-        if (transactionIndex <= 0)
-        {
-            em.getTransaction().begin();
-            transactionIndex = 0;
-        }
-        transactionIndex++;
+        eventQueue.add(event);
+        startThread();
     }
 
-    protected void commitTransaction()
-    {
-        transactionIndex--;
-        if (transactionIndex == 0)
-            em.getTransaction().commit();
-    }
-
-    protected void rollbackTransaction()
-    {
-        em.getTransaction().rollback();
-        transactionIndex = 0;
-    }
-
-    protected WorldData getWorld(int dimensionId)
+    protected synchronized WorldData getWorld(int dimensionId)
     {
         return em.getReference(WorldData.class, dimensionId);
     }
 
-    protected PlayerData getPlayer(String uuid)
+    protected synchronized PlayerData getPlayer(String uuid)
     {
-        beginTransaction();
         PlayerData data = getOneOrNullResult(buildSimpleQuery(PlayerData.class, PlayerData_.uuid, uuid));
         if (data == null)
         {
@@ -200,11 +206,10 @@ public class PlayerLogger extends ServerEventHandler
             data.uuid = uuid;
             em.persist(data);
         }
-        commitTransaction();
         return data;
     }
 
-    protected PlayerData getPlayer(UUID uuid)
+    protected synchronized PlayerData getPlayer(UUID uuid)
     {
         Long id = playerCache.get(uuid);
         if (id != null)
@@ -214,13 +219,12 @@ public class PlayerLogger extends ServerEventHandler
         return data;
     }
 
-    protected BlockData getBlock(String name)
+    protected synchronized BlockData getBlock(String name)
     {
         Long id = blockCache.get(name);
         if (id != null)
             return em.getReference(BlockData.class, id);
 
-        beginTransaction();
         BlockData data = getOneOrNullResult(buildSimpleQuery(BlockData.class, BlockData_.name, name));
         if (data == null)
         {
@@ -228,12 +232,11 @@ public class PlayerLogger extends ServerEventHandler
             data.name = name;
             em.persist(data);
         }
-        commitTransaction();
         blockCache.put(name, data.id);
         return data;
     }
 
-    protected BlockData getBlock(Block block)
+    protected synchronized BlockData getBlock(Block block)
     {
         Long id = blockTypeCache.get(block);
         if (id != null)
@@ -243,13 +246,13 @@ public class PlayerLogger extends ServerEventHandler
         return data;
     }
 
-    protected SerialBlob getTileEntityBlob(TileEntity entity)
+    protected SerialBlob getTileEntityBlob(TileEntity tileEntity)
     {
-        if (entity == null)
+        if (tileEntity == null)
             return null;
         NBTTagCompound nbt = new NBTTagCompound();
-        entity.writeToNBT(nbt);
-        nbt.setString("ENTITY_CLASS", entity.getClass().getName());
+        tileEntity.writeToNBT(nbt);
+        nbt.setString("ENTITY_CLASS", tileEntity.getClass().getName());
         try
         {
             return new SerialBlob(nbt.toString().getBytes(Charsets.UTF_8));
@@ -262,10 +265,10 @@ public class PlayerLogger extends ServerEventHandler
         return null;
     }
 
-    // ============================================================
-    // Rollback
+    /* ------------------------------------------------------------ */
+    /* data retrieval */
 
-    public List<ActionBlock> getBlockChangeSet(Selection area, Date startTime)
+    public synchronized List<ActionBlock> getBlockChangeSet(Selection area, Date startTime)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
@@ -279,183 +282,69 @@ public class PlayerLogger extends ServerEventHandler
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
         TypedQuery<ActionBlock> query = em.createQuery(cQuery);
 
-        beginTransaction();
+        em.getTransaction().begin();
         List<ActionBlock> changes = query.getResultList();
-        commitTransaction();
-
+        em.getTransaction().commit();
+        
         return changes;
     }
 
-    // ============================================================
-    // Block events
+    /* ------------------------------------------------------------ */
+    /* Block events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void worldLoad(WorldEvent.Load e)
+    public synchronized void worldLoad(WorldEvent.Load e)
     {
-        beginTransaction();
         WorldData world = em.find(WorldData.class, e.world.provider.dimensionId);
         if (world == null)
         {
+            em.getTransaction().begin();
             world = new WorldData();
             world.id = e.world.provider.dimensionId;
             world.name = e.world.provider.getDimensionName();
             em.persist(world);
+            em.getTransaction().commit();
         }
-        commitTransaction();
-    }
-
-    long t;
-    long st;
-    long total;
-    int count;
-
-    void DEBUG_start()
-    {
-        // total = count = 0;
-        t = st = System.nanoTime();
-    }
-
-    void DEBUG_tickStart()
-    {
-        t = System.nanoTime();
-    }
-
-    void DEBUG_tickNext(String type)
-    {
-        long nt = System.nanoTime();
-        System.err.println("> " + type + " \t" + (nt - t) / 1000 / 1000.0);
-        t = nt;
-    }
-
-    void DEBUG_end()
-    {
-        long dt = System.nanoTime() - st;
-        count++;
-        total += dt;
-        System.err.println(">> " + dt / 1000 / 1000.0 + " (avg: " + (total / count / 1000 / 1000.0) + ")");
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void placeEvent(BlockEvent.PlaceEvent e)
+    public void placeEvent(BlockEvent.PlaceEvent event)
     {
-        //DEBUG_start();
-        beginTransaction();
-        ActionBlock action = new ActionBlock();
-        action.time = new Date();
-        action.player = getPlayer(e.player.getPersistentID());
-        action.world = getWorld(e.world.provider.dimensionId);
-        action.block = getBlock(e.block);
-        action.metadata = e.blockMetadata;
-        action.type = ActionBlockType.PLACE;
-        action.x = e.x;
-        action.y = e.y;
-        action.z = e.z;
-        em.persist(action);
-        commitTransaction();
-        em.clear();
-        //DEBUG_end();
+        if (!event.isCanceled())
+            logEvent(new LogEventPlace(event));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void multiPlaceEvent(BlockEvent.MultiPlaceEvent e)
     {
         for (BlockSnapshot snapshot : e.getReplacedBlockSnapshots())
-        {
-            beginTransaction();
-            ActionBlock action = new ActionBlock();
-            action.time = new Date();
-            action.player = getPlayer(e.player.getPersistentID());
-            action.world = getWorld(snapshot.world.provider.dimensionId);
-            action.block = getBlock(snapshot.blockIdentifier.toString());
-            action.metadata = snapshot.meta;
-            action.type = ActionBlockType.PLACE;
-            action.x = snapshot.x;
-            action.y = snapshot.y;
-            action.z = snapshot.z;
-            em.persist(action);
-            commitTransaction();
-        }
+            eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, e.player)));
+        startThread();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void breakEvent(BreakEvent e)
+    public void breakEvent(BlockEvent.BreakEvent e)
     {
-        //DEBUG_start();
-        beginTransaction();
-        ActionBlock action = new ActionBlock();
-        action.time = new Date();
-        action.player = getPlayer(e.getPlayer().getPersistentID());
-        action.world = getWorld(e.world.provider.dimensionId);
-        action.block = getBlock(e.block);
-        action.metadata = e.blockMetadata;
-        action.entity = getTileEntityBlob(e.world.getTileEntity(e.x, e.y, e.z));
-        action.type = ActionBlockType.BREAK;
-        action.x = e.x;
-        action.y = e.y;
-        action.z = e.z;
-        em.persist(action);
-        commitTransaction();
-        em.clear();
-        //DEBUG_end();
+        logEvent(new LogEventBreak(e));
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void explosionEvent(ExplosionEvent.Detonate e)
     {
-        beginTransaction();
-        WorldData worldData = getWorld(e.world.provider.dimensionId);
-        for (ChunkPosition blockPos : (List<ChunkPosition>) e.explosion.affectedBlockPositions)
-        {
-            ActionBlock action = new ActionBlock();
-            action.time = new Date();
-            action.world = worldData;
-            action.block = getBlock(e.world.getBlock(blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ));
-            action.metadata = e.world.getBlockMetadata(blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ);
-            action.entity = getTileEntityBlob(e.world.getTileEntity(blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ));
-            action.type = ActionBlockType.DETONATE;
-            action.x = blockPos.chunkPosX;
-            action.y = blockPos.chunkPosY;
-            action.z = blockPos.chunkPosZ;
-            em.persist(action);
-        }
-        commitTransaction();
+        logEvent(new LogEventExplosion(e));
     }
 
-    // ============================================================
-    // Other events
+    /* ------------------------------------------------------------ */
+    /* Other events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void commandEvent(CommandEvent e)
+    public synchronized void commandEvent(CommandEvent e)
     {
-        beginTransaction();
-        ActionCommand action = new ActionCommand();
-        action.time = new Date();
-        action.command = e.command.getCommandName();
-        if (e.sender instanceof EntityPlayer)
-        {
-            EntityPlayer player = ((EntityPlayer) e.sender);
-            action.player = getPlayer(player.getPersistentID());
-            action.world = getWorld(player.worldObj.provider.dimensionId);
-            action.x = (int) player.posX;
-            action.y = (int) player.posY;
-            action.z = (int) player.posZ;
-        }
-        else if (e.sender instanceof TileEntityCommandBlock)
-        {
-            TileEntityCommandBlock block = ((TileEntityCommandBlock) e.sender);
-            action.player = getPlayer("commandblock");
-            action.world = getWorld(block.getWorldObj().provider.dimensionId);
-            action.x = block.xCoord;
-            action.y = block.yCoord;
-            action.z = block.zCoord;
-        }
-        em.persist(action);
-        commitTransaction();
+        logEvent(new LogEventCommand(e));
     }
 
-    // ============================================================
-    // Player events
+    /* ------------------------------------------------------------ */
+    /* Player events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent e)
@@ -505,8 +394,8 @@ public class PlayerLogger extends ServerEventHandler
         // TODO
     }
 
-    // ============================================================
-    // Interact events
+    /* ------------------------------------------------------------ */
+    /* Interact events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void attackEntityEvent(AttackEntityEvent e)
@@ -532,8 +421,8 @@ public class PlayerLogger extends ServerEventHandler
         // TODO
     }
 
-    // ============================================================
-    // Spawn events
+    /* ------------------------------------------------------------ */
+    /* Spawn events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void checkSpawnEvent(CheckSpawn e)
