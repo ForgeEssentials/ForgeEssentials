@@ -110,7 +110,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
         APIRegistry.perms.registerPermissionProperty(PERM_CURRENCY_SINGULAR, "coin", "Name of currency (singular)");
         APIRegistry.perms.registerPermissionProperty(PERM_STARTBUDGET, "100", "Starting amount of money for players");
         APIRegistry.perms.registerPermissionDescription(PERM_PRICE, "Default prices for items in economy");
-        APIRegistry.perms.registerPermissionProperty(PERM_DEATHTOLL, "", "Penalty for players to pay when they die. If set to lesser than 1, value is taken as a factor of the player's wallet balance.");
+        APIRegistry.perms.registerPermissionProperty(PERM_DEATHTOLL, "",
+                "Penalty for players to pay when they die. If set to lesser than 1, value is taken as a factor of the player's wallet balance.");
 
         PlotManager.serverStarting();
     }
@@ -189,29 +190,15 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     {
         if (e.entity instanceof EntityPlayerMP)
         {
-            EntityPlayerMP player = (EntityPlayerMP)e.entity;
-            String propValue = APIRegistry.perms.getPermissionProperty(player, PERM_DEATHTOLL);
-            if (propValue == null || propValue.equals("") || propValue.equals("0"))
-            {
+            UserIdent ident = new UserIdent((EntityPlayerMP) e.entity);
+            Long deathtoll = FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
+            if (deathtoll == null || deathtoll <= 0)
                 return;
-            }
-
-            long value = FunctionHelper.tryParseLong(propValue);
-            Wallet walletData = APIRegistry.economy.getWallet(player);
-
-            // we assume this is a factor of the player's wallet
-            // THIS IS NOT A PERCENTAGE!!!
-            if (value < 1)
-            {
-                long wallet = walletData.get();
-                wallet = wallet * value;
-                walletData.set(wallet);
-            }
-            // more than 1, so now it's absolute
-            else if (value >= 1)
-            {
-                walletData.set(Math.min(0, walletData.get() - value));
-            }
+            Wallet walletData = APIRegistry.economy.getWallet(ident);
+            if (deathtoll < 1)
+                walletData.set(walletData.get() * deathtoll);
+            else if (deathtoll >= 1)
+                walletData.set(Math.min(0, walletData.get() - deathtoll));
         }
     }
 
