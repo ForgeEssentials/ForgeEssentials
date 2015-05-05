@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
@@ -77,7 +76,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
         if (args.length < 5)
             throw new InvalidSyntaxException(getCommandUsage(sender));
 
-        UserIdent ident = new UserIdent(args[0]);
+        UserIdent ident = new UserIdent(args[0], sender);
         EntityPlayerMP player = ident.getPlayer();
         if (player == null)
             throw new PlayerNotFoundException();
@@ -98,8 +97,16 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
                 foundStacks += stack.stackSize;
         }
 
-        if (foundStacks < amount)
-            throw new TranslatedCommandException("You do not have enough %s to afford this", itemStack.getDisplayName());
+        if (foundStacks < amount) {
+            OutputHandler.chatError(player, Translator.format("You do not have enough %s to afford this", itemStack.getDisplayName()));
+            return;
+        }
+
+        OutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
+                amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(player).toString()));
+
+        args = Arrays.copyOfRange(args, 4, args.length);
+        MinecraftServer.getServer().getCommandManager().executeCommand(player, StringUtils.join(args, " "));
 
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {
@@ -107,16 +114,13 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
             if (stack != null && stack.getItem() == itemStack.getItem()
                     && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
             {
-                int removeCount = Math.min(stack.stackSize, foundStacks);
+                int removeCount = Math.min(stack.stackSize, amount);
                 player.inventory.decrStackSize(slot, removeCount);
                 foundStacks -= removeCount;
+                amount -= removeCount;
+                if (amount <= 0)
+                    break;
             }
         }
-
-        args = Arrays.copyOfRange(args, 4, args.length);
-        MinecraftServer.getServer().getCommandManager().executeCommand(sender, StringUtils.join(args, " "));
-
-        OutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
-                amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(player).toString()));
     }
 }
