@@ -1,10 +1,11 @@
 package com.forgeessentials.perftools;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.tasks.TaskRegistry;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -27,7 +28,7 @@ public class PerfToolsModule extends ConfigLoaderBase
         {
             watchdog = new MemoryWatchdog();
             PermissionsManager.registerPermission(PERM_WARN, RegisteredPermValue.OP);
-            TaskRegistry.registerRecurringTask(watchdog, 0, 0, 0, 0, 0, checkInterval, 0, 0);
+            TaskRegistry.getInstance().scheduleRepeated(watchdog, checkInterval * 60 * 1000);
         }
 
         new CommandServerPerf().register();

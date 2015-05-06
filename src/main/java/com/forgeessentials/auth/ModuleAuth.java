@@ -4,6 +4,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.auth.lists.CommandVIP;
 import com.forgeessentials.auth.lists.CommandWhiteList;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
@@ -11,7 +12,7 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.tasks.TaskRegistry;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -72,7 +73,7 @@ public class ModuleAuth extends ConfigLoaderBase {
         if (checkVanillaAuthStatus && !forceEnabled)
         {
             vanillaCheck = new VanillaServiceChecker();
-            TaskRegistry.registerRecurringTask(vanillaCheck, 0, checkInterval, 0, 0, 0, checkInterval, 0, 0);
+            TaskRegistry.getInstance().scheduleRepeated(vanillaCheck, checkInterval * 60 * 1000);
         }
 
         onStatusChange();

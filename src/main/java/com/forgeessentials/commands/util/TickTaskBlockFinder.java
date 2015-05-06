@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.TaskRegistry.ITickTask;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.ITickTask;
-import com.forgeessentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -73,7 +73,7 @@ public class TickTaskBlockFinder implements ITickTask {
         blockName = stack.getItem() != null ? stack.getDisplayName() : GameData.getBlockRegistry().getNameForObject(block);
 
         msg("Start the hunt for " + blockName);
-        TaskRegistry.registerTask(this);
+        TaskRegistry.getInstance().schedule(this);
     }
 
     @Override

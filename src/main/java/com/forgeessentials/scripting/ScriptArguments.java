@@ -6,18 +6,23 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-
-import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
-import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
 import net.minecraft.server.MinecraftServer;
 
-public final class ScriptArguments {
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
+import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
+import com.forgeessentials.scripting.ScriptParser.SyntaxException;
+import com.forgeessentials.util.FunctionHelper;
+
+public final class ScriptArguments
+{
 
     private static Map<String, ScriptArgument> scriptArguments = new HashMap<>();
 
@@ -31,6 +36,47 @@ public final class ScriptArguments {
     public static ScriptArgument get(String name)
     {
         return scriptArguments.get(name);
+    }
+
+    public static final Pattern ARGUMENT_PATTERN = Pattern.compile("@\\{?(\\w+)\\}?");
+
+    public static String process(String text)
+    {
+        return process(text, null, null);
+    }
+
+    public static String process(String text, ICommandSender sender)
+    {
+        return process(text, sender, null);
+    }
+
+    public static String process(String text, ICommandSender sender, List<?> args)
+    {
+        Matcher m = ARGUMENT_PATTERN.matcher(text);
+        StringBuffer sb = new StringBuffer();
+        while (m.find())
+        {
+            String modifier = m.group(1).toLowerCase();
+            ScriptArgument argument = get(modifier);
+            if (argument != null)
+                m.appendReplacement(sb, argument.process(sender));
+            else if (args == null)
+                m.appendReplacement(sb, m.group());
+            else
+                try
+                {
+                    int idx = Integer.parseInt(modifier);
+                    if (args == null || idx >= args.size())
+                        throw new SyntaxException("Missing argument @%d", idx);
+                    m.appendReplacement(sb, args.get(idx).toString());
+                }
+                catch (NumberFormatException e)
+                {
+                    m.appendReplacement(sb, m.group());
+                }
+        }
+        m.appendTail(sb);
+        return sb.toString();
     }
 
     private static void registerAll()
@@ -156,35 +202,40 @@ public final class ScriptArguments {
     };
 
     public static ScriptArgument tps = new ScriptArgument() {
-        @Override public String process(ICommandSender sender)
+        @Override
+        public String process(ICommandSender sender)
         {
             return new DecimalFormat("#").format(FunctionHelper.getTPS());
         }
     };
 
     public static ScriptArgument realTime = new ScriptArgument() {
-        @Override public String process(ICommandSender sender)
+        @Override
+        public String process(ICommandSender sender)
         {
             return FunctionHelper.getCurrentTimeString();
         }
     };
 
     public static ScriptArgument realDate = new ScriptArgument() {
-        @Override public String process(ICommandSender sender)
+        @Override
+        public String process(ICommandSender sender)
         {
             return FunctionHelper.getCurrentDateString();
         }
     };
 
     public static ScriptArgument worldTime = new ScriptArgument() {
-        @Override public String process(ICommandSender sender)
+        @Override
+        public String process(ICommandSender sender)
         {
             return new DecimalFormat("#").format(MinecraftServer.getServer().getEntityWorld().getWorldTime());
         }
     };
 
     public static ScriptArgument noOfPlayersOnline = new ScriptArgument() {
-        @Override public String process(ICommandSender sender)
+        @Override
+        public String process(ICommandSender sender)
         {
             int online = 0;
             try
@@ -199,7 +250,8 @@ public final class ScriptArguments {
     };
 
     public static ScriptArgument serverUptime = new ScriptArgument() {
-        @Override public String process(ICommandSender sender)
+        @Override
+        public String process(ICommandSender sender)
         {
             RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
             int secsIn = (int) (rb.getUptime() / 1000);
@@ -208,7 +260,8 @@ public final class ScriptArguments {
     };
 
     public static ScriptArgument uniquePlayers = new ScriptArgument() {
-        @Override public String process(ICommandSender sender)
+        @Override
+        public String process(ICommandSender sender)
         {
             return Integer.toString(APIRegistry.perms.getServerZone().getKnownPlayers().size());
         }

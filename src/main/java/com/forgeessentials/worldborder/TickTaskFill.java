@@ -19,12 +19,12 @@ import net.minecraft.world.chunk.storage.RegionFileCache;
 import net.minecraft.world.gen.ChunkProviderServer;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.TaskRegistry.ITickTask;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.ITickTask;
-import com.forgeessentials.util.tasks.TaskRegistry;
 
 /**
  * Does the actual filling, with limited chuncks per tick.
@@ -120,7 +120,7 @@ public class TickTaskFill implements ITickTask {
         }
 
         setupWriteChunkToNBT();
-        TaskRegistry.registerTask(this);
+        TaskRegistry.getInstance().schedule(this);
 
         OutputHandler.chatWarning(sender, String.format("This filler will take about %d at current speed", getETA()));
     }

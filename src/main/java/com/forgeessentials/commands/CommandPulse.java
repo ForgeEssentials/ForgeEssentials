@@ -12,9 +12,9 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskPulseHelper;
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.tasks.TaskRegistry;
 
 public class CommandPulse extends FEcmdModuleCommands {
 	
@@ -67,7 +67,7 @@ public class CommandPulse extends FEcmdModuleCommands {
                 var6 = parseIntWithMin(sender, args[3], 1);
             }
 
-            TaskRegistry.registerTask(new TickTaskPulseHelper(var11, new Point(var3, var4, var5), var6));
+            TaskRegistry.getInstance().schedule(new TickTaskPulseHelper(var11, new Point(var3, var4, var5), var6));
             OutputHandler.chatConfirmation(sender, "Redstone Pulsed for " + var6 + " Ticks");
         }
         else

@@ -1,15 +1,15 @@
 package com.forgeessentials.chat;
 
-import com.forgeessentials.chat.irc.IRCChatFormatter;
-import com.forgeessentials.chat.irc.IRCHelper;
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.forgeessentials.chat.irc.IRCChatFormatter;
+import com.forgeessentials.chat.irc.IRCHelper;
+import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.util.OutputHandler;
 
 public class ConfigChat extends ConfigLoaderBase {
     
@@ -40,22 +40,6 @@ public class ConfigChat extends ConfigLoaderBase {
         OutputHandler.felog.finer("Loading chatconfigs");
 
         config.addCustomCategoryComment("Chat", "Chat Configs");
-        config.addCustomCategoryComment("Chat.Automessage", "Automated spamm");
-
-        String[] msg = config
-                .get("Chat.Automessage",
-                        "messages",
-                        new String[] { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"",
-                                "\"The timing can be changed there too!\"" }, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES")
-                .getStringList().clone();
-        for (int i = 0; i < msg.length; i++)
-        {
-            AutoMessage.msg.add(FunctionHelper.formatColors(FunctionHelper.format(msg[i].substring(1, msg[i].length() - 1))));
-        }
-
-        AutoMessage.random = config.get("Chat.Automessage", "random", false, "Randomize the order of messages").getBoolean(false);
-        AutoMessage.waittime = config.get("Chat.Automessage", "inverval", 60, "Time in between each message in minutes").getInt();
-        AutoMessage.enable = config.get("Chat.Automessage", "enable", false).getBoolean(true);
 
         chatFormat = config.get("Chat", "chatformat", "%playerPrefix%groupPrefix<%username>%groupSuffix%playerSuffix %reset%message", largeComment_chatFormat)
                 .getString();
@@ -120,17 +104,6 @@ public class ConfigChat extends ConfigLoaderBase {
         Property prop = config.get("Chat", "chatformat", "%groupPrefix%playerPrefix<%username>%playerSuffix%groupSuffix %reset%message",
                 largeComment_chatFormat);
         prop.set(chatFormat);
-
-        String[] msg = AutoMessage.msg.toArray(new String[0]);
-        for (int i = 0; i < msg.length; i++)
-        {
-            msg[i] = "\"" + msg[i] + "\"";
-        }
-
-        config.get("Chat.Automessage", "messages", new String[] {}, "Each line is 1 message. You can use color coldes. YOU MUST USE DOUBLE QUOTES").set(msg);
-        config.get("Chat.Automessage", "random", false, "Randomize the order of messages").set(AutoMessage.random);
-        config.get("Chat.Automessage", "inverval", 1, "Time in between each message in minutes").set(AutoMessage.waittime);
-        config.get("Chat.Automessage", "enable", true).set(AutoMessage.enable);
 
         config.get("BannedWords", "censor", true, "censor the words in the censorList").set(ChatFormatter.censor);
         config.get("BannedWords", "censorList", new String[] {}, "List of words to be censored").set(

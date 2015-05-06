@@ -13,8 +13,6 @@ import net.minecraftforge.common.util.FakePlayer;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public class UserIdent {
 
     protected UUID uuid;
@@ -384,7 +382,7 @@ public class UserIdent {
     @SuppressWarnings("unchecked")
     public static EntityPlayerMP getPlayerByUsername(String name)
     {
-        for (EntityPlayerMP player : (List<EntityPlayerMP>) FMLCommonHandler.instance().getSidedDelegate().getServer().getConfigurationManager().playerEntityList)
+        for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
             if (player.getGameProfile().getName().equals(name))
                 return player;
         return null;

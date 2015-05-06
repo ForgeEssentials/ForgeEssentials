@@ -1,5 +1,11 @@
 package com.forgeessentials.chat.commands;
 
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.chat.AutoMessage;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.ForgeEssentials;
@@ -7,13 +13,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class CommandAutoMessage extends ForgeEssentialsCommandBase {
     @Override
@@ -41,14 +40,14 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
         {
             try
             {
-                int id = parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
-                AutoMessage.currentMsgID = id;
-                OutputHandler.chatConfirmation(sender, "You have selected \"" + AutoMessage.msg.get(id) + "\" as the next message.");
+                int id = parseIntBounded(sender, args[1], 0, AutoMessage.getInstance().messages.size());
+                AutoMessage.getInstance().currentMessageIdx = id;
+                OutputHandler.chatConfirmation(sender, "You have selected \"" + AutoMessage.getInstance().messages.get(id) + "\" as the next message.");
                 return;
             }
             catch (Exception e)
             {
-                throw new TranslatedCommandException("You have to select a message to broadcast next. Options: %s", AutoMessage.msg.size());
+                throw new TranslatedCommandException("You have to select a message to broadcast next. Options: %s", AutoMessage.getInstance().messages.size());
             }
         }
 
@@ -56,13 +55,13 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
         {
             try
             {
-                int id = parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
-                OutputHandler.broadcast(new ChatComponentText(AutoMessage.msg.get(id)));
+                int idx = parseIntBounded(sender, args[1], 0, AutoMessage.getInstance().messages.size());
+                AutoMessage.getInstance().send(idx);
                 return;
             }
             catch (Exception e)
             {
-                throw new TranslatedCommandException("You have to select a message to broadcast. Options: %s", AutoMessage.msg.size());
+                throw new TranslatedCommandException("You have to select a message to broadcast. Options: %s", AutoMessage.getInstance().messages.size());
             }
         }
 
@@ -76,7 +75,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
                     msg += " " + var;
                 }
                 OutputHandler.chatConfirmation(sender, msg.substring(1));
-                AutoMessage.msg.add(msg.substring(1));
+                AutoMessage.getInstance().messages.add(msg.substring(1));
                 ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_CATEGORY);
                 return;
             }
@@ -91,14 +90,14 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
         {
             try
             {
-                int id = parseIntBounded(sender, args[1], 0, AutoMessage.msg.size());
-                OutputHandler.chatConfirmation(sender, "Message \"" + AutoMessage.msg.get(id) + "\" removed.");
-                AutoMessage.msg.remove(id);
+                int id = parseIntBounded(sender, args[1], 0, AutoMessage.getInstance().messages.size());
+                OutputHandler.chatConfirmation(sender, "Message \"" + AutoMessage.getInstance().messages.get(id) + "\" removed.");
+                AutoMessage.getInstance().messages.remove(id);
                 return;
             }
             catch (Exception e)
             {
-                throw new TranslatedCommandException("You have to select a message to remove. Options: %s", AutoMessage.msg.size());
+                throw new TranslatedCommandException("You have to select a message to remove. Options: %s", AutoMessage.getInstance().messages.size());
             }
         }
     }

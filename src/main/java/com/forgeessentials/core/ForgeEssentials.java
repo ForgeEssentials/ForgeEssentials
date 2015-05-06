@@ -14,6 +14,7 @@ import com.forgeessentials.core.commands.HelpFixer;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TickTaskHandler;
 import com.forgeessentials.core.misc.Translator;
@@ -40,7 +41,6 @@ import com.forgeessentials.util.selections.CommandExpandY;
 import com.forgeessentials.util.selections.CommandPos;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionEventHandler;
-import com.forgeessentials.util.tasks.TaskRegistry;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -89,6 +89,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
     public ModuleLauncher moduleLauncher;
 
+    @SuppressWarnings("unused")
     private TaskRegistry tasks;
 
     @SuppressWarnings("unused")
@@ -196,8 +197,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
             new CommandExpandY().register();
         }
 
-        tasks.onServerStart();
-
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerInitEvent(e));
@@ -229,10 +228,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent e)
     {
-        tasks.onServerStop();
         PlayerInfo.saveAll();
         PlayerInfo.clear();
-
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerStopEvent(e));
     }
 

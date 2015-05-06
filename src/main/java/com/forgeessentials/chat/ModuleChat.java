@@ -43,30 +43,30 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
-public class ModuleChat {
-    
+public class ModuleChat
+{
+
     public static final String CONFIG_CATEGORY = "Chat";
 
     public static boolean welcomeNewPlayers;
     public static String welcomeNewPlayerMsg;
-    
+
     @FEModule.ModuleDir
     public static File moduleDir;
 
     public static PrintWriter chatLog;
-    
+
     public static PrintWriter cmdLog;
-    
+
     public static File logdir;
-    
+
     public static boolean connectToIRC;
-    
+
     private MailSystem mailsystem;
-    
+
     @SuppressWarnings("unused")
     private PlayerEventHandler ircPlayerHandler;
 
-    @SuppressWarnings("unused")
     private AutoMessage autoMessage;
 
     @SubscribeEvent
@@ -151,7 +151,10 @@ public class ModuleChat {
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
         removeTell(FMLCommonHandler.instance().getMinecraftServerInstance());
-        autoMessage = new AutoMessage(FMLCommonHandler.instance().getMinecraftServerInstance());
+        
+        autoMessage = new AutoMessage();
+        ForgeEssentials.getConfigManager().registerLoader(CONFIG_CATEGORY, autoMessage);
+        
         MailSystem.LoadAll();
         FMLCommonHandler.instance().bus().register(mailsystem);
         if (connectToIRC)
@@ -179,8 +182,8 @@ public class ModuleChat {
         {
             try
             {
-                Set<?> cmdList = ReflectionHelper
-                        .getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), CommandSetChecker.FIELDNAME);
+                Set<?> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(),
+                        CommandSetChecker.FIELDNAME);
 
                 ICommand toRemove = null;
                 Class<?> cmdClass = null;
@@ -215,8 +218,8 @@ public class ModuleChat {
                 ReflectionHelper
                         .setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, "commandSet", "b", "field_71561_b");
 
-                Map<String, CommandMsg> cmds = ReflectionHelper
-                        .getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), "commandMap", "a", "field_71562_a");
+                Map<String, CommandMsg> cmds = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(),
+                        "commandMap", "a", "field_71562_a");
                 if (cmds.containsKey("tell"))
                 {
                     OutputHandler.felog.finer("Removing command tell from vanilla set.");

@@ -4,7 +4,7 @@ import java.util.TimerTask;
 
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.util.tasks.TaskRegistry;
+import com.forgeessentials.core.misc.TaskRegistry;
 
 public class TimedTask extends TimerTask {
 
@@ -19,7 +19,7 @@ public class TimedTask extends TimerTask {
         this.interval = interval;
         this.command = command;
         this.name = name;
-        TaskRegistry.registerRecurringTask(this, 0, 0, interval, 0, 0, 0, interval, 0);
+        TaskRegistry.getInstance().scheduleRepeated(this, interval * 1000);
     }
 
     @Override
