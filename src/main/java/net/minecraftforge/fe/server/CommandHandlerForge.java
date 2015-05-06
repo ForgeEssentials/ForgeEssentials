@@ -99,5 +99,9 @@ public class CommandHandlerForge {
             return command.canCommandSenderUseCommand(sender);
     }
 
+    public static String getCommandPermission(String command)
+    {
+        return permMap.get(command);
+    }
  
 }

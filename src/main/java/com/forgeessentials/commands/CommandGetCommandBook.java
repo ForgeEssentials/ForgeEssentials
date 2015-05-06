@@ -1,7 +1,8 @@
 package com.forgeessentials.commands;
 
-import java.util.HashMap;
-import java.util.SortedSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.command.ICommand;
@@ -14,12 +15,16 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fe.server.CommandHandlerForge;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import org.apache.commons.lang3.StringUtils;
 
-public class CommandGetCommandBook extends FEcmdModuleCommands {
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+
+public class CommandGetCommandBook extends FEcmdModuleCommands
+{
+
     public static String joinAliases(Object[] par0ArrayOfObj)
     {
         StringBuilder var1 = new StringBuilder();
@@ -48,98 +53,58 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[]
-                { "cmdb", "gcmdb" };
+        return new String[] { "cmdb", "gcmdb" };
     }
 
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
-
-        HashMap<String, String> map = new HashMap<String, String>();
 
         if (sender.inventory.hasItemStack(new ItemStack(Items.written_book)))
         {
-            int i = 0;
-            for (ItemStack e : sender.inventory.mainInventory)
+            for (int i = 0; i < sender.inventory.mainInventory.length; i++)
             {
-                if (e != null)
+                ItemStack e = sender.inventory.mainInventory[i];
+                if (e != null && e.hasTagCompound() && e.getTagCompound().hasKey("title") && e.getTagCompound().hasKey("author")
+                        && e.getTagCompound().getString("title").equals("CommandBook") && e.getTagCompound().getString("author").equals("ForgeEssentials"))
                 {
-                    if (e.hasTagCompound())
-                    {
-                        if (e.getTagCompound().hasKey("title") && e.getTagCompound().hasKey("author"))
-                        {
-                            if (e.getTagCompound().getString("title").equals("CommandBook") && e.getTagCompound().getString("author").equals("ForgeEssentials"))
-                            {
-                                sender.inventory.setInventorySlotContents(i, null);
-                            }
-                        }
-                    }
+                    sender.inventory.setInventorySlotContents(i, null);
                 }
-                i++;
             }
         }
 
-        for (Object cmdObj : MinecraftServer.getServer().getCommandManager().getCommands().values().toArray())
+        Set<String> pages = new TreeSet<String>();
+        for (Object cmdObj : MinecraftServer.getServer().getCommandManager().getCommands().values())
         {
-            /*
-             * PAGE FORMAT
-			 * =========================
-			 * [GOLD] /commandName
-			 * [GOLD] aliases
-			 * [DARKRED] permissions
-			 * [Black] usage
-			 */
-
-            // Cast to command
             ICommand cmd = (ICommand) cmdObj;
-
-            // Skip commands for which the user has no permissions
-            if (!cmd.canCommandSenderUseCommand(sender))
-            {
+            if (!CommandHandlerForge.canUse(cmd, sender))
                 continue;
-            }
 
-            // Initialize string for page.
-            String text = "";
+            Set<String> commands = new HashSet<>();
+            commands.add("/" + cmd.getCommandName());
 
-            // List command aliases.
-            if (cmd.getCommandAliases() != null && cmd.getCommandAliases().size() != 0)
+            // Add aliases
+            List<?> aliases = cmd.getCommandAliases();
+            if (aliases != null && aliases.size() > 0)
             {
-                text += EnumChatFormatting.GOLD + joinAliases(cmd.getCommandAliases().toArray()) + "\n\n";
-            }
-            else
-            {
-                text += EnumChatFormatting.GOLD + "No aliases.\n\n";
+                for (Object alias : aliases)
+                    commands.add("/" + alias);
             }
 
-            // Display permissions node (If applicable)
-            if (cmd instanceof ForgeEssentialsCommandBase)// Was: FEcmdModuleCommands
-            {
-                text += EnumChatFormatting.DARK_RED + ((ForgeEssentialsCommandBase) cmd).getPermissionNode() + "\n\n";
-            }
-
-            // Display usage
-            text += EnumChatFormatting.BLACK + cmd.getCommandUsage(sender);
-
-            // Finally post to map
-            if (!text.equals(""))
-            {
-                map.put(EnumChatFormatting.GOLD + "/" + cmd.getCommandName() + "\n" + EnumChatFormatting.RESET, text);
-            }
+            String perm = CommandHandlerForge.getCommandPermission(cmd.getCommandName());
+            String text = EnumChatFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
+                    (perm != null ? EnumChatFormatting.DARK_RED + perm + "\n\n" : '\n') + EnumChatFormatting.BLACK + cmd.getCommandUsage(sender);
+            pages.add(text);
         }
 
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
-        for (String name : keys)
-        {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
-        }
+        NBTTagList pagesNbt = new NBTTagList();
+        for (String page : pages)
+            pagesNbt.appendTag(new NBTTagString(page));
 
+        NBTTagCompound tag = new NBTTagCompound();
         tag.setString("author", "ForgeEssentials");
         tag.setString("title", "CommandBook");
-        tag.setTag("pages", pages);
+        tag.setTag("pages", pagesNbt);
 
         ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
@@ -163,4 +128,5 @@ public class CommandGetCommandBook extends FEcmdModuleCommands {
     {
         return "/getcommandbook Get a command book listing all commands.";
     }
+
 }
