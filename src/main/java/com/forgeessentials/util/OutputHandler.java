@@ -221,7 +221,6 @@ public final class OutputHandler extends ConfigLoaderBase {
         public Logger getWrapper(){return wrapped;}
     }
 
-    
     @Override
     public void load(Configuration config, boolean isReload)
     {

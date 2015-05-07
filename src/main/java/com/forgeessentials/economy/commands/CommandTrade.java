@@ -14,6 +14,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
@@ -125,10 +126,16 @@ public class CommandTrade extends ParserCommandBase
 
                         ItemStack currentItemStack = arguments.senderPlayer.getCurrentEquippedItem();
                         if (!ItemStack.areItemStacksEqual(currentItemStack, itemStack) || !ItemStack.areItemStackTagsEqual(currentItemStack, itemStack))
-                            throw new TranslatedCommandException("You need to keep the item equipped until trade is finished!");
+                        {
+                            arguments.error(Translator.translate("You need to keep the item equipped until trade is finished!"));
+                            return;
+                        }
 
                         if (!buyerWallet.withdraw(price * itemStack.stackSize))
-                            throw new ModuleEconomy.CantAffordException();
+                        {
+                            OutputHandler.chatError(buyer.getPlayer(), Translator.translate("You can't afford that"));
+                            return;
+                        }
                         sellerWallet.add(price * itemStack.stackSize);
 
                         InventoryPlayer inventory = arguments.senderPlayer.inventory;
