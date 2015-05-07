@@ -40,7 +40,7 @@ public class CommandCraft extends FEcmdModuleCommands {
     @Override
     public RegisteredPermValue getDefaultPermission()
     {
-        return RegisteredPermValue.TRUE;
+        return RegisteredPermValue.OP;
     }
 
     @Override
