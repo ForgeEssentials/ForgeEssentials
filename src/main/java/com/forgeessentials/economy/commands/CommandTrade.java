@@ -93,7 +93,7 @@ public class CommandTrade extends ParserCommandBase
         final Wallet buyerWallet = APIRegistry.economy.getWallet(buyer);
 
         if (!buyerWallet.covers(price * itemStack.stackSize))
-            throw new TranslatedCommandException("%s can't affort that!");
+            throw new TranslatedCommandException("%s can't affort that!", buyer.getUsernameOrUUID());
 
         QuestionerCallback sellerHandler = new QuestionerCallback() {
             @Override
