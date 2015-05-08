@@ -37,8 +37,6 @@ project.ext.build = '0'
 if (System.getenv('BUILD_NUMBER') != null)
     project.ext.build = System.getenv('BUILD_NUMBER')
 
-evaluationDependsOn('Mixin')
-
 import org.ajoberstar.grgit.Grgit
 
 def repo = Grgit.open(project.file('.'))
@@ -78,7 +76,9 @@ afterEvaluate {
 configurations {
     serverLibs
     includeMod
+    shade
     myCompile
+    myCompile.extendsFrom shade
     compile.extendsFrom myCompile
 }
 
@@ -107,6 +107,10 @@ repositories {
         name = "sponge"
         url = "http://repo.spongepowered.org/maven/"
     }
+    maven {
+        name = "mumfrey-temp"
+        url = "http://repo.mumfrey.com/content/repositories/mixin/"
+    }
 }
 
 dependencies {
@@ -124,11 +128,7 @@ dependencies {
     myCompile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.2-SNAPSHOT:dev'
 
     // mixins
-    //myCompile 'org.spongepowered:mixin:0.1-SNAPSHOT'
-
-    //shade 'org.spongepowered:mixin:0.1-SNAPSHOT'
-
-    myCompile project('Mixin')
+    shade 'org.spongepowered:mixin:0.4-SNAPSHOT'
 
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
@@ -170,13 +170,17 @@ jar {
         attributes(
                 "BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
-                "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
-                "TweakOrder": "10000"
+                "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+                "TweakOrder": "10000",
+                "FMLCorePluginContainsFMLMod": "true",
+                "ForceLoadAsMod": "true",
+                "FMLAT": "forgeessentials_at.cfg"
         )
     }
-
-    from(project("Mixin").sourceSets.main.output) {
-        include "org/spongepowered/asm/**"
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
+            include "org/spongepowered/asm/**"
+        }
     }
 }
 
@@ -233,16 +237,15 @@ task deobfJar(dependsOn: "jar", type: Jar) {
     include "com/forgeessentials/**"
     // config guis won't work, but who cares, anyway?
 
-    from(project("Mixin").sourceSets.main.output) {
-        include "org/spongepowered/asm/**"
-    }
-
     manifest {
         attributes(
                 "BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
-                "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
-                "TweakOrder": "10000"
+                "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+                "TweakOrder": "10000",
+                "FMLCorePluginContainsFMLMod": "true",
+                "ForceLoadAsMod": "true",
+                "FMLAT": "forgeessentials_at.cfg"
         )
         classifier = 'deobf'
         appendix = project.minecraft.version

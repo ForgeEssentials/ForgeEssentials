@@ -1,7 +1,12 @@
 package com.forgeessentials.core;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import com.forgeessentials.core.preloader.classloading.FEClassLoader;
+import cpw.mods.fml.common.event.*;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -23,7 +28,6 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.network.S0PacketHandshake;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
-import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
@@ -46,16 +50,9 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.discovery.ASMDataTable;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 /**
  * Main mod class
@@ -89,6 +86,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
     public ModuleLauncher moduleLauncher;
 
+    public static File jarLocation;
+
     @SuppressWarnings("unused")
     private TaskRegistry tasks;
 
@@ -118,6 +117,28 @@ public class ForgeEssentials extends ConfigLoaderBase {
         Environment.check();
     }
 
+    @EventHandler
+    public void classLoad(FMLConstructionEvent e)
+    {
+        jarLocation = findJarFile();
+        new FEClassLoader().extractLibs(Launch.minecraftHome, Launch.classLoader);
+        MixinEnvironment.getDefaultEnvironment().addConfiguration("mixins.forgeessentials.json");
+    }
+
+    private File findJarFile()
+    {
+        URI uri = null;
+        try
+        {
+            uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+        }
+        catch (URISyntaxException ex)
+        {
+            ex.printStackTrace();
+        }
+        return uri != null ? new File(uri) : null;
+    }
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
@@ -125,7 +146,7 @@ public class ForgeEssentials extends ConfigLoaderBase {
         
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
         OutputHandler.felog.info("Initializing ForgeEssentials version " + FEVERSION + " (configDir = " + FEDIR.getAbsolutePath() + ")");
-        OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(FELaunchHandler.jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(FELaunchHandler.jarLocation));
+        OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(jarLocation));
 
         // Load configuration
         configManager = new ConfigManager(FEDIR, "main");
