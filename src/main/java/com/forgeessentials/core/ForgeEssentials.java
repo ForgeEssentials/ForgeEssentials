@@ -120,29 +120,15 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @EventHandler
     public void classLoad(FMLConstructionEvent e)
     {
-        jarLocation = findJarFile();
         new FEClassLoader().extractLibs(Launch.minecraftHome, Launch.classLoader);
         MixinEnvironment.getDefaultEnvironment().addConfiguration("mixins.forgeessentials.json");
-    }
-
-    private File findJarFile()
-    {
-        URI uri = null;
-        try
-        {
-            uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-        }
-        catch (URISyntaxException ex)
-        {
-            ex.printStackTrace();
-        }
-        return uri != null ? new File(uri) : null;
     }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
         asmData = e.getAsmData();
+        jarLocation = e.getSourceFile();
         
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
         OutputHandler.felog.info("Initializing ForgeEssentials version " + FEVERSION + " (configDir = " + FEDIR.getAbsolutePath() + ")");
