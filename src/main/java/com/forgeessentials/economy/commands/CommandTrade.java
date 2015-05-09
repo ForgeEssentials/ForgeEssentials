@@ -120,6 +120,7 @@ public class CommandTrade extends ParserCommandBase
                         }
                         else if (response == false)
                         {
+                            OutputHandler.chatError(buyer.getPlayer(), Translator.translate("Trade declined"));
                             arguments.error(Translator.format("Player %s declined the trade", buyer.getUsernameOrUUID()));
                             return;
                         }
@@ -127,6 +128,7 @@ public class CommandTrade extends ParserCommandBase
                         ItemStack currentItemStack = arguments.senderPlayer.getCurrentEquippedItem();
                         if (!ItemStack.areItemStacksEqual(currentItemStack, itemStack) || !ItemStack.areItemStackTagsEqual(currentItemStack, itemStack))
                         {
+                            OutputHandler.chatError(buyer.getPlayer(), Translator.translate("Error in transaction"));
                             arguments.error(Translator.translate("You need to keep the item equipped until trade is finished!"));
                             return;
                         }
