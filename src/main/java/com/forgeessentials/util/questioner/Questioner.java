@@ -74,9 +74,12 @@ public class Questioner extends ServerEventHandler
     @SubscribeEvent
     public void tickStart(TickEvent.ServerTickEvent event)
     {
-        for (Entry<ICommandSender, QuestionData> question : questions.entrySet())
-            if (question.getValue().isTimeout())
-                cancel(question.getKey());
+        synchronized (Questioner.class)
+        {
+            for (Entry<ICommandSender, QuestionData> question : questions.entrySet())
+                if (question.getValue().isTimeout())
+                    cancel(question.getKey());
+        }
     }
 
 }
