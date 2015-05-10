@@ -103,7 +103,8 @@ public class CommandPlot extends ParserCommandBase
         return false;
     }
 
-    public static final String[] completeMain = new String[] { "define", "claim", "list", "select", "set", "perms", "mods", "limits", "buy", "sell", };
+    public static final String[] completeMain = new String[] { "define", "claim", "list", "select", "set", "perms", "userperms", "mods", "users", "limits",
+            "buy", "sell", };
     public static final String[] completeSet = new String[] { "price", "fee", };
     public static final String[] completePerms = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
     public static final String[] completeTrueFalse = new String[] { "yes", "no", "true", "false", "allow", "deny", };
@@ -150,6 +151,9 @@ public class CommandPlot extends ParserCommandBase
         case "select":
             parseSelect(arguments);
             break;
+        case "users":
+            parseUsers(arguments);
+            break;
         case "mods":
             parseMods(arguments);
             break;
@@ -159,7 +163,7 @@ public class CommandPlot extends ParserCommandBase
         case "perms":
             parsePerms(arguments, false);
             break;
-        case "feeperms":
+        case "userperms":
             parsePerms(arguments, true);
             break;
         case "buy":
@@ -315,7 +319,38 @@ public class CommandPlot extends ParserCommandBase
         arguments.confirm("Selected plot");
     }
 
-    private void parseMods(CommandParserArgs arguments)
+    public static void parseUsers(CommandParserArgs arguments)
+    {
+        arguments.checkPermission(Plot.PERM_MODS);
+        if (arguments.isEmpty())
+        {
+            arguments.confirm(Translator.translate("/plot users add|remove <player>: Add / remove users"));
+            // TODO: List mods
+            return;
+        }
+        arguments.tabComplete("add", "remove");
+        String action = arguments.remove().toLowerCase();
+
+        UserIdent player = arguments.parsePlayer(true);
+        if (arguments.isTabCompletion || player == null)
+            return;
+
+        Plot plot = getPlot(arguments.senderPlayer);
+
+        switch (action)
+        {
+        case "add":
+            plot.getZone().addPlayerToGroup(player, Plot.GROUP_PLOT_USER);
+            break;
+        case "remove":
+            plot.getZone().removePlayerFromGroup(player, Plot.GROUP_PLOT_USER);
+            break;
+        default:
+            throw new TranslatedCommandException.InvalidSyntaxException();
+        }
+    }
+
+    public static void parseMods(CommandParserArgs arguments)
     {
         arguments.checkPermission(Plot.PERM_MODS);
         if (arguments.isEmpty())
@@ -326,13 +361,13 @@ public class CommandPlot extends ParserCommandBase
         }
         arguments.tabComplete("add", "remove");
         String action = arguments.remove().toLowerCase();
-        
+
         UserIdent player = arguments.parsePlayer(true);
         if (arguments.isTabCompletion || player == null)
             return;
 
         Plot plot = getPlot(arguments.senderPlayer);
-        
+
         switch (action)
         {
         case "add":
