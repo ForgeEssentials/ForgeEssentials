@@ -103,7 +103,7 @@ public class CommandPlot extends ParserCommandBase
         return false;
     }
 
-    public static final String[] completeMain = new String[] { "define", "claim", "list", "select", "set", "perms", "limits", "buy", "sell", };
+    public static final String[] completeMain = new String[] { "define", "claim", "list", "select", "set", "perms", "mods", "limits", "buy", "sell", };
     public static final String[] completeSet = new String[] { "price", "fee", };
     public static final String[] completePerms = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
     public static final String[] completeTrueFalse = new String[] { "yes", "no", "true", "false", "allow", "deny", };
@@ -169,7 +169,7 @@ public class CommandPlot extends ParserCommandBase
             arguments.error("Not yet implemented");
             break;
         default:
-            break;
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND);
         }
     }
 
@@ -564,7 +564,7 @@ public class CommandPlot extends ParserCommandBase
                 {
                     String message = Translator.format("Player %s wants to buy your plot \"%s\" for %s.", //
                             arguments.senderPlayer.getCommandSenderName(), plot.getName(), buyPriceStr);
-                    if (buyPrice < sellPrice)
+                    if (buyPrice < sellPrice && sellPrice >= 0)
                         message += " \u00a7c" + Translator.format("This is below the price of %s you set up!", APIRegistry.economy.toString(sellPrice));
                     if (buyPrice < plotPrice)
                         message += " \u00a7c" + Translator.format("This is below the plots value of %s!", APIRegistry.economy.toString(sellPrice));
@@ -576,16 +576,16 @@ public class CommandPlot extends ParserCommandBase
                             if (response == null)
                             {
                                 arguments.error(Translator.format("%s did not respond to your buy request", plot.getOwner().getUsernameOrUUID()));
-                            }
-                            else if (response == true)
-                            {
-                                buyPlot(arguments, plot, plotPrice);
+                                return;
                             }
                             else if (response == false)
                             {
+                                OutputHandler.chatError(plot.getOwner().getPlayer(), Translator.translate("Trade declined"));
                                 arguments.error(Translator.format("%s declined to sell you plot \"%s\" for %s", //
                                         plot.getOwner().getUsernameOrUUID(), plot.getName(), buyPriceStr));
+                                return;
                             }
+                            buyPlot(arguments, plot, plotPrice);
                         }
                     };
                     try
