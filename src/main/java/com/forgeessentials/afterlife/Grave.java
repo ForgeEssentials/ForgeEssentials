@@ -16,6 +16,7 @@ import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.data.v2.DataManager;
@@ -23,7 +24,8 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.google.gson.annotations.Expose;
 
-public class Grave {
+public class Grave
+{
 
     public static Map<Point, Grave> graves = new HashMap<Point, Grave>();
 
@@ -47,15 +49,15 @@ public class Grave {
     @Expose(serialize = false)
     private long lastTick;
 
-    public static void createGrave(EntityPlayer player, List<EntityItem> drops)
+    public static Grave createGrave(EntityPlayer player, List<EntityItem> drops)
     {
         if (!PermissionsManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST))
-            return;
-        
+            return null;
+
         if (player.posY < 0)
         {
             OutputHandler.chatWarning(player, "No deathchest for you as you fell out of the world!");
-            return;
+            return null;
         }
 
         int xp = 0;
@@ -66,13 +68,14 @@ public class Grave {
             player.experienceLevel = 0;
             player.experienceTotal = 0;
         }
-        
+
         // Create no grave if no experience / items available
         if (xp <= 0 && drops.isEmpty())
-            return;
+            return null;
 
         Grave grave = new Grave(player, drops, xp);
         graves.put(grave.point, grave);
+        return grave;
     }
 
     public Grave(EntityPlayer player, List<EntityItem> drops, int xp)
@@ -84,6 +87,8 @@ public class Grave {
         this.protTime = FunctionHelper.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_SAFETIME), 0);
         if (protTime <= 0)
             isProtected = false;
+        for (int i = 0; i < drops.size(); i++)
+            inventory.add(drops.get(i).getEntityItem().copy());
 
         point = new WorldPoint(player);
         point.setY(FunctionHelper.placeInWorld(player.worldObj, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1));
@@ -92,11 +97,15 @@ public class Grave {
             player.worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.fence);
             point.setY(point.getY() + 1);
         }
-        
-        for (int i = 0; i < drops.size(); i++)
-            inventory.add(drops.get(i).getEntityItem().copy());
+        FEskullTe.createPlayerSkull(player.getGameProfile(), player.worldObj, point.getX(), point.getY(), point.getZ());
+    }
 
-        FEskullTe.createPlayerSkull(player, player.worldObj, point.getX(), point.getY(), point.getZ());
+    public void updateBlocks()
+    {
+        if (point.getWorld().getBlock(point.getX(), point.getY(), point.getZ()) != Blocks.skull)
+            FEskullTe.createPlayerSkull(UserIdent.getGameProfileByUuid(owner), point.getWorld(), point.getX(), point.getY(), point.getZ());
+        if (hasFencePost && point.getWorld().getBlock(point.getX(), point.getY() - 1, point.getZ()) != Blocks.fence)
+            point.getWorld().setBlock(point.getX(), point.getY() - 1, point.getZ(), Blocks.fence);
     }
 
     public void update()
@@ -158,7 +167,8 @@ public class Grave {
         if (player.openContainer != player.inventoryContainer)
             player.closeScreen();
         player.getNextWindowId();
-        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, invGrave.getInventoryName(), invGrave.getSizeInventory(), true));
+        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, invGrave.getInventoryName(), invGrave.getSizeInventory(),
+                true));
         player.openContainer = new ContainerChest(player.inventory, invGrave);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addCraftingToCrafters(player);
@@ -178,11 +188,11 @@ public class Grave {
     {
         if (dropItems)
             dropItems();
-        
+
         point.getWorld().setBlock(point.getX(), point.getY(), point.getZ(), Blocks.air);
         if (hasFencePost && point.getWorld().getBlock(point.getX(), point.getY() - 1, point.getZ()) == Blocks.fence)
             point.getWorld().setBlock(point.getX(), point.getY() - 1, point.getZ(), Blocks.air);
-        
+
         DataManager.getInstance().delete(Grave.class, point.toString());
         graves.remove(point);
     }

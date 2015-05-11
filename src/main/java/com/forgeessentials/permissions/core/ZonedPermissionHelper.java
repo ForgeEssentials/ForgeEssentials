@@ -59,7 +59,8 @@ import cpw.mods.fml.common.gameevent.TickEvent;
  * 
  * @author Olee
  */
-public class ZonedPermissionHelper extends ServerEventHandler implements IPermissionsHelper, PermissionDebugger {
+public class ZonedPermissionHelper extends ServerEventHandler implements IPermissionsHelper, PermissionDebugger
+{
 
     public static final String PERMISSIONS_LIST_FILE = "PermissionsList.txt";
 
@@ -69,7 +70,17 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     protected boolean dirty = true;
 
-    protected long lastDirty = 0;
+    /**
+     * First time that permissions have been changed. At least one minute after this time, permissions will definitely
+     * be saved.
+     */
+    protected long firstDirtyTime = 0;
+
+    /**
+     * Last time that permissions have been changed. Five seconds after no more permissions have been changed, they will
+     * be saved.
+     */
+    protected long lastDirtyTime = 0;
 
     protected boolean registeredPermission = true;
 
@@ -77,7 +88,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public List<String> permissionDebugFilters = new ArrayList<>();
 
-    public boolean disableSave = false;
+    public boolean disableAutoSave = false;
 
     // ------------------------------------------------------------
 
@@ -106,8 +117,6 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public void save()
     {
-        if (disableSave)
-            return;
         dirty = false;
         if (persistenceProvider != null)
         {
@@ -150,8 +159,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public void setDirty(boolean registeredPermission)
     {
-        this.dirty = true;
-        this.lastDirty = System.currentTimeMillis();
+        dirty = true;
+        lastDirtyTime = System.currentTimeMillis();
+        if (firstDirtyTime <= 0)
+            firstDirtyTime = lastDirtyTime;
         this.registeredPermission |= registeredPermission;
     }
 
@@ -277,7 +288,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             e.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, FEPermissions.GROUP, true);
             e.serverZone.setGroupPermissionProperty(Zone.GROUP_FAKEPLAYERS, FEPermissions.GROUP_PRIORITY, "15");
             e.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, Zone.PERMISSION_ASTERIX, true);
-            //e.serverZone.groupParentAdd(Zone.GROUP_FAKEPLAYERS, Zone.GROUP_OPERATORS);
+            // e.serverZone.groupParentAdd(Zone.GROUP_FAKEPLAYERS, Zone.GROUP_OPERATORS);
         }
     }
 
@@ -313,7 +324,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         getServerZone().getWorldZone(e.world.provider.dimensionId);
     }
-    
+
     @SubscribeEvent
     public void playerMoveEvent(PlayerMoveEvent e)
     {
@@ -366,11 +377,16 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent e)
     {
-        if (dirty && System.currentTimeMillis() - lastDirty > 1000 * 60)
+        if (!disableAutoSave && dirty && (//
+                System.currentTimeMillis() - lastDirtyTime > 1000 * 5 || //
+                System.currentTimeMillis() - firstDirtyTime > 1000 * 60))
+        {
+            firstDirtyTime = 0;
             save();
+        }
         // TODO: Detect manual changes to persistence backend
     }
-    
+
     // ------------------------------------------------------------
     // -- Core permission handling
     // ------------------------------------------------------------
@@ -685,7 +701,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         return getServerZone().getStoredPlayerGroupEntries(ident);
     }
-    
+
     // --------------------------------------------------------
     // -- Permission checking
     // ------------------------------------------------------------
