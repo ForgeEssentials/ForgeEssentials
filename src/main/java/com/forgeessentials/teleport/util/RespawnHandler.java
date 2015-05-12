@@ -72,15 +72,15 @@ public class RespawnHandler {
     @SubscribeEvent
     public void doFirstRespawn(EntityJoinWorldEvent e)
     {
-        if (e.entity instanceof EntityPlayerMP)
+        if (!e.entity.getClass().equals(EntityPlayerMP.class))
+            return;
+        
+        EntityPlayerMP player = (EntityPlayerMP) e.entity;
+        if (!PlayerInfo.playerInfoExists(player.getPersistentID()))
         {
-            EntityPlayerMP player = (EntityPlayerMP) e.entity;
-            if (!PlayerInfo.playerInfoExists(player.getPersistentID()))
-            {
-                WarpPoint p = getPlayerSpawn(player, null);
-                if (p != null)
-                    FunctionHelper.teleportPlayer(player, p);
-            }
+            WarpPoint p = getPlayerSpawn(player, null);
+            if (p != null)
+                FunctionHelper.teleportPlayer(player, p);
         }
     }
     

@@ -1,22 +1,24 @@
 package com.forgeessentials.afterlife;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.world.World;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.mojang.authlib.GameProfile;
 
-public class FEskullTe extends TileEntitySkull {
+public class FEskullTe extends TileEntitySkull
+{
 
-    public FEskullTe(EntityPlayer player)
+    public FEskullTe(GameProfile player)
     {
         // Set player profile
-        func_152106_a(player.getGameProfile());
+        if (player != null)
+            func_152106_a(player);
     }
 
-    public static FEskullTe createPlayerSkull(EntityPlayer player, World world, int x, int y, int z)
+    public static FEskullTe createPlayerSkull(GameProfile player, World world, int x, int y, int z)
     {
         FEskullTe skull = new FEskullTe(player);
         world.setBlock(x, y, z, Blocks.skull, 1, 1);
@@ -32,13 +34,13 @@ public class FEskullTe extends TileEntitySkull {
         Grave grave = Grave.graves.get(point.toString());
         if (grave == null)
             return;
-        
+
         if (grave.isProtected)
         {
             UserIdent owner = new UserIdent(grave.owner);
             if (owner.hasPlayer())
             {
-                //createPlayerSkull(owner.getPlayer(), worldObj, point.getX(), point.getY(), point.getZ());
+                // createPlayerSkull(owner.getPlayer(), worldObj, point.getX(), point.getY(), point.getZ());
                 worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.chest);
             }
         }
@@ -47,5 +49,5 @@ public class FEskullTe extends TileEntitySkull {
             grave.remove(true);
         }
     }
-    
+
 }

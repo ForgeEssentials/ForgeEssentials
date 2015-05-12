@@ -120,7 +120,7 @@ public class ModulePermissions extends ConfigLoaderBase {
     @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
-        permissionHelper.disableSave = false;
+        permissionHelper.disableAutoSave = false;
         permissionHelper.save();
         permissionScheduler.saveAll();
     }

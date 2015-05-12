@@ -1,5 +1,8 @@
 package com.forgeessentials.afterlife;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -11,14 +14,30 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
-public class AfterlifeEventHandler extends ServerEventHandler {
+public class AfterlifeEventHandler extends ServerEventHandler
+{
+
+    public List<Grave> newGraves = new ArrayList<>();
 
     @SubscribeEvent
     public void playerDeathDropEvent(PlayerDropsEvent e)
     {
-        Grave.createGrave(e.entityPlayer, e.drops);
-        e.setCanceled(true);
+        Grave grave = Grave.createGrave(e.entityPlayer, e.drops);
+        if (grave != null)
+        {
+            newGraves.add(grave);
+            e.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void serverTickEvent(TickEvent.ServerTickEvent e)
+    {
+        for (Grave grave : newGraves)
+            grave.updateBlocks();
+        newGraves.clear();
     }
 
     @SubscribeEvent
@@ -28,15 +47,15 @@ public class AfterlifeEventHandler extends ServerEventHandler {
             return;
         if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
             return;
-        
+
         WorldPoint point = new WorldPoint(e.entity.worldObj, e.x, e.y, e.z);
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
-        
-        //Block block = e.entity.worldObj.getBlock(e.x, e.y, e.z);
-        //if (block != Blocks.skull && block != Blocks.chest && block != Blocks.fence)
-        //    return;
+
+        // Block block = e.entity.worldObj.getBlock(e.x, e.y, e.z);
+        // if (block != Blocks.skull && block != Blocks.chest && block != Blocks.fence)
+        // return;
 
         grave.interact((EntityPlayerMP) e.entityPlayer);
         e.setCanceled(true);
@@ -47,7 +66,7 @@ public class AfterlifeEventHandler extends ServerEventHandler {
     {
         if (e.world.isRemote)
             return;
-        
+
         WorldPoint point = new WorldPoint(e.world, e.x, e.y, e.z);
         Grave grave = Grave.graves.get(point);
         if (grave == null)
@@ -58,11 +77,11 @@ public class AfterlifeEventHandler extends ServerEventHandler {
             if (grave == null || !grave.hasFencePost)
                 return;
         }
-        e.setCanceled(true);
 
         grave.update();
         if (grave.isProtected)
         {
+            e.setCanceled(true);
             OutputHandler.chatError(e.getPlayer(), Translator.translate("You may not defile the grave of a player"));
             return;
         }

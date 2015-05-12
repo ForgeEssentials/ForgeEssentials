@@ -105,11 +105,11 @@ public class PermissionCommandParser
                     switch (action)
                     {
                     case "enable":
-                        ModulePermissions.permissionHelper.disableSave = false;
+                        ModulePermissions.permissionHelper.disableAutoSave = false;
                         arguments.confirm("Permission saving enabled");
                         break;
                     case "disable":
-                        ModulePermissions.permissionHelper.disableSave = true;
+                        ModulePermissions.permissionHelper.disableAutoSave = true;
                         arguments.confirm("Permission saving disabled");
                         break;
                     default:
