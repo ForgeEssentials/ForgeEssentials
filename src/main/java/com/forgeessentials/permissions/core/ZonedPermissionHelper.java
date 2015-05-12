@@ -15,8 +15,10 @@ import java.util.TreeSet;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -84,11 +86,13 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     protected boolean registeredPermission = true;
 
-    public Set<ICommandSender> permissionDebugUsers = new HashSet<>();
+    public Set<EntityPlayerMP> permissionDebugUsers = new HashSet<>();
 
     public List<String> permissionDebugFilters = new ArrayList<>();
 
     public boolean disableAutoSave = false;
+
+    // public boolean verbosePermissionDebug = false;
 
     // ------------------------------------------------------------
 
@@ -103,6 +107,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
         permissionDebugFilters.add("fe.protection.mobspawn");
         permissionDebugFilters.add("fe.protection.gamemode");
+        permissionDebugFilters.add("fe.protection.inventory");
         permissionDebugFilters.add("worldedit.limit.unrestricted");
     }
 
@@ -123,6 +128,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             OutputHandler.felog.fine("Saving permissions...");
             APIRegistry.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
+            dirty = false;
         }
 
         if (registeredPermission)
@@ -159,6 +165,13 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public void setDirty(boolean registeredPermission)
     {
+        // if (verbosePermissionDebug)
+        // {
+        // OutputHandler.felog.fine("PERMISSIONS SET DIRTY");
+        // StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        // for (int i = 2; i < stackTrace.length && i < 10; i++)
+        // OutputHandler.felog.fine("  " + stackTrace[i].toString());
+        // }
         dirty = true;
         lastDirtyTime = System.currentTimeMillis();
         if (firstDirtyTime <= 0)
@@ -250,10 +263,19 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] group [\u00a75%s\u00a7f]", zone.getName(), group);
         else
             msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] user [\u00a75%s\u00a7f]", zone.getName(), ident.getUsernameOrUUID());
-        for (ICommandSender sender : permissionDebugUsers)
+
+        WorldPoint point = null;
+        if (ident != null && ident.hasPlayer())
+            point = new WorldPoint(ident.getPlayer());
+
+        IChatComponent msgC1 = OutputHandler.confirmation(msg1);
+        IChatComponent msgC2 = OutputHandler.confirmation(msg2);
+        for (EntityPlayerMP player : permissionDebugUsers)
         {
-            OutputHandler.chatNotification(sender, msg1);
-            OutputHandler.chatNotification(sender, msg2);
+            if (point != null && new WorldPoint(player).distance(point) > 32)
+                continue;
+            player.addChatMessage(msgC1);
+            player.addChatMessage(msgC2);
         }
     }
 
