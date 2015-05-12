@@ -98,7 +98,7 @@ sourceSets {
 }
 
 repositories {
-    mavenLocal()
+    //mavenLocal()
     maven {
         name = "sk89q"
         url = "http://maven.sk89q.com/repo/"

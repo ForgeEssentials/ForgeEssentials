@@ -121,7 +121,6 @@ public class ForgeEssentials extends ConfigLoaderBase {
     public void classLoad(FMLConstructionEvent e)
     {
         new FEClassLoader().extractLibs(Launch.minecraftHome, Launch.classLoader);
-        MixinEnvironment.getDefaultEnvironment().addConfiguration("mixins.forgeessentials.json");
     }
 
     @Mod.EventHandler
