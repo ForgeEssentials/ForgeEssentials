@@ -145,12 +145,14 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                     break;
                 logEvent.process(em);
             }
-        }
-        finally
-        {
             em.getTransaction().commit();
-            em.clear();
         }
+        catch (Exception e)
+        {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+        }
+        em.clear();
     }
 
     protected void startThread()
@@ -344,7 +346,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /* Other events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public synchronized void commandEvent(CommandEvent e)
+    public void commandEvent(CommandEvent e)
     {
         logEvent(new LogEventCommand(e));
     }
