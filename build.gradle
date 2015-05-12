@@ -171,10 +171,11 @@ jar {
                 "BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
                 "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
-                "TweakOrder": "10000",
+                "TweakOrder": "0",
                 "FMLCorePluginContainsFMLMod": "true",
                 "ForceLoadAsMod": "true",
-                "FMLAT": "forgeessentials_at.cfg"
+                "FMLAT": "forgeessentials_at.cfg",
+                "MixinConfigs": "mixins.forgeessentials.json"
         )
     }
     configurations.shade.each { dep ->
@@ -242,10 +243,11 @@ task deobfJar(dependsOn: "jar", type: Jar) {
                 "BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
                 "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
-                "TweakOrder": "10000",
+                "TweakOrder": "0",
                 "FMLCorePluginContainsFMLMod": "true",
                 "ForceLoadAsMod": "true",
-                "FMLAT": "forgeessentials_at.cfg"
+                "FMLAT": "forgeessentials_at.cfg",
+                "MixinConfigs": "mixins.forgeessentials.json"
         )
         classifier = 'deobf'
         appendix = project.minecraft.version
