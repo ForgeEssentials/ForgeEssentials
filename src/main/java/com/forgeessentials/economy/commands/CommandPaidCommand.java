@@ -18,7 +18,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.economy.ModuleEconomy.CantAffordException;
+import com.forgeessentials.util.DoAsConsoleCommandSender;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandPaidCommand extends ForgeEssentialsCommandBase
@@ -75,18 +75,21 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
             throw new InvalidSyntaxException(getCommandUsage(sender));
 
         UserIdent ident = new UserIdent(args[0], sender);
-        if (!ident.hasUUID())
+        if (!ident.hasPlayer())
             throw new PlayerNotFoundException();
 
         int amount = parseIntWithMin(sender, args[1], 0);
         Wallet wallet = APIRegistry.economy.getWallet(ident);
         if (!wallet.withdraw(amount))
-            throw new CantAffordException();
+        {
+            OutputHandler.chatError(ident.getPlayer(), Translator.translate("You can't afford that"));
+            return;
+        }
 
         args = Arrays.copyOfRange(args, 2, args.length);
-        MinecraftServer.getServer().getCommandManager().executeCommand(sender, StringUtils.join(args, " "));
+        MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsConsoleCommandSender(ident.getPlayer()), StringUtils.join(args, " "));
 
-        OutputHandler.chatConfirmation(sender, Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
+        OutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
         ModuleEconomy.confirmNewWalletAmount(ident, wallet);
     }
 
