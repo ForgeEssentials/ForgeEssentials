@@ -251,17 +251,9 @@ public class Plot
 
     public void setPermission(String permission, boolean userPerm, boolean value)
     {
-        if (!value)
-        {
-            zone.setGroupPermission(GROUP_PLOT_OWNER, permission, true);
-            zone.setGroupPermission(GROUP_PLOT_MOD, permission, true);
-            zone.setGroupPermission(userPerm ? GROUP_PLOT_USER : GROUP_ALL, permission, false);
-        }
-        else
-        {
-            // zone.clearGroupPermission(GROUP_PLOT_OWNER, permission);
-            zone.clearGroupPermission(userPerm ? GROUP_PLOT_USER : GROUP_ALL, permission);
-        }
+        zone.setGroupPermission(GROUP_PLOT_OWNER, permission, true);
+        zone.setGroupPermission(GROUP_PLOT_MOD, permission, true);
+        zone.setGroupPermission(userPerm ? GROUP_PLOT_USER : GROUP_ALL, permission, value);
     }
 
     public void setDefaultPermissions()
