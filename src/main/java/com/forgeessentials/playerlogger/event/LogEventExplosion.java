@@ -1,6 +1,6 @@
 package com.forgeessentials.playerlogger.event;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -16,30 +16,33 @@ import com.forgeessentials.playerlogger.entity.WorldData;
 public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate>
 {
 
+    public List<CachedBlockData> blocks = new ArrayList<>();
+
     public LogEventExplosion(ExplosionEvent.Detonate event)
     {
         super(event);
+        for (ChunkPosition blockPos : event.getAffectedBlocks())
+            blocks.add(new CachedBlockData(event.world, blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void process(EntityManager em)
     {
         WorldData worldData = getWorld(event.world.provider.dimensionId);
-        for (ChunkPosition blockPos : (List<ChunkPosition>) event.explosion.affectedBlockPositions)
+        for (CachedBlockData blockData : blocks)
         {
             ActionBlock action = new ActionBlock();
-            action.time = new Date();
+            action.time = date;
             action.world = worldData;
-            action.block = getBlock(event.world.getBlock(blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ));
-            action.metadata = event.world.getBlockMetadata(blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ);
-            action.entity = getTileEntityBlob(event.world.getTileEntity(blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ));
+            action.block = getBlock(blockData.block);
+            action.metadata = blockData.metadata;
+            action.entity = getTileEntityBlob(blockData.tileEntity);
             action.type = ActionBlockType.DETONATE;
-            action.x = blockPos.chunkPosX;
-            action.y = blockPos.chunkPosY;
-            action.z = blockPos.chunkPosZ;
+            action.x = blockData.x;
+            action.y = blockData.y;
+            action.z = blockData.z;
             em.persist(action);
         }
     }
-    
+
 }

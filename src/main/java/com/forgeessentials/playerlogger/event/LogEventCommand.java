@@ -1,7 +1,5 @@
 package com.forgeessentials.playerlogger.event;
 
-import java.util.Date;
-
 import javax.persistence.EntityManager;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +23,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
     public void process(EntityManager em)
     {
         ActionCommand action = new ActionCommand();
-        action.time = new Date();
+        action.time = date;
         action.command = event.command.getCommandName();
         if (event.parameters.length > 0)
             action.arguments = StringUtils.join(event.parameters, ' ');

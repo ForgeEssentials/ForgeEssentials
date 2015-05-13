@@ -20,10 +20,12 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public class TeleportHelper extends ServerEventHandler {
+public class TeleportHelper extends ServerEventHandler
+{
 
-    public static class TeleportInfo {
-        
+    public static class TeleportInfo
+    {
+
         private EntityPlayerMP player;
 
         private long start;
@@ -75,7 +77,7 @@ public class TeleportHelper extends ServerEventHandler {
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
         if (!APIRegistry.perms.checkUserPermission(new UserIdent(player), point.toWorldPoint(), TELEPORT_TO))
             throw new TranslatedCommandException("You are not allowed to teleport to that location.");
-        
+
         // Get and check teleport cooldown
         int teleportCooldown = FunctionHelper.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_COOLDOWN), 0) * 1000;
         if (teleportCooldown > 0)
@@ -101,17 +103,19 @@ public class TeleportHelper extends ServerEventHandler {
         tpInfos.put(player.getPersistentID(), new TeleportInfo(player, point, teleportWarmup * 1000));
         OutputHandler.chatNotification(player, Translator.format("Teleporting. Please stand still for %s.", FunctionHelper.parseTime(teleportWarmup)));
     }
-    
+
     public static void doTeleport(EntityPlayerMP player, WarpPoint point)
     {
         PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
         pi.setLastTeleportOrigin(new WarpPoint(player));
         pi.setLastTeleportTime(System.currentTimeMillis());
+
+        player.mountEntity(null);
         if (player.dimension != point.getDimension())
             MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, point.getDimension());
-        player.playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 0.1, point.getZ(), point.getYaw(), point.getPitch());
+        player.playerNetServerHandler.setPlayerLocation(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
-    
+
     public static void doTeleportEntity(Entity entity, WarpPoint point)
     {
         if (entity.dimension != point.getDimension())
