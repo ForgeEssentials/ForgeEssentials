@@ -42,6 +42,7 @@ import com.forgeessentials.util.selections.CommandPos;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionEventHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -54,6 +55,9 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -150,6 +154,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @EventHandler
     public void load(FMLInitializationEvent e)
     {
+        FMLCommonHandler.instance().bus().register(this);
+        
         Translator.load();
 
         // other stuff
@@ -167,6 +173,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModulePostInitEvent(e));
     }
+
+    /* ------------------------------------------------------------ */
 
     @EventHandler
     public void serverPreInit(FMLServerAboutToStartEvent e)
@@ -240,6 +248,16 @@ public class ForgeEssentials extends ConfigLoaderBase {
         Translator.save();
     }
 
+    /* ------------------------------------------------------------ */
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerLoggedOut(PlayerLoggedOutEvent event)
+    {
+        //PlayerInfo.discardInfo(event.player.getPersistentID());
+    }
+    
+    /* ------------------------------------------------------------ */
+
     @Override
     public void load(Configuration config, boolean isReload)
     {
@@ -264,6 +282,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
         MiscEventHandler.majoritySleepThreshold = config.get(CONFIG_CAT_MISC, "MajoritySleepThreshold", 50, "Define the percentage of players that constitutes a majority for MajoritySleep to kick in.").getInt(50);
         MiscEventHandler.checkSpacesInNames = config.get(CONFIG_CAT_MISC, "CheckSpacesInNames", true, "Check if a player's name contains spaces (can gum up some things in FE)").getBoolean();
     }
+
+    /* ------------------------------------------------------------ */
 
     public static ConfigManager getConfigManager()
     {

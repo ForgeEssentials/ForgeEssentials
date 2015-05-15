@@ -380,7 +380,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void checkCommandPerm(CommandEvent e)
+    public void commandEvent(CommandEvent e)
     {
         if (!(e.command instanceof ForgeEssentialsCommandBase) && e.sender instanceof EntityPlayer && !CommandHandlerForge.canUse(e.command, e.sender))
         {
@@ -651,7 +651,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public ServerZone getServerZone()
     {
-        return getRootZone().getServerZone();
+        return rootZone.getServerZone();
     }
 
     public Collection<Zone> getGlobalZones()
@@ -792,13 +792,13 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public boolean checkUserPermission(UserIdent ident, WorldPoint targetPoint, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(ident, targetPoint, null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
+        return checkBooleanPermission(getPermission(ident, targetPoint, null, GroupEntry.toList(getServerZone().getPlayerGroups(ident, targetPoint)), permissionNode, false));
     }
 
     @Override
     public String getUserPermissionProperty(UserIdent ident, WorldPoint targetPoint, String permissionNode)
     {
-        return getPermission(ident, targetPoint, null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
+        return getPermission(ident, targetPoint, null, GroupEntry.toList(getServerZone().getPlayerGroups(ident, targetPoint)), permissionNode, true);
     }
 
     // ------------------------------------------------------------
@@ -806,13 +806,13 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public boolean checkUserPermission(UserIdent ident, WorldArea targetArea, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(ident, null, targetArea, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
+        return checkBooleanPermission(getPermission(ident, null, targetArea, GroupEntry.toList(getServerZone().getPlayerGroups(ident, targetArea.getCenter())), permissionNode, false));
     }
 
     @Override
     public String getUserPermissionProperty(UserIdent ident, WorldArea targetArea, String permissionNode)
     {
-        return getPermission(ident, null, targetArea, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
+        return getPermission(ident, null, targetArea, GroupEntry.toList(getServerZone().getPlayerGroups(ident, targetArea.getCenter())), permissionNode, true);
     }
 
     // ------------------------------------------------------------

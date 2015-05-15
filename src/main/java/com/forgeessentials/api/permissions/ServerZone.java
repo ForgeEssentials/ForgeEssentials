@@ -364,10 +364,17 @@ public class ServerZone extends Zone {
 
     public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)
     {
+        return getPlayerGroups(ident, null);
+    }
+    
+    public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident, WorldPoint point)
+    {
         SortedSet<GroupEntry> result = getAdditionalPlayerGroups(ident);
         // Check groups added through zones
-        if (ident != null)
-            for (Zone z : getZonesAt(ident))
+        if (point == null && ident != null && ident.hasPlayer())
+            point = new WorldPoint(ident.getPlayer());
+        if (ident != null && point != null)
+            for (Zone z : getZonesAt(point))
                 if (!(z instanceof ServerZone))
                     result.addAll(z.getStoredPlayerGroupEntries(ident));
         return includeGroups(result);
@@ -375,7 +382,12 @@ public class ServerZone extends Zone {
 
     public String getPrimaryPlayerGroup(UserIdent ident)
     {
-        Iterator<GroupEntry> it = getPlayerGroups(ident).iterator();
+        return getPrimaryPlayerGroup(ident, null);
+    }
+
+    public String getPrimaryPlayerGroup(UserIdent ident, WorldPoint point)
+    {
+        Iterator<GroupEntry> it = getPlayerGroups(ident, point).iterator();
         if (it.hasNext())
             return it.next().getGroup();
         else
