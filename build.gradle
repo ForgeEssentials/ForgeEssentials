@@ -252,12 +252,6 @@ task deobfJar(dependsOn: "jar", type: Jar) {
         classifier = 'deobf'
         appendix = project.minecraft.version
     }
-
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)) {
-            include "org/spongepowered/asm/**"
-        }
-    }
 }
 
 task sourceJar(type: Jar) {
