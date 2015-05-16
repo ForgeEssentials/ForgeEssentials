@@ -103,7 +103,7 @@ public class CommandPos extends ForgeEssentialsCommandBase {
         z = mop.blockZ;
 
         WorldPoint point = new WorldPoint(player.dimension, x, y, z);
-        if (!APIRegistry.perms.checkUserPermission(new UserIdent(player), point, getPermissionNode()))
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point, getPermissionNode()))
             throw new TranslatedCommandException("Insufficient permissions.");
 
         if (type == 1)

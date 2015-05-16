@@ -21,15 +21,15 @@ public class RespawnDebuffHandler {
         if (e.player.worldObj.isRemote)
             return;
 
-        String potionEffects = APIRegistry.perms.getUserPermissionProperty(new UserIdent(e.player), ModuleAfterlife.PERM_DEBUFFS);
+        String potionEffects = APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_DEBUFFS);
         if (potionEffects != null)
             FunctionHelper.applyPotionEffects(e.player, potionEffects);
 
-        Integer respawnHP = FunctionHelper.tryParseInt(APIRegistry.perms.getUserPermissionProperty(new UserIdent(e.player), ModuleAfterlife.PERM_HP));
+        Integer respawnHP = FunctionHelper.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_HP));
         if (respawnHP != null)
             e.player.setHealth(respawnHP);
 
-        Integer respawnFood = FunctionHelper.tryParseInt(APIRegistry.perms.getUserPermissionProperty(new UserIdent(e.player), ModuleAfterlife.PERM_FOOD));
+        Integer respawnFood = FunctionHelper.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_FOOD));
         if (respawnFood != null)
             e.player.getFoodStats().addStats(-1 * (20 - respawnFood), 0);
     }

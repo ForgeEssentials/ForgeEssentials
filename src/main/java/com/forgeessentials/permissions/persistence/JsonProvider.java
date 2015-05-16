@@ -102,7 +102,7 @@ public class JsonProvider extends ZonePersistenceProvider
         for(String uuid : usersData.users.keySet())
         {
             UserData userData = usersData.users.get(uuid);
-            UserIdent ident = new UserIdent(uuid, userData.username);
+            UserIdent ident = UserIdent.get(uuid, userData.username);
             PermissionList list = PermissionList.fromList(userData.permissions);
             list.put(FEPermissions.PREFIX, userData.prefix);
             list.put(FEPermissions.SUFFIX, userData.suffix);
@@ -149,7 +149,7 @@ public class JsonProvider extends ZonePersistenceProvider
             }
             for(String uuid : wzd.players.keySet())
             {
-                wz.getPlayerPermissions().put(new UserIdent(uuid, wzd.players.get(uuid).username), PermissionList.fromList(wzd.players.get(uuid).permissions));
+                wz.getPlayerPermissions().put(UserIdent.get(uuid, wzd.players.get(uuid).username), PermissionList.fromList(wzd.players.get(uuid).permissions));
             }
             for(AreaZoneData azd : wzd.zones)
             {
@@ -163,7 +163,7 @@ public class JsonProvider extends ZonePersistenceProvider
                 }
                 for(String uuid : azd.players.keySet())
                 {
-                    az.getPlayerPermissions().put(new UserIdent(uuid, azd.players.get(uuid).username), PermissionList.fromList(azd.players.get(uuid).permissions));
+                    az.getPlayerPermissions().put(UserIdent.get(uuid, azd.players.get(uuid).username), PermissionList.fromList(azd.players.get(uuid).permissions));
                 }
             }
         }

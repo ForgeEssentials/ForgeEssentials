@@ -22,7 +22,8 @@ import com.google.gson.JsonSyntaxException;
 /**
  *
  */
-public class Session implements Runnable, RemoteSession {
+public class Session implements Runnable, RemoteSession
+{
 
     private static final String SEPARATOR = "\n\n\n";
 
@@ -93,10 +94,7 @@ public class Session implements Runnable, RemoteSession {
 
             if (request.auth != null)
             {
-                synchronized (this)
-                {
-                    ident = new UserIdent(request.auth.username);
-                }
+                ident = UserIdent.get(request.auth.username);
                 if (!ident.hasUUID())
                 {
                     ident = null;
@@ -119,7 +117,7 @@ public class Session implements Runnable, RemoteSession {
                 close("banned", request);
                 return;
             }
-            
+
             // Check for remote permission
             if (!APIRegistry.perms.checkUserPermission(ident, ModuleRemote.PERM))
             {

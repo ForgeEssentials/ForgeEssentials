@@ -25,13 +25,14 @@ import com.google.gson.annotations.Expose;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class PlayerInfo implements Loadable {
+public class PlayerInfo implements Loadable
+{
 
     private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
 
     public static boolean persistSelections;
 
-    private final UserIdent ident;
+    public final UserIdent ident;
 
     private WarpPoint home;
 
@@ -89,7 +90,7 @@ public class PlayerInfo implements Loadable {
 
     protected PlayerInfo(UUID uuid)
     {
-        this.ident = new UserIdent(uuid);
+        this.ident = UserIdent.get(uuid);
     }
 
     /**
@@ -265,11 +266,12 @@ public class PlayerInfo implements Loadable {
     }
 
     /**
-     * Start a named timeout.
-     * Use {@link #checkTimeout(String)} to check if the timeout has passed.
+     * Start a named timeout. Use {@link #checkTimeout(String)} to check if the timeout has passed.
      * 
-     * @param name Unique name of the timeout
-     * @param milliseconds Timeout in milliseconds
+     * @param name
+     *            Unique name of the timeout
+     * @param milliseconds
+     *            Timeout in milliseconds
      */
     public void startTimeout(String name, int milliseconds)
     {
@@ -340,8 +342,24 @@ public class PlayerInfo implements Loadable {
             // Create empty inventory if it did not exist yet
             if (newInventory == null)
                 newInventory = new ArrayList<>();
+
+            //OutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s", ident.getUsernameOrUUID(), activeInventoryGroup, name));
+            /*
+            OutputHandler.felog.info("Items in old inventory:");
+            for (int i = 0; i < ident.getPlayer().inventory.getSizeInventory(); i++)
+            {
+                ItemStack itemStack = ident.getPlayer().inventory.getStackInSlot(i);
+                if (itemStack != null)
+                    OutputHandler.felog.info("  " + itemStack.getDisplayName());
+            }
+            OutputHandler.felog.info("Items in new inventory:");
+            for (ItemStack itemStack : newInventory)
+                if (itemStack != null)
+                    OutputHandler.felog.info("  " + itemStack.getDisplayName());
+            */
+
             // Swap player inventory and store the old one
-            inventoryGroups.put(activeInventoryGroup, FunctionHelper.swapInventory(this.ident.getPlayer(), newInventory));
+            inventoryGroups.put(activeInventoryGroup, FunctionHelper.swapInventory(this.ident.getPlayerMP(), newInventory));
             // Clear the inventory-group that was assigned to the player (optional)
             inventoryGroups.put(name, null);
             // Save the new active inventory-group
@@ -442,6 +460,5 @@ public class PlayerInfo implements Loadable {
     {
         return ImmutableMap.copyOf(playerInfoMap);
     }
-
 
 }

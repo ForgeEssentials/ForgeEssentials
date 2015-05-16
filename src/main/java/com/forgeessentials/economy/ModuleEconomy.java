@@ -134,7 +134,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     public static void confirmNewWalletAmount(UserIdent ident, Wallet wallet)
     {
         if (ident.hasPlayer())
-            OutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have now %s", wallet.toString()));
+            OutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
     }
 
     public static int tryRemoveItems(EntityPlayerMP player, ItemStack itemStack, int amount)
@@ -168,7 +168,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        UserIdent ident = new UserIdent(event.player);
+        UserIdent ident = UserIdent.get(event.player);
         PlayerWallet wallet = getWallet(ident);
         if (wallet != null)
             saveWallet(ident.getOrGenerateUuid(), wallet);
@@ -177,7 +177,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     @SubscribeEvent
     public void onXPPickup(PlayerPickupXpEvent e)
     {
-        UserIdent ident = new UserIdent(e.entityPlayer);
+        UserIdent ident = UserIdent.get(e.entityPlayer);
         double xpMultiplier = FunctionHelper.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
         if (xpMultiplier <= 0)
             return;
@@ -190,7 +190,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     {
         if (e.entity instanceof EntityPlayerMP)
         {
-            UserIdent ident = new UserIdent((EntityPlayerMP) e.entity);
+            UserIdent ident = UserIdent.get((EntityPlayerMP) e.entity);
             Long deathtoll = FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
             if (deathtoll == null || deathtoll <= 0)
                 return;
@@ -220,7 +220,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     @Override
     public PlayerWallet getWallet(EntityPlayerMP player)
     {
-        return getWallet(new UserIdent(player));
+        return getWallet(UserIdent.get(player));
     }
 
     @Override

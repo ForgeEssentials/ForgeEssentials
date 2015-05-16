@@ -71,12 +71,12 @@ public class CommandPromote extends ForgeEssentialsCommandBase {
                 APIRegistry.perms.removePlayerFromGroup(ident, group.getGroup());
                 OutputHandler.chatConfirmation(arguments.sender, Translator.format("Removed %s from group %s", ident.getUsernameOrUUID(), group));
                 if (ident.hasPlayer())
-                    OutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been removed from the %s group", group));
+                    OutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have been removed from the %s group", group));
             }
         APIRegistry.perms.addPlayerToGroup(ident, groupName);
         OutputHandler.chatConfirmation(arguments.sender, Translator.format("Added %s to group %s", ident.getUsernameOrUUID(), groupName));
         if (ident.hasPlayer())
-            OutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been added to the %s group", groupName));
+            OutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have been added to the %s group", groupName));
     }
 
     @Override

@@ -565,7 +565,7 @@ public class SQLProvider extends ZonePersistenceProvider {
                 Zone zone = zones.get(permData.get("zone_id"));
                 if (zone != null)
                 {
-                    zone.setPlayerPermissionProperty(new UserIdent((String) permData.get("user")), (String) permData.get("permission"),
+                    zone.setPlayerPermissionProperty(UserIdent.get((String) permData.get("user")), (String) permData.get("permission"),
                             (String) permData.get("value"));
                 }
             }

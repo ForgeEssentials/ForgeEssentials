@@ -53,11 +53,11 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
         if (request.data.name == null)
         {
             for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
-                response.players.add(getPlayerInfoResponse(session, new UserIdent(player), request.data.flags));
+                response.players.add(getPlayerInfoResponse(session, UserIdent.get(player), request.data.flags));
         }
         else
         {
-            UserIdent ident = new UserIdent(request.data.name);
+            UserIdent ident = UserIdent.get(request.data.name);
             if (!ident.hasPlayer())
                 error("player not found");
             response.players.add(getPlayerInfoResponse(session, ident, request.data.flags));
@@ -73,13 +73,13 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
             switch (flag)
             {
             case "location":
-                pi.data.put(flag, new DataFloatLocation(ident.getPlayer()));
+                pi.data.put(flag, new DataFloatLocation(ident.getPlayerMP()));
                 break;
             case "detail":
-                pi.data.put("health", ident.getPlayer().getHealth());
-                pi.data.put("armor", ident.getPlayer().getTotalArmorValue());
-                pi.data.put("hunger", ident.getPlayer().getFoodStats().getFoodLevel());
-                pi.data.put("saturation", ident.getPlayer().getFoodStats().getSaturationLevel());
+                pi.data.put("health", ident.getPlayerMP().getHealth());
+                pi.data.put("armor", ident.getPlayerMP().getTotalArmorValue());
+                pi.data.put("hunger", ident.getPlayerMP().getFoodStats().getFoodLevel());
+                pi.data.put("saturation", ident.getPlayerMP().getFoodStats().getSaturationLevel());
                 break;
             }
         }

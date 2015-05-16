@@ -19,7 +19,6 @@ import net.minecraftforge.common.util.FakePlayer;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.ImmutableUserIdent;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -314,7 +313,7 @@ public class ServerZone extends Zone {
         SortedSet<GroupEntry> result = getStoredPlayerGroupEntries(ident);
         if (ident != null)
         {
-            if (ident.hasGameProfile() && !ident.isFakePlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getGameProfile()))
+            if (ident.hasPlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayerMP().getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }
@@ -364,10 +363,17 @@ public class ServerZone extends Zone {
 
     public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)
     {
+        return getPlayerGroups(ident, null);
+    }
+    
+    public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident, WorldPoint point)
+    {
         SortedSet<GroupEntry> result = getAdditionalPlayerGroups(ident);
         // Check groups added through zones
-        if (ident != null)
-            for (Zone z : getZonesAt(ident))
+        if (point == null && ident != null && ident.hasPlayer())
+            point = new WorldPoint(ident.getPlayerMP());
+        if (ident != null && point != null)
+            for (Zone z : getZonesAt(point))
                 if (!(z instanceof ServerZone))
                     result.addAll(z.getStoredPlayerGroupEntries(ident));
         return includeGroups(result);
@@ -375,7 +381,12 @@ public class ServerZone extends Zone {
 
     public String getPrimaryPlayerGroup(UserIdent ident)
     {
-        Iterator<GroupEntry> it = getPlayerGroups(ident).iterator();
+        return getPrimaryPlayerGroup(ident, null);
+    }
+
+    public String getPrimaryPlayerGroup(UserIdent ident, WorldPoint point)
+    {
+        Iterator<GroupEntry> it = getPlayerGroups(ident, point).iterator();
         if (it.hasNext())
             return it.next().getGroup();
         else
@@ -440,7 +451,7 @@ public class ServerZone extends Zone {
         }
         else if (ident.hasPlayer())
         {
-            return getZonesAt(new WorldPoint(ident.getPlayer()));
+            return getZonesAt(new WorldPoint(ident.getPlayerMP()));
         }
         else
         {
@@ -476,7 +487,7 @@ public class ServerZone extends Zone {
 
     public boolean isFakePlayer(UserIdent ident)
     {
-        return ident.hasPlayer() && ident.getPlayer() instanceof FakePlayer;
+        return ident.hasPlayer() && ident.getPlayerMP() instanceof FakePlayer;
     }
 
     public void registerPlayer(UserIdent ident)
@@ -492,26 +503,6 @@ public class ServerZone extends Zone {
     public Set<UserIdent> getKnownPlayers()
     {
         return knownPlayers;
-    }
-
-    @Override
-    public void updatePlayerIdents()
-    {
-        Map<UserIdent, PermissionList> toAdd = new HashMap<>();
-        for (Iterator<Map.Entry<UserIdent, PermissionList>> iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
-        {
-            Map.Entry<UserIdent, PermissionList> player = iterator.next();
-            getServerZone().registerPlayer(player.getKey());
-            UserIdent ident = new ImmutableUserIdent(player.getKey());
-            if (ident.hashCode() != player.getKey().hashCode())
-            {
-                iterator.remove();
-                toAdd.put(ident, player.getValue());
-                if (playerGroups.containsKey(player.getKey()))
-                    playerGroups.put(ident, playerGroups.remove(player.getKey()));
-            }
-        }
-        playerPermissions.putAll(toAdd);
     }
 
     // ------------------------------------------------------------

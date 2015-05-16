@@ -37,7 +37,7 @@ public class FEskullTe extends TileEntitySkull
 
         if (grave.isProtected)
         {
-            UserIdent owner = new UserIdent(grave.owner);
+            UserIdent owner = UserIdent.get(grave.owner);
             if (owner.hasPlayer())
             {
                 // createPlayerSkull(owner.getPlayer(), worldObj, point.getX(), point.getY(), point.getZ());

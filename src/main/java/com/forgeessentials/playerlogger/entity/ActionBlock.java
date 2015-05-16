@@ -12,12 +12,16 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.forgeessentials.playerlogger.ModulePlayerLogger;
+import com.forgeessentials.playerlogger.event.CachedBlockData;
+
 /**
  *
  */
 @Entity
-@DiscriminatorValue(value = "1")  
-public class ActionBlock extends Action {
+@DiscriminatorValue(value = "1")
+public class ActionBlock extends Action
+{
 
     @Column(name = "type")
     @Enumerated(EnumType.ORDINAL)
@@ -32,9 +36,10 @@ public class ActionBlock extends Action {
 
     @Column(name = "entity")
     public Blob entity;
-    
-    public static enum ActionBlockType {
+
+    public static enum ActionBlockType
+    {
         PLACE, BREAK, DETONATE, USE_LEFT, USE_RIGHT
     }
-        
+
 }

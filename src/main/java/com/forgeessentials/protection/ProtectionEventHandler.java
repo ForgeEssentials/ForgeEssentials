@@ -40,6 +40,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
@@ -82,12 +83,12 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
 
         EntityPlayer source = e.entityPlayer;
-        UserIdent sourceIdent = new UserIdent(source);
+        UserIdent sourceIdent = UserIdent.get(source);
         if (e.target instanceof EntityPlayer)
         {
             // player -> player
             EntityPlayer target = (EntityPlayer) e.target;
-            if (!APIRegistry.perms.checkUserPermission(new UserIdent(target), ModuleProtection.PERM_PVP)
+            if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), ModuleProtection.PERM_PVP)
                     || !APIRegistry.perms.checkUserPermission(sourceIdent, ModuleProtection.PERM_PVP)
                     || !APIRegistry.perms.checkUserPermission(sourceIdent, new WorldPoint(target), ModuleProtection.PERM_PVP))
             {
@@ -136,7 +137,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + e.source.damageType;
                 if (ModuleProtection.isDebugMode(target))
                     OutputHandler.chatNotification(target, permission);
-                if (!APIRegistry.perms.checkUserPermission(new UserIdent(target), permission))
+                if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
                     e.setCanceled(true);
                     return;
@@ -150,7 +151,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + EntityList.getEntityString(source);
                 if (ModuleProtection.isDebugMode(target))
                     OutputHandler.chatNotification(target, permission);
-                if (!APIRegistry.perms.checkUserPermission(new UserIdent(target), permission))
+                if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
                     e.setCanceled(true);
                     return;
@@ -158,7 +159,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 permission = MobType.getMobType(source).getDamageByPermission();
                 if (ModuleProtection.isDebugMode(target))
                     OutputHandler.chatNotification(target, permission);
-                if (!APIRegistry.perms.checkUserPermission(new UserIdent(target), permission))
+                if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
                     e.setCanceled(true);
                     return;
@@ -173,7 +174,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
-        UserIdent ident = new UserIdent(e.entityPlayer);
+        UserIdent ident = UserIdent.get(e.entityPlayer);
         WorldPoint point = new WorldPoint(e.entityPlayer.dimension, (int) e.target.posX, (int) e.target.posY, (int) e.target.posZ);
         String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(e.target);
         if (ModuleProtection.isDebugMode(e.entityPlayer))
@@ -199,7 +200,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (ModuleProtection.isDebugMode(e.getPlayer()))
             OutputHandler.chatNotification(e.getPlayer(), permission);
         WorldPoint point = new WorldPoint(e.getPlayer().dimension, e.x, e.y, e.z);
-        if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.getPlayer()), point, permission))
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(e.getPlayer()), point, permission))
         {
             e.setCanceled(true);
             return;
@@ -212,7 +213,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
-        UserIdent ident = new UserIdent(e.player);
+        UserIdent ident = UserIdent.get(e.player);
         Block block = e.world.getBlock(e.x, e.y, e.z);
         String permission = ModuleProtection.getBlockPlacePermission(block, e.world, e.x, e.y, e.z);
         if (ModuleProtection.isDebugMode(e.player))
@@ -244,7 +245,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (ModuleProtection.isDebugMode(e.player))
                 OutputHandler.chatNotification(e.player, permission);
             WorldPoint point = new WorldPoint(e.player.dimension, b.x, b.y, b.z);
-            if (!APIRegistry.perms.checkUserPermission(new UserIdent(e.player), point, permission))
+            if (!APIRegistry.perms.checkUserPermission(UserIdent.get(e.player), point, permission))
             {
                 e.setCanceled(true);
                 return;
@@ -279,7 +280,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
-        UserIdent ident = new UserIdent(e.entityPlayer);
+        UserIdent ident = UserIdent.get(e.entityPlayer);
 
         WorldPoint point;
         if (e.action == RIGHT_CLICK_AIR)
@@ -385,8 +386,13 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         if (e.target instanceof EntityItem)
         {
-            // 1) Destroy item when player in creative mode
-            // 2) If creative mode is set for any group at the location where the block was destroyed, prevent drops
+            // 1) Do nothing if the whole world is creative!
+            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(e.target.dimension);
+            if (stringToGameType(worldZone.getGroupPermission(Zone.GROUP_DEFAULT, ModuleProtection.PERM_GAMEMODE)) == GameType.CREATIVE)
+                return;
+            
+            // 2) Destroy item when player in creative mode
+            // 3) If creative mode is set for any group at the location where the block was destroyed, prevent drops
             if (getGamemode(e.entityPlayer) == GameType.CREATIVE || anyCreativeModeAtPoint(e.entityPlayer, new WorldPoint(e.target)))
             {
                 e.target.worldObj.removeEntity(e.target);
@@ -406,7 +412,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         checkPlayerInventory(e.entityPlayer);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void playerLoginEvent(PlayerLoggedInEvent e)
     {
         checkPlayerInventory(e.player);
@@ -418,7 +424,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
         EntityPlayerMP player = (EntityPlayerMP) e.entityPlayer;
-        UserIdent ident = new UserIdent(player);
+        UserIdent ident = UserIdent.get(player);
 
         String inventoryGroup = APIRegistry.perms.getUserPermissionProperty(ident, e.afterPoint.toWorldPoint(), ModuleProtection.PERM_INVENTORY_GROUP);
 
@@ -433,6 +439,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             GameType playerGm = player.theItemInWorldManager.getGameType();
             if (playerGm != gm)
             {
+                //OutputHandler.felog.info(String.format("Changing gamemode for %s from %s to %s", ident.getUsernameOrUUID(), playerGm.getName(), gm.getName()));
                 if (gm != GameType.CREATIVE)
                 {
                     // TODO: Teleport player slightly above ground to prevent fall-death
@@ -478,7 +485,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerChangedZoneEventHigh(PlayerChangedZone event)
     {
-        UserIdent ident = new UserIdent(event.entityPlayer);
+        UserIdent ident = UserIdent.get(event.entityPlayer);
         List<ZoneEffect> effects = getZoneEffects(ident);
         effects.clear();
 
@@ -508,7 +515,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             int interval = FunctionHelper.parseIntDefault(
                     APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND_INTERVAL), 0);
-            effects.add(new CommandEffect(ident.getPlayer(), interval, command));
+            effects.add(new CommandEffect(ident.getPlayerMP(), interval, command));
         }
 
         int damage = FunctionHelper.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE), 0);
@@ -516,7 +523,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             int interval = FunctionHelper.parseIntDefault(
                     APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE_INTERVAL), 0);
-            effects.add(new DamageEffect(ident.getPlayer(), interval, damage));
+            effects.add(new DamageEffect(ident.getPlayerMP(), interval, damage));
         }
 
         // Check potion effect
@@ -525,7 +532,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             int interval = FunctionHelper.parseIntDefault(
                     APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION_INTERVAL), 0);
-            effects.add(new PotionEffect(ident.getPlayer(), interval, potion));
+            effects.add(new PotionEffect(ident.getPlayerMP(), interval, potion));
         }
 
         if (effects.isEmpty())
@@ -584,12 +591,12 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static GameType getGamemode(EntityPlayer player)
     {
-        return stringToGameType(APIRegistry.perms.getUserPermissionProperty(new UserIdent(player), ModuleProtection.PERM_GAMEMODE));
+        return stringToGameType(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(player), ModuleProtection.PERM_GAMEMODE));
     }
 
     public static boolean anyCreativeModeAtPoint(EntityPlayer player, WorldPoint point)
     {
-        if (stringToGameType(APIRegistry.perms.getUserPermissionProperty(new UserIdent(player), point, ModuleProtection.PERM_GAMEMODE)) == GameType.CREATIVE)
+        if (stringToGameType(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(player), point, ModuleProtection.PERM_GAMEMODE)) == GameType.CREATIVE)
             return true;
         for (String group : APIRegistry.perms.getServerZone().getGroups())
         {
@@ -604,7 +611,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         String permission = ModuleProtection.getItemInventoryPermission(stack);
         // if (ModuleProtection.isDebugMode(player))
         // OutputHandler.chatNotification(player, permission);
-        return !APIRegistry.perms.checkUserPermission(new UserIdent(player), permission);
+        return !APIRegistry.perms.checkUserPermission(UserIdent.get(player), permission);
     }
 
     public static void handleBannedInventoryItemEvent(net.minecraftforge.event.entity.player.PlayerEvent e, ItemStack stack)

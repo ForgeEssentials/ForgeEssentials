@@ -20,9 +20,11 @@ import com.google.gson.annotations.Expose;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public class PermissionScheduler extends ServerEventHandler {
+public class PermissionScheduler extends ServerEventHandler
+{
 
-    public static class PermissionEntry {
+    public static class PermissionEntry
+    {
 
         public String on;
 
@@ -36,7 +38,8 @@ public class PermissionScheduler extends ServerEventHandler {
 
     }
 
-    public static class PermissionSchedule {
+    public static class PermissionSchedule
+    {
 
         @Expose(serialize = false)
         public boolean state;
@@ -131,16 +134,7 @@ public class PermissionScheduler extends ServerEventHandler {
 
         if (schedules.isEmpty())
         {
-            PermissionSchedule schedule = new PermissionSchedule();
-            schedule.isRealTime = true;
-            schedule.isDelay = false;
-            // schedule.onMessage = "Turned time permissions ON";
-            // schedule.offMessage = "Turned time permissions OFF";
-            schedule.times.add(2 * 60 * 60 + 46 * 60);
-            schedule.times.add(2 * 60 * 60 + 47 * 60);
-            schedule.permissions.put("some.test.permission", new PermissionEntry("true", "false"));
-            schedule.permissions.put("some.test.property", new PermissionEntry("10", "70"));
-            schedules.put("sample", schedule);
+            PermissionSchedule schedule;
 
             schedule = new PermissionSchedule();
             schedule.isRealTime = false;
@@ -151,17 +145,11 @@ public class PermissionScheduler extends ServerEventHandler {
             schedule.times.add(18000);
             schedule.permissions.put("some.test.permission", new PermissionEntry("true", "false"));
             schedules.put("sample_mc", schedule);
-
-            schedule = new PermissionSchedule();
-            schedule.isRealTime = true;
-            schedule.isDelay = true;
-            // schedule.onMessage = "Turned delay permissions ON";
-            // schedule.offMessage = "Turned delay permissions OFF";
-            schedule.times.add(5);
-            schedule.times.add(10);
-            schedule.permissions.put("some.test.permission", new PermissionEntry("true", "false"));
-            schedules.put("sample_delay", schedule);
         }
+        // TODO: Remove this after beta7 release!!!!
+        schedules.remove("sample_delay");
+        DataManager.getInstance().delete(PermissionSchedule.class, "sample_delay");
+        
         checkSchedules(true);
     }
 

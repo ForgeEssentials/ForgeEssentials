@@ -60,7 +60,7 @@ public class CommandMuter {
 
         if (ConfigChat.logcmd && ModuleChat.cmdLog != null)
         {
-            ModuleChat.cmdLog.printf("%s %s [%s] /%s %s", FunctionHelper.getCurrentDateString(), FunctionHelper.getCurrentTimeString(),
+            ModuleChat.cmdLog.printf("%s %s [%s] /%s %s\n", FunctionHelper.getCurrentDateString(), FunctionHelper.getCurrentTimeString(),
                     e.sender.getCommandSenderName(), e.command.getCommandName(), StringUtils.join(e.parameters, " "));
         }
 

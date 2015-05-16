@@ -115,11 +115,13 @@ public class ModulePermissions extends ConfigLoaderBase {
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
         permissionHelper.save();
+        //permissionHelper.verbosePermissionDebug = true;
     }
 
     @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
+        //permissionHelper.verbosePermissionDebug = false;
         permissionHelper.disableAutoSave = false;
         permissionHelper.save();
         permissionScheduler.saveAll();

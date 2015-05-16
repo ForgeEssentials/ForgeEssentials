@@ -76,8 +76,8 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
         if (args.length < 5)
             throw new InvalidSyntaxException(getCommandUsage(sender));
 
-        UserIdent ident = new UserIdent(args[0], sender);
-        EntityPlayerMP player = ident.getPlayer();
+        UserIdent ident = UserIdent.get(args[0], sender);
+        EntityPlayerMP player = ident.getPlayerMP();
         if (player == null)
             throw new PlayerNotFoundException();
 
@@ -85,7 +85,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
         int amount = parseInt(sender, args[2]);
         int meta = parseInt(sender, args[3]);
 
-        Item item = CommandBase.getItemByText(ident.getPlayer(), itemName);
+        Item item = CommandBase.getItemByText(ident.getPlayerMP(), itemName);
         ItemStack itemStack = new ItemStack(item, amount, meta);
 
         int foundStacks = 0;

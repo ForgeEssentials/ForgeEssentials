@@ -144,19 +144,21 @@ public class PermissionCommandParser
             case "debug":
                 if (arguments.isTabCompletion)
                     return;
-                if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.sender), PERM_DEBUG))
+                if (arguments.senderPlayer == null)
+                    throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(arguments.senderPlayer), PERM_DEBUG))
                 {
                     arguments.error(FEPermissions.MSG_NO_COMMAND_PERM);
                     return;
                 }
-                if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(arguments.sender))
+                if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(arguments.senderPlayer))
                 {
-                    ModulePermissions.permissionHelper.permissionDebugUsers.remove(arguments.sender);
+                    ModulePermissions.permissionHelper.permissionDebugUsers.remove(arguments.senderPlayer);
                     arguments.confirm("Permission debug mode off");
                 }
                 else
                 {
-                    ModulePermissions.permissionHelper.permissionDebugUsers.add(arguments.sender);
+                    ModulePermissions.permissionHelper.permissionDebugUsers.add(arguments.senderPlayer);
                     arguments.confirm("Permission debug mode on");
                 }
                 break;
@@ -196,7 +198,7 @@ public class PermissionCommandParser
             case "perms":
                 if (arguments.senderPlayer == null)
                     throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-                listUserPermissions(arguments.sender, new UserIdent(arguments.senderPlayer), true);
+                listUserPermissions(arguments.sender, UserIdent.get(arguments.senderPlayer), true);
                 break;
             case "users":
                 listUsers(arguments.sender);

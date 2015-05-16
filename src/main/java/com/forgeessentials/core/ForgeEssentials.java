@@ -12,6 +12,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -46,10 +47,23 @@ import com.forgeessentials.util.selections.CommandPos;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionEventHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.discovery.ASMDataTable;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -59,7 +73,8 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
  */
 
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = ForgeEssentials.FEVERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
-public class ForgeEssentials extends ConfigLoaderBase {
+public class ForgeEssentials extends ConfigLoaderBase
+{
 
     public static final String CONFIG_CAT = "Core";
     public static final String CONFIG_CAT_MISC = "Core.Misc";
@@ -102,10 +117,10 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
     @SuppressWarnings("unused")
     private TeleportHelper teleportHelper;
-    
+
     @SuppressWarnings("unused")
     private TickTaskHandler tickTaskHandler;
-    
+
     @SuppressWarnings("unused")
     private Questioner questioner;
 
@@ -156,6 +171,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
     @EventHandler
     public void load(FMLInitializationEvent e)
     {
+        FMLCommonHandler.instance().bus().register(this);
+
         Translator.load();
 
         // other stuff
@@ -173,6 +190,8 @@ public class ForgeEssentials extends ConfigLoaderBase {
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModulePostInitEvent(e));
     }
+
+    /* ------------------------------------------------------------ */
 
     @EventHandler
     public void serverPreInit(FMLServerAboutToStartEvent e)
@@ -209,11 +228,11 @@ public class ForgeEssentials extends ConfigLoaderBase {
 
         registerPermissions();
     }
-    
+
     protected void registerPermissions()
     {
         APIRegistry.perms.registerPermission("mc.help", RegisteredPermValue.TRUE, "Help command");
-        
+
         // Teleport
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5", "Allow bypassing teleport cooldown");
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
@@ -246,6 +265,23 @@ public class ForgeEssentials extends ConfigLoaderBase {
         Translator.save();
     }
 
+    /* ------------------------------------------------------------ */
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void playerLoggedInEvent(PlayerLoggedInEvent event)
+    {
+        UserIdent.register(event.player);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerLoggedOutEvent(PlayerLoggedOutEvent event)
+    {
+        UserIdent.unregister(event.player);
+        PlayerInfo.discardInfo(event.player.getPersistentID());
+    }
+
+    /* ------------------------------------------------------------ */
+
     @Override
     public void load(Configuration config, boolean isReload)
     {
@@ -253,23 +289,28 @@ public class ForgeEssentials extends ConfigLoaderBase {
         config.addCustomCategoryComment(CONFIG_CAT_MODULES, "Enable/disable modules here.");
 
         versionCheck = config.get(CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean(true);
-        configManager.setUseCanonicalConfig(config.get(CONFIG_CAT, "canonicalConfigs", false, 
-                "For modules that support it, place their configs in this file.").getBoolean(false));
+        configManager.setUseCanonicalConfig(config.get(CONFIG_CAT, "canonicalConfigs", false, "For modules that support it, place their configs in this file.")
+                .getBoolean(false));
         modlistLocation = config.get(CONFIG_CAT, "modlistLocation", "modlist.txt",
                 "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.").getString();
         debugMode = config.get(CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean(false);
 
         // ----------------------------------------
         // Other global configurations options
-        
+
         CommandSetChecker.removeDuplicateCommands = config.get(CONFIG_CAT, "removeDuplicateCommands", true,
                 "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
         PlayerInfo.persistSelections = config.get(CONFIG_CAT, "persistSelections", false,
-                "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.").getBoolean(false);
+                "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.")
+                .getBoolean(false);
         MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If a majority of players sleep, make it day.").getBoolean(true);
-        MiscEventHandler.majoritySleepThreshold = config.get(CONFIG_CAT_MISC, "MajoritySleepThreshold", 50, "Define the percentage of players that constitutes a majority for MajoritySleep to kick in.").getInt(50);
-        MiscEventHandler.checkSpacesInNames = config.get(CONFIG_CAT_MISC, "CheckSpacesInNames", true, "Check if a player's name contains spaces (can gum up some things in FE)").getBoolean();
+        MiscEventHandler.majoritySleepThreshold = config.get(CONFIG_CAT_MISC, "MajoritySleepThreshold", 50,
+                "Define the percentage of players that constitutes a majority for MajoritySleep to kick in.").getInt(50);
+        MiscEventHandler.checkSpacesInNames = config.get(CONFIG_CAT_MISC, "CheckSpacesInNames", true,
+                "Check if a player's name contains spaces (can gum up some things in FE)").getBoolean();
     }
+
+    /* ------------------------------------------------------------ */
 
     public static ConfigManager getConfigManager()
     {

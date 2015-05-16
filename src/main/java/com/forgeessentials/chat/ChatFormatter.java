@@ -103,10 +103,10 @@ public class ChatFormatter {
         // replacing stuff...
 
 		// Player info
-		String playerPrefix = FunctionHelper.formatColors(FunctionHelper.getPlayerPrefixSuffix(new UserIdent(event.player), false));
-		String playerSuffix = FunctionHelper.formatColors(FunctionHelper.getPlayerPrefixSuffix(new UserIdent(event.player), true));
-		String groupPrefix = FunctionHelper.formatColors(FunctionHelper.getPlayerGroupPrefixSuffix(new UserIdent(event.player), false));
-		String groupSuffix = FunctionHelper.formatColors(FunctionHelper.getPlayerGroupPrefixSuffix(new UserIdent(event.player), true));
+		String playerPrefix = FunctionHelper.formatColors(FunctionHelper.getPlayerPrefixSuffix(UserIdent.get(event.player), false));
+		String playerSuffix = FunctionHelper.formatColors(FunctionHelper.getPlayerPrefixSuffix(UserIdent.get(event.player), true));
+		String groupPrefix = FunctionHelper.formatColors(FunctionHelper.getPlayerGroupPrefixSuffix(UserIdent.get(event.player), false));
+		String groupSuffix = FunctionHelper.formatColors(FunctionHelper.getPlayerGroupPrefixSuffix(UserIdent.get(event.player), true));
 		String zoneID = APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(event.player)).getName();
 		String rank = "";
 
@@ -188,7 +188,7 @@ public class ChatFormatter {
         if (ConfigChat.logchat && ModuleChat.chatLog != null)
         {
             ModuleChat.chatLog.println(FunctionHelper.getCurrentDateString() + " " + FunctionHelper.getCurrentTimeString() + "[" + event.username + "] "
-                    + event.message); // don't use event.line - it shows colour codes and everything
+                    + event.message + "\n"); // don't use event.line - it shows colour codes and everything
         }
 
     }

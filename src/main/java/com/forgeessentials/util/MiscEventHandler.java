@@ -37,7 +37,7 @@ public class MiscEventHandler {
         return instance;
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void checkPlayerName(PlayerLoggedInEvent e)
     {
         String name = e.player.getDisplayName();

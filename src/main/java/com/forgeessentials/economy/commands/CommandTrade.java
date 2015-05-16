@@ -120,7 +120,7 @@ public class CommandTrade extends ParserCommandBase
                         }
                         else if (response == false)
                         {
-                            OutputHandler.chatError(buyer.getPlayer(), Translator.translate("Trade declined"));
+                            OutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Trade declined"));
                             arguments.error(Translator.format("Player %s declined the trade", buyer.getUsernameOrUUID()));
                             return;
                         }
@@ -128,21 +128,21 @@ public class CommandTrade extends ParserCommandBase
                         ItemStack currentItemStack = arguments.senderPlayer.getCurrentEquippedItem();
                         if (!ItemStack.areItemStacksEqual(currentItemStack, itemStack) || !ItemStack.areItemStackTagsEqual(currentItemStack, itemStack))
                         {
-                            OutputHandler.chatError(buyer.getPlayer(), Translator.translate("Error in transaction"));
+                            OutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Error in transaction"));
                             arguments.error(Translator.translate("You need to keep the item equipped until trade is finished!"));
                             return;
                         }
 
                         if (!buyerWallet.withdraw(price * itemStack.stackSize))
                         {
-                            OutputHandler.chatError(buyer.getPlayer(), Translator.translate("You can't afford that"));
+                            OutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("You can't afford that"));
                             return;
                         }
                         sellerWallet.add(price * itemStack.stackSize);
 
                         InventoryPlayer inventory = arguments.senderPlayer.inventory;
                         inventory.mainInventory[inventory.currentItem] = null;
-                        FunctionHelper.givePlayerItem(buyer.getPlayer(), currentItemStack);
+                        FunctionHelper.givePlayerItem(buyer.getPlayerMP(), currentItemStack);
                     }
                 };
                 try
@@ -155,7 +155,7 @@ public class CommandTrade extends ParserCommandBase
                         message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?", itemStack.stackSize, itemStack.getDisplayName(),
                                 APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize),
                                 arguments.sender.getCommandSenderName());
-                    Questioner.add(buyer.getPlayer(), message, buyerHandler, 60);
+                    Questioner.add(buyer.getPlayerMP(), message, buyerHandler, 60);
                     arguments.confirm(Translator.format("Waiting on %s...", buyer.getUsernameOrUUID()));
                 }
                 catch (QuestionerStillActiveException e)

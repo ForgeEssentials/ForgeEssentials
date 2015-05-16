@@ -1,7 +1,6 @@
 package com.forgeessentials.playerlogger.event;
 
 import java.sql.Blob;
-import java.util.Date;
 
 import javax.persistence.EntityManager;
 
@@ -26,7 +25,7 @@ public class LogEventBreak extends PlayerLoggerEvent<BlockEvent.BreakEvent>
     public void process(EntityManager em)
     {
         ActionBlock action = new ActionBlock();
-        action.time = new Date();
+        action.time = date;
         action.player = getPlayer(event.getPlayer().getPersistentID());
         action.world = getWorld(event.world.provider.dimensionId);
         action.block = getBlock(event.block);

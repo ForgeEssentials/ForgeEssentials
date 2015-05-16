@@ -151,11 +151,11 @@ public class CommandPlot extends ParserCommandBase
         case "select":
             parseSelect(arguments);
             break;
-        case "users":
-            parseUsers(arguments);
-            break;
         case "mods":
-            parseMods(arguments);
+            parseMods(arguments, false);
+            break;
+        case "users":
+            parseMods(arguments, true);
             break;
         case "set":
             parseSet(arguments);
@@ -319,13 +319,20 @@ public class CommandPlot extends ParserCommandBase
         arguments.confirm("Selected plot");
     }
 
-    public static void parseUsers(CommandParserArgs arguments)
+    public static void parseMods(CommandParserArgs arguments, boolean modifyUsers)
     {
+        Plot plot = getPlot(arguments.senderPlayer);
+        String type = modifyUsers ? "users" : "mods";
+        String group = modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD;
+        
         arguments.checkPermission(Plot.PERM_MODS);
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.translate("/plot users add|remove <player>: Add / remove users"));
-            // TODO: List mods
+            arguments.confirm(Translator.translate("/plot " + type + " add|remove <player>: Add / remove " + type));
+            arguments.confirm(Translator.translate("Plot " + type + ":"));
+            for (UserIdent user : APIRegistry.perms.getServerZone().getKnownPlayers())
+                if (plot.getZone().getStoredPlayerGroups(user).contains(group))
+                    arguments.confirm("  " + user.getUsernameOrUUID());
             return;
         }
         arguments.tabComplete("add", "remove");
@@ -335,46 +342,15 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isTabCompletion || player == null)
             return;
 
-        Plot plot = getPlot(arguments.senderPlayer);
-
         switch (action)
         {
         case "add":
-            plot.getZone().addPlayerToGroup(player, Plot.GROUP_PLOT_USER);
+            plot.getZone().addPlayerToGroup(player, modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD);
+            arguments.confirm(Translator.format("Added %s to plot " + type, player.getUsernameOrUUID()));
             break;
         case "remove":
-            plot.getZone().removePlayerFromGroup(player, Plot.GROUP_PLOT_USER);
-            break;
-        default:
-            throw new TranslatedCommandException.InvalidSyntaxException();
-        }
-    }
-
-    public static void parseMods(CommandParserArgs arguments)
-    {
-        arguments.checkPermission(Plot.PERM_MODS);
-        if (arguments.isEmpty())
-        {
-            arguments.confirm(Translator.translate("/plot mods add|remove <player>: Add / remove mods"));
-            // TODO: List mods
-            return;
-        }
-        arguments.tabComplete("add", "remove");
-        String action = arguments.remove().toLowerCase();
-
-        UserIdent player = arguments.parsePlayer(true);
-        if (arguments.isTabCompletion || player == null)
-            return;
-
-        Plot plot = getPlot(arguments.senderPlayer);
-
-        switch (action)
-        {
-        case "add":
-            plot.getZone().addPlayerToGroup(player, Plot.GROUP_PLOT_MOD);
-            break;
-        case "remove":
-            plot.getZone().removePlayerFromGroup(player, Plot.GROUP_PLOT_MOD);
+            plot.getZone().removePlayerFromGroup(player, modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD);
+            arguments.confirm(Translator.format("Removed %s from plot " + type, player.getUsernameOrUUID()));
             break;
         default:
             throw new TranslatedCommandException.InvalidSyntaxException();
@@ -615,7 +591,7 @@ public class CommandPlot extends ParserCommandBase
                             }
                             else if (response == false)
                             {
-                                OutputHandler.chatError(plot.getOwner().getPlayer(), Translator.translate("Trade declined"));
+                                OutputHandler.chatError(plot.getOwner().getPlayerMP(), Translator.translate("Trade declined"));
                                 arguments.error(Translator.format("%s declined to sell you plot \"%s\" for %s", //
                                         plot.getOwner().getUsernameOrUUID(), plot.getName(), buyPriceStr));
                                 return;
@@ -625,7 +601,7 @@ public class CommandPlot extends ParserCommandBase
                     };
                     try
                     {
-                        Questioner.add(plot.getOwner().getPlayer(), message, handler, 60);
+                        Questioner.add(plot.getOwner().getPlayerMP(), message, handler, 60);
                     }
                     catch (QuestionerStillActiveException e)
                     {
@@ -664,7 +640,7 @@ public class CommandPlot extends ParserCommandBase
             sellerWallet.add(price);
             if (plot.getOwner().hasPlayer())
             {
-                OutputHandler.chatConfirmation(plot.getOwner().getPlayer(), Translator.format("You sold plot \"%s\" to %s for %s", //
+                OutputHandler.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", //
                         plot.getName(), arguments.senderPlayer.getCommandSenderName(), priceStr));
                 ModuleEconomy.confirmNewWalletAmount(plot.getOwner(), sellerWallet);
             }

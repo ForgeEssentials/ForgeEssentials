@@ -251,17 +251,9 @@ public class Plot
 
     public void setPermission(String permission, boolean userPerm, boolean value)
     {
-        if (!value)
-        {
-            zone.setGroupPermission(GROUP_PLOT_OWNER, permission, true);
-            zone.setGroupPermission(GROUP_PLOT_MOD, permission, true);
-            zone.setGroupPermission(userPerm ? GROUP_PLOT_USER : GROUP_ALL, permission, false);
-        }
-        else
-        {
-            // zone.clearGroupPermission(GROUP_PLOT_OWNER, permission);
-            zone.clearGroupPermission(userPerm ? GROUP_PLOT_USER : GROUP_ALL, permission);
-        }
+        zone.setGroupPermission(GROUP_PLOT_OWNER, permission, true);
+        zone.setGroupPermission(GROUP_PLOT_MOD, permission, true);
+        zone.setGroupPermission(userPerm ? GROUP_PLOT_USER : GROUP_ALL, permission, value);
     }
 
     public void setDefaultPermissions()
@@ -405,7 +397,7 @@ public class Plot
             {
                 String ownerId = zone.getGroupPermission(GROUP_ALL, PERM_OWNER);
                 if (ownerId != null)
-                    registerPlot(new Plot((AreaZone) zone, ownerId.equals(SERVER_OWNER) ? null : new UserIdent(ownerId)));
+                    registerPlot(new Plot((AreaZone) zone, ownerId.equals(SERVER_OWNER) ? null : UserIdent.get(ownerId)));
             }
     }
 
