@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -99,13 +100,32 @@ public class TeleportHelper extends ServerEventHandler
             return;
         }
 
+        if (!canTeleportTo(point))
+        {
+            OutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
+            return;
+        }
+
         // Setup timed teleport
         tpInfos.put(player.getPersistentID(), new TeleportInfo(player, point, teleportWarmup * 1000));
         OutputHandler.chatNotification(player, Translator.format("Teleporting. Please stand still for %s.", FunctionHelper.parseTime(teleportWarmup)));
     }
 
+    public static boolean canTeleportTo(WarpPoint point)
+    {
+        Block block1 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ());
+        Block block2 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
+        return !block1.getMaterial().isSolid() && !block2.getMaterial().isSolid();
+    }
+
     public static void doTeleport(EntityPlayerMP player, WarpPoint point)
     {
+        if (!canTeleportTo(point))
+        {
+            OutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
+            return;
+        }
+
         PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
         pi.setLastTeleportOrigin(new WarpPoint(player));
         pi.setLastTeleportTime(System.currentTimeMillis());
