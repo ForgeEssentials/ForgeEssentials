@@ -45,7 +45,7 @@ public abstract class Zone
     public static final String PERMISSION_ASTERIX = "*";
     public static final String PERMISSION_FALSE = "false";
     public static final String PERMISSION_TRUE = "true";
-    public static final String ALL_PERMS = "." + PERMISSION_ASTERIX;
+    public static final String ALL_PERMS = '.' + PERMISSION_ASTERIX;
 
     public static class PermissionList extends HashMap<String, String>
     {

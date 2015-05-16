@@ -10,7 +10,9 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 
 import com.forgeessentials.util.FunctionHelper;
 import com.google.gson.annotations.Expose;
@@ -52,6 +54,9 @@ public class UserIdent
 
     @Expose(serialize = false)
     protected EntityPlayer player;
+
+    @Expose(serialize = false)
+    protected GameProfile gameProfile;
 
     /* ------------------------------------------------------------ */
 
@@ -188,6 +193,7 @@ public class UserIdent
         ident.player = player;
         ident.username = player.getCommandSenderName();
         ident.uuid = player.getPersistentID();
+        ident.gameProfile = null;
 
         if (usernameIdent != null && usernameIdent != ident)
         {
@@ -253,6 +259,13 @@ public class UserIdent
         return (EntityPlayerMP) player;
     }
 
+    public EntityPlayerMP getFakePlayer(WorldServer world)
+    {
+        if (player != null)
+            return (EntityPlayerMP) player;
+        return FakePlayerFactory.get(world, getGameProfile());
+    }
+
     public String getUsernameOrUUID()
     {
         return username == null ? uuid.toString() : username;
@@ -283,9 +296,14 @@ public class UserIdent
 
     public GameProfile getGameProfile()
     {
-        if (player != null)
-            return player.getGameProfile();
-        return new GameProfile(getOrGenerateUuid(), username);
+        if (gameProfile == null)
+        {
+            if (player != null)
+                gameProfile = player.getGameProfile();
+            else
+                gameProfile = new GameProfile(getOrGenerateUuid(), username);
+        }
+        return gameProfile;
     }
 
     /* ------------------------------------------------------------ */
