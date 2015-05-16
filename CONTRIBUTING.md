@@ -13,6 +13,8 @@ From here, you may refer to ForgeGradle instructions for importing a project.
 
 *Note: ForgeGradle versions for Minecraft 1.7 recommends Java 7.*
 
+You also need to add the hibernate-jpamodelgen.jar which is referenced in the project to your IDE as annotation processor, or it will complain that it cannot find classes like `Action_`.
+
 Additional step (VERY IMPORTANT, OR EVENTS WILL NOT FIRE!!!)
 
 Open your IDE run configs, and select the preconfigured "Minecraft Client" run configuration.
