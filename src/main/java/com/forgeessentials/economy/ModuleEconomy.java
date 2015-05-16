@@ -1,8 +1,11 @@
 package com.forgeessentials.economy;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -10,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 
@@ -40,6 +44,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.registry.GameData;
@@ -63,6 +68,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     public static final String PERM_CURRENCY_SINGULAR = PERM_CURRENCY + ".singular";
 
     public static final String PERM_DEATHTOLL = PERM + ".deathtoll";
+    public static final String PERM_COMMANDPRICE = PERM + ".cmdprice";
 
     public static final String PERM_PRICE = PERM + ".price";
 
@@ -194,11 +200,33 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
             Long deathtoll = FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
             if (deathtoll == null || deathtoll <= 0)
                 return;
-            Wallet walletData = APIRegistry.economy.getWallet(ident);
+            Wallet wallet = APIRegistry.economy.getWallet(ident);
             if (deathtoll < 1)
-                walletData.set(walletData.get() * deathtoll);
+                wallet.set(wallet.get() * deathtoll);
             else if (deathtoll >= 1)
-                walletData.set(Math.min(0, walletData.get() - deathtoll));
+                wallet.set(Math.min(0, wallet.get() - deathtoll));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void commandEvent(CommandEvent event)
+    {
+        if (!(event.sender instanceof EntityPlayerMP))
+            return;
+        UserIdent ident = UserIdent.get((EntityPlayerMP) event.sender);
+
+        for (int i = event.parameters.length; i >= 0; i--)
+        {
+            String permission = PERM_COMMANDPRICE + '.' + event.command.getCommandName() + //
+                    (i == 0 ? "" : ('.' + StringUtils.join(Arrays.copyOf(event.parameters, i), '.')));
+            Long price = FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, permission));
+            if (price == null)
+                continue;
+
+            Wallet wallet = APIRegistry.economy.getWallet(ident);
+            if (!wallet.withdraw(price))
+                event.setCanceled(true);
+            break;
         }
     }
 
