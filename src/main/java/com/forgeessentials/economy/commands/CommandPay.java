@@ -75,7 +75,7 @@ public class CommandPay extends ParserCommandBase
 
         Wallet receiver = APIRegistry.economy.getWallet(player);
         receiver.add(amount);
-        OutputHandler.chatConfirmation(player.getPlayer(), Translator.format("You were paid %s from %s. You now have %s", //
+        OutputHandler.chatConfirmation(player.getPlayerMP(), Translator.format("You were paid %s from %s. You now have %s", //
                 APIRegistry.economy.toString(amount), arguments.sender.getCommandSenderName(), receiver.toString()));
     }
 

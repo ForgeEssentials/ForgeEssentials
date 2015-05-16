@@ -32,7 +32,7 @@ public class RespawnHandler
 
     public static WarpPoint getPlayerSpawn(EntityPlayer player, WarpPoint location, boolean doDefaultSpawn)
     {
-        UserIdent ident = new UserIdent(player);
+        UserIdent ident = UserIdent.get(player);
         if (location == null)
             location = new WarpPoint(player);
 

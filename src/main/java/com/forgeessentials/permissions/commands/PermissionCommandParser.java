@@ -198,7 +198,7 @@ public class PermissionCommandParser
             case "perms":
                 if (arguments.senderPlayer == null)
                     throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-                listUserPermissions(arguments.sender, new UserIdent(arguments.senderPlayer), true);
+                listUserPermissions(arguments.sender, UserIdent.get(arguments.senderPlayer), true);
                 break;
             case "users":
                 listUsers(arguments.sender);

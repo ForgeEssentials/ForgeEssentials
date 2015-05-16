@@ -155,7 +155,7 @@ public final class ScriptMethods
                 throw new MissingPlayerException();
             if (args.length < 1)
                 throw new SyntaxException("Missing argument for permcheck");
-            if (!APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
+            if (!APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
                 throw new MissingPermissionException(args[0], args.length > 1 ? StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ") : "");
             return true;
         }
@@ -169,7 +169,7 @@ public final class ScriptMethods
                 return false;
             if (args.length < 1)
                 throw new SyntaxException("Invalid argument count for permcheck");
-            if (!APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
+            if (!APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
                 return false;
             return true;
         }
@@ -183,15 +183,15 @@ public final class ScriptMethods
                 throw new SyntaxException("Missing player argument for teleport");
             if (args.length < 2)
                 throw new SyntaxException("Missing target argument for teleport");
-            UserIdent player = new UserIdent(args[1], sender);
+            UserIdent player = UserIdent.get(args[1], sender);
             if (!player.hasPlayer())
                 return false;
             if (args.length == 2)
             {
-                UserIdent target = new UserIdent(args[2], sender);
+                UserIdent target = UserIdent.get(args[2], sender);
                 if (!target.hasPlayer())
                     return false;
-                TeleportHelper.teleport(player.getPlayer(), new WarpPoint(target.getPlayer()));
+                TeleportHelper.teleport(player.getPlayerMP(), new WarpPoint(target.getPlayerMP()));
             }
             else if (args.length == 4)
             {
@@ -200,7 +200,7 @@ public final class ScriptMethods
                 Integer z = FunctionHelper.tryParseInt(args[3]);
                 if (x == null || y == null || z == null)
                     return false;
-                EntityPlayerMP p = player.getPlayer();
+                EntityPlayerMP p = player.getPlayerMP();
                 TeleportHelper.teleport(p, new WarpPoint(p.dimension, x, y, z, p.cameraPitch, p.cameraYaw));
             }
             else if (args.length == 5)
@@ -211,7 +211,7 @@ public final class ScriptMethods
                 Integer dim = FunctionHelper.tryParseInt(args[4]);
                 if (x == null || y == null || z == null || dim == 0 || !DimensionManager.isDimensionRegistered(dim))
                     return false;
-                EntityPlayerMP p = player.getPlayer();
+                EntityPlayerMP p = player.getPlayerMP();
                 TeleportHelper.teleport(p, new WarpPoint(dim, x, y, z, p.cameraPitch, p.cameraYaw));
             } else
                 throw new SyntaxException("Incorrect number of arguments");
@@ -236,7 +236,7 @@ public final class ScriptMethods
                 Wallet dst = null;
                 if (args.length == 2)
                 {
-                    UserIdent dstIdent = new UserIdent(args[1], sender);
+                    UserIdent dstIdent = UserIdent.get(args[1], sender);
                     if (!dstIdent.hasUUID())
                         throw new ScriptException("Player %s not found", args[1]);
                     dst = APIRegistry.economy.getWallet(dstIdent);
@@ -271,7 +271,7 @@ public final class ScriptMethods
                     throw new MissingPlayerException();
                 if (args.length < 1)
                     throw new SyntaxException("Missing argument for permcheck");
-                if (APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
+                if (APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
                     throw new MissingPermissionException(args[0], args.length > 1 ? StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ") : "");
                 return true;
             }
@@ -285,7 +285,7 @@ public final class ScriptMethods
                     return false;
                 if (args.length != 1)
                     throw new SyntaxException("Invalid argument count for permcheck");
-                if (APIRegistry.perms.checkUserPermission(new UserIdent((EntityPlayerMP) sender), args[0]))
+                if (APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
                     return false;
                 return true;
             }

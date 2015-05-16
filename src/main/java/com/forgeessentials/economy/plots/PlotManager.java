@@ -52,7 +52,7 @@ public class PlotManager extends ServerEventHandler
 
             String message = Translator.format("You entered \"%s\"", plotName);
 
-            UserIdent ident = new UserIdent(event.entityPlayer);
+            UserIdent ident = UserIdent.get(event.entityPlayer);
             Set<String> groups = plot.getZone().getStoredPlayerGroups(ident);
             if (groups.contains(Plot.GROUP_PLOT_OWNER))
             {

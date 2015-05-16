@@ -397,7 +397,7 @@ public class Plot
             {
                 String ownerId = zone.getGroupPermission(GROUP_ALL, PERM_OWNER);
                 if (ownerId != null)
-                    registerPlot(new Plot((AreaZone) zone, ownerId.equals(SERVER_OWNER) ? null : new UserIdent(ownerId)));
+                    registerPlot(new Plot((AreaZone) zone, ownerId.equals(SERVER_OWNER) ? null : UserIdent.get(ownerId)));
             }
     }
 

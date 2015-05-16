@@ -45,7 +45,7 @@ public class CommandParserArgs
         this.args = new LinkedList<String>(Arrays.asList(args));
         this.sender = sender;
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
-        this.ident = (senderPlayer == null) ? null : new UserIdent(senderPlayer);
+        this.ident = (senderPlayer == null) ? null : UserIdent.get(senderPlayer);
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
@@ -133,11 +133,11 @@ public class CommandParserArgs
             {
                 if (senderPlayer == null)
                     throw new TranslatedCommandException("_ME_ cannot be used in console.");
-                return new UserIdent(senderPlayer);
+                return UserIdent.get(senderPlayer);
             }
             else
             {
-                UserIdent ident = new UserIdent(name, sender);
+                UserIdent ident = UserIdent.get(name, sender);
                 if (mustExist && !ident.hasUUID())
                     throw new TranslatedCommandException("Player %s not found", name);
                 return ident;

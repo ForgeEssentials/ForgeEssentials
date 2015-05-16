@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,8 +17,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.ImmutableUserIdent;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.UserIdent.UserIdentInvalidatedEvent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 
@@ -281,8 +280,8 @@ public abstract class Zone
         if (map == null)
         {
             map = new PermissionList();
-            ident = new ImmutableUserIdent(ident);
             playerPermissions.put(ident, map);
+            return map;
         }
         return playerPermissions.get(ident);
     }
@@ -312,7 +311,7 @@ public abstract class Zone
      */
     public String getPlayerPermission(EntityPlayer player, String permissionNode)
     {
-        return getPlayerPermission(new UserIdent(player), permissionNode);
+        return getPlayerPermission(UserIdent.get(player), permissionNode);
     }
 
     /**
@@ -386,27 +385,6 @@ public abstract class Zone
             }
         }
         return false;
-    }
-
-    /**
-     * Revalidates all UserIdent fields in playerPermissions to replace those which were hashed based on their
-     * playername. This function should always be called as soon as a player connects to the server.
-     */
-    public void updatePlayerIdents()
-    {
-        Map<UserIdent, PermissionList> toAdd = new HashMap<>();
-        for (Iterator<Map.Entry<UserIdent, PermissionList>> iterator = playerPermissions.entrySet().iterator(); iterator.hasNext();)
-        {
-            Map.Entry<UserIdent, PermissionList> player = iterator.next();
-            getServerZone().registerPlayer(player.getKey());
-            UserIdent ident = new ImmutableUserIdent(player.getKey());
-            if (ident.hashCode() != player.getKey().hashCode())
-            {
-                iterator.remove();
-                toAdd.put(ident, player.getValue());
-            }
-        }
-        playerPermissions.putAll(toAdd);
     }
 
     // ------------------------------------------------------------
@@ -601,6 +579,20 @@ public abstract class Zone
     // ------------------------------------------------------------
     // -- Other
     // ------------------------------------------------------------
+
+    public void userIdentInvalidated(UserIdentInvalidatedEvent event)
+    {
+        PermissionList oldPerms = playerPermissions.remove(event.oldValue);
+        if (oldPerms == null)
+            return;
+        setDirty();
+
+        PermissionList newPerms = playerPermissions.get(event.newValue);
+        if (newPerms == null)
+            playerPermissions.put(event.newValue, oldPerms);
+        else
+            newPerms.putAll(oldPerms);
+    }
 
     /**
      * Swaps the permissions of one zone with another one

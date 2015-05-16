@@ -378,7 +378,7 @@ public class FlatfileProvider extends ZonePersistenceProvider {
                     OutputHandler.felog.severe("User identification missing in " + path.getAbsolutePath());
                     continue;
                 }
-                UserIdent ident = new UserIdent(uuid, username);
+                UserIdent ident = UserIdent.get(uuid, username);
 
                 // Load permissions
                 PermissionList permissions = zone.getOrCreatePlayerPermissions(ident);

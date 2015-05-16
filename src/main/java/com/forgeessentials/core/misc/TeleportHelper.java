@@ -75,7 +75,7 @@ public class TeleportHelper extends ServerEventHandler
         // Check permissions
         if (!APIRegistry.perms.checkPermission(player, TELEPORT_FROM))
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
-        if (!APIRegistry.perms.checkUserPermission(new UserIdent(player), point.toWorldPoint(), TELEPORT_TO))
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point.toWorldPoint(), TELEPORT_TO))
             throw new TranslatedCommandException("You are not allowed to teleport to that location.");
 
         // Get and check teleport cooldown

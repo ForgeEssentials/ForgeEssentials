@@ -29,6 +29,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.UserIdent.UserIdentInvalidatedEvent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
@@ -148,7 +149,6 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 // Set new server zone
                 rootZone.setServerZone(serverZone);
                 serverZone.rebuildZonesMap();
-                serverZone.updatePlayerIdents();
                 dirty = false;
                 APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
                 return true;
@@ -266,7 +266,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
         WorldPoint point = null;
         if (ident != null && ident.hasPlayer())
-            point = new WorldPoint(ident.getPlayer());
+            point = new WorldPoint(ident.getPlayerMP());
 
         IChatComponent msgC1 = OutputHandler.confirmation(msg1);
         IChatComponent msgC2 = OutputHandler.confirmation(msg2);
@@ -314,15 +314,18 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         }
     }
 
+    @SubscribeEvent
+    public void userIdentInvalidatedEvent(UserIdentInvalidatedEvent event)
+    {
+        for (Zone zone : getServerZone().getZones())
+            zone.userIdentInvalidated(event);
+    }
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerLogin(PlayerLoggedInEvent e)
     {
-        // Update permission storage with new players
-        for (Zone zone : getZones())
-            zone.updatePlayerIdents();
-
         // Make sure each player has at least one permission
-        UserIdent ident = new UserIdent(e.player);
+        UserIdent ident = UserIdent.get(e.player);
         if (getServerZone().getPlayerPermissions(ident) == null || getServerZone().getPlayerPermissions(ident).size() == 0)
             getServerZone().setPlayerPermission(ident, FEPermissions.PLAYER_KNOWN, true);
         else
@@ -366,7 +369,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerChangedZoneEvent(PlayerChangedZone event)
     {
-        UserIdent ident = new UserIdent(event.entityPlayer);
+        UserIdent ident = UserIdent.get(event.entityPlayer);
         String exitMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
         if (exitMsg != null)
         {
@@ -575,7 +578,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
         if (player != null)
         {
-            ident = new UserIdent(player);
+            ident = UserIdent.get(player);
             // TODO: should be changed to context.getDimension()
             dim = player.dimension;
         }
@@ -746,14 +749,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public boolean checkPermission(EntityPlayer player, String permissionNode)
     {
-        UserIdent ident = new UserIdent(player);
+        UserIdent ident = UserIdent.get(player);
         return checkBooleanPermission(getPermission(ident, new WorldPoint(player), null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
     @Override
     public String getPermissionProperty(EntityPlayer player, String permissionNode)
     {
-        UserIdent ident = new UserIdent(player);
+        UserIdent ident = UserIdent.get(player);
         return getPermission(ident, new WorldPoint(player), null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
     }
 
@@ -762,14 +765,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public boolean checkUserPermission(UserIdent ident, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(ident, ident != null && ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null,
+        return checkBooleanPermission(getPermission(ident, ident != null && ident.hasPlayer() ? new WorldPoint(ident.getPlayerMP()) : null, null,
                 GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
     @Override
     public String getUserPermissionProperty(UserIdent ident, String permissionNode)
     {
-        return getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : null, null, GroupEntry.toList(getPlayerGroups(ident)),
+        return getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayerMP()) : null, null, GroupEntry.toList(getPlayerGroups(ident)),
                 permissionNode, true);
     }
 
@@ -792,7 +795,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public boolean checkUserPermission(UserIdent ident, WorldPoint targetPoint, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(ident, targetPoint, null, GroupEntry.toList(getServerZone().getPlayerGroups(ident, targetPoint)), permissionNode, false));
+        return checkBooleanPermission(getPermission(ident, targetPoint, null, GroupEntry.toList(getServerZone().getPlayerGroups(ident, targetPoint)),
+                permissionNode, false));
     }
 
     @Override
@@ -806,7 +810,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public boolean checkUserPermission(UserIdent ident, WorldArea targetArea, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(ident, null, targetArea, GroupEntry.toList(getServerZone().getPlayerGroups(ident, targetArea.getCenter())), permissionNode, false));
+        return checkBooleanPermission(getPermission(ident, null, targetArea, GroupEntry.toList(getServerZone().getPlayerGroups(ident, targetArea.getCenter())),
+                permissionNode, false));
     }
 
     @Override

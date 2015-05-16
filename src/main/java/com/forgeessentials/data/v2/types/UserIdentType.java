@@ -27,11 +27,11 @@ public class UserIdentType implements DataType<UserIdent> {
             JsonElement uuid = obj.get("uuid");
             JsonElement username = obj.get("username");
             if (uuid == null)
-                return new UserIdent(username.getAsString());
+                return UserIdent.get(username.getAsString());
             else if (username == null)
-                return new UserIdent(uuid.getAsString());
+                return UserIdent.get(uuid.getAsString());
             else
-                return new UserIdent(uuid.getAsString(), username.getAsString());
+                return UserIdent.get(uuid.getAsString(), username.getAsString());
         }
         return UserIdent.fromString(json.getAsString());
     }

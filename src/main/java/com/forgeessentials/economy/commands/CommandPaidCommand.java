@@ -74,7 +74,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
         if (args.length < 3)
             throw new InvalidSyntaxException(getCommandUsage(sender));
 
-        UserIdent ident = new UserIdent(args[0], sender);
+        UserIdent ident = UserIdent.get(args[0], sender);
         if (!ident.hasPlayer())
             throw new PlayerNotFoundException();
 
@@ -82,14 +82,14 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
         Wallet wallet = APIRegistry.economy.getWallet(ident);
         if (!wallet.withdraw(amount))
         {
-            OutputHandler.chatError(ident.getPlayer(), Translator.translate("You can't afford that"));
+            OutputHandler.chatError(ident.getPlayerMP(), Translator.translate("You can't afford that"));
             return;
         }
 
         args = Arrays.copyOfRange(args, 2, args.length);
-        MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsConsoleCommandSender(ident.getPlayer()), StringUtils.join(args, " "));
+        MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsConsoleCommandSender(ident.getPlayerMP()), StringUtils.join(args, " "));
 
-        OutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
+        OutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
         ModuleEconomy.confirmNewWalletAmount(ident, wallet);
     }
 

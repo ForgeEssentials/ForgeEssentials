@@ -591,7 +591,7 @@ public class CommandPlot extends ParserCommandBase
                             }
                             else if (response == false)
                             {
-                                OutputHandler.chatError(plot.getOwner().getPlayer(), Translator.translate("Trade declined"));
+                                OutputHandler.chatError(plot.getOwner().getPlayerMP(), Translator.translate("Trade declined"));
                                 arguments.error(Translator.format("%s declined to sell you plot \"%s\" for %s", //
                                         plot.getOwner().getUsernameOrUUID(), plot.getName(), buyPriceStr));
                                 return;
@@ -601,7 +601,7 @@ public class CommandPlot extends ParserCommandBase
                     };
                     try
                     {
-                        Questioner.add(plot.getOwner().getPlayer(), message, handler, 60);
+                        Questioner.add(plot.getOwner().getPlayerMP(), message, handler, 60);
                     }
                     catch (QuestionerStillActiveException e)
                     {
@@ -640,7 +640,7 @@ public class CommandPlot extends ParserCommandBase
             sellerWallet.add(price);
             if (plot.getOwner().hasPlayer())
             {
-                OutputHandler.chatConfirmation(plot.getOwner().getPlayer(), Translator.format("You sold plot \"%s\" to %s for %s", //
+                OutputHandler.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", //
                         plot.getName(), arguments.senderPlayer.getCommandSenderName(), priceStr));
                 ModuleEconomy.confirmNewWalletAmount(plot.getOwner(), sellerWallet);
             }

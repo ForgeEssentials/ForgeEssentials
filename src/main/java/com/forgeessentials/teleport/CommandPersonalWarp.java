@@ -83,7 +83,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
                 if (map.containsKey(args[1]))
 				    throw new TranslatedCommandException("That personal warp already exists.");
                 
-				Integer prop = APIRegistry.perms.getUserPermissionPropertyInt(new UserIdent(sender), PERM_LIMIT_PROP);
+				Integer prop = APIRegistry.perms.getUserPermissionPropertyInt(UserIdent.get(sender), PERM_LIMIT_PROP);
 				if (prop == null || prop == -1)
 				{
 					map.put(args[1], new PWarp(sender.getPersistentID().toString(), args[1], new WarpPoint(sender)));
@@ -154,11 +154,11 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	{
 		if (target.startsWith("p:"))
 		{
-			return APIRegistry.perms.getUserPermissionProperty(new UserIdent(target.replaceFirst("p:", "")), PERM_LIMIT_PROP);
+			return APIRegistry.perms.getUserPermissionProperty(UserIdent.get(target.replaceFirst("p:", "")), PERM_LIMIT_PROP);
 		}
 		else if (target.startsWith("g:"))
 		{
-			return APIRegistry.perms.getUserPermissionProperty(new UserIdent(target.replaceFirst("g:", "")), PERM_LIMIT_PROP);
+			return APIRegistry.perms.getUserPermissionProperty(UserIdent.get(target.replaceFirst("g:", "")), PERM_LIMIT_PROP);
 		}
 		else
 		{
@@ -170,7 +170,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBase {
 	{
 		if (target.startsWith("p:"))
 		{
-			APIRegistry.perms.setPlayerPermissionProperty(new UserIdent(target.replaceFirst("p:", "")), PERM_LIMIT_PROP, Integer.toString(limit));
+			APIRegistry.perms.setPlayerPermissionProperty(UserIdent.get(target.replaceFirst("p:", "")), PERM_LIMIT_PROP, Integer.toString(limit));
 		}
 		else if (target.startsWith("g:"))
 		{
