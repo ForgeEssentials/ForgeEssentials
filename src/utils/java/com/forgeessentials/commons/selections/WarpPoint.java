@@ -93,17 +93,17 @@ public class WarpPoint {
 
     public int getBlockX()
     {
-        return (int) xd;
+        return (int) Math.floor(xd);
     }
 
     public int getBlockY()
     {
-        return (int) yd;
+        return (int) Math.floor(yd);
     }
 
     public int getBlockZ()
     {
-        return (int) zd;
+        return (int) Math.floor(zd);
     }
 
     public float getPitch()
