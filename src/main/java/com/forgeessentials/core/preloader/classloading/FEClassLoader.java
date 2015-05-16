@@ -1,6 +1,6 @@
 package com.forgeessentials.core.preloader.classloading;
 
-import com.forgeessentials.core.preloader.FELaunchHandler;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
 import java.io.BufferedOutputStream;
@@ -30,6 +30,8 @@ public class FEClassLoader
 
     private boolean reExtract;
 
+    private boolean runtimeDeobfEnabled = (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+
     public void extractLibs(File mcLocation, LaunchClassLoader cl)
     {
         FEfolder = new File(mcLocation, "ForgeEssentials/");
@@ -48,7 +50,7 @@ public class FEClassLoader
         runClassLoad(FEfolder, cl);
         checkLibs(cl);
 
-        if (FELaunchHandler.runtimeDeobfEnabled && reExtract)
+        if (runtimeDeobfEnabled && reExtract)
         {
             doActualExtract(mcLocation);
 

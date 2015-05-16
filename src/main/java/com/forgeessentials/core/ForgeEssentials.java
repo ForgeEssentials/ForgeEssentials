@@ -1,7 +1,12 @@
 package com.forgeessentials.core;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import com.forgeessentials.core.preloader.classloading.FEClassLoader;
+import cpw.mods.fml.common.event.*;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -24,7 +29,6 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.network.S0PacketHandshake;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
-import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
@@ -62,6 +66,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 /**
  * Main mod class
@@ -96,6 +101,8 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ModuleLauncher moduleLauncher;
 
+    public static File jarLocation;
+
     @SuppressWarnings("unused")
     private TaskRegistry tasks;
 
@@ -125,15 +132,21 @@ public class ForgeEssentials extends ConfigLoaderBase
         Environment.check();
     }
 
+    @EventHandler
+    public void classLoad(FMLConstructionEvent e)
+    {
+        new FEClassLoader().extractLibs(Launch.minecraftHome, Launch.classLoader);
+    }
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
         asmData = e.getAsmData();
-
+        jarLocation = e.getSourceFile();
+        
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
         OutputHandler.felog.info("Initializing ForgeEssentials version " + FEVERSION + " (configDir = " + FEDIR.getAbsolutePath() + ")");
-        OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(FELaunchHandler.jarLocation) + ", build hash is: "
-                + VersionUtils.getBuildHash(FELaunchHandler.jarLocation));
+        OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(jarLocation));
 
         // Load configuration
         configManager = new ConfigManager(FEDIR, "main");
