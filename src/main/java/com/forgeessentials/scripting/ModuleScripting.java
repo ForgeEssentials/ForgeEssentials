@@ -21,7 +21,6 @@ import com.forgeessentials.scripting.ScriptParser.MissingPermissionException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.command.CommandTimedTask;
 import com.forgeessentials.scripting.command.PatternCommand;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -48,6 +47,10 @@ public class ModuleScripting extends ServerEventHandler {
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
+    {
+    }
+
+    public void loadScripts()
     {
         scripts = new HashMap<>();
         for (ServerEventType eventType : ServerEventType.values())
@@ -84,8 +87,9 @@ public class ModuleScripting extends ServerEventHandler {
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        FunctionHelper.registerServerCommand(new CommandTimedTask());
+        new CommandTimedTask().register();
 
+        loadScripts();
         PatternCommand.loadAll();
         createDefaultPatternCommands();
         PatternCommand.saveAll();

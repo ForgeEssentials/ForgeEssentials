@@ -12,7 +12,6 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -56,7 +55,7 @@ public class ModuleBackup {
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        FunctionHelper.registerServerCommand(new CommandBackup());
+        new CommandBackup().register();
         if (BackupConfig.autoInterval != 0)
         {
             timer.schedule(new AutoBackup(), BackupConfig.autoInterval*60*1000, BackupConfig.autoInterval*60*1000);

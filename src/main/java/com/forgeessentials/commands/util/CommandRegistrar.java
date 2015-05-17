@@ -2,7 +2,6 @@ package com.forgeessentials.commands.util;
 
 import java.util.ArrayList;
 
-import com.forgeessentials.commands.CommandSpeed;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.api.APIRegistry;
@@ -37,12 +36,12 @@ import com.forgeessentials.commands.CommandRename;
 import com.forgeessentials.commands.CommandRepair;
 import com.forgeessentials.commands.CommandRules;
 import com.forgeessentials.commands.CommandSmite;
+import com.forgeessentials.commands.CommandSpeed;
 import com.forgeessentials.commands.CommandTime;
 import com.forgeessentials.commands.CommandVirtualchest;
 import com.forgeessentials.commands.CommandWeather;
 import com.forgeessentials.commands.admin.CommandDoAs;
 import com.forgeessentials.commands.admin.CommandServerSettings;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 public class CommandRegistrar {
@@ -124,7 +123,7 @@ public class CommandRegistrar {
         for (FEcmdModuleCommands cmd : cmdList)
         {
             cmd.registerExtraPermissions();
-            FunctionHelper.registerServerCommand(cmd);
+            cmd.register();
             APIRegistry.perms.registerPermissionDescription(cmd.getPermissionNode(), cmd.getCommandUsage(null));
         }
 	}

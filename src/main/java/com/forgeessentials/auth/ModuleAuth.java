@@ -1,5 +1,12 @@
 package com.forgeessentials.auth;
 
+import java.util.HashSet;
+import java.util.UUID;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.auth.lists.CommandVIP;
 import com.forgeessentials.auth.lists.CommandWhiteList;
@@ -8,19 +15,12 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-
-import java.util.HashSet;
-import java.util.UUID;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class)
 public class ModuleAuth extends ConfigLoaderBase {
@@ -62,12 +62,12 @@ public class ModuleAuth extends ConfigLoaderBase {
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        FunctionHelper.registerServerCommand(new CommandAuth());
+        new CommandAuth().register();
 
         if (AuthEventHandler.whitelist)
         {
-            FunctionHelper.registerServerCommand(new CommandWhiteList());
-            FunctionHelper.registerServerCommand(new CommandVIP());
+            new CommandWhiteList().register();
+            new CommandVIP().register();
         }
 
         if (checkVanillaAuthStatus && !forceEnabled)

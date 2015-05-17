@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +39,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fe.server.CommandHandlerForge;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -51,7 +49,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.Translator;
 import com.google.gson.JsonArray;
@@ -1291,18 +1288,6 @@ public final class FunctionHelper
         }
 
         return data;
-    }
-
-    public static void registerServerCommand(ForgeEssentialsCommandBase command)
-    {
-        if (command.getPermissionNode() != null && command.getDefaultPermission() != null)
-        {
-            CommandHandlerForge.registerCommand(command, command.getPermissionNode(), command.getDefaultPermission());
-        }
-        else
-        {
-            ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(command);
-        }
     }
 
     public static void findSafeY(EntityPlayer player)

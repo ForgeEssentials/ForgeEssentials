@@ -95,15 +95,15 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        FunctionHelper.registerServerCommand(new CommandMsg());
-        FunctionHelper.registerServerCommand(new CommandR());
-        FunctionHelper.registerServerCommand(new CommandNickname());
-        FunctionHelper.registerServerCommand(new CommandPm());
-        FunctionHelper.registerServerCommand(new CommandMute());
-        FunctionHelper.registerServerCommand(new CommandUnmute());
-        FunctionHelper.registerServerCommand(new CommandMail());
-        FunctionHelper.registerServerCommand(new CommandAutoMessage());
-        FunctionHelper.registerServerCommand(new CommandIRC());
+        new CommandMsg().register();
+        new CommandR().register();
+        new CommandNickname().register();
+        new CommandPm().register();
+        new CommandMute().register();
+        new CommandUnmute().register();
+        new CommandMail().register();
+        new CommandAutoMessage().register();
+        new CommandIRC().register();
         new CommandBannedWords().register();
 
         try

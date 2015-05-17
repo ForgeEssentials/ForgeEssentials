@@ -7,7 +7,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.plots.command.CommandPlot;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -26,7 +25,7 @@ public class PlotManager extends ServerEventHandler
 
     private static void registerCommands()
     {
-        FunctionHelper.registerServerCommand(new CommandPlot());
+        new CommandPlot().register();
     }
 
     /* ------------------------------------------------------------ */

@@ -12,7 +12,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -43,7 +42,7 @@ public class ModuleTickets {
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        FunctionHelper.registerServerCommand(new Command());
+        new Command().register();
         loadAll();
         APIRegistry.perms.registerPermission(PERMBASE + ".new", RegisteredPermValue.TRUE);
         APIRegistry.perms.registerPermission(PERMBASE + ".view", RegisteredPermValue.TRUE);

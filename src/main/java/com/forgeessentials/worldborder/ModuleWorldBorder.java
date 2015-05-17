@@ -15,7 +15,6 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -122,8 +121,8 @@ public class ModuleWorldBorder {
 	@SubscribeEvent
 	public void serverStarting(FEModuleServerInitEvent e)
 	{
-        FunctionHelper.registerServerCommand(new CommandWB());
-        FunctionHelper.registerServerCommand(new CommandFiller());
+        new CommandWB().register();
+        new CommandFiller().register();
 
 		APIRegistry.perms.registerPermission("fe.worldborder.admin", RegisteredPermValue.OP);
 		APIRegistry.perms.registerPermission("fe.worldborder.filler", RegisteredPermValue.OP);
