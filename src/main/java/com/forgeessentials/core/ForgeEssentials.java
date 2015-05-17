@@ -1,11 +1,7 @@
 package com.forgeessentials.core;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 
-import com.forgeessentials.core.preloader.classloading.FEClassLoader;
-import cpw.mods.fml.common.event.*;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
@@ -16,6 +12,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.core.commands.CommandFEInfo;
+import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.commands.HelpFixer;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
@@ -29,6 +26,7 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.network.S0PacketHandshake;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
+import com.forgeessentials.core.preloader.classloading.FEClassLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
@@ -52,6 +50,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.discovery.ASMDataTable;
+import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -66,7 +65,6 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
-import org.spongepowered.asm.mixin.MixinEnvironment;
 
 /**
  * Main mod class
@@ -212,6 +210,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         new CommandFEInfo().register();
         new CommandWand().register();
+        new CommandUuid().register();
 
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {

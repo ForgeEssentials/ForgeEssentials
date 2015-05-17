@@ -72,13 +72,6 @@ public abstract class FEcmdModuleCommands extends ForgeEssentialsCommandBase {
     // ------------------------------------------------------------
     // Permissions
 
-    /**
-     * Register other permissions in addition to the command-permission.
-     */
-    public void registerExtraPermissions()
-    {
-    }
-
     /*
      * Returns the permission node based on the command name
      */

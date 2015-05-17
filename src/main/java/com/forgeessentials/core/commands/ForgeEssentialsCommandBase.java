@@ -23,7 +23,8 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public abstract class ForgeEssentialsCommandBase extends CommandBase {
+public abstract class ForgeEssentialsCommandBase extends CommandBase
+{
 
     @Override
     public void processCommand(ICommandSender sender, String[] args)
@@ -131,6 +132,15 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         {
             ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(this);
         }
+        registerExtraPermissions();
+    }
+
+    /**
+     * Registers additional permissions
+     */
+    public void registerExtraPermissions()
+    {
+        /* do nothing */
     }
 
     /**
@@ -155,7 +165,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
 
     // ------------------------------------------------------------
     // Utilities
-    
+
     public static List<String> getListOfStringsMatchingLastWord(String arg, Collection<String> possibleMatches)
     {
         List<String> arraylist = new ArrayList<>();
@@ -168,13 +178,13 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         }
         return arraylist;
     }
-    
+
     public static List<String> getListOfStringsMatchingLastWord(String[] args, Collection<String> possibleMatches)
     {
         return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
     }
-    
-    public static List<String> getListOfStringsMatchingLastWord(String arg, String ... possibleMatches)
+
+    public static List<String> getListOfStringsMatchingLastWord(String arg, String... possibleMatches)
     {
         List<String> arraylist = new ArrayList<>();
         int i = possibleMatches.length;
@@ -188,8 +198,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         }
         return arraylist;
     }
-    
-    public static List<String> getListOfStringsMatchingLastWord(String[] args, String ... possibleMatches)
+
+    public static List<String> getListOfStringsMatchingLastWord(String[] args, String... possibleMatches)
     {
         return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
     }
@@ -206,7 +216,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase {
         }
         return arraylist;
     }
-    
+
     @Override
     public int compareTo(Object o)
     {

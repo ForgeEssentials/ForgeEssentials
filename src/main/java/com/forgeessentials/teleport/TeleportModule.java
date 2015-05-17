@@ -3,7 +3,6 @@ package com.forgeessentials.teleport;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.forgeessentials.teleport.util.RespawnHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,13 +16,11 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
+import com.forgeessentials.teleport.util.RespawnHandler;
 import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.teleport.util.TeleportDataManager;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -135,18 +132,6 @@ public class TeleportModule {
             APIRegistry.perms.registerPermission(cmd.getPermissionNode(), cmd.getDefaultPermission(), "Command: " + cmd.getCommandUsage(null));
         }
 
-    }
-
-    @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent e)
-    {
-        TeleportDataManager.load();
-    }
-
-    @SubscribeEvent
-    public void serverStop(FEModuleServerStopEvent e)
-    {
-        TeleportDataManager.save();
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

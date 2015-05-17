@@ -54,14 +54,14 @@ public class WarpPoint {
         this(point, 0, 0);
     }
 
-    public WarpPoint(Entity sender)
+    public WarpPoint(Entity entity)
     {
-        dim = sender.dimension;
-        xd = sender.posX;
-        yd = sender.posY;
-        zd = sender.posZ;
-        pitch = sender.rotationPitch;
-        yaw = sender.rotationYaw;
+        dim = entity.dimension;
+        xd = entity.posX;
+        yd = entity.posY;
+        zd = entity.posZ;
+        pitch = entity.rotationPitch;
+        yaw = entity.rotationYaw;
     }
 
     public WarpPoint(WarpPoint point)

@@ -1,30 +1,38 @@
 package com.forgeessentials.teleport;
 
-import java.util.List;
+import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.teleport.util.TeleportDataManager;
-import com.forgeessentials.teleport.util.Warp;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FunctionHelper;
 
-/**
- * Now uses TeleportCenter.
- *
- * @author Dries007
- */
+public class CommandWarp extends ParserCommandBase
+{
 
-public class CommandWarp extends ForgeEssentialsCommandBase {
+    public static class Warp extends WarpPoint
+    {
+        public Warp(Entity entity)
+        {
+            super(entity);
+        }
+    }
+
+    private static final String PERM = "fe.teleport.warp";
+    private static final String PERM_SET = PERM + ".set";
+    private static final String PERM_DELETE = PERM + ".delete";
+    private static final String PERM_LIMIT = PERM + ".max";
+
     @Override
     public String getCommandName()
     {
@@ -32,123 +40,15 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public String getCommandUsage(ICommandSender sender)
     {
-        if (args.length == 0)
-        {
-            String msg = "";
-            for (String warp : TeleportDataManager.warps.keySet())
-            {
-                msg = warp + ", " + msg;
-            }
-            OutputHandler.chatNotification(sender, msg);
-        }
-        else if (args.length == 1)
-        {
-            if (!TeleportDataManager.warps.containsKey(args[0].toLowerCase()))
-                throw new TranslatedCommandException("That warp doesn't exist!");
-            if (!PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
-                throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-            Warp warp = TeleportDataManager.warps.get(args[0].toLowerCase());
-            PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-            playerInfo.setLastTeleportOrigin(new WarpPoint(sender));
-            CommandBack.justDied.remove(sender.getPersistentID());
-            TeleportHelper.teleport(sender, warp.getPoint());
-        }
-        else if (args.length == 2)
-        {
-            if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_WARP_ADMIN))
-            {
-                if (args[0].equalsIgnoreCase("set"))
-                {
-                    if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
-                        throw new TranslatedCommandException("That warp already exists. Use '/warp del <name>' to delete.");
-                    else
-                    {
-                        Warp warp = new Warp(args[1].toLowerCase(), new WarpPoint(sender.dimension, sender.posX, sender.posY, sender.posZ, sender.rotationPitch, sender.rotationYaw));
-                        TeleportDataManager.addWarp(warp);
-                        if (!TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
-                            throw new TranslatedCommandException("Could not make warp! This is an error!");
-                        else OutputHandler.chatConfirmation(sender, "Done!");
-                    }
-                }
-                else if (args[0].equalsIgnoreCase("del"))
-                {
-                    if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
-                    {
-                        TeleportDataManager.removeWarp(TeleportDataManager.warps.get(args[1]));
-                        OutputHandler.chatConfirmation(sender, "Done!");
-                    }
-                    else
-                        throw new TranslatedCommandException("That warp doesn't exist!");
-                }
-                else
-                    throw new TranslatedCommandException("Improper syntax. Please try this instead: [name] OR <set|del> <name> ");
-            }
-            else
-            {
-                throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-            }
-        }
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-        if (args.length == 2)
-        {
-            if (TeleportDataManager.warps.containsKey(args[1].toLowerCase()))
-            {
-                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-                if (player != null)
-                {
-                    Warp warp = TeleportDataManager.warps.get(args[1].toLowerCase());
-                    PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-                    TeleportHelper.teleport(player, warp.getPoint());
-                }
-                else
-                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-            }
-            else
-            {
-                OutputHandler.felog.info("CommandBlock Error: That warp doesn't exist!");
-            }
-        }
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean canCommandBlockUseCommand(TileEntityCommandBlock te)
-    {
-        return true;
+        return "/warp <name> [set|delete]: Set, delete or teleport to a warp point.";
     }
 
     @Override
     public String getPermissionNode()
     {
-        return TeleportModule.PERM_WARP;
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        if (args.length == 1)
-        {
-            return getListOfStringsMatchingLastWord(args, TeleportDataManager.warps.keySet());
-        }
-        else if (args.length == 2)
-        {
-            return getListOfStringsMatchingLastWord(args, "set", "del");
-        }
-        else
-        {
-            return null;
-        }
+        return PERM;
     }
 
     @Override
@@ -158,10 +58,79 @@ public class CommandWarp extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public void registerExtraPermissions()
     {
+        APIRegistry.perms.registerPermission(PERM_SET, RegisteredPermValue.OP, "Allow setting warps");
+        APIRegistry.perms.registerPermission(PERM_DELETE, RegisteredPermValue.OP, "Allow deleting warps");
+        APIRegistry.perms.registerPermissionProperty(PERM_LIMIT, "10", "Maximal warp count");
+        APIRegistry.perms.registerPermissionPropertyOp(PERM_LIMIT, "false");
+    }
 
-        return "/warp [name] OR <set|del> <name> Teleports you to a warp point. You can also manipulate warps if you have permissions.";
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    public static Map<String, Warp> getWarps()
+    {
+        return DataManager.getInstance().loadAll(Warp.class);
+    }
+
+    @Override
+    public void parse(CommandParserArgs arguments)
+    {
+        if (arguments.isEmpty())
+        {
+            arguments.confirm(getCommandUsage(arguments.sender));
+            return;
+        }
+
+        Map<String, Warp> warps = getWarps();
+
+        arguments.tabComplete(warps.keySet());
+        String warpName = arguments.remove().toLowerCase();
+
+        if (arguments.isEmpty())
+        {
+            if (arguments.isTabCompletion)
+                return;
+
+            WarpPoint point = warps.get(warpName);
+            if (point == null)
+                throw new TranslatedCommandException("Warp by this name does not exist");
+            TeleportHelper.teleport(arguments.senderPlayer, point);
+        }
+        else
+        {
+            arguments.tabComplete("set", "delete");
+            if (arguments.isTabCompletion)
+                return;
+
+            String subCommand = arguments.remove().toLowerCase();
+            switch (subCommand)
+            {
+            case "set":
+                arguments.checkPermission(PERM_SET);
+
+                // Check limit
+                int limit = FunctionHelper.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, PERM_LIMIT), Integer.MAX_VALUE);
+                if (warps.size() >= limit)
+                    throw new TranslatedCommandException("You reached the warp limit");
+
+                DataManager.getInstance().save(new Warp(arguments.senderPlayer), warpName);
+                arguments.confirm(Translator.format("Set warp \"%s\" to current location", warpName));
+                break;
+            case "del":
+            case "delete":
+                arguments.checkPermission(PERM_DELETE);
+                DataManager.getInstance().delete(Warp.class, warpName);
+                arguments.confirm(Translator.format("Deleted warp \"%s\"", warpName));
+                break;
+            default:
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND);
+            }
+        }
     }
 
 }
