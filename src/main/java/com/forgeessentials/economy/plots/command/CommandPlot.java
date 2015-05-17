@@ -130,9 +130,7 @@ public class CommandPlot extends ParserCommandBase
             return;
         }
 
-        if (arguments.tabComplete(completeMain))
-            return;
-
+        arguments.tabComplete(completeMain);
         String subcmd = arguments.remove().toLowerCase();
         switch (subcmd)
         {
@@ -173,7 +171,7 @@ public class CommandPlot extends ParserCommandBase
             arguments.error("Not yet implemented");
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
         }
     }
 
@@ -244,8 +242,7 @@ public class CommandPlot extends ParserCommandBase
         PlotListingType listType = PlotListingType.OWN;
         if (!arguments.isEmpty())
         {
-            if (arguments.tabComplete(PlotListingType.stringValues()))
-                return;
+            arguments.tabComplete(PlotListingType.stringValues());
             try
             {
                 listType = PlotListingType.valueOf(arguments.remove().toUpperCase());
@@ -368,9 +365,7 @@ public class CommandPlot extends ParserCommandBase
             return;
         }
 
-        if (arguments.tabComplete(completeSet))
-            return;
-
+        arguments.tabComplete(completeSet);
         String subcmd = arguments.remove().toLowerCase();
         switch (subcmd)
         {
@@ -458,12 +453,10 @@ public class CommandPlot extends ParserCommandBase
             return;
         }
 
-        if (arguments.tabComplete(completePerms))
-            return;
+        arguments.tabComplete(completePerms);
         String perm = arguments.remove().toLowerCase();
 
-        if (arguments.tabComplete(completeTrueFalse))
-            return;
+        arguments.tabComplete(completeTrueFalse);
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing argument");
         String allowDeny = arguments.remove().toLowerCase();

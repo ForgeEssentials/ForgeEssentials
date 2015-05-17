@@ -51,15 +51,13 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
 
     public void parse(CommandParserArgs args)
     {
-        if (args.tabComplete(subCommands))
-            return;
-        
         if (args.isEmpty())
         {
             startRollback(args);
             return;
         }
         
+        args.tabComplete(subCommands);
         String arg = args.remove().toLowerCase();
         switch (arg) {
         case "help":

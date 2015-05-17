@@ -172,20 +172,20 @@ public class CommandParserArgs
         return APIRegistry.perms.checkPermission(permissionContext, perm);
     }
 
-    public boolean tabComplete(String... completionList)
+    public void tabComplete(String... completionList)
     {
         if (!isTabCompletion || args.size() != 1)
-            return false;
+            return;
         tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList);
-        return true;
+        throw new CancelParsingException();
     }
 
-    public boolean tabComplete(Collection<String> completionList)
+    public void tabComplete(Collection<String> completionList)
     {
         if (!isTabCompletion || args.size() != 1)
-            return false;
+            return;
         tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList);
-        return true;
+        throw new CancelParsingException();
     }
 
     public int parseInt()

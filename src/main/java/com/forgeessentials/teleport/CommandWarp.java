@@ -128,7 +128,7 @@ public class CommandWarp extends ParserCommandBase
                 arguments.confirm(Translator.format("Deleted warp \"%s\"", warpName));
                 break;
             default:
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND);
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
             }
         }
     }

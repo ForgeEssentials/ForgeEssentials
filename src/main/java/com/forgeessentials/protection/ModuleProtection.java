@@ -73,6 +73,7 @@ public class ModuleProtection
     public final static String PERM_DAMAGE_TO = BASE_PERM + ".damageto";
     public final static String PERM_DAMAGE_BY = BASE_PERM + ".damageby";
     public final static String PERM_INVENTORY = BASE_PERM + ".inventory";
+    public final static String PERM_EXIST = BASE_PERM + ".exist";
     public final static String PERM_EXPLOSION = BASE_PERM + ".explosion";
 
     public final static String PERM_MOBSPAWN = BASE_PERM + ".mobspawn";
@@ -194,12 +195,15 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_USE + Zone.ALL_PERMS, RegisteredPermValue.TRUE, "Allow using items");
         APIRegistry.perms.registerPermission(PERM_INVENTORY + Zone.ALL_PERMS, RegisteredPermValue.TRUE,
                 "Allow having item in inventory. Item will be dropped if not allowed.");
+        APIRegistry.perms.registerPermission(PERM_EXIST + Zone.ALL_PERMS, RegisteredPermValue.TRUE,
+                "Allow having item in inventory. Item will be destroyed if not allowed.");
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
                 String itemPerm = "." + getItemId(item) + Zone.ALL_PERMS;
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, RegisteredPermValue.TRUE, "USE " + getItemName(item));
                 APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, RegisteredPermValue.TRUE, "INVENTORY " + getItemName(item));
+                APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, RegisteredPermValue.TRUE, "EXIST " + getItemName(item));
             }
 
         // ----------------------------------------
@@ -316,18 +320,28 @@ public class ModuleProtection
         return GameData.getItemRegistry().getNameForObject(item).replace(':', '.');
     }
 
-    public static String getItemPermission(ItemStack stack)
+    public static String getItemPermission(ItemStack stack, boolean checkMeta)
     {
         int dmg = stack.getItemDamage();
-        if (dmg == 0 || dmg == 32767)
+        if (!checkMeta || dmg == 0 || dmg == 32767)
             return getItemId(stack.getItem());
         else
             return getItemId(stack.getItem()) + "." + dmg;
     }
 
+    public static String getItemPermission(ItemStack stack)
+    {
+        return getItemPermission(stack, true);
+    }
+
     public static String getItemUsePermission(ItemStack stack)
     {
         return ModuleProtection.PERM_USE + "." + getItemPermission(stack);
+    }
+
+    public static String getItemBanPermission(ItemStack stack)
+    {
+        return ModuleProtection.PERM_EXIST + "." + getItemPermission(stack);
     }
 
     public static String getItemInventoryPermission(ItemStack stack)

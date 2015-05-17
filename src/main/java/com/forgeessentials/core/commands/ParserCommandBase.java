@@ -27,7 +27,7 @@ public abstract class ParserCommandBase extends ForgeEssentialsCommandBase
         }
         catch (CommandException e)
         {
-            return null;
+            return arguments.tabCompletion;
         }
         return arguments.tabCompletion;
     }
