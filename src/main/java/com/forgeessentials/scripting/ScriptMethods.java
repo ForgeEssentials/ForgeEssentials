@@ -20,11 +20,12 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.scripting.ScriptParser.MissingPermissionException;
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
+import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
-import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.google.common.collect.ImmutableMap;
 
 public final class ScriptMethods
 {
@@ -41,6 +42,11 @@ public final class ScriptMethods
     public static ScriptMethod get(String name)
     {
         return scriptMethods.get(name);
+    }
+
+    public static Map<String, ScriptMethod> getAll()
+    {
+        return ImmutableMap.copyOf(scriptMethods);
     }
 
     private static void registerAll()
@@ -64,6 +70,12 @@ public final class ScriptMethods
             OutputHandler.chatConfirmation(sender, StringUtils.join(args, " "));
             return true;
         }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send confirmation message to the player";
+        }
     };
 
     public static final ScriptMethod notify = new ScriptMethod() {
@@ -72,6 +84,12 @@ public final class ScriptMethods
         {
             OutputHandler.chatNotification(sender, StringUtils.join(args, " "));
             return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send notification message to the player";
         }
     };
 
@@ -82,6 +100,12 @@ public final class ScriptMethods
             OutputHandler.chatWarning(sender, StringUtils.join(args, " "));
             return true;
         }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send warning message to the player";
+        }
     };
 
     public static final ScriptMethod error = new ScriptMethod() {
@@ -90,6 +114,12 @@ public final class ScriptMethods
         {
             OutputHandler.chatError(sender, StringUtils.join(args, " "));
             return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send error message to the player";
         }
     };
 
@@ -100,6 +130,12 @@ public final class ScriptMethods
             OutputHandler.chatError(sender, StringUtils.join(args, " "));
             return false;
         }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send error message to the player and fail script execution";
+        }
     };
 
     public static final ScriptMethod confirmall = new ScriptMethod() {
@@ -108,6 +144,12 @@ public final class ScriptMethods
         {
             OutputHandler.broadcast(OutputHandler.confirmation(StringUtils.join(args, " ")));
             return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send confirmation message to all players";
         }
     };
 
@@ -118,6 +160,12 @@ public final class ScriptMethods
             OutputHandler.broadcast(OutputHandler.notification(StringUtils.join(args, " ")));
             return true;
         }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send notification message to all players";
+        }
     };
 
     public static final ScriptMethod warnall = new ScriptMethod() {
@@ -126,6 +174,12 @@ public final class ScriptMethods
         {
             OutputHandler.broadcast(OutputHandler.warning(StringUtils.join(args, " ")));
             return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send warning message to all players";
         }
     };
 
@@ -136,6 +190,12 @@ public final class ScriptMethods
             OutputHandler.broadcast(OutputHandler.error(StringUtils.join(args, " ")));
             return true;
         }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send error message to all players";
+        }
     };
 
     public static final ScriptMethod failall = new ScriptMethod() {
@@ -144,6 +204,12 @@ public final class ScriptMethods
         {
             OutputHandler.broadcast(OutputHandler.error(StringUtils.join(args, " ")));
             return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send error message to all players and fail script execution";
         }
     };
 
@@ -159,6 +225,12 @@ public final class ScriptMethods
                 throw new MissingPermissionException(args[0], args.length > 1 ? StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ") : "");
             return true;
         }
+
+        @Override
+        public String getHelp()
+        {
+            return "`permcheck <perm> [error message...]`  \nPermission check (with error message)";
+        }
     };
 
     public static final ScriptMethod permchecksilent = new ScriptMethod() {
@@ -172,6 +244,12 @@ public final class ScriptMethods
             if (!APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
                 return false;
             return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`permchecksilent <perm>`  \nPermission check (without error message)";
         }
     };
 
@@ -213,9 +291,16 @@ public final class ScriptMethods
                     return false;
                 EntityPlayerMP p = player.getPlayerMP();
                 TeleportHelper.teleport(p, new WarpPoint(dim, x, y, z, p.cameraPitch, p.cameraYaw));
-            } else
+            }
+            else
                 throw new SyntaxException("Incorrect number of arguments");
             return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`teleport <player> <to-player>`  \n`teleport <player> <x> <y> <z> [dim]`";
         }
     };
 
@@ -255,6 +340,12 @@ public final class ScriptMethods
                 return false;
             }
         }
+
+        @Override
+        public String getHelp()
+        {
+            return "`pay <amount> [to-player]`  \nMake the player pay some amount of money and fail, if he can't afford it";
+        }
     };
 
     static
@@ -275,6 +366,12 @@ public final class ScriptMethods
                     throw new MissingPermissionException(args[0], args.length > 1 ? StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ") : "");
                 return true;
             }
+
+            @Override
+            public String getHelp()
+            {
+                return "`!permcheck <perm> [error message...]`  \nNegated permission check (with error message)";
+            }
         });
 
         add("!permchecksilent", new ScriptMethod() {
@@ -288,6 +385,12 @@ public final class ScriptMethods
                 if (APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
                     return false;
                 return true;
+            }
+
+            @Override
+            public String getHelp()
+            {
+                return "`!permchecksilent <perm>`  \nNegated permission check (without error message)";
             }
         });
     }

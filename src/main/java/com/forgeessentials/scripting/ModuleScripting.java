@@ -1,7 +1,9 @@
 package com.forgeessentials.scripting;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,7 +20,9 @@ import org.apache.commons.io.FileUtils;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptParser.MissingPermissionException;
+import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
+import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.command.CommandTimedTask;
 import com.forgeessentials.scripting.command.PatternCommand;
 import com.forgeessentials.util.OutputHandler;
@@ -33,9 +37,11 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 @FEModule(name = "Scripting", parentMod = ForgeEssentials.class, isCore = false)
-public class ModuleScripting extends ServerEventHandler {
+public class ModuleScripting extends ServerEventHandler
+{
 
-    public static enum ServerEventType {
+    public static enum ServerEventType
+    {
         START, STOP, LOGIN, LOGOUT;
     }
 
@@ -46,8 +52,38 @@ public class ModuleScripting extends ServerEventHandler {
     public Map<ServerEventType, Map<String, List<String>>> scripts = new HashMap<>();
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleInitEvent event)
     {
+        try (PrintWriter writer = new PrintWriter(new File(moduleDir, "arguments.txt")))
+        {
+            writer.println("# Script arguments");
+            writer.println();
+            for (Entry<String, ScriptArgument> item : ScriptArguments.getAll().entrySet())
+            {
+                writer.println("## @" + item.getKey());
+                writer.println(item.getValue().getHelp());
+                writer.println();
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            OutputHandler.felog.info("Unable to write script arguments file");
+        }
+        try (PrintWriter writer = new PrintWriter(new File(moduleDir, "methods.txt")))
+        {
+            writer.println("# Script methods");
+            writer.println();
+            for (Entry<String, ScriptMethod> item : ScriptMethods.getAll().entrySet())
+            {
+                writer.println("## " + item.getKey());
+                writer.println(item.getValue().getHelp());
+                writer.println();
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            OutputHandler.felog.info("Unable to write script arguments file");
+        }
     }
 
     public void loadScripts()
@@ -145,7 +181,8 @@ public class ModuleScripting extends ServerEventHandler {
             catch (CommandException e)
             {
                 OutputHandler.chatError(sender, e.getMessage());
-                //OutputHandler.felog.info(String.format("Error in script \"%s\": %s", script.getKey(), e.getMessage()));
+                // OutputHandler.felog.info(String.format("Error in script \"%s\": %s", script.getKey(),
+                // e.getMessage()));
             }
             catch (MissingPermissionException e)
             {

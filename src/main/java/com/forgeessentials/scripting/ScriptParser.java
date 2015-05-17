@@ -18,12 +18,20 @@ public class ScriptParser
 
     public static interface ScriptMethod
     {
+        
         public boolean process(ICommandSender sender, String[] args);
+
+        public String getHelp();
+        
     }
 
     public static interface ScriptArgument
     {
+        
         public String process(ICommandSender sender);
+
+        public String getHelp();
+        
     }
 
     private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@(\\w+)(.*)");
