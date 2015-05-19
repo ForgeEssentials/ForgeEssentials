@@ -304,7 +304,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return executeQuery(em.createQuery(cQuery));
     }
 
-    public List<ActionBlock> getBlockChanges(WorldPoint point, int firstResult, int maxResults)
+    public List<ActionBlock> getBlockChanges(WorldPoint point, Date startTime, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
@@ -313,9 +313,10 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         cQuery.where(cBuilder.and(cBuilder.equal(cRoot.<Integer> get(Action_.world.getName()), cBuilder.literal(point.getDimension())), //
                 cBuilder.equal(cRoot.get(Action_.x), cBuilder.literal(point.getX())), //
                 cBuilder.equal(cRoot.get(Action_.y), cBuilder.literal(point.getY())), //
-                cBuilder.equal(cRoot.get(Action_.z), cBuilder.literal(point.getZ()))));
+                cBuilder.equal(cRoot.get(Action_.z), cBuilder.literal(point.getZ())), //
+                cBuilder.lessThan(cRoot.get(Action_.time), cBuilder.literal(startTime))));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
-        return executeQuery(em.createQuery(cQuery).setFirstResult(firstResult).setMaxResults(maxResults));
+        return executeQuery(em.createQuery(cQuery).setMaxResults(maxResults));
     }
 
     /* ------------------------------------------------------------ */

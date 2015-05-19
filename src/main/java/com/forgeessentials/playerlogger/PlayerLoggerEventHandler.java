@@ -1,5 +1,6 @@
 package com.forgeessentials.playerlogger;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -30,6 +31,8 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         public WorldPoint checkPoint;
 
         public int checkStart;
+
+        public Date checkStartTime;
 
     }
 
@@ -68,13 +71,14 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         {
             info.checkPoint = point;
             info.checkStart = 0;
+            info.checkStartTime = new Date();
             if (event.action == Action.RIGHT_CLICK_BLOCK)
                 OutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked side):");
             else
                 OutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked block):");
         }
 
-        List<ActionBlock> changes = ModulePlayerLogger.getLogger().getBlockChanges(point, info.checkStart, 4);
+        List<ActionBlock> changes = ModulePlayerLogger.getLogger().getBlockChanges(point, info.checkStartTime, 4);
         if (changes.size() == 0 && !newCheck)
         {
             OutputHandler.chatError(event.entityPlayer, "No more changes");
@@ -84,6 +88,8 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         info.checkStart += changes.size();
         for (ActionBlock change : changes)
         {
+            info.checkStartTime = change.time;
+            
             String msg = String.format("%1$tm/%1$te %1$tH:%1$tM:%1$tS", change.time);
             if (change.player != null)
             {
