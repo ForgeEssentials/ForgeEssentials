@@ -301,11 +301,10 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 cBuilder.between(cRoot.get(Action_.y), cBuilder.literal(area.getLowPoint().getY()), cBuilder.literal(area.getHighPoint().getY())), //
                 cBuilder.between(cRoot.get(Action_.z), cBuilder.literal(area.getLowPoint().getZ()), cBuilder.literal(area.getHighPoint().getZ()))));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
-        TypedQuery<ActionBlock> query = em.createQuery(cQuery);
-        return executeQuery(query);
+        return executeQuery(em.createQuery(cQuery));
     }
 
-    public List<ActionBlock> getBlockChanges(WorldPoint point, int maxResults)
+    public List<ActionBlock> getBlockChanges(WorldPoint point, int firstResult, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
@@ -316,9 +315,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 cBuilder.equal(cRoot.get(Action_.y), cBuilder.literal(point.getY())), //
                 cBuilder.equal(cRoot.get(Action_.z), cBuilder.literal(point.getZ()))));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
-        TypedQuery<ActionBlock> query = em.createQuery(cQuery);
-        query.setMaxResults(maxResults);
-        return executeQuery(query);
+        return executeQuery(em.createQuery(cQuery).setFirstResult(firstResult).setMaxResults(maxResults));
     }
 
     /* ------------------------------------------------------------ */
