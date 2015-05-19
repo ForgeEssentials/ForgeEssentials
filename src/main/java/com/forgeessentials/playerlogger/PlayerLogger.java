@@ -40,6 +40,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.forgeessentials.commons.selections.Selection;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.playerlogger.entity.ActionBlock;
 import com.forgeessentials.playerlogger.entity.Action_;
 import com.forgeessentials.playerlogger.entity.BlockData;
@@ -50,16 +51,20 @@ import com.forgeessentials.playerlogger.entity.WorldData;
 import com.forgeessentials.playerlogger.event.LogEventBreak;
 import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
+import com.forgeessentials.playerlogger.event.LogEventInteract;
 import com.forgeessentials.playerlogger.event.LogEventPlace;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.google.common.base.Charsets;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.relauncher.Side;
 
 public class PlayerLogger extends ServerEventHandler implements Runnable
 {
@@ -276,25 +281,44 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /* ------------------------------------------------------------ */
     /* data retrieval */
 
-    public synchronized List<ActionBlock> getBlockChangeSet(Selection area, Date startTime)
+    private synchronized <T> List<T> executeQuery(TypedQuery<T> query)
+    {
+        em.getTransaction().begin();
+        List<T> changes = query.getResultList();
+        em.getTransaction().commit();
+        return changes;
+    }
+
+    public List<ActionBlock> getBlockChanges(Selection area, Date startTime)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
         Root<ActionBlock> cRoot = cQuery.from(ActionBlock.class);
         cQuery.select(cRoot);
         cQuery.where(cBuilder.and(cBuilder.greaterThanOrEqualTo(cRoot.get(Action_.time), cBuilder.literal(startTime)),
-                cBuilder.equal(cRoot.<Integer> get(Action_.world.getName()), cBuilder.literal(area.getDimension())),
-                cBuilder.between(cRoot.get(Action_.x), cBuilder.literal(area.getLowPoint().getX()), cBuilder.literal(area.getHighPoint().getX())),
-                cBuilder.between(cRoot.get(Action_.y), cBuilder.literal(area.getLowPoint().getY()), cBuilder.literal(area.getHighPoint().getY())),
+                cBuilder.equal(cRoot.<Integer> get(Action_.world.getName()), cBuilder.literal(area.getDimension())), //
+                cBuilder.between(cRoot.get(Action_.x), cBuilder.literal(area.getLowPoint().getX()), cBuilder.literal(area.getHighPoint().getX())), //
+                cBuilder.between(cRoot.get(Action_.y), cBuilder.literal(area.getLowPoint().getY()), cBuilder.literal(area.getHighPoint().getY())), //
                 cBuilder.between(cRoot.get(Action_.z), cBuilder.literal(area.getLowPoint().getZ()), cBuilder.literal(area.getHighPoint().getZ()))));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
         TypedQuery<ActionBlock> query = em.createQuery(cQuery);
+        return executeQuery(query);
+    }
 
-        em.getTransaction().begin();
-        List<ActionBlock> changes = query.getResultList();
-        em.getTransaction().commit();
-
-        return changes;
+    public List<ActionBlock> getBlockChanges(WorldPoint point, int maxResults)
+    {
+        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
+        Root<ActionBlock> cRoot = cQuery.from(ActionBlock.class);
+        cQuery.select(cRoot);
+        cQuery.where(cBuilder.and(cBuilder.equal(cRoot.<Integer> get(Action_.world.getName()), cBuilder.literal(point.getDimension())), //
+                cBuilder.equal(cRoot.get(Action_.x), cBuilder.literal(point.getX())), //
+                cBuilder.equal(cRoot.get(Action_.y), cBuilder.literal(point.getY())), //
+                cBuilder.equal(cRoot.get(Action_.z), cBuilder.literal(point.getZ()))));
+        cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
+        TypedQuery<ActionBlock> query = em.createQuery(cQuery);
+        query.setMaxResults(maxResults);
+        return executeQuery(query);
     }
 
     /* ------------------------------------------------------------ */
@@ -318,8 +342,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void placeEvent(BlockEvent.PlaceEvent event)
     {
-        if (!event.isCanceled())
-            logEvent(new LogEventPlace(event));
+        logEvent(new LogEventPlace(event));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -406,6 +429,14 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /* Interact events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerInteractEvent(PlayerInteractEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.useBlock == Result.DENY && event.useItem == Result.DENY))
+            return;
+        logEvent(new LogEventInteract(event));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void attackEntityEvent(AttackEntityEvent e)
     {
         // TODO
@@ -413,12 +444,6 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void livingHurtEvent(LivingHurtEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerInteractEvent(PlayerInteractEvent e)
     {
         // TODO
     }
