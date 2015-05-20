@@ -44,9 +44,13 @@ public class CommandLocate extends FEcmdModuleCommands {
             else
             {
                 OutputHandler.chatConfirmation(sender,
-                        Translator.format("%1$s is at %2$d, %3$d, %4$d in dim %5$d with gamemode %6$s", player.getCommandSenderName(), (int) player.posX,
-                                (int) player.posY,
-                                (int) player.posZ, player.dimension, player.theItemInWorldManager.getGameType().getName()));
+                        Translator.format("%1$s is at %2$d, %3$d, %4$d in dim %5$d with gamemode %6$s",
+                        		player.getCommandSenderName(),
+                        		Math.floor(player.posX),
+                        		Math.floor(player.posY),
+                        		Math.floor(player.posZ),
+                        		player.dimension,
+                        		player.theItemInWorldManager.getGameType().getName()));
             }
         }
     }
