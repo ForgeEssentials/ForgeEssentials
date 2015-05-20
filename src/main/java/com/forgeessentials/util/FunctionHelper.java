@@ -19,6 +19,9 @@ import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.NumberInvalidException;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -128,6 +131,21 @@ public final class FunctionHelper
         {
             return defaultValue;
         }
+    }
+
+    public static double parseYLocation(ICommandSender sender, double relative, String value)
+    {
+        boolean isRelative = value.startsWith("~");
+        if (isRelative && Double.isNaN(relative))
+            throw new NumberInvalidException("commands.generic.num.invalid", new Object[] { Double.valueOf(relative) });
+        double d1 = isRelative ? relative : 0.0D;
+        if (!isRelative || value.length() > 1)
+        {
+            if (isRelative)
+                value = value.substring(1);
+            d1 += CommandBase.parseDouble(sender, value);
+        }
+        return d1;
     }
 
     /**

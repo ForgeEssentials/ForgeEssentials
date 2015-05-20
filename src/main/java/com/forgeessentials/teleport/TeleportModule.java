@@ -3,14 +3,10 @@ package com.forgeessentials.teleport;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -18,17 +14,16 @@ import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
 import com.forgeessentials.teleport.util.RespawnHandler;
 import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
 @FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
-public class TeleportModule {
+public class TeleportModule
+{
 
     public static final String PERM_TP = "fe.teleport.tp";
     public static final String PERM_TP_OTHERS = "fe.teleport.tp.others";
@@ -48,7 +43,7 @@ public class TeleportModule {
     public static final String PERM_HOME = "fe.teleport.home";
     public static final String PERM_HOME_SET = PERM_HOME + ".set";
     public static final String PERM_HOME_OTHER = PERM_HOME + ".other";
-    
+
     public static final String PERM_BED = "fe.teleport.bed";
     public static final String PERM_BED_OTHERS = PERM_BED + ".others";
 
@@ -63,7 +58,7 @@ public class TeleportModule {
 
     public static final String PERM_WARP = "fe.teleport.warp";
     public static final String PERM_WARP_ADMIN = "fe.teleport.warp.admin";
-    
+
     public static List<TPAdata> tpaList = new ArrayList<TPAdata>();
     public static List<TPAdata> tpaListToAdd = new ArrayList<TPAdata>();
     public static List<TPAdata> tpaListToRemove = new ArrayList<TPAdata>();
@@ -73,7 +68,7 @@ public class TeleportModule {
 
     @SuppressWarnings("unused")
     private RespawnHandler respawnHandler;
-    
+
     static
     {
         commands.add(new CommandBack());
@@ -91,7 +86,7 @@ public class TeleportModule {
         commands.add(new CommandPortal());
         commands.add(new CommandSetSpawn());
     }
-    
+
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
@@ -108,19 +103,20 @@ public class TeleportModule {
     {
         for (ForgeEssentialsCommandBase cmd : commands)
             cmd.register();
-        
+
         portalManager.load();
-        
+
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
         APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, RegisteredPermValue.TRUE, "Allow returning to the last death location with back-command");
-        APIRegistry.perms.registerPermission(PERM_BACK_ONTP, RegisteredPermValue.TRUE, "Allow returning to the last location before teleport with back-command");
+        APIRegistry.perms
+                .registerPermission(PERM_BACK_ONTP, RegisteredPermValue.TRUE, "Allow returning to the last location before teleport with back-command");
         APIRegistry.perms.registerPermission(PERM_BED_OTHERS, RegisteredPermValue.OP, "Allow teleporting to other player's bed location");
-        
+
         APIRegistry.perms.registerPermission(PERM_HOME, RegisteredPermValue.TRUE, "Allow usage of /home");
         APIRegistry.perms.registerPermission(PERM_HOME_SET, RegisteredPermValue.TRUE, "Allow setting of home location");
         APIRegistry.perms.registerPermission(PERM_HOME_OTHER, RegisteredPermValue.OP, "Allow setting other players home location");
-        
+
         APIRegistry.perms.registerPermission(PERM_SPAWN_OTHERS, RegisteredPermValue.OP, "Allow setting other player's spawn");
         APIRegistry.perms.registerPermission(PERM_TOP_OTHERS, RegisteredPermValue.OP);
         APIRegistry.perms.registerPermission(PERM_TPA_SENDREQUEST, RegisteredPermValue.TRUE, "Allow sending teleport-to requests");
@@ -132,20 +128,6 @@ public class TeleportModule {
             APIRegistry.perms.registerPermission(cmd.getPermissionNode(), cmd.getDefaultPermission(), "Command: " + cmd.getCommandUsage(null));
         }
 
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void onPlayerDeath(LivingDeathEvent e)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer())
-        {
-            if (e.entityLiving instanceof EntityPlayer)
-            {
-                EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
-                PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-                CommandBack.justDied.add(player.getPersistentID());
-            }
-        }
     }
 
     @SubscribeEvent

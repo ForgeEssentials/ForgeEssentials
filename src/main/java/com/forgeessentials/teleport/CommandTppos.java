@@ -12,10 +12,12 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.FunctionHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-public class CommandTppos extends ForgeEssentialsCommandBase {
+
+public class CommandTppos extends ForgeEssentialsCommandBase
+{
 
     /**
      * Spawn point for each dimension
@@ -33,14 +35,10 @@ public class CommandTppos extends ForgeEssentialsCommandBase {
     {
         if (args.length == 3)
         {
-            double x = parseDouble(sender, args[0], sender.posX);
-            double y = parseDouble(sender, args[1], sender.posY);
-            double z = parseDouble(sender, args[2], sender.posZ);
-            EntityPlayerMP player = sender;
-            PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-            playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-            CommandBack.justDied.remove(player.getPersistentID());
-            TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.cameraPitch, player.cameraYaw));
+            double x = func_110666_a(sender, sender.posX, args[0]);
+            double y = FunctionHelper.parseYLocation(sender, sender.posY, args[1]);
+            double z = func_110666_a(sender, sender.posZ, args[2]);
+            TeleportHelper.teleport(sender, new WarpPoint(sender.dimension, x, y, z, sender.cameraPitch, sender.cameraYaw));
         }
         else
         {

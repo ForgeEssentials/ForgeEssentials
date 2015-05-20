@@ -1,15 +1,5 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.commons.selections.WarpPoint;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +10,17 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-public class CommandTPA extends ForgeEssentialsCommandBase {
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.teleport.util.TPAdata;
+import com.forgeessentials.util.OutputHandler;
+
+public class CommandTPA extends ForgeEssentialsCommandBase
+{
 
     @Override
     public String getCommandName()
@@ -44,9 +44,6 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
                     {
                         OutputHandler.chatNotification(data.sender, "Teleport request accepted.");
                         OutputHandler.chatConfirmation(data.receiver, "Teleport request accepted by other party. Teleporting..");
-                        PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(data.sender.getPersistentID());
-                        playerInfo.setLastTeleportOrigin(new WarpPoint(data.sender));
-                        CommandBack.justDied.remove(data.sender.getPersistentID());
                         TeleportModule.tpaListToRemove.add(data);
                         TeleportHelper.teleport(data.sender, new WarpPoint(data.receiver));
                         return;
@@ -75,7 +72,8 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
         }
 
         if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_TPA_SENDREQUEST))
-            throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
+            throw new TranslatedCommandException(
+                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
 
         EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (receiver == null)
@@ -87,8 +85,10 @@ public class CommandTPA extends ForgeEssentialsCommandBase {
             TeleportModule.tpaListToAdd.add(new TPAdata(sender, receiver, false));
 
             OutputHandler.chatNotification(sender, Translator.format("Teleport request sent to %s", receiver.getCommandSenderName()));
-            OutputHandler.chatNotification(receiver,
-                    Translator.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.", sender.getCommandSenderName()));
+            OutputHandler.chatNotification(
+                    receiver,
+                    Translator.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.",
+                            sender.getCommandSenderName()));
         }
     }
 

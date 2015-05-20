@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,6 +17,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
@@ -37,21 +37,6 @@ public class CommandTp extends ForgeEssentialsCommandBase
         return "tp";
     }
 
-    public static double parseYLocation(ICommandSender sender, double relative, String value)
-    {
-        boolean isRelative = value.startsWith("~");
-        if (isRelative && Double.isNaN(relative))
-            throw new NumberInvalidException("commands.generic.num.invalid", new Object[] { Double.valueOf(relative) });
-        double d1 = isRelative ? relative : 0.0D;
-        if (!isRelative || value.length() > 1)
-        {
-            if (isRelative)
-                value = value.substring(1);
-            d1 += parseDouble(sender, value);
-        }
-        return d1;
-    }
-
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
@@ -62,16 +47,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
             {
                 target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             }
-            if (target != null)
-            {
-                EntityPlayerMP player = sender;
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-                playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-                CommandBack.justDied.remove(player.getPersistentID());
-                TeleportHelper.teleport(player, new WarpPoint(target));
-            }
-            else
+            if (target == null)
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            TeleportHelper.teleport(sender, new WarpPoint(target));
         }
         else if (args.length == 2 && PermissionsManager.checkPermission(sender, TeleportModule.PERM_TP_OTHERS))
         {
@@ -100,7 +78,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
             {
                 EntityPlayerMP player = sender;
                 double x = func_110666_a(sender, player.posX, args[0]);
-                double y = parseYLocation(sender, player.posY, args[1]);
+                double y = FunctionHelper.parseYLocation(sender, player.posY, args[1]);
                 double z = func_110666_a(sender, player.posZ, args[2]);
                 PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
@@ -112,7 +90,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
                 if (player != null)
                 {
                     double x = func_110666_a(sender, player.posX, args[1]);
-                    double y = parseYLocation(sender, player.posY, args[2]);
+                    double y = FunctionHelper.parseYLocation(sender, player.posY, args[2]);
                     double z = func_110666_a(sender, player.posZ, args[3]);
                     PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
@@ -141,14 +119,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
                 {
                     target = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
                 }
-                if (target != null)
-                {
-                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-                    playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-                    TeleportHelper.teleport(player, new WarpPoint(target));
-                }
-                else
+                if (target == null)
                     throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[1]);
+                TeleportHelper.teleport(player, new WarpPoint(target));
             }
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -158,9 +131,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                double x = parseDouble(sender, args[1]), y = parseDouble(sender, args[2]), z = parseDouble(sender, args[3]);
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-                playerInfo.setLastTeleportOrigin(new WarpPoint(player));
+                double x = func_110666_a(sender, player.posX, args[1]);
+                double y = FunctionHelper.parseYLocation(sender, player.posY, args[2]);
+                double z = func_110666_a(sender, player.posZ, args[3]);
                 TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
             }
             else

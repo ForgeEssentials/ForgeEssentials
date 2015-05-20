@@ -72,7 +72,9 @@ public class RespawnHandler
         if (e.entityLiving instanceof EntityPlayer)
         {
             EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
-            PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastDeathLocation(new WarpPoint(player));
+            PlayerInfo pi = PlayerInfo.getPlayerInfo(player.getPersistentID());
+            pi.setLastDeathLocation(new WarpPoint(player));
+            pi.setLastTeleportOrigin(pi.getLastDeathLocation());
         }
     }
 

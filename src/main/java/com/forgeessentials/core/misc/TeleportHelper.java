@@ -113,9 +113,9 @@ public class TeleportHelper extends ServerEventHandler
 
     public static boolean canTeleportTo(WarpPoint point)
     {
-        Block block1 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ());
-        Block block2 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
-        return !block1.getMaterial().isSolid() && !block2.getMaterial().isSolid();
+         Block block1 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ());
+         Block block2 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
+         return (!block1.getMaterial().isSolid() || block1.getBlockBoundsMaxY() <= 0.5) && !block2.getMaterial().isSolid();
     }
 
     public static void doTeleport(EntityPlayerMP player, WarpPoint point)

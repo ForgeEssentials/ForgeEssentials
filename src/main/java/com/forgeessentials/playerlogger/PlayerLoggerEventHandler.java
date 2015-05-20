@@ -30,8 +30,6 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
         public WorldPoint checkPoint;
 
-        public int checkStart;
-
         public Date checkStartTime;
 
     }
@@ -70,7 +68,6 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         if (newCheck)
         {
             info.checkPoint = point;
-            info.checkStart = 0;
             info.checkStartTime = new Date();
             if (event.action == Action.RIGHT_CLICK_BLOCK)
                 OutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked side):");
@@ -85,7 +82,6 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             return;
         }
 
-        info.checkStart += changes.size();
         for (ActionBlock change : changes)
         {
             info.checkStartTime = change.time;

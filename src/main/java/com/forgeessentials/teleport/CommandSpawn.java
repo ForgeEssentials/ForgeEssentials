@@ -46,12 +46,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 
 			WarpPoint point = RespawnHandler.getPlayerSpawn(player, null, false);
 			if (point == null)
-			{
 				throw new TranslatedCommandException("There is no spawnpoint set for that player.");
-			}
-
-			PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-			OutputHandler.chatNotification(player, "Teleporting to spawn.");
 			TeleportHelper.teleport(player, point);
 		}
 		else if (args.length == 0)
@@ -94,8 +89,6 @@ public class CommandSpawn extends ForgeEssentialsCommandBase {
 			throw new TranslatedCommandException("There is no spawnpoint set for that player.");
 		}
 
-		PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-		OutputHandler.chatNotification(player, "Teleporting to spawn.");
 		TeleportHelper.teleport(player, point);
 	}
 

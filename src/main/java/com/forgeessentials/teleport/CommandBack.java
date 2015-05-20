@@ -1,9 +1,5 @@
 package com.forgeessentials.teleport;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
@@ -15,9 +11,8 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 
-public class CommandBack extends ForgeEssentialsCommandBase {
-    
-    public static List<UUID> justDied = new ArrayList<UUID>();
+public class CommandBack extends ForgeEssentialsCommandBase
+{
 
     @Override
     public String getCommandName()
@@ -26,30 +21,9 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public String getCommandUsage(ICommandSender sender)
     {
-        if (justDied.contains(sender.getPersistentID()))
-        {
-            if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
-                throw new TranslatedCommandException("You have nowhere to get back to");
-            PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-            if (info.getLastTeleportOrigin() == null)
-                throw new TranslatedCommandException("You have nowhere to get back to");
-            WarpPoint death = info.getLastTeleportOrigin();
-            info.setLastTeleportOrigin(new WarpPoint(sender));
-            TeleportHelper.teleport(sender, death);
-            justDied.remove(sender.getPersistentID());
-        }
-        else if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_BACK_ONTP))
-        {
-            PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
-            if (info.getLastTeleportOrigin() == null)
-                throw new TranslatedCommandException("You have nowhere to get back to");
-            WarpPoint back = info.getLastTeleportOrigin();
-            info.setLastTeleportOrigin(new WarpPoint(sender));
-            EntityPlayerMP player = sender;
-            TeleportHelper.teleport(player, back);
-        }
+        return "/back: Teleport you to your last death or teleport location.";
     }
 
     @Override
@@ -71,9 +45,24 @@ public class CommandBack extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        return "/back Teleport you to your last death or teleport location.";
+        PlayerInfo pi = PlayerInfo.getPlayerInfo(sender.getPersistentID());
+        WarpPoint point = null;
+
+        if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
+        {
+            point = pi.getLastDeathLocation();
+            pi.setLastTeleportOrigin(null);
+        }
+
+        if (point == null)
+            point = pi.getLastTeleportOrigin();
+
+        if (point == null)
+            throw new TranslatedCommandException("You have nowhere to get back to");
+
+        TeleportHelper.teleport(sender, point);
     }
 
 }

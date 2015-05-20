@@ -17,7 +17,8 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
-public class CommandHome extends ForgeEssentialsCommandBase {
+public class CommandHome extends ForgeEssentialsCommandBase
+{
 
     @Override
     public String getCommandName()
@@ -33,11 +34,7 @@ public class CommandHome extends ForgeEssentialsCommandBase {
             WarpPoint home = PlayerInfo.getPlayerInfo(sender.getPersistentID()).getHome();
             if (home == null)
                 throw new TranslatedCommandException("No home set. Use \"/home set\" first.");
-            EntityPlayerMP player = sender;
-            PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
-            playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-            CommandBack.justDied.remove(player.getPersistentID());
-            TeleportHelper.teleport(player, home);
+            TeleportHelper.teleport(sender, home);
         }
         else
         {
