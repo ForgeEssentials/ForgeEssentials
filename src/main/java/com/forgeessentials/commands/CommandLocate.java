@@ -2,6 +2,7 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
@@ -13,7 +14,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import java.util.List;
 
-public class CommandLocate extends FEcmdModuleCommands {
+public class CommandLocate extends FEcmdModuleCommands
+{
     @Override
     public String getCommandName()
     {
@@ -23,32 +25,23 @@ public class CommandLocate extends FEcmdModuleCommands {
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[]
-                { "gps", "loc", "playerinfo" };
+        return new String[] { "gps", "loc", "playerinfo" };
     }
 
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
         if (args.length != 1)
-        {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
-        }
-        else
-        {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player == null)
-            {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
-            else
-            {
-                OutputHandler.chatConfirmation(sender,
-                        Translator.format("%1$s is at %2$d, %3$d, %4$d in dim %5$d with gamemode %6$s", player.getCommandSenderName(), (int) player.posX,
-                                (int) player.posY,
-                                (int) player.posZ, player.dimension, player.theItemInWorldManager.getGameType().getName()));
-            }
-        }
+            throw new TranslatedCommandException(getCommandUsage(sender));
+
+        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        if (player == null)
+            OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+        
+        WorldPoint point = new WorldPoint(player);
+        OutputHandler.chatConfirmation(sender, Translator.format("%1$s is at %2$d, %3$d, %4$d in dim %5$d with gamemode %6$s", //
+                player.getCommandSenderName(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
+                player.theItemInWorldManager.getGameType().getName()));
     }
 
     @Override
@@ -66,7 +59,7 @@ public class CommandLocate extends FEcmdModuleCommands {
         }
         else
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 
