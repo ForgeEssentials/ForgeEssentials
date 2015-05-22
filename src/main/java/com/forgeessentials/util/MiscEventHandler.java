@@ -1,5 +1,7 @@
 package com.forgeessentials.util;
 
+import com.forgeessentials.core.misc.Translator;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -10,13 +12,13 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 
-public class MiscEventHandler {
+public class MiscEventHandler
+{
     public static boolean MajoritySleep = false;
 
     public static int majoritySleepThreshold;
 
     public static boolean checkSpacesInNames;
-    private static MiscEventHandler instance;
 
     public MiscEventHandler()
     {
@@ -25,29 +27,19 @@ public class MiscEventHandler {
         {
             FMLCommonHandler.instance().bus().register(this);
         }
-        instance = this;
-    }
-
-	/*
-     * MajoritySleep
-	 */
-
-    public static MiscEventHandler instance()
-    {
-        return instance;
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void checkPlayerName(PlayerLoggedInEvent e)
     {
-        String name = e.player.getDisplayName();
-        if (name.contains(" "))
+        if (e.player.getDisplayName().contains(" "))
         {
-            ((EntityPlayerMP) e.player).playerNetServerHandler.kickPlayerFromServer("Invalid name. Please change your name.");
+            String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", e.player.getCommandSenderName());
+            ((EntityPlayerMP) e.player).playerNetServerHandler.kickPlayerFromServer(msg);
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerSleepInBedEvent(PlayerSleepInBedEvent e)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -58,7 +50,8 @@ public class MiscEventHandler {
         if (MajoritySleep && FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
             WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
-            if (world.getWorldInfo().getWorldTime() % 24000L < 12000L){
+            if (world.getWorldInfo().getWorldTime() % 24000L < 12000L)
+            {
                 return;
             }
             int playersT = FMLCommonHandler.instance().getMinecraftServerInstance().getCurrentPlayerCount();

@@ -1,4 +1,4 @@
-package com.forgeessentials.remote.handler;
+package com.forgeessentials.remote.handler.chat;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;

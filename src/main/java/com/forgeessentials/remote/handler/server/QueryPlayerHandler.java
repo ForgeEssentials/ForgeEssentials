@@ -1,4 +1,4 @@
-package com.forgeessentials.remote.handler;
+package com.forgeessentials.remote.handler.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;

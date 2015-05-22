@@ -162,13 +162,10 @@ public class Session implements Runnable, RemoteSession
                 return;
             }
         }
-        catch (IllegalArgumentException e)
+        catch (IllegalArgumentException | JsonSyntaxException e)
         {
             OutputHandler.felog.warning("[remote] Message error: " + e.getMessage());
-        }
-        catch (JsonSyntaxException e)
-        {
-            OutputHandler.felog.warning("[remote] Message error: " + e.getMessage());
+            sendMessage(RemoteResponse.error(null, 0, e.getMessage()));
         }
     }
 
