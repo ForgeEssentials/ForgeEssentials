@@ -53,7 +53,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
         if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
         {
             point = pi.getLastDeathLocation();
-            pi.setLastTeleportOrigin(null);
+            pi.setLastDeathLocation(null);
         }
 
         if (point == null)

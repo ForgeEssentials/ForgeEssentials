@@ -1,5 +1,7 @@
 package com.forgeessentials.commons.selections;
 
+import com.google.gson.annotations.Expose;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
@@ -10,8 +12,6 @@ public class WarpPoint {
     
     protected int dim;
 
-    protected World world;
-
     protected float pitch;
 
     protected float yaw;
@@ -21,6 +21,9 @@ public class WarpPoint {
     protected double yd;
 
     protected double zd;
+
+    @Expose(serialize = false)
+    protected World world;
 
     // ------------------------------------------------------------
 

@@ -115,7 +115,9 @@ public class TeleportHelper extends ServerEventHandler
     {
          Block block1 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ());
          Block block2 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
-         return (!block1.getMaterial().isSolid() || block1.getBlockBoundsMaxY() <= 0.5) && !block2.getMaterial().isSolid();
+         boolean block1Free = !block1.getMaterial().isSolid() || block1.getBlockBoundsMaxX() < 1 || block1.getBlockBoundsMaxY() > 0;
+         boolean block2Free = !block2.getMaterial().isSolid() || block2.getBlockBoundsMaxX() < 1 || block2.getBlockBoundsMaxY() > 0;
+         return block1Free && block2Free;
     }
 
     public static void doTeleport(EntityPlayerMP player, WarpPoint point)
