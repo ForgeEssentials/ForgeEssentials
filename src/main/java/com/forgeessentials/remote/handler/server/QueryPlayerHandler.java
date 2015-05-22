@@ -1,6 +1,7 @@
 package com.forgeessentials.remote.handler.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
         PlayerInfoResponse pi = new PlayerInfoResponse(ident.getUuid().toString(), ident.getUsername());
         if (flags == null)
             return pi;
+        pi.data = new HashMap<>();
         for (String flag : flags)
         {
             switch (flag)
