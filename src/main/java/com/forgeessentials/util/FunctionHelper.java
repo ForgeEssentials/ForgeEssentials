@@ -496,6 +496,19 @@ public final class FunctionHelper
         return new ImmutablePair<String, Integer>(ID, meta);
     }
 
+    // ------------------------------------------------------------
+
+    /**
+     * Gets a type safe player list
+     * 
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static List<EntityPlayerMP> getPlayerList()
+    {
+        return MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+    }
+
     /**
      * Returns working directory or minecraft data-directory on client side. <br>
      * <b>Please use module directory instead!</b>
@@ -1392,5 +1405,6 @@ public final class FunctionHelper
         ichat.appendText(string.substring(lastEnd));
         return ichat;
     }
+
 
 }

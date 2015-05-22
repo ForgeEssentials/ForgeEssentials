@@ -378,7 +378,14 @@ public class UserIdent
         if (string.charAt(0) != '(' || string.charAt(string.length() - 1) != ')' || string.indexOf('|') < 0)
             throw new IllegalArgumentException("UserIdent string needs to be in the format \"(<uuid>|<username>)\"");
         String[] parts = string.substring(1, string.length() - 1).split("\\|", 2);
-        return get(UUID.fromString(parts[0]), parts[1]);
+        try
+        {
+            return get(UUID.fromString(parts[0]), parts[1]);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return get((UUID) null, parts[1]);
+        }
     }
 
     public static String getUsernameByUuid(String uuid)

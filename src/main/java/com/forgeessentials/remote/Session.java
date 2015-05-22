@@ -95,19 +95,10 @@ public class Session implements Runnable, RemoteSession
             if (request.auth != null)
             {
                 ident = UserIdent.get(request.auth.username);
-                if (!ident.hasUUID())
+                if (!request.auth.password.equals(ModuleRemote.getInstance().getPasskey(ident)))
                 {
-                    ident = null;
-                    sendMessage(RemoteResponse.error(request, "unknown username"));
+                    close("authentication failed", request);
                     return;
-                }
-                else
-                {
-                    if (!request.auth.password.equals(ModuleRemote.getInstance().getPasskey(ident)))
-                    {
-                        close("authentication failed", request);
-                        return;
-                    }
                 }
             }
 
@@ -159,6 +150,8 @@ public class Session implements Runnable, RemoteSession
             catch (Exception e)
             {
                 sendMessage(RemoteResponse.error(request, RemoteHandler.MSG_EXCEPTION));
+                OutputHandler.felog.warning("[remote] Exception while handling message");
+                e.printStackTrace();
                 return;
             }
         }
@@ -166,6 +159,7 @@ public class Session implements Runnable, RemoteSession
         {
             OutputHandler.felog.warning("[remote] Message error: " + e.getMessage());
             sendMessage(RemoteResponse.error(null, 0, e.getMessage()));
+            close();
         }
     }
 

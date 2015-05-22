@@ -288,8 +288,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
      */
     public String getPasskey(UserIdent userIdent)
     {
-        if (!userIdent.hasUUID())
-            return null;
         if (passkeys.containsKey(userIdent))
             return passkeys.get(userIdent);
         String passkey = generatePasskey();

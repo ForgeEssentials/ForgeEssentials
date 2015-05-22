@@ -1,13 +1,12 @@
 package com.forgeessentials.remote.handler.server;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
@@ -18,9 +17,11 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
+import com.forgeessentials.util.FunctionHelper;
 
 @FERemoteHandler(id = "query_player")
-public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.Request> {
+public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.Request>
+{
 
     public static final String PERM = PERM_REMOTE + ".query.player";
     public static final String PERM_LOCATION = PERM + ".location";
@@ -33,27 +34,27 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected RemoteResponse<QueryPlayerHandler.Response> handleData(RemoteSession session, RemoteRequest<QueryPlayerHandler.Request> request)
     {
-        for (String flag : request.data.flags)
-        {
-            switch (flag)
+        if (request.data != null && request.data.flags != null)
+            for (String flag : request.data.flags)
             {
-            case "location":
-                checkPermission(session, PERM_LOCATION);
-                break;
-            case "detail":
-                checkPermission(session, PERM_DETAIL);
-                break;
+                switch (flag)
+                {
+                case "location":
+                    checkPermission(session, PERM_LOCATION);
+                    break;
+                case "detail":
+                    checkPermission(session, PERM_DETAIL);
+                    break;
+                }
             }
-        }
 
         Response response = new Response();
-        if (request.data.name == null)
+        if (request.data == null || request.data.name == null)
         {
-            for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
-                response.players.add(getPlayerInfoResponse(session, UserIdent.get(player), request.data.flags));
+            for (EntityPlayerMP player : FunctionHelper.getPlayerList())
+                response.players.add(getPlayerInfoResponse(session, UserIdent.get(player), request.data == null ? null : request.data.flags));
         }
         else
         {
@@ -68,6 +69,8 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
     public PlayerInfoResponse getPlayerInfoResponse(RemoteSession session, UserIdent ident, Set<String> flags)
     {
         PlayerInfoResponse pi = new PlayerInfoResponse(ident.getUuid().toString(), ident.getUsername());
+        if (flags == null)
+            return pi;
         for (String flag : flags)
         {
             switch (flag)
@@ -86,11 +89,12 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
         return pi;
     }
 
-    public static class Request {
+    public static class Request
+    {
 
         public String name;
 
-        public Set<String> flags;
+        public Set<String> flags = new HashSet<>();
 
         public Request(String name, String... flags)
         {
@@ -103,19 +107,21 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
         }
     }
 
-    public static class Response {
+    public static class Response
+    {
 
         public List<PlayerInfoResponse> players = new ArrayList<>();
 
     }
 
-    public static class PlayerInfoResponse {
+    public static class PlayerInfoResponse
+    {
 
         public String uuid;
 
         public String name;
 
-        public Map<String, Object> data = new HashMap<>();
+        public Map<String, Object> data;
 
         public PlayerInfoResponse(String uuid, String name)
         {
