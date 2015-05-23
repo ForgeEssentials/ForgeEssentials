@@ -12,6 +12,9 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MiscEventHandler
 {
     public static boolean MajoritySleep = false;
@@ -32,7 +35,10 @@ public class MiscEventHandler
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void checkPlayerName(PlayerLoggedInEvent e)
     {
-        if (e.player.getGameProfile().getName().contains(" "))
+        Pattern pattern = Pattern.compile("\\s");
+        Matcher matcher = pattern.matcher(e.player.getGameProfile().getName());
+        boolean found = matcher.find();
+        if (found)
         {
             String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", e.player.getCommandSenderName());
             ((EntityPlayerMP) e.player).playerNetServerHandler.kickPlayerFromServer(msg);
