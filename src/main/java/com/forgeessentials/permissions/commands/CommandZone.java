@@ -27,7 +27,8 @@ import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.selections.SelectionHandler;
 
-public class CommandZone extends ForgeEssentialsCommandBase {
+public class CommandZone extends ForgeEssentialsCommandBase
+{
 
     public static final String PERM_NODE = "fe.perm.zone";
     public static final String PERM_ALL = PERM_NODE + Zone.ALL_PERMS;
@@ -78,12 +79,16 @@ public class CommandZone extends ForgeEssentialsCommandBase {
             }
 
             String arg = args.remove().toLowerCase();
-            switch (arg) {
+            switch (arg)
+            {
             case "help":
                 help(sender);
                 break;
             case "select":
                 parseSelect(sender, worldZone, args);
+                break;
+            case "info":
+                parseInfo(sender, worldZone, args);
                 break;
             case "list":
                 parseList(sender, worldZone, args);
@@ -100,7 +105,7 @@ public class CommandZone extends ForgeEssentialsCommandBase {
                 parseEntryExitMessage(sender, worldZone, args, arg.equals("entry"));
                 break;
             default:
-                throw new TranslatedCommandException("Unknown command argument");
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND);
             }
         }
     }
@@ -207,8 +212,10 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         {
             if (!redefine)
                 return;
-            for (Zone z: APIRegistry.perms.getZones()) {
-                if (z instanceof AreaZone) {
+            for (Zone z : APIRegistry.perms.getZones())
+            {
+                if (z instanceof AreaZone)
+                {
                     if (z.getName().startsWith(args.peek()))
                         tabComplete.add(z.getName());
                     if (Integer.toString(z.getId()).startsWith(args.peek()))
@@ -239,19 +246,19 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
         AreaBase area = null;
         AreaShape shape = null;
-        
+
         if (!args.isEmpty())
         {
             shape = AreaShape.getByName(args.remove());
             if (shape == null)
                 shape = AreaShape.BOX;
         }
-        
+
         if (!(sender instanceof EntityPlayerMP))
         {
             throw new TranslatedCommandException("Command not usable from console. Try /zone set <name> <coords> instead");
         }
-        
+
         area = SelectionHandler.selectionProvider.getSelection((EntityPlayerMP) sender);
         if (area == null)
             throw new TranslatedCommandException("No selection available. Please select a region first.");
@@ -305,8 +312,10 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         }
         if (tabCompleteMode)
         {
-            for (Zone z: APIRegistry.perms.getZones()) {
-                if (z instanceof AreaZone) {
+            for (Zone z : APIRegistry.perms.getZones())
+            {
+                if (z instanceof AreaZone)
+                {
                     if (z.getName().startsWith(args.peek()))
                         tabComplete.add(z.getName());
                     if (Integer.toString(z.getId()).startsWith(args.peek()))
@@ -328,16 +337,16 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
     private void parseSelect(ICommandSender sender, WorldZone worldZone, Queue<String> args)
     {
-        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_DELETE))
+        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_INFO))
         {
             OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
         }
-        
+
         if (!(sender instanceof EntityPlayerMP))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
         EntityPlayerMP player = (EntityPlayerMP) sender;
-        
+
         if (worldZone == null)
             throw new TranslatedCommandException("No world found");
 
@@ -346,8 +355,10 @@ public class CommandZone extends ForgeEssentialsCommandBase {
 
         if (tabCompleteMode)
         {
-            for (Zone z: APIRegistry.perms.getZones()) {
-                if (z instanceof AreaZone) {
+            for (Zone z : APIRegistry.perms.getZones())
+            {
+                if (z instanceof AreaZone)
+                {
                     if (z.getName().startsWith(args.peek()))
                         tabComplete.add(z.getName());
                     if (Integer.toString(z.getId()).startsWith(args.peek()))
@@ -369,6 +380,47 @@ public class CommandZone extends ForgeEssentialsCommandBase {
         SelectionHandler.selectionProvider.setDimension(player, worldZone.getDimensionID());
         SelectionHandler.sendUpdate(player);
         OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been selected.", zoneName));
+    }
+
+    private void parseInfo(ICommandSender sender, WorldZone worldZone, Queue<String> args)
+    {
+        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_INFO))
+        {
+            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
+
+        if (worldZone == null)
+            throw new TranslatedCommandException("No world found");
+
+        if (args.isEmpty())
+            throw new TranslatedCommandException("Missing arguments!");
+
+        if (tabCompleteMode)
+        {
+            for (Zone z : APIRegistry.perms.getZones())
+            {
+                if (z instanceof AreaZone)
+                {
+                    if (z.getName().startsWith(args.peek()))
+                        tabComplete.add(z.getName());
+                    if (Integer.toString(z.getId()).startsWith(args.peek()))
+                        tabComplete.add(Integer.toString(z.getId()));
+                }
+            }
+            return;
+        }
+        String zoneName = args.remove();
+        AreaZone zone = getAreaZone(worldZone, zoneName);
+        if (zone == null)
+        {
+            OutputHandler.chatError(sender, String.format("Area \"%s\" has does not exist!", zoneName));
+            return;
+        }
+        AreaBase area = zone.getArea();
+        OutputHandler.chatConfirmation(sender, String.format("Area \"%s\"", zoneName));
+        OutputHandler.chatNotification(sender, "  start = " + area.getLowPoint().toString());
+        OutputHandler.chatNotification(sender, "  end   = " + area.getHighPoint().toString());
     }
 
     private void parseEntryExitMessage(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean isEntry)
