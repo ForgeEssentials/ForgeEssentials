@@ -1,1 +1,1 @@
-If you're using FE for Minecraft 1.4 or 1.5, please get them from http://198.23.242.205/FE-legacy/libs/
+If you're using FE for Minecraft 1.4 or 1.5, please get them from https://www.mediafire.com/folder/dpqhf3ughd4j5/libs
