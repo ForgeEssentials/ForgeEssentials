@@ -18,9 +18,13 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
+import com.forgeessentials.remote.network.S7PacketRemote;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.PlayerInfo;
 
-public class CommandRemote extends ForgeEssentialsCommandBase {
+public class CommandRemote extends ForgeEssentialsCommandBase
+{
 
     @Override
     public String getCommandName()
@@ -28,7 +32,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
         return "remote";
     }
 
-    private static final String[] parseMainArgs = { "regen", "kick", "start", "stop", "block" };
+    private static final String[] parseMainArgs = { "regen", "kick", "start", "stop", "block", "qr" };
 
     @Override
     public void processCommand(ICommandSender sender, String[] vargs)
@@ -134,6 +138,21 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
                 args.confirm("Server stopped");
                 return;
             }
+            case "qr":
+            {
+                UserIdent ident = args.parsePlayer(true);
+                if (!PlayerInfo.getPlayerInfo(ident.getPlayer()).getHasFEClient())
+                {
+                    showPasskey(args, args.ident);
+                }
+                else
+                {
+                    String connectString = ModuleRemote.getInstance().getConnectString(ident);
+                    String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
+                    FunctionHelper.netHandler.sendTo(new S7PacketRemote(url), ident.getPlayer());
+                }
+                return;
+            }
             default:
                 throw new TranslatedCommandException("Unknown subcommand " + arg);
             }
@@ -149,15 +168,21 @@ public class CommandRemote extends ForgeEssentialsCommandBase {
     {
         String connectString = ModuleRemote.getInstance().getConnectString(ident);
         String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-        
         ChatComponentTranslation msg = new ChatComponentTranslation("Remote passkey = " + ModuleRemote.getInstance().getPasskey(ident) + " ");
-        
+
         IChatComponent qrLink = new ChatComponentText("[QR code]");
-        qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        if (!PlayerInfo.getPlayerInfo(ident.getPlayer()).getHasFEClient())
+        {
+            qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        }
+        else
+        {
+            qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
+        }
         qrLink.getChatStyle().setColor(EnumChatFormatting.RED);
         qrLink.getChatStyle().setUnderlined(true);
         msg.appendSibling(qrLink);
-        
+
         args.sender.addChatMessage(msg);
         args.sender.addChatMessage(new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
     }
