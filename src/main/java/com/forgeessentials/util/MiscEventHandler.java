@@ -32,7 +32,7 @@ public class MiscEventHandler
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void checkPlayerName(PlayerLoggedInEvent e)
     {
-        if (e.player.getDisplayName().contains(" "))
+        if (e.player.getGameProfile().getName().contains(" "))
         {
             String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", e.player.getCommandSenderName());
             ((EntityPlayerMP) e.player).playerNetServerHandler.kickPlayerFromServer(msg);
