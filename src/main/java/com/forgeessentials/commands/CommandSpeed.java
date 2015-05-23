@@ -2,6 +2,7 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.commands.network.S6PacketSpeed;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commons.NetworkUtils;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
@@ -21,7 +22,7 @@ public class CommandSpeed extends FEcmdModuleCommands
             if (args[0].equals("reset"))
             {
                 OutputHandler.chatNotification(player, "Resetting speed to regular walking speed.");
-                FunctionHelper.netHandler.sendTo(new S6PacketSpeed(0.0F), player);
+                NetworkUtils.netHandler.sendTo(new S6PacketSpeed(0.0F), player);
                 return;
             }
 
@@ -35,7 +36,7 @@ public class CommandSpeed extends FEcmdModuleCommands
                 multiplier = 10;
             }
             speed = speed * multiplier;
-            FunctionHelper.netHandler.sendTo(new S6PacketSpeed(speed), player);
+            NetworkUtils.netHandler.sendTo(new S6PacketSpeed(speed), player);
         }
     }
 

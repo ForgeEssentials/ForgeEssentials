@@ -31,14 +31,16 @@ public class ForgeEssentialsClient {
 
     public static boolean allowCUI;
 
-    public static SimpleNetworkWrapper netHandler;
-
     @Instance("ForgeEssentialsClient")
     public static ForgeEssentialsClient instance;
 
     @NetworkCheckHandler
     public boolean getServerMods(Map<String, String> map, Side side)
     {
+        if (!side.equals(Side.SERVER))
+        {
+            return true;
+        }
         if (map.containsKey("ForgeEssentials"))
         {
             serverHasFE = true;

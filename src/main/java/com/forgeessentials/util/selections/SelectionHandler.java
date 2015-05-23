@@ -1,5 +1,6 @@
 package com.forgeessentials.util.selections;
 
+import com.forgeessentials.commons.NetworkUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -31,7 +32,7 @@ public class SelectionHandler
 
     public static void sendUpdate(EntityPlayerMP player)
     {
-        FunctionHelper.netHandler.sendTo(new S1PacketSelectionUpdate(player), player);
+        NetworkUtils.netHandler.sendTo(new S1PacketSelectionUpdate(player), player);
     }
 
 }

@@ -66,8 +66,6 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 public final class FunctionHelper
 {
 
-    public static SimpleNetworkWrapper netHandler;
-
     public static final EventBus FE_INTERNAL_EVENTBUS = APIRegistry.getFEEventBus();
 
     /**

@@ -1,5 +1,6 @@
 package com.forgeessentials.commands;
 
+import com.forgeessentials.commons.NetworkUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -56,7 +57,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 		}
 		if(!player.noClip)
 			FunctionHelper.findSafeY(player);
-		FunctionHelper.netHandler.sendTo(new S5PacketNoclip(player.noClip), player);
+		NetworkUtils.netHandler.sendTo(new S5PacketNoclip(player.noClip), player);
 	}
 	
 	public static void checkClip(EntityPlayer player)
@@ -69,7 +70,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 				FunctionHelper.findSafeY(player);
 				if(!player.worldObj.isRemote)
 				{
-					FunctionHelper.netHandler.sendTo(new S5PacketNoclip(player.noClip), (EntityPlayerMP) player);
+					NetworkUtils.netHandler.sendTo(new S5PacketNoclip(player.noClip), (EntityPlayerMP) player);
 					OutputHandler.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");
 				}
 			}

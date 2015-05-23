@@ -2,6 +2,7 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
+import com.forgeessentials.commons.NetworkUtils;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
@@ -147,9 +148,9 @@ public class ForgeEssentials extends ConfigLoaderBase
         tasks = new TaskRegistry();
 
         // Load network packages
-        FunctionHelper.netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
-        FunctionHelper.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
-        FunctionHelper.netHandler.registerMessage(S1PacketSelectionUpdate.class, S1PacketSelectionUpdate.class, 1, Side.CLIENT);
+        NetworkUtils.netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
+        NetworkUtils.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
+        NetworkUtils.netHandler.registerMessage(S1PacketSelectionUpdate.class, S1PacketSelectionUpdate.class, 1, Side.CLIENT);
 
         // Misc
         miscEventHandler = new MiscEventHandler();

@@ -1,5 +1,6 @@
 package com.forgeessentials.commands;
 
+import com.forgeessentials.commons.NetworkUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -15,7 +16,6 @@ import com.forgeessentials.commands.util.LoginMessage;
 import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -37,8 +37,8 @@ public class ModuleCommands {
         MobTypeLoader.preLoad((FMLPreInitializationEvent)e.getFMLEvent());
         MinecraftForge.EVENT_BUS.register(eventHandler);
         FMLCommonHandler.instance().bus().register(eventHandler);
-        FunctionHelper.netHandler.registerMessage(S5PacketNoclip.class, S5PacketNoclip.class, 5, Side.CLIENT);
-        FunctionHelper.netHandler.registerMessage(S6PacketSpeed.class, S6PacketSpeed.class, 6, Side.CLIENT);
+        NetworkUtils.netHandler.registerMessage(S5PacketNoclip.class, S5PacketNoclip.class, 5, Side.CLIENT);
+        NetworkUtils.netHandler.registerMessage(S6PacketSpeed.class, S6PacketSpeed.class, 6, Side.CLIENT);
         LoginMessage.loadFile();
     }
 

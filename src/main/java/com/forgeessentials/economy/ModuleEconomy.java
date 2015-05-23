@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import com.forgeessentials.commons.NetworkUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -89,7 +90,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
-        FunctionHelper.netHandler.registerMessage(S4PacketEconomy.class, S4PacketEconomy.class, 4, Side.CLIENT);
+        NetworkUtils.netHandler.registerMessage(S4PacketEconomy.class, S4PacketEconomy.class, 4, Side.CLIENT);
     }
 
     @SubscribeEvent
