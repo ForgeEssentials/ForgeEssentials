@@ -59,8 +59,6 @@ public class CommandWallet extends ParserCommandBase
         }
 
         UserIdent player = arguments.parsePlayer(true);
-        if (player == null)
-            return;
         Wallet wallet = APIRegistry.economy.getWallet(player);
 
         if (arguments.isEmpty())

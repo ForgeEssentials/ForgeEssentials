@@ -37,9 +37,6 @@ public class CommandPromote extends ForgeEssentialsCommandBase {
         }
 
         UserIdent ident = arguments.parsePlayer(false);
-        if (ident == null)
-            return;
-
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Wrong syntax. Use \"/promote <player> <group>\"");
 

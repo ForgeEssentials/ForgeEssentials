@@ -336,7 +336,7 @@ public class CommandPlot extends ParserCommandBase
         String action = arguments.remove().toLowerCase();
 
         UserIdent player = arguments.parsePlayer(true);
-        if (arguments.isTabCompletion || player == null)
+        if (arguments.isTabCompletion)
             return;
 
         switch (action)

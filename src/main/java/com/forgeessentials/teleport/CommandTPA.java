@@ -1,25 +1,19 @@
 package com.forgeessentials.teleport;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.teleport.util.TPAdata;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.questioner.Questioner;
+import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
-public class CommandTPA extends ForgeEssentialsCommandBase
+public class CommandTPA extends ParserCommandBase
 {
 
     @Override
@@ -29,73 +23,9 @@ public class CommandTPA extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public String getCommandUsage(ICommandSender sender)
     {
-        if (args.length == 0)
-            throw new TranslatedCommandException("Improper syntax. Please try this instead: /tpa [player] <player|<x> <y> <z>|accept|decline>");
-
-        if (args[0].equalsIgnoreCase("accept"))
-        {
-            for (TPAdata data : TeleportModule.tpaList)
-            {
-                if (!data.tphere)
-                {
-                    if (data.receiver == sender)
-                    {
-                        OutputHandler.chatNotification(data.sender, "Teleport request accepted.");
-                        OutputHandler.chatConfirmation(data.receiver, "Teleport request accepted by other party. Teleporting..");
-                        TeleportModule.tpaListToRemove.add(data);
-                        TeleportHelper.teleport(data.sender, new WarpPoint(data.receiver));
-                        return;
-                    }
-                }
-            }
-            return;
-        }
-
-        if (args[0].equalsIgnoreCase("decline"))
-        {
-            for (TPAdata data : TeleportModule.tpaList)
-            {
-                if (!data.tphere)
-                {
-                    if (data.receiver == sender)
-                    {
-                        OutputHandler.chatNotification(data.sender, "Teleport request declined.");
-                        OutputHandler.chatError(data.receiver, "Teleport request declined by other party.");
-                        TeleportModule.tpaListToRemove.add(data);
-                        return;
-                    }
-                }
-            }
-            return;
-        }
-
-        if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_TPA_SENDREQUEST))
-            throw new TranslatedCommandException(
-                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-
-        EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-        if (receiver == null)
-        {
-            OutputHandler.chatError(sender, args[0] + " not found.");
-        }
-        else
-        {
-            TeleportModule.tpaListToAdd.add(new TPAdata(sender, receiver, false));
-
-            OutputHandler.chatNotification(sender, Translator.format("Teleport request sent to %s", receiver.getCommandSenderName()));
-            OutputHandler.chatNotification(
-                    receiver,
-                    Translator.format("Received teleport request from %s. Enter '/tpa accept' to accept, '/tpa decline' to decline.",
-                            sender.getCommandSenderName()));
-        }
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
+        return "/tpa [player] <player|<x> <y> <z>|accept|decline> Request to teleport yourself or another player.";
     }
 
     @Override
@@ -105,32 +35,94 @@ public class CommandTPA extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
-    {
-        if (args.length == 1)
-        {
-            ArrayList<String> list = new ArrayList<String>();
-            list.add("accept");
-            list.add("decline");
-            list.addAll(Arrays.asList(MinecraftServer.getServer().getAllUsernames()));
-            return getListOfStringsMatchingLastWord(args, list);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    @Override
     public RegisteredPermValue getDefaultPermission()
     {
         return RegisteredPermValue.TRUE;
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public boolean canConsoleUseCommand()
     {
-
-        return "/tpa [player] <player|<x> <y> <z>|accept|decline> Request to teleport yourself or another player.";
+        return false;
     }
+
+    @Override
+    public void parse(final CommandParserArgs arguments)
+    {
+        if (arguments.isEmpty())
+        {
+            arguments.confirm("/tpa <player>: Request being teleportet to another player");
+            arguments.confirm("/tpa <player> <here|x y z>: Propose another player to be teleported");
+            return;
+        }
+
+        final UserIdent player = arguments.parsePlayer(true);
+        if (arguments.isEmpty())
+        {
+            if (arguments.isTabCompletion)
+                return;
+            try
+            {
+                Questioner.add(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getCommandSenderName()),
+                        new QuestionerCallback() {
+                            @Override
+                            public void respond(Boolean response)
+                            {
+                                if (response == null)
+                                    arguments.error("TPA request timed out");
+                                else if (response == false)
+                                    arguments.error("TPA declined");
+                                else
+                                    TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
+                            }
+                        }, 20);
+            }
+            catch (QuestionerStillActiveException e)
+            {
+                throw new QuestionerStillActiveException.CommandException();
+            }
+            return;
+        }
+
+        arguments.tabComplete("here");
+
+        final WarpPoint point;
+        final String locationName;
+        if (arguments.peek().equalsIgnoreCase("here"))
+        {
+            point = new WarpPoint(arguments.senderPlayer);
+            locationName = arguments.sender.getCommandSenderName();
+            arguments.remove();
+        }
+        else
+        {
+            point = new WarpPoint(arguments.senderPlayer.worldObj, //
+                    arguments.parseDouble(), arguments.parseDouble(), arguments.parseDouble(), //
+                    player.getPlayer().rotationPitch, player.getPlayer().rotationYaw);
+            locationName = point.toReadableString();
+        }
+
+        if (arguments.isTabCompletion)
+            return;
+        try
+        {
+            Questioner.add(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
+                @Override
+                public void respond(Boolean response)
+                {
+                    if (response == null)
+                        arguments.error("TPA request timed out");
+                    else if (response == false)
+                        arguments.error("TPA declined");
+                    else
+                        TeleportHelper.teleport(player.getPlayerMP(), point);
+                }
+            }, 20);
+        }
+        catch (QuestionerStillActiveException e)
+        {
+            throw new QuestionerStillActiveException.CommandException();
+        }
+    }
+
 }

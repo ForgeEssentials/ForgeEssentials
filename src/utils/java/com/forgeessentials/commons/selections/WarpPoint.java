@@ -8,8 +8,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
-public class WarpPoint {
-    
+public class WarpPoint
+{
+
     protected int dim;
 
     protected float pitch;
@@ -36,7 +37,18 @@ public class WarpPoint {
         this.pitch = playerPitch;
         this.yaw = playerYaw;
     }
-    
+
+    public WarpPoint(World world, double x, double y, double z, float playerPitch, float playerYaw)
+    {
+        this.world = world;
+        this.dim = world.provider.dimensionId;
+        this.xd = x;
+        this.yd = y;
+        this.zd = z;
+        this.pitch = playerPitch;
+        this.yaw = playerYaw;
+    }
+
     public WarpPoint(int dimension, ChunkCoordinates location, float pitch, float yaw)
     {
         this(dimension, location.posX + 0.5, location.posY, location.posZ + 0.5, pitch, yaw);
@@ -59,12 +71,7 @@ public class WarpPoint {
 
     public WarpPoint(Entity entity)
     {
-        dim = entity.dimension;
-        xd = entity.posX;
-        yd = entity.posY;
-        zd = entity.posZ;
-        pitch = entity.rotationPitch;
-        yaw = entity.rotationYaw;
+        this(entity.worldObj, entity.posX, entity.posY, entity.posZ, entity.rotationPitch, entity.rotationYaw);
     }
 
     public WarpPoint(WarpPoint point)
@@ -118,7 +125,7 @@ public class WarpPoint {
     {
         return yaw;
     }
-    
+
     public void setDimension(int dim)
     {
         this.dim = dim;
@@ -206,6 +213,11 @@ public class WarpPoint {
         return "[" + xd + "," + yd + "," + zd + ",dim=" + dim + ",pitch=" + pitch + ",yaw=" + yaw + "]";
     }
 
+    public String toReadableString()
+    {
+        return String.format("%.0f %.0f %.0f dim=%d", xd, yd, zd, dim);
+    }
+
     @Override
     public boolean equals(Object object)
     {
@@ -223,7 +235,8 @@ public class WarpPoint {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int h = 1 + Double.valueOf(xd).hashCode();
         h = h * 31 + Double.valueOf(yd).hashCode();
         h = h * 31 + Double.valueOf(zd).hashCode();
@@ -232,6 +245,5 @@ public class WarpPoint {
         h = h * 31 + dim;
         return h;
     }
-
 
 }

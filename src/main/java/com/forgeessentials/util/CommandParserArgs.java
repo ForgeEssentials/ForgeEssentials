@@ -117,7 +117,7 @@ public class CommandParserArgs
         if (isTabCompletion && size() == 1)
         {
             tabCompletion = completePlayer(peek());
-            return null;
+            throw new CancelParsingException();
         }
         if (isEmpty())
         {

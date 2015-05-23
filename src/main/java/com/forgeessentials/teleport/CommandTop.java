@@ -1,22 +1,23 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.commons.selections.WarpPoint;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
-public class CommandTop extends ForgeEssentialsCommandBase {
+
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+
+public class CommandTop extends ForgeEssentialsCommandBase
+{
 
     @Override
     public String getCommandName()
@@ -62,7 +63,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
             throw new TranslatedCommandException("Improper syntax. Please try this instead: <player>");
     }
 
-    public void top(EntityPlayer player)
+    public void top(EntityPlayerMP player)
     {
         WarpPoint point = new WarpPoint(player);
         point.setY(player.worldObj.getActualHeight());
@@ -70,8 +71,7 @@ public class CommandTop extends ForgeEssentialsCommandBase {
         {
             point.setY(point.getY() - 1);
         }
-        ((EntityPlayerMP) player).playerNetServerHandler.setPlayerLocation(point.getX(), point.getY() + 1, point.getZ(), point.getYaw(), point.getPitch());
-        OutputHandler.chatConfirmation(player, "Teleported.");
+        TeleportHelper.teleport(player, point);
     }
 
     @Override

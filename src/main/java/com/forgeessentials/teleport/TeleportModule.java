@@ -9,17 +9,15 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
-import com.forgeessentials.teleport.util.RespawnHandler;
-import com.forgeessentials.teleport.util.TPAdata;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 
 @FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
 public class TeleportModule
@@ -59,9 +57,6 @@ public class TeleportModule
     public static final String PERM_WARP = "fe.teleport.warp";
     public static final String PERM_WARP_ADMIN = "fe.teleport.warp.admin";
 
-    public static List<TPAdata> tpaList = new ArrayList<TPAdata>();
-    public static List<TPAdata> tpaListToAdd = new ArrayList<TPAdata>();
-    public static List<TPAdata> tpaListToRemove = new ArrayList<TPAdata>();
     private static List<ForgeEssentialsCommandBase> commands = new ArrayList<ForgeEssentialsCommandBase>();
 
     private PortalManager portalManager;
@@ -76,11 +71,9 @@ public class TeleportModule
         commands.add(new CommandHome());
         commands.add(new CommandSpawn());
         commands.add(new CommandTp());
-        commands.add(new CommandTphere());
         commands.add(new CommandTppos());
         commands.add(new CommandWarp());
         commands.add(new CommandTPA());
-        commands.add(new CommandTPAhere());
         commands.add(new CommandPersonalWarp());
         commands.add(new CommandTop());
         commands.add(new CommandPortal());
@@ -128,31 +121,6 @@ public class TeleportModule
             APIRegistry.perms.registerPermission(cmd.getPermissionNode(), cmd.getDefaultPermission(), "Command: " + cmd.getCommandUsage(null));
         }
 
-    }
-
-    @SubscribeEvent
-    public void serverTick(TickEvent.ServerTickEvent e)
-    {
-        handleTick();
-    }
-
-    private static void handleTick()
-    {
-        try
-        {
-            tpaList.addAll(tpaListToAdd);
-            tpaListToAdd.clear();
-            for (TPAdata data : tpaList)
-            {
-                data.count();
-            }
-            tpaList.removeAll(tpaListToRemove);
-            tpaListToRemove.clear();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
 }
