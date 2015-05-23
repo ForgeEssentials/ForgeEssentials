@@ -86,7 +86,7 @@ public class ChatFormatter {
 
         if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).hasKey("nickname"))
         {
-            nickname = event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
+            nickname = FunctionHelper.formatColors(event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname"));
         }
 
 		/*
