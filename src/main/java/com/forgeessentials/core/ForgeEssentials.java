@@ -62,7 +62,6 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 /**
@@ -146,7 +145,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         tasks = new TaskRegistry();
 
         // Load network packages
-        NetworkUtils.netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
         NetworkUtils.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
         NetworkUtils.netHandler.registerMessage(S1PacketSelectionUpdate.class, S1PacketSelectionUpdate.class, 1, Side.CLIENT);
 
