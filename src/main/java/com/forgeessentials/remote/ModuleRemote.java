@@ -232,7 +232,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     public void registerHandler(RemoteHandler handler, String id)
     {
         if (handlers.containsKey(id))
-            throw new IllegalArgumentException(Translator.format("Handler with ID \"%s\" already registerd", id));
+            throw new IllegalArgumentException(Translator.format("Tried to register handler \"%s\" with ID \"%s\", but handler \"%s\" is already registered with that ID.", handler.getClass().getName(), id, handlers.get(id).getClass().getName()));
 
         handlers.put(id, handler);
         String perm = handler.getPermission();
