@@ -26,7 +26,7 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-@FEModule(name = "ServerVote", parentMod = ForgeEssentials.class)
+@FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false)
 public class ModuleServerVote {
 
     @ModuleDir

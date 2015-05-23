@@ -42,6 +42,11 @@ public @interface FEModule {
     boolean canDisable() default true;
 
     /**
+     * Allows a module to determine whether it wants to be loaded by default.
+     */
+    boolean defaultModule() default true;
+
+    /**
      * For all built in modules, this had better be the ForgeEssentials class.
      * For everyone else, this should be your @mod file.
      *
