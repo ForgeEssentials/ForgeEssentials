@@ -20,6 +20,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
+import com.forgeessentials.commons.NetworkUtils;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -27,7 +28,6 @@ import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoader
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
 import com.forgeessentials.remote.network.S7PacketRemote;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -248,7 +248,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     public void registerHandler(RemoteHandler handler, String id)
     {
         if (handlers.containsKey(id))
-            throw new IllegalArgumentException(Translator.format("Tried to register handler \"%s\" with ID \"%s\", but handler \"%s\" is already registered with that ID.", handler.getClass().getName(), id, handlers.get(id).getClass().getName()));
+            throw new IllegalArgumentException(Translator.format(
+                    "Tried to register handler \"%s\" with ID \"%s\", but handler \"%s\" is already registered with that ID.", handler.getClass().getName(),
+                    id, handlers.get(id).getClass().getName()));
 
         handlers.put(id, handler);
         String perm = handler.getPermission();
@@ -388,7 +390,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
-        FunctionHelper.netHandler.registerMessage(S7PacketRemote.class, S7PacketRemote.class, 7, Side.CLIENT);
+        NetworkUtils.netHandler.registerMessage(S7PacketRemote.class, S7PacketRemote.class, 7, Side.CLIENT);
     }
 
 }

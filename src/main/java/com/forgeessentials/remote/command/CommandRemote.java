@@ -14,13 +14,13 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.commons.NetworkUtils;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
 import com.forgeessentials.remote.network.S7PacketRemote;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
 
 public class CommandRemote extends ForgeEssentialsCommandBase
@@ -141,7 +141,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
             case "qr":
             {
                 UserIdent ident = args.parsePlayer(true);
-                if (!PlayerInfo.getPlayerInfo(ident.getPlayer()).getHasFEClient())
+                if (!PlayerInfo.getPlayerInfo(ident.getPlayerMP()).getHasFEClient())
                 {
                     showPasskey(args, args.ident);
                 }
@@ -149,7 +149,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
                 {
                     String connectString = ModuleRemote.getInstance().getConnectString(ident);
                     String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-                    FunctionHelper.netHandler.sendTo(new S7PacketRemote(url), ident.getPlayer());
+                    NetworkUtils.netHandler.sendTo(new S7PacketRemote(url), ident.getPlayerMP());
                 }
                 return;
             }
@@ -171,7 +171,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
         ChatComponentTranslation msg = new ChatComponentTranslation("Remote passkey = " + ModuleRemote.getInstance().getPasskey(ident) + " ");
 
         IChatComponent qrLink = new ChatComponentText("[QR code]");
-        if (!PlayerInfo.getPlayerInfo(ident.getPlayer()).getHasFEClient())
+        if (!PlayerInfo.getPlayerInfo(ident.getPlayerMP()).getHasFEClient())
         {
             qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
         }

@@ -1,7 +1,9 @@
 package com.forgeessentials.client.core;
 
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
-import static com.forgeessentials.client.ForgeEssentialsClient.netHandler;
+import static com.forgeessentials.commons.NetworkUtils.netHandler;
+
+import com.forgeessentials.commons.NetworkUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -31,6 +33,8 @@ import cpw.mods.fml.relauncher.Side;
 public class ClientProxy extends DummyProxy
 {
     private ClientConfig config;
+    
+    private VersionUtils version;
 
     private static Selection selection;
 
@@ -39,8 +43,8 @@ public class ClientProxy extends DummyProxy
     @Override
     public void doPreInit(FMLPreInitializationEvent e)
     {
-        feclientlog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(e.getSourceFile()) + ", build hash is: "
-                + VersionUtils.getBuildHash(e.getSourceFile()));
+        version = new VersionUtils(e.getSourceFile());
+        feclientlog.info("Build information: Build number is: " + version.getBuildNumber() + ", build hash is: " + version.getBuildHash());
         if (FMLCommonHandler.instance().getSide().isClient())
         {
             config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));
@@ -88,7 +92,7 @@ public class ClientProxy extends DummyProxy
         if (ForgeEssentialsClient.instance.serverHasFE)
         {
             System.out.println("Dispatching FE handshake packet");
-            ForgeEssentialsClient.netHandler.sendToServer(new C0PacketHandshake());
+            NetworkUtils.netHandler.sendToServer(new C0PacketHandshake());
         }
     }
 
