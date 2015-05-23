@@ -2,14 +2,13 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
-import com.forgeessentials.commons.NetworkUtils;
-import com.forgeessentials.core.preloader.FELaunchHandler;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.NetworkUtils;
 import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -27,7 +26,7 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.core.network.S0PacketHandshake;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
-import com.forgeessentials.core.preloader.classloading.FEClassLoader;
+import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.FunctionHelper;
@@ -51,7 +50,6 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.discovery.ASMDataTable;
-import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

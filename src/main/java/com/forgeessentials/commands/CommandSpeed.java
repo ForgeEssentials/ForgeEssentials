@@ -1,13 +1,13 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.network.S6PacketSpeed;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commons.NetworkUtils;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.network.S6PacketSpeed;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commons.NetworkUtils;
+import com.forgeessentials.util.OutputHandler;
 
 public class CommandSpeed extends FEcmdModuleCommands
 {

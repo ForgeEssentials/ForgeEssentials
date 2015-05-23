@@ -30,7 +30,7 @@ public class FELaunchHandler implements ITweaker {
 
         try
         {
-            Class mixinTweakClass = Class.forName("org.spongepowered.asm.launch.MixinTweaker");
+            Class<?> mixinTweakClass = Class.forName("org.spongepowered.asm.launch.MixinTweaker");
             mixinTweaker = (ITweaker) mixinTweakClass.newInstance();
             mixinTweaker.acceptOptions(args, gameDir, assetsDir, profile);
         }

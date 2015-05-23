@@ -1,10 +1,9 @@
 package com.forgeessentials.core.environment;
 
-import com.forgeessentials.core.ForgeEssentials;
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.commons.VersionUtils;
 
 import cpw.mods.fml.common.ICrashCallable;
 
@@ -34,4 +33,5 @@ public class FECrashCallable implements ICrashCallable
 
         return returned;
     }
+    
 }

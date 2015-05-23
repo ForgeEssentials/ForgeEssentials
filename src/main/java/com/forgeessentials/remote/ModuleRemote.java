@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -56,16 +56,22 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
 
     static
     {
-        List<Character> chars = new ArrayList<Character>();
+        // Build a character set with only easily distinguishable characters
+        Set<Character> chars = new HashSet<Character>();
         for (char c = 'a'; c <= 'z'; c++)
             chars.add(c);
         for (char c = 'A'; c <= 'Z'; c++)
             chars.add(c);
         for (char c = '0'; c <= '9'; c++)
             chars.add(c);
+        chars.remove('o');
+        chars.remove('O');
+        chars.remove('0');
+        chars.remove('I');
         PASSKEY_CHARS = new char[chars.size()];
-        for (int i = 0; i < chars.size(); i++)
-            PASSKEY_CHARS[i] = chars.get(i);
+        int idx = 0;
+        for (Character c : chars)
+            PASSKEY_CHARS[idx++] = c;
     }
 
     /* ------------------------------------------------------------ */

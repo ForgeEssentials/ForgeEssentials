@@ -1,11 +1,10 @@
 package com.forgeessentials.util.selections;
 
-import com.forgeessentials.commons.NetworkUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.forgeessentials.commons.NetworkUtils;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.network.S1PacketSelectionUpdate;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
 public class SelectionHandler

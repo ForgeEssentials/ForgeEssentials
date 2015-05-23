@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 import com.forgeessentials.api.economy.Economy;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.remote.AbstractRemoteHandler;
+import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 
 import cpw.mods.fml.common.eventhandler.EventBus;
@@ -15,7 +16,8 @@ import cpw.mods.fml.common.eventhandler.EventBus;
 /**
  * This is the central access point for all FE API functions
  */
-public class APIRegistry {
+public class APIRegistry
+{
 
     /**
      * Use this to call API functions available in the economy module.
@@ -34,8 +36,10 @@ public class APIRegistry {
     public static NamedWorldHandler namedWorldHandler = new NamedWorldHandler.DefaultNamedWorldHandler();
 
     /**
-     * This manager allows registering custom {@link AbstractRemoteHandler}s for remote-module. Please be careful to use unique
-     * names in your handlers for {@link AbstractRemoteHandler#getID()}
+     * This manager allows registering custom {@link AbstractRemoteHandler}s for remote-module. Please be careful to use
+     * unique names in your handlers for {@link AbstractRemoteHandler#getID()}
+     * 
+     * Using this instance to register handlers is deprecated. Use the {@link FERemoteHandler} annotation instead.
      */
     @Deprecated
     public static RemoteManager remoteManager = new RemoteManager.DefaultRemoteHandlerManager();
@@ -55,7 +59,8 @@ public class APIRegistry {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.TYPE })
-    public @interface ForgeEssentialsRegistrar {
+    public @interface ForgeEssentialsRegistrar
+    {
         String ident();
     }
 
