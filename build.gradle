@@ -54,10 +54,7 @@ minecraft {
     runDir = "rundir"
     ext.forgeVersion = "10.13.2.1258"
 
-    replaceIn "com/forgeessentials/core/ForgeEssentials.java"
-    replace "%VERSION%", project.version
-
-    replaceIn "com/forgeessentials/client/ForgeEssentialsClient.java"
+    replaceIn "com/forgeessentials/commons/VersionUtils.java"
     replace "%VERSION%", project.version
 
     //srgExtra "PK: org/spongepowered/asm com/forgeessentials/repackage/org_spongepowered/asm"
@@ -170,7 +167,7 @@ jar {
         attributes(
                 "BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
-                "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+                "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
                 "TweakOrder": "0",
                 "FMLCorePluginContainsFMLMod": "true",
                 "ForceLoadAsMod": "true",
@@ -242,7 +239,7 @@ task deobfJar(dependsOn: "jar", type: Jar) {
         attributes(
                 "BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
-                "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+                "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
                 "TweakOrder": "0",
                 "FMLCorePluginContainsFMLMod": "true",
                 "ForceLoadAsMod": "true",

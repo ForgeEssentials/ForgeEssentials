@@ -28,7 +28,7 @@ public class FEClassLoader
 
     private File FEfolder;
 
-    private boolean reExtract;
+    private boolean reExtract, triedonce;
 
     private boolean runtimeDeobfEnabled = (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
 
@@ -48,16 +48,17 @@ public class FEClassLoader
 
         //verify if we can find the current files
         runClassLoad(FEfolder, cl);
-        checkLibs(cl);
+        //checkLibs(cl);
 
         if (runtimeDeobfEnabled && reExtract)
         {
+            triedonce = true;
             doActualExtract(mcLocation);
 
             // after remediation, re-verify files
 
             runClassLoad(FEfolder, cl);
-            checkLibs(cl);
+            //checkLibs(cl);
 
         }
 
@@ -145,6 +146,7 @@ public class FEClassLoader
             catch (ClassNotFoundException cnfe)
             {
                 erroredLibs.add(clazz);
+                cnfe.printStackTrace();
             }
         }
         if (!erroredLibs.isEmpty())
@@ -154,8 +156,17 @@ public class FEClassLoader
             {
                 System.err.println(error);
             }
-            System.err.println("[ForgeEssentials] We will now re-extract the missing library files.");
-            reExtract = true;
+            if (triedonce)
+            {
+                System.err.println("[ForgeEssentials] We tried to load the library files, but something seems to have happened.");
+                System.err.println("[ForgeEssentials] Will try loading again.");
+                runClassLoad(FEfolder, Launch.classLoader);
+                //System.err.println("[ForgeEssentials] The server will start, but errors may occur. You are advised to restart the server at the earliest opportunity.");
+            }
+            else {
+                System.err.println("[ForgeEssentials] We will now re-extract the missing library files.");
+                reExtract = true;
+            }
 
             //throw new RuntimeException("[ForgeEssentials] You are missing one or more library files. See your FML log for details.");
         }

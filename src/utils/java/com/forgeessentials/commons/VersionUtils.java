@@ -7,7 +7,19 @@ import java.util.jar.Manifest;
 
 public class VersionUtils
 {
-    public static String getBuildNumber(File source)
+
+    public static VersionUtils INSTANCE;
+
+    public static final String FEVERSION = "1.4.0-beta7";
+
+    private File source;
+
+    public VersionUtils(File source)
+    {
+        this.source = source;
+        INSTANCE = this;
+    }
+    public String getBuildNumber()
     {
         try
         {
@@ -27,7 +39,7 @@ public class VersionUtils
         return "0";
     }
 
-    public static String getBuildHash(File source)
+    public String getBuildHash()
     {
         try
         {

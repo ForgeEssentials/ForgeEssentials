@@ -29,12 +29,15 @@ public class ClientProxy extends DummyProxy
 {
     private ClientConfig config;
 
+    private VersionUtils version;
+
     private static Selection selection;
 
     @Override
     public void doPreInit(FMLPreInitializationEvent e)
     {
-        feclientlog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(e.getSourceFile()) + ", build hash is: " + VersionUtils.getBuildHash(e.getSourceFile()));
+        version = new VersionUtils(e.getSourceFile());
+        feclientlog.info("Build information: Build number is: " + version.getBuildNumber() + ", build hash is: " + version.getBuildHash());
         if (FMLCommonHandler.instance().getSide().isClient())
         {
             config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));

@@ -68,8 +68,8 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
         }
         else if (args[0].equalsIgnoreCase("about"))
         {
-            OutputHandler.chatNotification(sender, "You are currently running ForgeEssentials version " + ForgeEssentials.FEVERSION);
-            OutputHandler.chatNotification(sender, "Build information: Build number is: " + VersionUtils.getBuildNumber(ForgeEssentials.jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(ForgeEssentials.jarLocation));
+            OutputHandler.chatNotification(sender, "You are currently running ForgeEssentials version " + VersionUtils.FEVERSION);
+            OutputHandler.felog.info("Build information: Build number is: " + ForgeEssentials.version.getBuildNumber() + ", build hash is: " + ForgeEssentials.version.getBuildHash());
             OutputHandler.chatNotification(sender,
                     "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
         }

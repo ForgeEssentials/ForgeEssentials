@@ -2,7 +2,7 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
-import net.minecraft.launchwrapper.Launch;
+import com.forgeessentials.core.preloader.FELaunchHandler;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -70,15 +70,13 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = ForgeEssentials.FEVERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
+@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = VersionUtils.FEVERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
     public static final String CONFIG_CAT = "Core";
     public static final String CONFIG_CAT_MISC = "Core.Misc";
     public static final String CONFIG_CAT_MODULES = "Core.Modules";
-
-    public static final String FEVERSION = "%VERSION%";
 
     @Instance(value = "ForgeEssentials")
     public static ForgeEssentials instance;
@@ -98,8 +96,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static boolean mcstats;
 
     public ModuleLauncher moduleLauncher;
-
-    public static File jarLocation;
 
     @SuppressWarnings("unused")
     private TaskRegistry tasks;
@@ -122,6 +118,8 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SuppressWarnings("unused")
     private Questioner questioner;
 
+    public static VersionUtils version;
+
     public static ASMDataTable asmData;
 
     public ForgeEssentials()
@@ -130,21 +128,16 @@ public class ForgeEssentials extends ConfigLoaderBase
         Environment.check();
     }
 
-    @EventHandler
-    public void classLoad(FMLConstructionEvent e)
-    {
-        new FEClassLoader().extractLibs(Launch.minecraftHome, Launch.classLoader);
-    }
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
         asmData = e.getAsmData();
-        jarLocation = e.getSourceFile();
+
+        version = new VersionUtils(FELaunchHandler.jarLocation);
         
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
-        OutputHandler.felog.info("Initializing ForgeEssentials version " + FEVERSION + " (configDir = " + FEDIR.getAbsolutePath() + ")");
-        OutputHandler.felog.info("Build information: Build number is: " + VersionUtils.getBuildNumber(jarLocation) + ", build hash is: " + VersionUtils.getBuildHash(jarLocation));
+        OutputHandler.felog.info("Initializing ForgeEssentials version " + VersionUtils.FEVERSION + " (configDir = " + FEDIR.getAbsolutePath() + ")");
+        OutputHandler.felog.info("Build information: Build number is: " + version.getBuildNumber() + ", build hash is: " + version.getBuildHash());
 
         // Load configuration
         configManager = new ConfigManager(FEDIR, "main");

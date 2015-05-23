@@ -24,8 +24,7 @@ public class FECrashCallable implements ICrashCallable
     {
         String modules = StringUtils.join(ModuleLauncher.getModuleList(), ", ");
         String n = System.getProperty("line.separator");
-        String returned =  "Build information: Build number is: " + VersionUtils.getBuildNumber(ForgeEssentials.jarLocation)
-                + ", Build hash is: " + VersionUtils.getBuildHash(ForgeEssentials.jarLocation)
+        String returned =  "Build information: Build number is: " + ForgeEssentials.version.getBuildNumber() + ", build hash is: " + ForgeEssentials.version.getBuildHash()
                 + ", Modules loaded: " + modules;
 
         if (Environment.hasCauldron)
