@@ -3,6 +3,7 @@ package com.forgeessentials.teleport;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ParserCommandBase;
@@ -15,6 +16,9 @@ import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
 public class CommandTPA extends ParserCommandBase
 {
+
+    public static final String PERM_HERE = TeleportModule.PERM_TPA + ".here";
+    public static final String PERM_LOCATION = TeleportModule.PERM_TPA + ".loc";
 
     @Override
     public String getCommandName()
@@ -38,6 +42,13 @@ public class CommandTPA extends ParserCommandBase
     public RegisteredPermValue getDefaultPermission()
     {
         return RegisteredPermValue.TRUE;
+    }
+
+    @Override
+    public void registerExtraPermissions()
+    {
+        APIRegistry.perms.registerPermission(PERM_HERE, RegisteredPermValue.TRUE, "Allow teleporting other players to your own location (inversed TPA)");
+        APIRegistry.perms.registerPermission(PERM_LOCATION, RegisteredPermValue.OP, "Allow teleporting other players to any location");
     }
 
     @Override
@@ -90,12 +101,14 @@ public class CommandTPA extends ParserCommandBase
         final String locationName;
         if (arguments.peek().equalsIgnoreCase("here"))
         {
+            arguments.checkPermission(PERM_HERE);
             point = new WarpPoint(arguments.senderPlayer);
             locationName = arguments.sender.getCommandSenderName();
             arguments.remove();
         }
         else
         {
+            arguments.checkPermission(PERM_LOCATION);
             point = new WarpPoint(arguments.senderPlayer.worldObj, //
                     arguments.parseDouble(), arguments.parseDouble(), arguments.parseDouble(), //
                     player.getPlayer().rotationPitch, player.getPlayer().rotationYaw);
