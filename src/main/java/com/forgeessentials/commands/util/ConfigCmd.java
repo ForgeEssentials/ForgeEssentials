@@ -1,6 +1,6 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import net.minecraftforge.common.config.Configuration;
 
 public class ConfigCmd extends ConfigLoaderBase {

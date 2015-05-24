@@ -14,14 +14,14 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Strings;
 
 public class Censor extends ConfigLoaderBase
 {
 
-    private static final String CONFIG_CATEGORY = "Censor";
+    private static final String CONFIG_CATEGORY = "Chat.Censor";
 
     private static final String[] DEFAULT_WORDS = new String[] { "fuck", "ass", "bitch", "shit" };
 

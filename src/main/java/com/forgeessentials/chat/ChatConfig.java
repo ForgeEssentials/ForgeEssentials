@@ -2,7 +2,7 @@ package com.forgeessentials.chat;
 
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 
 public class ChatConfig extends ConfigLoaderBase
 {

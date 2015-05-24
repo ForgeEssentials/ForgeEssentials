@@ -439,7 +439,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             e.serverZone.setGroupPermission(Zone.GROUP_OPERATORS, FEPermissions.GROUP, true);
             e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
-            e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[OPERATOR]");
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[&cOP&f]");
         }
         if (!e.serverZone.groupExists(Zone.GROUP_FAKEPLAYERS))
         {

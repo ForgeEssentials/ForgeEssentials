@@ -1,6 +1,6 @@
 package com.forgeessentials.servervote;
 
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.OutputHandler;
 import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.item.Item;

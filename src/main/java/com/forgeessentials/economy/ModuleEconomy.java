@@ -25,7 +25,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.commands.CommandCalculatePriceList;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
@@ -54,7 +54,7 @@ import cpw.mods.fml.relauncher.Side;
  * Handles wallets for each player, transactions and plot management.
  */
 @FEModule(name = "Economy", parentMod = ForgeEssentials.class)
-public class ModuleEconomy extends ServerEventHandler implements Economy, IConfigLoader
+public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
 {
 
     public static final String PERM = "fe.economy";

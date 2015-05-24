@@ -12,14 +12,12 @@ import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.FunctionHelper;
 
 public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
 {
-
-    private static TimedMessageHandler instance;
 
     public static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + ".TimedMessage";
     
@@ -40,13 +38,12 @@ public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
 
     public TimedMessageHandler()
     {
-        instance = this;
         ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_CATEGORY, this);
     }
 
     public static TimedMessageHandler getInstance()
     {
-        return instance;
+        return ModuleChat.instance.timedMessageHandler;
     }
 
     public boolean isEnabled()

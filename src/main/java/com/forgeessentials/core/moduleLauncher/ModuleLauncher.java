@@ -2,7 +2,7 @@ package com.forgeessentials.core.moduleLauncher;
 
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -111,10 +111,10 @@ public class ModuleLauncher {
         // Register modules with configuration manager
         for (ModuleContainer module : containerMap.values())
         {
-            if (module.module instanceof IConfigLoader)
+            if (module.module instanceof ConfigLoader)
             {
                 OutputHandler.felog.info("Registering configuration for FE module " + module.name);
-                ForgeEssentials.getConfigManager().registerLoader(module.name, (IConfigLoader) module.module, false);
+                ForgeEssentials.getConfigManager().registerLoader(module.name, (ConfigLoader) module.module, false);
             }
             else
             {

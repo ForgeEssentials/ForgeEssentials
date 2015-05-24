@@ -1,6 +1,6 @@
 package com.forgeessentials.tickets;
 
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.OutputHandler;
 import net.minecraftforge.common.config.Configuration;
 

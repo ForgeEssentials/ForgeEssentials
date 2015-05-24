@@ -35,11 +35,15 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
+import com.forgeessentials.chat.command.CommandIRC;
 import com.forgeessentials.chat.command.CommandMessageReplacement;
+import com.forgeessentials.chat.command.CommandMute;
 import com.forgeessentials.chat.command.CommandNickname;
 import com.forgeessentials.chat.command.CommandPm;
 import com.forgeessentials.chat.command.CommandReply;
 import com.forgeessentials.chat.command.CommandTimedMessages;
+import com.forgeessentials.chat.command.CommandUnmute;
+import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.environment.CommandSetChecker;
@@ -87,20 +91,22 @@ public class ModuleChat
 
     private PrintWriter logWriter;
 
-    private Censor censor;
+    public Censor censor;
 
-    @SuppressWarnings("unused")
-    private TimedMessageHandler timedMessageHandler;
+    public IrcHandler ircHandler;
+
+    public TimedMessageHandler timedMessageHandler;
 
     @SubscribeEvent
     public void moduleLoad(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
-        
+
         ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
 
         timedMessageHandler = new TimedMessageHandler();
+        ircHandler = new IrcHandler();
         censor = new Censor();
 
         setupChatReplacements();
@@ -212,18 +218,13 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        new CommandReply().register();
-        new CommandPm().register();
+        new CommandIRC().register();
+        new CommandMute().register();
         new CommandNickname().register();
+        new CommandPm().register();
+        new CommandReply().register();
         new CommandTimedMessages().register();
-
-        // new CommandNickname().register();
-        // new CommandPm().register();
-        // new CommandMute().register();
-        // new CommandUnmute().register();
-        // new CommandMail().register();
-        // new CommandIRC().register();
-        // new CommandBannedWords().register();
+        new CommandUnmute().register();
 
         // APIRegistry.perms.registerPermission("fe.chat.usecolor", RegisteredPermValue.TRUE);
         // APIRegistry.perms.registerPermission("fe.chat.nickname.others", RegisteredPermValue.OP);
@@ -267,11 +268,12 @@ public class ModuleChat
     public void serverStopping(FEModuleServerStopEvent e)
     {
         closeLog();
+        ircHandler.disconnect();
     }
 
     /* ------------------------------------------------------------ */
 
-    @SubscribeEvent(priority = EventPriority.NORMAL)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void chatEvent(ServerChatEvent event)
     {
         if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
@@ -289,12 +291,15 @@ public class ModuleChat
         }
 
         // Log chat message
-        logChatMessage(event.player, event.message);
+        logChatMessage(event.player.getCommandSenderName(), event.message);
 
         // Initialize parameters
         String message = processChatReplacements(event.player, censor.filter(event.player, event.message));
         UserIdent ident = UserIdent.get(event.player);
         String playerName = getPlayerNickname(event.player);
+
+        // Send to IRC
+        ircHandler.sendPlayerMessage(message, playerName);
 
         // Get player name formatting
         String playerColors = APIRegistry.perms.getUserPermissionProperty(ident, FEPermissions.PLAYER_CHATFORMAT);
@@ -413,11 +418,11 @@ public class ModuleChat
 
     /* ------------------------------------------------------------ */
 
-    public void logChatMessage(ICommandSender sender, String message)
+    public void logChatMessage(String sender, String message)
     {
         if (logWriter == null)
             return;
-        String logMessage = String.format("[%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1$tS] %2$s: %3$s", new Date(), sender.getCommandSenderName(), message);
+        String logMessage = String.format("[%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1$tS] %2$s: %3$s", new Date(), sender, message);
         logWriter.write(logMessage + "\n");
     }
 

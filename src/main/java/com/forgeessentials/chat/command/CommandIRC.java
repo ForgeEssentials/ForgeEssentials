@@ -45,18 +45,18 @@ public class CommandIRC extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            if (args[0].equalsIgnoreCase("reconnect"))
+            if (args[0].equalsIgnoreCase("reconnect") || args[0].equalsIgnoreCase("connect"))
             {
-                IrcHandler.instance.connect();
+                IrcHandler.getInstance().connect();
             }
             else if (args[0].equalsIgnoreCase("disconnect"))
             {
-                IrcHandler.instance.disconnect();
+                IrcHandler.getInstance().disconnect();
             }
         }
         else
         {
-            OutputHandler.sendMessage(sender, "IRC bot is " + (IrcHandler.instance.isConnected() ? "online" : "offline"));
+            OutputHandler.sendMessage(sender, "IRC bot is " + (IrcHandler.getInstance().isConnected() ? "online" : "offline"));
         }
     }
 
