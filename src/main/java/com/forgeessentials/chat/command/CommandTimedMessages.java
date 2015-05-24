@@ -1,4 +1,4 @@
-package com.forgeessentials.chat.commands;
+package com.forgeessentials.chat.command;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,25 +6,21 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.chat.AutoMessage;
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.chat.TimedMessageHandler;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandAutoMessage extends ForgeEssentialsCommandBase {
+public class CommandTimedMessages extends ForgeEssentialsCommandBase
+{
     @Override
     public String getCommandName()
     {
-        return "automessage";
-    }
-
-    @Override
-    public List<String> getCommandAliases()
-    {
-        return Arrays.asList("am");
+        return "timedmessage";
     }
 
     @Override
@@ -40,14 +36,15 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
         {
             try
             {
-                int id = parseIntBounded(sender, args[1], 0, AutoMessage.getInstance().messages.size());
-                AutoMessage.getInstance().currentMessageIdx = id;
-                OutputHandler.chatConfirmation(sender, "You have selected \"" + AutoMessage.getInstance().messages.get(id) + "\" as the next message.");
+                int id = parseIntBounded(sender, args[1], 0, TimedMessageHandler.getInstance().messages.size());
+                TimedMessageHandler.getInstance().currentMessageIdx = id;
+                OutputHandler.chatConfirmation(sender, "You have selected \"" + TimedMessageHandler.getInstance().messages.get(id) + "\" as the next message.");
                 return;
             }
             catch (Exception e)
             {
-                throw new TranslatedCommandException("You have to select a message to broadcast next. Options: %s", AutoMessage.getInstance().messages.size());
+                throw new TranslatedCommandException("You have to select a message to broadcast next. Options: %s",
+                        TimedMessageHandler.getInstance().messages.size());
             }
         }
 
@@ -55,13 +52,14 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
         {
             try
             {
-                int idx = parseIntBounded(sender, args[1], 0, AutoMessage.getInstance().messages.size());
-                AutoMessage.getInstance().send(idx);
+                int idx = parseIntBounded(sender, args[1], 0, TimedMessageHandler.getInstance().messages.size());
+                TimedMessageHandler.getInstance().send(idx);
                 return;
             }
             catch (Exception e)
             {
-                throw new TranslatedCommandException("You have to select a message to broadcast. Options: %s", AutoMessage.getInstance().messages.size());
+                throw new TranslatedCommandException("You have to select a message to broadcast. Options: %s",
+                        TimedMessageHandler.getInstance().messages.size());
             }
         }
 
@@ -69,13 +67,9 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
         {
             try
             {
-                String msg = "";
-                for (String var : FunctionHelper.dropFirstString(args))
-                {
-                    msg += " " + var;
-                }
-                OutputHandler.chatConfirmation(sender, msg.substring(1));
-                AutoMessage.getInstance().messages.add(msg.substring(1));
+                String msg = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
+                OutputHandler.chatConfirmation(sender, msg);
+                TimedMessageHandler.getInstance().messages.add(msg);
                 ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_CATEGORY);
                 return;
             }
@@ -90,14 +84,14 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
         {
             try
             {
-                int id = parseIntBounded(sender, args[1], 0, AutoMessage.getInstance().messages.size());
-                OutputHandler.chatConfirmation(sender, "Message \"" + AutoMessage.getInstance().messages.get(id) + "\" removed.");
-                AutoMessage.getInstance().messages.remove(id);
+                int id = parseIntBounded(sender, args[1], 0, TimedMessageHandler.getInstance().messages.size());
+                OutputHandler.chatConfirmation(sender, "Message \"" + TimedMessageHandler.getInstance().messages.get(id) + "\" removed.");
+                TimedMessageHandler.getInstance().messages.remove(id);
                 return;
             }
             catch (Exception e)
             {
-                throw new TranslatedCommandException("You have to select a message to remove. Options: %s", AutoMessage.getInstance().messages.size());
+                throw new TranslatedCommandException("You have to select a message to remove. Options: %s", TimedMessageHandler.getInstance().messages.size());
             }
         }
     }
@@ -130,7 +124,7 @@ public class CommandAutoMessage extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/automessage [select|broadcast|add|del] Select, broadcast, add or remove messages";
+        return "/TimedMessageHandler [select|broadcast|add|del] Select, broadcast, add or remove messages";
     }
 
     @Override

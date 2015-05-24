@@ -10,34 +10,41 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.config.Configuration;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.FunctionHelper;
 
-public class AutoMessage extends ConfigLoaderBase implements Runnable
+public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
 {
 
-    private static AutoMessage instance;
+    private static TimedMessageHandler instance;
 
-    public static final String CATEGORY = "Chat.Automessage";
+    public static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + ".TimedMessage";
+    
     public static final String MESSAGES_HELP = "Each line is 1 message. You can use scripting arguments and color codes.";
+    
     public static final String[] MESSAGES_DEFAULT = new String[] { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"",
             "\"The timing can be changed there too!\"" };
 
     private boolean enabled;
 
-    public int interval;
-    public boolean random;
+    private int interval;
+    
+    private boolean random;
+    
     public List<String> messages = new ArrayList<>();
+    
     public int currentMessageIdx;
 
-    public AutoMessage()
+    public TimedMessageHandler()
     {
         instance = this;
+        ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_CATEGORY, this);
     }
 
-    public static AutoMessage getInstance()
+    public static TimedMessageHandler getInstance()
     {
         return instance;
     }
@@ -85,7 +92,7 @@ public class AutoMessage extends ConfigLoaderBase implements Runnable
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        config.addCustomCategoryComment(CATEGORY, "Automated spamm");
+        config.addCustomCategoryComment(CATEGORY, "Automated spam");
         enabled = config.get(CATEGORY, "enable", false).getBoolean(true);
         random = config.get(CATEGORY, "random", false).getBoolean(false);
         interval = config.get(CATEGORY, "inverval", 60, "Interval in seconds").getInt();

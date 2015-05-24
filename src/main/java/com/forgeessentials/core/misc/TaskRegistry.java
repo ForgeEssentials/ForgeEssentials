@@ -16,21 +16,6 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 public class TaskRegistry extends ServerEventHandler
 {
 
-    private static TaskRegistry instance;
-
-    public TaskRegistry()
-    {
-        super();
-        instance = this;
-    }
-
-    public static TaskRegistry getInstance()
-    {
-        return instance;
-    }
-
-    /* ------------------------------------------------------------ */
-
     public static interface ITickTask
     {
 
@@ -44,9 +29,39 @@ public class TaskRegistry extends ServerEventHandler
 
     }
     
-    protected ConcurrentLinkedQueue<ITickTask> tickTasks = new ConcurrentLinkedQueue<>();
+    private static TaskRegistry instance;
 
     public static int MAX_BLOCK_TASKS = 6;
+    
+    protected ConcurrentLinkedQueue<ITickTask> tickTasks = new ConcurrentLinkedQueue<>();
+
+    private Timer timer = new Timer();
+
+    private Map<Runnable, TimerTask> runnableTasks = new HashMap<>();
+
+    /* ------------------------------------------------------------ */
+
+    public TaskRegistry()
+    {
+        super();
+        instance = this;
+    }
+
+    public static TaskRegistry getInstance()
+    {
+        return instance;
+    }
+
+    @SubscribeEvent
+    public void onServerStop(FEModuleServerStopEvent event)
+    {
+        tickTasks.clear();
+        runnableTasks.clear();
+        timer.cancel();
+        timer = new Timer(true);
+    }
+
+    /* ------------------------------------------------------------ */
 
     public void schedule(ITickTask task)
     {
@@ -84,18 +99,6 @@ public class TaskRegistry extends ServerEventHandler
 
     /* ------------------------------------------------------------ */
     /* Timers */
-
-    private Timer timer = new Timer();
-
-    private Map<Runnable, TimerTask> runnableTasks = new HashMap<>();
-
-    @SubscribeEvent
-    public void onServerStop(FEModuleServerStopEvent event)
-    {
-        timer.cancel();
-        runnableTasks.clear();
-        timer = new Timer(true);
-    }
 
     public void schedule(TimerTask task, long time)
     {

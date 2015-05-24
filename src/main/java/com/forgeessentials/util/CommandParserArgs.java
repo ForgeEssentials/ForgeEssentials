@@ -266,4 +266,9 @@ public class CommandParserArgs
             throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
+    public String[] toArray()
+    {
+        return args.toArray(new String[args.size()]);
+    }
+
 }
