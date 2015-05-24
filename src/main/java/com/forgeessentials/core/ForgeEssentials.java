@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -158,6 +159,11 @@ public class ForgeEssentials extends ConfigLoaderBase
                 return null;
             }
         }, Packet0Handshake.class, 0, Side.SERVER);
+
+        if (!Loader.isModLoaded("ForgeEssentialsClient"))
+        {
+            NetworkUtils.initServerNullHandlers();
+        }
 
         // Misc
         miscEventHandler = new MiscEventHandler();

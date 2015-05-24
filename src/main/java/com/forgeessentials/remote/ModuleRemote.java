@@ -36,7 +36,6 @@ import com.google.gson.Gson;
 
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager

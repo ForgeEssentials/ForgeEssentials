@@ -9,6 +9,7 @@ import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.Packet5Noclip;
 import com.forgeessentials.commons.network.Packet6Speed;
 import com.forgeessentials.commons.network.Packet7Remote;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -66,6 +67,11 @@ public class ClientProxy extends DummyProxy
         netHandler.registerMessage(C5HandlerNoclip.class, Packet5Noclip.class, 5, Side.CLIENT);
         netHandler.registerMessage(C6HandlerSpeed.class, Packet6Speed.class, 6, Side.CLIENT);
         netHandler.registerMessage(C7HandlerRemote.class, Packet7Remote.class, 7, Side.CLIENT);
+
+        if (!Loader.isModLoaded("ForgeEssentials"))
+        {
+            NetworkUtils.initClientNullHandlers();
+        }
     }
 
     @Override
