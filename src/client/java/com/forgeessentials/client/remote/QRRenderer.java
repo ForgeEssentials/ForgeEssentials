@@ -32,6 +32,7 @@ public class QRRenderer
             mc.renderEngine.bindTexture(qrCode);
             GL11.glPushMatrix();
             GL11.glScalef(0.5F, 0.5F, 0);
+            GL11.glColor4f(1, 1, 1, 1);
             mc.currentScreen.drawTexturedModalRect(0, 0, 0, 0, 256, 256);
             GL11.glPopMatrix();
         }
