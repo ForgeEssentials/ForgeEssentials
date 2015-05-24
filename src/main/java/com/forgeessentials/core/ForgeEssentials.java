@@ -178,8 +178,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void load(FMLInitializationEvent e)
     {
-        NetworkUtils.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
-        
         FMLCommonHandler.instance().bus().register(this);
 
         Translator.load();

@@ -54,7 +54,6 @@ public class ClientProxy extends DummyProxy
             config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));
             config.init();
         }
-        netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
         netHandler.registerMessage(new IMessageHandler<Packet0Handshake, IMessage>()
         {
             @Override
