@@ -48,17 +48,19 @@ public class ClientProxy extends DummyProxy
             config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));
             config.init();
         }
+        
         netHandler.registerMessage(C0PacketHandshake.class, C0PacketHandshake.class, 0, Side.SERVER);
-        netHandler.registerMessage(C1PacketSelectionUpdate.class, C1PacketSelectionUpdate.class, 1, Side.CLIENT);
-        netHandler.registerMessage(C4PacketEconomy.class, C4PacketEconomy.class, 4, Side.CLIENT);
-        netHandler.registerMessage(C5PacketNoclip.class, C5PacketNoclip.class, 5, Side.CLIENT);
-        netHandler.registerMessage(C6PacketSpeed.class, C6PacketSpeed.class, 6, Side.CLIENT);
-        netHandler.registerMessage(C7PacketRemote.class, C7PacketRemote.class, 7, Side.CLIENT);
     }
 
     @Override
     public void load(FMLInitializationEvent e)
     {
+        netHandler.registerMessage(C1PacketSelectionUpdate.class, C1PacketSelectionUpdate.class, 1, Side.CLIENT);
+        netHandler.registerMessage(C4PacketEconomy.class, C4PacketEconomy.class, 4, Side.CLIENT);
+        netHandler.registerMessage(C5PacketNoclip.class, C5PacketNoclip.class, 5, Side.CLIENT);
+        netHandler.registerMessage(C6PacketSpeed.class, C6PacketSpeed.class, 6, Side.CLIENT);
+        netHandler.registerMessage(C7PacketRemote.class, C7PacketRemote.class, 7, Side.CLIENT);
+        
         super.load(e);
         FMLCommonHandler.instance().bus().register(this);
         if (ForgeEssentialsClient.allowCUI)

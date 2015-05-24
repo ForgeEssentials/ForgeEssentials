@@ -145,7 +145,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         tasks = new TaskRegistry();
 
         // Load network packages
-        NetworkUtils.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
         NetworkUtils.netHandler.registerMessage(S1PacketSelectionUpdate.class, S1PacketSelectionUpdate.class, 1, Side.CLIENT);
 
         // Misc
@@ -159,6 +158,8 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void load(FMLInitializationEvent e)
     {
+        NetworkUtils.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
+        
         FMLCommonHandler.instance().bus().register(this);
 
         Translator.load();
