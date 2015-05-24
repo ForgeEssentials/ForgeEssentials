@@ -35,18 +35,8 @@ public class C7PacketRemote implements IMessageHandler<C7PacketRemote, IMessage>
     @Override
     public void fromBytes(ByteBuf buf)
     {
-        byte[] bytes;
-        int length = buf.readableBytes();
-
-        if (buf.hasArray())
-        {
-            bytes = buf.array();
-        }
-        else
-        {
-            bytes = new byte[length];
-            buf.getBytes(buf.readerIndex(), bytes);
-        }
+        byte[] bytes = new byte[buf.readableBytes()];
+        buf.getBytes(buf.readerIndex(), bytes);
         String link = new String(bytes);
         try
         {
