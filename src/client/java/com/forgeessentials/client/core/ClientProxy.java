@@ -1,21 +1,26 @@
 package com.forgeessentials.client.core;
 
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
-import static com.forgeessentials.commons.NetworkUtils.netHandler;
+import static com.forgeessentials.commons.network.NetworkUtils.netHandler;
 
-import com.forgeessentials.commons.NetworkUtils;
+import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.Packet0Handshake;
+import com.forgeessentials.commons.network.Packet1SelectionUpdate;
+import com.forgeessentials.commons.network.Packet5Noclip;
+import com.forgeessentials.commons.network.Packet6Speed;
+import com.forgeessentials.commons.network.Packet7Remote;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.cui.CUIRenderrer;
-import com.forgeessentials.client.network.C0PacketHandshake;
-import com.forgeessentials.client.network.C1PacketSelectionUpdate;
-import com.forgeessentials.client.network.C4PacketEconomy;
-import com.forgeessentials.client.network.C5PacketNoclip;
-import com.forgeessentials.client.network.C6PacketSpeed;
-import com.forgeessentials.client.network.C7PacketRemote;
+import com.forgeessentials.client.network.C5HandlerNoclip;
+import com.forgeessentials.client.network.C6HandlerSpeed;
+import com.forgeessentials.client.network.C7HandlerRemote;
 import com.forgeessentials.client.remote.QRRenderer;
 import com.forgeessentials.client.util.DummyProxy;
 import com.forgeessentials.commons.VersionUtils;
@@ -51,12 +56,26 @@ public class ClientProxy extends DummyProxy
             config.init();
         }
         netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
-        netHandler.registerMessage(C0PacketHandshake.class, C0PacketHandshake.class, 0, Side.SERVER);
-        netHandler.registerMessage(C1PacketSelectionUpdate.class, C1PacketSelectionUpdate.class, 1, Side.CLIENT);
-        netHandler.registerMessage(C4PacketEconomy.class, C4PacketEconomy.class, 4, Side.CLIENT);
-        netHandler.registerMessage(C5PacketNoclip.class, C5PacketNoclip.class, 5, Side.CLIENT);
-        netHandler.registerMessage(C6PacketSpeed.class, C6PacketSpeed.class, 6, Side.CLIENT);
-        netHandler.registerMessage(C7PacketRemote.class, C7PacketRemote.class, 7, Side.CLIENT);
+        netHandler.registerMessage(new IMessageHandler<Packet0Handshake, IMessage>()
+        {
+            @Override
+            public IMessage onMessage(Packet0Handshake message, MessageContext ctx)
+            {
+                return null;
+            }
+        }, Packet0Handshake.class, 0, Side.SERVER);
+        netHandler.registerMessage(new IMessageHandler<Packet1SelectionUpdate, IMessage>()
+        {
+            @Override
+            public IMessage onMessage(Packet1SelectionUpdate message, MessageContext ctx)
+            {
+                setSelection(message.getSelection());
+                return null;
+            }
+        }, Packet1SelectionUpdate.class, 1, Side.CLIENT);
+        netHandler.registerMessage(C5HandlerNoclip.class, Packet5Noclip.class, 5, Side.CLIENT);
+        netHandler.registerMessage(C6HandlerSpeed.class, Packet6Speed.class, 6, Side.CLIENT);
+        netHandler.registerMessage(C7HandlerRemote.class, Packet7Remote.class, 7, Side.CLIENT);
     }
 
     @Override
@@ -92,7 +111,7 @@ public class ClientProxy extends DummyProxy
         if (ForgeEssentialsClient.instance.serverHasFE)
         {
             System.out.println("Dispatching FE handshake packet");
-            NetworkUtils.netHandler.sendToServer(new C0PacketHandshake());
+            NetworkUtils.netHandler.sendToServer(new Packet0Handshake());
         }
     }
 

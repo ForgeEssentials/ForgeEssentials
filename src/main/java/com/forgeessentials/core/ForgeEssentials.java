@@ -2,13 +2,18 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
+import com.forgeessentials.commons.network.Packet0Handshake;
+import com.forgeessentials.commons.network.Packet1SelectionUpdate;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.NetworkUtils;
+import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -24,8 +29,6 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.core.network.S0PacketHandshake;
-import com.forgeessentials.core.network.S1PacketSelectionUpdate;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
@@ -145,8 +148,24 @@ public class ForgeEssentials extends ConfigLoaderBase
         tasks = new TaskRegistry();
 
         // Load network packages
-        NetworkUtils.netHandler.registerMessage(S0PacketHandshake.class, S0PacketHandshake.class, 0, Side.SERVER);
-        NetworkUtils.netHandler.registerMessage(S1PacketSelectionUpdate.class, S1PacketSelectionUpdate.class, 1, Side.CLIENT);
+        NetworkUtils.netHandler.registerMessage(new IMessageHandler<Packet0Handshake, IMessage>()
+        {
+            @Override
+            public IMessage onMessage(Packet0Handshake message, MessageContext ctx)
+            {
+                System.out.println("Received handshake packet");
+                PlayerInfo.getPlayerInfo(ctx.getServerHandler().playerEntity).setHasFEClient(true);
+                return null;
+            }
+        }, Packet0Handshake.class, 0, Side.SERVER);
+        NetworkUtils.netHandler.registerMessage(new IMessageHandler<Packet1SelectionUpdate, IMessage>()
+        {
+            @Override
+            public IMessage onMessage(Packet1SelectionUpdate message, MessageContext ctx)
+            {
+                return null;
+            }
+        }, Packet1SelectionUpdate.class, 1, Side.CLIENT);
 
         // Misc
         miscEventHandler = new MiscEventHandler();

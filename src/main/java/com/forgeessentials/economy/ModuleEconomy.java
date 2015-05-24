@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import com.forgeessentials.commons.NetworkUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -35,12 +34,10 @@ import com.forgeessentials.economy.commands.CommandSell;
 import com.forgeessentials.economy.commands.CommandSellCommand;
 import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
-import com.forgeessentials.economy.network.S4PacketEconomy;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -86,12 +83,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, IConfi
 
     /* ------------------------------------------------------------ */
     /* Module events */
-
-    @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
-    {
-        NetworkUtils.netHandler.registerMessage(S4PacketEconomy.class, S4PacketEconomy.class, 4, Side.CLIENT);
-    }
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)

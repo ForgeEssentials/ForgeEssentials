@@ -1,4 +1,4 @@
-package com.forgeessentials.commons;
+package com.forgeessentials.commons.network;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;

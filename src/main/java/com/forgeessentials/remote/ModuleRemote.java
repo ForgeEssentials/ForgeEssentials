@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import com.forgeessentials.commons.network.Packet7Remote;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -20,14 +24,13 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
-import com.forgeessentials.commons.NetworkUtils;
+import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
-import com.forgeessentials.remote.network.S7PacketRemote;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -390,7 +393,14 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
-        NetworkUtils.netHandler.registerMessage(S7PacketRemote.class, S7PacketRemote.class, 7, Side.CLIENT);
+        NetworkUtils.netHandler.registerMessage(new IMessageHandler<Packet7Remote, IMessage>()
+        {
+            @Override
+            public IMessage onMessage(Packet7Remote message, MessageContext ctx)
+            {
+                return null;
+            }
+        }, Packet7Remote.class, 7, Side.CLIENT);
     }
 
 }

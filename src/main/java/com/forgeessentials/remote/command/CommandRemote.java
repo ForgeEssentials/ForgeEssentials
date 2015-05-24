@@ -2,6 +2,7 @@ package com.forgeessentials.remote.command;
 
 import java.util.List;
 
+import com.forgeessentials.commons.network.Packet7Remote;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
@@ -14,12 +15,11 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.remote.RemoteSession;
-import com.forgeessentials.commons.NetworkUtils;
+import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
-import com.forgeessentials.remote.network.S7PacketRemote;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 
@@ -149,7 +149,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
                 {
                     String connectString = ModuleRemote.getInstance().getConnectString(ident);
                     String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-                    NetworkUtils.netHandler.sendTo(new S7PacketRemote(url), ident.getPlayerMP());
+                    NetworkUtils.netHandler.sendTo(new Packet7Remote(url), ident.getPlayerMP());
                 }
                 return;
             }
