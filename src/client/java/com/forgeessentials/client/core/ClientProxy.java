@@ -54,14 +54,6 @@ public class ClientProxy extends DummyProxy
             config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));
             config.init();
         }
-        netHandler.registerMessage(new IMessageHandler<Packet0Handshake, IMessage>()
-        {
-            @Override
-            public IMessage onMessage(Packet0Handshake message, MessageContext ctx)
-            {
-                return null;
-            }
-        }, Packet0Handshake.class, 0, Side.SERVER);
         netHandler.registerMessage(new IMessageHandler<Packet1SelectionUpdate, IMessage>()
         {
             @Override

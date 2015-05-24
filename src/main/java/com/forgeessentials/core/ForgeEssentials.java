@@ -158,14 +158,6 @@ public class ForgeEssentials extends ConfigLoaderBase
                 return null;
             }
         }, Packet0Handshake.class, 0, Side.SERVER);
-        NetworkUtils.netHandler.registerMessage(new IMessageHandler<Packet1SelectionUpdate, IMessage>()
-        {
-            @Override
-            public IMessage onMessage(Packet1SelectionUpdate message, MessageContext ctx)
-            {
-                return null;
-            }
-        }, Packet1SelectionUpdate.class, 1, Side.CLIENT);
 
         // Misc
         miscEventHandler = new MiscEventHandler();

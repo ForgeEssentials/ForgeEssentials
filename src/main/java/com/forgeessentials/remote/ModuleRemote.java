@@ -11,10 +11,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import com.forgeessentials.commons.network.Packet7Remote;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -33,7 +30,6 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.google.gson.Gson;
@@ -388,19 +384,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     public static ModuleRemote getInstance()
     {
         return instance;
-    }
-
-    @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
-    {
-        NetworkUtils.netHandler.registerMessage(new IMessageHandler<Packet7Remote, IMessage>()
-        {
-            @Override
-            public IMessage onMessage(Packet7Remote message, MessageContext ctx)
-            {
-                return null;
-            }
-        }, Packet7Remote.class, 7, Side.CLIENT);
     }
 
 }

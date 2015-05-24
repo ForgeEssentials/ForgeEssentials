@@ -40,23 +40,6 @@ public class ModuleCommands {
         MobTypeLoader.preLoad((FMLPreInitializationEvent)e.getFMLEvent());
         MinecraftForge.EVENT_BUS.register(eventHandler);
         FMLCommonHandler.instance().bus().register(eventHandler);
-        NetworkUtils.netHandler.registerMessage(new IMessageHandler<Packet5Noclip, IMessage>()
-        {
-
-            @Override
-            public IMessage onMessage(Packet5Noclip message, MessageContext ctx)
-            {
-                return null;
-            }
-        }, Packet5Noclip.class, 5, Side.CLIENT);
-        NetworkUtils.netHandler.registerMessage(new IMessageHandler<Packet6Speed, IMessage>()
-        {
-            @Override
-            public IMessage onMessage(Packet6Speed message, MessageContext ctx)
-            {
-                return null;
-            }
-        }, Packet6Speed.class, 6, Side.CLIENT);
         LoginMessage.loadFile();
     }
 
