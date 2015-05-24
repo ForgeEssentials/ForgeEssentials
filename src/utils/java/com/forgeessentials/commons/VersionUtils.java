@@ -10,7 +10,7 @@ public class VersionUtils
 
     public static VersionUtils INSTANCE;
 
-    public static final String FEVERSION = "1.4.0-beta7";
+    public static final String FEVERSION = "1.4.0-beta8";
 
     private File source;
 
