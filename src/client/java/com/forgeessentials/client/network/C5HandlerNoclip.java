@@ -1,5 +1,6 @@
 package com.forgeessentials.client.network;
 
+import com.forgeessentials.commons.network.Packet5Noclip;
 import io.netty.buffer.ByteBuf;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -8,21 +9,13 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
-public class C5PacketNoclip implements IMessageHandler<C5PacketNoclip, IMessage>, IMessage
+public class C5HandlerNoclip implements IMessageHandler<Packet5Noclip, IMessage>
 {
 
     @Override
-    public void fromBytes(ByteBuf buf)
+    public IMessage onMessage(Packet5Noclip message, MessageContext ctx)
     {
-        FMLClientHandler.instance().getClientPlayerEntity().noClip = buf.readBoolean();
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf){}
-
-    @Override
-    public IMessage onMessage(C5PacketNoclip message, MessageContext ctx)
-    {
+        FMLClientHandler.instance().getClientPlayerEntity().noClip = message.getNoclip();
         ChatComponentText cmsg = new ChatComponentText("NoClip " + (FMLClientHandler.instance().getClientPlayerEntity().noClip ? "enabled." : "disabled."));
         cmsg.getChatStyle().setColor(EnumChatFormatting.AQUA);
         FMLClientHandler.instance().getClientPlayerEntity().addChatMessage(cmsg);

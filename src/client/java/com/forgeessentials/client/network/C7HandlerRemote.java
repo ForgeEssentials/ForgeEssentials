@@ -1,5 +1,6 @@
 package com.forgeessentials.client.network;
 
+import com.forgeessentials.commons.network.Packet7Remote;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
@@ -19,28 +20,15 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class C7PacketRemote implements IMessageHandler<C7PacketRemote, IMessage>, IMessage
+public class C7HandlerRemote implements IMessageHandler<Packet7Remote, IMessage>
 {
 
     @Override
-    public IMessage onMessage(C7PacketRemote message, MessageContext ctx)
+    public IMessage onMessage(Packet7Remote message, MessageContext ctx)
     {
-        return null;
-    }
-
-    public C7PacketRemote()
-    {
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        byte[] bytes = new byte[buf.readableBytes()];
-        buf.getBytes(buf.readerIndex(), bytes);
-        String link = new String(bytes);
         try
         {
-            DynamicTexture qrCode = new DynamicTexture(ImageIO.read(new URL(link)));
+            DynamicTexture qrCode = new DynamicTexture(ImageIO.read(new URL(message.link)));
             ClientProxy.setQRCode(Minecraft.getMinecraft().renderEngine.getDynamicTextureLocation("qr_code", qrCode));
         }
         catch (IOException e)
@@ -50,11 +38,7 @@ public class C7PacketRemote implements IMessageHandler<C7PacketRemote, IMessage>
             FMLClientHandler.instance().getClientPlayerEntity().addChatMessage(cmsg);
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
+        return null;
     }
 
 }

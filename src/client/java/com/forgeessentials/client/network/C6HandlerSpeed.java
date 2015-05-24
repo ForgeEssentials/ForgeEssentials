@@ -1,5 +1,6 @@
 package com.forgeessentials.client.network;
 
+import com.forgeessentials.commons.network.Packet6Speed;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -8,12 +9,13 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
-public class C6PacketSpeed implements IMessage, IMessageHandler<C6PacketSpeed, IMessage>
+public class C6HandlerSpeed implements IMessageHandler<Packet6Speed, IMessage>
 {
+
     @Override
-    public void fromBytes(ByteBuf buf)
+    public IMessage onMessage(Packet6Speed message, MessageContext ctx)
     {
-        float speed = buf.readFloat();
+        float speed = message.getSpeed();
 
         // special reset code
         if (speed == 0.0F)
@@ -21,22 +23,14 @@ public class C6PacketSpeed implements IMessage, IMessageHandler<C6PacketSpeed, I
             FMLClientHandler.instance().getClientPlayerEntity().capabilities.setPlayerWalkSpeed(0.05F);
             FMLClientHandler.instance().getClientPlayerEntity().capabilities.setFlySpeed(0.1F);
             FMLClientHandler.instance().getClientPlayerEntity().sendPlayerAbilities();
-            return;
         }
-        FMLClientHandler.instance().getClientPlayerEntity().capabilities.setPlayerWalkSpeed(speed);
-        FMLClientHandler.instance().getClientPlayerEntity().capabilities.setFlySpeed(speed);
-        FMLClientHandler.instance().getClientPlayerEntity().sendPlayerAbilities();
-    }
+        else
+        {
+            FMLClientHandler.instance().getClientPlayerEntity().capabilities.setPlayerWalkSpeed(speed);
+            FMLClientHandler.instance().getClientPlayerEntity().capabilities.setFlySpeed(speed);
+            FMLClientHandler.instance().getClientPlayerEntity().sendPlayerAbilities();
+        }
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-
-    }
-
-    @Override
-    public IMessage onMessage(C6PacketSpeed message, MessageContext ctx)
-    {
         ChatComponentText cmsg = new ChatComponentText("Walk/fly speed set to" + FMLClientHandler.instance().getClientPlayerEntity().capabilities.getWalkSpeed());
         cmsg.getChatStyle().setColor(EnumChatFormatting.AQUA);
         FMLClientHandler.instance().getClientPlayerEntity().addChatMessage(cmsg);
