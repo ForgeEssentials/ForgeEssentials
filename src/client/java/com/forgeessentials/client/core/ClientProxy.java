@@ -2,8 +2,6 @@ package com.forgeessentials.client.core;
 
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 import static com.forgeessentials.commons.NetworkUtils.netHandler;
-
-import com.forgeessentials.commons.NetworkUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -18,6 +16,7 @@ import com.forgeessentials.client.network.C6PacketSpeed;
 import com.forgeessentials.client.network.C7PacketRemote;
 import com.forgeessentials.client.remote.QRRenderer;
 import com.forgeessentials.client.util.DummyProxy;
+import com.forgeessentials.commons.NetworkUtils;
 import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.commons.selections.Selection;
 
@@ -27,7 +26,6 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends DummyProxy
@@ -50,7 +48,6 @@ public class ClientProxy extends DummyProxy
             config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));
             config.init();
         }
-        netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
         netHandler.registerMessage(C0PacketHandshake.class, C0PacketHandshake.class, 0, Side.SERVER);
         netHandler.registerMessage(C1PacketSelectionUpdate.class, C1PacketSelectionUpdate.class, 1, Side.CLIENT);
         netHandler.registerMessage(C4PacketEconomy.class, C4PacketEconomy.class, 4, Side.CLIENT);
