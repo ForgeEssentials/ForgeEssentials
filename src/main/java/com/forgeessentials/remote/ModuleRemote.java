@@ -20,25 +20,31 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
+import com.forgeessentials.commons.NetworkUtils;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
+import com.forgeessentials.remote.network.S7PacketRemote;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.google.gson.Gson;
 
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
-public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
+public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
+{
 
-    public static class PasskeyMap extends HashMap<UserIdent, String> {
+    public static class PasskeyMap extends HashMap<UserIdent, String>
+    {
         private static final long serialVersionUID = -8268113844467318789L; /* default */
     };
 
@@ -86,6 +92,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     protected boolean useSSL;
 
     protected Server server;
+
+    protected String ip = null;
 
     protected Map<String, RemoteHandler> handlers = new HashMap<>();
 
@@ -164,6 +172,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
         useSSL = config.get(CONFIG_CAT, "use_ssl", false,
                 "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
         passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6, "Length of the randomly generated passkeys").getInt();
+        ip = config.get(CONFIG_CAT, "ip", "", "Server ip or domain name to include in qr code.").getString();
+
     }
 
     /* ------------------------------------------------------------ */
@@ -238,7 +248,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     public void registerHandler(RemoteHandler handler, String id)
     {
         if (handlers.containsKey(id))
-            throw new IllegalArgumentException(Translator.format("Tried to register handler \"%s\" with ID \"%s\", but handler \"%s\" is already registered with that ID.", handler.getClass().getName(), id, handlers.get(id).getClass().getName()));
+            throw new IllegalArgumentException(Translator.format(
+                    "Tried to register handler \"%s\" with ID \"%s\", but handler \"%s\" is already registered with that ID.", handler.getClass().getName(),
+                    id, handlers.get(id).getClass().getName()));
 
         handlers.put(id, handler);
         String perm = handler.getPermission();
@@ -363,7 +375,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     {
         if (!userIdent.hasUUID())
             return null;
-        return userIdent.getUuid().toString() + "@" + (useSSL ? "ssl:" : "") + getHostName() + ":" + port + "|" + getPasskey(userIdent);
+        return userIdent.getUuid().toString() + "@" + (useSSL ? "ssl:" : "") + (ip != null && !ip.isEmpty() ? ip : getHostName()) + ":" + port + "|"
+                + getPasskey(userIdent);
     }
 
     /**
@@ -372,6 +385,12 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager {
     public static ModuleRemote getInstance()
     {
         return instance;
+    }
+
+    @SubscribeEvent
+    public void preLoad(FEModulePreInitEvent e)
+    {
+        NetworkUtils.netHandler.registerMessage(S7PacketRemote.class, S7PacketRemote.class, 7, Side.CLIENT);
     }
 
 }
