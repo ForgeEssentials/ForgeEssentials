@@ -375,9 +375,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
             return;
         }
         AreaBase area = zone.getArea();
+        SelectionHandler.selectionProvider.setDimension(player, worldZone.getDimensionID());
         SelectionHandler.selectionProvider.setStart(player, area.getLowPoint());
         SelectionHandler.selectionProvider.setEnd(player, area.getHighPoint());
-        SelectionHandler.selectionProvider.setDimension(player, worldZone.getDimensionID());
         SelectionHandler.sendUpdate(player);
         OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been selected.", zoneName));
     }
