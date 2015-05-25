@@ -491,16 +491,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void playerMoveEvent(PlayerMoveEvent e)
     {
-        // Abort processing, if the event has already been cancelled
-        if (!e.isCanceled())
+        Zone before = APIRegistry.perms.getServerZone().getZonesAt(e.before.toWorldPoint()).get(0);
+        Zone after = APIRegistry.perms.getServerZone().getZonesAt(e.after.toWorldPoint()).get(0);
+        if (!before.equals(after))
         {
-            Zone before = APIRegistry.perms.getServerZone().getZonesAt(e.before.toWorldPoint()).get(0);
-            Zone after = APIRegistry.perms.getServerZone().getZonesAt(e.after.toWorldPoint()).get(0);
-            if (!before.equals(after))
-            {
-                PlayerChangedZone event = new PlayerChangedZone(e.entityPlayer, before, after, e.before, e.after);
-                e.setCanceled(MinecraftForge.EVENT_BUS.post(event));
-            }
+            PlayerChangedZone event = new PlayerChangedZone(e.entityPlayer, before, after, e.before, e.after);
+            e.setCanceled(MinecraftForge.EVENT_BUS.post(event));
         }
     }
 

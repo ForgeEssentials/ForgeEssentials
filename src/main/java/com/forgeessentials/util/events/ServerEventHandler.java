@@ -25,7 +25,7 @@ public class ServerEventHandler {
             register();
     }
 
-    private void register()
+    protected void register()
     {
         if (registered) return;
         registered = true;
@@ -33,7 +33,7 @@ public class ServerEventHandler {
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    private void unregister()
+    protected void unregister()
     {
         if (registered)
         {

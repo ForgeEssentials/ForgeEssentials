@@ -23,16 +23,19 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Commands", parentMod = ForgeEssentials.class)
-public class ModuleCommands {
-    
-    public static CommandsEventHandler eventHandler = new CommandsEventHandler();
+public class ModuleCommands
+{
+
+    public static CommandsEventHandler oldEventHandler = new CommandsEventHandler();
+
+    public static ModuleCommandsEventHandler eventHandler = new ModuleCommandsEventHandler();
 
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
-        MobTypeLoader.preLoad((FMLPreInitializationEvent)e.getFMLEvent());
-        MinecraftForge.EVENT_BUS.register(eventHandler);
-        FMLCommonHandler.instance().bus().register(eventHandler);
+        MobTypeLoader.preLoad((FMLPreInitializationEvent) e.getFMLEvent());
+        MinecraftForge.EVENT_BUS.register(oldEventHandler);
+        FMLCommonHandler.instance().bus().register(oldEventHandler);
         LoginMessage.loadFile();
     }
 
@@ -45,8 +48,9 @@ public class ModuleCommands {
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-    	CommandRegistrar.registerCommands(e);
+        CommandRegistrar.registerCommands(e);
         CommandDataManager.load();
+
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
         APIRegistry.perms.registerPermission("fe.commands" + Zone.ALL_PERMS, RegisteredPermValue.OP);
     }

@@ -1,8 +1,5 @@
 package com.forgeessentials.commands.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -29,9 +26,6 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class CommandsEventHandler {
     
-    public static List<AFKdata> afkList = new ArrayList<AFKdata>();
-    public static List<AFKdata> afkListToAdd = new ArrayList<AFKdata>();
-    public static List<AFKdata> afkListToRemove = new ArrayList<AFKdata>();
     public static HashMultimap<EntityPlayer, PlayerInvChest> map = HashMultimap.create();
 
     public static int getWorldHour(World world)
@@ -179,29 +173,6 @@ public class CommandsEventHandler {
                     }
                 }
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void doServerTick(TickEvent.ServerTickEvent e)
-    {
-        /*
-         * AFK system
-         */
-        try
-        {
-            afkList.addAll(afkListToAdd);
-            afkListToAdd.clear();
-            for (AFKdata data : afkList)
-            {
-                data.count();
-            }
-            afkList.removeAll(afkListToRemove);
-            afkListToRemove.clear();
-        }
-        catch (Exception e1)
-        {
-            e1.printStackTrace();
         }
     }
 

@@ -1,6 +1,7 @@
 package com.forgeessentials.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -152,6 +153,11 @@ public class PlayerInfo implements Loadable
         return get(ident.getUuid());
     }
 
+    public static Collection<PlayerInfo> getAll()
+    {
+        return playerInfoMap.values();
+    }
+
     public static boolean exists(UUID uuid)
     {
         if (playerInfoMap.containsKey(uuid))
@@ -208,6 +214,11 @@ public class PlayerInfo implements Loadable
     public void setActive()
     {
         lastActivity = System.currentTimeMillis();
+    }
+
+    public void setActive(long delta)
+    {
+        lastActivity = System.currentTimeMillis() - delta;
     }
 
     public long getInactiveTime()

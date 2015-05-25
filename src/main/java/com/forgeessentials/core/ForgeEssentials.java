@@ -99,7 +99,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public ModuleLauncher moduleLauncher;
 
     @SuppressWarnings("unused")
-    private TaskRegistry tasks;
+    private TaskRegistry tasks = new TaskRegistry();
 
     @SuppressWarnings("unused")
     private SelectionEventHandler wandHandler;
@@ -144,8 +144,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         configManager = new ConfigManager(FEDIR, "main");
         configManager.registerLoader(configManager.getMainConfigName(), this);
         configManager.registerLoader(configManager.getMainConfigName(), new OutputHandler());
-
-        tasks = new TaskRegistry();
 
         // Load network packages
         NetworkUtils.netHandler.registerMessage(new IMessageHandler<Packet0Handshake, IMessage>() {

@@ -1,47 +1,27 @@
 package com.forgeessentials.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commands.util.AFKdata;
-import com.forgeessentials.commands.util.CommandsEventHandler;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.FEPlayerEvent.PlayerAFKEvent;
+import com.forgeessentials.util.PlayerInfo;
 
-public class CommandAFK extends FEcmdModuleCommands {
-    public static CommandAFK instance;
-    public static List<UUID> afkList = new ArrayList<UUID>();
-    // Config
-    public static int warmup = 5;
-    public static String outMessage, inMessage, selfOutMessage, selfInMessage;
-    public final String NOTICEPERM = getPermissionNode() + ".notice";
+public class CommandAFK extends FEcmdModuleCommands
+{
 
-    public CommandAFK()
-    {
-        instance = this;
-    }
+    public static final String PERM = "fe.commands.afk";
 
-    @Override
-    public void loadConfig(Configuration config, String category)
-    {
-        warmup = config.get(category, "warmup", 5, "Time in sec. you have to stand still to activate AFK.").getInt();
-        String messages = category + ".messages";
-        outMessage = config.get(messages, "outMessage", "Player %s is now away").getString();
-        inMessage = config.get(messages, "inMessage", "Player %s is no longer away").getString();
-        selfOutMessage = config.get(messages, "selfOutMessage", "You are now away").getString();
-        selfInMessage = config.get(messages, "selfInMessage", "You are no longer away").getString();
-    }
+    public static final String PERM_ANNOUNCE = PERM + ".announce";
+
+    public static final String PERM_WARMUP = PERM + ".warmup";
+
+    public static final String PERM_AUTOTIME = PERM + ".autotime";
 
     @Override
     public String getCommandName()
@@ -50,60 +30,9 @@ public class CommandAFK extends FEcmdModuleCommands {
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public String getCommandUsage(ICommandSender sender)
     {
-        CommandsEventHandler.afkListToAdd.add(new AFKdata(sender));
-        OutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    public void abort(AFKdata afkData)
-    {
-        if (!afkData.player.capabilities.isCreativeMode)
-        {
-            afkData.player.capabilities.disableDamage = false;
-        }
-        afkData.player.sendPlayerAbilities();
-        afkList.remove(afkData.player.getPersistentID());
-        CommandsEventHandler.afkListToRemove.add(afkData);
-
-        if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
-        {
-            OutputHandler.broadcast(new ChatComponentText(Translator.format(inMessage, afkData.player.getDisplayName())));
-        }
-        else
-        {
-            OutputHandler.chatConfirmation(afkData.player, selfInMessage);
-        }
-        APIRegistry.getFEEventBus().post(new PlayerAFKEvent(afkData.player, false));
-    }
-
-    public void makeAFK(AFKdata afkData)
-    {
-        afkData.player.capabilities.disableDamage = true;
-        afkData.player.sendPlayerAbilities();
-        afkList.add(afkData.player.getPersistentID());
-
-        if (PermissionsManager.checkPermission(afkData.player, NOTICEPERM))
-        {
-            OutputHandler.broadcast(new ChatComponentText(Translator.format(outMessage, afkData.player.getDisplayName())));
-        }
-        else
-        {
-            OutputHandler.chatConfirmation(afkData.player, selfOutMessage);
-        }
-        APIRegistry.getFEEventBus().post(new PlayerAFKEvent(afkData.player, true));
-    }
-
-    @Override
-    public void registerExtraPermissions()
-    {
-        APIRegistry.perms.registerPermission(NOTICEPERM, RegisteredPermValue.TRUE);
+        return "/afk: Mark yourself as away.";
     }
 
     @Override
@@ -113,8 +42,27 @@ public class CommandAFK extends FEcmdModuleCommands {
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public void registerExtraPermissions()
     {
-        return "/afk Mark yourself as away.";
+        APIRegistry.perms.registerPermission(PERM_ANNOUNCE, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermissionProperty(PERM_WARMUP, "10", "Time a player needs to wait before he can go afk with /afk");
+        APIRegistry.perms.registerPermissionProperty(PERM_AUTOTIME, "120", "Auto afk time in seconds");
     }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    {
+        UserIdent ident = UserIdent.get(sender);
+        int autoTime = FunctionHelper.parseIntDefault(ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
+        int warmup = FunctionHelper.parseIntDefault(ident.getPermissionProperty(PERM_WARMUP), 0);
+        PlayerInfo.get(sender).setActive(autoTime * 1000 - warmup * 1000);
+        OutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
+    }
+
 }
