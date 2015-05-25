@@ -78,6 +78,8 @@ public class ModuleChat
 
     public static final String PERM_COLOR = PERM + ".usecolor";
 
+    public static final String PERM_RANGE = PERM + ".range";
+
     // @formatter:off
     static final Pattern URL_PATTERN = Pattern.compile(
             //         schema                          ipv4            OR           namespace                 port     path         ends
@@ -240,9 +242,8 @@ public class ModuleChat
 
         APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
         APIRegistry.perms.registerPermission(PERM_CHAT, RegisteredPermValue.TRUE, "Allow players to use the public chat");
-
-        // APIRegistry.perms.registerPermission("fe.chat.usecolor", RegisteredPermValue.TRUE);
-        // APIRegistry.perms.registerPermission("fe.chat.nickname.others", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_COLOR, RegisteredPermValue.TRUE, "Allow players to use the public chat");
+        APIRegistry.perms.registerPermissionProperty(PERM_RANGE, "", "Send chat messages only to players in this range of the sender");
     }
 
     @SubscribeEvent
@@ -348,6 +349,19 @@ public class ModuleChat
         // Finish message with links
         IChatComponent messageComponent = filterChatLinks(message);
         event.component = new ChatComponentTranslation("%s%s", header, messageComponent);
+
+        // Handle chat range
+        Double range = FunctionHelper.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));
+        if (range != null)
+        {
+            WorldPoint source = new WorldPoint(event.player);
+            for (EntityPlayerMP player : FunctionHelper.getPlayerList())
+            {
+                if (player.dimension == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
+                    player.addChatMessage(event.component);
+            }
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

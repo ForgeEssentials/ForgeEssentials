@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -16,6 +17,10 @@ import com.forgeessentials.util.OutputHandler;
 
 public class CommandNickname extends ForgeEssentialsCommandBase
 {
+
+    public static final String PERM = ModuleChat.PERM + ".nickname";
+    
+    public static final String PERM_OTHERS = PERM + ".others";
 
     @Override
     public String getCommandName()
@@ -44,7 +49,13 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return "fe.chat." + getCommandName();
+        return PERM;
+    }
+
+    @Override
+    public void registerExtraPermissions()
+    {
+        APIRegistry.perms.registerPermission(PERM_OTHERS, RegisteredPermValue.OP);
     }
 
     @Override
@@ -71,7 +82,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
         }
         else if (args.length == 2)
         {
-            if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
+            if (!PermissionsManager.checkPermission(sender, PERM_OTHERS))
                 throw new TranslatedCommandException("You don't have permissions for that.");
 
             EntityPlayerMP player = getPlayer(sender, args[0]);

@@ -377,6 +377,11 @@ public class UserIdent
     {
         return APIRegistry.perms.checkUserPermission(this, permissionNode);
     }
+    
+    public String getPermissionProperty(String permissionNode)
+    {
+        return APIRegistry.perms.getUserPermissionProperty(this, permissionNode);
+    }
 
     /* ------------------------------------------------------------ */
 
