@@ -1,11 +1,7 @@
 package com.forgeessentials.chat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,17 +19,43 @@ public class Censor extends ConfigLoaderBase
 
     private static final String CONFIG_CATEGORY = "Chat.Censor";
 
-    private static final String[] DEFAULT_WORDS = new String[] { "fuck", "ass", "bitch", "shit" };
+    private static final String[] DEFAULT_WORDS = new String[] { "fuck.*", "bastard", "moron", "ass", "asshole", "bitch", "shit" };
 
-    public static List<String> bannedWords = new ArrayList<>();
+    private static final String CENSOR_HELP = "Words to be censored. Prepend with ! to disable word boundary check.";
 
-    public static Map<String, Pattern> bannedPatterns = new HashMap<>();
+    private List<CensoredWord> filterList = new ArrayList<>();
 
     public boolean enabled;
 
     public String censorSymbol;
 
     public int censorSlap;
+
+    public class CensoredWord
+    {
+
+        public String word;
+
+        public String blank;
+
+        public Pattern pattern;
+
+        public CensoredWord(String word)
+        {
+            if (word.startsWith("!"))
+            {
+                blank = Strings.repeat(censorSymbol, word.length() - 1);
+                word = word.substring(1);
+            }
+            else
+            {
+                blank = Strings.repeat(censorSymbol, word.length());
+                word = "\\b" + word + "\\b";
+            }
+            pattern = Pattern.compile(word, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.MULTILINE);
+        }
+
+    }
 
     public Censor()
     {
@@ -44,8 +66,6 @@ public class Censor extends ConfigLoaderBase
     public void load(Configuration config, boolean isReload)
     {
         enabled = config.get(CONFIG_CATEGORY, "enable", true).getBoolean(true);
-        bannedWords = new ArrayList<>(Arrays.asList(config.get(CONFIG_CATEGORY, "words", DEFAULT_WORDS,
-                "Words to be censored. Prepend with ! to disable word boundary check.").getStringList()));
         censorSlap = config.get(CONFIG_CATEGORY, "slapDamage", 1, "Damage to a player when he uses a censored word").getInt();
         censorSymbol = config.get(CONFIG_CATEGORY, "censorSymbol", "#", "Replace censored words with this character").getString();
         if (censorSymbol.length() > 1)
@@ -58,39 +78,20 @@ public class Censor extends ConfigLoaderBase
             OutputHandler.felog.warning("Censor symbol is empty!");
             censorSymbol = "#";
         }
-        buildPatterns();
-    }
-
-    public void buildPatterns()
-    {
-        bannedPatterns.clear();
-        for (String word : bannedWords)
-        {
-            String blank;
-            if (word.startsWith("!"))
-            {
-                blank = Strings.repeat(censorSymbol, word.length() - 1);
-                word = word.substring(1);
-            }
-            else
-            {
-                blank = Strings.repeat(censorSymbol, word.length());
-                word = "\\b" + word + "\\b";
-            }
-            bannedPatterns.put(blank, Pattern.compile(word, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.MULTILINE));
-        }
+        for (String word : config.get(CONFIG_CATEGORY, "words", DEFAULT_WORDS, CENSOR_HELP).getStringList())
+            filterList.add(new CensoredWord(word));
     }
 
     public String filter(EntityPlayerMP player, String message)
     {
         if (!enabled)
             return message;
-        for (Entry<String, Pattern> word : bannedPatterns.entrySet())
+        for (CensoredWord filter : filterList)
         {
-            Matcher m = word.getValue().matcher(message);
+            Matcher m = filter.pattern.matcher(message);
             if (m.find())
             {
-                message = m.replaceAll(word.getKey());
+                message = m.replaceAll(filter.blank);
                 if (censorSlap != 0)
                     player.attackEntityFrom(DamageSource.generic, censorSlap);
             }
