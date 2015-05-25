@@ -23,12 +23,8 @@ public class ClientConfig {
     public void init()
     {
         config.load();
-        config.addCustomCategoryComment(Configuration.CATEGORY_GENERAL, "Configure ForgeEssentials .");
-
-        Property prop = config.get(Configuration.CATEGORY_GENERAL, "allowCUI", true);
-        prop.comment = "Set to false to disable graphical selections.";
-        ForgeEssentialsClient.allowCUI = prop.getBoolean(true);
-        // any other parts please config here
+        config.addCustomCategoryComment(Configuration.CATEGORY_GENERAL, "Configure ForgeEssentials Client addon features.");
+        syncConfig();
         config.save();
     }
 
@@ -41,6 +37,7 @@ public class ClientConfig {
     public void syncConfig()
     {
         ForgeEssentialsClient.allowCUI = config.getBoolean("allowCUI", Configuration.CATEGORY_GENERAL, true, "Set to false to disable graphical selections.");
+        ForgeEssentialsClient.allowQRCodeRender = config.get(Configuration.CATEGORY_GENERAL, "allowQRCodeRender", true, "Set to false to disable QR code rendering when you enter /remote qr..").getBoolean(true);
 
     }
 }

@@ -29,6 +29,7 @@ public class ForgeEssentialsClient {
     public boolean serverHasFE;
 
     public static boolean allowCUI;
+    public static boolean allowQRCodeRender;
 
     @Instance("ForgeEssentialsClient")
     public static ForgeEssentialsClient instance;
