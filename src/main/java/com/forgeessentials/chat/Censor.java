@@ -64,7 +64,14 @@ public class Censor extends ConfigLoaderBase
     {
         bannedPatterns.clear();
         for (String word : bannedWords)
-            bannedPatterns.put(Strings.repeat(censorSymbol, word.length()), Pattern.compile("(?i)\\b" + word + "\\b"));
+        {
+            if (word.startsWith("!"))
+                word = word.substring(1);
+            else
+                word = "\\b" + word + "\\b";
+            bannedPatterns.put(Strings.repeat(censorSymbol, word.length()),
+                    Pattern.compile(word, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.MULTILINE));
+        }
     }
 
     public String filter(EntityPlayerMP player, String message)
