@@ -105,6 +105,7 @@ public class PlayerInfo implements Loadable
     {
         if (namedTimeout == null)
             namedTimeout = new HashMap<String, Date>();
+        lastActivity = System.currentTimeMillis();
     }
 
     /**

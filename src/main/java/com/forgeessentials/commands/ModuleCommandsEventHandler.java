@@ -7,6 +7,7 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -32,7 +33,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     public void register()
     {
         super.register();
-        TaskRegistry.getInstance().scheduleRepeated(this, 1000 * 1);
+        TaskRegistry.getInstance().scheduleRepeated(this, 1000 * 2);
     }
 
     @Override
@@ -90,11 +91,24 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         afkPlayers.remove(player.getUuid());
     }
 
+    public void playerActive(EntityPlayerMP player)
+    {
+        PlayerInfo pi = PlayerInfo.get(player);
+        pi.setActive();
+        clearAfk(pi.ident);
+    }
+
+    /* ------------------------------------------------------------ */
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerMoveEvent(PlayerMoveEvent event)
     {
-        if (event.before.distance(event.after) < 0.05)
-            return;
+        playerActive((EntityPlayerMP) event.entityPlayer);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerMoveEvent(PlayerInteractEvent event)
+    {
         playerActive((EntityPlayerMP) event.entityPlayer);
     }
 
@@ -117,13 +131,6 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     public void playerLogin(PlayerLoggedInEvent event)
     {
         afkPlayers.remove(event.player.getPersistentID());
-    }
-
-    public void playerActive(EntityPlayerMP player)
-    {
-        PlayerInfo pi = PlayerInfo.get(player);
-        pi.setActive();
-        clearAfk(pi.ident);
     }
 
 }
