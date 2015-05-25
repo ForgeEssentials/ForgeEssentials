@@ -194,8 +194,7 @@ public class LoginMessage {
     public static String getUptime()
     {
         RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-        int secsIn = (int) (rb.getUptime() / 1000);
-        return FunctionHelper.parseTime(secsIn);
+        return FunctionHelper.formatDateTimeReadable(rb.getUptime() / 1000, true);
     }
     
 }

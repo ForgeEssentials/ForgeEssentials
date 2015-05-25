@@ -13,7 +13,8 @@ import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
-public class Kit {
+public class Kit
+{
 
     private String name;
 
@@ -33,7 +34,7 @@ public class Kit {
             if (player.inventory.mainInventory[i] != null)
                 collapsedInventory.add(player.inventory.mainInventory[i]);
         items = collapsedInventory.toArray(new ItemStack[collapsedInventory.size()]);
-        
+
         armor = new ItemStack[player.inventory.armorInventory.length];
         for (int i = 0; i < 4; i++)
             if (player.inventory.armorInventory[i] != null)
@@ -70,14 +71,15 @@ public class Kit {
             long timeout = pi.getRemainingTimeout("KIT_" + name);
             if (timeout > 0)
             {
-                OutputHandler.chatWarning(player, Translator.format("Kit cooldown active, %s to go!", FunctionHelper.parseTime(timeout / 1000)));
+                OutputHandler.chatWarning(player,
+                        Translator.format("Kit cooldown active, %s to go!", FunctionHelper.formatDateTimeReadable(timeout / 1000, true)));
                 return;
             }
             pi.startTimeout("KIT_" + name, cooldown * 1000);
         }
 
         boolean couldNotGiveItems = false;
-        
+
         for (ItemStack stack : items)
             couldNotGiveItems |= !player.inventory.addItemStackToInventory(ItemStack.copyItemStack(stack));
 
@@ -87,7 +89,7 @@ public class Kit {
                     player.inventory.armorInventory[i] = armor[i];
                 else
                     couldNotGiveItems |= !player.inventory.addItemStackToInventory(ItemStack.copyItemStack(armor[i]));
-        
+
         if (couldNotGiveItems)
             OutputHandler.chatError(player, Translator.translate("Could not give some kit items."));
         OutputHandler.chatConfirmation(player, "Kit dropped.");

@@ -364,8 +364,7 @@ public final class ScriptArguments
         public String process(ICommandSender sender)
         {
             RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-            int secsIn = (int) (rb.getUptime() / 1000);
-            return FunctionHelper.parseTime(secsIn);
+            return FunctionHelper.formatDateTimeReadable(rb.getUptime() / 1000, true);
         }
 
         @Override

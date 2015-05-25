@@ -53,6 +53,7 @@ import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -107,6 +108,8 @@ public class ModuleChat
     public IrcHandler ircHandler;
 
     public TimedMessageHandler timedMessageHandler;
+
+    /* ------------------------------------------------------------ */
 
     @SubscribeEvent
     public void moduleLoad(FEModuleInitEvent e)
@@ -222,6 +225,20 @@ public class ModuleChat
             public Object getReplacement(EntityPlayerMP player)
             {
                 return APIRegistry.perms.getServerZone().getPlayerGroups(UserIdent.get(player)).first().getGroup();
+            }
+        });
+        chatReplacements.put("timeplayed", new ChatReplacer() {
+            @Override
+            public Object getReplacement(EntityPlayerMP player)
+            {
+                return FunctionHelper.formatDateTimeReadable(PlayerInfo.get(player).getTimePlayed() / 1000, true);
+            }
+        });
+        chatReplacements.put("lastlogin", new ChatReplacer() {
+            @Override
+            public Object getReplacement(EntityPlayerMP player)
+            {
+                return FunctionHelper.formatDateTimeReadable((new Date().getTime() - PlayerInfo.get(player).getLastLogin().getTime()) / 1000, true);
             }
         });
     }

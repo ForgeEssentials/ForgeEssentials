@@ -404,47 +404,63 @@ public final class FunctionHelper
 
     // ------------------------------------------------------------
 
+    public static final long SECOND = 1;
+    public static final long MINUTE = 60 * SECOND;
+    public static final long HOUR = 60 * MINUTE;
+    public static final long DAY = 24 * HOUR;
+    public static final long WEEK = 7 * DAY;
+
     /**
      * Gets a nice string with only needed elements. Max time is weeks
      *
-     * @param timeInSec
+     * @param time
      * @return Time in string format
      */
-    public static String parseTime(long timeInSec)
+    public static String formatDateTimeReadable(long time, boolean showSeconds)
     {
-        String uptime = "";
-        long weeks = timeInSec / (86400 * 7);
-        long remainder = timeInSec % (86400 * 7);
-        long days = remainder / 86400;
-        remainder = timeInSec % 86400;
-        long hours = remainder / 3600;
-        remainder = timeInSec % 3600;
-        long minutes = remainder / 60;
-        long seconds = remainder % 60;
+        long weeks = time / WEEK;
+        time -= WEEK * weeks;
+        long days = time / DAY;
+        time -= DAY * days;
+        long hours = time / HOUR;
+        time -= HOUR * hours;
+        long minutes = time / MINUTE;
+        time -= MINUTE * minutes;
+        long seconds = time / SECOND;
 
+        StringBuilder sb = new StringBuilder();
         if (weeks != 0)
-        {
-            uptime += weeks + " weeks ";
-        }
-
+            sb.append(String.format("%d weeks ", weeks));
         if (days != 0)
         {
-            uptime += (days < 10 ? "0" : "") + days + " days ";
+            if (sb.length() > 0)
+                sb.append(", ");
+            sb.append(String.format("%d days ", days));
         }
-
         if (hours != 0)
         {
-            uptime += (hours < 10 ? "0" : "") + hours + " h ";
+            if (sb.length() > 0)
+                sb.append(", ");
+            sb.append(String.format("%d hours ", hours));
         }
-
-        if (minutes != 0)
+        if (minutes != 0 || !showSeconds)
         {
-            uptime += (minutes < 10 ? "0" : "") + minutes + " minutes ";
+            if (sb.length() > 0)
+                if (!showSeconds)
+                    sb.append("and ");
+                else
+                    sb.append(", ");
+            sb.append(String.format("%d minutes ", minutes));
+        }
+        if (showSeconds)
+        {
+            if (sb.length() > 0)
+                sb.append("and ");
+            sb.append(String.format("%d seconds ", seconds));
         }
 
-        uptime += (seconds < 10 ? "0" : "") + seconds + " seconds";
-
-        return uptime;
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
     }
 
     /**

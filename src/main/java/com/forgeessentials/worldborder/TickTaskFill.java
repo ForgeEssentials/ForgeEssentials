@@ -33,7 +33,8 @@ import com.forgeessentials.util.OutputHandler;
  * @author gnif
  */
 
-public class TickTaskFill implements ITickTask {
+public class TickTaskFill implements ITickTask
+{
 
     public ICommandSender sender;
 
@@ -129,7 +130,7 @@ public class TickTaskFill implements ITickTask {
     {
         try
         {
-            return FunctionHelper.parseTime((int) (todo / speed / FunctionHelper.getTPS()));
+            return FunctionHelper.formatDateTimeReadable((int) (todo / speed / FunctionHelper.getTPS()), true);
         }
         catch (Exception e)
         {

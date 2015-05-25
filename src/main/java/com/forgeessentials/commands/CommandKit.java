@@ -100,7 +100,8 @@ public class CommandKit extends FEcmdModuleCommands
                     cooldown = parseIntWithMin(sender, args[2], -1);
                 }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
-                OutputHandler.chatConfirmation(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
+                OutputHandler.chatConfirmation(sender,
+                        Translator.format("Kit created successfully. %s cooldown.", FunctionHelper.formatDateTimeReadable(cooldown, true)));
             }
             else
             {
@@ -225,7 +226,8 @@ public class CommandKit extends FEcmdModuleCommands
                     cooldown = parseIntWithMin(sender, args[2], -1);
                 }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
-                OutputHandler.chatConfirmation(sender, "Kit created successfully. %c sec cooldown.".replaceAll("%c", "" + FunctionHelper.parseTime(cooldown)));
+                OutputHandler.chatConfirmation(sender,
+                        Translator.format("Kit created successfully. %s cooldown.", FunctionHelper.formatDateTimeReadable(cooldown, true)));
             }
         }
 
