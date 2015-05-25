@@ -272,13 +272,14 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void playerLoggedInEvent(PlayerLoggedInEvent event)
     {
         UserIdent.register(event.player);
+        PlayerInfo.login(event.player.getPersistentID());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoggedOutEvent(PlayerLoggedOutEvent event)
     {
         UserIdent.unregister(event.player);
-        PlayerInfo.discard(event.player.getPersistentID());
+        PlayerInfo.logout(event.player.getPersistentID());
     }
 
     /* ------------------------------------------------------------ */

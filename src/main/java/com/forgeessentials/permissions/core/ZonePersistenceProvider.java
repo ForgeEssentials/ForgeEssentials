@@ -30,6 +30,7 @@ public abstract class ZonePersistenceProvider {
     {
         for (UserIdent ident : serverZone.getPlayerPermissions().keySet())
         {
+            serverZone.registerPlayer(ident);
             String groupList = serverZone.getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
             serverZone.clearPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
             if (groupList == null)

@@ -35,6 +35,7 @@ import com.forgeessentials.commands.CommandRemove;
 import com.forgeessentials.commands.CommandRename;
 import com.forgeessentials.commands.CommandRepair;
 import com.forgeessentials.commands.CommandRules;
+import com.forgeessentials.commands.CommandSeen;
 import com.forgeessentials.commands.CommandSmite;
 import com.forgeessentials.commands.CommandSpeed;
 import com.forgeessentials.commands.CommandTime;
@@ -44,13 +45,14 @@ import com.forgeessentials.commands.admin.CommandDoAs;
 import com.forgeessentials.commands.admin.CommandServerSettings;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
-public class CommandRegistrar {
-	
+public class CommandRegistrar
+{
+
     public static ArrayList<FEcmdModuleCommands> cmdList;
 
     static
     {
-    	cmdList = new ArrayList<FEcmdModuleCommands>();
+        cmdList = new ArrayList<FEcmdModuleCommands>();
         cmdList.add(new CommandTime());
         cmdList.add(new CommandMotd());
         cmdList.add(new CommandEnchant());
@@ -81,7 +83,7 @@ public class CommandRegistrar {
         cmdList.add(new CommandWeather());
         cmdList.add(new CommandBind());
         cmdList.add(new CommandRename());
-        //cmdList.add(new CommandVanish());
+        // cmdList.add(new CommandVanish());
         cmdList.add(new CommandPush());
         cmdList.add(new CommandDrop());
         cmdList.add(new CommandPulse());
@@ -89,43 +91,45 @@ public class CommandRegistrar {
         cmdList.add(new CommandNoClip());
         cmdList.add(new CommandBubble());
         cmdList.add(new CommandSpeed());
+        cmdList.add(new CommandSeen());
     }
 
     public static void commandConfigs(Configuration config)
     {
         config.load();
-        
-		// Add categories
-		config.addCustomCategoryComment("commands", "All FE commands will have a config space here.");
-		config.addCustomCategoryComment("CommandBlock", "Toggle server wide command block usage here.");
-		config.addCustomCategoryComment("Player", "Toggle server wide player usage here.");
-		config.addCustomCategoryComment("Console", "Toggle console usage here.");
 
-		for (FEcmdModuleCommands fecmd : cmdList) {
-			if (fecmd.usableByCmdBlock())
-				fecmd.setEnabledForCmdBlock(config.get("CommandBlock", fecmd.getCommandName(), fecmd.isEnabledForCmdBlock()).getBoolean());
-			if (fecmd.usableByPlayer())
-				fecmd.setEnabledForPlayer(config.get("Player", fecmd.getCommandName(), fecmd.isEnabledForPlayer()).getBoolean());
-			if (fecmd.canConsoleUseCommand())
-				fecmd.setEnabledForConsole(config.get("Console", fecmd.getCommandName(), fecmd.isEnabledForConsole()).getBoolean());
+        // Add categories
+        config.addCustomCategoryComment("commands", "All FE commands will have a config space here.");
+        config.addCustomCategoryComment("CommandBlock", "Toggle server wide command block usage here.");
+        config.addCustomCategoryComment("Player", "Toggle server wide player usage here.");
+        config.addCustomCategoryComment("Console", "Toggle console usage here.");
 
-			String category = "commands." + fecmd.getCommandName();
-			config.addCustomCategoryComment(category, fecmd.getPermissionNode());
+        for (FEcmdModuleCommands fecmd : cmdList)
+        {
+            if (fecmd.usableByCmdBlock())
+                fecmd.setEnabledForCmdBlock(config.get("CommandBlock", fecmd.getCommandName(), fecmd.isEnabledForCmdBlock()).getBoolean());
+            if (fecmd.usableByPlayer())
+                fecmd.setEnabledForPlayer(config.get("Player", fecmd.getCommandName(), fecmd.isEnabledForPlayer()).getBoolean());
+            if (fecmd.canConsoleUseCommand())
+                fecmd.setEnabledForConsole(config.get("Console", fecmd.getCommandName(), fecmd.isEnabledForConsole()).getBoolean());
 
-			fecmd.loadConfig(config, category);
-		}
+            String category = "commands." + fecmd.getCommandName();
+            config.addCustomCategoryComment(category, fecmd.getPermissionNode());
+
+            fecmd.loadConfig(config, category);
+        }
 
         config.save();
     }
 
-	public static void registerCommands(FEModuleServerInitEvent e)
-	{
+    public static void registerCommands(FEModuleServerInitEvent e)
+    {
         for (FEcmdModuleCommands cmd : cmdList)
         {
             cmd.registerExtraPermissions();
             cmd.register();
             APIRegistry.perms.registerPermissionDescription(cmd.getPermissionNode(), cmd.getCommandUsage(null));
         }
-	}
-	
+    }
+
 }

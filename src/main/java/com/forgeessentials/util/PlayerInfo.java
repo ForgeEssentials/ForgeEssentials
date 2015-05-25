@@ -80,7 +80,7 @@ public class PlayerInfo implements Loadable
     private long timePlayed = 0;
 
     @Expose(serialize = false)
-    private long timePlayedRef = System.currentTimeMillis();
+    private long timePlayedRef = 0;
 
     private Date firstLogin = new Date();
 
@@ -105,9 +105,6 @@ public class PlayerInfo implements Loadable
     {
         if (namedTimeout == null)
             namedTimeout = new HashMap<String, Date>();
-        lastActivity = System.currentTimeMillis();
-        timePlayedRef = System.currentTimeMillis();
-        lastLogin = new Date();
     }
 
     /**
@@ -115,8 +112,6 @@ public class PlayerInfo implements Loadable
      */
     public void save()
     {
-        getTimePlayed();
-        lastLogout = new Date();
         DataManager.getInstance().save(this, ident.getUuid().toString());
     }
 
@@ -156,6 +151,25 @@ public class PlayerInfo implements Loadable
     public static Collection<PlayerInfo> getAll()
     {
         return playerInfoMap.values();
+    }
+
+    public static void login(UUID uuid)
+    {
+        PlayerInfo pi = get(uuid);
+        pi.lastActivity = System.currentTimeMillis();
+        pi.timePlayedRef = System.currentTimeMillis();
+        pi.lastLogin = new Date();
+    }
+
+    public static void logout(UUID uuid)
+    {
+        if (!playerInfoMap.containsKey(uuid))
+            return;
+        PlayerInfo pi = playerInfoMap.remove(uuid);
+        pi.getTimePlayed();
+        pi.lastLogout = new Date();
+        pi.timePlayedRef = 0;
+        pi.save();
     }
 
     public static boolean exists(UUID uuid)
@@ -206,8 +220,11 @@ public class PlayerInfo implements Loadable
 
     public long getTimePlayed()
     {
-        timePlayed += System.currentTimeMillis() - timePlayedRef;
-        timePlayedRef = System.currentTimeMillis();
+        if (ident.hasPlayer() && timePlayedRef != 0)
+        {
+            timePlayed += System.currentTimeMillis() - timePlayedRef;
+            timePlayedRef = System.currentTimeMillis();
+        }
         return timePlayed;
     }
 
