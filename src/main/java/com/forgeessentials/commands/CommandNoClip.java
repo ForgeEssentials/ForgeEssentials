@@ -2,6 +2,7 @@ package com.forgeessentials.commands;
 
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet5Noclip;
+import com.forgeessentials.util.PlayerInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -42,7 +43,14 @@ public class CommandNoClip extends FEcmdModuleCommands
 	@Override
 	public void processCommandPlayer(EntityPlayerMP player, String[] args)
 	{
-        if(!player.capabilities.isFlying && !player.noClip)
+		if (!PlayerInfo.getPlayerInfo(player).getHasFEClient())
+		{
+			OutputHandler.chatError(player, "You need the FE client addon to use this command.");
+			OutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");
+			return;
+		}
+
+		if(!player.capabilities.isFlying && !player.noClip)
             throw new TranslatedCommandException("You must be flying.");
 		
 		if(args.length == 0)

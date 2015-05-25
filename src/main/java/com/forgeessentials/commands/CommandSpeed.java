@@ -1,6 +1,7 @@
 package com.forgeessentials.commands;
 
 import com.forgeessentials.commons.network.Packet6Speed;
+import com.forgeessentials.util.PlayerInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -14,6 +15,13 @@ public class CommandSpeed extends FEcmdModuleCommands
     @Override
     public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
+        if (!PlayerInfo.getPlayerInfo(player).getHasFEClient())
+        {
+            OutputHandler.chatError(player, "You need the FE client addon to use this command.");
+            OutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");
+            return;
+        }
+
         OutputHandler.chatWarning(player, "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
         if (args.length >= 1)
         {
