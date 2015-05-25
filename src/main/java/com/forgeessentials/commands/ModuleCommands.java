@@ -1,10 +1,8 @@
 package com.forgeessentials.commands;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandRegistrar;
 import com.forgeessentials.commands.util.CommandsEventHandler;
@@ -52,7 +50,6 @@ public class ModuleCommands
         CommandDataManager.load();
 
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
-        APIRegistry.perms.registerPermission("fe.commands" + Zone.ALL_PERMS, RegisteredPermValue.OP);
     }
 
     @SubscribeEvent
