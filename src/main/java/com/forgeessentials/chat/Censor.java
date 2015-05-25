@@ -44,7 +44,8 @@ public class Censor extends ConfigLoaderBase
     public void load(Configuration config, boolean isReload)
     {
         enabled = config.get(CONFIG_CATEGORY, "enable", true).getBoolean(true);
-        bannedWords = new ArrayList<>(Arrays.asList(config.get(CONFIG_CATEGORY, "words", DEFAULT_WORDS, "Words to be censored. Prepend with ! to disable word boundary check.").getStringList()));
+        bannedWords = new ArrayList<>(Arrays.asList(config.get(CONFIG_CATEGORY, "words", DEFAULT_WORDS,
+                "Words to be censored. Prepend with ! to disable word boundary check.").getStringList()));
         censorSlap = config.get(CONFIG_CATEGORY, "slapDamage", 1, "Damage to a player when he uses a censored word").getInt();
         censorSymbol = config.get(CONFIG_CATEGORY, "censorSymbol", "#", "Replace censored words with this character").getString();
         if (censorSymbol.length() > 1)
@@ -65,12 +66,18 @@ public class Censor extends ConfigLoaderBase
         bannedPatterns.clear();
         for (String word : bannedWords)
         {
+            String blank;
             if (word.startsWith("!"))
+            {
+                blank = Strings.repeat(censorSymbol, word.length() - 1);
                 word = word.substring(1);
+            }
             else
+            {
+                blank = Strings.repeat(censorSymbol, word.length());
                 word = "\\b" + word + "\\b";
-            bannedPatterns.put(Strings.repeat(censorSymbol, word.length()),
-                    Pattern.compile(word, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.MULTILINE));
+            }
+            bannedPatterns.put(blank, Pattern.compile(word, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.MULTILINE));
         }
     }
 
@@ -83,7 +90,7 @@ public class Censor extends ConfigLoaderBase
             Matcher m = word.getValue().matcher(message);
             if (m.find())
             {
-                m.replaceAll(word.getKey());
+                message = m.replaceAll(word.getKey());
                 if (censorSlap != 0)
                     player.attackEntityFrom(DamageSource.generic, censorSlap);
             }
