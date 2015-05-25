@@ -12,32 +12,32 @@ public class PlayerInfoSelectionProvider implements ISelectionProvider {
     @Override
     public Selection getSelection(EntityPlayerMP player)
     {
-        PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+        PlayerInfo pi = PlayerInfo.get(player);
         return new Selection(pi.getSelDim(), pi.getSel1(), pi.getSel2());
     }
 
     @Override
     public void setDimension(EntityPlayerMP player, int dim)
     {
-        PlayerInfo.getPlayerInfo(player).setSelDim(dim);
+        PlayerInfo.get(player).setSelDim(dim);
     }
 
     @Override
     public void setStart(EntityPlayerMP player, Point start)
     {
-        PlayerInfo.getPlayerInfo(player).setSel1(start);
+        PlayerInfo.get(player).setSel1(start);
     }
 
     @Override
     public void setEnd(EntityPlayerMP player, Point end)
     {
-        PlayerInfo.getPlayerInfo(player).setSel2(end);
+        PlayerInfo.get(player).setSel2(end);
     }
 
     @Override
     public void select(EntityPlayerMP player, int dimension, AreaBase area)
     {
-        PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+        PlayerInfo pi = PlayerInfo.get(player);
         pi.setSelDim(dimension);
         pi.setSel1(area.getLowPoint());
         pi.setSel2(area.getHighPoint());

@@ -135,7 +135,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         asmData = e.getAsmData();
 
         version = new VersionUtils(FELaunchHandler.jarLocation);
-        
+
         FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
         OutputHandler.felog.info("Initializing ForgeEssentials version " + VersionUtils.FEVERSION + " (configDir = " + FEDIR.getAbsolutePath() + ")");
         OutputHandler.felog.info("Build information: Build number is: " + version.getBuildNumber() + ", build hash is: " + version.getBuildHash());
@@ -148,13 +148,12 @@ public class ForgeEssentials extends ConfigLoaderBase
         tasks = new TaskRegistry();
 
         // Load network packages
-        NetworkUtils.netHandler.registerMessage(new IMessageHandler<Packet0Handshake, IMessage>()
-        {
+        NetworkUtils.netHandler.registerMessage(new IMessageHandler<Packet0Handshake, IMessage>() {
             @Override
             public IMessage onMessage(Packet0Handshake message, MessageContext ctx)
             {
                 System.out.println("Received handshake packet");
-                PlayerInfo.getPlayerInfo(ctx.getServerHandler().playerEntity).setHasFEClient(true);
+                PlayerInfo.get(ctx.getServerHandler().playerEntity).setHasFEClient(true);
                 return null;
             }
         }, Packet0Handshake.class, 0, Side.SERVER);
@@ -258,8 +257,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent e)
     {
-        PlayerInfo.saveAll();
-        PlayerInfo.clear();
+        PlayerInfo.discardAll();
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerStopEvent(e));
     }
 
@@ -282,7 +280,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void playerLoggedOutEvent(PlayerLoggedOutEvent event)
     {
         UserIdent.unregister(event.player);
-        PlayerInfo.discardInfo(event.player.getPersistentID());
+        PlayerInfo.discard(event.player.getPersistentID());
     }
 
     /* ------------------------------------------------------------ */
@@ -305,9 +303,6 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         CommandSetChecker.removeDuplicateCommands = config.get(CONFIG_CAT, "removeDuplicateCommands", true,
                 "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
-        PlayerInfo.persistSelections = config.get(CONFIG_CAT, "persistSelections", false,
-                "Switch to true if you want selections to persist between user sessions. Has no effect when WEIntegrationTools is installed.")
-                .getBoolean(false);
         MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If a majority of players sleep, make it day.").getBoolean(true);
         MiscEventHandler.majoritySleepThreshold = config.get(CONFIG_CAT_MISC, "MajoritySleepThreshold", 50,
                 "Define the percentage of players that constitutes a majority for MajoritySleep to kick in.").getInt(50);

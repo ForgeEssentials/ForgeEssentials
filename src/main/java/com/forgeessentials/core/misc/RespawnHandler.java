@@ -72,7 +72,7 @@ public class RespawnHandler
         if (e.entityLiving instanceof EntityPlayer)
         {
             EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
-            PlayerInfo pi = PlayerInfo.getPlayerInfo(player.getPersistentID());
+            PlayerInfo pi = PlayerInfo.get(player.getPersistentID());
             pi.setLastDeathLocation(new WarpPoint(player));
             pi.setLastTeleportOrigin(pi.getLastDeathLocation());
         }
@@ -85,7 +85,7 @@ public class RespawnHandler
             return;
 
         EntityPlayerMP player = (EntityPlayerMP) e.entity;
-        if (!PlayerInfo.playerInfoExists(player.getPersistentID()))
+        if (!PlayerInfo.exists(player.getPersistentID()))
         {
             WarpPoint p = getPlayerSpawn(player, null, true);
             if (p != null)
@@ -96,7 +96,7 @@ public class RespawnHandler
     @SubscribeEvent
     public void doRespawn(PlayerRespawnEvent e)
     {
-        WarpPoint lastDeathLocation = PlayerInfo.getPlayerInfo(e.player.getPersistentID()).getLastDeathLocation();
+        WarpPoint lastDeathLocation = PlayerInfo.get(e.player.getPersistentID()).getLastDeathLocation();
         if (lastDeathLocation == null)
             lastDeathLocation = new WarpPoint(e.player);
 

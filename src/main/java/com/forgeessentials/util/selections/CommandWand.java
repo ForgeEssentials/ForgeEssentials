@@ -56,7 +56,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
 			wandId = "hands";
 		}
 
-        PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
+        PlayerInfo info = PlayerInfo.get(sender.getPersistentID());
 
         // Check for rebind
         boolean rebind = args.length > 0 && args[0].equalsIgnoreCase("rebind");
@@ -92,7 +92,7 @@ public class CommandWand extends ForgeEssentialsCommandBase {
     @Override
     public boolean canPlayerUseCommand(EntityPlayer player)
     {
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
+        PlayerInfo info = PlayerInfo.get(player.getPersistentID());
         if (info.isWandEnabled())
         {
             return true;

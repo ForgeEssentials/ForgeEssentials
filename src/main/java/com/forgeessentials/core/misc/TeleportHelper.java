@@ -83,7 +83,7 @@ public class TeleportHelper extends ServerEventHandler
         int teleportCooldown = FunctionHelper.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_COOLDOWN), 0) * 1000;
         if (teleportCooldown > 0)
         {
-            PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+            PlayerInfo pi = PlayerInfo.get(player);
             long cooldownDuration = (pi.getLastTeleportTime() + teleportCooldown) - System.currentTimeMillis();
             if (cooldownDuration >= 0)
             {
@@ -128,7 +128,7 @@ public class TeleportHelper extends ServerEventHandler
             return;
         }
 
-        PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+        PlayerInfo pi = PlayerInfo.get(player);
         pi.setLastTeleportOrigin(new WarpPoint(player));
         pi.setLastTeleportTime(System.currentTimeMillis());
 

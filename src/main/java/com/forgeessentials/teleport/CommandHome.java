@@ -31,7 +31,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
     {
         if (args.length == 0)
         {
-            WarpPoint home = PlayerInfo.getPlayerInfo(sender.getPersistentID()).getHome();
+            WarpPoint home = PlayerInfo.get(sender.getPersistentID()).getHome();
             if (home == null)
                 throw new TranslatedCommandException("No home set. Use \"/home set\" first.");
             TeleportHelper.teleport(sender, home);
@@ -53,7 +53,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
                     throw new TranslatedCommandException("You don't have the permission to set your home location.");
 
                 WarpPoint p = new WarpPoint(sender);
-                PlayerInfo info = PlayerInfo.getPlayerInfo(player.getPersistentID());
+                PlayerInfo info = PlayerInfo.get(player.getPersistentID());
                 info.setHome(p);
                 info.save();
                 OutputHandler.chatConfirmation(sender, Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));

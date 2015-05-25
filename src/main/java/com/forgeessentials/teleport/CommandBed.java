@@ -72,7 +72,7 @@ public class CommandBed extends ForgeEssentialsCommandBase {
         if (spawn == null)
             throw new TranslatedCommandException("Your bed has been obstructed.");
 
-        PlayerInfo.getPlayerInfo(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
+        PlayerInfo.get(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
         WarpPoint spawnPoint = new WarpPoint(world.provider.dimensionId, spawn, player.rotationPitch, player.rotationYaw);
         TeleportHelper.teleport(player, spawnPoint);
     }

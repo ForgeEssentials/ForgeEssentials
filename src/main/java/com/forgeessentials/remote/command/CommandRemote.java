@@ -141,7 +141,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
             case "qr":
             {
                 UserIdent ident = args.parsePlayer(true);
-                if (!PlayerInfo.getPlayerInfo(ident.getPlayerMP()).getHasFEClient())
+                if (!PlayerInfo.get(ident.getPlayerMP()).getHasFEClient())
                 {
                     showPasskey(args, args.ident);
                 }
@@ -171,7 +171,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
         ChatComponentTranslation msg = new ChatComponentTranslation("Remote passkey = " + ModuleRemote.getInstance().getPasskey(ident) + " ");
 
         IChatComponent qrLink = new ChatComponentText("[QR code]");
-        if (!PlayerInfo.getPlayerInfo(ident.getPlayerMP()).getHasFEClient())
+        if (!PlayerInfo.get(ident.getPlayerMP()).getHasFEClient())
         {
             qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
         }

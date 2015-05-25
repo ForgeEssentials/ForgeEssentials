@@ -26,7 +26,7 @@ public class SelectionEventHandler extends ServerEventHandler {
 
         // get info now rather than later
         EntityPlayer player = event.entityPlayer;
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player);
+        PlayerInfo info = PlayerInfo.get(player);
 
         if (!info.isWandEnabled()) return;
 

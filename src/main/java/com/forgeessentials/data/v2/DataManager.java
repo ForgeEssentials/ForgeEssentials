@@ -24,9 +24,11 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.Expose;
 
-public class DataManager implements ExclusionStrategy {
+public class DataManager implements ExclusionStrategy
+{
 
-    public static interface DataType<T> extends JsonSerializer<T>, JsonDeserializer<T> {
+    public static interface DataType<T> extends JsonSerializer<T>, JsonDeserializer<T>
+    {
         Class<T> getType();
     }
 
@@ -48,7 +50,7 @@ public class DataManager implements ExclusionStrategy {
         addDataType(new ItemStackType());
         addDataType(new NBTTagCompoundType());
     }
- 
+
     public DataManager(File basePath)
     {
         this.basePath = basePath;
@@ -107,6 +109,12 @@ public class DataManager implements ExclusionStrategy {
     {
         File file = getTypeFile(clazz, key);
         return file.delete();
+    }
+
+    public boolean exists(Class<?> clazz, String key)
+    {
+        File file = getTypeFile(clazz, key);
+        return file.exists();
     }
 
     public <T> Map<String, T> loadAll(Class<T> clazz)
@@ -216,6 +224,5 @@ public class DataManager implements ExclusionStrategy {
     {
         return new File(getTypePath(clazz), key + ".json");
     }
-
 
 }

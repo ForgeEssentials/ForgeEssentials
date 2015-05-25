@@ -47,7 +47,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        PlayerInfo pi = PlayerInfo.getPlayerInfo(sender.getPersistentID());
+        PlayerInfo pi = PlayerInfo.get(sender.getPersistentID());
         WarpPoint point = null;
 
         if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_BACK_ONDEATH))

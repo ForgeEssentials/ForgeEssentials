@@ -15,7 +15,7 @@ public class CommandSpeed extends FEcmdModuleCommands
     @Override
     public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
-        if (!PlayerInfo.getPlayerInfo(player).getHasFEClient())
+        if (!PlayerInfo.get(player).getHasFEClient())
         {
             OutputHandler.chatError(player, "You need the FE client addon to use this command.");
             OutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");

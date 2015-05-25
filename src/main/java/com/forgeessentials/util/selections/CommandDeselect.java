@@ -28,7 +28,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        PlayerInfo info = PlayerInfo.getPlayerInfo(sender.getPersistentID());
+        PlayerInfo info = PlayerInfo.get(sender.getPersistentID());
         info.setSel1(null);
         info.setSel2(null);
         SelectionHandler.sendUpdate(sender);

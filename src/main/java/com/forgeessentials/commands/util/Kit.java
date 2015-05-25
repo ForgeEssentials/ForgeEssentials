@@ -66,7 +66,7 @@ public class Kit {
     {
         if (!PermissionsManager.checkPermission(player, CommandKit.PERM_BYPASS_COOLDOWN) && cooldown > 0)
         {
-            PlayerInfo pi = PlayerInfo.getPlayerInfo(player.getPersistentID());
+            PlayerInfo pi = PlayerInfo.get(player.getPersistentID());
             long timeout = pi.getRemainingTimeout("KIT_" + name);
             if (timeout > 0)
             {

@@ -5,13 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -20,19 +18,23 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.annotations.Expose;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class PlayerInfo implements Loadable
 {
 
     private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
 
-    public static boolean persistSelections;
+    /* ------------------------------------------------------------ */
+    /* General */
 
     public final UserIdent ident;
+
+    @Expose(serialize = false)
+    private boolean hasFEClient = false;
+
+    /* ------------------------------------------------------------ */
+    /* Teleport */
 
     private WarpPoint home;
 
@@ -40,24 +42,23 @@ public class PlayerInfo implements Loadable
 
     private WarpPoint lastDeathLocation;
 
-    protected HashMap<String, Date> namedTimeout = new HashMap<String, Date>();
+    @Expose(serialize = false)
+    private long lastTeleportTime = 0;
 
-    protected Point sel1;
+    /* ------------------------------------------------------------ */
+    /* Selection */
 
-    protected Point sel2;
+    private Point sel1;
 
-    protected int selDim;
+    private Point sel2;
 
-    private int timePlayed = 0;
+    private int selDim;
 
-    private Map<String, List<ItemStack>> inventoryGroups = new HashMap<>();
-
-    private String activeInventoryGroup = "default";
-
-    private long firstJoin = System.currentTimeMillis();
+    /* ------------------------------------------------------------ */
+    /* Selection wand */
 
     @Expose(serialize = false)
-    private long loginTime = System.currentTimeMillis();
+    private boolean wandEnabled = false;
 
     @Expose(serialize = false)
     private String wandID;
@@ -65,32 +66,47 @@ public class PlayerInfo implements Loadable
     @Expose(serialize = false)
     private int wandDmg;
 
-    @Expose(serialize = false)
-    private boolean wandEnabled = false;
+    /* ------------------------------------------------------------ */
+    /* Inventory groups */
+
+    private Map<String, List<ItemStack>> inventoryGroups = new HashMap<>();
+
+    private String activeInventoryGroup = "default";
+
+    /* ------------------------------------------------------------ */
+    /* Stats / time */
+
+    private long timePlayed = 0;
 
     @Expose(serialize = false)
-    private long lastTeleportTime = 0;
+    private long timePlayedRef = System.currentTimeMillis();
+
+    private Date firstLogin = new Date();
+
+    private Date lastLogin = new Date();
+
+    private Date lastLogout;
 
     @Expose(serialize = false)
-    private boolean hasFEClient = false;
+    private long lastActivity = System.currentTimeMillis();
 
-    // undo and redo stuff
-    @Expose(serialize = false)
-    private Stack<BackupArea> undos = new Stack<BackupArea>();
+    private HashMap<String, Date> namedTimeout = new HashMap<String, Date>();
 
-    @Expose(serialize = false)
-    private Stack<BackupArea> redos = new Stack<BackupArea>();
+    /* ------------------------------------------------------------ */
+
+    private PlayerInfo(UUID uuid)
+    {
+        this.ident = UserIdent.get(uuid);
+    }
 
     @Override
     public void afterLoad()
     {
         if (namedTimeout == null)
             namedTimeout = new HashMap<String, Date>();
-    }
-
-    protected PlayerInfo(UUID uuid)
-    {
-        this.ident = UserIdent.get(uuid);
+        lastActivity = System.currentTimeMillis();
+        timePlayedRef = System.currentTimeMillis();
+        lastLogin = new Date();
     }
 
     /**
@@ -98,147 +114,109 @@ public class PlayerInfo implements Loadable
      */
     public void save()
     {
-        recalcTimePlayed();
+        getTimePlayed();
+        lastLogout = new Date();
         DataManager.getInstance().save(this, ident.getUuid().toString());
     }
 
-    @SubscribeEvent
-    public void initForPlayer(PlayerEvent.LoadFromFile event)
+    /* ------------------------------------------------------------ */
+
+    public static PlayerInfo get(UUID uuid)
     {
-        getPlayerInfo(event.entityPlayer);
+        PlayerInfo info = playerInfoMap.get(uuid);
+        if (info == null)
+        {
+            // Attempt to populate this info with some data from our storage.
+            info = DataManager.getInstance().load(PlayerInfo.class, uuid.toString());
+            if (info == null)
+            {
+                EntityPlayerMP player = UserIdent.getPlayerByUuid(uuid);
+                if (player != null)
+                    APIRegistry.getFEEventBus().post(new NoPlayerInfoEvent(player));
+                info = new PlayerInfo(uuid);
+            }
+            playerInfoMap.put(uuid, info);
+        }
+        return info;
     }
 
-    public static boolean playerInfoExists(UUID playerID)
+    public static PlayerInfo get(EntityPlayer player)
     {
-        if (playerInfoMap.containsKey(playerID))
+        return get(player.getPersistentID());
+    }
+
+    public static PlayerInfo get(UserIdent ident)
+    {
+        if (!ident.hasUUID())
+            return null;
+        return get(ident.getUuid());
+    }
+
+    public static boolean exists(UUID uuid)
+    {
+        if (playerInfoMap.containsKey(uuid))
             return true;
-        PlayerInfo info = load(playerID.toString());
-        if (info != null)
+        if (DataManager.getInstance().exists(PlayerInfo.class, uuid.toString()))
             return true;
         return false;
     }
 
-    private static PlayerInfo load(String key)
+    /**
+     * Unload PlayerInfo and save to disk
+     */
+    public static void discard(UUID uuid)
     {
-        PlayerInfo info = DataManager.getInstance().load(PlayerInfo.class, key);
-        return info;
-    }
-
-    public static PlayerInfo getPlayerInfo(EntityPlayer player)
-    {
-        return getPlayerInfo(player.getPersistentID());
-    }
-
-    public static PlayerInfo getPlayerInfo(UserIdent ident)
-    {
-        if (!ident.hasUUID())
-            return null;
-        return getPlayerInfo(ident.getUuid());
-    }
-
-    public static PlayerInfo getPlayerInfo(UUID playerID)
-    {
-        PlayerInfo info = playerInfoMap.get(playerID);
-        if (info == null)
-        {
-            // Attempt to populate this info with some data from our storage.
-            info = load(playerID.toString());
-            if (info == null)
-            {
-                EntityPlayerMP player = UserIdent.getPlayerByUuid(playerID);
-                if (player != null)
-                    APIRegistry.getFEEventBus().post(new NoPlayerInfoEvent(player));
-                info = new PlayerInfo(playerID);
-            }
-            playerInfoMap.put(playerID, info);
-        }
-        return info;
-    }
-
-    public static void discardInfo(UUID username)
-    {
-        PlayerInfo info = playerInfoMap.remove(username);
+        PlayerInfo info = playerInfoMap.remove(uuid);
         if (info != null)
-        {
             info.save();
-        }
     }
 
     /**
-     * Saves all player-infos
+     * Discard all PlayerInfo
      */
-    public static void saveAll()
+    public static void discardAll()
     {
         for (PlayerInfo info : playerInfoMap.values())
-        {
             info.save();
-        }
-    }
-
-    /**
-     * Clear player-infos
-     */
-    public static void clear()
-    {
         playerInfoMap.clear();
     }
 
-    // ----------------------------------------------
+    /* ------------------------------------------------------------ */
 
-    public String getWandID()
+    public Date getFirstLogin()
     {
-        return wandID;
+        return firstLogin;
     }
 
-    public void setWandID(String wandID)
+    public Date getLastLogin()
     {
-        this.wandID = wandID;
+        return lastLogin;
     }
 
-    public boolean isWandEnabled()
+    public Date getLastLogout()
     {
-        return wandEnabled;
+        return lastLogout;
     }
 
-    public void setWandEnabled(boolean wandEnabled)
+    public long getTimePlayed()
     {
-        this.wandEnabled = wandEnabled;
-    }
-
-    public int getWandDmg()
-    {
-        return wandDmg;
-    }
-
-    public void setWandDmg(int wandDmg)
-    {
-        this.wandDmg = wandDmg;
-    }
-
-    // ----------------------------------------------
-
-    public long getFirstJoin()
-    {
-        return firstJoin;
-    }
-
-    public int getTimePlayed()
-    {
-        recalcTimePlayed();
+        timePlayed += System.currentTimeMillis() - timePlayedRef;
+        timePlayedRef = System.currentTimeMillis();
         return timePlayed;
     }
 
-    public void recalcTimePlayed()
+    public void setActive()
     {
-        long current = System.currentTimeMillis() - loginTime;
-        int min = (int) (current / 60000);
-        timePlayed += min;
-        loginTime = System.currentTimeMillis();
+        lastActivity = System.currentTimeMillis();
     }
 
-    // ----------------------------------------------
-    // --------------- Timeouts ---------------------
-    // ----------------------------------------------
+    public long getInactiveTime()
+    {
+        return System.currentTimeMillis() - lastActivity;
+    }
+
+    /* ------------------------------------------------------------ */
+    /* Timeouts */
 
     /**
      * Check, if a timeout passed
@@ -280,9 +258,41 @@ public class PlayerInfo implements Loadable
         namedTimeout.put(name, date);
     }
 
-    // ----------------------------------------------
-    // ------------ Selection stuff -----------------
-    // ----------------------------------------------
+    /* ------------------------------------------------------------ */
+    /* Wand */
+
+    public boolean isWandEnabled()
+    {
+        return wandEnabled;
+    }
+
+    public void setWandEnabled(boolean wandEnabled)
+    {
+        this.wandEnabled = wandEnabled;
+    }
+
+    public String getWandID()
+    {
+        return wandID;
+    }
+
+    public void setWandID(String wandID)
+    {
+        this.wandID = wandID;
+    }
+
+    public int getWandDmg()
+    {
+        return wandDmg;
+    }
+
+    public void setWandDmg(int wandDmg)
+    {
+        this.wandDmg = wandDmg;
+    }
+
+    /* ------------------------------------------------------------ */
+    /* Selection */
 
     public Point getSel1()
     {
@@ -314,9 +324,8 @@ public class PlayerInfo implements Loadable
         selDim = dimension;
     }
 
-    // ----------------------------------------------
-    // ---------- protection gamemode ---------------
-    // ----------------------------------------------
+    /* ------------------------------------------------------------ */
+    /* Inventory groups */
 
     public Map<String, List<ItemStack>> getInventoryGroups()
     {
@@ -343,20 +352,16 @@ public class PlayerInfo implements Loadable
             if (newInventory == null)
                 newInventory = new ArrayList<>();
 
-            //OutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s", ident.getUsernameOrUUID(), activeInventoryGroup, name));
+            // OutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s",
+            // ident.getUsernameOrUUID(), activeInventoryGroup, name));
             /*
-            OutputHandler.felog.info("Items in old inventory:");
-            for (int i = 0; i < ident.getPlayer().inventory.getSizeInventory(); i++)
-            {
-                ItemStack itemStack = ident.getPlayer().inventory.getStackInSlot(i);
-                if (itemStack != null)
-                    OutputHandler.felog.info("  " + itemStack.getDisplayName());
-            }
-            OutputHandler.felog.info("Items in new inventory:");
-            for (ItemStack itemStack : newInventory)
-                if (itemStack != null)
-                    OutputHandler.felog.info("  " + itemStack.getDisplayName());
-            */
+             * OutputHandler.felog.info("Items in old inventory:"); for (int i = 0; i <
+             * ident.getPlayer().inventory.getSizeInventory(); i++) { ItemStack itemStack =
+             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != null) OutputHandler.felog.info("  " +
+             * itemStack.getDisplayName()); } OutputHandler.felog.info("Items in new inventory:"); for (ItemStack
+             * itemStack : newInventory) if (itemStack != null) OutputHandler.felog.info("  " +
+             * itemStack.getDisplayName());
+             */
 
             // Swap player inventory and store the old one
             inventoryGroups.put(activeInventoryGroup, FunctionHelper.swapInventory(this.ident.getPlayerMP(), newInventory));
@@ -367,41 +372,8 @@ public class PlayerInfo implements Loadable
         }
     }
 
-    // ----------------------------------------------
-    // ------------ Undo/Redo stuff -----------------
-    // ----------------------------------------------
-
-    public void addUndoAction(BackupArea backup)
-    {
-        undos.push(backup);
-        redos.clear();
-    }
-
-    public BackupArea getNextUndo()
-    {
-        if (undos.empty())
-        {
-            return null;
-        }
-
-        BackupArea back = undos.pop();
-        redos.push(back);
-        return back;
-    }
-
-    public BackupArea getNextRedo()
-    {
-        if (redos.empty())
-        {
-            return null;
-        }
-
-        BackupArea back = redos.pop();
-        undos.push(back);
-        return back;
-    }
-
-    // ----------------------------------------------
+    /* ------------------------------------------------------------ */
+    /* Teleportation */
 
     public WarpPoint getLastTeleportOrigin()
     {
@@ -443,9 +415,9 @@ public class PlayerInfo implements Loadable
         this.home = home;
     }
 
-    // ----------------------------------------------
+    /* ------------------------------------------------------------ */
+    /* Other */
 
-    // network stuff
     public boolean getHasFEClient()
     {
         return hasFEClient;
@@ -454,11 +426,6 @@ public class PlayerInfo implements Loadable
     public void setHasFEClient(boolean status)
     {
         this.hasFEClient = status;
-    }
-
-    public static Map<UUID, PlayerInfo> getPlayerInfoMap()
-    {
-        return ImmutableMap.copyOf(playerInfoMap);
     }
 
 }

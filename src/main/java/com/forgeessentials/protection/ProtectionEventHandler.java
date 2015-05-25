@@ -510,7 +510,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
 
         // Apply inventory-group
-        PlayerInfo pi = PlayerInfo.getPlayerInfo(player);
+        PlayerInfo pi = PlayerInfo.get(player);
         pi.setInventoryGroup(inventoryGroup);
 
         checkPlayerInventory(player);

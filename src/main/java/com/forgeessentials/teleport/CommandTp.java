@@ -61,7 +61,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
 
                 if (target != null)
                 {
-                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
+                    PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                     WarpPoint point = new WarpPoint(target);
                     TeleportHelper.teleport(player, point);
@@ -80,7 +80,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
                 double x = func_110666_a(sender, player.posX, args[0]);
                 double y = FunctionHelper.parseYLocation(sender, player.posY, args[1]);
                 double z = func_110666_a(sender, player.posZ, args[2]);
-                PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
+                PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                 TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
             }
@@ -92,7 +92,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
                     double x = func_110666_a(sender, player.posX, args[1]);
                     double y = FunctionHelper.parseYLocation(sender, player.posY, args[2]);
                     double z = func_110666_a(sender, player.posZ, args[3]);
-                    PlayerInfo playerInfo = PlayerInfo.getPlayerInfo(player.getPersistentID());
+                    PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                     TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
                 }
