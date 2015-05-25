@@ -10,11 +10,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandReply extends ForgeEssentialsCommandBase
@@ -81,21 +79,12 @@ public class CommandReply extends ForgeEssentialsCommandBase
 
         ICommandSender target = getReplyTarget(sender);
         if (target == null)
-            throw new PlayerNotFoundException();
+            throw new PlayerNotFoundException("No reply target found");
 
         if (target == sender)
             throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
 
-        IChatComponent message = func_147176_a(sender, args, 0, !(sender instanceof EntityPlayer));
-        ChatComponentTranslation sentMsg = new ChatComponentTranslation("commands.message.display.incoming", new Object[] { sender.func_145748_c_(),
-                message.createCopy() });
-        ChatComponentTranslation senderMsg = new ChatComponentTranslation("commands.message.display.outgoing",
-                new Object[] { target.func_145748_c_(), message });
-        sentMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
-        senderMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
-        target.addChatMessage(sentMsg);
-        sender.addChatMessage(senderMsg);
-        CommandReply.messageSent(sender, target);
+        ModuleChat.tell(sender, func_147176_a(sender, args, 0, !(sender instanceof EntityPlayer)), target);
     }
 
 }

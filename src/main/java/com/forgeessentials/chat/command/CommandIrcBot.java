@@ -7,25 +7,25 @@ import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandIRC extends ForgeEssentialsCommandBase
+public class CommandIrcBot extends ForgeEssentialsCommandBase
 {
 
     @Override
     public String getCommandName()
     {
-        return "irc";
+        return "ircbot";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/irc [reconnect|disconnect|status] Connect or disconnect the IRC server bot.";
+        return "/ircbot [reconnect|disconnect] Connect or disconnect the IRC server bot.";
     }
 
     @Override
     public String getPermissionNode()
     {
-        return "fe.chat.irc";
+        return "fe.chat.ircbot";
     }
 
     @Override

@@ -9,6 +9,8 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -269,6 +271,12 @@ public class CommandParserArgs
     public String[] toArray()
     {
         return args.toArray(new String[args.size()]);
+    }
+
+    @Override
+    public String toString()
+    {
+        return StringUtils.join(args.toArray(), " ");
     }
 
 }

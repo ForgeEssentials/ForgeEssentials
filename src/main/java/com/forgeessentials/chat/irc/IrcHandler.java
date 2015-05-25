@@ -1,9 +1,14 @@
 package com.forgeessentials.chat.irc;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent.Action;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
@@ -25,6 +30,10 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
 import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.chat.irc.command.CommandHelp;
+import com.forgeessentials.chat.irc.command.CommandListPlayers;
+import com.forgeessentials.chat.irc.command.CommandMessage;
+import com.forgeessentials.chat.irc.command.CommandReply;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
@@ -36,7 +45,13 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     private static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + ".IRC";
 
-    private static final String CHANNELS_HELP = "List of channels to connect to, together with the # character.";
+    private static final String CHANNELS_HELP = "List of channels to connect to, together with the # character";
+
+    private static final String ADMINS_HELP = "List of priviliged users that can use more commands via the IRC bot";
+
+    public static final String COMMAND_CHAR = "%";
+
+    public static final String COMMAND_MC_CHAR = "!";
 
     private PircBotX bot;
 
@@ -62,16 +77,34 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     private boolean sendMessages;
 
+    public final Map<String, IrcCommand> commands = new HashMap<>();
+
+    // This map is used to keep the ICommandSender from being recycled by the garbage collector,
+    // so they can be used as WeakReferences in CommandReply
+    public final Map<User, IrcCommandSender> ircUserCache = new HashMap<>();
+
     /* ------------------------------------------------------------ */
 
     public IrcHandler()
     {
         ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+
+        registerCommand(new CommandHelp());
+        registerCommand(new CommandListPlayers());
+        registerCommand(new CommandMessage());
+        registerCommand(new CommandReply());
     }
 
     public static IrcHandler getInstance()
     {
         return ModuleChat.instance.ircHandler;
+    }
+
+    public void registerCommand(IrcCommand command)
+    {
+        for (String commandName : command.getCommandNames())
+            if (commands.put(commandName, command) != null)
+                OutputHandler.felog.warning(String.format("IRC command name %s used twice!", commandName));
     }
 
     public void connect()
@@ -86,6 +119,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         bot.setLogin(botName);
         bot.setVerbose(false);
         bot.setAutoNickChange(true);
+        bot.setMessageDelay(0);
 
         bot.setCapEnabled(!twitchMode);
         if (twitchMode)
@@ -125,6 +159,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (bot != null)
         {
             bot.shutdown();
+            ircUserCache.clear();
             bot = null;
         }
     }
@@ -154,6 +189,10 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         for (String channel : config.get(CATEGORY, "channels", new String[] { "#someChannelName" }, CHANNELS_HELP).getStringList())
             channels.add(channel);
 
+        admins.clear();
+        for (String admin : config.get(CATEGORY, "admins", new String[] {}, ADMINS_HELP).getStringList())
+            admins.add(admin);
+
         // ircHeader = config.get(CATEGORY, "ircOutput", "(IRC) [%channel] <%ircUser>",
         // "String to identify IRC channel output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
         // ircPrivateHeader = config.get(CATEGORY, "ircPrivateOutput", "&6(IRC) [%ircUser]&7",
@@ -182,7 +221,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     /* ------------------------------------------------------------ */
 
-    public void sendMessage(String message, User user)
+    public void sendMessage(User user, String message)
     {
         if (!isConnected())
             return;
@@ -224,6 +263,59 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         OutputHandler.broadcast(new ChatComponentTranslation("[\u00a7cIRC\u00a7r] %s", messageComponent));
     }
 
+    public ICommandSender getIrcUser(String username)
+    {
+        if (!isConnected())
+            return null;
+        for (User user : bot.getUsers())
+        {
+            if (user.getNick().equals(username))
+            {
+                IrcCommandSender sender = new IrcCommandSender(user);
+                ircUserCache.put(sender.getUser(), sender);
+                return sender;
+            }
+        }
+        return null;
+    }
+
+    private void processCommand(User user, String cmdLine)
+    {
+        String[] args = cmdLine.split(" ");
+        String commandName = args[0].substring(1);
+        args = Arrays.copyOfRange(args, 1, args.length);
+
+        IrcCommand command = commands.get(commandName);
+        if (command == null)
+        {
+            sendMessage(user, String.format("Error: Command %s not found!", commandName));
+            return;
+        }
+
+        IrcCommandSender sender = new IrcCommandSender(user);
+        ircUserCache.put(sender.getUser(), sender);
+        try
+        {
+            command.processCommand(sender, args);
+        }
+        catch (CommandException e)
+        {
+            sendMessage(user, "Error: " + e.getMessage());
+        }
+    }
+
+    private boolean processMcCommand(User user, String raw)
+    {
+        if (!admins.contains(user.getNick()))
+        {
+            sendMessage(user, "Permission denied. You are not an admin");
+            return true;
+        }
+
+        sendMessage(user, "Not yet implemented!");
+        return true;
+    }
+
     /* ------------------------------------------------------------ */
 
     @Override
@@ -234,25 +326,19 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
             raw.replace(":", "");
 
         // Check to see if it is a command
-        if (raw.startsWith("%"))
+        if (raw.startsWith(COMMAND_CHAR))
         {
-            sendMessage("Not yet implemented!", event.getUser());
+            processCommand(event.getUser(), raw);
         }
-        else if (raw.startsWith("!"))
+        else if (raw.startsWith(COMMAND_MC_CHAR))
         {
-            if (!admins.contains(event.getUser().getNick()))
-            {
-                sendMessage("Permission denied. You are not an admin", event.getUser());
-                return;
-            }
-            // TODO: Run MC commands
-            sendMessage("Not yet implemented!", event.getUser());
+            processMcCommand(event.getUser(), raw);
         }
         else
         {
             if (twitchMode && (event.getUser().getNick() == "jtv"))
                 return;
-            sendMessage(String.format("Hello %s, use %%help for commands", event.getUser().getNick()), event.getUser());
+            sendMessage(event.getUser(), String.format("Hello %s, use %%help for commands", event.getUser().getNick()));
         }
     }
 
@@ -266,20 +352,16 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         while (raw.startsWith(":"))
             raw.replace(":", "");
 
-        if (raw.startsWith("%"))
+        if (raw.startsWith(COMMAND_CHAR))
         {
-            sendMessage("Not yet implemented!", event.getUser());
+            processCommand(event.getUser(), raw);
             return;
         }
 
-        if (raw.startsWith("!"))
+        if (raw.startsWith(COMMAND_MC_CHAR))
         {
-            if (admins.contains(event.getUser().getLogin()))
-            {
-                // TODO: Run MC commands
-                sendMessage("Not yet implemented!", event.getUser());
+            if (processMcCommand(event.getUser(), raw))
                 return;
-            }
         }
 
         if (showMessages)
@@ -329,6 +411,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     @Override
     public void onPart(PartEvent<PircBotX> event) throws Exception
     {
+        ircUserCache.remove(event.getUser());
         if (!showEvents || event.getUser() == bot.getUserBot())
             return;
         mcSendMessage(Translator.format("%s left the channel %s: %s", event.getUser().getNick(), event.getChannel().getName(), event.getReason()));

@@ -35,7 +35,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
-import com.forgeessentials.chat.command.CommandIRC;
+import com.forgeessentials.chat.command.CommandIrc;
+import com.forgeessentials.chat.command.CommandIrcBot;
 import com.forgeessentials.chat.command.CommandMessageReplacement;
 import com.forgeessentials.chat.command.CommandMute;
 import com.forgeessentials.chat.command.CommandNickname;
@@ -218,13 +219,15 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        new CommandIRC().register();
         new CommandMute().register();
         new CommandNickname().register();
         new CommandPm().register();
         new CommandReply().register();
         new CommandTimedMessages().register();
         new CommandUnmute().register();
+
+        new CommandIrc().register();
+        new CommandIrcBot().register();
 
         // APIRegistry.perms.registerPermission("fe.chat.usecolor", RegisteredPermValue.TRUE);
         // APIRegistry.perms.registerPermission("fe.chat.nickname.others", RegisteredPermValue.OP);
