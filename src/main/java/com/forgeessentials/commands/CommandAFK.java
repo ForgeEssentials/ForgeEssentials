@@ -23,6 +23,8 @@ public class CommandAFK extends FEcmdModuleCommands
 
     public static final String PERM_AUTOTIME = PERM + ".autotime";
 
+    public static final String PERM_AUTOKICK = PERM + ".autokick";
+
     @Override
     public String getCommandName()
     {
@@ -47,6 +49,7 @@ public class CommandAFK extends FEcmdModuleCommands
         APIRegistry.perms.registerPermission(PERM_ANNOUNCE, RegisteredPermValue.TRUE);
         APIRegistry.perms.registerPermissionProperty(PERM_WARMUP, "10", "Time a player needs to wait before he can go afk with /afk");
         APIRegistry.perms.registerPermissionProperty(PERM_AUTOTIME, "120", "Auto afk time in seconds");
+        APIRegistry.perms.registerPermission(PERM_AUTOKICK, RegisteredPermValue.FALSE, "Automatically kick a player, when he is AFK");
     }
 
     @Override

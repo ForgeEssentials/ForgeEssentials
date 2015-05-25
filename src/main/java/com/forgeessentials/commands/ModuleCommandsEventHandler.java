@@ -21,6 +21,7 @@ import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class ModuleCommandsEventHandler extends ServerEventHandler implements Runnable
 {
@@ -54,6 +55,13 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (isAfk(player.getUuid()))
             return;
+
+        if (player.checkPermission(CommandAFK.PERM_AUTOKICK))
+        {
+            player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.translate("You have been kicked for being AFK"));
+            return;
+        }
+
         PlayerAFKEvent event = new PlayerAFKEvent(player.getPlayerMP(), true);
         APIRegistry.getFEEventBus().post(event);
 
@@ -103,6 +111,12 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
             return;
         if (event.sender instanceof EntityPlayerMP)
             playerActive((EntityPlayerMP) event.sender);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerLogin(PlayerLoggedInEvent event)
+    {
+        afkPlayers.remove(event.player.getPersistentID());
     }
 
     public void playerActive(EntityPlayerMP player)
