@@ -67,6 +67,8 @@ import cpw.mods.fml.common.eventhandler.EventBus;
 public final class FunctionHelper
 {
 
+    public static final char FORMAT_CHARACTER = '\u00a7';
+
     public static final EventBus FE_INTERNAL_EVENTBUS = APIRegistry.getFEEventBus();
 
     /**
@@ -495,6 +497,27 @@ public final class FunctionHelper
         return new ImmutablePair<String, Integer>(ID, meta);
     }
 
+    public static final Pattern FORMAT_PATTERN;
+
+    static
+    {
+        String codes = "";
+        for (EnumChatFormatting code : EnumChatFormatting.values())
+            codes += code.getFormattingCode();
+        FORMAT_PATTERN = Pattern.compile(FunctionHelper.FORMAT_CHARACTER + "[" + codes + "]");
+    }
+
+    /**
+     * Strips any minecraft formatting codes
+     * 
+     * @param message
+     * @return
+     */
+    public static String stripFormatting(String message)
+    {
+        return FORMAT_PATTERN.matcher(message).replaceAll("");
+    }
+
     // ------------------------------------------------------------
 
     /**
@@ -672,7 +695,7 @@ public final class FunctionHelper
         {
             if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1)
             {
-                b[i] = '\u00a7';
+                b[i] = FORMAT_CHARACTER;
                 b[i + 1] = Character.toLowerCase(b[i + 1]);
             }
         }

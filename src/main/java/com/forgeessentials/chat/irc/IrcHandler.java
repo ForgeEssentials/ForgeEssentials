@@ -8,11 +8,15 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent.Action;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.ServerChatEvent;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -39,6 +43,9 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoader
 {
@@ -77,6 +84,18 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     private boolean sendMessages;
 
+    private String ircHeader;
+
+    private String ircHeaderGlobal;
+
+    private String mcHeader;
+
+    private int messageDelay;
+
+    private boolean allowCommands;
+
+    private boolean allowMcCommands;
+
     public final Map<String, IrcCommand> commands = new HashMap<>();
 
     // This map is used to keep the ICommandSender from being recycled by the garbage collector,
@@ -88,6 +107,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public IrcHandler()
     {
         ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        MinecraftForge.EVENT_BUS.register(this);
 
         registerCommand(new CommandHelp());
         registerCommand(new CommandListPlayers());
@@ -119,7 +139,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         bot.setLogin(botName);
         bot.setVerbose(false);
         bot.setAutoNickChange(true);
-        bot.setMessageDelay(0);
+        bot.setMessageDelay(messageDelay);
 
         bot.setCapEnabled(!twitchMode);
         if (twitchMode)
@@ -175,15 +195,22 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void load(Configuration config, boolean isReload)
     {
         config.addCustomCategoryComment(CATEGORY, "Configure the built-in IRC bot here");
-        server = config.get(CATEGORY, "server", "irc.something.com").getString();
-        port = config.get(CATEGORY, "port", 5555).getInt();
-        botName = config.get(CATEGORY, "botName", "FEIRCBot").getString();
-        serverPassword = config.get(CATEGORY, "serverPassword", "").getString();
+        server = config.get(CATEGORY, "server", "irc.something.com", "Server address").getString();
+        port = config.get(CATEGORY, "port", 5555, "Server port").getInt();
+        botName = config.get(CATEGORY, "botName", "FEIRCBot", "Bot name").getString();
+        serverPassword = config.get(CATEGORY, "serverPassword", "", "Server password").getString();
         nickPassword = config.get(CATEGORY, "nickPassword", "", "NickServ password").getString();
         twitchMode = config.get(CATEGORY, "twitchMode", false, "If set to true, sets connection to twitch mode").getBoolean();
         showEvents = config.get(CATEGORY, "showEvents", true, "Show IRC events ingame (e.g., join, leave, kick, etc.)").getBoolean();
         showMessages = config.get(CATEGORY, "showMessages", true, "Show chat messages from IRC ingame").getBoolean();
         sendMessages = config.get(CATEGORY, "sendMessages", false, "If enabled, ingame messages will be sent to IRC as well").getBoolean();
+        ircHeader = config.get(CATEGORY, "ircHeader", "[\u00a7cIRC\u00a7r]<%s> ", "Header for messages sent from IRC. Must contain one \"%s\"").getString();
+        ircHeaderGlobal = config.get(CATEGORY, "ircHeaderGlobal", "[\u00a7cIRC\u00a7r] ", "Header for IRC events. Must NOT contain any \"%s\"").getString();
+        mcHeader = config.get(CATEGORY, "mcHeader", "<%s> %s", "Header for messages sent from MC to IRC. Must contain two \"%s\"").getString();
+        messageDelay = config.get(CATEGORY, "messageDelay", 0, "Delay between messages sent to IRC").getInt();
+        allowCommands = config.get(CATEGORY, "allowCommands", true, "If enabled, allows usage of bot commands").getBoolean();
+        allowMcCommands = config.get(CATEGORY, "allowMcCommands", true,
+                "If enabled, allows usage of MC commands through the bot (only if the IRC user is in the admins list)").getBoolean();
 
         channels.clear();
         for (String channel : config.get(CATEGORY, "channels", new String[] { "#someChannelName" }, CHANNELS_HELP).getStringList())
@@ -193,10 +220,6 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         for (String admin : config.get(CATEGORY, "admins", new String[] {}, ADMINS_HELP).getStringList())
             admins.add(admin);
 
-        // ircHeader = config.get(CATEGORY, "ircOutput", "(IRC) [%channel] <%ircUser>",
-        // "String to identify IRC channel output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
-        // ircPrivateHeader = config.get(CATEGORY, "ircPrivateOutput", "&6(IRC) [%ircUser]&7",
-        // "String to identify IRC Private MSG output. %channel is replaced by the channel name, %ircuser is replaced by the IRC user's nick").getString();
         // mcHeader = config.get(CATEGORY, "mcFormat", "<%username> %message",
         // "String for formatting messages posted to the IRC channel by the bot").getString();
 
@@ -243,24 +266,29 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     {
         if (!isConnected() || !sendMessages)
             return;
-        sendMessage(String.format("<%s> %s", playerName, message));
+        sendMessage(String.format(mcHeader, playerName, message));
+    }
+
+    public void sendPlayerMessage(ICommandSender sender, IChatComponent message)
+    {
+        sendPlayerMessage(FunctionHelper.stripFormatting(message.getUnformattedText()), sender.getCommandSenderName());
     }
 
     private void mcSendMessage(String message, User user)
     {
         ModuleChat.instance.logChatMessage("IRC-" + user.getNick(), message);
 
-        String headerText = String.format("[\u00a7cIRC\u00a7r]<%s> ", user.getNick());
-        IChatComponent header = ModuleChat.suggestCommandComponent(headerText, Action.SUGGEST_COMMAND, "/ircm ");
+        String headerText = String.format(ircHeader, user.getNick());
+        IChatComponent header = ModuleChat.suggestCommandComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
         IChatComponent messageComponent = ModuleChat.filterChatLinks(FunctionHelper.formatColors(message));
-
         OutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
     }
 
     private void mcSendMessage(String message)
     {
+        IChatComponent header = ModuleChat.suggestCommandComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
         IChatComponent messageComponent = ModuleChat.filterChatLinks(FunctionHelper.formatColors(message));
-        OutputHandler.broadcast(new ChatComponentTranslation("[\u00a7cIRC\u00a7r] %s", messageComponent));
+        OutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
     }
 
     public ICommandSender getIrcUser(String username)
@@ -304,19 +332,44 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         }
     }
 
-    private boolean processMcCommand(User user, String raw)
+    private void processMcCommand(User user, String cmdLine)
     {
         if (!admins.contains(user.getNick()))
         {
             sendMessage(user, "Permission denied. You are not an admin");
-            return true;
+            return;
         }
 
-        sendMessage(user, "Not yet implemented!");
-        return true;
+        String[] args = cmdLine.split(" ");
+        String commandName = args[0].substring(1);
+        args = Arrays.copyOfRange(args, 1, args.length);
+
+        ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(commandName);
+        if (command == null)
+        {
+            sendMessage(user, String.format("Error: Command %s not found!", commandName));
+            return;
+        }
+
+        IrcCommandSender sender = new IrcCommandSender(user);
+        ircUserCache.put(sender.getUser(), sender);
+        try
+        {
+            command.processCommand(sender, args);
+        }
+        catch (CommandException e)
+        {
+            sendMessage(user, "Error: " + e.getMessage());
+        }
     }
 
     /* ------------------------------------------------------------ */
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void chatEvent(ServerChatEvent event)
+    {
+        sendPlayerMessage(event.player, event.component);
+    }
 
     @Override
     public void onPrivateMessage(PrivateMessageEvent<PircBotX> event)
@@ -326,11 +379,11 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
             raw.replace(":", "");
 
         // Check to see if it is a command
-        if (raw.startsWith(COMMAND_CHAR))
+        if (raw.startsWith(COMMAND_CHAR) && allowCommands)
         {
             processCommand(event.getUser(), raw);
         }
-        else if (raw.startsWith(COMMAND_MC_CHAR))
+        else if (raw.startsWith(COMMAND_MC_CHAR) && allowMcCommands)
         {
             processMcCommand(event.getUser(), raw);
         }
@@ -352,19 +405,15 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         while (raw.startsWith(":"))
             raw.replace(":", "");
 
-        if (raw.startsWith(COMMAND_CHAR))
+        if (raw.startsWith(COMMAND_CHAR) && allowCommands)
         {
             processCommand(event.getUser(), raw);
-            return;
         }
-
-        if (raw.startsWith(COMMAND_MC_CHAR))
+        else if (raw.startsWith(COMMAND_MC_CHAR) && allowMcCommands)
         {
-            if (processMcCommand(event.getUser(), raw))
-                return;
+            processMcCommand(event.getUser(), raw);
         }
-
-        if (showMessages)
+        else if (showMessages)
             mcSendMessage(raw, event.getUser());
     }
 

@@ -28,8 +28,9 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -37,6 +38,7 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.chat.command.CommandIrc;
 import com.forgeessentials.chat.command.CommandIrcBot;
+import com.forgeessentials.chat.command.CommandIrcPm;
 import com.forgeessentials.chat.command.CommandMessageReplacement;
 import com.forgeessentials.chat.command.CommandMute;
 import com.forgeessentials.chat.command.CommandNickname;
@@ -69,6 +71,12 @@ public class ModuleChat
     public static final String CONFIG_FILE = "Chat";
 
     public static final String CONFIG_CATEGORY = "Chat";
+
+    public static final String PERM = "fe.chat";
+
+    public static final String PERM_CHAT = PERM + ".chat";
+
+    public static final String PERM_COLOR = PERM + ".usecolor";
 
     // @formatter:off
     static final Pattern URL_PATTERN = Pattern.compile(
@@ -227,7 +235,11 @@ public class ModuleChat
         new CommandUnmute().register();
 
         new CommandIrc().register();
+        new CommandIrcPm().register();
         new CommandIrcBot().register();
+
+        APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
+        APIRegistry.perms.registerPermission(PERM_CHAT, RegisteredPermValue.TRUE, "Allow players to use the public chat");
 
         // APIRegistry.perms.registerPermission("fe.chat.usecolor", RegisteredPermValue.TRUE);
         // APIRegistry.perms.registerPermission("fe.chat.nickname.others", RegisteredPermValue.OP);
@@ -279,6 +291,15 @@ public class ModuleChat
     @SubscribeEvent(priority = EventPriority.LOW)
     public void chatEvent(ServerChatEvent event)
     {
+        UserIdent ident = UserIdent.get(event.player);
+
+        if (!ident.checkPermission(PERM_CHAT))
+        {
+            OutputHandler.chatWarning(event.player, "You don't have the permission to write in public chat.");
+            event.setCanceled(true);
+            return;
+        }
+
         if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
         {
             OutputHandler.chatWarning(event.player, "You are currently muted.");
@@ -298,11 +319,7 @@ public class ModuleChat
 
         // Initialize parameters
         String message = processChatReplacements(event.player, censor.filter(event.player, event.message));
-        UserIdent ident = UserIdent.get(event.player);
         String playerName = getPlayerNickname(event.player);
-
-        // Send to IRC
-        ircHandler.sendPlayerMessage(message, playerName);
 
         // Get player name formatting
         String playerColors = APIRegistry.perms.getUserPermissionProperty(ident, FEPermissions.PLAYER_CHATFORMAT);
@@ -317,7 +334,7 @@ public class ModuleChat
         IChatComponent playerSuffix = suggestCommandComponent(FunctionHelper.getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
         // TODO: Make chat format below configurable? If so, it should always be tested with String.format first!
-        IChatComponent header = new ChatComponentTranslation("%s%s<%s>%s%s ", //
+        IChatComponent header = new ChatComponentTranslation(ChatConfig.chatFormat, //
                 groupPrefix != null ? groupPrefix : "", //
                 playerPrefix != null ? playerPrefix : "", //
                 playerText, //
@@ -325,12 +342,26 @@ public class ModuleChat
                 groupSuffix != null ? groupSuffix : "");
 
         // Apply colors
-        if (event.message.contains("&") && PermissionsManager.checkPermission(event.player, "fe.chat.usecolor"))
+        if (event.message.contains("&") && ident.checkPermission(PERM_COLOR))
             message = FunctionHelper.formatColors(message);
 
         // Finish message with links
         IChatComponent messageComponent = filterChatLinks(message);
         event.component = new ChatComponentTranslation("%s%s", header, messageComponent);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void commandEvent(CommandEvent event)
+    {
+        if (!(event.sender instanceof EntityPlayerMP))
+            return;
+        EntityPlayerMP player = (EntityPlayerMP) event.sender;
+        if (!player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
+            return;
+        if (!ChatConfig.mutedCommands.contains(event.command.getCommandName()))
+            return;
+        OutputHandler.chatWarning(event.sender, "You are currently muted.");
+        event.setCanceled(true);
     }
 
     public static String processChatReplacements(EntityPlayerMP player, String message)
