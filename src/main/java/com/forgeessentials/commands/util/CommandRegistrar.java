@@ -29,7 +29,6 @@ import com.forgeessentials.commands.CommandMotd;
 import com.forgeessentials.commands.CommandNoClip;
 import com.forgeessentials.commands.CommandPing;
 import com.forgeessentials.commands.CommandPotion;
-import com.forgeessentials.commands.CommandPulse;
 import com.forgeessentials.commands.CommandPush;
 import com.forgeessentials.commands.CommandRemove;
 import com.forgeessentials.commands.CommandRename;
@@ -86,7 +85,6 @@ public class CommandRegistrar
         // cmdList.add(new CommandVanish());
         cmdList.add(new CommandPush());
         cmdList.add(new CommandDrop());
-        cmdList.add(new CommandPulse());
         cmdList.add(new CommandFindblock());
         cmdList.add(new CommandNoClip());
         cmdList.add(new CommandBubble());
