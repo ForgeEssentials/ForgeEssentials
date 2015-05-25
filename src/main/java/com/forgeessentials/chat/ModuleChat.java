@@ -351,7 +351,6 @@ public class ModuleChat
         IChatComponent playerText = suggestCommandComponent(playerColors + playerName, Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent playerSuffix = suggestCommandComponent(FunctionHelper.getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
-        // TODO: Make chat format below configurable? If so, it should always be tested with String.format first!
         IChatComponent header = new ChatComponentTranslation(ChatConfig.chatFormat, //
                 groupPrefix != null ? groupPrefix : "", //
                 playerPrefix != null ? playerPrefix : "", //

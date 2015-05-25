@@ -249,6 +249,9 @@ public class PlayerInfo implements Loadable
 
     /**
      * Check, if a timeout passed
+     * 
+     * @param name
+     * @return true, if the timeout passed
      */
     public boolean checkTimeout(String name)
     {

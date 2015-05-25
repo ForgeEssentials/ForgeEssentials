@@ -131,6 +131,12 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     public void playerLogin(PlayerLoggedInEvent event)
     {
         afkPlayers.remove(event.player.getPersistentID());
-    }
 
+        PlayerInfo pi = PlayerInfo.get(event.player);
+        if (!pi.checkTimeout("tempban"))
+        {
+            pi.ident.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You are still banned for %s",
+                    FunctionHelper.formatDateTimeReadable(pi.getRemainingTimeout("tempban") / 1000, true)));
+        }
+    }
 }

@@ -37,6 +37,7 @@ import com.forgeessentials.commands.CommandRules;
 import com.forgeessentials.commands.CommandSeen;
 import com.forgeessentials.commands.CommandSmite;
 import com.forgeessentials.commands.CommandSpeed;
+import com.forgeessentials.commands.CommandTempBan;
 import com.forgeessentials.commands.CommandTime;
 import com.forgeessentials.commands.CommandVirtualchest;
 import com.forgeessentials.commands.CommandWeather;
@@ -90,6 +91,7 @@ public class CommandRegistrar
         cmdList.add(new CommandBubble());
         cmdList.add(new CommandSpeed());
         cmdList.add(new CommandSeen());
+        cmdList.add(new CommandTempBan());
     }
 
     public static void commandConfigs(Configuration config)
