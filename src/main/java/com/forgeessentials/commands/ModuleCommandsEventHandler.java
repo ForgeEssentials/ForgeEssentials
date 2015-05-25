@@ -41,6 +41,8 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         for (PlayerInfo pi : PlayerInfo.getAll())
         {
+            if (!pi.ident.hasPlayer())
+                continue;
             int autoTime = FunctionHelper.parseIntDefault(pi.ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
             if (pi.getInactiveTime() / 1000 > autoTime)
                 setAfk(pi.ident);

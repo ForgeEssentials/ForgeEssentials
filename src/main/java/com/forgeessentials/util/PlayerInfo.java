@@ -116,6 +116,11 @@ public class PlayerInfo implements Loadable
         DataManager.getInstance().save(this, ident.getUuid().toString());
     }
 
+    public boolean isLoggedIn()
+    {
+        return ident.hasPlayer();
+    }
+
     /* ------------------------------------------------------------ */
 
     public static PlayerInfo get(UUID uuid)
@@ -221,7 +226,7 @@ public class PlayerInfo implements Loadable
 
     public long getTimePlayed()
     {
-        if (ident.hasPlayer() && timePlayedRef != 0)
+        if (isLoggedIn() && timePlayedRef != 0)
         {
             timePlayed += System.currentTimeMillis() - timePlayedRef;
             timePlayedRef = System.currentTimeMillis();

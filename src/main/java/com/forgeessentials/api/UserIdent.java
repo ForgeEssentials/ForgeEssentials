@@ -175,7 +175,7 @@ public class UserIdent
         return get(uuidOrUsername, (ICommandSender) null);
     }
 
-    public static synchronized void register(EntityPlayer player)
+    public static synchronized void login(EntityPlayer player)
     {
         UserIdent ident = byUuid.get(player.getPersistentID());
         UserIdent usernameIdent = byUsername.get(player.getCommandSenderName());
@@ -209,7 +209,7 @@ public class UserIdent
         }
     }
 
-    public static synchronized void unregister(EntityPlayer player)
+    public static synchronized void logout(EntityPlayer player)
     {
         UserIdent ident = UserIdent.get(player);
         ident.player = null;
