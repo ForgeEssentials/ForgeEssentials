@@ -44,7 +44,7 @@ public class Censor extends ConfigLoaderBase
     public void load(Configuration config, boolean isReload)
     {
         enabled = config.get(CONFIG_CATEGORY, "enable", true).getBoolean(true);
-        bannedWords = new ArrayList<>(Arrays.asList(config.get(CONFIG_CATEGORY, "words", DEFAULT_WORDS, "Words to be censored").getStringList()));
+        bannedWords = new ArrayList<>(Arrays.asList(config.get(CONFIG_CATEGORY, "words", DEFAULT_WORDS, "Words to be censored. Prepend with ! to disable word boundary check.").getStringList()));
         censorSlap = config.get(CONFIG_CATEGORY, "slapDamage", 1, "Damage to a player when he uses a censored word").getInt();
         censorSymbol = config.get(CONFIG_CATEGORY, "censorSymbol", "#", "Replace censored words with this character").getString();
         if (censorSymbol.length() > 1)
