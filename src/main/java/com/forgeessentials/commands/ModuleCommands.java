@@ -1,11 +1,5 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet5Noclip;
-import com.forgeessentials.commons.network.Packet6Speed;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -27,7 +21,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
 
 @FEModule(name = "Commands", parentMod = ForgeEssentials.class)
 public class ModuleCommands {

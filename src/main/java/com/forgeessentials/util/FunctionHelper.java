@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
@@ -36,6 +37,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
@@ -64,6 +66,8 @@ import cpw.mods.fml.common.eventhandler.EventBus;
 
 public final class FunctionHelper
 {
+
+    public static final char FORMAT_CHARACTER = '\u00a7';
 
     public static final EventBus FE_INTERNAL_EVENTBUS = APIRegistry.getFEEventBus();
 
@@ -493,6 +497,27 @@ public final class FunctionHelper
         return new ImmutablePair<String, Integer>(ID, meta);
     }
 
+    public static final Pattern FORMAT_PATTERN;
+
+    static
+    {
+        String codes = "";
+        for (EnumChatFormatting code : EnumChatFormatting.values())
+            codes += code.getFormattingCode();
+        FORMAT_PATTERN = Pattern.compile(FunctionHelper.FORMAT_CHARACTER + "[" + codes + "]");
+    }
+
+    /**
+     * Strips any minecraft formatting codes
+     * 
+     * @param message
+     * @return
+     */
+    public static String stripFormatting(String message)
+    {
+        return FORMAT_PATTERN.matcher(message).replaceAll("");
+    }
+
     // ------------------------------------------------------------
 
     /**
@@ -670,11 +695,47 @@ public final class FunctionHelper
         {
             if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1)
             {
-                b[i] = '\u00a7';
+                b[i] = FORMAT_CHARACTER;
                 b[i + 1] = Character.toLowerCase(b[i + 1]);
             }
         }
         return new String(b);
+    }
+
+    /**
+     * Apply a set of {@link EnumChatFormatting} to a {@link ChatStyle}
+     * 
+     * @param chatStyle
+     * @param formattings
+     */
+    public static void applyFormatting(ChatStyle chatStyle, Collection<EnumChatFormatting> formattings)
+    {
+        for (EnumChatFormatting format : formattings)
+        {
+            switch (format)
+            {
+            case BOLD:
+                chatStyle.setBold(true);
+                break;
+            case ITALIC:
+                chatStyle.setItalic(true);
+                break;
+            case OBFUSCATED:
+                chatStyle.setObfuscated(true);
+                break;
+            case STRIKETHROUGH:
+                chatStyle.setStrikethrough(true);
+                break;
+            case UNDERLINE:
+                chatStyle.setUnderlined(true);
+                break;
+            case RESET:
+                break;
+            default:
+                chatStyle.setColor(format);
+                break;
+            }
+        }
     }
 
     /**
@@ -1402,6 +1463,5 @@ public final class FunctionHelper
         ichat.appendText(string.substring(lastEnd));
         return ichat;
     }
-
 
 }

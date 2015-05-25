@@ -1,6 +1,6 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.google.common.primitives.Ints;
 import net.minecraftforge.common.config.Configuration;
 

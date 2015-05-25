@@ -1,6 +1,6 @@
 package com.forgeessentials.worldborder;
 
-import com.forgeessentials.core.moduleLauncher.config.IConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.worldborder.Effects.IEffect;
 import net.minecraftforge.common.config.Configuration;

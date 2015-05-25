@@ -20,9 +20,9 @@ public class ConfigManager {
 
         public Configuration config;
 
-        public Set<IConfigLoader> loaders = new HashSet<>();
+        public Set<ConfigLoader> loaders = new HashSet<>();
 
-        public Set<IConfigLoader> loaded = new HashSet<>();
+        public Set<ConfigLoader> loaded = new HashSet<>();
 
     }
 
@@ -57,12 +57,12 @@ public class ConfigManager {
         return getConfigFile(configName).config;
     }
 
-    public void registerLoader(String configName, IConfigLoader loader)
+    public void registerLoader(String configName, ConfigLoader loader)
     {
         registerLoader(configName, loader, true);
     }
 
-    public void registerLoader(String configName, IConfigLoader loader, boolean loadAfterRegistration)
+    public void registerLoader(String configName, ConfigLoader loader, boolean loadAfterRegistration)
     {
         if (useCanonicalConfig && loader.supportsCanonicalConfig())
             getConfigFile(mainConfigName).loaders.add(loader);
@@ -80,7 +80,7 @@ public class ConfigManager {
         {
             if (reload)
                 file.config.load();
-            for (IConfigLoader loader : file.loaders)
+            for (ConfigLoader loader : file.loaders)
             {
                 if (!reload)
                 {
@@ -103,7 +103,7 @@ public class ConfigManager {
         for (ConfigFile file : configFiles.values())
         {
             file.config.load();
-            for (IConfigLoader loader : file.loaders)
+            for (ConfigLoader loader : file.loaders)
                 loader.save(file.config);
             file.config.save();
         }
@@ -112,7 +112,7 @@ public class ConfigManager {
     public void save(String configName)
     {
         ConfigFile file = getConfigFile(configName);
-        for (IConfigLoader loader : file.loaders)
+        for (ConfigLoader loader : file.loaders)
             loader.save(file.config);
         file.config.save();
     }

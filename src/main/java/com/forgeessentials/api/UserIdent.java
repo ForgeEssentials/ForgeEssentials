@@ -372,6 +372,18 @@ public class UserIdent
     }
 
     /* ------------------------------------------------------------ */
+    
+    public boolean checkPermission(String permissionNode)
+    {
+        return APIRegistry.perms.checkUserPermission(this, permissionNode);
+    }
+    
+    public String getPermissionProperty(String permissionNode)
+    {
+        return APIRegistry.perms.getUserPermissionProperty(this, permissionNode);
+    }
+
+    /* ------------------------------------------------------------ */
 
     public static UserIdent fromString(String string)
     {
@@ -446,5 +458,6 @@ public class UserIdent
                 return ident.getUuid();
         return null;
     }
+
 
 }

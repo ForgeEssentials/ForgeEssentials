@@ -1,6 +1,8 @@
 package com.forgeessentials.permissions.core;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -66,7 +69,13 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 public class ZonedPermissionHelper extends ServerEventHandler implements IPermissionsHelper, PermissionDebugger
 {
 
+    private static final String NEW_LINE = System.getProperty("line.separator");
+
     public static final String PERMISSIONS_LIST_FILE = "PermissionsList.txt";
+
+    public static final String PERMISSIONS_LIST_ITEMS_FILE = "PermissionList_Items.txt";
+
+    public static final String PERMISSIONS_LIST_BLOCKS_FILE = "PermissionList_Blocks.txt";
 
     protected RootZone rootZone;
 
@@ -111,7 +120,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         permissionDebugFilters.add("fe.protection.gamemode");
         permissionDebugFilters.add("fe.protection.inventory");
         permissionDebugFilters.add("fe.protection.exist");
-        //permissionDebugFilters.add("fe.economy.cmdprice");
+        // permissionDebugFilters.add("fe.economy.cmdprice");
         permissionDebugFilters.add("worldedit.limit.unrestricted");
     }
 
@@ -138,7 +147,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         if (registeredPermission)
         {
             registeredPermission = false;
-            PermissionsListWriter.write(rootZone, new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE));
+            writePermissionlist();
         }
     }
 
@@ -180,6 +189,132 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         if (firstDirtyTime <= 0)
             firstDirtyTime = lastDirtyTime;
         this.registeredPermission |= registeredPermission;
+    }
+
+    public static boolean isItemPermission(String perm)
+    {
+        return perm.startsWith("fe.protection.inventory.") || //
+                perm.startsWith("fe.protection.exist.") || //
+                perm.startsWith("fe.protection.use.");
+    }
+
+    public static boolean isBlockPermission(String perm)
+    {
+        return perm.startsWith("fe.protection.place.") || //
+                perm.startsWith("fe.protection.break.") || //
+                perm.startsWith("fe.protection.interact.");
+    }
+
+    public void writePermissionlist()
+    {
+        PermissionList defaultPerms = rootZone.getGroupPermissions(Zone.GROUP_DEFAULT);
+        PermissionList opPerms = rootZone.getGroupPermissions(Zone.GROUP_OPERATORS);
+
+        File file = new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE);
+        File fileItems = new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_ITEMS_FILE);
+        File fileBlocks = new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_BLOCKS_FILE);
+
+        TreeMap<String, String> permissions = new TreeMap<>(opPerms);
+        permissions.putAll(defaultPerms);
+
+        int permCount = 0;
+        int permNameLength = 0;
+        for (String perm : permissions.keySet())
+            if (!perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+            {
+                permCount++;
+                permNameLength = Math.max(permNameLength, perm.length());
+            }
+        permNameLength += 2;
+
+        try
+        {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                    BufferedWriter writerItems = new BufferedWriter(new FileWriter(fileItems));
+                    BufferedWriter writerBlocks = new BufferedWriter(new FileWriter(fileBlocks)))
+            {
+                writer.write("#// ---------- PERMISSIONS LIST ------------ \\\\#");
+                writer.newLine();
+                writer.write("#// ---------------- " + FunctionHelper.getCurrentDateString() + " ------------- \\\\#");
+                writer.newLine();
+                writer.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
+                writer.newLine();
+                writer.write("#// ---------------------------------------- \\\\#");
+                writer.newLine();
+
+                writerItems.write("#// ---------- PERMISSIONS LIST ITEMS ------ \\\\#");
+                writerItems.newLine();
+                writerItems.write("#// ---------------- " + FunctionHelper.getCurrentDateString() + " ------------- \\\\#");
+                writerItems.newLine();
+                writerItems.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
+                writerItems.newLine();
+                writerItems.write("#// ---------------------------------------- \\\\#");
+                writerItems.newLine();
+
+                writerBlocks.write("#// ---------- PERMISSIONS LIST BLOCKS ----- \\\\#");
+                writerBlocks.newLine();
+                writerBlocks.write("#// ---------------- " + FunctionHelper.getCurrentDateString() + " ------------- \\\\#");
+                writerBlocks.newLine();
+                writerBlocks.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
+                writerBlocks.newLine();
+                writerBlocks.write("#// ---------------------------------------- \\\\#");
+                writerBlocks.newLine();
+
+                for (Entry<String, String> permission : permissions.entrySet())
+                {
+                    String perm = permission.getKey();
+                    if (perm.endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                    {
+                        perm = perm.substring(0, perm.length() - FEPermissions.DESCRIPTION_PROPERTY.length());
+                        String value = permissions.get(perm);
+                        if (value == null)
+                        {
+                            StringBuffer sb = new StringBuffer();
+                            sb.append(perm);
+                            for (int i = perm.length(); i <= permNameLength; i++)
+                                sb.append(' ');
+                            sb.append("# ");
+                            sb.append(permission.getValue());
+                            sb.append(NEW_LINE);
+                            if (isItemPermission(perm))
+                                writerItems.write(sb.toString());
+                            else if (isBlockPermission(perm))
+                                writerBlocks.write(sb.toString());
+                            else
+                                writer.write(sb.toString());
+                        }
+                    }
+                    else
+                    {
+                        String description = permissions.get(perm + FEPermissions.DESCRIPTION_PROPERTY);
+                        String value = permission.getValue();
+                        String opValue = opPerms.get(perm);
+                        StringBuffer sb = new StringBuffer();
+                        sb.append(perm);
+                        for (int i = perm.length(); i <= permNameLength; i++)
+                            sb.append(' ');
+                        sb.append("# ");
+                        if (opValue != null)
+                            sb.append("(OP only: " + opValue + ") ");
+                        else
+                            sb.append("(default: " + value + ") ");
+                        if (description != null)
+                            sb.append(description);
+                        sb.append(NEW_LINE);
+                        if (isItemPermission(perm))
+                            writerItems.write(sb.toString());
+                        else if (isBlockPermission(perm))
+                            writerBlocks.write(sb.toString());
+                        else
+                            writer.write(sb.toString());
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     // ------------------------------------------------------------
@@ -304,7 +439,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             e.serverZone.setGroupPermission(Zone.GROUP_OPERATORS, FEPermissions.GROUP, true);
             e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
-            e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[OPERATOR]");
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[&cOP&f]");
         }
         if (!e.serverZone.groupExists(Zone.GROUP_FAKEPLAYERS))
         {
