@@ -32,7 +32,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
         return "remote";
     }
 
-    private static final String[] parseMainArgs = { "regen", "kick", "start", "stop", "block", "qr" };
+    private static final String[] parseMainArgs = { "regen", "setkey", "kick", "start", "stop", "block", "qr" };
 
     @Override
     public void processCommand(ICommandSender sender, String[] vargs)
@@ -80,6 +80,21 @@ public class CommandRemote extends ForgeEssentialsCommandBase
                     return;
                 ModuleRemote.getInstance().setPasskey(ident, ModuleRemote.getInstance().generatePasskey());
                 args.confirm("Generated new passkey");
+                showPasskey(args, ident);
+                return;
+            }
+            case "setkey":
+            {
+                UserIdent ident = args.parsePlayer(false);
+                if (!ident.equals(args.ident))
+                    args.checkPermission(ModuleRemote.PERM_CONTROL);
+                if (args.isEmpty())
+                    throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                String key = args.remove();
+                if (args.isTabCompletion)
+                    return;
+                ModuleRemote.getInstance().setPasskey(ident, key);
+                args.confirm(Translator.format("Passkey of %s changed to %s", ident.getUsernameOrUuid(), key));
                 showPasskey(args, ident);
                 return;
             }
@@ -171,7 +186,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
         ChatComponentTranslation msg = new ChatComponentTranslation("Remote passkey = " + ModuleRemote.getInstance().getPasskey(ident) + " ");
 
         IChatComponent qrLink = new ChatComponentText("[QR code]");
-        if (PlayerInfo.get(ident.getUuid()).getHasFEClient())
+        if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
             qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
         else
             qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));

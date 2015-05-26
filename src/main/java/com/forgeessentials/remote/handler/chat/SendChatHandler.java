@@ -2,7 +2,6 @@ package com.forgeessentials.remote.handler.chat;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.event.ClickEvent.Action;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,13 +18,13 @@ import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.remote.handler.RemoteMessageID;
 import com.forgeessentials.util.OutputHandler;
 
-@FERemoteHandler(id = RemoteMessageID.SEND_CHAT)
-public class ActionChatHandler extends GenericRemoteHandler<String>
+@FERemoteHandler(id = RemoteMessageID.CHAT)
+public class SendChatHandler extends GenericRemoteHandler<String>
 {
 
     public static final String PERM = PERM_REMOTE + ".chat.send";
 
-    public ActionChatHandler()
+    public SendChatHandler()
     {
         super(PERM, String.class);
         APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows to send chat messages");
@@ -37,7 +36,7 @@ public class ActionChatHandler extends GenericRemoteHandler<String>
         if (request.data == null)
             error("Missing message");
 
-        EntityPlayerMP player = session.getUserIdent().getFakePlayer(MinecraftServer.getServer().worldServers[0]);
+        EntityPlayerMP player = session.getUserIdent().getFakePlayer();
         String cmd = String.format("/msg %s ", player.getCommandSenderName());
         IChatComponent header = ModuleChat.clickChatComponent(player.getCommandSenderName(), Action.SUGGEST_COMMAND, cmd);
         ChatComponentTranslation chatComponent = new ChatComponentTranslation("chat.type.text", header, request.data);

@@ -2,6 +2,8 @@ package com.forgeessentials.chat.irc;
 
 import org.pircbotx.User;
 
+import com.forgeessentials.util.FunctionHelper;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
@@ -40,7 +42,7 @@ public class IrcCommandSender implements ICommandSender
     public void addChatMessage(IChatComponent chatComponent)
     {
         if (user.getBot().isConnected())
-            user.sendMessage(chatComponent.getUnformattedText());
+            user.sendMessage(FunctionHelper.stripFormatting(chatComponent.getUnformattedText()));
     }
 
     @Override

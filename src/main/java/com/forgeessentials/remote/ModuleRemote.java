@@ -316,8 +316,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
      */
     public void setPasskey(UserIdent userIdent, String passkey)
     {
-        if (!userIdent.hasUuid())
-            return;
         if (passkey == null)
             passkeys.remove(userIdent);
         else

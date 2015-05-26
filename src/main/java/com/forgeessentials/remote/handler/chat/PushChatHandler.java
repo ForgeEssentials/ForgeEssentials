@@ -1,7 +1,5 @@
 package com.forgeessentials.remote.handler.chat;
 
-import java.util.Date;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -13,6 +11,7 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteRequest.PushRequestData;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.remote.ChatResponse;
 import com.forgeessentials.remote.handler.RemoteMessageID;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -45,23 +44,7 @@ public class PushChatHandler extends GenericRemoteHandler<PushRequestData> {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
-        push(new RemoteResponse<>(RemoteMessageID.PUSH_CHAT, new Response(event.username, event.message)));
-    }
-
-    public static class Response {
-
-        public String username;
-
-        public String message;
-
-        public Date timestamp;
-
-        public Response(String username, String message)
-        {
-            this.username = username;
-            this.message = message;
-            this.timestamp = new Date();
-        }
+        push(new RemoteResponse<>(RemoteMessageID.CHAT, new ChatResponse(event.username, event.message)));
     }
 
 }

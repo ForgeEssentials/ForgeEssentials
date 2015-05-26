@@ -259,6 +259,13 @@ public class UserIdent
         return (EntityPlayerMP) player;
     }
 
+    public EntityPlayerMP getFakePlayer()
+    {
+        if (player != null)
+            return (EntityPlayerMP) player;
+        return FakePlayerFactory.get(MinecraftServer.getServer().worldServers[0], getGameProfile());
+    }
+
     public EntityPlayerMP getFakePlayer(WorldServer world)
     {
         if (player != null)
@@ -372,12 +379,12 @@ public class UserIdent
     }
 
     /* ------------------------------------------------------------ */
-    
+
     public boolean checkPermission(String permissionNode)
     {
         return APIRegistry.perms.checkUserPermission(this, permissionNode);
     }
-    
+
     public String getPermissionProperty(String permissionNode)
     {
         return APIRegistry.perms.getUserPermissionProperty(this, permissionNode);
@@ -458,6 +465,5 @@ public class UserIdent
                 return ident.getUuid();
         return null;
     }
-
 
 }
