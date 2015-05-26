@@ -85,11 +85,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 
     protected String hostname;
 
+    protected boolean localhostOnly;
+
     protected boolean useSSL;
 
     protected Server server;
-
-    protected String ip = null;
 
     protected Map<String, RemoteHandler> handlers = new HashMap<>();
 
@@ -163,13 +163,12 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of the minecraft server. Use * to allow access from any address.").getString();
+        localhostOnly = config.get(CONFIG_CAT, "localhostOnly", true, "Allow connections from the web").getBoolean();
+        hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of your server. Used for QR code generation.").getString();
         port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
         useSSL = config.get(CONFIG_CAT, "use_ssl", false,
                 "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
         passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6, "Length of the randomly generated passkeys").getInt();
-        ip = config.get(CONFIG_CAT, "ip", "", "Server ip or domain name to include in qr code.").getString();
-
     }
 
     /* ------------------------------------------------------------ */
@@ -371,8 +370,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     {
         if (!userIdent.hasUUID())
             return null;
-        return userIdent.getUuid().toString() + "@" + (useSSL ? "ssl:" : "") + (ip != null && !ip.isEmpty() ? ip : getHostName()) + ":" + port + "|"
-                + getPasskey(userIdent);
+        return String.format("%s@%s:%d|%s", userIdent.getUsernameOrUUID(), (useSSL ? "ssl:" : "") + hostname, port, getPasskey(userIdent));
     }
 
     /**
