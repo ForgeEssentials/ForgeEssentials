@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -27,7 +25,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.event.ClickEvent;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -35,11 +32,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -727,31 +721,56 @@ public final class FunctionHelper
     public static void applyFormatting(ChatStyle chatStyle, Collection<EnumChatFormatting> formattings)
     {
         for (EnumChatFormatting format : formattings)
+            applyFormatting(chatStyle, format);
+    }
+
+    /**
+     * Apply an {@link EnumChatFormatting} to a {@link ChatStyle}
+     * 
+     * @param chatStyle
+     * @param formatting
+     */
+    public static void applyFormatting(ChatStyle chatStyle, EnumChatFormatting formatting)
+    {
+        switch (formatting)
         {
-            switch (format)
-            {
-            case BOLD:
-                chatStyle.setBold(true);
-                break;
-            case ITALIC:
-                chatStyle.setItalic(true);
-                break;
-            case OBFUSCATED:
-                chatStyle.setObfuscated(true);
-                break;
-            case STRIKETHROUGH:
-                chatStyle.setStrikethrough(true);
-                break;
-            case UNDERLINE:
-                chatStyle.setUnderlined(true);
-                break;
-            case RESET:
-                break;
-            default:
-                chatStyle.setColor(format);
-                break;
-            }
+        case BOLD:
+            chatStyle.setBold(true);
+            break;
+        case ITALIC:
+            chatStyle.setItalic(true);
+            break;
+        case OBFUSCATED:
+            chatStyle.setObfuscated(true);
+            break;
+        case STRIKETHROUGH:
+            chatStyle.setStrikethrough(true);
+            break;
+        case UNDERLINE:
+            chatStyle.setUnderlined(true);
+            break;
+        case RESET:
+            break;
+        default:
+            chatStyle.setColor(formatting);
+            break;
         }
+    }
+
+    public static Collection<EnumChatFormatting> enumChatFormattings(String textFormats)
+    {
+        List<EnumChatFormatting> result = new ArrayList<EnumChatFormatting>();
+        for (int i = 0; i < textFormats.length(); i++)
+        {
+            char formatChar = textFormats.charAt(i);
+            for (EnumChatFormatting format : EnumChatFormatting.values())
+                if (format.getFormattingCode() == formatChar)
+                {
+                    result.add(format);
+                    break;
+                }
+        }
+        return result;
     }
 
     /**
@@ -1422,62 +1441,6 @@ public final class FunctionHelper
                 y++;
             }
         }
-    }
-
-    /**
-     * this code is present in Forge 1278, and should be removed in the 1.8 update of FE.
-     */
-
-    static final Pattern URL_PATTERN = Pattern.compile(
-            // schema ipv4 OR namespace port path ends
-            // |-----------------| |-------------------------| |----------------------------| |---------| |--|
-            // |---------------|
-            "((?:[a-z0-9]{2,}:\\/\\/)?(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[-\\w_\\.]{1,}\\.[a-z]{2,}?))(?::[0-9]{1,5})?.*?(?=[!\"\u00A7 \n]|$))",
-            Pattern.CASE_INSENSITIVE);
-
-    public static ChatComponentTranslation newChatWithLinks(String string)
-    {
-        // Includes ipv4 and domain pattern
-        // Matches an ip (xx.xxx.xx.xxx) or a domain (something.com) with or
-        // without a protocol or path.
-        ChatComponentTranslation ichat = new ChatComponentTranslation("");
-        Matcher matcher = URL_PATTERN.matcher(string);
-        int lastEnd = 0;
-
-        // Find all urls
-        while (matcher.find())
-        {
-            int start = matcher.start();
-            int end = matcher.end();
-
-            // Append the previous left overs.
-            ichat.appendText(string.substring(lastEnd, start));
-            lastEnd = end;
-            String url = string.substring(start, end);
-            IChatComponent link = new ChatComponentText(url);
-
-            try
-            {
-                // Add schema so client doesn't crash.
-                if ((new URI(url)).getScheme() == null)
-                    url = "http://" + url;
-            }
-            catch (URISyntaxException e)
-            {
-                // Bad syntax bail out!
-                ichat.appendText(url);
-                continue;
-            }
-
-            // Set the click event and append the link.
-            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-            link.getChatStyle().setChatClickEvent(click);
-            ichat.appendSibling(link);
-        }
-
-        // Append the rest of the message.
-        ichat.appendText(string.substring(lastEnd));
-        return ichat;
     }
 
 }

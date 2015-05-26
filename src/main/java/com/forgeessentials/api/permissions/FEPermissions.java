@@ -44,6 +44,5 @@ public final class FEPermissions {
 	public static final String PLAYER_NAME = PLAYER + ".name";
     public static final String PLAYER_GROUPS = PLAYER + ".groups";
     public static final String PLAYER_KNOWN = PLAYER + ".known";
-    public static final String PLAYER_CHATFORMAT = PLAYER + ".chatformat";
 
 }
