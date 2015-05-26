@@ -1,6 +1,7 @@
 package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -428,8 +429,7 @@ public class PermissionCommandParser
                 if (type != PermissionAction.CLEAR)
                     arguments.tabCompletion = completePermission(arguments.args.peek());
                 else
-                    arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(),
-                            zone.getPlayerPermissions(ident).keySet());
+                    arguments.tabCompletion = completePermission(arguments.args.peek(), zone.getPlayerPermissions(ident).keySet());
                 return;
             }
 
@@ -865,8 +865,7 @@ public class PermissionCommandParser
                 if (type != PermissionAction.CLEAR)
                     arguments.tabCompletion = completePermission(arguments.args.peek());
                 else
-                    arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), zone
-                            .getGroupPermissions(group).keySet());
+                    arguments.tabCompletion = completePermission(arguments.args.peek(), zone.getGroupPermissions(group).keySet());
                 return;
             }
 
@@ -1094,10 +1093,10 @@ public class PermissionCommandParser
     // -- Utils
     // ------------------------------------------------------------
 
-    public static List<String> completePermission(String permission)
+    public static List<String> completePermission(String permission, Collection<String> permissionSet)
     {
         Set<String> result = new TreeSet<String>();
-        for (String perm : APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions())
+        for (String perm : permissionSet)
         {
             int nodeIndex = perm.indexOf('.', permission.length());
             if (nodeIndex >= 0)
@@ -1105,8 +1104,12 @@ public class PermissionCommandParser
             if (CommandBase.doesStringStartWith(permission, perm))
                 result.add(perm);
         }
-
         return new ArrayList<String>(result);
+    }
+
+    public static List<String> completePermission(String permission)
+    {
+        return completePermission(permission, APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
     }
 
     public static Zone getZoneByName(ICommandSender sender, String zoneId)
