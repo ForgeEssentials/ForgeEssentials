@@ -21,13 +21,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Mixin(BlockPortal.class)
-public abstract class BlockPortal_01 extends BlockPortal {
+public abstract class BlockPortal_01 extends BlockPortal
+{
 
     @Override
     @Overwrite
     public void onEntityCollidedWithBlock(World world, int p_149670_2_, int p_149670_3_, int p_149670_4_, Entity entity)
     {
-        Portal portal = PortalManager.getInstance().getPortalAt(new WorldPoint(entity.dimension, p_149670_2_, p_149670_3_, p_149670_4_));
+        if (entity == null)
+            return;
+        Portal portal = null;
+        if (entity != null && PortalManager.getInstance() != null)
+            portal = PortalManager.getInstance().getPortalAt(new WorldPoint(entity.dimension, p_149670_2_, p_149670_3_, p_149670_4_));
         if (portal == null)
         {
             if (entity.ridingEntity == null && entity.riddenByEntity == null)
@@ -38,7 +43,7 @@ public abstract class BlockPortal_01 extends BlockPortal {
             if (entity instanceof EntityPlayerMP)
                 TeleportHelper.doTeleport((EntityPlayerMP) entity, portal.getTarget().toWarpPoint(entity.rotationPitch, entity.rotationYaw));
             else
-                TeleportHelper.doTeleportEntity(entity, portal.getTarget().toWarpPoint(entity.rotationPitch, entity.rotationYaw));                 
+                TeleportHelper.doTeleportEntity(entity, portal.getTarget().toWarpPoint(entity.rotationPitch, entity.rotationYaw));
         }
     }
 
@@ -70,12 +75,13 @@ public abstract class BlockPortal_01 extends BlockPortal {
         }
         return true;
     }
-    
+
     @Override
     @Overwrite
     public boolean func_150000_e(World p_150000_1_, int p_150000_2_, int p_150000_3_, int p_150000_4_)
     {
-        if (PortalManager.getInstance() != null && PortalManager.getInstance().getPortalAt(new WorldPoint(p_150000_1_, p_150000_2_, p_150000_3_, p_150000_4_)) == null)
+        if (PortalManager.getInstance() != null
+                && PortalManager.getInstance().getPortalAt(new WorldPoint(p_150000_1_, p_150000_2_, p_150000_3_, p_150000_4_)) == null)
         {
             BlockPortalSize size = new BlockPortalSize(p_150000_1_, p_150000_2_, p_150000_3_, p_150000_4_, 1);
             BlockPortalSize size1 = new BlockPortalSize(p_150000_1_, p_150000_2_, p_150000_3_, p_150000_4_, 2);
@@ -106,11 +112,13 @@ public abstract class BlockPortal_01 extends BlockPortal {
 
         if (l == 0)
         {
-            if (p_149719_1_.getBlock(p_149719_2_ - 1, p_149719_3_, p_149719_4_) != this && p_149719_1_.getBlock(p_149719_2_ + 1, p_149719_3_, p_149719_4_) != this)
+            if (p_149719_1_.getBlock(p_149719_2_ - 1, p_149719_3_, p_149719_4_) != this
+                    && p_149719_1_.getBlock(p_149719_2_ + 1, p_149719_3_, p_149719_4_) != this)
             {
                 l = 2;
             }
-            else if (p_149719_1_.getBlock(p_149719_2_, p_149719_3_ - 1, p_149719_4_) != this && p_149719_1_.getBlock(p_149719_2_, p_149719_3_ + 1, p_149719_4_) != this)
+            else if (p_149719_1_.getBlock(p_149719_2_, p_149719_3_ - 1, p_149719_4_) != this
+                    && p_149719_1_.getBlock(p_149719_2_, p_149719_3_ + 1, p_149719_4_) != this)
             {
                 l = 4;
             }
@@ -119,9 +127,9 @@ public abstract class BlockPortal_01 extends BlockPortal {
                 l = 1;
             }
 
-            if (p_149719_1_ instanceof World && !((World)p_149719_1_).isRemote)
+            if (p_149719_1_ instanceof World && !((World) p_149719_1_).isRemote)
             {
-                ((World)p_149719_1_).setBlockMetadataWithNotify(p_149719_2_, p_149719_3_, p_149719_4_, l, 2);
+                ((World) p_149719_1_).setBlockMetadataWithNotify(p_149719_2_, p_149719_3_, p_149719_4_, l, 2);
             }
         }
 
@@ -138,7 +146,7 @@ public abstract class BlockPortal_01 extends BlockPortal {
             this.setBlockBounds(0, 0.375F, 0, 1, 0.625F, 1);
         }
     }
-    
+
     /**
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
      * their own) Args: x, y, z, neighbor Block
