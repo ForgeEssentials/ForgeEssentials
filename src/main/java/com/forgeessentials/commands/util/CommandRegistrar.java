@@ -1,49 +1,46 @@
 package com.forgeessentials.commands.util;
 
-import java.util.ArrayList;
-
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commands.admin.CommandModlist;
+import com.forgeessentials.commands.tools.CommandPing;
+import com.forgeessentials.commands.admin.CommandBubble;
+import com.forgeessentials.commands.admin.CommandDoAs;
+import com.forgeessentials.commands.admin.CommandInventorySee;
+import com.forgeessentials.commands.admin.CommandServerSettings;
+import com.forgeessentials.commands.admin.CommandTempBan;
+import com.forgeessentials.commands.game.CommandBurn;
+import com.forgeessentials.commands.game.CommandButcher;
+import com.forgeessentials.commands.game.CommandEnchant;
+import com.forgeessentials.commands.game.CommandGameMode;
+import com.forgeessentials.commands.game.CommandKit;
+import com.forgeessentials.commands.game.CommandPush;
+import com.forgeessentials.commands.game.CommandRules;
+import com.forgeessentials.commands.game.CommandSmite;
+import com.forgeessentials.commands.game.cheat.CommandCraft;
+import com.forgeessentials.commands.game.cheat.CommandEnderchest;
+import com.forgeessentials.commands.game.cheat.CommandHeal;
+import com.forgeessentials.commands.game.cheat.CommandPotion;
+import com.forgeessentials.commands.game.cheat.CommandRepair;
+import com.forgeessentials.commands.game.cheat.CommandVirtualchest;
+import com.forgeessentials.commands.game.player.CommandGetCommandBook;
+import com.forgeessentials.commands.game.player.CommandKill;
+import com.forgeessentials.commands.game.player.CommandNoClip;
+import com.forgeessentials.commands.game.player.CommandSpeed;
+import com.forgeessentials.commands.game.world.CommandTime;
+import com.forgeessentials.commands.game.world.CommandWeather;
+import com.forgeessentials.commands.tools.CommandAFK;
+import com.forgeessentials.commands.tools.CommandBind;
+import com.forgeessentials.commands.tools.CommandCapabilities;
+import com.forgeessentials.commands.tools.CommandDrop;
+import com.forgeessentials.commands.tools.CommandFindblock;
+import com.forgeessentials.commands.tools.CommandLocate;
+import com.forgeessentials.commands.tools.CommandRemove;
+import com.forgeessentials.commands.tools.CommandRename;
+import com.forgeessentials.commands.tools.CommandSeen;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commands.CommandAFK;
-import com.forgeessentials.commands.CommandBind;
-import com.forgeessentials.commands.CommandBubble;
-import com.forgeessentials.commands.CommandBurn;
-import com.forgeessentials.commands.CommandButcher;
-import com.forgeessentials.commands.CommandCapabilities;
-import com.forgeessentials.commands.CommandCraft;
-import com.forgeessentials.commands.CommandDrop;
-import com.forgeessentials.commands.CommandEnchant;
-import com.forgeessentials.commands.CommandEnderchest;
-import com.forgeessentials.commands.CommandFindblock;
-import com.forgeessentials.commands.CommandGameMode;
-import com.forgeessentials.commands.CommandGetCommandBook;
-import com.forgeessentials.commands.CommandHeal;
-import com.forgeessentials.commands.CommandInventorySee;
-import com.forgeessentials.commands.CommandJump;
-import com.forgeessentials.commands.CommandKill;
-import com.forgeessentials.commands.CommandKit;
-import com.forgeessentials.commands.CommandLocate;
-import com.forgeessentials.commands.CommandModlist;
-import com.forgeessentials.commands.CommandMotd;
-import com.forgeessentials.commands.CommandNoClip;
-import com.forgeessentials.commands.CommandPing;
-import com.forgeessentials.commands.CommandPotion;
-import com.forgeessentials.commands.CommandPush;
-import com.forgeessentials.commands.CommandRemove;
-import com.forgeessentials.commands.CommandRename;
-import com.forgeessentials.commands.CommandRepair;
-import com.forgeessentials.commands.CommandRules;
-import com.forgeessentials.commands.CommandSeen;
-import com.forgeessentials.commands.CommandSmite;
-import com.forgeessentials.commands.CommandSpeed;
-import com.forgeessentials.commands.CommandTempBan;
-import com.forgeessentials.commands.CommandTime;
-import com.forgeessentials.commands.CommandVirtualchest;
-import com.forgeessentials.commands.CommandWeather;
-import com.forgeessentials.commands.admin.CommandDoAs;
-import com.forgeessentials.commands.admin.CommandServerSettings;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import java.util.ArrayList;
 
 public class CommandRegistrar
 {
@@ -54,7 +51,6 @@ public class CommandRegistrar
     {
         cmdList = new ArrayList<FEcmdModuleCommands>();
         cmdList.add(new CommandTime());
-        cmdList.add(new CommandMotd());
         cmdList.add(new CommandEnchant());
         cmdList.add(new CommandLocate());
         cmdList.add(new CommandRules());
@@ -66,7 +62,6 @@ public class CommandRegistrar
         cmdList.add(new CommandEnderchest());
         cmdList.add(new CommandVirtualchest());
         cmdList.add(new CommandCapabilities());
-        cmdList.add(new CommandJump());
         cmdList.add(new CommandCraft());
         cmdList.add(new CommandPing());
         cmdList.add(new CommandInventorySee());

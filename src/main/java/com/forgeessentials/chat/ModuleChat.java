@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.forgeessentials.chat.command.CommandMOTD;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -124,6 +125,7 @@ public class ModuleChat
         censor = new Censor();
 
         setupChatReplacements();
+        LoginMessage.loadFile();
     }
 
     public void setupChatReplacements()
@@ -252,6 +254,7 @@ public class ModuleChat
         new CommandReply().register();
         new CommandTimedMessages().register();
         new CommandUnmute().register();
+        new CommandMOTD().register();
 
         new CommandIrc().register();
         new CommandIrcPm().register();

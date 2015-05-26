@@ -78,6 +78,7 @@ public class TeleportModule
         commands.add(new CommandTop());
         commands.add(new CommandPortal());
         commands.add(new CommandSetSpawn());
+        commands.add(new CommandJump());
     }
 
     @SubscribeEvent

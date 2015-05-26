@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.util;
 
+import com.forgeessentials.chat.LoginMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -13,8 +14,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.commands.CommandNoClip;
-import com.forgeessentials.commands.CommandVanish;
+import com.forgeessentials.commands.game.player.CommandNoClip;
+import com.forgeessentials.commands.game.player.CommandVanish;
 import com.forgeessentials.util.FunctionHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;

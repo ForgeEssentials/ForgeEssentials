@@ -1,5 +1,6 @@
 package com.forgeessentials.commands;
 
+import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.api.APIRegistry;
@@ -7,7 +8,6 @@ import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandRegistrar;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.ConfigCmd;
-import com.forgeessentials.commands.util.LoginMessage;
 import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -34,7 +34,6 @@ public class ModuleCommands
         MobTypeLoader.preLoad((FMLPreInitializationEvent) e.getFMLEvent());
         MinecraftForge.EVENT_BUS.register(oldEventHandler);
         FMLCommonHandler.instance().bus().register(oldEventHandler);
-        LoginMessage.loadFile();
     }
 
     @SubscribeEvent

@@ -1,6 +1,6 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.commands.CommandVirtualchest;
+import com.forgeessentials.commands.game.cheat.CommandVirtualchest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
