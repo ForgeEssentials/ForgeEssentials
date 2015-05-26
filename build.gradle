@@ -50,9 +50,9 @@ if (JavaVersion.current().isJava8Compatible()) {
 }
 
 minecraft {
-    version = "1.7.10-10.13.2.1258"
+    version = "1.7.10-10.13.2.1291"
     runDir = "rundir"
-    ext.forgeVersion = "10.13.2.1258"
+    ext.forgeVersion = "10.13.2.1291"
 
     replaceIn "com/forgeessentials/commons/VersionUtils.java"
     replace "%VERSION%", project.version
