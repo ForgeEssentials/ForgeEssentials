@@ -43,7 +43,7 @@ public class SendChatHandler extends GenericRemoteHandler<String>
         ServerChatEvent event = new ServerChatEvent(player, request.data, chatComponent);
         if (!MinecraftForge.EVENT_BUS.post(event))
             OutputHandler.broadcast(event.component);
-        return success(request);
+        return null;
     }
 
 }
