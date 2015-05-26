@@ -279,14 +279,14 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         ModuleChat.instance.logChatMessage("IRC-" + user.getNick(), message);
 
         String headerText = String.format(ircHeader, user.getNick());
-        IChatComponent header = ModuleChat.suggestCommandComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
+        IChatComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
         IChatComponent messageComponent = ModuleChat.filterChatLinks(FunctionHelper.formatColors(message));
         OutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
     }
 
     private void mcSendMessage(String message)
     {
-        IChatComponent header = ModuleChat.suggestCommandComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
+        IChatComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
         IChatComponent messageComponent = ModuleChat.filterChatLinks(FunctionHelper.formatColors(message));
         OutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
     }

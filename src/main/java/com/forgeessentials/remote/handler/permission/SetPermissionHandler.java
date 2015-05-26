@@ -20,7 +20,7 @@ public class SetPermissionHandler extends GenericRemoteHandler<SetPermissionHand
     public SetPermissionHandler()
     {
         super(PERM, SetPermissionHandler.Request.class);
-        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Allows to change permissions through remote");
+        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Allows to change permissions");
     }
 
     @Override

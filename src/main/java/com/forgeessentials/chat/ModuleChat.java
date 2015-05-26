@@ -347,9 +347,9 @@ public class ModuleChat
         // Initialize header
         String playerCmd = "/msg " + event.player.getCommandSenderName() + " ";
         IChatComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
-        IChatComponent playerPrefix = suggestCommandComponent(FunctionHelper.getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
-        IChatComponent playerText = suggestCommandComponent(playerColors + playerName, Action.SUGGEST_COMMAND, playerCmd);
-        IChatComponent playerSuffix = suggestCommandComponent(FunctionHelper.getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent playerPrefix = clickChatComponent(FunctionHelper.getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent playerText = clickChatComponent(playerColors + playerName, Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent playerSuffix = clickChatComponent(FunctionHelper.getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
         IChatComponent header = new ChatComponentTranslation(ChatConfig.chatFormat, //
                 groupPrefix != null ? groupPrefix : "", //
@@ -410,7 +410,7 @@ public class ModuleChat
         return message;
     }
 
-    public static IChatComponent suggestCommandComponent(String text, Action action, String uri)
+    public static IChatComponent clickChatComponent(String text, Action action, String uri)
     {
         IChatComponent component = new ChatComponentText(FunctionHelper.formatColors(text));
         component.getChatStyle().setChatClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, uri));
@@ -424,7 +424,7 @@ public class ModuleChat
             String text = APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (text != null)
             {
-                IChatComponent component = suggestCommandComponent(text, Action.SUGGEST_COMMAND, "/gmsg " + group.getGroup() + " ");
+                IChatComponent component = clickChatComponent(text, Action.SUGGEST_COMMAND, "/gmsg " + group.getGroup() + " ");
                 if (header == null)
                     header = component;
                 else

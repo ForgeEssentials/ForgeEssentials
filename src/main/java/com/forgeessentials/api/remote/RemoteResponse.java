@@ -5,7 +5,8 @@ import com.google.gson.JsonElement;
 /**
  * Represents a generic remote response
  */
-public class RemoteResponse<T> {
+public class RemoteResponse<T>
+{
 
     public String id;
 
@@ -17,7 +18,7 @@ public class RemoteResponse<T> {
 
     public T data;
 
-    public RemoteResponse(String id, int rid, boolean success, String message, T data)
+    private RemoteResponse(String id, int rid, boolean success, String message, T data)
     {
         this.id = id;
         this.rid = rid;
@@ -26,13 +27,25 @@ public class RemoteResponse<T> {
         this.data = data;
     }
 
-    public RemoteResponse(String id, T data)
+    private RemoteResponse(String id, int rid, boolean success, String message)
     {
         this.id = id;
-        this.rid = 0;
+        this.rid = rid;
+        this.success = success;
+        this.message = message;
+    }
+
+    public RemoteResponse(String id, int rid, T data)
+    {
+        this.id = id;
+        this.rid = rid;
         this.success = true;
-        this.message = null;
         this.data = data;
+    }
+
+    public RemoteResponse(String id, T data)
+    {
+        this(id, 0, data);
     }
 
     public RemoteResponse(RemoteRequest<?> request, T data)
@@ -46,7 +59,7 @@ public class RemoteResponse<T> {
 
     public static RemoteResponse<String> error(String id, int rid, String message)
     {
-        return new RemoteResponse<String>(id, rid, false, message, null);
+        return new RemoteResponse<String>(id, rid, false, message);
     }
 
     public static RemoteResponse<String> error(RemoteRequest<?> request, String message)
@@ -54,24 +67,24 @@ public class RemoteResponse<T> {
         return error(request.id, request.rid, message);
     }
 
-    public static RemoteResponse<String> ok(String id, int rid, String message)
+    public static RemoteResponse<?> success(String id, int rid, String message)
     {
-        return new RemoteResponse<String>(id, rid, true, message, null);
+        return new RemoteResponse<Object>(id, rid, true, message);
     }
 
-    public static RemoteResponse<String> ok(RemoteRequest<?> request, String message)
+    public static RemoteResponse<?> success(RemoteRequest<?> request, String message)
     {
-        return ok(request.id, request.rid, message);
+        return success(request.id, request.rid, message);
     }
 
-    public static RemoteResponse<String> ok(String id, int rid)
+    public static RemoteResponse<?> success(String id, int rid)
     {
-        return ok(id, rid, "ok");
+        return success(id, rid, "ok");
     }
 
-    public static RemoteResponse<String> ok(RemoteRequest<?> request)
+    public static RemoteResponse<?> success(RemoteRequest<?> request)
     {
-        return ok(request.id, request.rid);
+        return success(request.id, request.rid);
     }
 
     public static <T> RemoteResponse<T> transform(RemoteResponse<?> response, T newData)
@@ -79,7 +92,8 @@ public class RemoteResponse<T> {
         return new RemoteResponse<T>(response.id, response.rid, response.success, response.message, newData);
     }
 
-    public static class JsonRemoteResponse extends RemoteResponse<JsonElement> {
+    public static class JsonRemoteResponse extends RemoteResponse<JsonElement>
+    {
 
         public JsonRemoteResponse(String id, int rid, boolean success, String message, JsonElement data)
         {
@@ -92,5 +106,5 @@ public class RemoteResponse<T> {
         }
 
     }
-    
+
 }

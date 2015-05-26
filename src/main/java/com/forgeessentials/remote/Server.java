@@ -64,7 +64,7 @@ public class Server implements Runnable {
     {
         try
         {
-            RemoteResponse<?> shutdownMessage = RemoteResponse.ok("shutdown", 0, "Server shutting down");
+            RemoteResponse<?> shutdownMessage = RemoteResponse.success("shutdown", 0, "Server shutting down");
             for (Session session : sessions)
             {
                 session.trySendMessage(shutdownMessage);

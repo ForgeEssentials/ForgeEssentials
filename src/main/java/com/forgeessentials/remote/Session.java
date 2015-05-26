@@ -11,6 +11,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler.PermissionException;
+import com.forgeessentials.api.remote.RemoteHandler.RemoteException;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
@@ -145,6 +146,11 @@ public class Session implements Runnable, RemoteSession
             catch (PermissionException e)
             {
                 sendMessage(RemoteResponse.error(request, RemoteHandler.MSG_NO_PERMISSION));
+                return;
+            }
+            catch (RemoteException e)
+            {
+                sendMessage(RemoteResponse.error(request, e.getMessage()));
                 return;
             }
             catch (Exception e)

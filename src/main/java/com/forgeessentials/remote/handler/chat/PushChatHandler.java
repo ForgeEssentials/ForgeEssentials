@@ -1,5 +1,7 @@
 package com.forgeessentials.remote.handler.chat;
 
+import java.util.Date;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -20,17 +22,17 @@ public class PushChatHandler extends GenericRemoteHandler<PushRequestData> {
 
     public static final String ID = "push_chat";
 
-    public static final String PERM = PERM_REMOTE + ".push.chat";
+    public static final String PERM = PERM_REMOTE + ".chat.push";
 
     public PushChatHandler()
     {
         super(PERM, PushRequestData.class);
-        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows requesting chat push-messages");
+        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows requesting chat push messages");
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
-    public synchronized RemoteResponse<String> handleData(RemoteSession session, RemoteRequest<PushRequestData> request)
+    public synchronized RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<PushRequestData> request)
     {
         if (hasPushSession(session) ^ !request.data.enable)
             error("chat push already " + (request.data.enable ? "enabled" : "disabled"));
@@ -38,7 +40,7 @@ public class PushChatHandler extends GenericRemoteHandler<PushRequestData> {
             addPushSession(session);
         else
             removePushSession(session);
-        return RemoteResponse.ok(request);
+        return success(request);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -53,10 +55,13 @@ public class PushChatHandler extends GenericRemoteHandler<PushRequestData> {
 
         public String message;
 
+        public Date timestamp;
+
         public Response(String username, String message)
         {
             this.username = username;
             this.message = message;
+            this.timestamp = new Date();
         }
     }
 

@@ -9,7 +9,8 @@ import com.forgeessentials.api.APIRegistry;
 /**
  *
  */
-public abstract class AbstractRemoteHandler implements RemoteHandler {
+public abstract class AbstractRemoteHandler implements RemoteHandler
+{
 
     private final String permission;
 
@@ -37,9 +38,14 @@ public abstract class AbstractRemoteHandler implements RemoteHandler {
         throw new RemoteException(message);
     }
 
-    public static void error(String message, Object... args) 
+    public static void error(String message, Object... args)
     {
         throw new RemoteException(message, args);
+    }
+
+    public static RemoteResponse<?> success(RemoteRequest<?> request)
+    {
+        return RemoteResponse.success(request);
     }
 
     protected synchronized void addPushSession(RemoteSession session)
