@@ -64,7 +64,7 @@ public class CommandTrade extends ParserCommandBase
 
         final UserIdent buyer = arguments.parsePlayer(true);
         if (!buyer.hasPlayer())
-            throw new TranslatedCommandException("Player %s is not online", buyer.getUsernameOrUUID());
+            throw new TranslatedCommandException("Player %s is not online", buyer.getUsernameOrUuid());
 
         // if (arguments.isEmpty())
         // throw new TranslatedCommandException("Missing argument");
@@ -91,7 +91,7 @@ public class CommandTrade extends ParserCommandBase
         final Wallet buyerWallet = APIRegistry.economy.getWallet(buyer);
 
         if (!buyerWallet.covers(price * itemStack.stackSize))
-            throw new TranslatedCommandException("%s can't affort that!", buyer.getUsernameOrUUID());
+            throw new TranslatedCommandException("%s can't affort that!", buyer.getUsernameOrUuid());
 
         QuestionerCallback sellerHandler = new QuestionerCallback() {
             @Override
@@ -119,7 +119,7 @@ public class CommandTrade extends ParserCommandBase
                         else if (response == false)
                         {
                             OutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Trade declined"));
-                            arguments.error(Translator.format("Player %s declined the trade", buyer.getUsernameOrUUID()));
+                            arguments.error(Translator.format("Player %s declined the trade", buyer.getUsernameOrUuid()));
                             return;
                         }
 
@@ -154,7 +154,7 @@ public class CommandTrade extends ParserCommandBase
                                 APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize),
                                 arguments.sender.getCommandSenderName());
                     Questioner.add(buyer.getPlayerMP(), message, buyerHandler, 60);
-                    arguments.confirm(Translator.format("Waiting on %s...", buyer.getUsernameOrUUID()));
+                    arguments.confirm(Translator.format("Waiting on %s...", buyer.getUsernameOrUuid()));
                 }
                 catch (QuestionerStillActiveException e)
                 {
@@ -167,10 +167,10 @@ public class CommandTrade extends ParserCommandBase
             String message;
             if (itemStack.stackSize == 1)
                 message = Translator.format("Sell one %s for %s to %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price),
-                        buyer.getUsernameOrUUID());
+                        buyer.getUsernameOrUuid());
             else
                 message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.stackSize, itemStack.getDisplayName(),
-                        APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize), buyer.getUsernameOrUUID());
+                        APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize), buyer.getUsernameOrUuid());
             Questioner.add(arguments.sender, message, sellerHandler, 20);
         }
         catch (QuestionerStillActiveException e)

@@ -329,7 +329,7 @@ public class CommandPlot extends ParserCommandBase
             arguments.confirm(Translator.translate("Plot " + type + ":"));
             for (UserIdent user : APIRegistry.perms.getServerZone().getKnownPlayers())
                 if (plot.getZone().getStoredPlayerGroups(user).contains(group))
-                    arguments.confirm("  " + user.getUsernameOrUUID());
+                    arguments.confirm("  " + user.getUsernameOrUuid());
             return;
         }
         arguments.tabComplete("add", "remove");
@@ -343,11 +343,11 @@ public class CommandPlot extends ParserCommandBase
         {
         case "add":
             plot.getZone().addPlayerToGroup(player, modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD);
-            arguments.confirm(Translator.format("Added %s to plot " + type, player.getUsernameOrUUID()));
+            arguments.confirm(Translator.format("Added %s to plot " + type, player.getUsernameOrUuid()));
             break;
         case "remove":
             plot.getZone().removePlayerFromGroup(player, modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD);
-            arguments.confirm(Translator.format("Removed %s from plot " + type, player.getUsernameOrUUID()));
+            arguments.confirm(Translator.format("Removed %s from plot " + type, player.getUsernameOrUuid()));
             break;
         default:
             throw new TranslatedCommandException.InvalidSyntaxException();
@@ -579,14 +579,14 @@ public class CommandPlot extends ParserCommandBase
                         {
                             if (response == null)
                             {
-                                arguments.error(Translator.format("%s did not respond to your buy request", plot.getOwner().getUsernameOrUUID()));
+                                arguments.error(Translator.format("%s did not respond to your buy request", plot.getOwner().getUsernameOrUuid()));
                                 return;
                             }
                             else if (response == false)
                             {
                                 OutputHandler.chatError(plot.getOwner().getPlayerMP(), Translator.translate("Trade declined"));
                                 arguments.error(Translator.format("%s declined to sell you plot \"%s\" for %s", //
-                                        plot.getOwner().getUsernameOrUUID(), plot.getName(), buyPriceStr));
+                                        plot.getOwner().getUsernameOrUuid(), plot.getName(), buyPriceStr));
                                 return;
                             }
                             buyPlot(arguments, plot, plotPrice);
@@ -638,7 +638,7 @@ public class CommandPlot extends ParserCommandBase
                 ModuleEconomy.confirmNewWalletAmount(plot.getOwner(), sellerWallet);
             }
             arguments.confirm(Translator.format("%s sold plot \"%s\" to you for %s", //
-                    plot.getOwner().getUsernameOrUUID(), plot.getName(), priceStr));
+                    plot.getOwner().getUsernameOrUuid(), plot.getName(), priceStr));
             ModuleEconomy.confirmNewWalletAmount(arguments.ident, buyerWallet);
         }
         else

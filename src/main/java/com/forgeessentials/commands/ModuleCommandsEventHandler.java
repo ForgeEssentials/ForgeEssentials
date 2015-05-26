@@ -71,7 +71,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
         player.getPlayerMP().capabilities.disableDamage = true;
         if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
-            OutputHandler.broadcast(OutputHandler.confirmation(Translator.format("Player %s is now AFK", player.getUsernameOrUUID())));
+            OutputHandler.broadcast(OutputHandler.confirmation(Translator.format("Player %s is now AFK", player.getUsernameOrUuid())));
         else
             OutputHandler.chatConfirmation(player.getPlayer(), Translator.translate("You are now AFK"));
 
@@ -87,7 +87,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
         player.getPlayerMP().capabilities.disableDamage = false;
         if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
-            OutputHandler.broadcast(OutputHandler.confirmation(Translator.format("Player %s is not AFK any more", player.getUsernameOrUUID())));
+            OutputHandler.broadcast(OutputHandler.confirmation(Translator.format("Player %s is not AFK any more", player.getUsernameOrUuid())));
         else
             OutputHandler.chatConfirmation(player.getPlayer(), Translator.translate("You are not AFK any more"));
 

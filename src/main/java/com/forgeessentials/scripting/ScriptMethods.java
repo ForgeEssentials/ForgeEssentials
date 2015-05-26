@@ -322,7 +322,7 @@ public final class ScriptMethods
                 if (args.length == 2)
                 {
                     UserIdent dstIdent = UserIdent.get(args[1], sender);
-                    if (!dstIdent.hasUUID())
+                    if (!dstIdent.hasUuid())
                         throw new ScriptException("Player %s not found", args[1]);
                     dst = APIRegistry.economy.getWallet(dstIdent);
                 }

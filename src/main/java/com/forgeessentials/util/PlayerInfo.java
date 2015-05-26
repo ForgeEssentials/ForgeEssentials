@@ -149,7 +149,7 @@ public class PlayerInfo implements Loadable
 
     public static PlayerInfo get(UserIdent ident)
     {
-        if (!ident.hasUUID())
+        if (!ident.hasUuid())
             return null;
         return get(ident.getUuid());
     }

@@ -63,7 +63,7 @@ public class CommandWallet extends ParserCommandBase
 
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.format("Wallet of %s contains %s", player.getUsernameOrUUID(), wallet.toString()));
+            arguments.confirm(Translator.format("Wallet of %s contains %s", player.getUsernameOrUuid(), wallet.toString()));
             return;
         }
         if (arguments.isTabCompletion)
@@ -83,19 +83,19 @@ public class CommandWallet extends ParserCommandBase
         {
         case "set":
             wallet.set(amount);
-            arguments.confirm(Translator.format("Set wallet of %s to %s", player.getUsernameOrUUID(), wallet.toString()));
+            arguments.confirm(Translator.format("Set wallet of %s to %s", player.getUsernameOrUuid(), wallet.toString()));
             break;
         case "add":
             wallet.add(amount);
             arguments.confirm(Translator.format("Added %s to %s's wallet. It now contains %s", //
-                    APIRegistry.economy.toString(amount), player.getUsernameOrUUID(), wallet.toString()));
+                    APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), wallet.toString()));
             break;
         case "remove":
             if (!wallet.withdraw(amount))
                 throw new TranslatedCommandException("Player %s does not have enough %s in his wallet", //
-                        player.getUsernameOrUUID(), APIRegistry.economy.currency(2));
+                        player.getUsernameOrUuid(), APIRegistry.economy.currency(2));
             arguments.confirm(Translator.format("Removed %s from %s's wallet. It now contains %s", //
-                    APIRegistry.economy.toString(amount), player.getUsernameOrUUID(), wallet.toString()));
+                    APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), wallet.toString()));
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);

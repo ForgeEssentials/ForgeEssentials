@@ -27,7 +27,7 @@ public class TranslatedCommandException extends CommandException
 
         public PlayerNotFoundException(UserIdent ident)
         {
-            super("Player %s not found", ident.getUsernameOrUUID());
+            super("Player %s not found", ident.getUsernameOrUuid());
         }
 
     }

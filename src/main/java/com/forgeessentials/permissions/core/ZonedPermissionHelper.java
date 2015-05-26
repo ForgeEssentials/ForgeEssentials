@@ -401,7 +401,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         else if (ident == null)
             msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] group [\u00a75%s\u00a7f]", zone.getName(), group);
         else
-            msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] user [\u00a75%s\u00a7f]", zone.getName(), ident.getUsernameOrUUID());
+            msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] user [\u00a75%s\u00a7f]", zone.getName(), ident.getUsernameOrUuid());
 
         WorldPoint point = null;
         if (ident != null && ident.hasPlayer())

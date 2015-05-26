@@ -86,7 +86,7 @@ public class CommandPm extends ParserCommandBase
             if (arguments.sender == player.getPlayer())
                 throw new PlayerNotFoundException("commands.message.sameTarget");
             setTarget(arguments.sender, player.getPlayer());
-            arguments.confirm(Translator.format("Set PM target to %s", player.getUsernameOrUUID()));
+            arguments.confirm(Translator.format("Set PM target to %s", player.getUsernameOrUuid()));
         }
         else
         {

@@ -367,7 +367,7 @@ public class SQLProvider extends ZonePersistenceProvider {
 
             for (UserIdent ident : serverZone.getKnownPlayers())
             {
-                if (!ident.hasUUID())
+                if (!ident.hasUuid())
                     continue;
                 Map<String, Object> fieldsAndValues = new HashMap<>();
                 fieldsAndValues.put("uuid", ident.getOrGenerateUuid().toString());

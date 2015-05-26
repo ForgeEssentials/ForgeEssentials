@@ -151,7 +151,7 @@ public class Plot
         if (owner == null)
             return SERVER_OWNER;
         else
-            return owner.getUsernameOrUUID();
+            return owner.getUsernameOrUuid();
     }
 
     public String getName()
@@ -161,7 +161,7 @@ public class Plot
             name = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, PERM_NAME);
         if (name == null)
             return null;
-        return name.replaceAll("@p", owner.getUsernameOrUUID());
+        return name.replaceAll("@p", owner.getUsernameOrUuid());
     }
 
     public String getNameNotNull()
@@ -287,7 +287,7 @@ public class Plot
     public void printDetails(ICommandSender sender)
     {
         OutputHandler.chatNotification(sender, String.format("Plot #%d: %s", zone.getId(), getName()));
-        OutputHandler.chatNotification(sender, String.format("  Owner: %s", owner.getUsernameOrUUID()));
+        OutputHandler.chatNotification(sender, String.format("  Owner: %s", owner.getUsernameOrUuid()));
         OutputHandler.chatNotification(sender,
                 String.format("  Location between %s and %s", zone.getArea().getHighPoint().toString(), zone.getArea().getLowPoint().toString()));
         long price = getPrice();

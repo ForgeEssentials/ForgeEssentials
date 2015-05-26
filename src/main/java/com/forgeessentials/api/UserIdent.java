@@ -222,7 +222,7 @@ public class UserIdent
         return username != null;
     }
 
-    public boolean hasUUID()
+    public boolean hasUuid()
     {
         return uuid != null;
     }
@@ -266,7 +266,7 @@ public class UserIdent
         return FakePlayerFactory.get(world, getGameProfile());
     }
 
-    public String getUsernameOrUUID()
+    public String getUsernameOrUuid()
     {
         return username == null ? uuid.toString() : username;
     }
@@ -411,7 +411,7 @@ public class UserIdent
         if (profile != null)
             return profile.getName();
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
-            if (ident.hasUUID() && ident.getUuid().equals(uuid))
+            if (ident.hasUuid() && ident.getUuid().equals(uuid))
                 return ident.getUsername();
         return null;
     }

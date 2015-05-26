@@ -90,7 +90,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             if (change.player != null)
             {
                 UserIdent player = UserIdent.get(change.player.uuid);
-                msg += " " + player.getUsernameOrUUID();
+                msg += " " + player.getUsernameOrUuid();
             }
             msg += ": ";
 

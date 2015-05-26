@@ -86,31 +86,31 @@ public class CommandRemote extends ForgeEssentialsCommandBase
             case "block":
             {
                 UserIdent ident = args.parsePlayer(true);
-                if (!ident.hasUUID())
-                    throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUUID());
+                if (!ident.hasUuid())
+                    throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUuid());
                 args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isTabCompletion)
                     return;
                 ModuleRemote.getInstance().setPasskey(ident, null);
-                args.confirm(Translator.format("User %s has been blocked from remote until he generates a new passkey", ident.getUsernameOrUUID()));
+                args.confirm(Translator.format("User %s has been blocked from remote until he generates a new passkey", ident.getUsernameOrUuid()));
                 return;
             }
             case "kick":
             {
                 UserIdent ident = args.parsePlayer(true);
-                if (!ident.hasUUID())
-                    throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUUID());
+                if (!ident.hasUuid())
+                    throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUuid());
                 args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isTabCompletion)
                     return;
                 RemoteSession session = ModuleRemote.getInstance().getServer().getSession(ident);
                 if (session == null)
                 {
-                    args.confirm(Translator.format("User %s is not logged in on remote", ident.getUsernameOrUUID()));
+                    args.confirm(Translator.format("User %s is not logged in on remote", ident.getUsernameOrUuid()));
                     return;
                 }
                 session.close("kick", 0);
-                args.confirm(Translator.format("User %s has been kicked from remote", ident.getUsernameOrUUID()));
+                args.confirm(Translator.format("User %s has been kicked from remote", ident.getUsernameOrUuid()));
                 return;
             }
             case "start":
@@ -171,7 +171,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
         ChatComponentTranslation msg = new ChatComponentTranslation("Remote passkey = " + ModuleRemote.getInstance().getPasskey(ident) + " ");
 
         IChatComponent qrLink = new ChatComponentText("[QR code]");
-        if (PlayerInfo.get(ident.getPlayerMP()).getHasFEClient())
+        if (PlayerInfo.get(ident.getUuid()).getHasFEClient())
             qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
         else
             qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));

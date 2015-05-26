@@ -209,9 +209,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         List<String> arraylist = new ArrayList<>();
         for (UserIdent s2 : APIRegistry.perms.getServerZone().getKnownPlayers())
         {
-            if (doesStringStartWith(arg, s2.getUsernameOrUUID()))
+            if (doesStringStartWith(arg, s2.getUsernameOrUuid()))
             {
-                arraylist.add(s2.getUsernameOrUUID());
+                arraylist.add(s2.getUsernameOrUuid());
             }
         }
         return arraylist;

@@ -278,7 +278,7 @@ public class PermissionCommandParser
 
         // Parse player
         UserIdent ident = arguments.parsePlayer(false);
-        if (!ident.hasUUID())
+        if (!ident.hasUuid())
             arguments.error(String.format("Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername()));
 
         parseUserInner(arguments, ident, null);
@@ -291,7 +291,7 @@ public class PermissionCommandParser
         {
             if (zone == null)
             {
-                arguments.confirm(String.format("Groups for player %s:", ident.getUsernameOrUUID()));
+                arguments.confirm(String.format("Groups for player %s:", ident.getUsernameOrUuid()));
                 for (GroupEntry group : APIRegistry.perms.getPlayerGroups(ident))
                 {
                     arguments.confirm("  " + group);
@@ -303,7 +303,7 @@ public class PermissionCommandParser
             // args.info("/p ... allow|deny|clear <perms> : Set permissions");
             // args.info("/p ... value <perm> <value> : Set permission property");
             // args.info("/p ... spawn : Set player spawn");
-            arguments.confirm(ident.getUsernameOrUUID() + "'s permissions in zone " + zone.getName() + ":");
+            arguments.confirm(ident.getUsernameOrUuid() + "'s permissions in zone " + zone.getName() + ":");
             for (Entry<String, String> perm : zone.getPlayerPermissions(ident).entrySet())
             {
                 arguments.confirm("  " + perm.getKey() + " = " + (perm.getValue() == null ? "null" : perm.getValue()));
@@ -395,19 +395,19 @@ public class PermissionCommandParser
             String fix = zone.getPlayerPermission(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (fix == null || fix.isEmpty())
                 fix = "empty";
-            arguments.confirm(String.format("%s's %s is %s", ident.getUsernameOrUUID(), fixName, fix));
+            arguments.confirm(String.format("%s's %s is %s", ident.getUsernameOrUuid(), fixName, fix));
         }
         else
         {
             String fix = StringUtils.join(arguments.args, " ");
             if (fix.equalsIgnoreCase("clear"))
             {
-                arguments.confirm(String.format("%s's %s cleared", ident.getUsernameOrUUID(), fixName));
+                arguments.confirm(String.format("%s's %s cleared", ident.getUsernameOrUuid(), fixName));
                 zone.clearPlayerPermission(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             }
             else
             {
-                arguments.confirm(String.format("%s's %s set to %s", ident.getUsernameOrUUID(), fixName, fix));
+                arguments.confirm(String.format("%s's %s set to %s", ident.getUsernameOrUuid(), fixName, fix));
                 zone.setPlayerPermissionProperty(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
             }
         }
@@ -461,11 +461,11 @@ public class PermissionCommandParser
                 break;
             case VALUE:
                 zone.setPlayerPermissionProperty(ident, permissionNode, value);
-                arguments.confirm(String.format("Set %s for %s to %s in zone %s", permissionNode, ident.getUsernameOrUUID(), value, zone.getName()));
+                arguments.confirm(String.format("Set %s for %s to %s in zone %s", permissionNode, ident.getUsernameOrUuid(), value, zone.getName()));
                 break;
             }
             if (msg != null)
-                arguments.confirm(String.format(msg, ident.getUsernameOrUUID(), permissionNode, zone.getName()));
+                arguments.confirm(String.format(msg, ident.getUsernameOrUuid(), permissionNode, zone.getName()));
         }
     }
 
@@ -475,8 +475,8 @@ public class PermissionCommandParser
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         if (arguments.args.isEmpty())
         {
-            arguments.confirm("/feperm user " + ident.getUsernameOrUUID() + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
-            arguments.confirm("/feperm user " + ident.getUsernameOrUUID() + " spawn bed (enable|disable): Enable/disable spawning at bed");
+            arguments.confirm("/feperm user " + ident.getUsernameOrUuid() + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
+            arguments.confirm("/feperm user " + ident.getUsernameOrUuid() + " spawn bed (enable|disable): Enable/disable spawning at bed");
             return;
         }
         if (arguments.isTabCompletion)
@@ -503,12 +503,12 @@ public class PermissionCommandParser
             if (val.equals("true") | val.equals("enable"))
             {
                 zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, true);
-                arguments.confirm(String.format("Enabled bed-spawning for user %s in zone %s", ident.getUsernameOrUUID(), zone.getName()));
+                arguments.confirm(String.format("Enabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName()));
             }
             else if (val.equals("false") | val.equals("disable"))
             {
                 zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, false);
-                arguments.confirm(String.format("Disabled bed-spawning for user %s in zone %s", ident.getUsernameOrUUID(), zone.getName()));
+                arguments.confirm(String.format("Disabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName()));
             }
             arguments.confirm("Invalid argument. Use enable or disable.");
             return;
@@ -537,12 +537,12 @@ public class PermissionCommandParser
         if (point == null)
         {
             zone.clearPlayerPermission(ident, FEPermissions.SPAWN_LOC);
-            arguments.confirm(String.format("Cleared spawn-rule for user %s in zone %s", ident.getUsernameOrUUID(), zone.getName()));
+            arguments.confirm(String.format("Cleared spawn-rule for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName()));
         }
         else
         {
             zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN_LOC, point.toString());
-            arguments.confirm(String.format("Set spawn for user %s to %s in zone %s", ident.getUsernameOrUUID(), point.toString(), zone.getName()));
+            arguments.confirm(String.format("Set spawn for user %s to %s in zone %s", ident.getUsernameOrUuid(), point.toString(), zone.getName()));
         }
     }
 
@@ -556,9 +556,9 @@ public class PermissionCommandParser
         if (arguments.args.isEmpty())
         {
             if (zone instanceof ServerZone)
-                arguments.confirm(String.format("Groups for player %s (without includes):", ident.getUsernameOrUUID()));
+                arguments.confirm(String.format("Groups for player %s (without includes):", ident.getUsernameOrUuid()));
             else
-                arguments.confirm(String.format("Groups for player %s (without includes) in %s:", ident.getUsernameOrUUID(), zone.getName()));
+                arguments.confirm(String.format("Groups for player %s (without includes) in %s:", ident.getUsernameOrUuid(), zone.getName()));
             for (GroupEntry g : zone.getStoredPlayerGroupEntries(ident))
             {
                 arguments.confirm("  " + g);
@@ -606,19 +606,19 @@ public class PermissionCommandParser
                 case "add":
                     for (String group : groups)
                         zone.addPlayerToGroup(ident, group);
-                    arguments.confirm(String.format("Player %s added to group(s) %s", ident.getUsernameOrUUID(), StringUtils.join(groups, ", ")));
+                    arguments.confirm(String.format("Player %s added to group(s) %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", ")));
                     break;
                 case "remove":
                     for (String group : groups)
                         zone.removePlayerFromGroup(ident, group);
-                    arguments.confirm(String.format("Player %s removed from group(s) %s", ident.getUsernameOrUUID(), StringUtils.join(groups, ", ")));
+                    arguments.confirm(String.format("Player %s removed from group(s) %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", ")));
                     break;
                 case "set":
                     for (GroupEntry g : APIRegistry.perms.getStoredPlayerGroups(ident))
                         zone.removePlayerFromGroup(ident, g.getGroup());
                     for (String group : groups)
                         zone.addPlayerToGroup(ident, group);
-                    arguments.confirm(String.format("Set %s's group(s) to %s", ident.getUsernameOrUUID(), StringUtils.join(groups, ", ")));
+                    arguments.confirm(String.format("Set %s's group(s) to %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", ")));
                     break;
                 }
             }
@@ -1153,7 +1153,7 @@ public class PermissionCommandParser
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST_PERMS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
-        OutputHandler.chatNotification(sender, ident.getUsernameOrUUID() + " permissions:");
+        OutputHandler.chatNotification(sender, ident.getUsernameOrUuid() + " permissions:");
 
         Map<Zone, Map<String, String>> userPerms = ModulePermissions.permissionHelper.enumUserPermissions(ident);
         for (Entry<Zone, Map<String, String>> zone : userPerms.entrySet())
@@ -1260,7 +1260,7 @@ public class PermissionCommandParser
         OutputHandler.chatNotification(sender, "Known players:");
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
         {
-            OutputHandler.chatNotification(sender, " - " + ident.getUsernameOrUUID());
+            OutputHandler.chatNotification(sender, " - " + ident.getUsernameOrUuid());
         }
 
         OutputHandler.chatNotification(sender, "Online players:");
@@ -1276,7 +1276,7 @@ public class PermissionCommandParser
         OutputHandler.chatNotification(sender, "Players in group " + group + ":");
         if (players != null)
             for (UserIdent player : players)
-                OutputHandler.chatNotification(sender, "  " + player.getUsernameOrUUID());
+                OutputHandler.chatNotification(sender, "  " + player.getUsernameOrUuid());
     }
 
 }

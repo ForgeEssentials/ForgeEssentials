@@ -140,7 +140,7 @@ public class CommandParserArgs
             else
             {
                 UserIdent ident = UserIdent.get(name, sender);
-                if (mustExist && !ident.hasUUID())
+                if (mustExist && !ident.hasUuid())
                     throw new TranslatedCommandException("Player %s not found", name);
                 return ident;
             }
@@ -152,8 +152,8 @@ public class CommandParserArgs
         Set<String> result = new TreeSet<String>();
         for (UserIdent knownPlayerIdent : APIRegistry.perms.getServerZone().getKnownPlayers())
         {
-            if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUUID()))
-                result.add(knownPlayerIdent.getUsernameOrUUID());
+            if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
+                result.add(knownPlayerIdent.getUsernameOrUuid());
         }
         for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
         {

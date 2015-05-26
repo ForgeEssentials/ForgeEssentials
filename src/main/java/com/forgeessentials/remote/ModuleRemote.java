@@ -316,7 +316,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
      */
     public void setPasskey(UserIdent userIdent, String passkey)
     {
-        if (!userIdent.hasUUID())
+        if (!userIdent.hasUuid())
             return;
         if (passkey == null)
             passkeys.remove(userIdent);
@@ -368,9 +368,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
      */
     public String getConnectString(UserIdent userIdent)
     {
-        if (!userIdent.hasUUID())
+        if (!userIdent.hasUuid())
             return null;
-        return String.format("%s@%s:%d|%s", userIdent.getUsernameOrUUID(), (useSSL ? "ssl:" : "") + hostname, port, getPasskey(userIdent));
+        return String.format("%s@%s:%d|%s", userIdent.getUsernameOrUuid(), (useSSL ? "ssl:" : "") + hostname, port, getPasskey(userIdent));
     }
 
     /**
