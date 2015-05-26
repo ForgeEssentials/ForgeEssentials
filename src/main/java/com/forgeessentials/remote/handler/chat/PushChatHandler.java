@@ -13,14 +13,13 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteRequest.PushRequestData;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.remote.handler.RemoteMessageID;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@FERemoteHandler(id = PushChatHandler.ID)
+@FERemoteHandler(id = RemoteMessageID.PUSH_CHAT)
 public class PushChatHandler extends GenericRemoteHandler<PushRequestData> {
-
-    public static final String ID = "push_chat";
 
     public static final String PERM = PERM_REMOTE + ".chat.push";
 
@@ -46,7 +45,7 @@ public class PushChatHandler extends GenericRemoteHandler<PushRequestData> {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
-        push(new RemoteResponse<>(ID, new Response(event.username, event.message)));
+        push(new RemoteResponse<>(RemoteMessageID.PUSH_CHAT, new Response(event.username, event.message)));
     }
 
     public static class Response {

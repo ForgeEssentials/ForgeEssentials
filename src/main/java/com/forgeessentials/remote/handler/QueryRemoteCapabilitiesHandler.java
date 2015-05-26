@@ -14,15 +14,17 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.ModuleRemote;
 import com.google.gson.JsonElement;
 
-@FERemoteHandler(id = "query_remote_capabilities")
-public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonElement> {
+@FERemoteHandler(id = RemoteMessageID.QUERY_REMOTE_CAPABILITIES)
+public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonElement>
+{
 
-    //public static final String PERM = PERM_REMOTE + ".query.remote.capabilities";
+    // public static final String PERM = PERM_REMOTE + ".query.remote.capabilities";
 
     public QueryRemoteCapabilitiesHandler()
     {
         super(null, JsonElement.class);
-        //APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows querying capabilities (allowed handlers - should ALWAYS be granted)");
+        // APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE,
+        // "Allows querying capabilities (allowed handlers - should ALWAYS be granted)");
     }
 
     @Override
@@ -38,7 +40,8 @@ public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonEle
         return new RemoteResponse<QueryRemoteCapabilitiesHandler.Response>(request, response);
     }
 
-    public static class Response {
+    public static class Response
+    {
 
         public Set<String> handlers = new HashSet<>();
 

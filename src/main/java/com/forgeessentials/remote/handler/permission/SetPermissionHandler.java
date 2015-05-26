@@ -11,8 +11,9 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
+import com.forgeessentials.remote.handler.RemoteMessageID;
 
-@FERemoteHandler(id = "set_permission")
+@FERemoteHandler(id = RemoteMessageID.SET_PERMISSION)
 public class SetPermissionHandler extends GenericRemoteHandler<SetPermissionHandler.Request> {
 
     public static final String PERM = QueryPermissionsHandler.PERM + ".set";

@@ -1,13 +1,14 @@
 package com.forgeessentials.client.network;
 
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+
 import com.forgeessentials.commons.network.Packet5Noclip;
-import io.netty.buffer.ByteBuf;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 
 public class C5HandlerNoclip implements IMessageHandler<Packet5Noclip, IMessage>
 {
@@ -21,4 +22,5 @@ public class C5HandlerNoclip implements IMessageHandler<Packet5Noclip, IMessage>
         FMLClientHandler.instance().getClientPlayerEntity().addChatMessage(cmsg);
         return null;
     }
+    
 }

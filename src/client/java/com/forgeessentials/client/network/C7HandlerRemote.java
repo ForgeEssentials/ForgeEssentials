@@ -1,8 +1,5 @@
 package com.forgeessentials.client.network;
 
-import com.forgeessentials.commons.network.Packet7Remote;
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.net.URL;
 
@@ -14,6 +11,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.client.core.ClientProxy;
+import com.forgeessentials.commons.network.Packet7Remote;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;

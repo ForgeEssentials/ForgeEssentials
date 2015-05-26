@@ -18,9 +18,10 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
+import com.forgeessentials.remote.handler.RemoteMessageID;
 import com.forgeessentials.util.FunctionHelper;
 
-@FERemoteHandler(id = "query_player")
+@FERemoteHandler(id = RemoteMessageID.QUERY_PLAYER)
 public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.Request>
 {
 

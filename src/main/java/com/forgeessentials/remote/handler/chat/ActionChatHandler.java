@@ -16,9 +16,10 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.remote.handler.RemoteMessageID;
 import com.forgeessentials.util.OutputHandler;
 
-@FERemoteHandler(id = "send_chat")
+@FERemoteHandler(id = RemoteMessageID.SEND_CHAT)
 public class ActionChatHandler extends GenericRemoteHandler<String>
 {
 

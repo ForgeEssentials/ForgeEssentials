@@ -1,13 +1,14 @@
 package com.forgeessentials.client.network;
 
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+
 import com.forgeessentials.commons.network.Packet6Speed;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 
 public class C6HandlerSpeed implements IMessageHandler<Packet6Speed, IMessage>
 {
@@ -37,4 +38,5 @@ public class C6HandlerSpeed implements IMessageHandler<Packet6Speed, IMessage>
 
         return null;
     }
+
 }
