@@ -4,11 +4,13 @@ import java.io.IOException;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
+import com.google.gson.Gson;
 
 /**
  *
  */
-public interface RemoteSession {
+public interface RemoteSession
+{
 
     /**
      * Sends a message to the client. Throws a {@link SessionClosedException}, if the session was already closed.
@@ -67,9 +69,20 @@ public interface RemoteSession {
     boolean isClosed();
 
     /**
+     * Get the Gson instance of the remote manager
+     */
+    Gson getGson();
+
+    /**
+     * Gets the remote manager of this session
+     */
+    RemoteManager getRemoteManager();
+
+    /**
      * Thrown, when a message should be sent to the remote-client, but the session was already terminated
      */
-    public static class SessionClosedException extends Exception {
+    public static class SessionClosedException extends Exception
+    {
         private static final long serialVersionUID = -7782278063344870691L;
 
         private final RemoteSession session;

@@ -12,6 +12,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler.PermissionException;
 import com.forgeessentials.api.remote.RemoteHandler.RemoteException;
+import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
@@ -306,6 +307,12 @@ public class Session implements Runnable, RemoteSession
     public Gson getGson()
     {
         return ModuleRemote.getInstance().getGson();
+    }
+
+    @Override
+    public RemoteManager getRemoteManager()
+    {
+        return ModuleRemote.getInstance();
     }
 
 }

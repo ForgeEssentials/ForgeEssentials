@@ -12,6 +12,7 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.ModuleRemote;
+import com.forgeessentials.remote.RemoteMessageID;
 import com.google.gson.JsonElement;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_REMOTE_CAPABILITIES)

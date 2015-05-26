@@ -1,10 +1,6 @@
 package com.forgeessentials.remote.handler.server;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,11 +14,15 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
-import com.forgeessentials.remote.handler.RemoteMessageID;
+import com.forgeessentials.remote.RemoteMessageID;
+import com.forgeessentials.remote.network.PlayerInfoResponse;
+import com.forgeessentials.remote.network.QueryPlayerRequest;
+import com.forgeessentials.remote.network.QueryPlayerResponse;
 import com.forgeessentials.util.FunctionHelper;
+import com.google.gson.JsonPrimitive;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_PLAYER)
-public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.Request>
+public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
 {
 
     public static final String PERM = PERM_REMOTE + ".query.player";
@@ -31,12 +31,12 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
 
     public QueryPlayerHandler()
     {
-        super(PERM, QueryPlayerHandler.Request.class);
+        super(PERM, QueryPlayerRequest.class);
         APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Allows querying player data");
     }
 
     @Override
-    protected RemoteResponse<QueryPlayerHandler.Response> handleData(RemoteSession session, RemoteRequest<QueryPlayerHandler.Request> request)
+    protected RemoteResponse<QueryPlayerResponse> handleData(RemoteSession session, RemoteRequest<QueryPlayerRequest> request)
     {
         if (request.data != null && request.data.flags != null)
             for (String flag : request.data.flags)
@@ -52,7 +52,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
                 }
             }
 
-        Response response = new Response();
+        QueryPlayerResponse response = new QueryPlayerResponse();
         if (request.data == null || request.data.name == null)
         {
             for (EntityPlayerMP player : FunctionHelper.getPlayerList())
@@ -65,7 +65,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
                 error("player not found");
             response.players.add(getPlayerInfoResponse(session, ident, request.data.flags));
         }
-        return new RemoteResponse<QueryPlayerHandler.Response>(request, response);
+        return new RemoteResponse<QueryPlayerResponse>(request, response);
     }
 
     public PlayerInfoResponse getPlayerInfoResponse(RemoteSession session, UserIdent ident, Set<String> flags)
@@ -79,59 +79,17 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerHandler.
             switch (flag)
             {
             case "location":
-                pi.data.put(flag, new DataFloatLocation(ident.getPlayerMP()));
+                pi.data.put(flag, session.getGson().toJsonTree(new DataFloatLocation(ident.getPlayerMP())));
                 break;
             case "detail":
-                pi.data.put("health", ident.getPlayerMP().getHealth());
-                pi.data.put("armor", ident.getPlayerMP().getTotalArmorValue());
-                pi.data.put("hunger", ident.getPlayerMP().getFoodStats().getFoodLevel());
-                pi.data.put("saturation", ident.getPlayerMP().getFoodStats().getSaturationLevel());
+                pi.data.put("health", new JsonPrimitive(ident.getPlayerMP().getHealth()));
+                pi.data.put("armor", new JsonPrimitive(ident.getPlayerMP().getTotalArmorValue()));
+                pi.data.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getFoodLevel()));
+                pi.data.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getSaturationLevel()));
                 break;
             }
         }
         return pi;
-    }
-
-    public static class Request
-    {
-
-        public String name;
-
-        public Set<String> flags = new HashSet<>();
-
-        public Request(String name, String... flags)
-        {
-            this.name = name;
-            int i = flags.length;
-            for (int j = 0; j < i; ++j)
-            {
-                this.flags.add(flags[i]);
-            }
-        }
-    }
-
-    public static class Response
-    {
-
-        public List<PlayerInfoResponse> players = new ArrayList<>();
-
-    }
-
-    public static class PlayerInfoResponse
-    {
-
-        public String uuid;
-
-        public String name;
-
-        public Map<String, Object> data;
-
-        public PlayerInfoResponse(String uuid, String name)
-        {
-            this.uuid = uuid;
-            this.name = name;
-        }
-
     }
 
 }

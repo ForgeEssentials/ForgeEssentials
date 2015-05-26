@@ -56,15 +56,6 @@ public class RemoteRequest<T> {
         }
 
     }
-    
-    public static class PushRequestData {
 
-        public boolean enable;
-
-        public PushRequestData(boolean enable)
-        {
-            this.enable = enable;
-        }
-    }
 
 }

@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
-import com.forgeessentials.remote.handler.RemoteMessageID;
+import com.forgeessentials.remote.network.ChatResponse;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 

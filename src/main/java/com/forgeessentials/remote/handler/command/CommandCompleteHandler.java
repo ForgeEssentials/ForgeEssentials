@@ -14,7 +14,7 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.RemoteCommandSender;
-import com.forgeessentials.remote.handler.RemoteMessageID;
+import com.forgeessentials.remote.RemoteMessageID;
 
 @FERemoteHandler(id = RemoteMessageID.COMMAND_COMPLETE)
 public class CommandCompleteHandler extends GenericRemoteHandler<String>
