@@ -313,7 +313,7 @@ public class ServerZone extends Zone {
         SortedSet<GroupEntry> result = getStoredPlayerGroupEntries(ident);
         if (ident != null)
         {
-            if (ident.hasPlayer() && MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getPlayerMP().getGameProfile()))
+            if (MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getFakePlayer().getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }
