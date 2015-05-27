@@ -43,7 +43,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
 
         ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(commandName);
         if (command == null)
-            error("Command not found");
+            error(String.format("Command \"%s\" not found", commandName));
 
         RemoteCommandSender sender = new RemoteCommandSender(session);
         

@@ -79,7 +79,7 @@ public class RemoteResponse<T>
 
     public static RemoteResponse<?> success(String id, int rid)
     {
-        return success(id, rid, "ok");
+        return success(id, rid, null);
     }
 
     public static RemoteResponse<?> success(RemoteRequest<?> request)
