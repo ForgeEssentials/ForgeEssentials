@@ -67,6 +67,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
                 args.confirm("/remote start: Start remote server (= enable)");
                 args.confirm("/remote stop: Stop remote server (= disable)");
                 args.confirm("/remote regen [player]: Generate new passkey");
+                args.confirm("/remote setkey <player> <key>: Set your own passkey");
                 args.confirm("/remote block <player>: Block player from remote, until he generates a new passkey");
                 args.confirm("/remote kick <player>: Kick player accessing remote right now");
                 return;

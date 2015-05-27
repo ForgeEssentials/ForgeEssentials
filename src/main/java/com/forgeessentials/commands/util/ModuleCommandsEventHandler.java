@@ -4,7 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import com.forgeessentials.commands.tools.CommandAFK;
+import com.forgeessentials.commands.player.CommandAFK;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;

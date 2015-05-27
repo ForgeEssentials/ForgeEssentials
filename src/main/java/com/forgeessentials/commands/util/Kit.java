@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.commands.game.CommandKit;
+import com.forgeessentials.commands.item.CommandKit;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
