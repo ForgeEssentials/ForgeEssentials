@@ -6,6 +6,7 @@ import com.forgeessentials.commands.player.CommandBubble;
 import com.forgeessentials.commands.player.CommandBurn;
 import com.forgeessentials.commands.player.CommandCapabilities;
 import com.forgeessentials.commands.player.CommandDoAs;
+import com.forgeessentials.commands.player.CommandFly;
 import com.forgeessentials.commands.player.CommandGameMode;
 import com.forgeessentials.commands.player.CommandHeal;
 import com.forgeessentials.commands.player.CommandInventorySee;
@@ -88,6 +89,7 @@ public class CommandRegistrar
         cmdList.add(new CommandSpeed());
         cmdList.add(new CommandSeen());
         cmdList.add(new CommandTempBan());
+        cmdList.add(new CommandFly());
     }
 
     public static void commandConfigs(Configuration config)
