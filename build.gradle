@@ -281,7 +281,7 @@ artifacts {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.1'
+    gradleVersion = '2.4'
 }
 
 task cleanLibFiles(dependsOn: "check", type: Delete) {
