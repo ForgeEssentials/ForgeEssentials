@@ -24,7 +24,7 @@ especially a powerful permissions and protection system:
 
 *******************
 
-#### Download for the latest builds on [Jenkins](http://ci.forgeessentials.com/job/ForgeEssentials/). or releases on [Curseforge](http://minecraft.curseforge.com/mc-mods/74735) ####
+#### Download for the latest builds on [Jenkins](http://ci.forgeessentials.com/job/FE/). or releases on [Curseforge](http://minecraft.curseforge.com/mc-mods/74735) ####
 
 #####Note that this comes with WorldEdit build 3360. You can use any WorldEdit build above build 3349.#####
 
