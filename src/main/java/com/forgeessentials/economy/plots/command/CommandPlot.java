@@ -104,7 +104,7 @@ public class CommandPlot extends ParserCommandBase
     }
 
     public static final String[] completeMain = new String[] { "define", "claim", "list", "select", "set", "perms", "userperms", "mods", "users", "limits",
-            "buy", "sell", };
+            "buy", "sell", "delete", };
     public static final String[] completeSet = new String[] { "price", "fee", };
     public static final String[] completePerms = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
     public static final String[] completeTrueFalse = new String[] { "yes", "no", "true", "false", "allow", "deny", };
@@ -136,6 +136,9 @@ public class CommandPlot extends ParserCommandBase
         {
         case "define":
             parseDefine(arguments);
+            break;
+        case "delete":
+            parseDelete(arguments);
             break;
         case "claim":
             parseClaim(arguments);
@@ -200,6 +203,13 @@ public class CommandPlot extends ParserCommandBase
         {
             throw new TranslatedCommandException("Plot creation cancelled");
         }
+    }
+
+    public static void parseDelete(CommandParserArgs arguments)
+    {
+        Plot plot = getPlot(arguments.senderPlayer);
+        arguments.confirm(Translator.format("Plot \"%s\" has been deleted.", plot.getNameNotNull()));
+        plot.getZone().getWorldZone().removeAreaZone(plot.getZone());
     }
 
     public static void parseClaim(CommandParserArgs arguments)
