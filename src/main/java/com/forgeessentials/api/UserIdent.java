@@ -50,6 +50,7 @@ public class UserIdent
 
     private String username;
 
+    @Expose(serialize = false)
     private int hashCode;
 
     @Expose(serialize = false)
@@ -249,6 +250,11 @@ public class UserIdent
         return username;
     }
 
+    public String getUsernameOrUuid()
+    {
+        return username == null ? uuid.toString() : username;
+    }
+
     public EntityPlayer getPlayer()
     {
         return player;
@@ -271,11 +277,6 @@ public class UserIdent
         if (player != null)
             return (EntityPlayerMP) player;
         return FakePlayerFactory.get(world, getGameProfile());
-    }
-
-    public String getUsernameOrUuid()
-    {
-        return username == null ? uuid.toString() : username;
     }
 
     /**
@@ -315,10 +316,15 @@ public class UserIdent
 
     /* ------------------------------------------------------------ */
 
+    public String toSerializeString()
+    {
+        return "(" + (uuid == null ? "" : uuid.toString()) + "|" + username + ")";
+    }
+
     @Override
     public String toString()
     {
-        return "(" + (uuid == null ? "" : uuid.toString()) + "|" + username + ")";
+        return toSerializeString();
     }
 
     @Override

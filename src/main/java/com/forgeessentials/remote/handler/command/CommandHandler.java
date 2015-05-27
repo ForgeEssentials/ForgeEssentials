@@ -38,7 +38,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
             error("Missing command");
 
         String[] args = request.data.split(" ");
-        String commandName = args[0].substring(1);
+        String commandName = args[0];
         args = Arrays.copyOfRange(args, 1, args.length);
 
         ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(commandName);

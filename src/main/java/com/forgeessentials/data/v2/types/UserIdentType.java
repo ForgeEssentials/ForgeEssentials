@@ -15,7 +15,7 @@ public class UserIdentType implements DataType<UserIdent> {
     @Override
     public JsonElement serialize(UserIdent src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return new JsonPrimitive(src.toString());
+        return new JsonPrimitive(src.toSerializeString());
     }
 
     @Override

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -169,6 +170,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         useSSL = config.get(CONFIG_CAT, "use_ssl", false,
                 "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
         passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6, "Length of the randomly generated passkeys").getInt();
+        if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning())
+            startServer();
     }
 
     /* ------------------------------------------------------------ */
@@ -190,8 +193,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
             return;
         try
         {
-            if (hostname.equals("*") || hostname.isEmpty())
-                hostname = "0.0.0.0";
+            String bindAddress = localhostOnly ? "localhost" : "0.0.0.0";
             if (useSSL)
             {
                 try
@@ -201,7 +203,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
                     {
                         SSLContextHelper sslCtxHelper = new SSLContextHelper();
                         sslCtxHelper.loadSSLCertificate(is, certificatePassword, certificatePassword);
-                        server = new Server(port, hostname, sslCtxHelper.getSSLCtx());
+                        server = new Server(port, bindAddress, sslCtxHelper.getSSLCtx());
                     }
                     else
                         OutputHandler.felog.severe("[remote] Unable to load SSL certificate: File not found");
@@ -213,7 +215,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
             }
             else
             {
-                server = new Server(port, hostname);
+                server = new Server(port, bindAddress);
             }
         }
         catch (IOException e1)

@@ -3,6 +3,7 @@ package com.forgeessentials.remote;
 import java.io.IOException;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
@@ -28,6 +29,11 @@ public class RemoteCommandSender implements ICommandSender
         return session;
     }
 
+    public EntityPlayerMP getPlayer()
+    {
+        return session.getUserIdent().getFakePlayer();
+    }
+
     @Override
     public String getCommandSenderName()
     {
@@ -37,12 +43,16 @@ public class RemoteCommandSender implements ICommandSender
     @Override
     public IChatComponent func_145748_c_()
     {
-        return session.getUserIdent().getFakePlayer().func_145748_c_();
+        return getPlayer().func_145748_c_();
     }
 
     @Override
     public void addChatMessage(IChatComponent chatComponent)
     {
+        if (session.getUserIdent().hasPlayer())
+        {
+            session.getUserIdent().getPlayerMP().addChatMessage(chatComponent);
+        }
         if (!session.isClosed())
         {
             try
@@ -61,19 +71,19 @@ public class RemoteCommandSender implements ICommandSender
     @Override
     public boolean canCommandSenderUseCommand(int level, String cmd)
     {
-        return session.getUserIdent().getFakePlayer().canCommandSenderUseCommand(level, cmd);
+        return getPlayer().canCommandSenderUseCommand(level, cmd);
     }
 
     @Override
     public ChunkCoordinates getPlayerCoordinates()
     {
-        return session.getUserIdent().getFakePlayer().getPlayerCoordinates();
+        return getPlayer().getPlayerCoordinates();
     }
 
     @Override
     public World getEntityWorld()
     {
-        return session.getUserIdent().getFakePlayer().getEntityWorld();
+        return getPlayer().getEntityWorld();
     }
 
 }
