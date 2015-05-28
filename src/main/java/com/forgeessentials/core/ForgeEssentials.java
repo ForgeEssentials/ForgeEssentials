@@ -14,7 +14,6 @@ import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.CommandUuid;
-import com.forgeessentials.core.commands.HelpFixer;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
@@ -209,8 +208,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         BlockModListFile.dumpFMLRegistries();
 
         // commands
-        e.registerServerCommand(new HelpFixer());
-
         new CommandFEInfo().register();
         new CommandWand().register();
         new CommandUuid().register();

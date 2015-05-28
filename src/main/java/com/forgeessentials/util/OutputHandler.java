@@ -20,7 +20,7 @@ public final class OutputHandler extends ConfigLoaderBase {
 	
     public static LogWrapper felog = new LogWrapper(LogManager.getLogger("ForgeEssentials"));
 
-    private static EnumChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
+    public static EnumChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
 
     public static final String CONFIG_CAT = "Core.Output";
 

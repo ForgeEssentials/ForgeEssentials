@@ -1,6 +1,20 @@
 package com.forgeessentials.commands.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraftforge.common.config.Configuration;
+
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commands.item.CommandBind;
+import com.forgeessentials.commands.item.CommandCraft;
+import com.forgeessentials.commands.item.CommandDrop;
+import com.forgeessentials.commands.item.CommandEnchant;
+import com.forgeessentials.commands.item.CommandEnderchest;
+import com.forgeessentials.commands.item.CommandKit;
+import com.forgeessentials.commands.item.CommandRename;
+import com.forgeessentials.commands.item.CommandRepair;
+import com.forgeessentials.commands.item.CommandVirtualchest;
 import com.forgeessentials.commands.player.CommandAFK;
 import com.forgeessentials.commands.player.CommandBubble;
 import com.forgeessentials.commands.player.CommandBurn;
@@ -23,15 +37,6 @@ import com.forgeessentials.commands.server.CommandModlist;
 import com.forgeessentials.commands.server.CommandPing;
 import com.forgeessentials.commands.server.CommandRules;
 import com.forgeessentials.commands.server.CommandServerSettings;
-import com.forgeessentials.commands.item.CommandBind;
-import com.forgeessentials.commands.item.CommandCraft;
-import com.forgeessentials.commands.item.CommandDrop;
-import com.forgeessentials.commands.item.CommandEnchant;
-import com.forgeessentials.commands.item.CommandEnderchest;
-import com.forgeessentials.commands.item.CommandKit;
-import com.forgeessentials.commands.item.CommandRename;
-import com.forgeessentials.commands.item.CommandRepair;
-import com.forgeessentials.commands.item.CommandVirtualchest;
 import com.forgeessentials.commands.world.CommandButcher;
 import com.forgeessentials.commands.world.CommandFindblock;
 import com.forgeessentials.commands.world.CommandPush;
@@ -40,18 +45,13 @@ import com.forgeessentials.commands.world.CommandTime;
 import com.forgeessentials.commands.world.CommandWeather;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
-import net.minecraftforge.common.config.Configuration;
-
-import java.util.ArrayList;
-
 public class CommandRegistrar
 {
 
-    public static ArrayList<FEcmdModuleCommands> cmdList;
+    public static List<FEcmdModuleCommands> cmdList = new ArrayList<>();
 
     static
     {
-        cmdList = new ArrayList<FEcmdModuleCommands>();
         cmdList.add(new CommandTime());
         cmdList.add(new CommandEnchant());
         cmdList.add(new CommandLocate());
@@ -116,7 +116,6 @@ public class CommandRegistrar
 
             fecmd.loadConfig(config, category);
         }
-
         config.save();
     }
 
@@ -124,7 +123,6 @@ public class CommandRegistrar
     {
         for (FEcmdModuleCommands cmd : cmdList)
         {
-            cmd.registerExtraPermissions();
             cmd.register();
             APIRegistry.perms.registerPermissionDescription(cmd.getPermissionNode(), cmd.getCommandUsage(null));
         }

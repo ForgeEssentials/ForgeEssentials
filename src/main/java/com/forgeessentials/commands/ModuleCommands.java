@@ -1,14 +1,15 @@
 package com.forgeessentials.commands;
 
-import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commands.server.CommandHelp;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandRegistrar;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.ConfigCmd;
 import com.forgeessentials.commands.util.MobTypeLoader;
+import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -47,6 +48,9 @@ public class ModuleCommands
     {
         CommandRegistrar.registerCommands(e);
         CommandDataManager.load();
+
+        // TODO: TEMP !
+        new CommandHelp().register();
 
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
     }
