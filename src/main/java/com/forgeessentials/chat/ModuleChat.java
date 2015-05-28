@@ -14,8 +14,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.forgeessentials.chat.command.CommandMOTD;
-
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -41,6 +39,7 @@ import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.chat.command.CommandIrc;
 import com.forgeessentials.chat.command.CommandIrcBot;
 import com.forgeessentials.chat.command.CommandIrcPm;
+import com.forgeessentials.chat.command.CommandMOTD;
 import com.forgeessentials.chat.command.CommandMessageReplacement;
 import com.forgeessentials.chat.command.CommandMute;
 import com.forgeessentials.chat.command.CommandNickname;
@@ -49,6 +48,7 @@ import com.forgeessentials.chat.command.CommandReply;
 import com.forgeessentials.chat.command.CommandTimedMessages;
 import com.forgeessentials.chat.command.CommandUnmute;
 import com.forgeessentials.chat.irc.IrcHandler;
+import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.environment.CommandSetChecker;
@@ -573,6 +573,7 @@ public class ModuleChat
         target.addChatMessage(sentMsg);
         sender.addChatMessage(senderMsg);
         CommandReply.messageSent(sender, target);
+        ModuleCommandsEventHandler.checkAfkMessage(target, message);
     }
 
     @SubscribeEvent
