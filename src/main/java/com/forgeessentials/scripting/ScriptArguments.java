@@ -99,6 +99,20 @@ public final class ScriptArguments
         }
     }
 
+    public static ScriptArgument sender = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            return sender.getCommandSenderName();
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Command sender name";
+        }
+    };
+
     public static ScriptArgument player = new ScriptArgument() {
         @Override
         public String process(ICommandSender sender)

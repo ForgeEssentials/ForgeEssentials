@@ -18,17 +18,38 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
+import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandHelp extends ParserCommandBase
+public class CommandHelp extends ParserCommandBase implements ConfigLoader
 {
 
-    private boolean hasCustomHelpPage = false;
+    private static final String CONFIG_HELP = "Add custom messages here that will appear when /help is run";
+
+    private static CommandHelp instance;
+
+    private String[] messages;
+
+    public static CommandHelp instance()
+    {
+        if (instance == null)
+            instance = new CommandHelp();
+        return instance;
+    }
+
+    private CommandHelp()
+    {
+        super();
+        ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+    }
 
     @Override
     public String getCommandName()
@@ -140,10 +161,10 @@ public class CommandHelp extends ParserCommandBase
 
     public void showHelpPage(ICommandSender sender)
     {
-        if (!hasCustomHelpPage)
+        if (messages.length == 0)
             showHelpPage(sender, 0);
-
-        // TODO Add custom help page
+        for (int i = 0; i < messages.length; i++)
+            OutputHandler.chatConfirmation(sender, ScriptArguments.process(messages[i], sender));
     }
 
     public void showHelpPage(ICommandSender sender, int page)
@@ -188,6 +209,24 @@ public class CommandHelp extends ParserCommandBase
             }
         });
         return list;
+    }
+
+    @Override
+    public void load(Configuration config, boolean isReload)
+    {
+        messages = config.get(ForgeEssentials.CONFIG_CAT, "custom_help", new String[] {}, CONFIG_HELP).getStringList();
+    }
+
+    @Override
+    public void save(Configuration config)
+    {
+        /* do nothing */
+    }
+
+    @Override
+    public boolean supportsCanonicalConfig()
+    {
+        return true;
     }
 
 }

@@ -1,7 +1,5 @@
 package com.forgeessentials.commands;
 
-import net.minecraftforge.common.MinecraftForge;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.server.CommandHelp;
 import com.forgeessentials.commands.util.CommandDataManager;
@@ -17,7 +15,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -48,7 +45,7 @@ public class ModuleCommands
         CommandDataManager.load();
 
         // TODO: TEMP !
-        new CommandHelp().register();
+        CommandHelp.instance().register();
 
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
     }
