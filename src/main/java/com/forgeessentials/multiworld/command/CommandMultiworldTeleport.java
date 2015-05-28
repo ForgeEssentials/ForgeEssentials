@@ -120,7 +120,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
         }
         msg = Translator.format(msg + " at [%.0f, %.0f, %.0f]", x, y, z);
         OutputHandler.chatConfirmation(player, msg);
-        Multiworld.teleport(player, world, x, y, z, true);
+        Multiworld.teleport(player, world, x, y, z, false);
     }
 
     @Override

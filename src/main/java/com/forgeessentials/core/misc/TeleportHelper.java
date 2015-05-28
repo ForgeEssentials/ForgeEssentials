@@ -66,6 +66,7 @@ public class TeleportHelper extends ServerEventHandler
 
     public static final String TELEPORT_COOLDOWN = "fe.teleport.cooldown";
     public static final String TELEPORT_WARMUP = "fe.teleport.warmup";
+    public static final String TELEPORT_CROSSDIM = "fe.teleport.crossdim";
     public static final String TELEPORT_FROM = "fe.teleport.from";
     public static final String TELEPORT_TO = "fe.teleport.to";
 
@@ -78,6 +79,8 @@ public class TeleportHelper extends ServerEventHandler
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
         if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point.toWorldPoint(), TELEPORT_TO))
             throw new TranslatedCommandException("You are not allowed to teleport to that location.");
+        if (player.dimension != point.getDimension() && !APIRegistry.perms.checkUserPermission(UserIdent.get(player), point.toWorldPoint(), TELEPORT_CROSSDIM))
+            throw new TranslatedCommandException("You are not allowed to teleport across dimensions.");
 
         // Get and check teleport cooldown
         int teleportCooldown = FunctionHelper.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_COOLDOWN), 0) * 1000;
