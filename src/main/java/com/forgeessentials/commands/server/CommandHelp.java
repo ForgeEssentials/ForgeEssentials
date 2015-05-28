@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.forgeessentials.compat.HelpFixer;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,6 +39,8 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
     private String[] messages;
 
+    private HelpFixer fixer;
+
     public static CommandHelp instance()
     {
         if (instance == null)
@@ -48,6 +51,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     private CommandHelp()
     {
         super();
+        fixer = new HelpFixer();
         ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
@@ -128,7 +132,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
                 EnumChatFormatting color = OutputHandler.chatConfirmationColor;
                 if (results.size() > 1 || command == null)
-                    arguments.notify(Translator.format("Searching commandy by \"%s\"", name));
+                    arguments.notify(Translator.format("Searching commands by \"%s\"", name));
 
                 if (command != null)
                 {
@@ -169,46 +173,12 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
     public void showHelpPage(ICommandSender sender, int page)
     {
-        List<ICommand> list = getSortedPossibleCommands(sender);
-        byte b0 = 7;
-        int i = (list.size() - 1) / b0;
-        page = Math.max(0, Math.min(page, i));
-
-        int j = Math.min((page + 1) * b0, list.size());
-        ChatComponentTranslation chatcomponenttranslation1 = new ChatComponentTranslation("commands.help.header", new Object[] { Integer.valueOf(page + 1),
-                Integer.valueOf(i + 1) });
-        chatcomponenttranslation1.getChatStyle().setColor(EnumChatFormatting.DARK_GREEN);
-        sender.addChatMessage(chatcomponenttranslation1);
-
-        for (int l = page * b0; l < j; ++l)
-        {
-            ICommand icommand1 = list.get(l);
-            ChatComponentTranslation chatcomponenttranslation = new ChatComponentTranslation(icommand1.getCommandUsage(sender), new Object[0]);
-            chatcomponenttranslation.getChatStyle()
-                    .setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + icommand1.getCommandName() + " "));
-            sender.addChatMessage(chatcomponenttranslation);
-        }
-
-        if (page == 0 && sender instanceof EntityPlayer)
-        {
-            ChatComponentTranslation chatcomponenttranslation2 = new ChatComponentTranslation("commands.help.footer", new Object[0]);
-            chatcomponenttranslation2.getChatStyle().setColor(EnumChatFormatting.GREEN);
-            sender.addChatMessage(chatcomponenttranslation2);
-        }
+        fixer.processCommand(sender, new String[]{ "" + page});
     }
 
     protected List<ICommand> getSortedPossibleCommands(ICommandSender sender)
     {
-        @SuppressWarnings("unchecked")
-        List<ICommand> list = MinecraftServer.getServer().getCommandManager().getPossibleCommands(sender);
-        Collections.sort(list, new Comparator<ICommand>() {
-            @Override
-            public int compare(ICommand o1, ICommand o2)
-            {
-                return o1.getCommandName().compareTo(o2.getCommandName());
-            }
-        });
-        return list;
+        return fixer.getSortedPossibleCommands(sender);
     }
 
     @Override

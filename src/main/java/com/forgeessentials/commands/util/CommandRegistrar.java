@@ -119,13 +119,4 @@ public class CommandRegistrar
         config.save();
     }
 
-    public static void registerCommands(FEModuleServerInitEvent e)
-    {
-        for (FEcmdModuleCommands cmd : cmdList)
-        {
-            cmd.register();
-            APIRegistry.perms.registerPermissionDescription(cmd.getPermissionNode(), cmd.getCommandUsage(null));
-        }
-    }
-
 }

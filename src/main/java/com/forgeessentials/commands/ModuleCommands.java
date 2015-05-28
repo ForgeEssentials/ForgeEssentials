@@ -6,6 +6,7 @@ import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandRegistrar;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.ConfigCmd;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.core.ForgeEssentials;
@@ -41,7 +42,11 @@ public class ModuleCommands
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        CommandRegistrar.registerCommands(e);
+        for (FEcmdModuleCommands cmd : CommandRegistrar.cmdList)
+        {
+            cmd.register();
+            APIRegistry.perms.registerPermissionDescription(cmd.getPermissionNode(), cmd.getCommandUsage(null));
+        }
         CommandDataManager.load();
 
         // TODO: TEMP !

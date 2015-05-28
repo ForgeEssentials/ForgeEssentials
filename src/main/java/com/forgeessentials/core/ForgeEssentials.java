@@ -2,6 +2,7 @@ package com.forgeessentials.core;
 
 import java.io.File;
 
+import com.forgeessentials.compat.HelpFixer;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -211,6 +212,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         new CommandFEInfo().register();
         new CommandWand().register();
         new CommandUuid().register();
+        FunctionHelper.replaceCommand("help", new HelpFixer());// commands module to overwrite this with its own impl
 
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
