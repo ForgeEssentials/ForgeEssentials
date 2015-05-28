@@ -7,22 +7,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.ClickEvent.Action;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
@@ -51,7 +46,6 @@ import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -65,7 +59,6 @@ import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
 public class ModuleChat
@@ -276,35 +269,7 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
-        replaceMessageCommand();
-    }
-
-    private static void replaceMessageCommand()
-    {
-        try
-        {
-            CommandHandler commandHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
-            ICommand newCommand = new CommandMessageReplacement();
-
-            Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
-            Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
-
-            for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
-            {
-                Entry<String, ICommand> command = it.next();
-                if (command.getValue() instanceof CommandMessage)
-                {
-                    commandSet.remove(command.getValue());
-                    commandSet.add(newCommand);
-                    command.setValue(newCommand);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            OutputHandler.felog.severe("Error patching /tell command");
-            e.printStackTrace();
-        }
+        FunctionHelper.replaceCommand(CommandMessage.class, new CommandMessageReplacement());
     }
 
     @SubscribeEvent

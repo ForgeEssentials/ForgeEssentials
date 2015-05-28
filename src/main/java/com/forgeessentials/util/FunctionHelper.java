@@ -10,7 +10,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -19,8 +23,11 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
+import net.minecraft.command.server.CommandMessage;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,6 +55,8 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.Translator;
 import com.google.gson.JsonArray;
@@ -57,6 +66,7 @@ import com.google.gson.JsonPrimitive;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventBus;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public final class FunctionHelper
 {
@@ -529,6 +539,69 @@ public final class FunctionHelper
     }
 
     // ------------------------------------------------------------
+
+    public static void replaceCommand(Class<CommandMessage> clazz, ICommand newCommand)
+    {
+        try
+        {
+            CommandHandler commandHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+            Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
+            Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
+            for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
+            {
+                Entry<String, ICommand> command = it.next();
+                if (clazz.isAssignableFrom(command.getValue().getClass()))
+                {
+                    commandSet.remove(command.getValue());
+                    commandSet.add(newCommand);
+                    command.setValue(newCommand);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            OutputHandler.felog.severe(String.format("Error replacing command /%s", clazz.getClass().getName()));
+            e.printStackTrace();
+        }
+        if (newCommand instanceof ForgeEssentialsCommandBase)
+            ((ForgeEssentialsCommandBase) newCommand).register();
+    }
+
+    public static void replaceCommand(ICommand oldCommand, ICommand newCommand)
+    {
+        try
+        {
+            CommandHandler commandHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+            Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
+            Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
+            for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
+            {
+                Entry<String, ICommand> command = it.next();
+                if (command.getValue() == oldCommand)
+                {
+                    commandSet.remove(command.getValue());
+                    commandSet.add(newCommand);
+                    command.setValue(newCommand);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            OutputHandler.felog.severe(String.format("Error replacing command /%s", oldCommand.getCommandName()));
+            e.printStackTrace();
+        }
+        if (newCommand instanceof ForgeEssentialsCommandBase)
+            ((ForgeEssentialsCommandBase) newCommand).register();
+    }
+
+    public static void replaceCommand(String command, ICommand newCommand)
+    {
+        ICommand oldCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(command);
+        if (oldCommand != null)
+            replaceCommand(oldCommand, newCommand);
+        else
+            OutputHandler.felog.severe(String.format("Could not find command /%s to replace", command));
+    }
 
     /**
      * Gets a type safe player list
