@@ -52,6 +52,8 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         }
     }
 
+    /* ------------------------------------------------------------ */
+
     public boolean isAfk(UUID uuid)
     {
         return afkPlayers.contains(uuid);
@@ -87,7 +89,17 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         PlayerAFKEvent event = new PlayerAFKEvent(player.getPlayerMP(), false);
         APIRegistry.getFEEventBus().post(event);
 
-        player.getPlayerMP().capabilities.disableDamage = false;
+        switch (player.getPlayerMP().theItemInWorldManager.getGameType())
+        {
+        case NOT_SET:
+        case SURVIVAL:
+        case ADVENTURE:
+            player.getPlayerMP().capabilities.disableDamage = false;
+            break;
+        default:
+            break;
+        }
+
         if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
             OutputHandler.broadcast(OutputHandler.confirmation(Translator.format("Player %s is not AFK any more", player.getUsernameOrUuid())));
         else
