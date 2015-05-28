@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
@@ -12,7 +13,9 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.preloader.asm.EventInjector;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -24,16 +27,27 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 /**
  * 
  */
-public class PortalManager extends ServerEventHandler {
+public class PortalManager extends ServerEventHandler
+{
 
     private static PortalManager instance;
 
     protected Map<String, Portal> portals = new HashMap<>();
 
+    private static boolean mixinLoaded = false;
+
+    private static Block portalBlock = Blocks.portal;
+
     public PortalManager()
     {
         super();
         instance = this;
+        mixinLoaded = EventInjector.injectedPatches.contains("block.BlockPortal_01");
+        if (!mixinLoaded)
+        {
+            OutputHandler.felog.severe("Unable to apply portal block mixin. Will revert to glass panes for portals.");
+            portalBlock = Blocks.glass_pane;
+        }
     }
 
     public static PortalManager getInstance()
@@ -69,10 +83,9 @@ public class PortalManager extends ServerEventHandler {
         WorldPoint before = e.before.toWorldPoint();
         for (Portal portal : portals.values())
         {
-            if (!portal.hasFrame() && portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
+            if (portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
             {
-                TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, portal.target.toWarpPoint(e.entityPlayer.rotationPitch,
-                        e.entityPlayer.rotationYaw));
+                TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, portal.target.toWarpPoint(e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw));
             }
         }
     }
@@ -155,8 +168,8 @@ public class PortalManager extends ServerEventHandler {
             for (int ix = portal.getPortalArea().getLowPoint().getX(); ix <= portal.getPortalArea().getHighPoint().getX(); ix++)
                 for (int iy = portal.getPortalArea().getLowPoint().getY(); iy <= portal.getPortalArea().getHighPoint().getY(); iy++)
                     for (int iz = portal.getPortalArea().getLowPoint().getZ(); iz <= portal.getPortalArea().getHighPoint().getZ(); iz++)
-                        if (world.getBlock(ix, iy, iz) != Blocks.portal)
-                            world.setBlock(ix, iy, iz, Blocks.portal);
+                        if (world.getBlock(ix, iy, iz) != portalBlock)
+                            world.setBlock(ix, iy, iz, portalBlock);
         }
     }
 
