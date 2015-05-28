@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -38,13 +37,13 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return null;
+        return ModuleEconomy.PERM_COMMAND + ".paidcommand";
     }
 
     @Override
     public RegisteredPermValue getDefaultPermission()
     {
-        return null;
+        return RegisteredPermValue.FALSE;
     }
 
     @Override
@@ -57,12 +56,6 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
     public boolean canConsoleUseCommand()
     {
         return true;
-    }
-
-    @Override
-    public boolean canPlayerUseCommand(EntityPlayer player)
-    {
-        return false;
     }
 
     /*

@@ -22,6 +22,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Economy;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -88,19 +89,19 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         APIRegistry.economy = this;
         plotManager = new PlotManager();
+
+        FECommandManager.registerCommand(new CommandWallet());
+        FECommandManager.registerCommand(new CommandPay());
+        FECommandManager.registerCommand(new CommandSell());
+        FECommandManager.registerCommand(new CommandPaidCommand());
+        FECommandManager.registerCommand(new CommandSellCommand());
+        FECommandManager.registerCommand(new CommandTrade());
+        FECommandManager.registerCommand(new CommandCalculatePriceList());
     }
 
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        new CommandWallet().register();
-        new CommandPay().register();
-        new CommandSell().register();
-        new CommandPaidCommand().register();
-        new CommandSellCommand().register();
-        new CommandTrade().register();
-        new CommandCalculatePriceList().register();
-
         APIRegistry.perms.registerPermissionProperty(PERM_XP_MULTIPLIER, "1",
                 "XP to currency conversion rate (integer, a zombie drops around 5 XP, 0 to disable)");
         APIRegistry.perms.registerPermissionProperty(PERM_CURRENCY, "coins", "Name of currency (plural)");

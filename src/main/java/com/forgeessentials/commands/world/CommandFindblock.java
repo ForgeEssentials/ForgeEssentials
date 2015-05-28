@@ -12,11 +12,13 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 
 import cpw.mods.fml.common.registry.GameData;
 
-public class CommandFindblock extends FEcmdModuleCommands {
-	
+public class CommandFindblock extends FEcmdModuleCommands implements ConfigurableCommand
+{
+
     public static final int defaultCount = 1;
     public static int defaultRange = 20 * 16;
     public static int defaultSpeed = 16 * 16;
@@ -29,7 +31,7 @@ public class CommandFindblock extends FEcmdModuleCommands {
     }
 
     @Override
-	public String[] getDefaultAliases()
+    public String[] getDefaultAliases()
     {
         return new String[] { "fb" };
     }
@@ -48,7 +50,7 @@ public class CommandFindblock extends FEcmdModuleCommands {
     {
         if (args.length < 2)
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
         String id = args[0];
         int meta = parseInt(sender, args[1]);
@@ -71,7 +73,8 @@ public class CommandFindblock extends FEcmdModuleCommands {
         if (args.length == 1)
         {
             List<String> names = new ArrayList<String>();
-            for (Item i : GameData.getItemRegistry().typeSafeIterable()){
+            for (Item i : GameData.getItemRegistry().typeSafeIterable())
+            {
                 names.add(i.getUnlocalizedName());
             }
             return getListOfStringsMatchingLastWord(args, names);
@@ -90,7 +93,7 @@ public class CommandFindblock extends FEcmdModuleCommands {
         }
         else
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 

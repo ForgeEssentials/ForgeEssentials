@@ -10,6 +10,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.OutputHandler;
@@ -35,6 +36,7 @@ public class ModuleTickets {
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
+        FECommandManager.registerCommand(new CommandTicket());
         FMLCommonHandler.instance().bus().register(this);
         ForgeEssentials.getConfigManager().registerLoader("Tickets", new ConfigTickets());
     }
@@ -42,7 +44,6 @@ public class ModuleTickets {
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        new Command().register();
         loadAll();
         APIRegistry.perms.registerPermission(PERMBASE + ".new", RegisteredPermValue.TRUE);
         APIRegistry.perms.registerPermission(PERMBASE + ".view", RegisteredPermValue.TRUE);

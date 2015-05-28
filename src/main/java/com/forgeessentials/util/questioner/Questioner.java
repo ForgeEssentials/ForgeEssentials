@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.command.ICommandSender;
 
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -21,8 +22,8 @@ public class Questioner extends ServerEventHandler
     public Questioner()
     {
         super();
-        new CommandQuestioner(true).register();
-        new CommandQuestioner(false).register();
+        FECommandManager.registerCommand(new CommandQuestioner(true));
+        FECommandManager.registerCommand(new CommandQuestioner(false));
     }
 
     public static synchronized void add(QuestionData question) throws QuestionerStillActiveException

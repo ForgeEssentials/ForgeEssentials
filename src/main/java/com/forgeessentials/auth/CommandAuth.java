@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,15 +11,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.PermissionDeniedException;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandAuth extends ForgeEssentialsCommandBase {
+public class CommandAuth extends ForgeEssentialsCommandBase
+{
     private static String[] playerCommands = new String[] { "help", "login", "register", "changepass", "kick", "setpass", "unregister" };
     private static String[] serverCommands = new String[] { "help", "kick", "setpass", "unregister" };
 
@@ -34,11 +34,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public List<?> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("AUTH");
-        return list;
+        return new String[] { "AUTH" };
     }
 
     @Override
@@ -165,7 +163,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             {
                 if (!hasAdmin)
                     throw new PermissionDeniedException();
-                
+
                 if (!PlayerPassData.isRegistered(userID))
                     throw new TranslatedCommandException("Player %s is not registered!", userID);
 
@@ -194,10 +192,10 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
                     OutputHandler.chatConfirmation(sender, "You can't use this new password - it's the same as what was previously there.");
                     return;
                 }
-                
+
                 if (!PlayerPassData.isRegistered(sender.getPersistentID()))
                     throw new TranslatedCommandException("Player %s is not registered!", sender.getCommandSenderName());
-                
+
                 if (!PlayerPassData.checkPassword(sender.getPersistentID(), args[1]))
                 {
                     OutputHandler.chatConfirmation(sender, "Could not change the password - your old password is wrong");
@@ -338,8 +336,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
             }
             break;
         case 2:
-            if (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("setpass") ||
-                    args[0].equalsIgnoreCase("unregister"))
+            if (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("setpass") || args[0].equalsIgnoreCase("unregister"))
             {
                 list.addAll(getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()));
             }
@@ -373,4 +370,5 @@ public class CommandAuth extends ForgeEssentialsCommandBase {
     {
         return RegisteredPermValue.TRUE;
     }
+
 }

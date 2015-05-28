@@ -22,6 +22,7 @@ import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
@@ -111,6 +112,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
                 "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
 
         registerRemoteHandlers();
+        FECommandManager.registerCommand(new CommandRemote());
     }
 
     private void registerRemoteHandlers()
@@ -142,7 +144,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     {
         loadPasskeys();
         startServer();
-        new CommandRemote().register();
     }
 
     /**

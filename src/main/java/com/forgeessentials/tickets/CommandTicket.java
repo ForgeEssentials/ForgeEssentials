@@ -18,7 +18,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
-public class Command extends ForgeEssentialsCommandBase {
+public class CommandTicket extends ForgeEssentialsCommandBase {
     @Override
     public String getCommandName()
     {

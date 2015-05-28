@@ -18,6 +18,7 @@ import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TickTaskHandler;
@@ -119,9 +120,14 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SuppressWarnings("unused")
     private Questioner questioner;
 
+    @SuppressWarnings("unused")
+    private FECommandManager commandManager;
+
     public static VersionUtils version;
 
     public static ASMDataTable asmData;
+
+    /* ------------------------------------------------------------ */
 
     public ForgeEssentials()
     {
@@ -181,7 +187,21 @@ public class ForgeEssentials extends ConfigLoaderBase
         wandHandler = new SelectionEventHandler();
         teleportHelper = new TeleportHelper();
         tickTaskHandler = new TickTaskHandler();
+        questioner = new Questioner();
         FunctionHelper.FE_INTERNAL_EVENTBUS.register(new CompatReiMinimap());
+
+        // Register commands
+        FECommandManager.registerCommand(new CommandFEInfo());
+        FECommandManager.registerCommand(new CommandWand());
+        FECommandManager.registerCommand(new CommandUuid());
+        if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
+        {
+            FECommandManager.registerCommand(new CommandPos(1));
+            FECommandManager.registerCommand(new CommandPos(2));
+            FECommandManager.registerCommand(new CommandDeselect());
+            FECommandManager.registerCommand(new CommandExpand());
+            FECommandManager.registerCommand(new CommandExpandY());
+        }
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
     }
@@ -190,6 +210,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void postLoad(FMLPostInitializationEvent e)
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModulePostInitEvent(e));
+        commandManager = new FECommandManager();
     }
 
     /* ------------------------------------------------------------ */
@@ -197,7 +218,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
-        questioner = new Questioner();
         DataManager.setInstance(new DataManager(new File(FunctionHelper.getWorldPath(), "FEData/json")));
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerPreInitEvent(e));
     }
@@ -207,26 +227,13 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         BlockModListFile.makeModList();
         BlockModListFile.dumpFMLRegistries();
-
-        // commands
-        new CommandFEInfo().register();
-        new CommandWand().register();
-        new CommandUuid().register();
-        FunctionHelper.replaceCommand("help", new HelpFixer());// commands module to overwrite this with its own impl
-
-        if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
-        {
-            new CommandPos(1).register();
-            new CommandPos(2).register();
-            new CommandDeselect().register();
-            new CommandExpand().register();
-            new CommandExpandY().register();
-        }
-
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerInitEvent(e));
 
+        FunctionHelper.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
+        FECommandManager.registerCommands();
+        
         registerPermissions();
     }
 
@@ -263,6 +270,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerStoppedEvent(e));
         Translator.save();
+        FECommandManager.clearRegisteredCommands();
     }
 
     /* ------------------------------------------------------------ */

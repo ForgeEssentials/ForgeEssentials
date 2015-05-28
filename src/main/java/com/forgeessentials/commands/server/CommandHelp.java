@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.server;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +8,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.forgeessentials.compat.HelpFixer;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
@@ -22,6 +19,7 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.Translator;
@@ -35,22 +33,12 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
     private static final String CONFIG_HELP = "Add custom messages here that will appear when /help is run";
 
-    private static CommandHelp instance;
-
     private String[] messages;
 
     private HelpFixer fixer;
 
-    public static CommandHelp instance()
+    public CommandHelp()
     {
-        if (instance == null)
-            instance = new CommandHelp();
-        return instance;
-    }
-
-    private CommandHelp()
-    {
-        super();
         fixer = new HelpFixer();
         ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
@@ -173,7 +161,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
     public void showHelpPage(ICommandSender sender, int page)
     {
-        fixer.processCommand(sender, new String[]{ "" + page});
+        fixer.processCommand(sender, new String[] { "" + page });
     }
 
     protected List<ICommand> getSortedPossibleCommands(ICommandSender sender)

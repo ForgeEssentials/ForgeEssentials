@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Queue;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -18,8 +19,9 @@ import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandButcher extends FEcmdModuleCommands {
-    
+public class CommandButcher extends FEcmdModuleCommands
+{
+
     public static List<String> typeList = ButcherMobType.getNames();
 
     @Override
@@ -70,7 +72,7 @@ public class CommandButcher extends FEcmdModuleCommands {
             else
                 radius = parseIntWithMin(sender, radiusValue, 0);
         }
-        
+
         if (!argsStack.isEmpty())
             mobType = argsStack.remove();
 
@@ -82,14 +84,14 @@ public class CommandButcher extends FEcmdModuleCommands {
             y = parseDouble(sender, argsStack.remove(), sender.posY);
             z = parseDouble(sender, argsStack.remove(), sender.posZ);
         }
-        
+
         if (!argsStack.isEmpty())
         {
             world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
             if (world == null)
                 throw new TranslatedCommandException("The specified dimension does not exist");
         }
-        
+
         AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
         CommandButcherTickTask.schedule(sender, world, mobType, pool, radius);
     }
@@ -105,7 +107,7 @@ public class CommandButcher extends FEcmdModuleCommands {
         String mobType = ButcherMobType.HOSTILE.toString();
 
         Queue<String> argsStack = new LinkedList<String>(Arrays.asList(args));
-        
+
         if (!argsStack.isEmpty())
         {
             String radiusValue = argsStack.remove();
@@ -114,30 +116,31 @@ public class CommandButcher extends FEcmdModuleCommands {
             else
                 radius = parseIntWithMin(sender, radiusValue, 0);
         }
-        
+
         if (!argsStack.isEmpty())
             mobType = argsStack.remove();
 
         if (!argsStack.isEmpty())
         {
             if (argsStack.size() < 3)
-            	throw new TranslatedCommandException(getCommandUsage(sender));
+                throw new TranslatedCommandException(getCommandUsage(sender));
             x = parseInt(sender, argsStack.remove());
             y = parseInt(sender, argsStack.remove());
             z = parseInt(sender, argsStack.remove());
         }
         else
         {
-            if (sender instanceof TileEntityCommandBlock)
+            if (sender instanceof CommandBlockLogic)
             {
-                TileEntityCommandBlock cb = (TileEntityCommandBlock) sender;
-                world = cb.getWorldObj();
-                x = cb.xCoord;
-                y = cb.yCoord;
-                z = cb.zCoord;
+                CommandBlockLogic cb = (CommandBlockLogic) sender;
+                world = cb.getEntityWorld();
+                ChunkCoordinates coords = cb.getPlayerCoordinates();
+                x = coords.posX;
+                y = coords.posY;
+                z = coords.posZ;
             }
             else
-            	throw new TranslatedCommandException(getCommandUsage(sender));
+                throw new TranslatedCommandException(getCommandUsage(sender));
         }
 
         if (!argsStack.isEmpty())

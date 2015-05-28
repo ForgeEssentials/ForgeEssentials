@@ -124,7 +124,7 @@ public class ModuleScripting extends ServerEventHandler
     public void serverStarting(FEModuleServerInitEvent e)
     {
         new CommandTimedTask().register();
-
+        
         loadScripts();
         PatternCommand.loadAll();
         createDefaultPatternCommands();

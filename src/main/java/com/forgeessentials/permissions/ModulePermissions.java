@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.permissions.commands.CommandPermissions;
@@ -38,7 +39,8 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
-public class ModulePermissions extends ConfigLoaderBase {
+public class ModulePermissions extends ConfigLoaderBase
+{
 
     private static final String CONFIG_CAT = "Permissions";
 
@@ -46,8 +48,8 @@ public class ModulePermissions extends ConfigLoaderBase {
 
     private String persistenceBackend = "flatfile";
 
-    private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath() + "/permissions",
-            false);
+    private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath()
+            + "/permissions", false);
 
     private PermissionScheduler permissionScheduler;
 
@@ -59,9 +61,13 @@ public class ModulePermissions extends ConfigLoaderBase {
         permissionScheduler = new PermissionScheduler();
         APIRegistry.perms = permissionHelper;
         PermissionsManager.setPermProvider(permissionHelper);
-        
+
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
+
+        FECommandManager.registerCommand(new CommandZone());
+        FECommandManager.registerCommand(new CommandPermissions());
+        FECommandManager.registerCommand(new CommandPromote());
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -80,7 +86,7 @@ public class ModulePermissions extends ConfigLoaderBase {
         {
             OutputHandler.felog.warning("Unable to create FEData backup");
         }
-        
+
         // Load permissions
         switch (persistenceBackend.toLowerCase())
         {
@@ -88,8 +94,8 @@ public class ModulePermissions extends ConfigLoaderBase {
             permissionHelper.setPersistenceProvider(new SQLProvider(dbConnector.getChosenConnection(), dbConnector.getActiveType()));
             break;
         case "json":
-        	permissionHelper.setPersistenceProvider(new JsonProvider(new File(FunctionHelper.getWorldPath(), "FEData/json")));
-        	break;
+            permissionHelper.setPersistenceProvider(new JsonProvider(new File(FunctionHelper.getWorldPath(), "FEData/json")));
+            break;
         case "flatfile":
         default:
         {
@@ -100,28 +106,19 @@ public class ModulePermissions extends ConfigLoaderBase {
         permissionHelper.load();
         permissionScheduler.loadAll();
         registerPermissions();
-        registerCommands();
-    }
-
-    public void registerCommands()
-    {
-        new CommandZone().register();
-        new CommandPermissions().register();
-        //new CommandAutoPromote().register();
-        new CommandPromote().register();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
         permissionHelper.save();
-        //permissionHelper.verbosePermissionDebug = true;
+        // permissionHelper.verbosePermissionDebug = true;
     }
 
     @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
-        //permissionHelper.verbosePermissionDebug = false;
+        // permissionHelper.verbosePermissionDebug = false;
         permissionHelper.disableAutoSave = false;
         permissionHelper.save();
         permissionScheduler.saveAll();
@@ -187,7 +184,8 @@ public class ModulePermissions extends ConfigLoaderBase {
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile", "Choose a permission persistence backend (flatfile, sql, json)").getString();
+        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile", "Choose a permission persistence backend (flatfile, sql, json)")
+                .getString();
 
         dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
     }

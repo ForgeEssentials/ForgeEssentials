@@ -2,8 +2,9 @@ package com.forgeessentials.playerlogger.event;
 
 import javax.persistence.EntityManager;
 
+import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.event.CommandEvent;
 
 import org.apache.commons.lang3.StringUtils;
@@ -36,14 +37,15 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
             action.y = (int) player.posY;
             action.z = (int) player.posZ;
         }
-        else if (event.sender instanceof TileEntityCommandBlock)
+        else if (event.sender instanceof CommandBlockLogic)
         {
-            TileEntityCommandBlock block = ((TileEntityCommandBlock) event.sender);
+            CommandBlockLogic block = ((CommandBlockLogic) event.sender);
             action.player = getPlayer("commandblock");
-            action.world = getWorld(block.getWorldObj().provider.dimensionId);
-            action.x = block.xCoord;
-            action.y = block.yCoord;
-            action.z = block.zCoord;
+            action.world = getWorld(block.getEntityWorld().provider.dimensionId);
+            ChunkCoordinates coords = block.getPlayerCoordinates();
+            action.x = coords.posX;
+            action.y = coords.posY;
+            action.z = coords.posZ;
         }
         em.persist(action);
     }

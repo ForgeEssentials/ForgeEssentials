@@ -9,9 +9,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ConfigManager {
+public class ConfigManager
+{
 
-    private static class ConfigFile {
+    private static class ConfigFile
+    {
 
         public ConfigFile(File path)
         {
@@ -95,6 +97,16 @@ public class ConfigManager {
                 file.config.save();
         }
         OutputHandler.felog.finer("Finished loading configuration files");
+    }
+
+    public void load(String configName)
+    {
+        ConfigFile file = configFiles.get(configName);
+        if (file == null)
+            return;
+        for (ConfigLoader loader : file.loaders)
+            loader.load(file.config, true);
+        file.config.save();
     }
 
     public void saveAll()

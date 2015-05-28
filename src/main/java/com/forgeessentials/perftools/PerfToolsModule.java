@@ -1,15 +1,18 @@
 package com.forgeessentials.perftools;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "perftools", parentMod = ForgeEssentials.class)
 public class PerfToolsModule extends ConfigLoaderBase
@@ -22,6 +25,13 @@ public class PerfToolsModule extends ConfigLoaderBase
     protected static boolean warn;
 
     @SubscribeEvent
+    public void load(FEModuleInitEvent e)
+    {
+        FECommandManager.registerCommand(new CommandServerPerf());
+        FECommandManager.registerCommand(new CommandChunkLoaderList());
+    }
+
+    @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         if (warn)
@@ -30,9 +40,6 @@ public class PerfToolsModule extends ConfigLoaderBase
             PermissionsManager.registerPermission(PERM_WARN, RegisteredPermValue.OP);
             TaskRegistry.getInstance().scheduleRepeated(watchdog, checkInterval * 60 * 1000);
         }
-
-        new CommandServerPerf().register();
-        new CommandChunkLoaderList().register();
     }
 
     @Override

@@ -32,13 +32,14 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandRules extends FEcmdModuleCommands {
+public class CommandRules extends FEcmdModuleCommands implements ConfigurableCommand
+{
 
-    public static final String[] autocomargs =
-            { "add", "remove", "move", "change", "book" };
+    public static final String[] autocomargs = { "add", "remove", "move", "change", "book" };
     public static ArrayList<String> rules;
     public static File rulesFile = new File(ForgeEssentials.getFEDirectory(), "rules.txt");
 
@@ -87,7 +88,7 @@ public class CommandRules extends FEcmdModuleCommands {
             catch (IOException e)
             {
                 OutputHandler.felog.severe("Error writing the Rules file: " + rulesFile.getName());
-			}
+            }
         }
         else
         {
@@ -219,8 +220,8 @@ public class CommandRules extends FEcmdModuleCommands {
         }
         else if (args.length == 1)
         {
-        	
-        	if (args[0].equalsIgnoreCase("help"))
+
+            if (args[0].equalsIgnoreCase("help"))
             {
                 OutputHandler.chatNotification(sender, " - /rules [#]");
                 if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
@@ -238,7 +239,8 @@ public class CommandRules extends FEcmdModuleCommands {
         }
 
         if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
-            throw new TranslatedCommandException("You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
+            throw new TranslatedCommandException(
+                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
 
         int index;
 
@@ -435,14 +437,14 @@ public class CommandRules extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-    	// Needs elaboration.
-    	if (sender instanceof EntityPlayer)
+        // Needs elaboration.
+        if (sender instanceof EntityPlayer)
         {
-    		return "/rules [#|add|remove|move|change|help|book] Gets or sets the rules of the server.";
+            return "/rules [#|add|remove|move|change|help|book] Gets or sets the rules of the server.";
         }
         else
         {
-        	return "/rules [#|add|remove|move|change|help] Gets or sets the rules of the server.";
+            return "/rules [#|add|remove|move|change|help] Gets or sets the rules of the server.";
         }
     }
 

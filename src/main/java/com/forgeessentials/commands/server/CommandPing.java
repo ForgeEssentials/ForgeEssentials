@@ -8,10 +8,12 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandPing extends FEcmdModuleCommands {
-    String response = "Pong! %time";
+public class CommandPing extends FEcmdModuleCommands implements ConfigurableCommand
+{
+    public String response = "Pong! %time";
 
     @Override
     public void loadConfig(Configuration config, String category)

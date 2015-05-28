@@ -5,6 +5,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.playerlogger.command.CommandRollback;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -31,6 +32,7 @@ public class ModulePlayerLogger
         logger = new PlayerLogger();
         eventHandler = new PlayerLoggerEventHandler();
         ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new PlayerLoggerConfig());
+        FECommandManager.registerCommand(new CommandRollback());
     }
 
     @SubscribeEvent
@@ -38,8 +40,6 @@ public class ModulePlayerLogger
     {
         registerPermissions(APIRegistry.perms);
         logger.loadDatabase();
-        new CommandRollback().register();
-        // new CommandTestPlayerlogger().register();
     }
 
     private void registerPermissions(IPermissionsHelper p)

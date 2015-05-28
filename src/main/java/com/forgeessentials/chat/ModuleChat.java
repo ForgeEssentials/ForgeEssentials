@@ -46,6 +46,7 @@ import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
@@ -246,17 +247,17 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        new CommandMute().register();
-        new CommandNickname().register();
-        new CommandPm().register();
-        new CommandReply().register();
-        new CommandTimedMessages().register();
-        new CommandUnmute().register();
-        new CommandMOTD().register();
+        FECommandManager.registerCommand(new CommandMute());
+        FECommandManager.registerCommand(new CommandNickname());
+        FECommandManager.registerCommand(new CommandPm());
+        FECommandManager.registerCommand(new CommandReply());
+        FECommandManager.registerCommand(new CommandTimedMessages());
+        FECommandManager.registerCommand(new CommandUnmute());
+        FECommandManager.registerCommand(new CommandMOTD());
 
-        new CommandIrc().register();
-        new CommandIrcPm().register();
-        new CommandIrcBot().register();
+        FECommandManager.registerCommand(new CommandIrc());
+        FECommandManager.registerCommand(new CommandIrcPm());
+        FECommandManager.registerCommand(new CommandIrcBot());
 
         APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
         APIRegistry.perms.registerPermission(PERM_CHAT, RegisteredPermValue.TRUE, "Allow players to use the public chat");

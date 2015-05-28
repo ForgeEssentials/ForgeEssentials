@@ -5,6 +5,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.multiworld.command.CommandMultiworld;
@@ -35,16 +36,15 @@ public class ModuleMultiworld extends ConfigLoaderBase {
     {
         multiworldManager.loadWorldProviders();
         multiworldManager.loadWorldTypes();
+        
+        FECommandManager.registerCommand(new CommandMultiworld());
+        FECommandManager.registerCommand(new CommandMultiworldTeleport());
     }
 
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
         multiworldManager.load();
-        
-        // Register commands
-        new CommandMultiworld().register();
-        new CommandMultiworldTeleport().register();
 
         PermissionsManager.registerPermission(PERM_CREATE, RegisteredPermValue.OP);
         PermissionsManager.registerPermission(PERM_DELETE, RegisteredPermValue.OP);

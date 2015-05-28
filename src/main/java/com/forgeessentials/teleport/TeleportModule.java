@@ -1,14 +1,11 @@
 package com.forgeessentials.teleport;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.teleport.portal.CommandPortal;
@@ -57,8 +54,6 @@ public class TeleportModule
     public static final String PERM_WARP = "fe.teleport.warp";
     public static final String PERM_WARP_ADMIN = "fe.teleport.warp.admin";
 
-    private static List<ForgeEssentialsCommandBase> commands = new ArrayList<ForgeEssentialsCommandBase>();
-
     private PortalManager portalManager;
 
     @SuppressWarnings("unused")
@@ -66,19 +61,19 @@ public class TeleportModule
 
     static
     {
-        commands.add(new CommandBack());
-        commands.add(new CommandBed());
-        commands.add(new CommandHome());
-        commands.add(new CommandSpawn());
-        commands.add(new CommandTp());
-        commands.add(new CommandTppos());
-        commands.add(new CommandWarp());
-        commands.add(new CommandTPA());
-        commands.add(new CommandPersonalWarp());
-        commands.add(new CommandTop());
-        commands.add(new CommandPortal());
-        commands.add(new CommandSetSpawn());
-        commands.add(new CommandJump());
+        FECommandManager.registerCommand(new CommandBack());
+        FECommandManager.registerCommand(new CommandBed());
+        FECommandManager.registerCommand(new CommandHome());
+        FECommandManager.registerCommand(new CommandSpawn());
+        FECommandManager.registerCommand(new CommandTp());
+        FECommandManager.registerCommand(new CommandTppos());
+        FECommandManager.registerCommand(new CommandWarp());
+        FECommandManager.registerCommand(new CommandTPA());
+        FECommandManager.registerCommand(new CommandPersonalWarp());
+        FECommandManager.registerCommand(new CommandTop());
+        FECommandManager.registerCommand(new CommandPortal());
+        FECommandManager.registerCommand(new CommandSetSpawn());
+        FECommandManager.registerCommand(new CommandJump());
     }
 
     @SubscribeEvent
@@ -95,9 +90,6 @@ public class TeleportModule
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        for (ForgeEssentialsCommandBase cmd : commands)
-            cmd.register();
-
         portalManager.load();
 
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
@@ -116,12 +108,6 @@ public class TeleportModule
         APIRegistry.perms.registerPermission(PERM_TPA_SENDREQUEST, RegisteredPermValue.TRUE, "Allow sending teleport-to requests");
         APIRegistry.perms.registerPermission(PERM_TPAHERE_SENDREQUEST, RegisteredPermValue.TRUE, "Allow sending teleport-here requests");
         APIRegistry.perms.registerPermission(PERM_WARP_ADMIN, RegisteredPermValue.OP);
-
-        for (ForgeEssentialsCommandBase cmd : commands)
-        {
-            APIRegistry.perms.registerPermission(cmd.getPermissionNode(), cmd.getDefaultPermission(), "Command: " + cmd.getCommandUsage(null));
-        }
-
     }
 
 }

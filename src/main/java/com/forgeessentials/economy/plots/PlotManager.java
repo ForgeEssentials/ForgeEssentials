@@ -5,6 +5,7 @@ import java.util.Set;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.PermissionEvent;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.plots.command.CommandPlot;
 import com.forgeessentials.util.OutputHandler;
@@ -17,15 +18,14 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class PlotManager extends ServerEventHandler
 {
 
-    public static void serverStarting()
+    public PlotManager()
     {
-        registerCommands();
-        Plot.registerPermissions();
+        FECommandManager.registerCommand(new CommandPlot());
     }
 
-    private static void registerCommands()
+    public static void serverStarting()
     {
-        new CommandPlot().register();
+        Plot.registerPermissions();
     }
 
     /* ------------------------------------------------------------ */
@@ -75,12 +75,12 @@ public class PlotManager extends ServerEventHandler
             {
                 message += " " + Translator.format("owned by %s", plot.getOwnerName());
                 OutputHandler.chatConfirmation(event.entityPlayer, message);
-                
+
                 long price = plot.getPrice();
                 if (price >= 0)
                     OutputHandler.chatNotification(event.entityPlayer, Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
-                
-                //TODO: fee check
+
+                // TODO: fee check
             }
         }
     }

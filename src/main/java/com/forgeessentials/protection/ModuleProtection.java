@@ -44,6 +44,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
@@ -123,6 +124,10 @@ public class ModuleProtection
     public void load(FEModuleInitEvent e)
     {
         protectionHandler = new ProtectionEventHandler();
+
+        FECommandManager.registerCommand(new CommandItemPermission());
+        FECommandManager.registerCommand(new CommandProtectionDebug());
+        FECommandManager.registerCommand(new CommandUpgradePermissions());
     }
 
     public static String getItemName(Item item)
@@ -141,10 +146,6 @@ public class ModuleProtection
     @SubscribeEvent
     public void registerPermissions(FEModuleServerInitEvent event)
     {
-        new CommandItemPermission().register();
-        new CommandProtectionDebug().register();
-        new CommandUpgradePermissions().register();
-
         // ----------------------------------------
         // Other
         APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE, "If denied for at least one of two fighting players, PvP will be disabled");

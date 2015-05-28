@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,6 +19,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandSellCommand extends ForgeEssentialsCommandBase
@@ -40,13 +40,13 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return null;
+        return ModuleEconomy.PERM_COMMAND + ".soldcommand";
     }
 
     @Override
     public RegisteredPermValue getDefaultPermission()
     {
-        return null;
+        return RegisteredPermValue.FALSE;
     }
 
     @Override
@@ -59,12 +59,6 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
     public boolean canConsoleUseCommand()
     {
         return true;
-    }
-
-    @Override
-    public boolean canPlayerUseCommand(EntityPlayer player)
-    {
-        return false;
     }
 
     /*
@@ -97,7 +91,8 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
                 foundStacks += stack.stackSize;
         }
 
-        if (foundStacks < amount) {
+        if (foundStacks < amount)
+        {
             OutputHandler.chatError(player, Translator.format("You do not have enough %s to afford this", itemStack.getDisplayName()));
             return;
         }

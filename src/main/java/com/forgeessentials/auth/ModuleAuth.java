@@ -11,6 +11,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.auth.lists.CommandVIP;
 import com.forgeessentials.auth.lists.CommandWhiteList;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -23,7 +24,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class)
-public class ModuleAuth extends ConfigLoaderBase {
+public class ModuleAuth extends ConfigLoaderBase
+{
 
     private static final String CONFIG_CATEGORY = "Auth";
     private static final String CONFIG_CATEGORY_LISTS = "Authlists";
@@ -57,19 +59,18 @@ public class ModuleAuth extends ConfigLoaderBase {
     {
         pwdEnc = new EncryptionHelper();
         handler = new AuthEventHandler();
+        
+        FECommandManager.registerCommand(new CommandAuth());
+        if (AuthEventHandler.whitelist)
+        {
+            FECommandManager.registerCommand(new CommandWhiteList());
+            FECommandManager.registerCommand(new CommandVIP());
+        }
     }
 
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        new CommandAuth().register();
-
-        if (AuthEventHandler.whitelist)
-        {
-            new CommandWhiteList().register();
-            new CommandVIP().register();
-        }
-
         if (checkVanillaAuthStatus && !forceEnabled)
         {
             vanillaCheck = new VanillaServiceChecker();

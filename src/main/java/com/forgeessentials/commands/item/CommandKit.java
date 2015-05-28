@@ -20,6 +20,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
@@ -31,7 +32,7 @@ import com.forgeessentials.util.OutputHandler;
  * @author Dries007
  */
 
-public class CommandKit extends FEcmdModuleCommands
+public class CommandKit extends FEcmdModuleCommands implements ConfigurableCommand
 {
 
     public static final String PERM = COMMANDS_PERM + ".kit";
@@ -180,7 +181,6 @@ public class CommandKit extends FEcmdModuleCommands
     @Override
     public void loadConfig(Configuration config, String category)
     {
-        super.loadConfig(config, category);
         kitForNewPlayers = config.get(category, "kitForNewPlayers", "", "Name of kit to issue to new players. If this is left blank, it will be ignored.")
                 .getString();
     }

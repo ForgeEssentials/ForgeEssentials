@@ -9,13 +9,15 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.VirtualChest;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 
 /**
  * Opens a configurable virtual chest
  *
  * @author Dries007
  */
-public class CommandVirtualchest extends FEcmdModuleCommands {
+public class CommandVirtualchest extends FEcmdModuleCommands implements ConfigurableCommand
+{
     public static int size = 54;
     public static String name = "Vault 13";
 
@@ -35,8 +37,7 @@ public class CommandVirtualchest extends FEcmdModuleCommands {
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[]
-                { "vchest" };
+        return new String[] { "vchest" };
     }
 
     @Override

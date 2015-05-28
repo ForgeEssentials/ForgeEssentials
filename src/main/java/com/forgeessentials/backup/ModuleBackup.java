@@ -11,6 +11,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -47,6 +48,7 @@ public class ModuleBackup {
     {
         // Register configuration
         ForgeEssentials.getConfigManager().registerLoader("Backups", new BackupConfig());
+        FECommandManager.registerCommand(new CommandBackup());
         
         MinecraftForge.EVENT_BUS.register(this);
         worldSaver = new WorldSaver();
@@ -55,7 +57,6 @@ public class ModuleBackup {
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        new CommandBackup().register();
         if (BackupConfig.autoInterval != 0)
         {
             timer.schedule(new AutoBackup(), BackupConfig.autoInterval*60*1000, BackupConfig.autoInterval*60*1000);
