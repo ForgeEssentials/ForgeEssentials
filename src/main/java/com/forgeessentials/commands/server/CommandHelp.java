@@ -45,7 +45,7 @@ public class CommandHelp extends ParserCommandBase
     @Override
     public String getPermissionNode()
     {
-        return "fo.commands.help";
+        return "fe.commands.help";
     }
 
     @Override

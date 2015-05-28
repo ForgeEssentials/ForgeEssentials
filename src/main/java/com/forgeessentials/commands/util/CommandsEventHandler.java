@@ -2,6 +2,7 @@ package com.forgeessentials.commands.util;
 
 import com.forgeessentials.chat.LoginMessage;
 
+import com.forgeessentials.util.events.ServerEventHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -26,7 +27,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public class CommandsEventHandler {
+public class CommandsEventHandler extends ServerEventHandler{
     
     public static HashMultimap<EntityPlayer, PlayerInvChest> map = HashMultimap.create();
 
@@ -53,6 +54,11 @@ public class CommandsEventHandler {
     public static void remove(PlayerInvChest inv)
     {
         map.remove(inv.owner, inv);
+    }
+
+    public CommandsEventHandler()
+    {
+        super();
     }
 
     @SubscribeEvent

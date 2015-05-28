@@ -33,8 +33,6 @@ public class ModuleCommands
     public void preLoad(FEModulePreInitEvent e)
     {
         MobTypeLoader.preLoad((FMLPreInitializationEvent) e.getFMLEvent());
-        MinecraftForge.EVENT_BUS.register(oldEventHandler);
-        FMLCommonHandler.instance().bus().register(oldEventHandler);
     }
 
     @SubscribeEvent
