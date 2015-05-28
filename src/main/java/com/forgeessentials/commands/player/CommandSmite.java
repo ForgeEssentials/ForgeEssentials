@@ -27,7 +27,7 @@ public class CommandSmite extends FEcmdModuleCommands {
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        if (args.length >= 1)
+        if (args.length == 1)
         {
             if (args[0].toLowerCase().equals("me"))
             {
@@ -45,6 +45,17 @@ public class CommandSmite extends FEcmdModuleCommands {
                 else
                     throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
             }
+        }
+        else if (args.length > 1)
+        {
+            if(args.length != 3) {
+                throw new TranslatedCommandException("Need coordinates X, Y, Z.");
+            }
+            int x = Integer.valueOf(args[0]);
+            int y = Integer.valueOf(args[1]);
+            int z = Integer.valueOf(args[2]);
+            sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, x, y, z));
+            OutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
         }
         else
         {
