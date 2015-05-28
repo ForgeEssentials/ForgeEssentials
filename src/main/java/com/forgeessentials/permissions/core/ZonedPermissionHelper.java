@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
@@ -451,6 +452,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             e.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, ModuleProtection.BASE_PERM + ".*", true);
             // e.serverZone.groupParentAdd(Zone.GROUP_FAKEPLAYERS, Zone.GROUP_OPERATORS);
         }
+        if (!e.serverZone.groupExists(Zone.GROUP_CMDBLOCKS))
+        {
+            e.serverZone.setGroupPermission(Zone.GROUP_CMDBLOCKS, FEPermissions.GROUP, true);
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_CMDBLOCKS, FEPermissions.GROUP_PRIORITY, "15");
+            e.serverZone.setGroupPermission(Zone.GROUP_CMDBLOCKS, "*", true);
+        }
     }
 
     @SubscribeEvent
@@ -691,7 +698,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     protected static boolean contextIsConsole(IContext context)
     {
-        return context.getPlayer() == null && context.getCommandSender() != null && !(context.getCommandSender() instanceof EntityPlayer);
+        return context.getPlayer() == null && context.getCommandSender() != null && !(context.getCommandSender() instanceof EntityPlayer)
+                && !(context.getCommandSender() instanceof CommandBlockLogic);
     }
 
     protected static boolean contextIsPlayer(IContext context)
@@ -748,8 +756,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             }
         }
 
-        return checkBooleanPermission(getPermission(ident, loc, area, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
-        // return checkPermission(player, node);
+        SortedSet<GroupEntry> groups = getPlayerGroups(ident);
+        if (context.getCommandSender() instanceof CommandBlockLogic)
+            groups.add(new GroupEntry(rootZone.getServerZone(), Zone.GROUP_CMDBLOCKS));
+        return checkBooleanPermission(getPermission(ident, loc, area, GroupEntry.toList(groups), permissionNode, false));
     }
 
     // ------------------------------------------------------------
