@@ -104,10 +104,6 @@ repositories {
         name = "sponge"
         url = "http://repo.spongepowered.org/maven/"
     }
-    maven {
-        name = "mumfrey-temp"
-        url = "http://repo.mumfrey.com/content/repositories/mixin/"
-    }
 }
 
 dependencies {
@@ -125,7 +121,7 @@ dependencies {
     myCompile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.2-SNAPSHOT:dev'
 
     // mixins
-    shade 'org.spongepowered:mixin:0.4-SNAPSHOT'
+    shade 'org.spongepowered:mixin:0.4.3'
 
     serverLibs 'org.pircbotx:pircbotx:1.9'
     serverLibs 'com.h2database:h2:1.3.175'
