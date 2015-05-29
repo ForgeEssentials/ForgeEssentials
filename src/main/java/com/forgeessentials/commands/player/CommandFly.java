@@ -39,16 +39,17 @@ public class CommandFly extends FEcmdModuleCommands
         if (args.length == 0)
         {
             if (!player.capabilities.isFlying)
-                player.capabilities.isFlying = true;
+                player.capabilities.isFlying = player.capabilities.allowFlying = true;
             else
-                player.capabilities.isFlying = false;
+                player.capabilities.isFlying = player.capabilities.allowFlying = false;
         }
         else
         {
-            player.capabilities.isFlying = Boolean.parseBoolean(args[0]);
+            player.capabilities.isFlying = player.capabilities.allowFlying = Boolean.parseBoolean(args[0]);
         }
-        if (!player.capabilities.isFlying)
+        if (!player.capabilities.allowFlying)
             FunctionHelper.findSafeY(player);
         OutputHandler.chatNotification(player, "Flying " + (player.capabilities.isFlying ? "enabled" : "disabled"));
     }
+    
 }
