@@ -1,7 +1,6 @@
 package com.forgeessentials.economy.commands;
 
 import java.util.Arrays;
-import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
@@ -29,9 +28,9 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        return Arrays.asList("pc", "pcmd");
+        return new String[] { "pc", "pcmd" };
     }
 
     @Override

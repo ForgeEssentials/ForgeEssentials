@@ -1,7 +1,6 @@
 package com.forgeessentials.tickets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -26,9 +25,9 @@ public class CommandTicket extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        return Arrays.asList("tickets");
+        return new String[] { "tickets" };
     }
 
     @Override

@@ -51,11 +51,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("zone");
-        return list;
+        return new String[] { "zone" };
     }
 
     public void parse(ICommandSender sender, Queue<String> args)

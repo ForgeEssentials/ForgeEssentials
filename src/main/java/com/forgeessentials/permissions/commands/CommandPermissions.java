@@ -1,8 +1,5 @@
 package com.forgeessentials.permissions.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -19,13 +16,9 @@ public class CommandPermissions extends ParserCommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("perm");
-        list.add("fep");
-        list.add("p");
-        return list;
+        return new String[] { "perm", "fep", "p" };
     }
 
     @Override

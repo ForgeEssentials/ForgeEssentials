@@ -34,12 +34,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "AUTH" };
-    }
-
-    @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         if (args.length == 0)

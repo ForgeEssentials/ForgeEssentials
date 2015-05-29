@@ -47,7 +47,10 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
     public void setAliases(String[] aliases)
     {
-        setAliases(Arrays.asList(aliases));
+        if (aliases == null)
+            setAliases(new ArrayList<String>());
+        else
+            setAliases(Arrays.asList(aliases));
     }
 
     public void setAliases(List<String> aliases)

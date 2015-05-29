@@ -13,8 +13,9 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import java.util.Arrays;
 import java.util.List;
 
-public class CommandServerSettings extends FEcmdModuleCommands {
-	
+public class CommandServerSettings extends FEcmdModuleCommands
+{
+
     public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MOTD", "spawnProtection", "gamemode");
 
     @Override
@@ -26,12 +27,11 @@ public class CommandServerSettings extends FEcmdModuleCommands {
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[]
-                { "ss" };
+        return new String[] { "ss" };
     }
 
     @Override
-	public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args)
     {
         if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
         {

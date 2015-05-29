@@ -1,7 +1,5 @@
 package com.forgeessentials.commands.server;
 
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
@@ -25,12 +23,6 @@ public class CommandPing extends FEcmdModuleCommands implements ConfigurableComm
     public String getCommandName()
     {
         return "ping";
-    }
-
-    @Override
-    public List<String> getCommandAliases()
-    {
-        return null;
     }
 
     @Override

@@ -20,6 +20,7 @@ public class ModulePlayerLogger
 
     public static final String PERM = "fe.pl";
     public static final String PERM_WAND = PERM + ".wand";
+    public static final String PERM_COMMAND = PERM + ".cmd";
 
     private static PlayerLogger logger;
 

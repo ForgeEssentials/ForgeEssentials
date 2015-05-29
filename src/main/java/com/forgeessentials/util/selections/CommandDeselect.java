@@ -1,8 +1,5 @@
 package com.forgeessentials.util.selections;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -20,9 +17,9 @@ public class CommandDeselect extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        return Arrays.asList("/fedeselect", "/deselect", "/sel");
+        return new String[] { "/fedeselect", "/deselect", "/sel" };
     }
 
     @Override

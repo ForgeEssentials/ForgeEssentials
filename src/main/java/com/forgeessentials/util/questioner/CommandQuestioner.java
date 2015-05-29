@@ -1,8 +1,5 @@
 package com.forgeessentials.util.questioner;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -27,22 +24,12 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        ArrayList<String> list = new ArrayList<String>();
         if (type)
-        {
-            list.add("accept");
-            list.add("allow");
-            list.add("give");
-        }
+            return new String[] { "accept", "allow", "give" };
         else
-        {
-            list.add("decline");
-            list.add("deny");
-            list.add("take");
-        }
-        return list;
+            return new String[] { "decline", "deny", "take" };
     }
 
     @Override
@@ -77,5 +64,5 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     {
         Questioner.answer(sender, type);
     }
-    
+
 }

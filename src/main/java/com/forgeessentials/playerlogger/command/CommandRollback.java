@@ -1,7 +1,6 @@
 package com.forgeessentials.playerlogger.command;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +20,10 @@ import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 
-public class CommandRollback extends ForgeEssentialsCommandBase {
-    
-    public static final String PERM = ModulePlayerLogger.PERM + ".rollback";
+public class CommandRollback extends ForgeEssentialsCommandBase
+{
+
+    public static final String PERM = ModulePlayerLogger.PERM_COMMAND + ".rollback";
     public static final String PERM_ALL = PERM + Zone.ALL_PERMS;
     public static final String PERM_PREVIEW = PERM + ".preview";
 
@@ -32,9 +32,9 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
     protected static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
     private Map<UUID, RollbackInfo> rollbacks = new HashMap<>();
-    
+
     private Timer playbackTimer = new Timer();
-    
+
     @Override
     public String getCommandName()
     {
@@ -42,11 +42,9 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("rb");
-        return list;
+        return new String[] { "rb" };
     }
 
     public void parse(CommandParserArgs args)
@@ -56,10 +54,11 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             startRollback(args);
             return;
         }
-        
+
         args.tabComplete(subCommands);
         String arg = args.remove().toLowerCase();
-        switch (arg) {
+        switch (arg)
+        {
         case "help":
             help(args.sender);
             break;
@@ -92,22 +91,22 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
     private void startRollback(CommandParserArgs args)
     {
         args.checkPermission(PERM_PREVIEW);
-        
+
         if (args.isTabCompletion)
             return;
-        
+
         if (rollbacks.containsKey(args.senderPlayer.getPersistentID()))
             cancelRollback(args);
 
         Selection area = SelectionHandler.selectionProvider.getSelection(args.senderPlayer);
         if (area == null)
             throw new TranslatedCommandException("No selection available. Please select a region first.");
-        
+
         RollbackInfo rb = new RollbackInfo(args.senderPlayer, area);
         rollbacks.put(args.senderPlayer.getPersistentID(), rb);
         rb.stepBackward();
         rb.previewChanges();
-        
+
         OutputHandler.chatConfirmation(args.sender, "Showing changes since " + TIME_FORMAT.format(rb.getTime()));
     }
 
@@ -121,12 +120,12 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
         RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
-        
+
         if (backward)
             rb.stepBackward();
         else
             rb.stepForward();
-        
+
         rb.previewChanges();
         OutputHandler.chatConfirmation(args.sender, "Showing changes since " + TIME_FORMAT.format(rb.getTime()));
     }
@@ -134,14 +133,14 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
     private void confirmRollback(CommandParserArgs args)
     {
         args.checkPermission(PERM);
-        
+
         if (args.isTabCompletion)
             return;
-        
+
         RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
-        
+
         rb.confirm();
         OutputHandler.chatConfirmation(args.sender, "Successfully restored changes");
     }
@@ -151,11 +150,11 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
         RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress.");
-        
+
         rb.cancel();
         OutputHandler.chatConfirmation(args.sender, "Cancelled active rollback");
     }
-    
+
     private void playRollback(CommandParserArgs args)
     {
         args.checkPermission(PERM_PREVIEW);
@@ -165,14 +164,14 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             speed = parseInt(args.sender, args.remove());
         if (speed < 0)
             speed = 1;
-        
+
         if (args.isTabCompletion)
             return;
 
         RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
-        
+
         if (rb.task != null)
         {
             rb.task.cancel();
@@ -196,7 +195,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             speed = parseInt(args.sender, args.remove());
         if (speed < 0)
             speed = 1;
-        
+
         if (args.isTabCompletion)
             return;
 
@@ -205,7 +204,7 @@ public class CommandRollback extends ForgeEssentialsCommandBase {
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
         if (rb.task == null)
             throw new TranslatedCommandException("No playback running");
-        
+
         rb.task.cancel();
         rb.task = null;
         OutputHandler.chatConfirmation(args.sender, "Stopped playback");

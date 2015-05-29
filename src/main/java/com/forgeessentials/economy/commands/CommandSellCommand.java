@@ -1,7 +1,6 @@
 package com.forgeessentials.economy.commands;
 
 import java.util.Arrays;
-import java.util.List;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -32,9 +31,9 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        return Arrays.asList("sc", "scmd");
+        return new String[] { "sc", "scmd" };
     }
 
     @Override

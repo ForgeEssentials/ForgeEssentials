@@ -1,8 +1,6 @@
 package com.forgeessentials.chat.command;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -42,9 +40,9 @@ public class CommandReply extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        return Arrays.asList("r");
+        return new String[] { "r" };
     }
 
     @Override

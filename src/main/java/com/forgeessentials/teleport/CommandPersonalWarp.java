@@ -1,8 +1,6 @@
 package com.forgeessentials.teleport;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -38,9 +36,9 @@ public class CommandPersonalWarp extends ParserCommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public String[] getDefaultAliases()
     {
-        return Arrays.asList("pw", "personalwarp");
+        return new String[] { "pw", "personalwarp" };
     }
 
     @Override
