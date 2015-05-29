@@ -117,6 +117,8 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
     public static void checkAfkMessage(ICommandSender target, IChatComponent message)
     {
+        if (!(target instanceof EntityPlayerMP))
+            return;
         UserIdent targetIdent = UserIdent.get((EntityPlayerMP) target);
         if (target instanceof EntityPlayerMP && isAfk(targetIdent))
         {
