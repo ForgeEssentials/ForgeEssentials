@@ -135,6 +135,8 @@ public class TeleportHelper extends ServerEventHandler
         PlayerInfo pi = PlayerInfo.get(player);
         pi.setLastTeleportOrigin(new WarpPoint(player));
         pi.setLastTeleportTime(System.currentTimeMillis());
+        if (pi.getLastDeathLocation().equals(point.toWorldPoint()))
+            pi.setLastDeathLocation(null);
 
         player.mountEntity(null);
         if (player.dimension != point.getDimension())

@@ -229,7 +229,12 @@ public class WarpPoint
         if (object instanceof Point)
         {
             Point p = (Point) object;
-            return xd == p.getX() && yd == p.getY() && zd == p.getZ();
+            return (int) xd == p.getX() && (int) yd == p.getY() && (int) zd == p.getZ();
+        }
+        if (object instanceof WorldPoint)
+        {
+            WorldPoint p = (WorldPoint) object;
+            return dim == p.getDimension() && (int) xd == p.getX() && (int) yd == p.getY() && (int) zd == p.getZ();
         }
         return false;
     }

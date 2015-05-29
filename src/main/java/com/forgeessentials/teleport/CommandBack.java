@@ -49,16 +49,10 @@ public class CommandBack extends ForgeEssentialsCommandBase
     {
         PlayerInfo pi = PlayerInfo.get(sender.getPersistentID());
         WarpPoint point = null;
-
         if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
-        {
             point = pi.getLastDeathLocation();
-            pi.setLastDeathLocation(null);
-        }
-
         if (point == null)
             point = pi.getLastTeleportOrigin();
-
         if (point == null)
             throw new TranslatedCommandException("You have nowhere to get back to");
 
