@@ -1,9 +1,12 @@
 package com.forgeessentials.chat.irc;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -189,6 +192,19 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         return bot != null && bot.isConnected();
     }
 
+    public Set<User> getIrcUsers()
+    {
+        return bot.getUsers();
+    }
+
+    public Collection<String> getIrcUserNames()
+    {
+        List<String> users = new ArrayList<>();
+        for (User user : bot.getUsers())
+            users.add(user.getNick());
+        return users;
+    }
+
     /* ------------------------------------------------------------ */
 
     @Override
@@ -256,22 +272,15 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     public void sendMessage(String message)
     {
-        if (!isConnected())
-            return;
-        for (String channel : channels)
-            bot.sendMessage(channel, message);
-    }
-
-    public void sendPlayerMessage(String message, String playerName)
-    {
-        if (!isConnected() || !sendMessages)
-            return;
-        sendMessage(String.format(mcHeader, playerName, message));
+        if (isConnected())
+            for (String channel : channels)
+                bot.sendMessage(channel, message);
     }
 
     public void sendPlayerMessage(ICommandSender sender, IChatComponent message)
     {
-        sendPlayerMessage(FunctionHelper.stripFormatting(message.getUnformattedText()), sender.getCommandSenderName());
+        if (isConnected())
+            sendMessage(String.format(mcHeader, sender.getCommandSenderName(), FunctionHelper.stripFormatting(message.getUnformattedText())));
     }
 
     private void mcSendMessage(String message, User user)
@@ -368,7 +377,8 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     @SubscribeEvent(priority = EventPriority.LOW)
     public void chatEvent(ServerChatEvent event)
     {
-        sendPlayerMessage(event.player, event.component);
+        if (isConnected() && sendMessages)
+            sendMessage(FunctionHelper.stripFormatting(event.component.getUnformattedText()));
     }
 
     @Override

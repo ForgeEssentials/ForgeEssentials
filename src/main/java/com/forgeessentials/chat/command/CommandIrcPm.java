@@ -1,5 +1,7 @@
 package com.forgeessentials.chat.command;
 
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
@@ -71,6 +73,17 @@ public class CommandIrcPm extends ForgeEssentialsCommandBase
                 ModuleChat.tell(sender, message, target);
             }
         }
+    }
+
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    @Override
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    {
+        if (args.length != 1)
+            return null;
+        return getListOfStringsMatchingLastWord(args, IrcHandler.getInstance().getIrcUserNames());
     }
 
 }
