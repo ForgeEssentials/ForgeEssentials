@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -24,11 +25,18 @@ import javax.persistence.TemporalType;
  *
  */
 @Entity
-@Table
+@Table(indexes = { //
+        @Index(columnList = "player_id", name = "player_idx"), //
+        @Index(columnList = "dimension", name = "world_idx"), //
+        @Index(columnList = "x", name = "x_idx"), //
+        @Index(columnList = "y", name = "y_idx"), //
+        @Index(columnList = "z", name = "z_idx"), //
+})
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "action", discriminatorType = DiscriminatorType.INTEGER)  
-@DiscriminatorValue(value = "0")  
-public class Action {
+@DiscriminatorColumn(name = "action", discriminatorType = DiscriminatorType.INTEGER)
+@DiscriminatorValue(value = "0")
+public class Action
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,5 +63,5 @@ public class Action {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "player_id")
     public PlayerData player;
-    
+
 }

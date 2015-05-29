@@ -2,25 +2,23 @@ package com.forgeessentials.playerlogger.command;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.UUID;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 
-public class CommandRollback extends ForgeEssentialsCommandBase
+public class CommandRollback extends ParserCommandBase
 {
 
     public static final String PERM = ModulePlayerLogger.PERM_COMMAND + ".rollback";
@@ -47,6 +45,31 @@ public class CommandRollback extends ForgeEssentialsCommandBase
         return new String[] { "rb" };
     }
 
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/zone: Displays command help";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return PERM;
+    }
+
+    @Override
+    public RegisteredPermValue getDefaultPermission()
+    {
+        return RegisteredPermValue.OP;
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
     public void parse(CommandParserArgs args)
     {
         if (args.isEmpty())
@@ -210,21 +233,6 @@ public class CommandRollback extends ForgeEssentialsCommandBase
         OutputHandler.chatConfirmation(args.sender, "Stopped playback");
     }
 
-    @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
-    {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, false);
-        parse(arguments);
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
-        parse(arguments);
-        return arguments.tabCompletion;
-    }
-
     private static void help(ICommandSender sender)
     {
         OutputHandler.chatConfirmation(sender, "/rollback [minutes]: Start rollback");
@@ -232,30 +240,6 @@ public class CommandRollback extends ForgeEssentialsCommandBase
         OutputHandler.chatConfirmation(sender, "/rollback - [min] [sec]: Go forward in time");
         OutputHandler.chatConfirmation(sender, "/rollback confirm: Confirm changes");
         OutputHandler.chatConfirmation(sender, "/rollback cancel: Cancel rollback");
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM;
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/zone: Displays command help";
-    }
-
-    @Override
-    public RegisteredPermValue getDefaultPermission()
-    {
-        return RegisteredPermValue.OP;
     }
 
 }

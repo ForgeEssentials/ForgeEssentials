@@ -140,38 +140,64 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @Override
     public synchronized void run()
     {
-        try
+        while (!eventQueue.isEmpty())
         {
-            em.getTransaction().begin();
-            while (true)
+            synchronized (this)
             {
-                PlayerLoggerEvent<?> logEvent = eventQueue.poll();
-                if (logEvent == null)
-                    break;
-                logEvent.process(em);
+                try
+                {
+                    em.getTransaction().begin();
+                    int count;
+                    for (count = 0; count < 1000; count++)
+                    {
+                        PlayerLoggerEvent<?> logEvent = eventQueue.poll();
+                        if (logEvent == null)
+                            break;
+                        logEvent.process(em);
+                    }
+                    em.getTransaction().commit();
+                    //System.out.println(String.format("%d: Wrote %d playerlogger entries", System.currentTimeMillis() % (1000 * 60), count));
+                }
+                catch (Exception e)
+                {
+                    em.getTransaction().rollback();
+                    e.printStackTrace();
+                }
+                em.clear();
             }
-            em.getTransaction().commit();
+            this.notify();
         }
-        catch (Exception e)
-        {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-        em.clear();
     }
 
     protected void startThread()
     {
         if (thread != null && thread.isAlive())
             return;
-        thread = new Thread(this);
+        thread = new Thread(this, "Playerlogger");
         thread.start();
     }
 
     // ============================================================
     // Utilities
 
-    protected <T> TypedQuery<T> buildSimpleQuery(Class<T> clazz, String fieldName, Object value)
+    /**
+     * <b>NEVER</b> call this and do write operations with this entity manager unless you do it in a synchronized block
+     * with this object.
+     * 
+     * <pre>
+     * <code>synchronized (playerLogger) {
+     *      playerLogger.getEntityManager().doShit();
+     * }</code>
+     * </pre>
+     * 
+     * @return entity manager
+     */
+    public EntityManager getEntityManager()
+    {
+        return em;
+    }
+
+    public <T> TypedQuery<T> buildSimpleQuery(Class<T> clazz, String fieldName, Object value)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<T> cQuery = cBuilder.createQuery(clazz);
@@ -180,7 +206,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return em.createQuery(cQuery);
     }
 
-    protected <T, V> TypedQuery<T> buildSimpleQuery(Class<T> clazz, SingularAttribute<T, V> field, V value)
+    public <T, V> TypedQuery<T> buildSimpleQuery(Class<T> clazz, SingularAttribute<T, V> field, V value)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<T> cQuery = cBuilder.createQuery(clazz);
@@ -189,7 +215,18 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return em.createQuery(cQuery);
     }
 
-    protected <T> T getOneOrNullResult(TypedQuery<T> query)
+    public <T, V> TypedQuery<Long> buildCountQuery(Class<T> clazz, SingularAttribute<T, V> field, V value)
+    {
+        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cQuery = cBuilder.createQuery(Long.class);
+        Root<T> cRoot = cQuery.from(clazz);
+        cQuery.select(cBuilder.count(cRoot));
+        if (field != null)
+            cQuery.where(cBuilder.equal(cRoot.get(field), value));
+        return em.createQuery(cQuery);
+    }
+
+    public <T> T getOneOrNullResult(TypedQuery<T> query)
     {
         List<T> results = query.getResultList();
         if (results.size() == 1)

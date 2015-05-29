@@ -121,4 +121,5 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             OutputHandler.chatConfirmation(event.entityPlayer, msg);
         }
     }
+    
 }

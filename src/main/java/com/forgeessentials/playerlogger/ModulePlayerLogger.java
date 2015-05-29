@@ -7,6 +7,7 @@ import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.playerlogger.command.CommandPlayerlogger;
 import com.forgeessentials.playerlogger.command.CommandRollback;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
@@ -33,7 +34,10 @@ public class ModulePlayerLogger
         logger = new PlayerLogger();
         eventHandler = new PlayerLoggerEventHandler();
         ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new PlayerLoggerConfig());
+
         FECommandManager.registerCommand(new CommandRollback());
+        FECommandManager.registerCommand(new CommandPlayerlogger());
+        // FECommandManager.registerCommand(new CommandTestPlayerlogger());
     }
 
     @SubscribeEvent

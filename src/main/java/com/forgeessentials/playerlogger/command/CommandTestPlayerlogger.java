@@ -24,14 +24,9 @@ public class CommandTestPlayerlogger extends ParserCommandBase
 
     public boolean place;
 
-    private static CommandTestPlayerlogger instance;
-
     public CommandTestPlayerlogger()
     {
-        if (instance != null)
-            FMLCommonHandler.instance().bus().unregister(instance);
         FMLCommonHandler.instance().bus().register(this);
-        instance = this;
     }
 
     @Override
