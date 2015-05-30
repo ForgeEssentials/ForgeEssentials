@@ -3,13 +3,13 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.gson.annotations.Expose;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+
+import com.google.gson.annotations.Expose;
 
 /**
  * Point which stores dimension as well
@@ -155,6 +155,11 @@ public class WorldPoint extends Point {
         {
             WorldPoint p = (WorldPoint) object;
             return dim == p.dim && x == p.x && y == p.y && z == p.z;
+        }
+        if (object instanceof WarpPoint)
+        {
+            WarpPoint p = (WarpPoint) object;
+            return dim == p.dim && x == p.getBlockX() && y == p.getBlockY() && z == p.getBlockZ();
         }
         return false;
     }
