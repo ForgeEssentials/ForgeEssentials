@@ -53,7 +53,6 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase
         else if (args[0].equalsIgnoreCase("reload"))
         {
             OutputHandler.chatNotification(sender, "Reloading ForgeEssentials configs. May not work for all settings!");
-            OutputHandler.chatNotification(sender, EnumChatFormatting.RED + "This is experimental!");
             ModuleLauncher.instance.reloadConfigs(sender);
             OutputHandler.chatNotification(sender, "Done!");
         }

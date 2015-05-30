@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.events.ConfigReloadEvent;
 import net.minecraft.command.ICommandSender;
 
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
@@ -134,6 +136,7 @@ public class ModuleLauncher
         ForgeEssentials.getConfigManager().load(true);
         for (ModuleContainer module : containerMap.values())
             module.runReload(sender);
+        APIRegistry.getFEEventBus().post(new ConfigReloadEvent());
     }
 
     public void unregister(String moduleName)
