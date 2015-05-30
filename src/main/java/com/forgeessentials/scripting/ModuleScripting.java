@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.forgeessentials.util.events.ConfigReloadEvent;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -162,11 +163,14 @@ public class ModuleScripting extends ServerEventHandler
         }
     }
 
-    @FEModule.Reload
-    public void reload(ICommandSender sender)
+    @SubscribeEvent
+    public void reload(ConfigReloadEvent e)
     {
+        loadScripts();
         PatternCommand.loadAll();
-    }
+        createDefaultPatternCommands();
+        PatternCommand.saveAll();
+}
 
     public void runEventScripts(ServerEventType eventType, ICommandSender sender)
     {

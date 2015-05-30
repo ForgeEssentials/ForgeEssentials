@@ -14,7 +14,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
-import com.forgeessentials.core.moduleLauncher.FEModule.Reload;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 
@@ -97,26 +96,7 @@ public class ModuleContainer implements Comparable
         Class[] params;
         for (Method m : c.getDeclaredMethods())
         {
-            if (m.isAnnotationPresent(Reload.class))
-            {
-                if (reload != null)
-                {
-                    throw new RuntimeException("Only one method may be marked as Reload");
-                }
-                params = m.getParameterTypes();
-                if (params.length != 1)
-                {
-                    throw new RuntimeException(m + " may only have 1 argument!");
-                }
-                if (!params[0].equals(ICommandSender.class))
-                {
-                    throw new RuntimeException(m + " must take " + ICommandSender.class.getSimpleName() + " as a param!");
-                }
-                m.setAccessible(true);
-                reload = m.getName();
-            }
-
-            else if (m.isAnnotationPresent(Preconditions.class))
+            if (m.isAnnotationPresent(Preconditions.class))
             {
                 params = m.getParameterTypes();
                 if (params.length != 0)
