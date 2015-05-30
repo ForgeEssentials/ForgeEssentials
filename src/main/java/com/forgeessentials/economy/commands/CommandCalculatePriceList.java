@@ -172,7 +172,14 @@ public class CommandCalculatePriceList extends ParserCommandBase
                         for (Object stacks : recipeItems)
                             if (stacks != null)
                             {
-                                ItemStack stack = (ItemStack) ((stacks instanceof List<?>) ? ((List<?>) stacks).get(0) : stacks);
+                                ItemStack stack = null;
+                                if (stacks instanceof List<?>)
+                                {
+                                    if (!((List<?>) stacks).isEmpty())
+                                        stack = (ItemStack) ((List<?>) stacks).get(0);
+                                }
+                                else
+                                    stack = (ItemStack) stacks;
                                 if (stack != null)
                                     craftRecipes.write(String.format("  %s:%d\n", getItemId(stack.getItem()), stack.getItemDamage()));
                             }
@@ -205,7 +212,14 @@ public class CommandCalculatePriceList extends ParserCommandBase
                                 for (Object stacks : getRecipeItems(recipe))
                                     if (stacks != null)
                                     {
-                                        ItemStack stack = (ItemStack) ((stacks instanceof List<?>) ? ((List<?>) stacks).get(0) : stacks);
+                                        ItemStack stack = null;
+                                        if (stacks instanceof List<?>)
+                                        {
+                                            if (!((List<?>) stacks).isEmpty())
+                                                stack = (ItemStack) ((List<?>) stacks).get(0);
+                                        }
+                                        else
+                                            stack = (ItemStack) stacks;
                                         if (stack != null)
                                             msg += String.format("\n  %.0f - %s:%d", priceMap.get(ModuleEconomy.getItemIdentifier(stack)),
                                                     getItemId(stack.getItem()), stack.getItemDamage());
