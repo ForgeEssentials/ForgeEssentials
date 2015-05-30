@@ -1,7 +1,6 @@
 package com.forgeessentials.util;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
@@ -31,11 +30,11 @@ public class DoAsConsoleCommandSender implements ICommandSender
     @Override
     public void addChatMessage(IChatComponent message)
     {
-        OutputHandler.sendMessage(sender, message);
+        sender.addChatMessage(message);
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(int p_70003_1_, String p_70003_2_)
+    public boolean canCommandSenderUseCommand(int level, String command)
     {
         return true;
     }
@@ -43,13 +42,13 @@ public class DoAsConsoleCommandSender implements ICommandSender
     @Override
     public ChunkCoordinates getPlayerCoordinates()
     {
-        return MinecraftServer.getServer().getPlayerCoordinates();
+        return sender.getPlayerCoordinates();
     }
 
     @Override
     public World getEntityWorld()
     {
-        return MinecraftServer.getServer().getEntityWorld();
+        return sender.getEntityWorld();
     }
 
 }

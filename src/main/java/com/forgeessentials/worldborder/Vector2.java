@@ -1,4 +1,4 @@
-package com.forgeessentials.util.vector;
+package com.forgeessentials.worldborder;
 
 import net.minecraft.util.MathHelper;
 

@@ -100,7 +100,6 @@ public class WESelectionHandler implements ISelectionProvider
                 return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null : new Point(
                         wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
                 // Vector c = cyl.getCenter();
-                // Vector2D r = cyl.getRadius();
                 // return new Selection(world,
                 // new Point(c.getBlockX() - r.getBlockX(), cyl.getMinimumY(), c.getBlockZ() - r.getBlockZ()),
                 // new Point(c.getBlockX() + r.getBlockX(), cyl.getMaximumY(), c.getBlockZ() + r.getBlockZ()));

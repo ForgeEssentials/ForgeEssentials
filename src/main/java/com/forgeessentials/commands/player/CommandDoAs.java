@@ -3,12 +3,8 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -16,6 +12,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.DoAsConsoleCommandSender;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -50,7 +47,7 @@ public class CommandDoAs extends FEcmdModuleCommands
                     {
                         cmd = cmd + " " + args[i];
                     }
-                    MinecraftServer.getServer().getCommandManager().executeCommand(new DummyCommandSender(player), cmd);
+                    MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsConsoleCommandSender(player), cmd);
                 }
             }
         }
@@ -110,50 +107,4 @@ public class CommandDoAs extends FEcmdModuleCommands
         PermissionsManager.registerPermission("fe.commands.doas.console", RegisteredPermValue.OP);
     }
 
-    public class DummyCommandSender implements ICommandSender
-    {
-
-        private EntityPlayer player;
-
-        public DummyCommandSender(EntityPlayer player)
-        {
-            this.player = player;
-        }
-
-        @Override
-        public String getCommandSenderName()
-        {
-            return "FEServerDo";
-        }
-
-        @Override
-        public IChatComponent func_145748_c_()
-        {
-            return null;
-        }
-
-        @Override
-        public void addChatMessage(IChatComponent iChatComponent)
-        {
-            OutputHandler.sendMessage(player, iChatComponent);
-        }
-
-        @Override
-        public boolean canCommandSenderUseCommand(int i, String s)
-        {
-            return true;
-        }
-
-        @Override
-        public ChunkCoordinates getPlayerCoordinates()
-        {
-            return null;
-        }
-
-        @Override
-        public World getEntityWorld()
-        {
-            return null;
-        }
-    }
 }

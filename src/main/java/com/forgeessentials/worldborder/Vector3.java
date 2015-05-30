@@ -1,4 +1,4 @@
-package com.forgeessentials.util.vector;
+package com.forgeessentials.worldborder;
 
 import java.util.List;
 
