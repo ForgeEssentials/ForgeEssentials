@@ -367,7 +367,7 @@ public final class OutputHandler extends ConfigLoaderBase
      */
     public static void debug(Object msg)
     {
-        if (ForgeEssentials.isDebugMode())
+        if (ForgeEssentials.debugMode)
         {
             System.out.println(" {DEBUG} >>>> " + msg);
         }

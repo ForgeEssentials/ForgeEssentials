@@ -8,6 +8,7 @@ import java.util.Calendar;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
+import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
 
@@ -24,7 +25,7 @@ public class BlockModListFile
     {
         try
         {
-            File modListFile = new File(ForgeEssentials.getFEDirectory(), ForgeEssentials.modlistLocation);
+            File modListFile = new File(ForgeEssentials.getFEDirectory(), FEConfig.modlistLocation);
             if (modListFile.exists())
             {
                 modListFile.delete();
@@ -54,7 +55,7 @@ public class BlockModListFile
         }
         catch (Exception e)
         {
-            OutputHandler.felog.severe("Error writing the modlist file: " + ForgeEssentials.modlistLocation);
+            OutputHandler.felog.severe("Error writing the modlist file: " + FEConfig.modlistLocation);
         }
     }
 

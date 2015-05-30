@@ -20,6 +20,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.compat.HelpFixer;
+import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.Translator;
@@ -172,7 +173,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        messages = config.get(ForgeEssentials.CONFIG_CAT, "custom_help", new String[] {}, CONFIG_HELP).getStringList();
+        messages = config.get(FEConfig.CONFIG_CAT, "custom_help", new String[] {}, CONFIG_HELP).getStringList();
     }
 
     @Override

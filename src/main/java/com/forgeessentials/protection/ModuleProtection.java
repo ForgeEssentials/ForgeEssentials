@@ -63,6 +63,7 @@ public class ModuleProtection
 
     public final static String PERM_PVP = BASE_PERM + ".pvp";
 
+    public final static String PERM_SLEEP = BASE_PERM + ".sleep";
     public final static String PERM_GAMEMODE = BASE_PERM + ".gamemode";
     public final static String PERM_INVENTORY_GROUP = BASE_PERM + ".inventorygroup";
 
@@ -149,6 +150,7 @@ public class ModuleProtection
     {
         // ----------------------------------------
         // Other
+        APIRegistry.perms.registerPermission(PERM_SLEEP, RegisteredPermValue.TRUE, "Allow players to sleep in beds");
         APIRegistry.perms.registerPermission(PERM_PVP, RegisteredPermValue.TRUE, "If denied for at least one of two fighting players, PvP will be disabled");
         APIRegistry.perms.registerPermissionProperty(PERM_GAMEMODE, "-1", "Force gamemode (-1 = none / default, 0 = survival, 1 = creative, 2 = adventure)");
         APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default",

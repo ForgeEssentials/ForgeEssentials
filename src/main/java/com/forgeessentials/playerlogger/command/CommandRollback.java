@@ -10,7 +10,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
@@ -128,7 +128,7 @@ public class CommandRollback extends ParserCommandBase
         rb.stepBackward();
         rb.previewChanges();
 
-        OutputHandler.chatConfirmation(args.sender, "Showing changes since " + ForgeEssentials.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
+        OutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
     private void stepRollback(CommandParserArgs args, boolean backward)
@@ -148,7 +148,7 @@ public class CommandRollback extends ParserCommandBase
             rb.stepForward();
 
         rb.previewChanges();
-        OutputHandler.chatConfirmation(args.sender, "Showing changes since " + ForgeEssentials.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
+        OutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
     private void confirmRollback(CommandParserArgs args)

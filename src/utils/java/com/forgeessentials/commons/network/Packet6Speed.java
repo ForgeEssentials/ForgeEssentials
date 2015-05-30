@@ -1,14 +1,16 @@
 package com.forgeessentials.commons.network;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 public class Packet6Speed implements IMessage
 {
 
     private float speed;
 
-    public Packet6Speed(){}
+    public Packet6Speed()
+    {
+    }
 
     public Packet6Speed(float speed)
     {
@@ -19,7 +21,7 @@ public class Packet6Speed implements IMessage
     @Override
     public void fromBytes(ByteBuf buf)
     {
-        float speed = buf.readFloat();
+        speed = buf.readFloat();
     }
 
     @Override
@@ -29,8 +31,8 @@ public class Packet6Speed implements IMessage
     }
 
     public float getSpeed()
-{
-    return speed;
-}
+    {
+        return speed;
+    }
 
 }

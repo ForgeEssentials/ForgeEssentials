@@ -4,6 +4,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -45,8 +46,8 @@ public class PerfToolsModule extends ConfigLoaderBase
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        warn = config.get(ForgeEssentials.CONFIG_CAT, "warnHighMemUsage", true, "Warn server ops when we detect high memory usage.").getBoolean(true);
-        percentageWarn = config.get(ForgeEssentials.CONFIG_CAT, "percentageWarn", 90, "Percentage at which to warn server ops").getInt(90);
-        checkInterval = config.get(ForgeEssentials.CONFIG_CAT, "checkInterval", 5, "Interval in minutes to check memory use.").getInt(5);
+        warn = config.get(FEConfig.CONFIG_CAT, "warnHighMemUsage", true, "Warn server ops when we detect high memory usage.").getBoolean(true);
+        percentageWarn = config.get(FEConfig.CONFIG_CAT, "percentageWarn", 90, "Percentage at which to warn server ops").getInt(90);
+        checkInterval = config.get(FEConfig.CONFIG_CAT, "checkInterval", 5, "Interval in minutes to check memory use.").getInt(5);
     }
 }

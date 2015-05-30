@@ -49,6 +49,7 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
@@ -237,7 +238,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             {
                 writer.write("#// ---------- PERMISSIONS LIST ------------ \\\\#");
                 writer.newLine();
-                writer.write("#// ---------------- " + ForgeEssentials.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
+                writer.write("#// ---------------- " + FEConfig.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
                 writer.newLine();
                 writer.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
                 writer.newLine();
@@ -246,7 +247,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
                 writerItems.write("#// ---------- PERMISSIONS LIST ITEMS ------ \\\\#");
                 writerItems.newLine();
-                writerItems.write("#// ---------------- " + ForgeEssentials.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
+                writerItems.write("#// ---------------- " + FEConfig.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
                 writerItems.newLine();
                 writerItems.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
                 writerItems.newLine();
@@ -255,7 +256,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
                 writerBlocks.write("#// ---------- PERMISSIONS LIST BLOCKS ----- \\\\#");
                 writerBlocks.newLine();
-                writerBlocks.write("#// ---------------- " + ForgeEssentials.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
+                writerBlocks.write("#// ---------------- " + FEConfig.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
                 writerBlocks.newLine();
                 writerBlocks.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
                 writerBlocks.newLine();

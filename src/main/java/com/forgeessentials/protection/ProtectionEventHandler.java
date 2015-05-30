@@ -17,11 +17,14 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -35,6 +38,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
+import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
@@ -49,6 +53,7 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.protection.effect.CommandEffect;
@@ -73,6 +78,8 @@ import cpw.mods.fml.relauncher.Side;
 
 public class ProtectionEventHandler extends ServerEventHandler
 {
+
+    private boolean checkMajoritySleep;
 
     /* ------------------------------------------------------------ */
     /* Entity permissions */
@@ -332,6 +339,58 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     /* ------------------------------------------------------------ */
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void playerSleepInBedEventHigh(PlayerSleepInBedEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+
+        UserIdent ident = UserIdent.get(event.entityPlayer);
+        WorldPoint point = new WorldPoint(event.entity.dimension, event.x, event.y, event.z);
+        if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_SLEEP))
+        {
+            event.result = EnumStatus.NOT_POSSIBLE_HERE;
+            OutputHandler.sendMessage(event.entityPlayer, Translator.translate("You are not allowed to sleep here"));
+            return;
+        }
+        checkMajoritySleep = true;
+    }
+
+    private void checkMajoritySleep()
+    {
+        if (!checkMajoritySleep)
+            return;
+        checkMajoritySleep = false;
+
+        WorldServer world = ServerUtil.getOverworld();
+        if (FEConfig.majoritySleep >= 1 || world.isDaytime())
+            return;
+
+        int sleepingPlayers = 0;
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            if (player.isPlayerSleeping())
+                sleepingPlayers++;
+        float percentage = (float) sleepingPlayers / MinecraftServer.getServer().getCurrentPlayerCount();
+        OutputHandler.felog.finer(String.format("Players sleeping: %.0f%%", percentage * 100));
+
+        if (percentage >= FEConfig.majoritySleep && percentage < 1)
+        {
+            if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
+            {
+                long time = world.getWorldInfo().getWorldTime() + 24000L;
+                world.getWorldInfo().setWorldTime(time - time % 24000L);
+            }
+            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+                if (player.isPlayerSleeping())
+                    player.wakeUpPlayer(false, false, true);
+            // TODO: We change some vanilla behaviour here - is this ok?
+            // Personally I think this is a good change though
+            world.provider.resetRainAndThunder();
+        }
+    }
+
+    /* ------------------------------------------------------------ */
+
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void checkSpawnEvent(CheckSpawn event)
     {
@@ -373,6 +432,9 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
         }
     }
+
+    /* ------------------------------------------------------------ */
+    /* inventory / item permissions */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void itemPickupEvent(EntityItemPickupEvent event)
@@ -594,6 +656,8 @@ public class ProtectionEventHandler extends ServerEventHandler
                     sendZoneDeniedMessage(effect.getPlayer());
             }
         }
+        if (checkMajoritySleep)
+            checkMajoritySleep();
     }
 
     @SubscribeEvent

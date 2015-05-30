@@ -17,6 +17,7 @@ import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldServer;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
@@ -289,6 +290,16 @@ public abstract class ServerUtil
             return 1000 / tps;
     }
 
+    public static WorldServer getOverworld()
+    {
+        return MinecraftServer.getServer().worldServers[0];
+    }
+
+    public static long getOverworldTime()
+    {
+        return MinecraftServer.getServer().worldServers[0].getWorldInfo().getWorldTime();
+    }
+
     /* ------------------------------------------------------------ */
 
     public static void replaceCommand(Class<CommandMessage> clazz, ICommand newCommand)
@@ -353,5 +364,6 @@ public abstract class ServerUtil
         else
             OutputHandler.felog.severe(String.format("Could not find command /%s to replace", command));
     }
+
 
 }

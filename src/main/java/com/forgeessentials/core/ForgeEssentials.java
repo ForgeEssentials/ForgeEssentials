@@ -1,8 +1,10 @@
 package com.forgeessentials.core;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -30,7 +32,6 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
-import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
@@ -78,21 +79,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
-    public static final String CONFIG_CAT = "Core";
-    public static final String CONFIG_CAT_MISC = "Core.Misc";
-    public static final String CONFIG_CAT_MODULES = "Core.Modules";
-
     public static final EventBus BUS = APIRegistry.getFEEventBus();
-
-    public static SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy-MM-dd");
-
-    public static SimpleDateFormat FORMAT_DATE_TIME = new SimpleDateFormat("dd.MM HH:mm");
-
-    public static SimpleDateFormat FORMAT_DATE_TIME_SECONDS = new SimpleDateFormat("dd.MM HH:mm:ss");
-
-    public static SimpleDateFormat FORMAT_TIME = new SimpleDateFormat("HH:mm");
-
-    public static SimpleDateFormat FORMAT_TIME_SECONDS = new SimpleDateFormat("HH:mm:ss");
 
     @Instance(value = "ForgeEssentials")
     public static ForgeEssentials instance;
@@ -101,15 +88,9 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     private ConfigManager configManager;
 
-    private boolean debugMode = false;
+    public static boolean debugMode = false;
 
     public static boolean versionCheck = true;
-
-    public static boolean preload;
-
-    public static String modlistLocation;
-
-    public static boolean mcstats;
 
     public ModuleLauncher moduleLauncher;
 
@@ -118,9 +99,6 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     @SuppressWarnings("unused")
     private SelectionEventHandler wandHandler;
-
-    @SuppressWarnings("unused")
-    private MiscEventHandler miscEventHandler;
 
     @SuppressWarnings("unused")
     private ForgeEssentialsEventFactory factory;
@@ -163,6 +141,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         // Load configuration
         configManager = new ConfigManager(FEDIR, "main");
         configManager.registerLoader(configManager.getMainConfigName(), this);
+        configManager.registerLoader(configManager.getMainConfigName(), new FEConfig());
         configManager.registerLoader(configManager.getMainConfigName(), new OutputHandler());
 
         // Load network packages
@@ -180,9 +159,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         {
             NetworkUtils.initServerNullHandlers();
         }
-
-        // Misc
-        miscEventHandler = new MiscEventHandler();
 
         // Load modules
         moduleLauncher = new ModuleLauncher();
@@ -295,6 +271,17 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         UserIdent.login(event.player);
         PlayerInfo.login(event.player.getPersistentID());
+
+        if (FEConfig.checkSpacesInNames)
+        {
+            Pattern pattern = Pattern.compile("\\s");
+            Matcher matcher = pattern.matcher(event.player.getGameProfile().getName());
+            if (matcher.find())
+            {
+                String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getCommandSenderName());
+                ((EntityPlayerMP) event.player).playerNetServerHandler.kickPlayerFromServer(msg);
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -309,31 +296,10 @@ public class ForgeEssentials extends ConfigLoaderBase
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        config.addCustomCategoryComment(CONFIG_CAT, "Configure ForgeEssentials Core.");
-        config.addCustomCategoryComment(CONFIG_CAT_MODULES, "Enable/disable modules here.");
-
-        versionCheck = config.get(CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean(true);
-        configManager.setUseCanonicalConfig(config.get(CONFIG_CAT, "canonicalConfigs", false, "For modules that support it, place their configs in this file.")
-                .getBoolean(false));
-        modlistLocation = config.get(CONFIG_CAT, "modlistLocation", "modlist.txt",
-                "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.").getString();
-        debugMode = config.get(CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean(false);
-
-        FORMAT_DATE = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date", "yyyy-MM-dd", "Date-only format").getString());
-        FORMAT_DATE_TIME = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date_time", "dd.MM HH:mm", "Date and time format").getString());
-        FORMAT_DATE_TIME_SECONDS = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date_time_seconds", "dd.MM HH:mm:ss",
-                "Date and time format with seconds").getString());
-        FORMAT_TIME = new SimpleDateFormat(config.get(CONFIG_CAT, "format_time", "HH:mm", "Time-only format").getString());
-        FORMAT_TIME_SECONDS = new SimpleDateFormat(config.get(CONFIG_CAT, "format_time", "HH:mm:ss", "Time-only format with seconds").getString());
-
-        // ----------------------------------------
-        // Other global configurations options
-
-        MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If a majority of players sleep, make it day.").getBoolean(true);
-        MiscEventHandler.majoritySleepThreshold = config.get(CONFIG_CAT_MISC, "MajoritySleepThreshold", 50,
-                "Define the percentage of players that constitutes a majority for MajoritySleep to kick in.").getInt(50);
-        MiscEventHandler.checkSpacesInNames = config.get(CONFIG_CAT_MISC, "CheckSpacesInNames", true,
-                "Check if a player's name contains spaces (can gum up some things in FE)").getBoolean();
+        versionCheck = config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean(true);
+        configManager.setUseCanonicalConfig(config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false,
+                "For modules that support it, place their configs in this file.").getBoolean(false));
+        debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean(false);
     }
 
     /* ------------------------------------------------------------ */
@@ -346,16 +312,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static File getFEDirectory()
     {
         return instance.FEDIR;
-    }
-
-    public static boolean isDebugMode()
-    {
-        return instance.debugMode;
-    }
-
-    public void setDebugMode(boolean debugMode)
-    {
-        this.debugMode = debugMode;
     }
 
 }

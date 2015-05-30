@@ -21,7 +21,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ChatConfig;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
@@ -467,7 +467,7 @@ public final class ScriptArguments
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
             EntityPlayerMP _player = ((EntityPlayerMP) sender);
-            return ForgeEssentials.FORMAT_DATE_TIME.format(PlayerInfo.get(_player).getLastLogout());
+            return FEConfig.FORMAT_DATE_TIME.format(PlayerInfo.get(_player).getLastLogout());
         }
 
         @Override
@@ -484,7 +484,7 @@ public final class ScriptArguments
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
             EntityPlayerMP _player = ((EntityPlayerMP) sender);
-            return ForgeEssentials.FORMAT_DATE_TIME.format(PlayerInfo.get(_player).getLastLogin());
+            return FEConfig.FORMAT_DATE_TIME.format(PlayerInfo.get(_player).getLastLogin());
         }
 
         @Override
@@ -546,7 +546,7 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            return ForgeEssentials.FORMAT_TIME.format(new Date());
+            return FEConfig.FORMAT_TIME.format(new Date());
         }
 
         @Override
@@ -560,7 +560,7 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            return ForgeEssentials.FORMAT_DATE.format(new Date());
+            return FEConfig.FORMAT_DATE.format(new Date());
         }
 
         @Override
