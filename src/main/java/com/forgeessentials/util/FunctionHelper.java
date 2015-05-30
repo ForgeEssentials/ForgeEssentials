@@ -408,6 +408,8 @@ public final class FunctionHelper
 
     // ------------------------------------------------------------
 
+    // TODO: Move these to a class like ForgeEssentials and make them configurable
+
     public static final long SECOND = 1;
     public static final long MINUTE = 60 * SECOND;
     public static final long HOUR = 60 * MINUTE;
@@ -420,7 +422,7 @@ public final class FunctionHelper
      * @param time
      * @return Time in string format
      */
-    public static String formatDateTimeReadable(long time, boolean showSeconds)
+    public static String formatTimeDurationReadable(long time, boolean showSeconds)
     {
         long weeks = time / WEEK;
         time -= WEEK * weeks;
@@ -524,7 +526,7 @@ public final class FunctionHelper
         String codes = "";
         for (EnumChatFormatting code : EnumChatFormatting.values())
             codes += code.getFormattingCode();
-        FORMAT_PATTERN = Pattern.compile(FunctionHelper.FORMAT_CHARACTER + "[" + codes + "]");
+        FORMAT_PATTERN = Pattern.compile(FORMAT_CHARACTER + "[" + codes + "]");
     }
 
     /**

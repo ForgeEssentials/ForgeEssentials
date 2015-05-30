@@ -1,6 +1,5 @@
 package com.forgeessentials.playerlogger.command;
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -11,6 +10,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
@@ -26,8 +26,6 @@ public class CommandRollback extends ParserCommandBase
     public static final String PERM_PREVIEW = PERM + ".preview";
 
     private static final String[] subCommands = { "help", "start", "cancel", "confirm", "play", "+", "-" };
-
-    protected static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
     private Map<UUID, RollbackInfo> rollbacks = new HashMap<>();
 
@@ -130,7 +128,7 @@ public class CommandRollback extends ParserCommandBase
         rb.stepBackward();
         rb.previewChanges();
 
-        OutputHandler.chatConfirmation(args.sender, "Showing changes since " + TIME_FORMAT.format(rb.getTime()));
+        OutputHandler.chatConfirmation(args.sender, "Showing changes since " + ForgeEssentials.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
     private void stepRollback(CommandParserArgs args, boolean backward)
@@ -150,7 +148,7 @@ public class CommandRollback extends ParserCommandBase
             rb.stepForward();
 
         rb.previewChanges();
-        OutputHandler.chatConfirmation(args.sender, "Showing changes since " + TIME_FORMAT.format(rb.getTime()));
+        OutputHandler.chatConfirmation(args.sender, "Showing changes since " + ForgeEssentials.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
     private void confirmRollback(CommandParserArgs args)

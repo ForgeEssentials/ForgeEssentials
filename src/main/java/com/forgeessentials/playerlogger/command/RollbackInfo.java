@@ -20,43 +20,44 @@ import com.google.common.collect.Lists;
 
 import cpw.mods.fml.common.registry.GameData;
 
-public class RollbackInfo {
+public class RollbackInfo
+{
 
     EntityPlayerMP player;
-    
+
     private Selection area;
-    
+
     private Date time;
-    
+
     List<ActionBlock> changes;
-    
+
     private int timeStep = -60;
 
     public PlaybackTask task;
-    
+
     public RollbackInfo(EntityPlayerMP player, Selection area)
     {
         this.player = player;
         this.area = area;
         this.setTime(new Date());
     }
-    
+
     @SuppressWarnings("deprecation")
-	public void stepBackward()
+    public void stepBackward()
     {
         timeStep *= timeStep < 0 ? 1.25 : -0.25;
         timeStep -= 1;
         getTime().setSeconds(getTime().getSeconds() + timeStep);
     }
-    
+
     @SuppressWarnings("deprecation")
-	public void stepForward()
+    public void stepForward()
     {
         timeStep *= timeStep > 0 ? 1.25 : -0.25;
         timeStep += 1;
         getTime().setSeconds(getTime().getSeconds() + timeStep);
     }
-    
+
     public void previewChanges()
     {
         List<ActionBlock> lastChanges = changes;
@@ -72,12 +73,14 @@ public class RollbackInfo {
                 if (change.type == ActionBlockType.PLACE)
                 {
                     sendBlockChange(player, change, Blocks.air, 0);
-                    System.out.println(CommandRollback.TIME_FORMAT.format(change.time) + " REMOVED " + change.block.name);
+                    // System.out.println(ForgeEssentials.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REMOVED " +
+                    // change.block.name);
                 }
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
                 {
                     sendBlockChange(player, change, GameData.getBlockRegistry().getObject(change.block.name), change.metadata);
-                    System.out.println(CommandRollback.TIME_FORMAT.format(change.time) + " RESTORED " + change.block.name + ":" + change.metadata);
+                    // System.out.println(ForgeEssentials.FORMAT_DATE_TIME_SECONDS.format(change.time) + " RESTORED " +
+                    // change.block.name + ":" + change.metadata);
                 }
             }
         }
@@ -89,12 +92,14 @@ public class RollbackInfo {
                 if (change.type == ActionBlockType.PLACE)
                 {
                     sendBlockChange(player, change, GameData.getBlockRegistry().getObject(change.block.name), change.metadata);
-                    System.out.println(CommandRollback.TIME_FORMAT.format(change.time) + " REPLACED " + change.block.name);
+                    // System.out.println(ForgeEssentials.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REPLACED " +
+                    // change.block.name);
                 }
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
                 {
                     sendBlockChange(player, change, Blocks.air, 0);
-                    System.out.println(CommandRollback.TIME_FORMAT.format(change.time) + " REBROKE " + change.block.name + ":" + change.metadata);
+                    // System.out.println(ForgeEssentials.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REBROKE " +
+                    // change.block.name + ":" + change.metadata);
                 }
             }
         }
@@ -154,7 +159,7 @@ public class RollbackInfo {
         packet.field_148884_e = newMeta;
         player.playerNetServerHandler.sendPacket(packet);
     }
-    
+
     public static class PlaybackTask extends TimerTask
     {
         private RollbackInfo rb;
@@ -173,7 +178,7 @@ public class RollbackInfo {
             rb.getTime().setSeconds(rb.getTime().getSeconds() - speed);
             rb.previewChanges();
         }
-        
+
     }
 
 }

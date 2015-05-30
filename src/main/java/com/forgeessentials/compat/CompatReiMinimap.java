@@ -1,78 +1,81 @@
 package com.forgeessentials.compat;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-public class CompatReiMinimap {
-    private static final String base = "fe.reimm.compat";
+public class CompatReiMinimap
+{
 
-    public static final String cavemap = base + ".cavemap";
-    public static final String radarPlayer = base + ".radarPlayer";
-    public static final String radarAnimal = base + ".radarAnimal";
-    public static final String radarMod = base + ".radarMod";
-    public static final String radarSlime = base + ".radarSlime";
-    public static final String radarSquid = base + ".radarSquid";
-    public static final String radarOther = base + ".radarOther";
+    public static final String PERM = "fe.reimm.compat";
+    public static final String PERM_CAVEMAP = PERM + ".cavemap";
+    public static final String PERM_RADAR = PERM + ".radar";
+    public static final String PERM_RADAR_PLAYER = PERM_RADAR + ".player";
+    public static final String PERM_RADAR_ANIMAL = PERM_RADAR + ".animal";
+    public static final String PERM_RADAR_MOD = PERM_RADAR + ".mod";
+    public static final String PERM_RADAR_SLIME = PERM_RADAR + ".slime";
+    public static final String PERM_RADAR_SQUID = PERM_RADAR + ".squid";
+    public static final String PERM_RADAR_OTHER = PERM_RADAR + ".other";
 
     @SubscribeEvent
     public void registerPerms(FEModuleServerInitEvent e)
     {
-        PermissionsManager.registerPermission(cavemap, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(radarAnimal, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(radarMod, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(radarOther, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(radarPlayer, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(radarSlime, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(radarOther, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermissionDescription(PERM, "Rei's minimap permissions");
+        PermissionsManager.registerPermission(PERM_CAVEMAP, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(PERM_RADAR_ANIMAL, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(PERM_RADAR_MOD, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(PERM_RADAR_OTHER, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(PERM_RADAR_PLAYER, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(PERM_RADAR_SLIME, RegisteredPermValue.TRUE);
+        PermissionsManager.registerPermission(PERM_RADAR_OTHER, RegisteredPermValue.TRUE);
     }
 
-    public static String reimotd(EntityPlayer username)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        try
+        e.player.addChatMessage(new ChatComponentText(getPermissionCodes(e.player)));
+    }
+
+    public static String getPermissionCodes(EntityPlayer user)
+    {
+        String MOTD = "\u00a7e\u00a7f";
+        if (PermissionsManager.checkPermission(user, PERM_CAVEMAP))
         {
-            String MOTD = "\u00a7e\u00a7f";
-
-            if (PermissionsManager.checkPermission(username, cavemap))
-            {
-                MOTD = "\u00a77" + MOTD;
-            }
-            if (PermissionsManager.checkPermission(username, radarSquid))
-            {
-                MOTD = "\u00a76" + MOTD;
-            }
-            if (PermissionsManager.checkPermission(username, radarSlime))
-            {
-                MOTD = "\u00a75" + MOTD;
-            }
-            if (PermissionsManager.checkPermission(username, radarMod))
-            {
-                MOTD = "\u00a74" + MOTD;
-            }
-            if (PermissionsManager.checkPermission(username, radarAnimal))
-            {
-                MOTD = "\u00a73" + MOTD;
-            }
-            if (PermissionsManager.checkPermission(username, radarPlayer))
-            {
-                MOTD = "\u00a72" + MOTD;
-            }
-            if (PermissionsManager.checkPermission(username, cavemap))
-            {
-                MOTD = "\u00a71" + MOTD;
-            }
-
-            MOTD = "\u00a70\u00a70" + MOTD;
-
-            return MOTD;
+            MOTD = "\u00a77" + MOTD;
         }
-        catch (Exception e)
+        if (PermissionsManager.checkPermission(user, PERM_RADAR_SQUID))
         {
-            e.printStackTrace();
+            MOTD = "\u00a76" + MOTD;
         }
-        return "";
+        if (PermissionsManager.checkPermission(user, PERM_RADAR_SLIME))
+        {
+            MOTD = "\u00a75" + MOTD;
+        }
+        if (PermissionsManager.checkPermission(user, PERM_RADAR_MOD))
+        {
+            MOTD = "\u00a74" + MOTD;
+        }
+        if (PermissionsManager.checkPermission(user, PERM_RADAR_ANIMAL))
+        {
+            MOTD = "\u00a73" + MOTD;
+        }
+        if (PermissionsManager.checkPermission(user, PERM_RADAR_PLAYER))
+        {
+            MOTD = "\u00a72" + MOTD;
+        }
+        if (PermissionsManager.checkPermission(user, PERM_CAVEMAP))
+        {
+            MOTD = "\u00a71" + MOTD;
+        }
+        MOTD = "\u00a70\u00a70" + MOTD;
+        return MOTD;
     }
 
 }

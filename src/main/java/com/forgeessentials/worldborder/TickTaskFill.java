@@ -130,7 +130,7 @@ public class TickTaskFill implements ITickTask
     {
         try
         {
-            return FunctionHelper.formatDateTimeReadable((int) (todo / speed / FunctionHelper.getTPS()), true);
+            return FunctionHelper.formatTimeDurationReadable((int) (todo / speed / FunctionHelper.getTPS()), true);
         }
         catch (Exception e)
         {

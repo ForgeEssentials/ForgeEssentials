@@ -20,17 +20,21 @@ public class ChatConfig extends ConfigLoaderBase
 
     private static final String MUTEDCMD_HELP = "All commands in here will be blocked if the player is muted.";
 
-    private static final String WELCOME_MESSAGE = "Welcome messages for new players. Can be colour formatted. Insert %username for the player's username.";
+    private static final String WELCOME_MESSAGE = "Welcome messages for new players. Can be colour formatted (supports script arguments)";
+
+    private static final String LOGIN_MESSAGE = "Login message shown each time the player logs in (supports script arguments)";
 
     public static String gamemodeCreative;
 
     public static String gamemodeAdventure;
 
-    protected static String gamemodeSurvival;
+    public static String gamemodeSurvival;
 
     public static String chatFormat = "%s%s<%s>%s%s ";
 
     public static String welcomeMessage;
+
+    public static String[] loginMessage;
 
     public static Set<String> mutedCommands = new HashSet<>();
 
@@ -51,11 +55,12 @@ public class ChatConfig extends ConfigLoaderBase
         }
 
         welcomeMessage = config.get("Chat", "WelcomeMessage", "Welcome %username to the server!", WELCOME_MESSAGE).getString();
+        loginMessage = config.get("Chat", "LoginMessage", "Welcome %username to the server!", LOGIN_MESSAGE).getStringList();
 
         config.addCustomCategoryComment(CAT_GM, "Gamemode names");
-        gamemodeSurvival = config.get(CAT_GM, "Survival", "[Sur]").getString();
-        gamemodeCreative = config.get(CAT_GM, "Creative", "[Cre]").getString();
-        gamemodeAdventure = config.get(CAT_GM, "Adventure", "[Adv]").getString();
+        gamemodeSurvival = config.get(CAT_GM, "Survival", "survival").getString();
+        gamemodeCreative = config.get(CAT_GM, "Creative", "creative").getString();
+        gamemodeAdventure = config.get(CAT_GM, "Adventure", "adventure").getString();
 
         mutedCommands.clear();
         for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] { "me" }, MUTEDCMD_HELP).getStringList())

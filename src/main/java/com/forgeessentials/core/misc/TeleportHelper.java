@@ -112,7 +112,7 @@ public class TeleportHelper extends ServerEventHandler
         // Setup timed teleport
         tpInfos.put(player.getPersistentID(), new TeleportInfo(player, point, teleportWarmup * 1000));
         OutputHandler.chatNotification(player,
-                Translator.format("Teleporting. Please stand still for %s.", FunctionHelper.formatDateTimeReadable(teleportWarmup, true)));
+                Translator.format("Teleporting. Please stand still for %s.", FunctionHelper.formatTimeDurationReadable(teleportWarmup, true)));
     }
 
     public static boolean canTeleportTo(WarpPoint point)

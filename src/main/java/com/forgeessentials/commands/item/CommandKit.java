@@ -102,7 +102,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
                 }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
                 OutputHandler.chatConfirmation(sender,
-                        Translator.format("Kit created successfully. %s cooldown.", FunctionHelper.formatDateTimeReadable(cooldown, true)));
+                        Translator.format("Kit created successfully. %s cooldown.", FunctionHelper.formatTimeDurationReadable(cooldown, true)));
             }
             else
             {
@@ -227,7 +227,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
                 }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
                 OutputHandler.chatConfirmation(sender,
-                        Translator.format("Kit created successfully. %s cooldown.", FunctionHelper.formatDateTimeReadable(cooldown, true)));
+                        Translator.format("Kit created successfully. %s cooldown.", FunctionHelper.formatTimeDurationReadable(cooldown, true)));
             }
         }
 

@@ -5,6 +5,7 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,12 +15,18 @@ import java.util.regex.Pattern;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.chat.ChatConfig;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.PlayerInfo;
 import com.google.common.collect.ImmutableMap;
 
 public final class ScriptArguments
@@ -255,6 +262,26 @@ public final class ScriptArguments
         }
     };
 
+    public static ScriptArgument gm = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            if (((EntityPlayerMP) sender).theItemInWorldManager.getGameType().isCreative())
+                return ChatConfig.gamemodeCreative;
+            if (((EntityPlayerMP) sender).theItemInWorldManager.getGameType().isAdventure())
+                return ChatConfig.gamemodeAdventure;
+            return ChatConfig.gamemodeSurvival;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Player gamemode";
+        }
+    };
+
     public static ScriptArgument health = new ScriptArgument() {
         @Override
         public String process(ICommandSender sender)
@@ -271,7 +298,28 @@ public final class ScriptArguments
         }
     };
 
-    public static ScriptArgument food = new ScriptArgument() {
+    public static ScriptArgument healthcolor = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            float health = ((EntityPlayerMP) sender).getHealth();
+            if (health <= 6)
+                return EnumChatFormatting.RED.toString();
+            if (health < 16)
+                return EnumChatFormatting.YELLOW.toString();
+            return EnumChatFormatting.GREEN.toString();
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Insert color code based on player health";
+        }
+    };
+
+    public static ScriptArgument hunger = new ScriptArgument() {
         @Override
         public String process(ICommandSender sender)
         {
@@ -283,7 +331,28 @@ public final class ScriptArguments
         @Override
         public String getHelp()
         {
-            return "Player food level";
+            return "Player hunger level";
+        }
+    };
+
+    public static ScriptArgument hungercolor = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            float hunger = ((EntityPlayerMP) sender).getFoodStats().getFoodLevel();
+            if (hunger <= 6)
+                return EnumChatFormatting.RED.toString();
+            if (hunger < 12)
+                return EnumChatFormatting.YELLOW.toString();
+            return EnumChatFormatting.GREEN.toString();
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Insert color code based on player hunger level";
         }
     };
 
@@ -300,6 +369,161 @@ public final class ScriptArguments
         public String getHelp()
         {
             return "Player (food) saturation level";
+        }
+    };
+
+    public static ScriptArgument saturationcolor = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            float hunger = ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel();
+            if (hunger <= 0)
+                return EnumChatFormatting.RED.toString();
+            if (hunger <= 1.5)
+                return EnumChatFormatting.YELLOW.toString();
+            return EnumChatFormatting.GREEN.toString();
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Insert color code based on player saturation level";
+        }
+    };
+
+    public static ScriptArgument zone = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            return APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(((EntityPlayerMP) sender))).getName();
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Get name of the zone the player is in";
+        }
+    };
+
+    public static ScriptArgument zoneId = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            return Integer.toString(APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(((EntityPlayerMP) sender))).getId());
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Get ID of the zone the player is in";
+        }
+    };
+
+    public static ScriptArgument group = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            return APIRegistry.perms.getServerZone().getPlayerGroups(UserIdent.get(_player)).first().getGroup();
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Get name of the zone the player is in";
+        }
+    };
+
+    public static ScriptArgument timePlayed = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            return FunctionHelper.formatTimeDurationReadable(PlayerInfo.get(_player).getTimePlayed() / 1000, true);
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Get total time a player played on the server" + "";
+        }
+    };
+
+    public static ScriptArgument lastLogout = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            return ForgeEssentials.FORMAT_DATE_TIME.format(PlayerInfo.get(_player).getLastLogout());
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Get the time a player logged out last time";
+        }
+    };
+
+    public static ScriptArgument lastLogin = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            return ForgeEssentials.FORMAT_DATE_TIME.format(PlayerInfo.get(_player).getLastLogin());
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Get the time a player logged in last time";
+        }
+    };
+
+    public static ScriptArgument sinceLastLogout = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            return FunctionHelper.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogout().getTime()) / 1000, true);
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Get the time since a player logged out last time";
+        }
+    };
+
+    public static ScriptArgument sinceLastLogin = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            return FunctionHelper.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogin().getTime()) / 1000, true);
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Get the time since a player logged in last time";
         }
     };
 
@@ -378,7 +602,7 @@ public final class ScriptArguments
         public String process(ICommandSender sender)
         {
             RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-            return FunctionHelper.formatDateTimeReadable(rb.getUptime() / 1000, true);
+            return FunctionHelper.formatTimeDurationReadable(rb.getUptime() / 1000, true);
         }
 
         @Override

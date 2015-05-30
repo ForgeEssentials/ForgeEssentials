@@ -34,7 +34,6 @@ import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.chat.command.CommandIrc;
 import com.forgeessentials.chat.command.CommandIrcBot;
 import com.forgeessentials.chat.command.CommandIrcPm;
-import com.forgeessentials.chat.command.CommandMOTD;
 import com.forgeessentials.chat.command.CommandMessageReplacement;
 import com.forgeessentials.chat.command.CommandMute;
 import com.forgeessentials.chat.command.CommandNickname;
@@ -48,9 +47,9 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -60,6 +59,7 @@ import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
 public class ModuleChat
@@ -89,13 +89,6 @@ public class ModuleChat
             Pattern.CASE_INSENSITIVE);
     // @formatter:on
 
-    public static interface ChatReplacer
-    {
-        public Object getReplacement(EntityPlayerMP player);
-    }
-
-    public static final Map<String, ChatReplacer> chatReplacements = new HashMap<>();
-
     public static final Map<String, String> chatConstReplacements = new HashMap<>();
 
     @FEModule.Instance
@@ -124,7 +117,6 @@ public class ModuleChat
         censor = new Censor();
 
         setupChatReplacements();
-        LoginMessage.loadFile();
     }
 
     public void setupChatReplacements()
@@ -164,84 +156,6 @@ public class ModuleChat
         chatConstReplacements.put("underline", EnumChatFormatting.UNDERLINE.toString());
         chatConstReplacements.put("italics", EnumChatFormatting.ITALIC.toString());
         chatConstReplacements.put("reset", EnumChatFormatting.RESET.toString());
-
-        chatReplacements.put("gm", new ChatReplacer() {
-            @Override
-            public Object getReplacement(EntityPlayerMP player)
-            {
-                if (player.theItemInWorldManager.getGameType().isCreative())
-                    return ChatConfig.gamemodeCreative;
-                if (player.theItemInWorldManager.getGameType().isAdventure())
-                    return ChatConfig.gamemodeAdventure;
-                return ChatConfig.gamemodeSurvival;
-            }
-        });
-        chatReplacements.put("healthcolor", new ChatReplacer() {
-            @Override
-            public Object getReplacement(EntityPlayerMP player)
-            {
-                float health = player.getHealth();
-                if (health <= 6)
-                    return EnumChatFormatting.RED;
-                if (health < 16)
-                    return EnumChatFormatting.YELLOW;
-                return EnumChatFormatting.GREEN;
-            }
-        });
-        chatReplacements.put("health", new ChatReplacer() {
-            @Override
-            public Object getReplacement(EntityPlayerMP player)
-            {
-                return (int) player.getHealth() / 2.0;
-            }
-        });
-        chatReplacements.put("hungercolor", new ChatReplacer() {
-            @Override
-            public Object getReplacement(EntityPlayerMP player)
-            {
-                float hunger = player.getFoodStats().getFoodLevel();
-                if (hunger <= 6)
-                    return EnumChatFormatting.RED;
-                if (hunger < 12)
-                    return EnumChatFormatting.YELLOW;
-                return EnumChatFormatting.GREEN;
-            }
-        });
-        chatReplacements.put("hunger", new ChatReplacer() {
-            @Override
-            public Object getReplacement(EntityPlayerMP player)
-            {
-                return player.getFoodStats().getFoodLevel();
-            }
-        });
-        chatReplacements.put("zone", new ChatReplacer() {
-            @Override
-            public Object getReplacement(EntityPlayerMP player)
-            {
-                return APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(player)).getName();
-            }
-        });
-        chatReplacements.put("group", new ChatReplacer() {
-            @Override
-            public Object getReplacement(EntityPlayerMP player)
-            {
-                return APIRegistry.perms.getServerZone().getPlayerGroups(UserIdent.get(player)).first().getGroup();
-            }
-        });
-        chatReplacements.put("timeplayed", new ChatReplacer() {
-            @Override
-            public Object getReplacement(EntityPlayerMP player)
-            {
-                return FunctionHelper.formatDateTimeReadable(PlayerInfo.get(player).getTimePlayed() / 1000, true);
-            }
-        });
-        chatReplacements.put("lastlogin", new ChatReplacer() {
-            @Override
-            public Object getReplacement(EntityPlayerMP player)
-            {
-                return FunctionHelper.formatDateTimeReadable((new Date().getTime() - PlayerInfo.get(player).getLastLogin().getTime()) / 1000, true);
-            }
-        });
     }
 
     @SubscribeEvent
@@ -253,7 +167,6 @@ public class ModuleChat
         FECommandManager.registerCommand(new CommandReply());
         FECommandManager.registerCommand(new CommandTimedMessages());
         FECommandManager.registerCommand(new CommandUnmute());
-        FECommandManager.registerCommand(new CommandMOTD());
 
         FECommandManager.registerCommand(new CommandIrc());
         FECommandManager.registerCommand(new CommandIrcPm());
@@ -376,19 +289,12 @@ public class ModuleChat
         event.setCanceled(true);
     }
 
-    public static String processChatReplacements(EntityPlayerMP player, String message)
+    public static String processChatReplacements(ICommandSender sender, String message)
     {
-        for (Entry<String, ChatReplacer> r : chatReplacements.entrySet())
-        {
-            if (message.contains("%" + r.getKey()))
-            {
-                message = message.replaceAll("%" + r.getKey(), r.getValue().getReplacement(player).toString());
-            }
-        }
+        message = ScriptArguments.process(message);
         for (Entry<String, String> r : chatConstReplacements.entrySet())
-        {
             message = message.replaceAll("%" + r.getKey(), r.getValue());
-        }
+        message = FunctionHelper.formatColors(message);
         return message;
     }
 
@@ -460,6 +366,34 @@ public class ModuleChat
         // Append the rest of the message.
         ichat.appendText(text.substring(lastEnd));
         return ichat;
+    }
+
+    /* ------------------------------------------------------------ */
+
+    @SubscribeEvent
+    public void onPlayerFirstJoin(NoPlayerInfoEvent event)
+    {
+        if (!ChatConfig.welcomeMessage.isEmpty())
+        {
+            String message = processChatReplacements(event.getPlayer(), ChatConfig.welcomeMessage);
+            OutputHandler.broadcast(new ChatComponentText(message));
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
+    {
+        if (e.player instanceof EntityPlayerMP)
+            sendMotd(e.player);
+    }
+
+    public static void sendMotd(ICommandSender sender)
+    {
+        for (String message : ChatConfig.loginMessage)
+        {
+            message = processChatReplacements(sender, message);
+            OutputHandler.sendMessage(sender, message);
+        }
     }
 
     /* ------------------------------------------------------------ */
@@ -540,18 +474,6 @@ public class ModuleChat
         sender.addChatMessage(senderMsg);
         CommandReply.messageSent(sender, target);
         ModuleCommandsEventHandler.checkAfkMessage(target, message);
-    }
-
-    @SubscribeEvent
-    public void onPlayerFirstJoin(NoPlayerInfoEvent event)
-    {
-        if (!ChatConfig.welcomeMessage.isEmpty())
-        {
-            String format = FunctionHelper.formatColors(ChatConfig.welcomeMessage);
-            format = FunctionHelper.replaceAllIgnoreCase(format, "%username", event.entityPlayer.getCommandSenderName());
-            format = processChatReplacements(event.getPlayer(), format);
-            OutputHandler.broadcast(new ChatComponentText(format));
-        }
     }
 
 }

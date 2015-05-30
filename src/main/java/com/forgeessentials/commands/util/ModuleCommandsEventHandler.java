@@ -177,7 +177,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         if (!pi.checkTimeout("tempban"))
         {
             pi.ident.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You are still banned for %s",
-                    FunctionHelper.formatDateTimeReadable(pi.getRemainingTimeout("tempban") / 1000, true)));
+                    FunctionHelper.formatTimeDurationReadable(pi.getRemainingTimeout("tempban") / 1000, true)));
         }
     }
 

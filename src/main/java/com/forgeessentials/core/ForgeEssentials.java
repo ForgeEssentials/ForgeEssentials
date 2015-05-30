@@ -1,8 +1,10 @@
 package com.forgeessentials.core;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 
 import com.forgeessentials.compat.HelpFixer;
+
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -79,6 +81,12 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static final String CONFIG_CAT = "Core";
     public static final String CONFIG_CAT_MISC = "Core.Misc";
     public static final String CONFIG_CAT_MODULES = "Core.Modules";
+
+    public static SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy-MM-dd");
+
+    public static SimpleDateFormat FORMAT_DATE_TIME = new SimpleDateFormat("dd.MM HH:mm");
+
+    public static SimpleDateFormat FORMAT_DATE_TIME_SECONDS = new SimpleDateFormat("dd.MM HH:mm:ss");
 
     @Instance(value = "ForgeEssentials")
     public static ForgeEssentials instance;
@@ -233,7 +241,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         FunctionHelper.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
         FECommandManager.registerCommands();
-        
+
         registerPermissions();
     }
 
@@ -253,6 +261,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverStarted(FMLServerStartedEvent e)
     {
+        // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         CommandSetChecker.remove();
 
         FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
@@ -304,11 +313,13 @@ public class ForgeEssentials extends ConfigLoaderBase
                 "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.").getString();
         debugMode = config.get(CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean(false);
 
+        FORMAT_DATE = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date", "yyyy-MM-dd", "Date-only format").getString());
+        FORMAT_DATE_TIME = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date_time", "dd.MM HH:mm", "Date-only format").getString());
+        FORMAT_DATE_TIME_SECONDS = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date_time_seconds", "dd.MM HH:mm:ss", "Date-only format").getString());
+
         // ----------------------------------------
         // Other global configurations options
 
-        CommandSetChecker.removeDuplicateCommands = config.get(CONFIG_CAT, "removeDuplicateCommands", true,
-                "Remove commands from the list if they already exist outside of FE.").getBoolean(true);
         MiscEventHandler.MajoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleep", true, "If a majority of players sleep, make it day.").getBoolean(true);
         MiscEventHandler.majoritySleepThreshold = config.get(CONFIG_CAT_MISC, "MajoritySleepThreshold", 50,
                 "Define the percentage of players that constitutes a majority for MajoritySleep to kick in.").getInt(50);

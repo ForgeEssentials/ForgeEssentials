@@ -1,8 +1,5 @@
 package com.forgeessentials.commands.util;
 
-import com.forgeessentials.chat.LoginMessage;
-
-import com.forgeessentials.util.events.ServerEventHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -17,14 +14,13 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.commands.player.CommandNoClip;
-import com.forgeessentials.commands.player.CommandVanish;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.events.ServerEventHandler;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class CommandsEventHandler extends ServerEventHandler{
@@ -181,41 +177,6 @@ public class CommandsEventHandler extends ServerEventHandler{
                     }
                 }
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
-    {
-        if (e.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean(CommandVanish.TAGNAME))
-        {
-            CommandVanish.vanishedPlayers.add(e.player.getPersistentID());
-        }
-        LoginMessage.sendLoginMessage(e.player);
-    }
-
-    @SubscribeEvent
-    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent e)
-    {
-        CommandVanish.vanishedPlayers.remove(e.player.getPersistentID());
-    }
-
-    @SubscribeEvent
-    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent e)
-    {
-        if (e.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean(CommandVanish.TAGNAME))
-        {
-            CommandVanish.vanishedPlayers.add(e.player.getPersistentID());
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent e)
-    {
-
-        if (e.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean(CommandVanish.TAGNAME))
-        {
-            CommandVanish.vanishedPlayers.add(e.player.getPersistentID());
         }
     }
 

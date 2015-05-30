@@ -78,6 +78,6 @@ public class CommandTempBan extends FEcmdModuleCommands
         pi.startTimeout("tempban", duration * 1000);
         if (player.hasPlayer())
             player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You have been banned for %s",
-                    FunctionHelper.formatDateTimeReadable(duration, true)));
+                    FunctionHelper.formatTimeDurationReadable(duration, true)));
     }
 }
