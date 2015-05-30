@@ -4,7 +4,8 @@ package com.forgeessentials.util;
 
 import java.util.ArrayList;
 
-public class BackupArea {
+public class BackupArea
+{
     public ArrayList<BlockSaveable> before;
     public ArrayList<BlockSaveable> after;
 

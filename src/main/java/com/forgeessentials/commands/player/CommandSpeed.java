@@ -1,14 +1,14 @@
 package com.forgeessentials.commands.player;
 
-import com.forgeessentials.commons.network.Packet6Speed;
-import com.forgeessentials.util.PlayerInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.Packet6Speed;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerInfo;
 
 public class CommandSpeed extends FEcmdModuleCommands
 {
@@ -25,7 +25,7 @@ public class CommandSpeed extends FEcmdModuleCommands
         OutputHandler.chatWarning(player, "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
         if (args.length >= 1)
         {
-            //float speed = Float.parseFloat(args[0]);
+            // float speed = Float.parseFloat(args[0]);
 
             if (args[0].equals("reset"))
             {

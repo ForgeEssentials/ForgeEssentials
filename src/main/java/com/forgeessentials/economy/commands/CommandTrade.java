@@ -13,8 +13,8 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
@@ -140,7 +140,7 @@ public class CommandTrade extends ParserCommandBase
 
                         InventoryPlayer inventory = arguments.senderPlayer.inventory;
                         inventory.mainInventory[inventory.currentItem] = null;
-                        FunctionHelper.givePlayerItem(buyer.getPlayerMP(), currentItemStack);
+                        PlayerUtil.give(buyer.getPlayerMP(), currentItemStack);
                     }
                 };
                 try

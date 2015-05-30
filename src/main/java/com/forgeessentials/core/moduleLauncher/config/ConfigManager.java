@@ -1,13 +1,14 @@
 package com.forgeessentials.core.moduleLauncher.config;
 
-import com.forgeessentials.util.OutputHandler;
-import net.minecraftforge.common.config.Configuration;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import net.minecraftforge.common.config.Configuration;
+
+import com.forgeessentials.util.OutputHandler;
 
 public class ConfigManager
 {

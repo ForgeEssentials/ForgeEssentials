@@ -6,7 +6,8 @@ import net.minecraft.item.ItemStack;
 
 import com.forgeessentials.api.UserIdent;
 
-public class InventoryGrave extends InventoryBasic {
+public class InventoryGrave extends InventoryBasic
+{
 
     private Grave grave;
 

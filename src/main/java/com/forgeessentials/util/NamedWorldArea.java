@@ -12,7 +12,8 @@ import com.google.gson.annotations.Expose;
 /**
  * Keeps a WorldArea linked to a particular multiworld, even if the dim-id changes
  */
-public class NamedWorldArea extends WorldArea {
+public class NamedWorldArea extends WorldArea
+{
 
     protected String worldName;
 

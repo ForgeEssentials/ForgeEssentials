@@ -7,7 +7,8 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import cpw.mods.fml.common.eventhandler.Cancelable;
 
 @Cancelable
-public class PlayerMoveEvent extends FEPlayerEvent {
+public class PlayerMoveEvent extends FEPlayerEvent
+{
     public final WarpPoint before;
     public final WarpPoint after;
 

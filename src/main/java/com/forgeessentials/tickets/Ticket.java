@@ -5,8 +5,9 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 
-public class Ticket {
-    
+public class Ticket
+{
+
     public int id;
 
     public String creator;

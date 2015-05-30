@@ -55,10 +55,10 @@ import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
 import com.forgeessentials.protection.effect.PotionEffect;
 import com.forgeessentials.protection.effect.ZoneEffect;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TimeoutHandler;
+import com.forgeessentials.util.PlayerUtil;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 
@@ -289,7 +289,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         WorldPoint point;
         if (event.action == RIGHT_CLICK_AIR)
         {
-            MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(event.entityPlayer);
+            MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(event.entityPlayer);
             if (mop == null)
                 point = new WorldPoint(event.entityPlayer.dimension, event.x, event.y, event.z);
             else
@@ -519,28 +519,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     /* ------------------------------------------------------------ */
 
-    static class ZoneDeniedMessageHandler extends TimeoutHandler
-    {
-
-        private final EntityPlayer player;
-
-        public ZoneDeniedMessageHandler(EntityPlayer entityPlayer)
-        {
-            super(4000);
-            this.player = entityPlayer;
-        }
-
-        @Override
-        protected void doRun()
-        {
-            OutputHandler.chatError(player, ModuleProtection.MSG_ZONE_DENIED);
-        }
-
-    }
-
     private HashMap<UUID, List<ZoneEffect>> zoneEffects = new HashMap<>();
-
-    private HashMap<UUID, ZoneDeniedMessageHandler> zoneDeniedMh = new HashMap<>();
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerChangedZoneEventHigh(PlayerChangedZone event)
@@ -552,7 +531,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         // Check knockback
         if (!APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_KNOCKBACK).equals(Zone.PERMISSION_FALSE))
         {
-            getZoneDeniedMessageHandler(event.entityPlayer).run();
+            sendZoneDeniedMessage(event.entityPlayer);
 
             Vec3 center = event.afterPoint.toVec3();
             if (event.afterZone instanceof AreaZone)
@@ -573,15 +552,15 @@ public class ProtectionEventHandler extends ServerEventHandler
         String command = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND);
         if (command != null && !command.isEmpty())
         {
-            int interval = FunctionHelper.parseIntDefault(
+            int interval = ServerUtil.parseIntDefault(
                     APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND_INTERVAL), 0);
             effects.add(new CommandEffect(ident.getPlayerMP(), interval, command));
         }
 
-        int damage = FunctionHelper.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE), 0);
+        int damage = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE), 0);
         if (damage > 0)
         {
-            int interval = FunctionHelper.parseIntDefault(
+            int interval = ServerUtil.parseIntDefault(
                     APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE_INTERVAL), 0);
             effects.add(new DamageEffect(ident.getPlayerMP(), interval, damage));
         }
@@ -590,7 +569,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         String potion = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION);
         if (potion != null && !potion.isEmpty())
         {
-            int interval = FunctionHelper.parseIntDefault(
+            int interval = ServerUtil.parseIntDefault(
                     APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION_INTERVAL), 0);
             effects.add(new PotionEffect(ident.getPlayerMP(), interval, potion));
         }
@@ -612,7 +591,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             {
                 effect.update();
                 if (effect.isLethal())
-                    getZoneDeniedMessageHandler(effect.getPlayer()).run();
+                    sendZoneDeniedMessage(effect.getPlayer());
             }
         }
     }
@@ -621,7 +600,6 @@ public class ProtectionEventHandler extends ServerEventHandler
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
     {
         zoneEffects.remove(event.player.getPersistentID());
-        zoneDeniedMh.remove(event.player.getPersistentID());
     }
 
     /* ------------------------------------------------------------ */
@@ -706,15 +684,14 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
     }
 
-    private ZoneDeniedMessageHandler getZoneDeniedMessageHandler(EntityPlayer entityPlayer)
+    private static void sendZoneDeniedMessage(EntityPlayer player)
     {
-        ZoneDeniedMessageHandler mh = zoneDeniedMh.get(entityPlayer.getPersistentID());
-        if (mh == null)
+        PlayerInfo pi = PlayerInfo.get(player);
+        if (pi.checkTimeout("zone_denied_message"))
         {
-            mh = new ZoneDeniedMessageHandler(entityPlayer);
-            zoneDeniedMh.put(entityPlayer.getPersistentID(), mh);
+            OutputHandler.chatError(player, ModuleProtection.MSG_ZONE_DENIED);
+            pi.startTimeout("zone_denied_message", 4000);
         }
-        return mh;
     }
 
     private List<ZoneEffect> getZoneEffects(UserIdent ident)

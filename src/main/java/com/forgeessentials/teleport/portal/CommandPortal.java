@@ -58,7 +58,7 @@ public class CommandPortal extends ParserCommandBase
             arguments.confirm(getCommandUsage(arguments.sender));
             return;
         }
-        
+
         arguments.tabComplete("create", "recreate", "target", "delete", "list");
 
         String subcommand = arguments.remove().toLowerCase();
@@ -97,7 +97,7 @@ public class CommandPortal extends ParserCommandBase
             throw new TranslatedCommandException("Portal by that name already exists. Use recreate!");
 
         arguments.tabComplete("noframe", "frame");
-        
+
         boolean frame = true;
         if (!arguments.isEmpty())
         {
@@ -152,7 +152,7 @@ public class CommandPortal extends ParserCommandBase
             arguments.confirm("  Set portal's target to the current / specified location");
             return;
         }
-        
+
         arguments.tabComplete(PortalManager.getInstance().portals.keySet());
 
         String name = arguments.remove();

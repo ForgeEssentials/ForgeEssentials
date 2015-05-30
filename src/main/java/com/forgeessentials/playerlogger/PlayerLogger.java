@@ -156,7 +156,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                         logEvent.process(em);
                     }
                     em.getTransaction().commit();
-                    //System.out.println(String.format("%d: Wrote %d playerlogger entries", System.currentTimeMillis() % (1000 * 60), count));
+                    // System.out.println(String.format("%d: Wrote %d playerlogger entries", System.currentTimeMillis()
+                    // % (1000 * 60), count));
                 }
                 catch (Exception e)
                 {

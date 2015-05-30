@@ -1,17 +1,19 @@
 package com.forgeessentials.commands.server;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.Arrays;
-import java.util.List;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.ServerUtil;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandServerSettings extends FEcmdModuleCommands
 {
@@ -102,7 +104,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
             else
             {
                 String msg = "";
-                for (String var : FunctionHelper.dropFirstString(args))
+                for (String var : ServerUtil.dropFirst(args))
                 {
                     msg += " " + var;
                 }

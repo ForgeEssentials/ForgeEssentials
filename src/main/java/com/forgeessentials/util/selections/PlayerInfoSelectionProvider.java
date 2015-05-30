@@ -7,7 +7,8 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.util.PlayerInfo;
 
-public class PlayerInfoSelectionProvider implements ISelectionProvider {
+public class PlayerInfoSelectionProvider implements ISelectionProvider
+{
 
     @Override
     public Selection getSelection(EntityPlayerMP player)
@@ -43,5 +44,5 @@ public class PlayerInfoSelectionProvider implements ISelectionProvider {
         pi.setSel2(area.getHighPoint());
         SelectionHandler.sendUpdate(player);
     }
-    
+
 }

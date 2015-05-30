@@ -12,7 +12,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table
-public class PlayerData {
+public class PlayerData
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

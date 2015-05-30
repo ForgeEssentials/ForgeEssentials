@@ -16,7 +16,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public class WorldSaver {
+public class WorldSaver
+{
     public static String start;
     public static String done;
     public static String failed;

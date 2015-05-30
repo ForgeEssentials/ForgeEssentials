@@ -23,7 +23,8 @@ import com.forgeessentials.util.CommandParserArgs;
 
 import cpw.mods.fml.common.registry.GameData;
 
-public class CommandUpgradePermissions extends ParserCommandBase {
+public class CommandUpgradePermissions extends ParserCommandBase
+{
 
     @Override
     public String getCommandName()

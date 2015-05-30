@@ -12,7 +12,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.ServerUtil;
 
 public class CommandWallet extends ParserCommandBase
 {
@@ -75,7 +75,7 @@ public class CommandWallet extends ParserCommandBase
 
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing value");
-        Long amount = FunctionHelper.tryParseLong(arguments.remove());
+        Long amount = ServerUtil.tryParseLong(arguments.remove());
         if (amount == null)
             throw new TranslatedCommandException("Invalid number");
 

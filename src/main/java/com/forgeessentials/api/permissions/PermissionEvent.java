@@ -8,8 +8,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 /**
  * PermissionEvent
  * 
- * Parent event for all permission related events. The dispatched sub-events
- * are:
+ * Parent event for all permission related events. The dispatched sub-events are:
  * <ul>
  * <li>{@link PermissionEvent.Initialize}
  * <li>{@link PermissionEvent.AfterLoad}
@@ -25,7 +24,8 @@ import cpw.mods.fml.common.eventhandler.Event;
  * 
  * @author Olee
  */
-public class PermissionEvent extends Event {
+public class PermissionEvent extends Event
+{
 
     public ServerZone serverZone;
 
@@ -35,11 +35,11 @@ public class PermissionEvent extends Event {
     }
 
     /**
-     * Event runs when a new permission-tree (ServerZone) gets initialized. This
-     * event can be used to initialize internal groups or some other default
-     * permissions.
+     * Event runs when a new permission-tree (ServerZone) gets initialized. This event can be used to initialize
+     * internal groups or some other default permissions.
      */
-    public static class Initialize extends PermissionEvent {
+    public static class Initialize extends PermissionEvent
+    {
         public Initialize(ServerZone serverZone)
         {
             super(serverZone);
@@ -49,7 +49,8 @@ public class PermissionEvent extends Event {
     /**
      * Event after permissions have been reloaded
      */
-    public static class AfterLoad extends PermissionEvent {
+    public static class AfterLoad extends PermissionEvent
+    {
         public AfterLoad(ServerZone serverZone)
         {
             super(serverZone);
@@ -59,7 +60,8 @@ public class PermissionEvent extends Event {
     /**
      * Event before permissions are saved
      */
-    public static class BeforeSave extends PermissionEvent {
+    public static class BeforeSave extends PermissionEvent
+    {
         public BeforeSave(ServerZone serverZone)
         {
             super(serverZone);
@@ -69,7 +71,8 @@ public class PermissionEvent extends Event {
     /**
      * Parent class for user-related permission events
      */
-    public static class User extends PermissionEvent {
+    public static class User extends PermissionEvent
+    {
 
         public UserIdent ident;
 
@@ -80,7 +83,8 @@ public class PermissionEvent extends Event {
         }
 
         @Cancelable
-        public static class ModifyPermission extends User {
+        public static class ModifyPermission extends User
+        {
 
             public com.forgeessentials.api.permissions.Zone zone;
             public String permissionNode;
@@ -96,9 +100,11 @@ public class PermissionEvent extends Event {
         }
 
         @Cancelable
-        public static class ModifyGroups extends User {
+        public static class ModifyGroups extends User
+        {
 
-            public static enum Action {
+            public static enum Action
+            {
                 ADD, REMOVE;
             }
 
@@ -118,7 +124,8 @@ public class PermissionEvent extends Event {
     /**
      * Parent class for group-related permission events
      */
-    public static class Group extends PermissionEvent {
+    public static class Group extends PermissionEvent
+    {
 
         public String group;
 
@@ -129,7 +136,8 @@ public class PermissionEvent extends Event {
         }
 
         @Cancelable
-        public static class ModifyPermission extends Group {
+        public static class ModifyPermission extends Group
+        {
 
             public com.forgeessentials.api.permissions.Zone zone;
             public String permissionNode;
@@ -145,7 +153,8 @@ public class PermissionEvent extends Event {
         }
 
         @Cancelable
-        public static class Create extends Group {
+        public static class Create extends Group
+        {
             public Create(ServerZone serverZone, String group)
             {
                 super(serverZone, group);
@@ -153,7 +162,8 @@ public class PermissionEvent extends Event {
         }
 
         @Cancelable
-        public static class Delete extends Group {
+        public static class Delete extends Group
+        {
             public Delete(ServerZone serverZone, String group)
             {
                 super(serverZone, group);
@@ -165,7 +175,8 @@ public class PermissionEvent extends Event {
     /**
      * Parent class for group-related permission events
      */
-    public static class Zone extends PermissionEvent {
+    public static class Zone extends PermissionEvent
+    {
 
         public com.forgeessentials.api.permissions.Zone zone;
 
@@ -176,7 +187,8 @@ public class PermissionEvent extends Event {
         }
 
         @Cancelable
-        public static class Create extends Zone {
+        public static class Create extends Zone
+        {
             public Create(ServerZone serverZone, com.forgeessentials.api.permissions.Zone zone)
             {
                 super(serverZone, zone);
@@ -184,7 +196,8 @@ public class PermissionEvent extends Event {
         }
 
         @Cancelable
-        public static class Delete extends Zone {
+        public static class Delete extends Zone
+        {
             public Delete(ServerZone serverZone, com.forgeessentials.api.permissions.Zone zone)
             {
                 super(serverZone, zone);

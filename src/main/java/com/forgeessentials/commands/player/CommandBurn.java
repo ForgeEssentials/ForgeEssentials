@@ -17,7 +17,8 @@ import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandBurn extends FEcmdModuleCommands {
+public class CommandBurn extends FEcmdModuleCommands
+{
     @Override
     public String getCommandName()
     {
@@ -67,7 +68,7 @@ public class CommandBurn extends FEcmdModuleCommands {
         }
         else
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 
@@ -123,13 +124,13 @@ public class CommandBurn extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-    	if (sender instanceof EntityPlayer)
+        if (sender instanceof EntityPlayer)
         {
-    		return "/burn <me|player> Set a player on fire.";
+            return "/burn <me|player> Set a player on fire.";
         }
         else
         {
-        	return "/burn <player> Set a player on fire.";
+            return "/burn <player> Set a player on fire.";
         }
     }
 }

@@ -10,12 +10,13 @@ import com.forgeessentials.util.events.EventCancelledException;
 import com.google.gson.annotations.Expose;
 
 /**
- * {@link AreaZone} covers just a specific area in one world. It has higher priority than all other {@link Zone} types. Area zones can overlap. Priority is then
- * decided by assigning highest priority to the innermost, smallest area.
+ * {@link AreaZone} covers just a specific area in one world. It has higher priority than all other {@link Zone} types.
+ * Area zones can overlap. Priority is then decided by assigning highest priority to the innermost, smallest area.
  * 
  * @author Olee
  */
-public class AreaZone extends Zone implements Comparable<AreaZone> {
+public class AreaZone extends Zone implements Comparable<AreaZone>
+{
 
     @Expose(serialize = false)
     private WorldZone worldZone;
@@ -49,10 +50,10 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
         this.worldZone = worldZone;
         this.name = name;
         this.area = area;
-        
+
         // Check if the creation of the zone should be cancelled
         EventCancelledException.checkedPost(new PermissionEvent.Zone.Create(worldZone.getServerZone(), this), ForgeEssentials.BUS);
-        
+
         // If not cancelled, inc the zoneID pointer and add the zone to the world
         worldZone.getServerZone().nextZoneID();
         this.worldZone.addAreaZone(this);

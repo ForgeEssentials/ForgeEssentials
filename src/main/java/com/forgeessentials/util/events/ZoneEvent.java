@@ -1,9 +1,11 @@
 package com.forgeessentials.util.events;
 
 import com.forgeessentials.api.permissions.Zone;
+
 import cpw.mods.fml.common.eventhandler.Event;
 
-public class ZoneEvent extends Event {
+public class ZoneEvent extends Event
+{
 
     protected static Zone zone;
 

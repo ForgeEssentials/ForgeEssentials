@@ -29,7 +29,8 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
         OutputHandler.chatNotification(sender, "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
         long used = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         OutputHandler.chatNotification(sender, "Used: " + (used / 1024 / 1024) + " MiB");
-        OutputHandler.chatNotification(sender, "Average tick time: " + formatNumbers.format(this.func_120035_a(MinecraftServer.getServer().tickTimeArray) * 1.0E-6D) + " ms");
+        OutputHandler.chatNotification(sender,
+                "Average tick time: " + formatNumbers.format(this.func_120035_a(MinecraftServer.getServer().tickTimeArray) * 1.0E-6D) + " ms");
         OutputHandler.chatNotification(sender, "For TPS information, run /forge tps.");
     }
 
@@ -67,6 +68,6 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
             i += p_120035_1_[j];
         }
 
-        return (double)i / (double)p_120035_1_.length;
+        return (double) i / (double) p_120035_1_.length;
     }
 }

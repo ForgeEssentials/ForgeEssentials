@@ -36,8 +36,8 @@ import com.forgeessentials.economy.commands.CommandSellCommand;
 import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.plots.PlotManager;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
@@ -176,7 +176,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public void onXPPickup(PlayerPickupXpEvent e)
     {
         UserIdent ident = UserIdent.get(e.entityPlayer);
-        double xpMultiplier = FunctionHelper.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
+        double xpMultiplier = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
         if (xpMultiplier <= 0)
             return;
         PlayerWallet wallet = getWallet(ident);
@@ -189,7 +189,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         if (e.entity instanceof EntityPlayerMP)
         {
             UserIdent ident = UserIdent.get((EntityPlayerMP) e.entity);
-            Long deathtoll = FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
+            Long deathtoll = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
             if (deathtoll == null || deathtoll <= 0)
                 return;
             Wallet wallet = APIRegistry.economy.getWallet(ident);
@@ -211,7 +211,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         {
             String permission = PERM_COMMANDPRICE + '.' + event.command.getCommandName() + //
                     (i == 0 ? "" : ('.' + StringUtils.join(Arrays.copyOf(event.parameters, i), '.')));
-            Long price = FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, permission));
+            Long price = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, permission));
             if (price == null)
                 continue;
 
@@ -232,7 +232,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         if (wallet == null)
             wallet = DataManager.getInstance().load(PlayerWallet.class, ident.getOrGenerateUuid().toString());
         if (wallet == null)
-            wallet = new PlayerWallet(FunctionHelper.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_STARTBUDGET), 0));
+            wallet = new PlayerWallet(ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_STARTBUDGET), 0));
         wallets.put(ident, wallet);
         return wallet;
     }
@@ -276,7 +276,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     public static Long getItemPrice(ItemStack itemStack, UserIdent ident)
     {
-        return FunctionHelper.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, getItemPricePermission(itemStack)));
+        return ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, getItemPricePermission(itemStack)));
     }
 
     public static void setItemPrice(ItemStack itemStack, long price)

@@ -1,11 +1,5 @@
 package com.forgeessentials.commands.world;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -16,7 +10,14 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-public class CommandRemove extends FEcmdModuleCommands {
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.OutputHandler;
+
+public class CommandRemove extends FEcmdModuleCommands
+{
     @Override
     public String getCommandName()
     {
@@ -48,12 +49,13 @@ public class CommandRemove extends FEcmdModuleCommands {
         }
         else
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
 
-        List<EntityItem> entityList = sender.worldObj.getEntitiesWithinAABB(EntityItem.class,
-                AxisAlignedBB.getBoundingBox(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1,
-                        centerZ + radius + 1));
+        List<EntityItem> entityList = sender.worldObj.getEntitiesWithinAABB(
+                EntityItem.class,
+                AxisAlignedBB.getBoundingBox(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius
+                        + 1));
 
         int counter = 0;
         for (int i = 0; i < entityList.size(); i++)
@@ -84,11 +86,12 @@ public class CommandRemove extends FEcmdModuleCommands {
             }
         }
         else
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
 
-        List<EntityItem> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(EntityItem.class,
-                AxisAlignedBB.getBoundingBox(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY() + radius + 1,
-                        center.getZ() + radius + 1));
+        List<EntityItem> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(
+                EntityItem.class,
+                AxisAlignedBB.getBoundingBox(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY()
+                        + radius + 1, center.getZ() + radius + 1));
 
         int counter = 0;
         for (int i = 0; i < entityList.size(); i++)
@@ -115,13 +118,13 @@ public class CommandRemove extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-    	if (sender instanceof EntityPlayer)
+        if (sender instanceof EntityPlayer)
         {
-    		return "/remove <radius> [x, y, z] Removes all items within a specified radius from yourself or the given coordinates.";
+            return "/remove <radius> [x, y, z] Removes all items within a specified radius from yourself or the given coordinates.";
         }
         else
         {
-        	return "/remove <radius> <x, y, z> Removes all items within a specified radius from the given coordinates.";
+            return "/remove <radius> <x, y, z> Removes all items within a specified radius from the given coordinates.";
         }
     }
 

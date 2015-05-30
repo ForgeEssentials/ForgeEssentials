@@ -31,7 +31,8 @@ import com.google.gson.annotations.Expose;
  * 
  * @author Olee
  */
-public class ServerZone extends Zone {
+public class ServerZone extends Zone
+{
 
     @Expose(serialize = false)
     private RootZone rootZone;
@@ -366,7 +367,7 @@ public class ServerZone extends Zone {
     {
         return getPlayerGroups(ident, null);
     }
-    
+
     public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident, WorldPoint point)
     {
         SortedSet<GroupEntry> result = getAdditionalPlayerGroups(ident);
@@ -654,7 +655,8 @@ public class ServerZone extends Zone {
         return null;
     }
 
-    public static interface PermissionDebugger {
+    public static interface PermissionDebugger
+    {
 
         void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value);
 

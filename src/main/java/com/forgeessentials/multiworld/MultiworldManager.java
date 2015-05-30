@@ -51,7 +51,8 @@ import cpw.mods.fml.relauncher.Side;
  * @author Olee
  * @author gnif
  */
-public class MultiworldManager extends ServerEventHandler implements NamedWorldHandler {
+public class MultiworldManager extends ServerEventHandler implements NamedWorldHandler
+{
 
     public static final String PERM_PROP_MULTIWORLD = FEPermissions.FE_INTERNAL + ".multiworld";
 
@@ -195,8 +196,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     }
 
     /**
-     * Register and load a multiworld. If the world fails to load, it won't be
-     * registered
+     * Register and load a multiworld. If the world fails to load, it won't be registered
      */
     public void addWorld(Multiworld world) throws MultiworldException
     {
@@ -236,8 +236,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
             // Handle permission-dim changes
             checkMultiworldPermissions(world);
-            APIRegistry.perms.getServerZone().getWorldZone(world.dimensionId).setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD,
-                    world.getName());
+            APIRegistry.perms.getServerZone().getWorldZone(world.dimensionId)
+                    .setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
 
             // Register the dimension
             DimensionManager.registerDimension(world.dimensionId, world.providerId);
@@ -301,8 +301,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     }
 
     /**
-     * Checks the WorldZone permissions for multiworlds and moves them to the
-     * correct dimension if it changed
+     * Checks the WorldZone permissions for multiworlds and moves them to the correct dimension if it changed
      */
     private static void checkMultiworldPermissions(Multiworld world)
     {
@@ -372,8 +371,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     // ============================================================
 
     /**
-     * Forge DimensionManager stores used dimension IDs and does not assign them
-     * again, unless they are cleared manually.
+     * Forge DimensionManager stores used dimension IDs and does not assign them again, unless they are cleared
+     * manually.
      */
     public void clearDimensionMap()
     {
@@ -384,8 +383,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     // Unloading and deleting of worlds
 
     /**
-     * When a world is unloaded and marked as to-be-unregistered, remove it now
-     * when it is not needed any more
+     * When a world is unloaded and marked as to-be-unregistered, remove it now when it is not needed any more
      */
     @SubscribeEvent
     public void serverTickEvent(ServerTickEvent event)
@@ -524,8 +522,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             String name = type.getWorldTypeName().toUpperCase();
 
             /*
-             * MC does not allow creation of this worldType, so we should not
-             * either
+             * MC does not allow creation of this worldType, so we should not either
              */
             if (name.equals("DEFAULT_1_1"))
                 continue;

@@ -24,7 +24,8 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 
-public class AuthEventHandler {
+public class AuthEventHandler
+{
 
     public static String banned;
     public static String notvip;
@@ -191,17 +192,13 @@ public class AuthEventHandler {
         }
     }
 
-    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onPlayerOpenContainer(PlayerOpenContainerEvent event)
-    {
-        UUID username = event.entityPlayer.getPersistentID();
-
-        if (!ModuleAuth.hasSession.contains(username))
-        {
-            event.setResult(Result.DENY);
-            OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
-        }
-    }*/
+    /*
+     * @SubscribeEvent(priority = EventPriority.HIGHEST) public void onPlayerOpenContainer(PlayerOpenContainerEvent
+     * event) { UUID username = event.entityPlayer.getPersistentID();
+     * 
+     * if (!ModuleAuth.hasSession.contains(username)) { event.setResult(Result.DENY);
+     * OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help."); } }
+     */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onLogin(PlayerEvent.PlayerLoggedInEvent e)

@@ -14,7 +14,8 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 
-public class ForgeEssentialsEventFactory extends ServerEventHandler {
+public class ForgeEssentialsEventFactory extends ServerEventHandler
+{
 
     private HashMap<UUID, WarpPoint> lastPlayerPosition = new HashMap<>();
 
@@ -42,10 +43,10 @@ public class ForgeEssentialsEventFactory extends ServerEventHandler {
         lastPlayerPosition.put(player.getPersistentID(), new WarpPoint(e.player));
     }
 
-	@SubscribeEvent
-	public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
-	{
-	    lastPlayerPosition.remove(e.player.getPersistentID());
-	}
+    @SubscribeEvent
+    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
+    {
+        lastPlayerPosition.remove(e.player.getPersistentID());
+    }
 
 }

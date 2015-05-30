@@ -1,15 +1,16 @@
 package com.forgeessentials.servervote;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Event triggered when the snooper gets a vote from a service.
@@ -20,7 +21,8 @@ import java.util.List;
  */
 
 @Cancelable
-public class VoteEvent extends Event {
+public class VoteEvent extends Event
+{
     public String player;
     public String serviceName;
     public String ip;
@@ -41,15 +43,14 @@ public class VoteEvent extends Event {
     {
         try
         {
-            /*JSONObject json = new JSONObject(decoded);
-            player = json.getString("player");
-            serviceName = json.getString("serviceName");
-            ip = json.getString("ip");
-            timeStamp = json.getJSONObject("timeStamp").getString("date");
-            sane = true;*/
+            /*
+             * JSONObject json = new JSONObject(decoded); player = json.getString("player"); serviceName =
+             * json.getString("serviceName"); ip = json.getString("ip"); timeStamp =
+             * json.getJSONObject("timeStamp").getString("date"); sane = true;
+             */
 
             Gson gson = new Gson();
-            JsonElement element = gson.fromJson (decoded, JsonElement.class);
+            JsonElement element = gson.fromJson(decoded, JsonElement.class);
             JsonObject json = element.getAsJsonObject();
             player = json.get("player").getAsString();
             serviceName = json.get("serviceName").getAsString();

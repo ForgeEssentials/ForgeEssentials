@@ -48,8 +48,8 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -183,7 +183,7 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
-        FunctionHelper.replaceCommand(CommandMessage.class, new CommandMessageReplacement());
+        ServerUtil.replaceCommand(CommandMessage.class, new CommandMessageReplacement());
     }
 
     @SubscribeEvent
@@ -262,11 +262,11 @@ public class ModuleChat
         event.component = new ChatComponentTranslation("%s%s", header, messageComponent);
 
         // Handle chat range
-        Double range = FunctionHelper.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));
+        Double range = ServerUtil.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));
         if (range != null)
         {
             WorldPoint source = new WorldPoint(event.player);
-            for (EntityPlayerMP player : FunctionHelper.getPlayerList())
+            for (EntityPlayerMP player : ServerUtil.getPlayerList())
             {
                 if (player.dimension == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
                     OutputHandler.sendMessage(player, event.component);

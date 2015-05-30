@@ -25,8 +25,9 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.ServerUtil;
 import com.google.common.collect.ImmutableMap;
 
 public final class ScriptArguments
@@ -449,7 +450,7 @@ public final class ScriptArguments
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
             EntityPlayerMP _player = ((EntityPlayerMP) sender);
-            return FunctionHelper.formatTimeDurationReadable(PlayerInfo.get(_player).getTimePlayed() / 1000, true);
+            return OutputHandler.formatTimeDurationReadable(PlayerInfo.get(_player).getTimePlayed() / 1000, true);
         }
 
         @Override
@@ -500,7 +501,7 @@ public final class ScriptArguments
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
             EntityPlayerMP _player = ((EntityPlayerMP) sender);
-            return FunctionHelper.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogout().getTime()) / 1000, true);
+            return OutputHandler.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogout().getTime()) / 1000, true);
         }
 
         @Override
@@ -517,7 +518,7 @@ public final class ScriptArguments
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
             EntityPlayerMP _player = ((EntityPlayerMP) sender);
-            return FunctionHelper.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogin().getTime()) / 1000, true);
+            return OutputHandler.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogin().getTime()) / 1000, true);
         }
 
         @Override
@@ -531,7 +532,7 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            return new DecimalFormat("#").format(FunctionHelper.getTPS());
+            return new DecimalFormat("#").format(ServerUtil.getTPS());
         }
 
         @Override
@@ -559,7 +560,7 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            return FunctionHelper.getCurrentDateString();
+            return ForgeEssentials.FORMAT_DATE.format(new Date());
         }
 
         @Override
@@ -602,7 +603,7 @@ public final class ScriptArguments
         public String process(ICommandSender sender)
         {
             RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-            return FunctionHelper.formatTimeDurationReadable(rb.getUptime() / 1000, true);
+            return OutputHandler.formatTimeDurationReadable(rb.getUptime() / 1000, true);
         }
 
         @Override

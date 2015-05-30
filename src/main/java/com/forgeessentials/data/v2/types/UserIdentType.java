@@ -10,7 +10,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 
-public class UserIdentType implements DataType<UserIdent> {
+public class UserIdentType implements DataType<UserIdent>
+{
 
     @Override
     public JsonElement serialize(UserIdent src, Type typeOfSrc, JsonSerializationContext context)

@@ -21,7 +21,8 @@ import cpw.mods.fml.common.StartupQuery;
  * 
  * @author Olee
  */
-public class MultiworldSaveHandler implements ISaveHandler {
+public class MultiworldSaveHandler implements ISaveHandler
+{
 
     private SaveHandler parent;
 
@@ -68,7 +69,7 @@ public class MultiworldSaveHandler implements ISaveHandler {
                 exception1.printStackTrace();
             }
         }
-        
+
         file1 = new File(getDimensionDirectory(), "level.dat_old");
         if (file1.exists())
         {
@@ -102,7 +103,7 @@ public class MultiworldSaveHandler implements ISaveHandler {
     {
         NBTTagCompound dataTag = new NBTTagCompound();
         dataTag.setTag("Data", data);
-        
+
         // Save the list of mods the world was created with
         FMLCommonHandler.instance().handleWorldDataSave(parent, p_75755_1_, dataTag);
 

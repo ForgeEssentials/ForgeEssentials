@@ -2,7 +2,8 @@ package com.forgeessentials.api.remote;
 
 import com.google.gson.Gson;
 
-public interface RemoteManager {
+public interface RemoteManager
+{
 
     void registerHandler(RemoteHandler handler, String id);
 
@@ -10,7 +11,8 @@ public interface RemoteManager {
 
     Gson getGson();
 
-    public static class DefaultRemoteHandlerManager implements RemoteManager {
+    public static class DefaultRemoteHandlerManager implements RemoteManager
+    {
 
         /*
          * (non-Javadoc)

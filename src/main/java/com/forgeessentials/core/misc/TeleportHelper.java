@@ -13,9 +13,9 @@ import net.minecraft.server.MinecraftServer;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -83,7 +83,7 @@ public class TeleportHelper extends ServerEventHandler
             throw new TranslatedCommandException("You are not allowed to teleport across dimensions.");
 
         // Get and check teleport cooldown
-        int teleportCooldown = FunctionHelper.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_COOLDOWN), 0) * 1000;
+        int teleportCooldown = ServerUtil.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_COOLDOWN), 0) * 1000;
         if (teleportCooldown > 0)
         {
             PlayerInfo pi = PlayerInfo.get(player);
@@ -96,7 +96,7 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         // Get and check teleport warmup
-        int teleportWarmup = FunctionHelper.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_WARMUP), 0);
+        int teleportWarmup = ServerUtil.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_WARMUP), 0);
         if (teleportWarmup <= 0)
         {
             doTeleport(player, point);
@@ -112,7 +112,7 @@ public class TeleportHelper extends ServerEventHandler
         // Setup timed teleport
         tpInfos.put(player.getPersistentID(), new TeleportInfo(player, point, teleportWarmup * 1000));
         OutputHandler.chatNotification(player,
-                Translator.format("Teleporting. Please stand still for %s.", FunctionHelper.formatTimeDurationReadable(teleportWarmup, true)));
+                Translator.format("Teleporting. Please stand still for %s.", OutputHandler.formatTimeDurationReadable(teleportWarmup, true)));
     }
 
     public static boolean canTeleportTo(WarpPoint point)

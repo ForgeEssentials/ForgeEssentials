@@ -11,7 +11,8 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.google.gson.JsonElement;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_PERMISSIONS)
-public class QueryPermissionsHandler extends GenericRemoteHandler<JsonElement> {
+public class QueryPermissionsHandler extends GenericRemoteHandler<JsonElement>
+{
 
     public static final String PERM = PERM_REMOTE + ".permission";
 

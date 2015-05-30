@@ -1,10 +1,9 @@
 package com.forgeessentials.util.selections;
 
-import com.forgeessentials.commons.network.Packet1SelectionUpdate;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;

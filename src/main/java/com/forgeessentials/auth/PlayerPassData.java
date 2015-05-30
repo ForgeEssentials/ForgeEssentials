@@ -5,10 +5,11 @@ import java.util.UUID;
 
 import com.forgeessentials.data.v2.DataManager;
 
-public class PlayerPassData {
+public class PlayerPassData
+{
 
     private static HashMap<UUID, PlayerPassData> cache = new HashMap<UUID, PlayerPassData>();
-    
+
     public final String password;
 
     public PlayerPassData(String password)

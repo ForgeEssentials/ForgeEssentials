@@ -1,6 +1,5 @@
 package com.forgeessentials.core.preloader.asm.mixins.network;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.C12PacketUpdateSign;
@@ -11,9 +10,12 @@ import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.SignEditEvent;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+
+import com.google.common.base.Preconditions;
 
 @Mixin(NetHandlerPlayServer.class)
 public abstract class MixinNetHandlerPlayServer_01
@@ -36,7 +38,7 @@ public abstract class MixinNetHandlerPlayServer_01
 
             if (tileentity instanceof TileEntitySign)
             {
-                TileEntitySign tileentitysign = (TileEntitySign)tileentity;
+                TileEntitySign tileentitysign = (TileEntitySign) tileentity;
 
                 if (!tileentitysign.func_145914_a() || tileentitysign.func_145911_b() != playerEntity)
                 {
@@ -78,7 +80,7 @@ public abstract class MixinNetHandlerPlayServer_01
                 j = p_147343_1_.func_149588_c();
                 int k = p_147343_1_.func_149586_d();
                 i = p_147343_1_.func_149585_e();
-                TileEntitySign tileentitysign1 = (TileEntitySign)tileentity;
+                TileEntitySign tileentitysign1 = (TileEntitySign) tileentity;
                 System.arraycopy(Preconditions.checkNotNull(onSignEditEvent(p_147343_1_, playerEntity)), 0, tileentitysign1.signText, 0, 4);
                 tileentitysign1.markDirty();
                 worldserver.markBlockForUpdate(j, k, i);

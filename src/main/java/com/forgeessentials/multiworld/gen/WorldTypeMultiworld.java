@@ -22,7 +22,8 @@ import com.forgeessentials.multiworld.WorldServerMultiworld;
  * 
  * @author Olee
  */
-public class WorldTypeMultiworld extends WorldType {
+public class WorldTypeMultiworld extends WorldType
+{
 
     private WorldServerMultiworld currentMultiworld;
 
@@ -39,7 +40,7 @@ public class WorldTypeMultiworld extends WorldType {
             currentMultiworld = (WorldServerMultiworld) world;
         else
             currentMultiworld = null;
-        
+
         // TODO: Use custom WorldChunkManager to generate custom worlds
         if (this == FLAT)
         {
@@ -78,7 +79,8 @@ public class WorldTypeMultiworld extends WorldType {
     @Override
     public GenLayer getBiomeLayer(long worldSeed, GenLayer parentLayer)
     {
-        // TODO: Temporary solution to allow changing basic biomes - but a customized WorldChunkManager would remove the need for that
+        // TODO: Temporary solution to allow changing basic biomes - but a customized WorldChunkManager would remove the
+        // need for that
         if (currentMultiworld == null)
         {
             GenLayer ret = new GenLayerBiome(200L, parentLayer, this);

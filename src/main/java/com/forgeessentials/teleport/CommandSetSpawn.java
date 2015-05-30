@@ -12,21 +12,22 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandSetSpawn extends ForgeEssentialsCommandBase {
+public class CommandSetSpawn extends ForgeEssentialsCommandBase
+{
 
     public static final String PERM_SETSPAWN = "fe.perm.setspawn";
-    
-	@Override
-	public String getCommandName()
-	{
-		return "setspawn";
-	}
 
-	@Override
-	public void processCommandPlayer(EntityPlayerMP sender, String[] args)
-	{
-	    PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
-	}
+    @Override
+    public String getCommandName()
+    {
+        return "setspawn";
+    }
+
+    @Override
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    {
+        PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
+    }
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
@@ -36,35 +37,35 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase {
         return arguments.tabCompletion;
     }
 
-	@Override
-	public void processCommandConsole(ICommandSender sender, String[] args)
-	{
+    @Override
+    public void processCommandConsole(ICommandSender sender, String[] args)
+    {
         PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
-	}
+    }
 
-	@Override
+    @Override
     public boolean canConsoleUseCommand()
-	{
-		return true;
-	}
+    {
+        return true;
+    }
 
-	@Override
-	public String getPermissionNode()
-	{
-		return PERM_SETSPAWN;
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return PERM_SETSPAWN;
+    }
 
-	@Override
-	public RegisteredPermValue getDefaultPermission()
-	{
-		return RegisteredPermValue.OP;
-	}
+    @Override
+    public RegisteredPermValue getDefaultPermission()
+    {
+        return RegisteredPermValue.OP;
+    }
 
-	@Override
-	public String getCommandUsage(ICommandSender sender)
-	{
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
 
-		return "/setspawn (here|x y z) | (bed enable|disable)";
-	}
-	
+        return "/setspawn (here|x y z) | (bed enable|disable)";
+    }
+
 }

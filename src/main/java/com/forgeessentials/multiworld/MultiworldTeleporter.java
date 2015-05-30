@@ -8,7 +8,8 @@ import net.minecraft.world.WorldServer;
  * 
  * @author Olee
  */
-public class MultiworldTeleporter extends Teleporter {
+public class MultiworldTeleporter extends Teleporter
+{
 
     protected final WorldServer world;
 

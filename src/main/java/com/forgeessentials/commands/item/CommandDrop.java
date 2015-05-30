@@ -21,33 +21,34 @@ import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.registry.GameData;
 
-public class CommandDrop extends FEcmdModuleCommands {
-	
+public class CommandDrop extends FEcmdModuleCommands
+{
+
     @Override
-	public String getCommandName()
+    public String getCommandName()
     {
         return "drop";
     }
 
     @Override
-	public int getRequiredPermissionLevel()
+    public int getRequiredPermissionLevel()
     {
         return 2;
     }
 
     @Override
-	public String getCommandUsage(ICommandSender par1ICommandSender)
+    public String getCommandUsage(ICommandSender par1ICommandSender)
     {
         return "/drop <X> <Y> <Z> <ItemID> <Meta> <Qty>";
     }
 
     @SuppressWarnings("deprecation")
     @Override
-	public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args)
     {
         if (args.length != 6)
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
         Object var3 = null;
         int var4 = (int) this.func_82368_a(sender, 0.0D, args[0]);

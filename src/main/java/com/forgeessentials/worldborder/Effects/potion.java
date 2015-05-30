@@ -1,21 +1,22 @@
 package com.forgeessentials.worldborder.Effects;
 
-import com.forgeessentials.worldborder.WorldBorder;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.config.Configuration;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.worldborder.WorldBorder;
 
-public class potion implements IEffect {
+public class potion implements IEffect
+{
     private List<PotionEffect> potionEffectsList = new ArrayList<PotionEffect>();
 
     @Override
     public void registerConfig(Configuration config, String category)
     {
-        String[] potionEffects =
-                { "9:5:0" };
+        String[] potionEffects = { "9:5:0" };
 
         config.addCustomCategoryComment(category, "For more information, go to http://www.minecraftwiki.net/wiki/Potion_effects#Parameters");
         potionEffects = config.get(category, "potionEffects", potionEffects, "Format like this: 'ID:duration:amplifier'").getStringList();

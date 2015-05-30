@@ -85,7 +85,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         for (ActionBlock change : changes)
         {
             info.checkStartTime = change.time;
-            
+
             String msg = String.format("%1$tm/%1$te %1$tH:%1$tM:%1$tS", change.time);
             if (change.player != null)
             {
@@ -121,5 +121,5 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             OutputHandler.chatConfirmation(event.entityPlayer, msg);
         }
     }
-    
+
 }

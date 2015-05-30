@@ -17,9 +17,9 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.ServerUtil;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -78,7 +78,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
             {
                 EntityPlayerMP player = sender;
                 double x = func_110666_a(sender, player.posX, args[0]);
-                double y = FunctionHelper.parseYLocation(sender, player.posY, args[1]);
+                double y = ServerUtil.parseYLocation(sender, player.posY, args[1]);
                 double z = func_110666_a(sender, player.posZ, args[2]);
                 PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
@@ -90,7 +90,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
                 if (player != null)
                 {
                     double x = func_110666_a(sender, player.posX, args[1]);
-                    double y = FunctionHelper.parseYLocation(sender, player.posY, args[2]);
+                    double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
                     double z = func_110666_a(sender, player.posZ, args[3]);
                     PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
@@ -132,7 +132,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
             if (player != null)
             {
                 double x = func_110666_a(sender, player.posX, args[1]);
-                double y = FunctionHelper.parseYLocation(sender, player.posY, args[2]);
+                double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
                 double z = func_110666_a(sender, player.posZ, args[3]);
                 TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
             }

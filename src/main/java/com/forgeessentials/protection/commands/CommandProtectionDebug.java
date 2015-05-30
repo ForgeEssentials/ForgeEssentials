@@ -8,7 +8,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandProtectionDebug extends ForgeEssentialsCommandBase {
+public class CommandProtectionDebug extends ForgeEssentialsCommandBase
+{
 
     @Override
     public String getCommandName()

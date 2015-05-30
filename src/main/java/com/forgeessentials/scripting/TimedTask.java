@@ -6,7 +6,8 @@ import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.core.misc.TaskRegistry;
 
-public class TimedTask extends TimerTask {
+public class TimedTask extends TimerTask
+{
 
     private int interval; // in seconds
 

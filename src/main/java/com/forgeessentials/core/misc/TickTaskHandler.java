@@ -9,9 +9,11 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public class TickTaskHandler extends ServerEventHandler {
+public class TickTaskHandler extends ServerEventHandler
+{
 
-    public static interface TickTask {
+    public static interface TickTask
+    {
 
         public void tick();
 

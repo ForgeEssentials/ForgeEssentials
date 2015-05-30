@@ -2,9 +2,10 @@ package com.forgeessentials.protection.effect;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.PlayerUtil;
 
-public class PotionEffect extends ZoneEffect {
+public class PotionEffect extends ZoneEffect
+{
 
     protected String potionEffects;
 
@@ -17,7 +18,7 @@ public class PotionEffect extends ZoneEffect {
     @Override
     public void execute()
     {
-        FunctionHelper.applyPotionEffects(player, potionEffects);
+        PlayerUtil.applyPotionEffects(player, potionEffects);
     }
 
 }

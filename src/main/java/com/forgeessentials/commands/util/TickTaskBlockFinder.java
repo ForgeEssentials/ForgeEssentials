@@ -14,13 +14,14 @@ import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.registry.GameData;
 
-public class TickTaskBlockFinder implements ITickTask {
+public class TickTaskBlockFinder implements ITickTask
+{
 
     private World world;
     private EntityPlayer player;
     private Block block;
     private String blockName;
-    
+
     private int meta;
     private int targetRange;
     private int targetAmount;
@@ -53,7 +54,8 @@ public class TickTaskBlockFinder implements ITickTask {
         world = player.worldObj;
 
         block = GameData.getBlockRegistry().getObject(id);
-        if (block == null) {
+        if (block == null)
+        {
             try
             {
                 int intId = Integer.parseInt(id);
@@ -64,11 +66,12 @@ public class TickTaskBlockFinder implements ITickTask {
                 /* ignore */
             }
         }
-        if (block == null) {
+        if (block == null)
+        {
             msg("Error: " + id + ":" + meta + " unkown.");
             return;
         }
-        
+
         stack = new ItemStack(block, 1, meta);
         blockName = stack.getItem() != null ? stack.getDisplayName() : GameData.getBlockRegistry().getNameForObject(block);
 

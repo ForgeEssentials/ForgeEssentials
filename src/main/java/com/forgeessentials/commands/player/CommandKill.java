@@ -17,7 +17,8 @@ import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandKill extends FEcmdModuleCommands {
+public class CommandKill extends FEcmdModuleCommands
+{
 
     @Override
     public String getCommandName()

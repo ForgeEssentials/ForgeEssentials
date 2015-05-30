@@ -1,14 +1,16 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.google.common.primitives.Ints;
-import net.minecraftforge.common.config.Configuration;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class BackupConfig extends ConfigLoaderBase {
+import net.minecraftforge.common.config.Configuration;
+
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.google.common.primitives.Ints;
+
+public class BackupConfig extends ConfigLoaderBase
+{
 
     private static final String MAIN = "Backup";
     private static final String AUTOBACKUP = MAIN + ".autoBackup";

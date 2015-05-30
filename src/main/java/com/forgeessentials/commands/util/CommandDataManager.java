@@ -5,10 +5,11 @@ import java.util.Map;
 
 import com.forgeessentials.data.v2.DataManager;
 
-public class CommandDataManager {
+public class CommandDataManager
+{
 
     public static Map<String, Kit> kits = new HashMap<String, Kit>();
-    
+
     public static Map<Integer, WeatherTimeData> WTmap = new HashMap<Integer, WeatherTimeData>();
 
     public static void load()
@@ -38,9 +39,9 @@ public class CommandDataManager {
             WTmap.put(wt.dimID, wt);
     }
 
-	/*
+    /*
      * Saving loops
-	 */
+     */
 
     public static void saveKits()
     {
@@ -67,9 +68,9 @@ public class CommandDataManager {
         DataManager.getInstance().save(kit, kit.getName());
     }
 
-	/*
+    /*
      * Removing loops
-	 */
+     */
 
     public static void removeKit(Kit kit)
     {

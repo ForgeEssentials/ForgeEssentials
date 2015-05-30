@@ -8,7 +8,8 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
-public class BlockPortalSize {
+public class BlockPortalSize
+{
     private final World field_150867_a;
     private final int field_150865_b;
     private final int field_150866_c;
@@ -164,8 +165,7 @@ public class BlockPortalSize {
 
     public boolean func_150860_b()
     {
-        return this.field_150861_f != null && this.field_150868_h >= 2 && this.field_150868_h <= 21 && this.field_150862_g >= 3
-                && this.field_150862_g <= 21;
+        return this.field_150861_f != null && this.field_150868_h >= 2 && this.field_150868_h <= 21 && this.field_150862_g >= 3 && this.field_150862_g <= 21;
     }
 
     public void func_150859_c()

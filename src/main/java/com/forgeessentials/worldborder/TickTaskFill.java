@@ -23,8 +23,8 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.ITickTask;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.ServerUtil;
 
 /**
  * Does the actual filling, with limited chuncks per tick.
@@ -130,7 +130,7 @@ public class TickTaskFill implements ITickTask
     {
         try
         {
-            return FunctionHelper.formatTimeDurationReadable((int) (todo / speed / FunctionHelper.getTPS()), true);
+            return OutputHandler.formatTimeDurationReadable((int) (todo / speed / ServerUtil.getTPS()), true);
         }
         catch (Exception e)
         {

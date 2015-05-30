@@ -17,16 +17,19 @@ import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class CommandBubble extends FEcmdModuleCommands {
-    
+public class CommandBubble extends FEcmdModuleCommands
+{
+
     public static String BUBBLE_GROUP = "command_bubble";
-    
-    public CommandBubble() {
+
+    public CommandBubble()
+    {
         ForgeEssentials.BUS.register(this);
     }
-    
+
     @SubscribeEvent
-    public void permissionInitializeEvent(PermissionEvent.Initialize e) {
+    public void permissionInitializeEvent(PermissionEvent.Initialize e)
+    {
         e.serverZone.setGroupPermissionProperty(BUBBLE_GROUP, FEPermissions.GROUP_PRIORITY, "45");
         e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_USE + Zone.ALL_PERMS, false);
         e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
@@ -34,7 +37,7 @@ public class CommandBubble extends FEcmdModuleCommands {
         e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
         e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
     }
-    
+
     @Override
     public String getCommandName()
     {

@@ -18,7 +18,8 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-public class ModuleLauncher {
+public class ModuleLauncher
+{
     public ModuleLauncher()
     {
         instance = this;
@@ -122,12 +123,12 @@ public class ModuleLauncher {
                 OutputHandler.felog.info("No configuration for FE module " + module.name);
             }
         }
-        
+
         ForgeEssentials.BUS.post(new FEModulePreInitEvent(e));
 
         ForgeEssentials.getConfigManager().load(false);
     }
-    
+
     public void reloadConfigs(ICommandSender sender)
     {
         ForgeEssentials.getConfigManager().load(true);
@@ -146,7 +147,7 @@ public class ModuleLauncher {
     {
         return containerMap.keySet();
     }
-    
+
     public static Map<String, ModuleContainer> getModuleMap()
     {
         return containerMap;

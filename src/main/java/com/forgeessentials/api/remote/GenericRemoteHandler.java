@@ -8,7 +8,8 @@ import com.google.gson.JsonElement;
  * @param <T>
  *            Type of the payload
  */
-public abstract class GenericRemoteHandler<T> extends AbstractRemoteHandler {
+public abstract class GenericRemoteHandler<T> extends AbstractRemoteHandler
+{
 
     private final Class<T> dataClass;
 

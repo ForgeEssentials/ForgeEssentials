@@ -5,7 +5,8 @@ import com.google.gson.JsonElement;
 /**
  * Represents a generic remote request
  */
-public class RemoteRequest<T> {
+public class RemoteRequest<T>
+{
 
     public String id;
 
@@ -38,7 +39,8 @@ public class RemoteRequest<T> {
         return new RemoteRequest<T>(request.id, request.rid, request.auth, newData);
     }
 
-    public static class JsonRemoteRequest extends RemoteRequest<JsonElement> {
+    public static class JsonRemoteRequest extends RemoteRequest<JsonElement>
+    {
 
         public JsonRemoteRequest(String id, int rid, RequestAuth auth, JsonElement data)
         {
@@ -56,6 +58,5 @@ public class RemoteRequest<T> {
         }
 
     }
-
 
 }

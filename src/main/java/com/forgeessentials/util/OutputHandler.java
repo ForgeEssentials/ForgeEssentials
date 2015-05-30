@@ -298,6 +298,67 @@ public final class OutputHandler extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
+    public static final long SECOND = 1;
+    public static final long MINUTE = 60 * SECOND;
+    public static final long HOUR = 60 * MINUTE;
+    public static final long DAY = 24 * HOUR;
+    public static final long WEEK = 7 * DAY;
+
+    /**
+     * Gets a nice string with only needed elements. Max time is weeks
+     *
+     * @param time
+     * @return Time in string format
+     */
+    public static String formatTimeDurationReadable(long time, boolean showSeconds)
+    {
+        long weeks = time / WEEK;
+        time -= WEEK * weeks;
+        long days = time / DAY;
+        time -= DAY * days;
+        long hours = time / HOUR;
+        time -= HOUR * hours;
+        long minutes = time / MINUTE;
+        time -= MINUTE * minutes;
+        long seconds = time / SECOND;
+
+        StringBuilder sb = new StringBuilder();
+        if (weeks != 0)
+            sb.append(String.format("%d weeks ", weeks));
+        if (days != 0)
+        {
+            if (sb.length() > 0)
+                sb.append(", ");
+            sb.append(String.format("%d days ", days));
+        }
+        if (hours != 0)
+        {
+            if (sb.length() > 0)
+                sb.append(", ");
+            sb.append(String.format("%d hours ", hours));
+        }
+        if (minutes != 0 || !showSeconds)
+        {
+            if (sb.length() > 0)
+                if (!showSeconds)
+                    sb.append("and ");
+                else
+                    sb.append(", ");
+            sb.append(String.format("%d minutes ", minutes));
+        }
+        if (showSeconds)
+        {
+            if (sb.length() > 0)
+                sb.append("and ");
+            sb.append(String.format("%d seconds ", seconds));
+        }
+
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
+    }
+
+    /* ------------------------------------------------------------ */
+
     /**
      * outputs a string to the console if the code is in MCP
      *

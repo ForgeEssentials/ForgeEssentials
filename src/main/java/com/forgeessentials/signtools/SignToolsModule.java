@@ -44,6 +44,7 @@ public class SignToolsModule extends ConfigLoaderBase
      * works the same as the old /colourize command
      * 
      * Note: Colour is the UK variant of Color
+     * 
      * @param e
      */
     @SubscribeEvent
@@ -68,16 +69,17 @@ public class SignToolsModule extends ConfigLoaderBase
     }
 
     /**
-     * how to use:
-     * First line of the sign MUST BE [command]
-     * Second line is the command you want to run
-     * Third and fourth lines are arguments to the command.
+     * how to use: First line of the sign MUST BE [command] Second line is the command you want to run Third and fourth
+     * lines are arguments to the command.
      */
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent e)
     {
-        if (!allowSignCommands || !e.action.equals(Action.RIGHT_CLICK_BLOCK)){ return;}
+        if (!allowSignCommands || !e.action.equals(Action.RIGHT_CLICK_BLOCK))
+        {
+            return;
+        }
 
         TileEntity te = e.entityPlayer.worldObj.getTileEntity(e.x, e.y, e.z);
         if (te != null)
@@ -85,7 +87,10 @@ public class SignToolsModule extends ConfigLoaderBase
             if (te instanceof TileEntitySign)
             {
                 String[] signText = ((TileEntitySign) te).signText;
-                if (!signText[0].equals("[command]")) { return;}
+                if (!signText[0].equals("[command]"))
+                {
+                    return;
+                }
 
                 else
                 {

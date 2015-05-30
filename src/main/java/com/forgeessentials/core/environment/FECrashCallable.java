@@ -23,8 +23,8 @@ public class FECrashCallable implements ICrashCallable
     {
         String modules = StringUtils.join(ModuleLauncher.getModuleList(), ", ");
         String n = System.getProperty("line.separator");
-        String returned =  "Build information: Build number is: " + ForgeEssentials.version.getBuildNumber() + ", build hash is: " + ForgeEssentials.version.getBuildHash()
-                + ", Modules loaded: " + modules;
+        String returned = "Build information: Build number is: " + ForgeEssentials.version.getBuildNumber() + ", build hash is: "
+                + ForgeEssentials.version.getBuildHash() + ", Modules loaded: " + modules;
 
         if (Environment.hasCauldron)
         {
@@ -33,5 +33,5 @@ public class FECrashCallable implements ICrashCallable
 
         return returned;
     }
-    
+
 }

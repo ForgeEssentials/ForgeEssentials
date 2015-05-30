@@ -16,7 +16,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
 {
 
     public static final String PERM = ModuleChat.PERM + ".nickname";
-    
+
     public static final String PERM_OTHERS = PERM + ".others";
 
     @Override
@@ -28,7 +28,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[] {"nick"};
+        return new String[] { "nick" };
     }
 
     @Override

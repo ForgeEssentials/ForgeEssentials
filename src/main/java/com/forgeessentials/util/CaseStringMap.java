@@ -6,14 +6,15 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A Map implementation backed by a HashMap.
- * The only difference between this and a normal HashMap is that it can only use Strings as Keys.
- * All Strings used in this map are converted to lowercase.
+ * A Map implementation backed by a HashMap. The only difference between this and a normal HashMap is that it can only
+ * use Strings as Keys. All Strings used in this map are converted to lowercase.
  *
- * @param <V> Value type
+ * @param <V>
+ *            Value type
  * @author AbrarSyed
  */
-public class CaseStringMap<V> implements Map<String, V> {
+public class CaseStringMap<V> implements Map<String, V>
+{
     HashMap<String, V> map;
 
     public CaseStringMap()

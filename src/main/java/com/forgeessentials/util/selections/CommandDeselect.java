@@ -8,7 +8,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
-public class CommandDeselect extends ForgeEssentialsCommandBase {
+public class CommandDeselect extends ForgeEssentialsCommandBase
+{
 
     @Override
     public String getCommandName()

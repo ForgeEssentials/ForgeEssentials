@@ -5,7 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-public enum EnumMobType {
+public enum EnumMobType
+{
     BOSS, GOLEM, HOSTILE, PASSIVE, VILLAGER, TAMEABLE;
 
     public static boolean isMobType(String type)
@@ -22,13 +23,14 @@ public enum EnumMobType {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface FEMob {
+    public @interface FEMob
+    {
         EnumMobType type() default EnumMobType.HOSTILE;
 
         @Retention(RetentionPolicy.RUNTIME)
-        @Target(
-                { ElementType.METHOD, ElementType.FIELD })
-        public @interface IsTamed {
+        @Target({ ElementType.METHOD, ElementType.FIELD })
+        public @interface IsTamed
+        {
         }
     }
 }

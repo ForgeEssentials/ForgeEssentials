@@ -28,10 +28,10 @@ public class CommandListHandler extends GenericRemoteHandler<String>
     protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<String> request)
     {
         List<String> commands = new ArrayList<String>();
-        
+
         @SuppressWarnings("unchecked")
         Set<String> cmds = MinecraftServer.getServer().getCommandManager().getCommands().keySet();
-        
+
         for (String cmd : cmds)
         {
             commands.add(cmd);

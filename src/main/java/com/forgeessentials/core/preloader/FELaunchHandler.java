@@ -1,16 +1,18 @@
 package com.forgeessentials.core.preloader;
 
-import com.forgeessentials.core.preloader.classloading.FEClassLoader;
-import net.minecraft.launchwrapper.ITweaker;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.launchwrapper.LaunchClassLoader;
-
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class FELaunchHandler implements ITweaker {
+import net.minecraft.launchwrapper.ITweaker;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
+
+import com.forgeessentials.core.preloader.classloading.FEClassLoader;
+
+public class FELaunchHandler implements ITweaker
+{
 
     public static File mcLocation, jarLocation;
     public static boolean runtimeDeobfEnabled;

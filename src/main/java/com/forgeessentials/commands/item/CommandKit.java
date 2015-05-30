@@ -17,7 +17,6 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
@@ -103,7 +102,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
                 }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
                 OutputHandler.chatConfirmation(sender,
-                        Translator.format("Kit created successfully. %s cooldown.", FunctionHelper.formatTimeDurationReadable(cooldown, true)));
+                        Translator.format("Kit created successfully. %s cooldown.", OutputHandler.formatTimeDurationReadable(cooldown, true)));
             }
             else
             {
@@ -228,7 +227,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
                 }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
                 OutputHandler.chatConfirmation(sender,
-                        Translator.format("Kit created successfully. %s cooldown.", FunctionHelper.formatTimeDurationReadable(cooldown, true)));
+                        Translator.format("Kit created successfully. %s cooldown.", OutputHandler.formatTimeDurationReadable(cooldown, true)));
             }
         }
 

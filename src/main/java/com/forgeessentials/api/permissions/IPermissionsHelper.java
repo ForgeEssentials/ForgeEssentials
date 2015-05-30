@@ -16,7 +16,8 @@ import com.forgeessentials.commons.selections.WorldPoint;
  * 
  * @author Olee
  */
-public interface IPermissionsHelper extends IPermissionsProvider {
+public interface IPermissionsHelper extends IPermissionsProvider
+{
 
     // ---------------------------------------------------------------------------
     // -- Persistence
@@ -24,14 +25,15 @@ public interface IPermissionsHelper extends IPermissionsProvider {
 
     /**
      * Marks the permission storage as dirty, so it will be persisted as soon as possible.
-     * @param registeredPermission 
+     * 
+     * @param registeredPermission
      */
     void setDirty(boolean registeredPermission);
 
     // ---------------------------------------------------------------------------
     // -- Permissions
     // ---------------------------------------------------------------------------
-    
+
     /**
      * Converts a string permission into a boolean value
      * 
@@ -64,7 +66,8 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * 
      * @param permissionNode
      * @param description
-     *            Description for the permission. Description will be stored as "permissionNode.$desc" permission-property.
+     *            Description for the permission. Description will be stored as "permissionNode.$desc"
+     *            permission-property.
      */
     void registerPermissionDescription(String permissionNode, String description);
 
@@ -77,12 +80,13 @@ public interface IPermissionsHelper extends IPermissionsProvider {
     String getPermissionDescription(String permissionNode);
 
     /**
-     * This is where permissions are registered with their default value. This function also allows to register a description.
+     * This is where permissions are registered with their default value. This function also allows to register a
+     * description.
      * 
      * @param permissionNode
      * @param level
-     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionsProvider} whether a player should be allowed to
-     *            access this permission by default, or as operator only.
+     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionsProvider}
+     *            whether a player should be allowed to access this permission by default, or as operator only.
      * @param description
      *            Description for the permission.
      */
@@ -214,7 +218,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
     String getUserPermissionProperty(UserIdent ident, Zone zone, String permissionNode);
 
     // ---------------------------------------------------------------------------
- 
+
     /**
      * Gets a permission-property for the specified group
      * 
@@ -267,7 +271,7 @@ public interface IPermissionsHelper extends IPermissionsProvider {
      * @param permissionNode
      */
     boolean checkGroupPermission(String group, WorldPoint point, String permissionNode);
-   
+
     // ---------------------------------------------------------------------------
 
     /**
@@ -418,16 +422,15 @@ public interface IPermissionsHelper extends IPermissionsProvider {
     String getPrimaryGroup(UserIdent ident);
 
     /**
-     * Get all groups the player belongs to, together with the system- and included groups.
-     * Groups are ordered by priority.
+     * Get all groups the player belongs to, together with the system- and included groups. Groups are ordered by
+     * priority.
      * 
      * @param ident
      */
     SortedSet<GroupEntry> getPlayerGroups(UserIdent ident);
 
     /**
-     * Get all groups the player belongs to.
-     * Groups are ordered by priority.
+     * Get all groups the player belongs to. Groups are ordered by priority.
      * 
      * @param ident
      */

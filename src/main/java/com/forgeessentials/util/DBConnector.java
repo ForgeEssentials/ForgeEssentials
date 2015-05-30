@@ -1,6 +1,9 @@
 package com.forgeessentials.util;
 
-import com.google.common.base.Throwables;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.HashMap;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -8,12 +11,10 @@ import net.minecraftforge.common.config.Property;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.HashMap;
+import com.google.common.base.Throwables;
 
-public class DBConnector {
+public class DBConnector
+{
     EnumDBType loadedType;
     private final DBConnector fallback;
     public final String name;
@@ -26,12 +27,17 @@ public class DBConnector {
     private HashMap<EnumDBType, HashMap<String, Property>> data;
 
     /**
-     * @param name          a name for the DB connector. to be used in Logging.
-     * @param fallback      The DBConnector from which to take information for a given
-     *                      type if loading that type from this config fails.
-     * @param dType         the default database type to use
-     * @param dbDefault     the default name for remote databases
-     * @param dbFileDefault the default path for file databases. Relative to FEDIR
+     * @param name
+     *            a name for the DB connector. to be used in Logging.
+     * @param fallback
+     *            The DBConnector from which to take information for a given type if loading that type from this config
+     *            fails.
+     * @param dType
+     *            the default database type to use
+     * @param dbDefault
+     *            the default name for remote databases
+     * @param dbFileDefault
+     *            the default path for file databases. Relative to FEDIR
      * @paramuseFallbac if the Fallback should be used for remote Databases
      */
     public DBConnector(String name, DBConnector fallback, EnumDBType dType, String dbDefault, String dbFileDefault, boolean useFallback)
@@ -46,11 +52,11 @@ public class DBConnector {
     }
 
     /**
-     * Forcibly writes everything to the config. the config's save() method is
-     * not called.
+     * Forcibly writes everything to the config. the config's save() method is not called.
      *
      * @param config
-     * @param category the category where everything regarding this connector will be.
+     * @param category
+     *            the category where everything regarding this connector will be.
      */
     public void write(Configuration config, String cat)
     {
@@ -92,11 +98,11 @@ public class DBConnector {
     }
 
     /**
-     * Loads the the connector from the config for use. config load method is
-     * not called.
+     * Loads the the connector from the config for use. config load method is not called.
      *
      * @param config
-     * @param category the category where everything regarding this connector will be.
+     * @param category
+     *            the category where everything regarding this connector will be.
      */
     public void loadOrGenerate(Configuration config, String cat)
     {
@@ -232,9 +238,11 @@ public class DBConnector {
     }
 
     /**
-     * @param dbType Only use this for remote types.
+     * @param dbType
+     *            Only use this for remote types.
      * @return NULL if some error occurred.
-     * @throws IllegalArgumentException if the type is not remote
+     * @throws IllegalArgumentException
+     *             if the type is not remote
      */
     private Connection getSpecificConnection(EnumDBType dbType) throws IllegalArgumentException
     {

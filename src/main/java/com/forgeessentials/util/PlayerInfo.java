@@ -401,7 +401,7 @@ public class PlayerInfo implements Loadable
              */
 
             // Swap player inventory and store the old one
-            inventoryGroups.put(activeInventoryGroup, FunctionHelper.swapInventory(this.ident.getPlayerMP(), newInventory));
+            inventoryGroups.put(activeInventoryGroup, PlayerUtil.swapInventory(this.ident.getPlayerMP(), newInventory));
             // Clear the inventory-group that was assigned to the player (optional)
             inventoryGroups.put(name, null);
             // Save the new active inventory-group

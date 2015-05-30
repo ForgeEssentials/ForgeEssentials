@@ -19,7 +19,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
  */
 
 @FEModule(name = "Afterlife", parentMod = ForgeEssentials.class)
-public class ModuleAfterlife extends ConfigLoaderBase {
+public class ModuleAfterlife extends ConfigLoaderBase
+{
 
     @FEModule.Instance
     public static ModuleAfterlife instance;
@@ -51,7 +52,7 @@ public class ModuleAfterlife extends ConfigLoaderBase {
     public void serverStarting(FEModuleServerInitEvent e)
     {
         Grave.loadAll();
-        
+
         APIRegistry.perms.registerPermissionDescription(PERM, "Permissions for afterlife configuration");
         APIRegistry.perms.registerPermissionDescription(PERM_DEBUFFS, "Potion effects to apply on respawn (comma separated list of id:duration:amplifier)");
         APIRegistry.perms.registerPermissionDescription(PERM_HP, "Respawn HP");
@@ -60,8 +61,10 @@ public class ModuleAfterlife extends ConfigLoaderBase {
         APIRegistry.perms.registerPermission(PERM_DEATHCHEST, RegisteredPermValue.TRUE, "Allow creation of deathchests");
         APIRegistry.perms.registerPermission(PERM_DEATHCHEST_FENCE, RegisteredPermValue.TRUE, "Put the skull on a spike");
         APIRegistry.perms.registerPermission(PERM_DEATHCHEST_BYPASS, RegisteredPermValue.OP, "Bypass grave protection");
-        APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_XP, "0.25", "Ratio of XP that you want to allow someone to keep in a grave. 1 keeps all XP, 0 disables XP recovery.");
-        APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_SAFETIME, "300", "Time in seconds a grave is protected. After this time anyone can take all stuff");
+        APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_XP, "0.25",
+                "Ratio of XP that you want to allow someone to keep in a grave. 1 keeps all XP, 0 disables XP recovery.");
+        APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_SAFETIME, "300",
+                "Time in seconds a grave is protected. After this time anyone can take all stuff");
     }
 
     @SubscribeEvent
@@ -75,30 +78,30 @@ public class ModuleAfterlife extends ConfigLoaderBase {
     {
         config.addCustomCategoryComment("Afterlife", //
                 "Afterlife configuration outdated." + //
-                "\n" + //
-                "\nFor afterlife configuration, use the new permission-properties \"/p global value fe.afterlife.<perm>\"." + //
-                "\nFollowing permissions are available:" + //
-                "\n - " + PERM_DEATHCHEST + //
-                "\n - " + PERM_DEATHCHEST_XP + //
-                "\n - " + PERM_DEATHCHEST_SAFETIME + //
-                "\n - " + PERM_DEATHCHEST_FENCE + //
-                "\n - " + PERM_DEATHCHEST_BYPASS + //
-                "\n" + //
-                "\n - " + PERM_DEBUFFS + //
-                "\n - " + PERM_HP + //
-                "\n - " + PERM_FOOD + //
-                "\n" + //
-                "\n For more information look at the wiki on github." //
+                        "\n" + //
+                        "\nFor afterlife configuration, use the new permission-properties \"/p global value fe.afterlife.<perm>\"." + //
+                        "\nFollowing permissions are available:" + //
+                        "\n - " + PERM_DEATHCHEST + //
+                        "\n - " + PERM_DEATHCHEST_XP + //
+                        "\n - " + PERM_DEATHCHEST_SAFETIME + //
+                        "\n - " + PERM_DEATHCHEST_FENCE + //
+                        "\n - " + PERM_DEATHCHEST_BYPASS + //
+                        "\n" + //
+                        "\n - " + PERM_DEBUFFS + //
+                        "\n - " + PERM_HP + //
+                        "\n - " + PERM_FOOD + //
+                        "\n" + //
+                        "\n For more information look at the wiki on github." //
         );
-        
+
         if (config.hasCategory("Afterlife.DeathChest"))
             config.removeCategory(config.getCategory("Afterlife.DeathChest"));
-        
+
         if (config.hasCategory("Afterlife.RespawnDebuffHandler"))
             config.removeCategory(config.getCategory("Afterlife.RespawnDebuffHandler"));
-        
+
         if (config.hasCategory("Afterlife.respawnStats"))
             config.removeCategory(config.getCategory("Afterlife.respawnStats"));
     }
-    
+
 }

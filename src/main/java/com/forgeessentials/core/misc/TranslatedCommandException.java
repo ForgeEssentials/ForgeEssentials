@@ -47,5 +47,4 @@ public class TranslatedCommandException extends CommandException
 
     }
 
-    
 }

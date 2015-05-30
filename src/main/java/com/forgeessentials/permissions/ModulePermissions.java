@@ -27,8 +27,8 @@ import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SQLProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -76,8 +76,8 @@ public class ModulePermissions extends ConfigLoaderBase
         // Backup FEData directory
         try
         {
-            File path = new File(FunctionHelper.getWorldPath(), "FEData");
-            File backupPath = new File(FunctionHelper.getWorldPath(), "FEData_backup");
+            File path = new File(ServerUtil.getWorldPath(), "FEData");
+            File backupPath = new File(ServerUtil.getWorldPath(), "FEData_backup");
             if (backupPath.exists())
                 FileUtils.deleteDirectory(backupPath);
             FileUtils.copyDirectory(path, backupPath);
@@ -94,12 +94,12 @@ public class ModulePermissions extends ConfigLoaderBase
             permissionHelper.setPersistenceProvider(new SQLProvider(dbConnector.getChosenConnection(), dbConnector.getActiveType()));
             break;
         case "json":
-            permissionHelper.setPersistenceProvider(new JsonProvider(new File(FunctionHelper.getWorldPath(), "FEData/json")));
+            permissionHelper.setPersistenceProvider(new JsonProvider(new File(ServerUtil.getWorldPath(), "FEData/json")));
             break;
         case "flatfile":
         default:
         {
-            permissionHelper.setPersistenceProvider(new FlatfileProvider(new File(FunctionHelper.getWorldPath(), "FEData/permissions")));
+            permissionHelper.setPersistenceProvider(new FlatfileProvider(new File(ServerUtil.getWorldPath(), "FEData/permissions")));
             break;
         }
         }

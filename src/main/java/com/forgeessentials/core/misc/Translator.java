@@ -16,7 +16,8 @@ import java.util.Properties;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
 
-public final class Translator {
+public final class Translator
+{
 
     public static final String TRANSLATOR_FILE = "translations.ini";
 

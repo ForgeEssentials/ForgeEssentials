@@ -8,12 +8,13 @@ import com.forgeessentials.util.NamedWorldPoint;
 /**
  * 
  */
-public class Portal {
+public class Portal
+{
 
     protected NamedWorldArea portalArea;
-    
+
     protected NamedWorldPoint target;
-    
+
     protected boolean frame = true;
 
     public Portal(NamedWorldArea portalArea, NamedWorldPoint target, boolean frame)
@@ -57,5 +58,5 @@ public class Portal {
     {
         this.frame = frame;
     }
-    
+
 }

@@ -7,7 +7,8 @@ import com.forgeessentials.commons.selections.WorldPoint;
 /**
  *
  */
-public class DataIntLocation {
+public class DataIntLocation
+{
 
     public int dim;
 

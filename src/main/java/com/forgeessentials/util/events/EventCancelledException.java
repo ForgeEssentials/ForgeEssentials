@@ -4,9 +4,10 @@ import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventBus;
 
-public class EventCancelledException extends Exception {
+public class EventCancelledException extends Exception
+{
     private static final long serialVersionUID = 6106472655247525969L;
-    
+
     private Event event;
 
     public EventCancelledException(Event event)

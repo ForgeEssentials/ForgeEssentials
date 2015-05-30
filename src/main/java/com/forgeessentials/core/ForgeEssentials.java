@@ -30,10 +30,10 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.MiscEventHandler;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -156,7 +156,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         version = new VersionUtils(FELaunchHandler.jarLocation);
 
-        FEDIR = new File(FunctionHelper.getBaseDir(), "/ForgeEssentials");
+        FEDIR = new File(ServerUtil.getBaseDir(), "/ForgeEssentials");
         OutputHandler.felog.info("Initializing ForgeEssentials version " + VersionUtils.FEVERSION + " (configDir = " + FEDIR.getAbsolutePath() + ")");
         OutputHandler.felog.info("Build information: Build number is: " + version.getBuildNumber() + ", build hash is: " + version.getBuildHash());
 
@@ -232,7 +232,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
-        DataManager.setInstance(new DataManager(new File(FunctionHelper.getWorldPath(), "FEData/json")));
+        DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
         ForgeEssentials.BUS.post(new FEModuleServerPreInitEvent(e));
     }
 
@@ -245,7 +245,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleServerInitEvent(e));
 
-        FunctionHelper.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
+        ServerUtil.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
         FECommandManager.registerCommands();
 
         registerPermissions();

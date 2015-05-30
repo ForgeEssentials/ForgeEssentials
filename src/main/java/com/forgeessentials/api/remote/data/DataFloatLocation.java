@@ -7,7 +7,8 @@ import com.forgeessentials.commons.selections.WarpPoint;
 /**
  *
  */
-public class DataFloatLocation {
+public class DataFloatLocation
+{
 
     public int dim;
 

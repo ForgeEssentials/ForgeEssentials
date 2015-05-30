@@ -59,7 +59,8 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        //if (ModuleLauncher.getModuleList().contains("WEIntegration") && FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
+        // if (ModuleLauncher.getModuleList().contains("WEIntegration") &&
+        // FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
         if (FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
             updatedSelectionPlayers.add((EntityPlayerMP) event.entityPlayer);
     }

@@ -1,14 +1,16 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.TimerTask;
 
-public class VanillaServiceChecker extends TimerTask {
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+
+public class VanillaServiceChecker extends TimerTask
+{
     private boolean online = true;
     private boolean oldOnline;
 
@@ -18,8 +20,8 @@ public class VanillaServiceChecker extends TimerTask {
     public VanillaServiceChecker()
     {
         online = oldOnline = check();
-        OutputHandler.felog
-                .info("VanillaServiceChecker initialized. Vanilla online mode: '" + ModuleAuth.vanillaMode() + "' Mojang login servers: '" + online + "'");
+        OutputHandler.felog.info("VanillaServiceChecker initialized. Vanilla online mode: '" + ModuleAuth.vanillaMode() + "' Mojang login servers: '" + online
+                + "'");
     }
 
     @Override

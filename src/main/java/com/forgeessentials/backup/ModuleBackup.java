@@ -21,8 +21,9 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class)
-public class ModuleBackup {
-    
+public class ModuleBackup
+{
+
     @FEModule.ModuleDir
     public static File moduleDir;
 
@@ -49,7 +50,7 @@ public class ModuleBackup {
         // Register configuration
         ForgeEssentials.getConfigManager().registerLoader("Backups", new BackupConfig());
         FECommandManager.registerCommand(new CommandBackup());
-        
+
         MinecraftForge.EVENT_BUS.register(this);
         worldSaver = new WorldSaver();
     }
@@ -59,11 +60,11 @@ public class ModuleBackup {
     {
         if (BackupConfig.autoInterval != 0)
         {
-            timer.schedule(new AutoBackup(), BackupConfig.autoInterval*60*1000, BackupConfig.autoInterval*60*1000);
+            timer.schedule(new AutoBackup(), BackupConfig.autoInterval * 60 * 1000, BackupConfig.autoInterval * 60 * 1000);
         }
         if (BackupConfig.worldSaveInterval != 0)
         {
-            timer.schedule(new AutoWorldSave(), BackupConfig.worldSaveInterval*60*1000, BackupConfig.worldSaveInterval*60*1000);
+            timer.schedule(new AutoWorldSave(), BackupConfig.worldSaveInterval * 60 * 1000, BackupConfig.worldSaveInterval * 60 * 1000);
         }
 
         APIRegistry.perms.registerPermission("fe.backup.msg", RegisteredPermValue.TRUE);

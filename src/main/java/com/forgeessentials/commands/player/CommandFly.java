@@ -1,11 +1,12 @@
 package com.forgeessentials.commands.player;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.WorldUtil;
 
 public class CommandFly extends FEcmdModuleCommands
 {
@@ -50,7 +51,7 @@ public class CommandFly extends FEcmdModuleCommands
         if (!player.onGround)
             player.capabilities.isFlying = player.capabilities.allowFlying;
         if (!player.capabilities.allowFlying)
-            FunctionHelper.placeInWorld(player);
+            WorldUtil.placeInWorld(player);
         player.sendPlayerAbilities();
         OutputHandler.chatNotification(player, "Flying " + (player.capabilities.allowFlying ? "enabled" : "disabled"));
     }

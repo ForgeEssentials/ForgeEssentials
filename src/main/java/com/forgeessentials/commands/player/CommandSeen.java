@@ -13,7 +13,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 public class CommandSeen extends FEcmdModuleCommands
@@ -83,7 +83,7 @@ public class CommandSeen extends FEcmdModuleCommands
 
         PlayerInfo pi = PlayerInfo.get(player.getUuid());
         long t = (System.currentTimeMillis() - pi.getLastLogout().getTime()) / 1000;
-        arguments.confirm(Translator.format("Player %s was last seen %s ago", player.getUsernameOrUuid(), FunctionHelper.formatTimeDurationReadable(t, false)));
+        arguments.confirm(Translator.format("Player %s was last seen %s ago", player.getUsernameOrUuid(), OutputHandler.formatTimeDurationReadable(t, false)));
         PlayerInfo.discard(pi.ident.getUuid());
     }
 

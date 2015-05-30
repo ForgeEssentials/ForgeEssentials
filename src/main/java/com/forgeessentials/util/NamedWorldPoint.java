@@ -10,7 +10,8 @@ import com.google.gson.annotations.Expose;
 /**
  * Keeps a WorldPoint linked to a particular multiworld, even if the dim-id changes
  */
-public class NamedWorldPoint extends WorldPoint {
+public class NamedWorldPoint extends WorldPoint
+{
 
     protected String worldName;
 
@@ -82,6 +83,5 @@ public class NamedWorldPoint extends WorldPoint {
         }
         return isValid;
     }
-
 
 }

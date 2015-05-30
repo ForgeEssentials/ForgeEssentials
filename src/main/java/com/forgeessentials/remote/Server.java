@@ -17,7 +17,8 @@ import com.forgeessentials.api.remote.RemoteResponse;
 /**
  *
  */
-public class Server implements Runnable {
+public class Server implements Runnable
+{
 
     private final ServerSocket serverSocket;
 

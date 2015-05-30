@@ -6,8 +6,9 @@ import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
-public interface ISelectionProvider {
-    
+public interface ISelectionProvider
+{
+
     public Selection getSelection(EntityPlayerMP player);
 
     public void setDimension(EntityPlayerMP player, int dim);

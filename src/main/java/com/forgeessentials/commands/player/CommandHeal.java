@@ -1,5 +1,13 @@
 package com.forgeessentials.commands.player;
 
+import java.util.List;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
@@ -7,16 +15,10 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+public class CommandHeal extends FEcmdModuleCommands
+{
 
-public class CommandHeal extends FEcmdModuleCommands {
-	
     @Override
     public String getCommandName()
     {
@@ -44,7 +46,7 @@ public class CommandHeal extends FEcmdModuleCommands {
         }
         else
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 
@@ -107,13 +109,13 @@ public class CommandHeal extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-    	if (sender instanceof EntityPlayer)
+        if (sender instanceof EntityPlayer)
         {
-    		return "/heal <player> Heal yourself or other players (if you have permission).";
+            return "/heal <player> Heal yourself or other players (if you have permission).";
         }
         else
         {
-        	return "/heal <player> Heal a player.";
+            return "/heal <player> Heal a player.";
         }
     }
 

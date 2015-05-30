@@ -1,14 +1,15 @@
 package com.forgeessentials.auth;
 
-import com.forgeessentials.util.OutputHandler;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import org.apache.logging.log4j.Level;
 
-public class EncryptionHelper {
+import com.forgeessentials.util.OutputHandler;
+
+public class EncryptionHelper
+{
     private static final SecureRandom rand = new SecureRandom();
     private static final char[] hex = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
     private static final String saltChars = "ABCDEFGHIJGMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_=+[]{};:.,<>/?\\|~`";

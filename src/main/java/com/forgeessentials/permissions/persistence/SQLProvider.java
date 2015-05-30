@@ -31,9 +31,11 @@ import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 
-public class SQLProvider extends ZonePersistenceProvider {
+public class SQLProvider extends ZonePersistenceProvider
+{
 
-    private class TableInfo {
+    private class TableInfo
+    {
 
         public String name;
 
@@ -270,7 +272,7 @@ public class SQLProvider extends ZonePersistenceProvider {
             {
                 OutputHandler.felog.info("Version of permission database incorrect. May not load permissions correctly!");
             }
-            
+
             if (version.equals("1.0"))
             {
                 TableInfo tbl = TABLES.get(TABLE_ZONE);
@@ -356,7 +358,7 @@ public class SQLProvider extends ZonePersistenceProvider {
             writeUserGroupPermissions(serverZone);
 
             // Use a transaction to be able to rollback, if there is an error
-            //db.setAutoCommit(false);
+            // db.setAutoCommit(false);
 
             // Truncate old data
             db.createStatement().executeUpdate(TABLES.get(TABLE_ZONE).createTruncate());
@@ -375,7 +377,7 @@ public class SQLProvider extends ZonePersistenceProvider {
                     fieldsAndValues.put("name", ident.getUsername());
                 db.createStatement().executeUpdate(TABLES.get(TABLE_USER).createInsertOrReplace(fieldsAndValues));
             }
-            
+
             saveServerZone(serverZone);
             saveZonePermissions(serverZone);
             for (WorldZone worldZone : serverZone.getWorldZones().values())
@@ -388,8 +390,8 @@ public class SQLProvider extends ZonePersistenceProvider {
                     saveZonePermissions(areaZone);
                 }
             }
-            //db.commit();
-            //db.setAutoCommit(true);
+            // db.commit();
+            // db.setAutoCommit(true);
         }
         catch (SQLException se)
         {

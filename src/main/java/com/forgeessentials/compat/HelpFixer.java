@@ -5,16 +5,17 @@
  */
 package com.forgeessentials.compat;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import net.minecraft.command.CommandHelp;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-public class HelpFixer extends CommandHelp {
+public class HelpFixer extends CommandHelp
+{
 
     @SuppressWarnings("unchecked")
     @Override

@@ -45,7 +45,7 @@ public abstract class MixinNetHandlerPlayServer_02
 
     @Shadow
     public MinecraftServer serverController;
-    
+
     // patch method
     @Overwrite
     public void processVanilla250Packet(C17PacketCustomPayload p_147349_1_)
@@ -156,7 +156,7 @@ public abstract class MixinNetHandlerPlayServer_02
 
                     if (container instanceof ContainerMerchant)
                     {
-                        ((ContainerMerchant)container).setCurrentRecipeIndex(i);
+                        ((ContainerMerchant) container).setCurrentRecipeIndex(i);
                     }
                 }
                 catch (Exception exception2)
@@ -185,7 +185,7 @@ public abstract class MixinNetHandlerPlayServer_02
 
                             if (tileentity instanceof TileEntityCommandBlock)
                             {
-                                commandblocklogic = ((TileEntityCommandBlock)tileentity).func_145993_a();
+                                commandblocklogic = ((TileEntityCommandBlock) tileentity).func_145993_a();
                             }
                         }
                         else if (b0 == 1)
@@ -194,7 +194,7 @@ public abstract class MixinNetHandlerPlayServer_02
 
                             if (entity instanceof EntityMinecartCommandBlock)
                             {
-                                commandblocklogic = ((EntityMinecartCommandBlock)entity).func_145822_e();
+                                commandblocklogic = ((EntityMinecartCommandBlock) entity).func_145822_e();
                             }
                         }
 
@@ -204,7 +204,7 @@ public abstract class MixinNetHandlerPlayServer_02
                         {
                             commandblocklogic.func_145752_a(s1);
                             commandblocklogic.func_145756_e();
-                            playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] {s1}));
+                            playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] { s1 }));
                         }
                     }
                     catch (Exception exception1)
@@ -230,7 +230,7 @@ public abstract class MixinNetHandlerPlayServer_02
                         datainputstream = new DataInputStream(new ByteArrayInputStream(p_147349_1_.func_149558_e()));
                         i = datainputstream.readInt();
                         int j = datainputstream.readInt();
-                        ContainerBeacon containerbeacon = (ContainerBeacon)playerEntity.openContainer;
+                        ContainerBeacon containerbeacon = (ContainerBeacon) playerEntity.openContainer;
                         Slot slot = containerbeacon.getSlot(0);
 
                         if (slot.getHasStack())
@@ -250,7 +250,7 @@ public abstract class MixinNetHandlerPlayServer_02
             }
             else if ("MC|ItemName".equals(p_147349_1_.func_149559_c()) && playerEntity.openContainer instanceof ContainerRepair)
             {
-                ContainerRepair containerrepair = (ContainerRepair)playerEntity.openContainer;
+                ContainerRepair containerrepair = (ContainerRepair) playerEntity.openContainer;
 
                 if (p_147349_1_.func_149558_e() != null && p_147349_1_.func_149558_e().length >= 1)
                 {

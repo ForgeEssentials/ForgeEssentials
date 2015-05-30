@@ -12,7 +12,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table
-public class BlockData {
+public class BlockData
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

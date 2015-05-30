@@ -22,7 +22,8 @@ import com.forgeessentials.multiworld.MultiworldException;
 import com.forgeessentials.multiworld.MultiworldManager;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandMultiworld extends ForgeEssentialsCommandBase {
+public class CommandMultiworld extends ForgeEssentialsCommandBase
+{
 
     private ICommandSender sender;
     private EntityPlayerMP senderPlayer;
@@ -223,7 +224,8 @@ public class CommandMultiworld extends ForgeEssentialsCommandBase {
         {
             if (args.size() > 1)
                 return;
-            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), ModuleMultiworld.getMultiworldManager().getWorldMap().keySet());
+            tabComplete = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), ModuleMultiworld.getMultiworldManager().getWorldMap()
+                    .keySet());
             return;
         }
         if (args.isEmpty())

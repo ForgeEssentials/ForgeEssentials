@@ -7,7 +7,8 @@ import java.io.InputStreamReader;
 /**
  *
  */
-public class SocketStreamSplitter {
+public class SocketStreamSplitter
+{
 
     private final InputStream is;
 

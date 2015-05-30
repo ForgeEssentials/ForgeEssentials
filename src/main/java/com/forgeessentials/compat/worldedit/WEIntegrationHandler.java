@@ -23,8 +23,8 @@ public class WEIntegrationHandler
         if (WEIntegration.disable)
         {
             OutputHandler.felog.severe("Requested to force-disable WorldEdit.");
-            //if (Loader.isModLoaded("WorldEdit"))
-                //MinecraftForge.EVENT_BUS.unregister(ForgeWorldEdit.inst); //forces worldedit forge NOT to load
+            // if (Loader.isModLoaded("WorldEdit"))
+            // MinecraftForge.EVENT_BUS.unregister(ForgeWorldEdit.inst); //forces worldedit forge NOT to load
             ModuleLauncher.instance.unregister("WEIntegrationTools");
         }
     }

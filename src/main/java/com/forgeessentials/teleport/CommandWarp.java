@@ -15,7 +15,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.ServerUtil;
 
 public class CommandWarp extends ParserCommandBase
 {
@@ -114,7 +114,7 @@ public class CommandWarp extends ParserCommandBase
                 arguments.checkPermission(PERM_SET);
 
                 // Check limit
-                int limit = FunctionHelper.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, PERM_LIMIT), Integer.MAX_VALUE);
+                int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, PERM_LIMIT), Integer.MAX_VALUE);
                 if (warps.size() >= limit)
                     throw new TranslatedCommandException("You reached the warp limit");
 

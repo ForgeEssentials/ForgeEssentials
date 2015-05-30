@@ -9,7 +9,8 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class ServerEventHandler {
+public class ServerEventHandler
+{
 
     private boolean registered = false;
 
@@ -27,7 +28,8 @@ public class ServerEventHandler {
 
     protected void register()
     {
-        if (registered) return;
+        if (registered)
+            return;
         registered = true;
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);

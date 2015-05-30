@@ -1,6 +1,7 @@
 package com.forgeessentials.tickets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -14,10 +15,10 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandTicket extends ForgeEssentialsCommandBase {
+public class CommandTicket extends ForgeEssentialsCommandBase
+{
     @Override
     public String getCommandName()
     {
@@ -99,9 +100,9 @@ public class CommandTicket extends ForgeEssentialsCommandBase {
                 throw new TranslatedCommandException("Usage: /ticket new <category> <message ...>");
             if (!ModuleTickets.categories.contains(args[1]))
                 throw new TranslatedCommandException("message.error.illegalCategory", args[1]);
-            
+
             String msg = "";
-            for (String var : FunctionHelper.dropFirstString(FunctionHelper.dropFirstString(args)))
+            for (String var : Arrays.copyOfRange(args, 2, args.length - 1))
             {
                 msg += " " + var;
             }

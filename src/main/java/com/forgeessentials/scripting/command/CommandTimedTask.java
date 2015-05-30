@@ -13,7 +13,8 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.scripting.TimedTask;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandTimedTask extends ForgeEssentialsCommandBase {
+public class CommandTimedTask extends ForgeEssentialsCommandBase
+{
 
     private static Map<String, TimedTask> taskList = new HashMap<String, TimedTask>();
 

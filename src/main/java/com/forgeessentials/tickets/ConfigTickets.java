@@ -1,12 +1,14 @@
 package com.forgeessentials.tickets;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.OutputHandler;
-import net.minecraftforge.common.config.Configuration;
-
 import java.util.Arrays;
 
-public class ConfigTickets extends ConfigLoaderBase {
+import net.minecraftforge.common.config.Configuration;
+
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.util.OutputHandler;
+
+public class ConfigTickets extends ConfigLoaderBase
+{
 
     @Override
     public void load(Configuration config, boolean isReload)

@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.ServerUtil;
 
 /**
  * Used to sort groups by priority and ancestors
  */
-public class GroupEntry implements Comparable<GroupEntry> {
+public class GroupEntry implements Comparable<GroupEntry>
+{
 
     private final String group;
 
@@ -31,13 +32,12 @@ public class GroupEntry implements Comparable<GroupEntry> {
 
     public GroupEntry(ServerZone zone, String group)
     {
-        this(group, FunctionHelper.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY), FEPermissions.GROUP_PRIORITY_DEFAULT));
+        this(group, ServerUtil.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY), FEPermissions.GROUP_PRIORITY_DEFAULT));
     }
 
     public GroupEntry(ServerZone zone, String group, int priority)
     {
-        this(group, priority, FunctionHelper
-                .parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY), FEPermissions.GROUP_PRIORITY_DEFAULT));
+        this(group, priority, ServerUtil.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY), FEPermissions.GROUP_PRIORITY_DEFAULT));
     }
 
     public String getGroup()

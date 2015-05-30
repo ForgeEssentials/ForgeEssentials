@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.permissions.PermissionsManager;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -331,7 +331,7 @@ public class CommandPlot extends ParserCommandBase
         Plot plot = getPlot(arguments.senderPlayer);
         String type = modifyUsers ? "users" : "mods";
         String group = modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD;
-        
+
         arguments.checkPermission(Plot.PERM_MODS);
         if (arguments.isEmpty())
         {

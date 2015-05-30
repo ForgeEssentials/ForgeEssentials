@@ -1,12 +1,7 @@
 package com.forgeessentials.commands.player;
 
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
+import java.util.List;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,9 +9,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.util.List;
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.PlayerUtil;
 
-public class CommandSmite extends FEcmdModuleCommands {
+import cpw.mods.fml.common.FMLCommonHandler;
+
+public class CommandSmite extends FEcmdModuleCommands
+{
 
     @Override
     public String getCommandName()
@@ -48,7 +50,8 @@ public class CommandSmite extends FEcmdModuleCommands {
         }
         else if (args.length > 1)
         {
-            if(args.length != 3) {
+            if (args.length != 3)
+            {
                 throw new TranslatedCommandException("Need coordinates X, Y, Z.");
             }
             int x = Integer.valueOf(args[0]);
@@ -59,7 +62,7 @@ public class CommandSmite extends FEcmdModuleCommands {
         }
         else
         {
-            MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(sender, 500);
+            MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(sender, 500);
             if (mop == null)
             {
                 OutputHandler.chatError(sender, "You must first look at the ground!");
@@ -87,7 +90,7 @@ public class CommandSmite extends FEcmdModuleCommands {
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
     }
 
     @Override

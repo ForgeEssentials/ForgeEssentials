@@ -2,19 +2,21 @@ package com.forgeessentials.core.commands;
 
 import java.util.List;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.preloader.asm.EventInjector;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.commons.VersionUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-public class CommandFEInfo extends ForgeEssentialsCommandBase {
+import com.forgeessentials.commons.VersionUtils;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.core.preloader.asm.EventInjector;
+import com.forgeessentials.util.OutputHandler;
 
-	public static final String[] options = {"debug", "reload", "modules", "about"};
-			
+public class CommandFEInfo extends ForgeEssentialsCommandBase
+{
+
+    public static final String[] options = { "debug", "reload", "modules", "about" };
+
     @Override
     public String getCommandName()
     {
@@ -59,7 +61,8 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
         {
             StringBuilder buff = new StringBuilder();
             String sep = "";
-            for (String str : ModuleLauncher.getModuleList()) {
+            for (String str : ModuleLauncher.getModuleList())
+            {
                 buff.append(sep);
                 buff.append(str);
                 sep = ", ";
@@ -69,9 +72,11 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
         else if (args[0].equalsIgnoreCase("about"))
         {
             OutputHandler.chatNotification(sender, "You are currently running ForgeEssentials version " + VersionUtils.FEVERSION);
-            OutputHandler.felog.info("Build information: Build number is: " + ForgeEssentials.version.getBuildNumber() + ", build hash is: " + ForgeEssentials.version.getBuildHash());
-            OutputHandler.chatNotification(sender,
-                    "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
+            OutputHandler.felog.info("Build information: Build number is: " + ForgeEssentials.version.getBuildNumber() + ", build hash is: "
+                    + ForgeEssentials.version.getBuildHash());
+            OutputHandler
+                    .chatNotification(sender,
+                            "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
         }
         else if (args[0].equalsIgnoreCase("debug"))
         {
@@ -88,7 +93,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase {
     {
         return RegisteredPermValue.OP;
     }
-    
+
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {

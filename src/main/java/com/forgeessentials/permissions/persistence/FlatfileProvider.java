@@ -31,7 +31,8 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.OutputHandler;
 
-public class FlatfileProvider extends ZonePersistenceProvider {
+public class FlatfileProvider extends ZonePersistenceProvider
+{
 
     public static final String PERMISSION_FILE_EXT = ".txt";
 
@@ -41,7 +42,8 @@ public class FlatfileProvider extends ZonePersistenceProvider {
 
     public static final FileFilter directoryFilter = new FileFilters.Directory();
 
-    public static class SortedPermisssionProperties extends Properties {
+    public static class SortedPermisssionProperties extends Properties
+    {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -79,13 +81,13 @@ public class FlatfileProvider extends ZonePersistenceProvider {
             /* do nothing */
         }
     }
-    
+
     @Override
     public void save(ServerZone serverZone)
     {
         File path = basePath;
         deleteDirectory(path);
-        
+
         writeUserGroupPermissions(serverZone);
 
         saveServerZone(path, serverZone);
@@ -182,7 +184,7 @@ public class FlatfileProvider extends ZonePersistenceProvider {
             String comment = "Permissions for user " + (username != null ? username : "<unknown-username>") + " with UUID "
                     + (uuid != null ? uuid.toString() : "<unknown-uuid>") + COMMENT_INFO;
             filename = filename.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
-            
+
             // prevent overwriting files with same playername
             while (new File(playersPath, filename + PERMISSION_FILE_EXT).exists())
                 filename = filename + "_";

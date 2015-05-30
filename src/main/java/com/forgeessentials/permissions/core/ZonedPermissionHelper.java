@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,7 +52,6 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
@@ -237,7 +237,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             {
                 writer.write("#// ---------- PERMISSIONS LIST ------------ \\\\#");
                 writer.newLine();
-                writer.write("#// ---------------- " + FunctionHelper.getCurrentDateString() + " ------------- \\\\#");
+                writer.write("#// ---------------- " + ForgeEssentials.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
                 writer.newLine();
                 writer.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
                 writer.newLine();
@@ -246,7 +246,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
                 writerItems.write("#// ---------- PERMISSIONS LIST ITEMS ------ \\\\#");
                 writerItems.newLine();
-                writerItems.write("#// ---------------- " + FunctionHelper.getCurrentDateString() + " ------------- \\\\#");
+                writerItems.write("#// ---------------- " + ForgeEssentials.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
                 writerItems.newLine();
                 writerItems.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
                 writerItems.newLine();
@@ -255,7 +255,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
                 writerBlocks.write("#// ---------- PERMISSIONS LIST BLOCKS ----- \\\\#");
                 writerBlocks.newLine();
-                writerBlocks.write("#// ---------------- " + FunctionHelper.getCurrentDateString() + " ------------- \\\\#");
+                writerBlocks.write("#// ---------------- " + ForgeEssentials.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
                 writerBlocks.newLine();
                 writerBlocks.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
                 writerBlocks.newLine();

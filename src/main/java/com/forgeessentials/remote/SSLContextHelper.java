@@ -11,7 +11,8 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
-public class SSLContextHelper {
+public class SSLContextHelper
+{
 
     private SSLContext sslCtx;
 

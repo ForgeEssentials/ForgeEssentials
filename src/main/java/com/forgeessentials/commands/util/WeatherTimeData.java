@@ -1,8 +1,8 @@
 package com.forgeessentials.commands.util;
 
+public class WeatherTimeData
+{
 
-public class WeatherTimeData {
-    
     public static final int dayTimeStart = 1;
     public static final int dayTimeEnd = 11;
     public static final int nightTimeStart = 14;
@@ -36,4 +36,3 @@ public class WeatherTimeData {
     }
 
 }
-

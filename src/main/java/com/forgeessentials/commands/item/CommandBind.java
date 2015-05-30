@@ -15,7 +15,8 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandBind extends FEcmdModuleCommands {
+public class CommandBind extends FEcmdModuleCommands
+{
     public static final String color = EnumChatFormatting.RESET + "" + EnumChatFormatting.AQUA;
 
     @Override
@@ -35,7 +36,7 @@ public class CommandBind extends FEcmdModuleCommands {
     {
         if (args.length == 0 || !(args[0].equalsIgnoreCase("left") || args[0].equalsIgnoreCase("right") || args[0].equalsIgnoreCase("clear")))
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
         else if (sender.inventory.getCurrentItem() == null)
         {

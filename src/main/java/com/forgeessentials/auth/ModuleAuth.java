@@ -59,7 +59,7 @@ public class ModuleAuth extends ConfigLoaderBase
     {
         pwdEnc = new EncryptionHelper();
         handler = new AuthEventHandler();
-        
+
         FECommandManager.registerCommand(new CommandAuth());
         if (AuthEventHandler.whitelist)
         {

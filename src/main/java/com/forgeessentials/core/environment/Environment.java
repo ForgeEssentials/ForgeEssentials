@@ -1,6 +1,7 @@
 package com.forgeessentials.core.environment;
 
 import com.forgeessentials.util.OutputHandler;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 

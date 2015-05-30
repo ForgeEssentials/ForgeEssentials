@@ -20,7 +20,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
  *
  * @author Dries007
  */
-public class CommandInventorySee extends FEcmdModuleCommands {
+public class CommandInventorySee extends FEcmdModuleCommands
+{
 
     public CommandInventorySee()
     {
@@ -54,8 +55,7 @@ public class CommandInventorySee extends FEcmdModuleCommands {
         player.getNextWindowId();
 
         PlayerInvChest chest = new PlayerInvChest(victim, sender);
-        player.playerNetServerHandler
-                .sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, chest.getInventoryName(), chest.getSizeInventory(), true));
+        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, chest.getInventoryName(), chest.getSizeInventory(), true));
         player.openContainer = new ContainerChest(player.inventory, chest);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addCraftingToCrafters(player);

@@ -10,7 +10,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table
-public class WorldData {
+public class WorldData
+{
 
     @Id
     @Column(name = "id")

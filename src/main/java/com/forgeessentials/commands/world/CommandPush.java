@@ -17,16 +17,17 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandPush extends FEcmdModuleCommands {
-	
+public class CommandPush extends FEcmdModuleCommands
+{
+
     @Override
-	public String getCommandName()
+    public String getCommandName()
     {
         return "push";
     }
 
     @Override
-	public String getCommandUsage(ICommandSender par1ICommandSender)
+    public String getCommandUsage(ICommandSender par1ICommandSender)
     {
         return "/push <X> <Y> <Z>";
     }
@@ -36,7 +37,7 @@ public class CommandPush extends FEcmdModuleCommands {
     {
         if (args.length != 3)
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
         else
         {

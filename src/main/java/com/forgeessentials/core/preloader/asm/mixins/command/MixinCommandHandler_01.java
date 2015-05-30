@@ -1,15 +1,5 @@
 package com.forgeessentials.core.preloader.asm.mixins.command;
 
-import com.forgeessentials.util.FunctionHelper;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.fe.server.CommandHandlerForge;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +8,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.fe.server.CommandHandlerForge;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
+
+import com.forgeessentials.util.ServerUtil;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @Mixin(CommandHandler.class)
@@ -43,7 +45,7 @@ public abstract class MixinCommandHandler_01
 
             while (iterator.hasNext())
             {
-                Entry entry = (Entry)iterator.next();
+                Entry entry = (Entry) iterator.next();
 
                 if (CommandBase.doesStringStartWith(s1, (String) entry.getKey()) && CommandHandlerForge.canUse(((ICommand) entry.getValue()), p_71558_1_))
                 {
@@ -57,11 +59,11 @@ public abstract class MixinCommandHandler_01
         {
             if (astring.length > 1)
             {
-                ICommand icommand = (ICommand)commandMap.get(s1);
+                ICommand icommand = (ICommand) commandMap.get(s1);
 
                 if (icommand != null)
                 {
-                    return icommand.addTabCompletionOptions(p_71558_1_, FunctionHelper.dropFirstString(astring));
+                    return icommand.addTabCompletionOptions(p_71558_1_, ServerUtil.dropFirst(astring));
                 }
             }
 
@@ -77,7 +79,7 @@ public abstract class MixinCommandHandler_01
 
         while (iterator.hasNext())
         {
-            ICommand icommand = (ICommand)iterator.next();
+            ICommand icommand = (ICommand) iterator.next();
 
             if (CommandHandlerForge.canUse(icommand, p_71557_1_))
             {

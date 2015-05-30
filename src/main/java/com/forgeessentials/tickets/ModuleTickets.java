@@ -23,12 +23,13 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 @FEModule(name = "Tickets", parentMod = ForgeEssentials.class)
-public class ModuleTickets {
+public class ModuleTickets
+{
 
     public static final String PERMBASE = "fe.tickets";
-    
+
     public static ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
-    
+
     public static List<String> categories = new ArrayList<String>();
 
     public static int currentID;
@@ -108,5 +109,5 @@ public class ModuleTickets {
             }
         }
     }
-    
+
 }

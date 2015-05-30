@@ -16,7 +16,8 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandPotion extends FEcmdModuleCommands {
+public class CommandPotion extends FEcmdModuleCommands
+{
     public static HashMap<String, Integer> names;
 
     static
@@ -50,9 +51,9 @@ public class CommandPotion extends FEcmdModuleCommands {
         return "potion";
     }
 
-	/*
+    /*
      * Expected syntax: /potion player effect duration [ampl]
-	 */
+     */
 
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
@@ -67,12 +68,12 @@ public class CommandPotion extends FEcmdModuleCommands {
         }
         else if (args.length != 3)
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
 
         if (!names.containsKey(args[1]))
             throw new TranslatedCommandException("That potion effect was not found.");
-        
+
         ID = names.get(args[1]);
         dur = parseIntWithMin(sender, args[2], 0) * 20;
 
@@ -106,7 +107,7 @@ public class CommandPotion extends FEcmdModuleCommands {
             ampl = parseIntWithMin(sender, args[3], 0);
         }
         else if (args.length != 3)
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
 
         dur = parseIntWithMin(sender, args[2], 0) * 20;
         PotionEffect eff = new PotionEffect(ID, dur, ampl);

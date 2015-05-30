@@ -2,12 +2,13 @@ package com.forgeessentials.protection.effect;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public abstract class ZoneEffect {
+public abstract class ZoneEffect
+{
 
     protected EntityPlayerMP player;
-    
+
     protected int interval;
-    
+
     protected long lastEffect;
 
     protected boolean lethal;
@@ -18,7 +19,7 @@ public abstract class ZoneEffect {
         this.interval = interval;
         this.lethal = lethal;
     }
-    
+
     public void update()
     {
         if (interval >= 0 && System.currentTimeMillis() - lastEffect >= interval)
@@ -32,7 +33,7 @@ public abstract class ZoneEffect {
             execute();
         }
     }
-    
+
     public abstract void execute();
 
     public EntityPlayerMP getPlayer()
@@ -54,5 +55,5 @@ public abstract class ZoneEffect {
     {
         return lethal;
     }
-    
+
 }

@@ -12,12 +12,13 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.ServerUtil;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandFiller extends ForgeEssentialsCommandBase {
+public class CommandFiller extends ForgeEssentialsCommandBase
+{
     // Zone name - filler
     public static HashMap<Integer, TickTaskFill> map = new HashMap<Integer, TickTaskFill>();
 
@@ -53,7 +54,7 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
     {
         /*
          * No world, Status update.
-		 */
+         */
         if (args.length == 0)
         {
             // Header
@@ -74,11 +75,11 @@ public class CommandFiller extends ForgeEssentialsCommandBase {
             return;
         }
 
-		/*
+        /*
          * Get the world
-		 */
+         */
         WorldServer world = null;
-        if (FunctionHelper.isNumeric(args[0]))
+        if (ServerUtil.isNumeric(args[0]))
         {
             world = DimensionManager.getWorld(parseInt(sender, args[0]));
         }

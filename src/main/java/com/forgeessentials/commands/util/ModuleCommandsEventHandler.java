@@ -15,9 +15,9 @@ import com.forgeessentials.commands.player.CommandAFK;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEPlayerEvent.PlayerAFKEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -46,7 +46,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         {
             if (!pi.ident.hasPlayer())
                 continue;
-            int autoTime = FunctionHelper.parseIntDefault(pi.ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
+            int autoTime = ServerUtil.parseIntDefault(pi.ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
             if (pi.getInactiveTime() / 1000 > autoTime)
                 setAfk(pi.ident);
         }
@@ -177,7 +177,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         if (!pi.checkTimeout("tempban"))
         {
             pi.ident.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You are still banned for %s",
-                    FunctionHelper.formatTimeDurationReadable(pi.getRemainingTimeout("tempban") / 1000, true)));
+                    OutputHandler.formatTimeDurationReadable(pi.getRemainingTimeout("tempban") / 1000, true)));
         }
     }
 

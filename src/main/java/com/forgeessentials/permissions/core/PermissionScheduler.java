@@ -149,7 +149,7 @@ public class PermissionScheduler extends ServerEventHandler
         // TODO: Remove this after beta7 release!!!!
         schedules.remove("sample_delay");
         DataManager.getInstance().delete(PermissionSchedule.class, "sample_delay");
-        
+
         checkSchedules(true);
     }
 

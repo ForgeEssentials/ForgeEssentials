@@ -1,17 +1,19 @@
 package com.forgeessentials.core.environment;
 
-import com.forgeessentials.util.OutputHandler;
-import com.google.common.collect.HashMultimap;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fe.server.CommandHandlerForge;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import com.forgeessentials.util.OutputHandler;
+import com.google.common.collect.HashMultimap;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class CommandSetChecker
 {

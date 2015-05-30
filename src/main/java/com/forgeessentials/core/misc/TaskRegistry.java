@@ -28,11 +28,11 @@ public class TaskRegistry extends ServerEventHandler
         public boolean editsBlocks();
 
     }
-    
+
     private static TaskRegistry instance;
 
     public static int MAX_BLOCK_TASKS = 6;
-    
+
     protected ConcurrentLinkedQueue<ITickTask> tickTasks = new ConcurrentLinkedQueue<>();
 
     private Timer timer = new Timer();

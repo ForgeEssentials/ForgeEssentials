@@ -8,17 +8,12 @@ import net.minecraft.item.Item;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public class CommandWand extends ForgeEssentialsCommandBase
 {
@@ -76,18 +71,6 @@ public class CommandWand extends ForgeEssentialsCommandBase
         // Check for permissions
         if (!checkCommandPermission(sender))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-
-        if (args.length > 0 && !rebind)
-        {
-            Pair<String, Integer> data = FunctionHelper.parseIdAndMetaFromString(args[0], false);
-            wandItem = GameData.getItemRegistry().getObject(data.getLeft());
-            wandId = wandItem.getUnlocalizedName();
-            wandDmg = data.getRight();
-            if (wandDmg == -1)
-            {
-                wandDmg = 0;
-            }
-        }
 
         // Bind wand
         info.setWandEnabled(true);

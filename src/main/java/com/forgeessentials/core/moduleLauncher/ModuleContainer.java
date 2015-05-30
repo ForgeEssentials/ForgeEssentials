@@ -23,7 +23,8 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 
 @SuppressWarnings("rawtypes")
-public class ModuleContainer implements Comparable {
+public class ModuleContainer implements Comparable
+{
 
     protected static HashSet<Class> modClasses = new HashSet<Class>();
 
@@ -137,9 +138,15 @@ public class ModuleContainer implements Comparable {
                         return;
                     }
                 }
-                catch (InstantiationException e){}
-                catch (IllegalAccessException e){}
-                catch (InvocationTargetException e){}
+                catch (InstantiationException e)
+                {
+                }
+                catch (IllegalAccessException e)
+                {
+                }
+                catch (InvocationTargetException e)
+                {
+                }
             }
         }
 

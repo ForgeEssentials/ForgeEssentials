@@ -18,7 +18,8 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandPromote extends ForgeEssentialsCommandBase {
+public class CommandPromote extends ForgeEssentialsCommandBase
+{
 
     public static final String PERM_NODE = "fe.perm.promote";
 
@@ -60,7 +61,8 @@ public class CommandPromote extends ForgeEssentialsCommandBase {
             throw new TranslatedCommandException("Group %s does not exist", groupName);
 
         if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(groupName, FEPermissions.GROUP_PROMOTION)))
-            throw new TranslatedCommandException("Group %s is not available for promotion. Allow %s on the group first.", groupName, FEPermissions.GROUP_PROMOTION);
+            throw new TranslatedCommandException("Group %s is not available for promotion. Allow %s on the group first.", groupName,
+                    FEPermissions.GROUP_PROMOTION);
 
         for (GroupEntry group : APIRegistry.perms.getServerZone().getStoredPlayerGroupEntries(ident))
             if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), FEPermissions.GROUP_PROMOTION)))

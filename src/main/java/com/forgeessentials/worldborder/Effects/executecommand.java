@@ -1,13 +1,16 @@
 package com.forgeessentials.worldborder.Effects;
 
-import com.forgeessentials.worldborder.WorldBorder;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
 
-public class executecommand implements IEffect {
+import com.forgeessentials.worldborder.WorldBorder;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+
+public class executecommand implements IEffect
+{
     private String command = "/say %p! Go back while you still can!";
 
     @Override
@@ -21,8 +24,7 @@ public class executecommand implements IEffect {
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
-            MinecraftServer.getServer().getCommandManager()
-                    .executeCommand(MinecraftServer.getServer(), command.replaceAll("%p", player.getDisplayName()));
+            MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), command.replaceAll("%p", player.getDisplayName()));
         }
     }
 }

@@ -11,7 +11,8 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.event.FMLStateEvent;
 import cpw.mods.fml.common.eventhandler.Event;
 
-public class FEModuleEvent extends Event{
+public class FEModuleEvent extends Event
+{
 
     protected FMLStateEvent event;
 

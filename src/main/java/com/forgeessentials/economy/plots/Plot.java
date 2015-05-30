@@ -26,8 +26,8 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.events.PlotEvent;
 import com.forgeessentials.util.events.PlotEvent.OwnerChanged;
@@ -196,7 +196,7 @@ public class Plot
         String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, getPlotCenter(), PERM_PRICE);
         if (priceStr == null)
             return 0;
-        double pricePerUnit = FunctionHelper.parseDoubleDefault(priceStr, 0);
+        double pricePerUnit = ServerUtil.parseDoubleDefault(priceStr, 0);
         if (pricePerUnit == 0)
             return 0;
         return (long) (getAccountedSize() * pricePerUnit);
@@ -204,7 +204,7 @@ public class Plot
 
     public long getPrice()
     {
-        return FunctionHelper.parseLongDefault(zone.getGroupPermission(GROUP_ALL, PERM_SELL_PRICE), -1);
+        return ServerUtil.parseLongDefault(zone.getGroupPermission(GROUP_ALL, PERM_SELL_PRICE), -1);
     }
 
     public void setPrice(long value)
@@ -224,7 +224,7 @@ public class Plot
 
     public int getFee()
     {
-        return Math.max(0, FunctionHelper.parseIntDefault(zone.getGroupPermission(GROUP_ALL, PERM_FEE), 0));
+        return Math.max(0, ServerUtil.parseIntDefault(zone.getGroupPermission(GROUP_ALL, PERM_FEE), 0));
     }
 
     public void setFee(int value)
@@ -237,7 +237,7 @@ public class Plot
 
     public int getFeeTimeout()
     {
-        return Math.max(0, FunctionHelper.parseIntDefault(zone.getGroupPermission(GROUP_ALL, PERM_FEE_TIMEOUT), 0));
+        return Math.max(0, ServerUtil.parseIntDefault(zone.getGroupPermission(GROUP_ALL, PERM_FEE_TIMEOUT), 0));
     }
 
     public void setFeeTimeout(int minutes)
@@ -277,7 +277,7 @@ public class Plot
         zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
         zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_USE + Zone.ALL_PERMS, false);
         zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
-        //zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
+        // zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
     }
 
     public void printInfo(ICommandSender sender)
@@ -335,7 +335,7 @@ public class Plot
         String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, area.getCenter(), PERM_PRICE);
         if (priceStr == null)
             return 0;
-        double pricePerUnit = FunctionHelper.parseDoubleDefault(priceStr, 0);
+        double pricePerUnit = ServerUtil.parseDoubleDefault(priceStr, 0);
         if (pricePerUnit == 0)
             return 0;
         return (long) (getAccountedSize(area) * pricePerUnit);

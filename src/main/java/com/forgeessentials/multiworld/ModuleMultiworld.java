@@ -21,7 +21,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
  * @author Olee
  */
 @FEModule(name = "Multiworld", parentMod = ForgeEssentials.class, canDisable = true)
-public class ModuleMultiworld extends ConfigLoaderBase {
+public class ModuleMultiworld extends ConfigLoaderBase
+{
 
     public static final String PERM_BASE = "fe.multiworld";
     public static final String PERM_CREATE = PERM_BASE + ".create";
@@ -30,13 +31,13 @@ public class ModuleMultiworld extends ConfigLoaderBase {
     public static final String PERM_TELEPORT = PERM_BASE + ".teleport";
 
     private static MultiworldManager multiworldManager = new MultiworldManager();
-    
+
     @SubscribeEvent
     public void postLoad(FEModulePostInitEvent e)
     {
         multiworldManager.loadWorldProviders();
         multiworldManager.loadWorldTypes();
-        
+
         FECommandManager.registerCommand(new CommandMultiworld());
         FECommandManager.registerCommand(new CommandMultiworldTeleport());
     }
@@ -60,7 +61,8 @@ public class ModuleMultiworld extends ConfigLoaderBase {
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        // persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile", "Choose a permission persistence backend (flatfile, sql)").getString();
+        // persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile",
+        // "Choose a permission persistence backend (flatfile, sql)").getString();
     }
 
     public static MultiworldManager getMultiworldManager()

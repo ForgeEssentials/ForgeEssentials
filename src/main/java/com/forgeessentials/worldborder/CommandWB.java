@@ -14,8 +14,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.ServerUtil;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -69,7 +69,7 @@ public class CommandWB extends ForgeEssentialsCommandBase
         {
             zone = APIRegistry.perms.getServerZone();
         }
-        else if (FunctionHelper.isNumeric(args[0]))
+        else if (ServerUtil.isNumeric(args[0]))
         {
             World world = DimensionManager.getWorld(parseInt(sender, args[0]));
             if (world == null)

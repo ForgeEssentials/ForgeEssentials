@@ -28,7 +28,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 @FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false)
-public class ModuleServerVote {
+public class ModuleServerVote
+{
 
     @ModuleDir
     public static File moduleDir;
@@ -179,8 +180,8 @@ public class ModuleServerVote {
     {
         if (!ConfigServerVote.msgAll.equals(""))
         {
-            player.playerNetServerHandler.sendPacket(new S02PacketChat(new ChatComponentText(OutputHandler.formatColors(ConfigServerVote.msgAll
-                    .replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
+            player.playerNetServerHandler.sendPacket(new S02PacketChat(new ChatComponentText(OutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll(
+                    "%service", vote.serviceName).replaceAll("%player", vote.player)))));
         }
 
         if (!ConfigServerVote.msgVoter.equals(""))

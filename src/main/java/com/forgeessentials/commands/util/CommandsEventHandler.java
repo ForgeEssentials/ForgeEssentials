@@ -14,7 +14,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.permissions.PermissionsManager;
 
 import com.forgeessentials.commands.player.CommandNoClip;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
@@ -23,8 +23,9 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public class CommandsEventHandler extends ServerEventHandler{
-    
+public class CommandsEventHandler extends ServerEventHandler
+{
+
     public static HashMultimap<EntityPlayer, PlayerInvChest> map = HashMultimap.create();
 
     public static int getWorldHour(World world)
@@ -65,9 +66,9 @@ public class CommandsEventHandler extends ServerEventHandler{
             return;
         }
 
-		/*
+        /*
          * Jump with compass
-		 */
+         */
         if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK)
         {
             if (e.entityPlayer.getCurrentEquippedItem() != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
@@ -76,15 +77,16 @@ public class CommandsEventHandler extends ServerEventHandler{
                 {
                     if (PermissionsManager.checkPermission(e.entityPlayer, "fe.commands.jump"))
                     {
-                        MovingObjectPosition mop = FunctionHelper.getPlayerLookingSpot(e.entityPlayer, 500);
-                        if (mop != null) {
-                        	int x = mop.blockX;
-                        	int y = mop.blockY;
-                        	int z = mop.blockZ;
-                			while (y < e.entityPlayer.worldObj.getHeight() + 2 && 
-                					(!e.entityPlayer.worldObj.isAirBlock(x, y, z) || !e.entityPlayer.worldObj.isAirBlock(x, y + 1, z)))
-                				y++;
-                        	((EntityPlayerMP) e.entityPlayer).setPositionAndUpdate(x + 0.5, y, z + 0.5);
+                        MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(e.entityPlayer, 500);
+                        if (mop != null)
+                        {
+                            int x = mop.blockX;
+                            int y = mop.blockY;
+                            int z = mop.blockZ;
+                            while (y < e.entityPlayer.worldObj.getHeight() + 2
+                                    && (!e.entityPlayer.worldObj.isAirBlock(x, y, z) || !e.entityPlayer.worldObj.isAirBlock(x, y + 1, z)))
+                                y++;
+                            ((EntityPlayerMP) e.entityPlayer).setPositionAndUpdate(x + 0.5, y, z + 0.5);
                         }
                     }
                 }
@@ -121,7 +123,7 @@ public class CommandsEventHandler extends ServerEventHandler{
     {
         /*
          * Time settings
-	     */
+         */
         if (!CommandDataManager.WTmap.containsKey(e.world.provider.dimensionId))
         {
             WeatherTimeData wt = new WeatherTimeData(e.world.provider.dimensionId);
@@ -132,8 +134,8 @@ public class CommandsEventHandler extends ServerEventHandler{
         {
             WeatherTimeData wt = CommandDataManager.WTmap.get(e.world.provider.dimensionId);
             /*
-	         * Weather part
-	         */
+             * Weather part
+             */
             if (wt.weatherSpecified)
             {
                 WorldInfo winfo = e.world.getWorldInfo();
@@ -151,9 +153,9 @@ public class CommandsEventHandler extends ServerEventHandler{
                 }
             }
 
-	        /*
-	         * Time part
-	         */
+            /*
+             * Time part
+             */
             if (wt.timeFreeze)
             {
                 e.world.setWorldTime(wt.freezeTime);
@@ -190,8 +192,8 @@ public class CommandsEventHandler extends ServerEventHandler{
                 inv.update();
             }
         }
-    	if(event.phase == TickEvent.Phase.END)
-    		CommandNoClip.checkClip(event.player);
+        if (event.phase == TickEvent.Phase.END)
+            CommandNoClip.checkClip(event.player);
     }
 
 }

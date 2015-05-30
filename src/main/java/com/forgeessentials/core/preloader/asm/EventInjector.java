@@ -1,12 +1,12 @@
 package com.forgeessentials.core.preloader.asm;
 
-import org.spongepowered.asm.lib.tree.ClassNode;
-import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
-import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import org.spongepowered.asm.lib.tree.ClassNode;
+import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
+import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 /**
  * Mixin config for FE hooks. Likely to be permanent until Forge gets its act together.

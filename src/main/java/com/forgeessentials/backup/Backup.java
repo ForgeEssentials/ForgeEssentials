@@ -1,10 +1,5 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.util.OutputHandler;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,7 +9,14 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class Backup implements Runnable {
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
+
+import com.forgeessentials.util.OutputHandler;
+
+public class Backup implements Runnable
+{
     private Thread thread;
     private WorldServer world;
     private boolean isWorld;
@@ -108,10 +110,9 @@ public class Backup implements Runnable {
             folder.mkdirs();
         }
 
-		/*
-         * Only needed when making a world backup.
-		 * Saves the world to disk and turns off saving.
-		 */
+        /*
+         * Only needed when making a world backup. Saves the world to disk and turns off saving.
+         */
         boolean canNotSave = true;
         if (isWorld && worldSave)
         {
@@ -130,14 +131,14 @@ public class Backup implements Runnable {
             }
         }
 
-		/*
+        /*
          * Does actual backup
-		 */
+         */
         doFolder(source);
 
-		/*
+        /*
          * Turns worls save back on if it was on.
-		 */
+         */
         if (isWorld && worldSave)
         {
             world.levelSaving = canNotSave;
@@ -163,12 +164,8 @@ public class Backup implements Runnable {
         Integer year = cal.get(Calendar.YEAR);
         Integer hour = cal.get(Calendar.HOUR_OF_DAY);
         Integer min = cal.get(Calendar.MINUTE);
-        return BackupConfig.backupName.replaceAll("%day", day.toString())
-                .replaceAll("%month", month.toString())
-                .replaceAll("%year", year.toString())
-                .replaceAll("%hour", hour.toString())
-                .replaceAll("%min", min.toString())
-                .replaceAll("%name", name.replaceAll(" ", "_"));
+        return BackupConfig.backupName.replaceAll("%day", day.toString()).replaceAll("%month", month.toString()).replaceAll("%year", year.toString())
+                .replaceAll("%hour", hour.toString()).replaceAll("%min", min.toString()).replaceAll("%name", name.replaceAll(" ", "_"));
     }
 
     /**

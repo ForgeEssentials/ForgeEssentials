@@ -8,7 +8,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.sk89q.worldedit.forge.ForgePermissionsProvider;
 
-public class PermissionsHandler implements ForgePermissionsProvider {
+public class PermissionsHandler implements ForgePermissionsProvider
+{
 
     @Override
     public boolean hasPermission(EntityPlayerMP player, String permission)

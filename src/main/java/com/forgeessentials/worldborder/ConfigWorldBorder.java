@@ -1,10 +1,11 @@
 package com.forgeessentials.worldborder;
 
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.worldborder.Effects.IEffect;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 
 /**
  * This generates the configuration structure
@@ -12,7 +13,8 @@ import net.minecraftforge.common.config.Property;
  * @author Dries007
  */
 
-public class ConfigWorldBorder extends ConfigLoaderBase {
+public class ConfigWorldBorder extends ConfigLoaderBase
+{
 
     /**
      * Does penalty part on config
@@ -26,8 +28,7 @@ public class ConfigWorldBorder extends ConfigLoaderBase {
         String penaltyBasePackage = IEffect.class.getPackage().getName();
         config.addCustomCategoryComment("Penalties", "This is what will happen to the player if he passes the world border.");
 
-        String[] stages =
-                { "Stage1" };
+        String[] stages = { "Stage1" };
         stages = config.get("Penalties", "stages", stages, "If you add an item here, a subcategory will be generated.").getStringList();
 
         for (String stage : stages)
@@ -38,8 +39,7 @@ public class ConfigWorldBorder extends ConfigLoaderBase {
                     "The distance outside the border when this gets activated. WARNING: This needs to be unique! You can specify 2 penalties in 1 stage.")
                     .getInt();
 
-            String[] effects =
-                    { "message", "knockback", "damage" };
+            String[] effects = { "message", "knockback", "damage" };
             effects = config.get(cat, "effects", effects, "Get the list of possibilities in the example file").getStringList();
 
             IEffect[] effctList = new IEffect[effects.length];

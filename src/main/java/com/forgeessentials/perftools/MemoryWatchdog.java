@@ -1,13 +1,15 @@
 package com.forgeessentials.perftools;
 
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.TimerTask;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import java.util.TimerTask;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Warns those with permission when the memory usage passes a certain percentage threshold
@@ -56,4 +58,3 @@ public class MemoryWatchdog extends TimerTask
         }
     }
 }
-

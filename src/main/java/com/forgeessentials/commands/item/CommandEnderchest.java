@@ -14,7 +14,8 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
  *
  * @author Dries007
  */
-public class CommandEnderchest extends FEcmdModuleCommands {
+public class CommandEnderchest extends FEcmdModuleCommands
+{
     @Override
     public String getCommandName()
     {
@@ -38,8 +39,7 @@ public class CommandEnderchest extends FEcmdModuleCommands {
         player.getNextWindowId();
 
         InventoryEnderChest chest = player.getInventoryEnderChest();
-        player.playerNetServerHandler
-                .sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, chest.getInventoryName(), chest.getSizeInventory(), true));
+        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, chest.getInventoryName(), chest.getSizeInventory(), true));
         player.openContainer = new ContainerChest(player.inventory, chest);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addCraftingToCrafters(player);

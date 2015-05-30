@@ -18,7 +18,7 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.remote.network.PlayerInfoResponse;
 import com.forgeessentials.remote.network.QueryPlayerRequest;
 import com.forgeessentials.remote.network.QueryPlayerResponse;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.ServerUtil;
 import com.google.gson.JsonPrimitive;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_PLAYER)
@@ -55,7 +55,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
         QueryPlayerResponse response = new QueryPlayerResponse();
         if (request.data == null || request.data.name == null)
         {
-            for (EntityPlayerMP player : FunctionHelper.getPlayerList())
+            for (EntityPlayerMP player : ServerUtil.getPlayerList())
                 response.players.add(getPlayerInfoResponse(session, UserIdent.get(player), request.data == null ? null : request.data.flags));
         }
         else

@@ -16,7 +16,8 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandRepair extends FEcmdModuleCommands {
+public class CommandRepair extends FEcmdModuleCommands
+{
     @Override
     public String getCommandName()
     {
@@ -45,7 +46,7 @@ public class CommandRepair extends FEcmdModuleCommands {
         }
         else
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
     }
 
@@ -71,7 +72,7 @@ public class CommandRepair extends FEcmdModuleCommands {
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
     }
 
     @Override
@@ -108,15 +109,15 @@ public class CommandRepair extends FEcmdModuleCommands {
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-    	if (sender instanceof EntityPlayer)
+        if (sender instanceof EntityPlayer)
         {
-    		return "/repair [player] Repairs the item you or another player is holding.";
+            return "/repair [player] Repairs the item you or another player is holding.";
         }
         else
         {
-        	return "/repair <player> Repairs the item the player is holding.";
+            return "/repair <player> Repairs the item the player is holding.";
         }
-        
+
     }
 
 }

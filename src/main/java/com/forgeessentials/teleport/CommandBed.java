@@ -21,7 +21,8 @@ import com.forgeessentials.util.PlayerInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandBed extends ForgeEssentialsCommandBase {
+public class CommandBed extends ForgeEssentialsCommandBase
+{
 
     public CommandBed()
     {

@@ -8,15 +8,16 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.data.v2.DataManager;
 
-public class WorldBorder {
-    
+public class WorldBorder
+{
+
     public String zone;
 
     public Point center;
 
     public int rad;
 
-    public byte shapeByte;    // 1 = square, 2 = round.
+    public byte shapeByte; // 1 = square, 2 = round.
 
     public boolean enabled;
 

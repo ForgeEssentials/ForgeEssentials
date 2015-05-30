@@ -1,11 +1,13 @@
 package com.forgeessentials.worldborder.Effects;
 
-import com.forgeessentials.worldborder.WorldBorder;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 
-public class smite implements IEffect {
+import com.forgeessentials.worldborder.WorldBorder;
+
+public class smite implements IEffect
+{
 
     @Override
     public void registerConfig(Configuration config, String category)

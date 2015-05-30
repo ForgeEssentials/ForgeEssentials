@@ -1,5 +1,11 @@
 package com.forgeessentials.data.v2.types;
 
+import java.lang.reflect.Type;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
 import com.forgeessentials.data.v2.DataManager.DataType;
 import com.forgeessentials.util.OutputHandler;
 import com.google.gson.JsonDeserializationContext;
@@ -8,14 +14,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
+
 import cpw.mods.fml.common.registry.GameData;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
-import java.lang.reflect.Type;
-
-public class ItemStackType implements DataType<ItemStack> {
+public class ItemStackType implements DataType<ItemStack>
+{
 
     private static final String DAMAGE = "damage";
     private static final String STACK_SIZE = "stackSize";
@@ -63,7 +66,7 @@ public class ItemStackType implements DataType<ItemStack> {
             Item item = GameData.getItemRegistry().getObject(itemID);
             if (item == null)
                 return null;
-            
+
             // Create item-stack and parse NBT data if the is any
             ItemStack stack = new ItemStack(item, stackSize, damage);
             if (obj.has("compound"))

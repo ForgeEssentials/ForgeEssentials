@@ -22,7 +22,8 @@ import com.forgeessentials.util.OutputHandler;
 /**
  * @author Olee
  */
-public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
+public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase
+{
 
     @Override
     public String getCommandName()
@@ -92,8 +93,8 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase {
             throw new TranslatedCommandException("Could not find world " + worldName);
         int dimId = world.provider.dimensionId;
 
-        //if (dimId < 0 || dimId == 1)
-        //    throw new TranslatedCommandException("You are not allowed to teleport to that dimension");
+        // if (dimId < 0 || dimId == 1)
+        // throw new TranslatedCommandException("You are not allowed to teleport to that dimension");
 
         String msg = "Teleporting to ";
         if (multiworld == null)

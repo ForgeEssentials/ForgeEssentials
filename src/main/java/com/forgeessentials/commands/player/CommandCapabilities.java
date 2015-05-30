@@ -1,13 +1,8 @@
 package com.forgeessentials.commands.player;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import java.util.ArrayList;
+import java.util.List;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,8 +12,14 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Allows you to modify a bunch of interesting stuff...
@@ -26,7 +27,8 @@ import java.util.List;
  * @author Dries007
  */
 
-public class CommandCapabilities extends FEcmdModuleCommands {
+public class CommandCapabilities extends FEcmdModuleCommands
+{
     public static ArrayList<String> names;
 
     static
@@ -50,7 +52,7 @@ public class CommandCapabilities extends FEcmdModuleCommands {
     {
         if (args.length > 3)
         {
-        	throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getCommandUsage(sender));
         }
 
         if (args.length == 0)

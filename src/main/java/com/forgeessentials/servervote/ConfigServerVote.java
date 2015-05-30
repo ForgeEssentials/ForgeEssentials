@@ -1,13 +1,5 @@
 package com.forgeessentials.servervote;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.OutputHandler;
-import cpw.mods.fml.common.registry.GameData;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
-
-import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,9 +13,20 @@ import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 
-public class ConfigServerVote extends ConfigLoaderBase {
-    private static final String category = "ServerVote";
+import javax.xml.bind.DatatypeConverter;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.Configuration;
+
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.util.OutputHandler;
+
+import cpw.mods.fml.common.registry.GameData;
+
+public class ConfigServerVote extends ConfigLoaderBase
+{
+    private static final String category = "ServerVote";
 
     public static boolean allowOfflineVotes;
     public static String msgAll = "";
@@ -57,7 +60,7 @@ public class ConfigServerVote extends ConfigLoaderBase {
 
         flatfileLog = config.get(category, "flatFileLog", true, "Log the votes in \"votes.log\"").getBoolean(true);
 
-        String[] tempArray = config.get(category, "rewards", new String[] { }, "Format is like this: [amount]x<id>[:meta]").getStringList();
+        String[] tempArray = config.get(category, "rewards", new String[] {}, "Format is like this: [amount]x<id>[:meta]").getStringList();
 
         freeStuff.clear();
         for (String temp : tempArray)

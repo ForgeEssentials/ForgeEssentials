@@ -12,8 +12,9 @@ import net.minecraft.world.storage.ISaveHandler;
  * 
  * @author Olee
  */
-public class WorldServerMultiworld extends WorldServer {
-    
+public class WorldServerMultiworld extends WorldServer
+{
+
     private Multiworld world;
     private MultiworldTeleporter worldTeleporter;
 
@@ -44,5 +45,5 @@ public class WorldServerMultiworld extends WorldServer {
     {
         return world;
     }
-    
+
 }

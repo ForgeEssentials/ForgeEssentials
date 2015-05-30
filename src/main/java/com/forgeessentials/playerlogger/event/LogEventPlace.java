@@ -35,5 +35,5 @@ public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.PlaceEvent>
         action.z = event.z;
         em.persist(action);
     }
-    
+
 }

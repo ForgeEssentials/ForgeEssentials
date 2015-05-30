@@ -1,14 +1,15 @@
 package com.forgeessentials.teleport;
 
-import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.FunctionHelper;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.PlayerUtil;
 
 public class CommandJump extends ForgeEssentialsCommandBase
 {
@@ -21,11 +22,11 @@ public class CommandJump extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        MovingObjectPosition mo = FunctionHelper.getPlayerLookingSpot(sender, 500);
+        MovingObjectPosition mo = PlayerUtil.getPlayerLookingSpot(sender, 500);
         if (mo == null)
             throw new TranslatedCommandException("The spot you are looking at is too far away to teleport.");
-        TeleportHelper.teleport(sender,
-                new WarpPoint(sender.getEntityWorld().provider.dimensionId, mo.blockX, mo.blockY + 1, mo.blockZ, sender.rotationPitch, sender.rotationYaw));
+        TeleportHelper.teleport(sender, new WarpPoint(sender.getEntityWorld().provider.dimensionId, mo.blockX, mo.blockY + 1, mo.blockZ, sender.rotationPitch,
+                sender.rotationYaw));
     }
 
     @Override

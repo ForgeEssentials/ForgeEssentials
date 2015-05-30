@@ -23,8 +23,8 @@ import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.ServerUtil;
 import com.google.common.collect.ImmutableMap;
 
 public final class ScriptMethods
@@ -273,9 +273,9 @@ public final class ScriptMethods
             }
             else if (args.length == 4)
             {
-                Integer x = FunctionHelper.tryParseInt(args[1]);
-                Integer y = FunctionHelper.tryParseInt(args[2]);
-                Integer z = FunctionHelper.tryParseInt(args[3]);
+                Integer x = ServerUtil.tryParseInt(args[1]);
+                Integer y = ServerUtil.tryParseInt(args[2]);
+                Integer z = ServerUtil.tryParseInt(args[3]);
                 if (x == null || y == null || z == null)
                     return false;
                 EntityPlayerMP p = player.getPlayerMP();
@@ -283,10 +283,10 @@ public final class ScriptMethods
             }
             else if (args.length == 5)
             {
-                Integer x = FunctionHelper.tryParseInt(args[1]);
-                Integer y = FunctionHelper.tryParseInt(args[2]);
-                Integer z = FunctionHelper.tryParseInt(args[3]);
-                Integer dim = FunctionHelper.tryParseInt(args[4]);
+                Integer x = ServerUtil.tryParseInt(args[1]);
+                Integer y = ServerUtil.tryParseInt(args[2]);
+                Integer z = ServerUtil.tryParseInt(args[3]);
+                Integer dim = ServerUtil.tryParseInt(args[4]);
                 if (x == null || y == null || z == null || dim == 0 || !DimensionManager.isDimensionRegistered(dim))
                     return false;
                 EntityPlayerMP p = player.getPlayerMP();

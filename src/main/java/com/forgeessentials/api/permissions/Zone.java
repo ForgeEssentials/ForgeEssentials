@@ -403,8 +403,7 @@ public abstract class Zone
 
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
-        if (ForgeEssentials.BUS
-                .post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+        if (ForgeEssentials.BUS.post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
             return false;
         Set<String> groups = getPlayerGroups(ident);
         groups.add(group);
@@ -414,8 +413,7 @@ public abstract class Zone
 
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
-        if (ForgeEssentials.BUS.post(
-                new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+        if (ForgeEssentials.BUS.post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
             return false;
         Set<String> groups = getPlayerGroups(ident);
         groups.remove(group);
@@ -567,8 +565,7 @@ public abstract class Zone
         if (group != null)
         {
             PermissionList map = getGroupPermissions(group);
-            if (map != null
-                    && !ForgeEssentials.BUS.post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
+            if (map != null && !ForgeEssentials.BUS.post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
             {
                 map.remove(permissionNode);
                 return true;

@@ -3,7 +3,8 @@ package com.forgeessentials.commands.util;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
 
-public class PlayerInvChest extends InventoryBasic {
+public class PlayerInvChest extends InventoryBasic
+{
     public EntityPlayerMP vieuwer;
     public EntityPlayerMP owner;
     public boolean allowUpdate;

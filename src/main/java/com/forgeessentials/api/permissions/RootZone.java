@@ -10,7 +10,8 @@ import com.forgeessentials.commons.selections.WorldPoint;
  * 
  * @author Olee
  */
-public class RootZone extends Zone {
+public class RootZone extends Zone
+{
 
     protected ServerZone serverZone;
 
@@ -87,6 +88,5 @@ public class RootZone extends Zone {
     {
         permissionHelper.setDirty(true);
     }
-    
-    
+
 }

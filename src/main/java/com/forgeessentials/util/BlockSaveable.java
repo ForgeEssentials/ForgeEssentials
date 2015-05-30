@@ -7,8 +7,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockSaveable {
-	
+public class BlockSaveable
+{
+
     private int x;
     private int y;
     private int z;

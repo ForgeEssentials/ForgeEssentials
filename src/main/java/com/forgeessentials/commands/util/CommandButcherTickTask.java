@@ -32,11 +32,13 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 
-public class CommandButcherTickTask implements TickTask {
+public class CommandButcherTickTask implements TickTask
+{
 
-    public static enum ButcherMobType {
+    public static enum ButcherMobType
+    {
         ALL, HOSTILE, PASSIVE, VILLAGER, TAMABLE, TAMED, GOLEM, BOSS;
-        
+
         public static List<String> getNames()
         {
             List<String> result = new ArrayList<>();

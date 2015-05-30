@@ -12,7 +12,8 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.google.gson.JsonElement;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_PERMISSION_REGISTERED)
-public class QueryRegisteredPermissionsHandler extends GenericRemoteHandler<JsonElement> {
+public class QueryRegisteredPermissionsHandler extends GenericRemoteHandler<JsonElement>
+{
 
     public QueryRegisteredPermissionsHandler()
     {

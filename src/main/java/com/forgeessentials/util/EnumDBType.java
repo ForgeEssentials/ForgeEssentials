@@ -1,18 +1,21 @@
 package com.forgeessentials.util;
 
-import com.google.common.base.Throwables;
-
 import java.util.IllegalFormatException;
 
-public enum EnumDBType {
+import com.google.common.base.Throwables;
+
+public enum EnumDBType
+{
     H2_FILE(false, "org.h2.Driver", "jdbc:h2:file:%s;IGNORECASE=TRUE;FILE_LOCK=NO;MODE=MYSQL"), // file
     MySQL(true, "com.mysql.jdbc.Driver", "jdbc:mysql://%s:%d/%s"); // host, port, database
 
     /**
-     * @param isRemote      if the JDBC connection method should use the one with username
-     *                      and password or not.
-     * @param driverName    the qualified name of the JDBC connector class for this DB
-     * @param connectString a formattable connection string. see existing ones.
+     * @param isRemote
+     *            if the JDBC connection method should use the one with username and password or not.
+     * @param driverName
+     *            the qualified name of the JDBC connector class for this DB
+     * @param connectString
+     *            a formattable connection string. see existing ones.
      */
     EnumDBType(boolean isRemote, String driverName, String connectString)
     {
@@ -22,8 +25,7 @@ public enum EnumDBType {
     }
 
     /**
-     * loads the class used to load this database. Catches its own error and
-     * outputs it.
+     * loads the class used to load this database. Catches its own error and outputs it.
      */
     public void loadClass()
     {
@@ -39,7 +41,8 @@ public enum EnumDBType {
     }
 
     /**
-     * @param data Object array used in formatting
+     * @param data
+     *            Object array used in formatting
      * @return fully finished connection string
      */
     public String getConnectionString(Object... data) throws IllegalFormatException

@@ -9,7 +9,8 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.ServerZone;
 
-public abstract class ZonePersistenceProvider {
+public abstract class ZonePersistenceProvider
+{
 
     public abstract void save(ServerZone serverZone);
 

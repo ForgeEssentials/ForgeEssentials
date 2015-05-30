@@ -8,7 +8,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.commands.util.ContainerCheatyWorkbench;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 
-public class CommandCraft extends FEcmdModuleCommands {
+public class CommandCraft extends FEcmdModuleCommands
+{
     @Override
     public String getCommandName()
     {

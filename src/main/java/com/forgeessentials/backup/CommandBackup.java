@@ -1,14 +1,16 @@
 package com.forgeessentials.backup;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import java.io.File;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import java.io.File;
-import java.util.List;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
-public class CommandBackup extends ForgeEssentialsCommandBase {
+public class CommandBackup extends ForgeEssentialsCommandBase
+{
     static String source;
     static String output;
     static List<String> fileList;

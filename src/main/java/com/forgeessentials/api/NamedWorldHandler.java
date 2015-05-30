@@ -3,7 +3,8 @@ package com.forgeessentials.api;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-public interface NamedWorldHandler {
+public interface NamedWorldHandler
+{
 
     static final String WORLD_NAME_END = "end";
     static final String WORLD_NAME_NETHER = "nether";
@@ -13,7 +14,8 @@ public interface NamedWorldHandler {
 
     String getWorldName(int dimId);
 
-    public static class DefaultNamedWorldHandler implements NamedWorldHandler {
+    public static class DefaultNamedWorldHandler implements NamedWorldHandler
+    {
 
         @Override
         public WorldServer getWorld(String name)

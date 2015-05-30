@@ -46,7 +46,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
             error(String.format("Command \"%s\" not found", commandName));
 
         RemoteCommandSender sender = new RemoteCommandSender(session);
-        
+
         boolean canUse;
         if (command instanceof ForgeEssentialsCommandBase)
             canUse = ((ForgeEssentialsCommandBase) command).checkCommandPermission(sender);
@@ -54,7 +54,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
             canUse = CommandHandlerForge.canUse(command, sender);
         if (!canUse)
             error(RemoteHandler.MSG_NO_PERMISSION);
-        
+
         try
         {
             command.processCommand(sender, args);

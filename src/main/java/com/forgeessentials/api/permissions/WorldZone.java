@@ -17,115 +17,116 @@ import com.google.gson.annotations.Expose;
  * 
  * @author Olee
  */
-public class WorldZone extends Zone {
+public class WorldZone extends Zone
+{
 
     @Expose(serialize = false)
-	private ServerZone serverZone;
+    private ServerZone serverZone;
 
-	private int dimensionID;
+    private int dimensionID;
 
-	private List<AreaZone> areaZones = new ArrayList<AreaZone>();
+    private List<AreaZone> areaZones = new ArrayList<AreaZone>();
 
-	public WorldZone(int id)
-	{
-		super(id);
-	}
+    public WorldZone(int id)
+    {
+        super(id);
+    }
 
-	public WorldZone(ServerZone serverZone, int dimensionID, int id)
-	{
-		this(id);
-		this.dimensionID = dimensionID;
-		this.serverZone = serverZone;
-		this.serverZone.addWorldZone(this);
-	}
+    public WorldZone(ServerZone serverZone, int dimensionID, int id)
+    {
+        this(id);
+        this.dimensionID = dimensionID;
+        this.serverZone = serverZone;
+        this.serverZone.addWorldZone(this);
+    }
 
-	public WorldZone(ServerZone serverZone, int dimensionID)
-	{
-		this(serverZone, dimensionID, serverZone.nextZoneID());
-	}
+    public WorldZone(ServerZone serverZone, int dimensionID)
+    {
+        this(serverZone, dimensionID, serverZone.nextZoneID());
+    }
 
-	@Override
-	public boolean isPlayerInZone(EntityPlayer player)
-	{
-		return player.dimension == dimensionID;
-	}
+    @Override
+    public boolean isPlayerInZone(EntityPlayer player)
+    {
+        return player.dimension == dimensionID;
+    }
 
-	@Override
-	public boolean isInZone(WorldPoint point)
-	{
-		return point.getDimension() == dimensionID;
-	}
+    @Override
+    public boolean isInZone(WorldPoint point)
+    {
+        return point.getDimension() == dimensionID;
+    }
 
-	@Override
-	public boolean isInZone(WorldArea area)
-	{
-		return area.getDimension() == dimensionID;
-	}
+    @Override
+    public boolean isInZone(WorldArea area)
+    {
+        return area.getDimension() == dimensionID;
+    }
 
-	@Override
-	public boolean isPartOfZone(WorldArea area)
-	{
-		return area.getDimension() == dimensionID;
-	}
+    @Override
+    public boolean isPartOfZone(WorldArea area)
+    {
+        return area.getDimension() == dimensionID;
+    }
 
-	@Override
-	public String getName()
-	{
-		return "WORLD_" + dimensionID;
-	}
+    @Override
+    public String getName()
+    {
+        return "WORLD_" + dimensionID;
+    }
 
-	@Override
-	public Zone getParent()
-	{
-		return serverZone;
-	}
+    @Override
+    public Zone getParent()
+    {
+        return serverZone;
+    }
 
-	@Override
-	public ServerZone getServerZone()
-	{
-		return serverZone;
-	}
+    @Override
+    public ServerZone getServerZone()
+    {
+        return serverZone;
+    }
 
-	public int getDimensionID()
-	{
-		return dimensionID;
-	}
+    public int getDimensionID()
+    {
+        return dimensionID;
+    }
 
-	public AreaZone getAreaZone(String areaName)
-	{
-		for (AreaZone areaZone : areaZones)
-		{
-			if (areaZone.getShortName().equals(areaName))
-			{
-				return areaZone;
-			}
-		}
-		return null;
-	}
+    public AreaZone getAreaZone(String areaName)
+    {
+        for (AreaZone areaZone : areaZones)
+        {
+            if (areaZone.getShortName().equals(areaName))
+            {
+                return areaZone;
+            }
+        }
+        return null;
+    }
 
-	public boolean removeAreaZone(AreaZone zone)
-	{
+    public boolean removeAreaZone(AreaZone zone)
+    {
         if (ForgeEssentials.BUS.post(new PermissionEvent.Zone.Delete(getServerZone(), zone)))
             return false;
-		return serverZone.removeZone(zone) | areaZones.remove(zone);
-	}
+        return serverZone.removeZone(zone) | areaZones.remove(zone);
+    }
 
-	public Collection<AreaZone> getAreaZones()
-	{
-		return areaZones;
-	}
+    public Collection<AreaZone> getAreaZones()
+    {
+        return areaZones;
+    }
 
-	public void sortAreaZones()
-	{
-		Collections.sort(areaZones);
-	}
+    public void sortAreaZones()
+    {
+        Collections.sort(areaZones);
+    }
 
-	void addAreaZone(AreaZone areaZone)
-	{
-		areaZones.add(areaZone);
-		getServerZone().addZone(areaZone);
-		sortAreaZones();
-		setDirty();
-	}
-    
+    void addAreaZone(AreaZone areaZone)
+    {
+        areaZones.add(areaZone);
+        getServerZone().addZone(areaZone);
+        sortAreaZones();
+        setDirty();
+    }
+
 }

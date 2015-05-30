@@ -2,7 +2,8 @@ package com.forgeessentials.core.moduleLauncher.config;
 
 import net.minecraftforge.common.config.Configuration;
 
-public interface ConfigLoader {
+public interface ConfigLoader
+{
 
     void load(Configuration config, boolean isReload);
 
@@ -10,20 +11,21 @@ public interface ConfigLoader {
 
     boolean supportsCanonicalConfig();
 
-    public abstract static class ConfigLoaderBase implements ConfigLoader {
-    
+    public abstract static class ConfigLoaderBase implements ConfigLoader
+    {
+
         @Override
         public void save(Configuration config)
         {
             /* do nothing */
         }
-    
+
         @Override
         public boolean supportsCanonicalConfig()
         {
             return true;
         }
-    
+
     }
-    
+
 }
