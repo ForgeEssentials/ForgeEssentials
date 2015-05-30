@@ -13,6 +13,7 @@ import java.util.Set;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
@@ -20,6 +21,7 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -49,6 +51,8 @@ import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 
 public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoader
 {
@@ -82,6 +86,8 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     private boolean twitchMode;
 
     private boolean showEvents;
+
+    private boolean showGameEvents;
 
     private boolean showMessages;
 
@@ -218,6 +224,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         nickPassword = config.get(CATEGORY, "nickPassword", "", "NickServ password").getString();
         twitchMode = config.get(CATEGORY, "twitchMode", false, "If set to true, sets connection to twitch mode").getBoolean();
         showEvents = config.get(CATEGORY, "showEvents", true, "Show IRC events ingame (e.g., join, leave, kick, etc.)").getBoolean();
+        showGameEvents = config.get(CATEGORY, "showGameEvents", true, "Show game events in IRC (e.g., join, leave, death, etc.)").getBoolean();
         showMessages = config.get(CATEGORY, "showMessages", true, "Show chat messages from IRC ingame").getBoolean();
         sendMessages = config.get(CATEGORY, "sendMessages", false, "If enabled, ingame messages will be sent to IRC as well").getBoolean();
         ircHeader = config.get(CATEGORY, "ircHeader", "[\u00a7cIRC\u00a7r]<%s> ", "Header for messages sent from IRC. Must contain one \"%s\"").getString();
@@ -380,6 +387,31 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (isConnected() && sendMessages)
             sendMessage(FunctionHelper.stripFormatting(event.component.getUnformattedText()));
     }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerLoginEvent(PlayerLoggedInEvent event)
+    {
+        if (showGameEvents)
+            sendMessage(Translator.format("%s joined the game", event.player.getCommandSenderName()));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerLoginEvent(PlayerLoggedOutEvent event)
+    {
+        if (showGameEvents)
+            sendMessage(Translator.format("%s left the game", event.player.getCommandSenderName()));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerDeathEvent(LivingDeathEvent event)
+    {
+        if (!(event.entityLiving instanceof EntityPlayer))
+            return;
+        if (showGameEvents)
+            sendMessage(Translator.format("%s died", event.entityLiving.getCommandSenderName()));
+    }
+
+    /* ------------------------------------------------------------ */
 
     @Override
     public void onPrivateMessage(PrivateMessageEvent<PircBotX> event)
