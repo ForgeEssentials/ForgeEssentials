@@ -1,11 +1,11 @@
 package com.forgeessentials.api.permissions;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.google.gson.annotations.Expose;
 
@@ -51,7 +51,7 @@ public class AreaZone extends Zone implements Comparable<AreaZone> {
         this.area = area;
         
         // Check if the creation of the zone should be cancelled
-        EventCancelledException.checkedPost(new PermissionEvent.Zone.Create(worldZone.getServerZone(), this), APIRegistry.getFEEventBus());
+        EventCancelledException.checkedPost(new PermissionEvent.Zone.Create(worldZone.getServerZone(), this), ForgeEssentials.BUS);
         
         // If not cancelled, inc the zoneID pointer and add the zone to the world
         worldZone.getServerZone().nextZoneID();

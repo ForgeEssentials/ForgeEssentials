@@ -30,10 +30,9 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
 public class CommandRules extends FEcmdModuleCommands implements ConfigurableCommand
@@ -200,7 +199,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
 
             for (int i = 0; i < rules.size(); i++)
             {
-                map.put(EnumChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", EnumChatFormatting.RESET + FunctionHelper.formatColors(rules.get(i)));
+                map.put(EnumChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", EnumChatFormatting.RESET + OutputHandler.formatColors(rules.get(i)));
             }
 
             SortedSet<String> keys = new TreeSet<String>(map.keySet());
@@ -258,7 +257,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = FunctionHelper.formatColors(newRule);
+            newRule = OutputHandler.formatColors(newRule);
             rules.add(newRule);
             OutputHandler.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
         }
@@ -290,7 +289,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = FunctionHelper.formatColors(newRule);
+            newRule = OutputHandler.formatColors(newRule);
             rules.set(index - 1, newRule);
             OutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
@@ -342,7 +341,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = FunctionHelper.formatColors(newRule);
+            newRule = OutputHandler.formatColors(newRule);
             rules.add(newRule);
             OutputHandler.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
         }
@@ -374,7 +373,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = FunctionHelper.formatColors(newRule);
+            newRule = OutputHandler.formatColors(newRule);
             rules.set(index - 1, newRule);
             OutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }

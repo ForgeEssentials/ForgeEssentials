@@ -3,8 +3,6 @@ package com.forgeessentials.core;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
-import com.forgeessentials.compat.HelpFixer;
-
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -15,6 +13,7 @@ import com.forgeessentials.commons.VersionUtils;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.compat.CompatReiMinimap;
+import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.environment.CommandSetChecker;
@@ -61,6 +60,7 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.eventhandler.EventBus;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -82,11 +82,17 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static final String CONFIG_CAT_MISC = "Core.Misc";
     public static final String CONFIG_CAT_MODULES = "Core.Modules";
 
+    public static final EventBus BUS = APIRegistry.getFEEventBus();
+
     public static SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
     public static SimpleDateFormat FORMAT_DATE_TIME = new SimpleDateFormat("dd.MM HH:mm");
 
     public static SimpleDateFormat FORMAT_DATE_TIME_SECONDS = new SimpleDateFormat("dd.MM HH:mm:ss");
+
+    public static SimpleDateFormat FORMAT_TIME = new SimpleDateFormat("HH:mm");
+
+    public static SimpleDateFormat FORMAT_TIME_SECONDS = new SimpleDateFormat("HH:mm:ss");
 
     @Instance(value = "ForgeEssentials")
     public static ForgeEssentials instance;
@@ -196,7 +202,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         teleportHelper = new TeleportHelper();
         tickTaskHandler = new TickTaskHandler();
         questioner = new Questioner();
-        FunctionHelper.FE_INTERNAL_EVENTBUS.register(new CompatReiMinimap());
+        ForgeEssentials.BUS.register(new CompatReiMinimap());
 
         // Register commands
         FECommandManager.registerCommand(new CommandFEInfo());
@@ -211,13 +217,13 @@ public class ForgeEssentials extends ConfigLoaderBase
             FECommandManager.registerCommand(new CommandExpandY());
         }
 
-        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleInitEvent(e));
+        ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleInitEvent(e));
     }
 
     @EventHandler
     public void postLoad(FMLPostInitializationEvent e)
     {
-        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModulePostInitEvent(e));
+        ForgeEssentials.BUS.post(new FEModuleEvent.FEModulePostInitEvent(e));
         commandManager = new FECommandManager();
     }
 
@@ -227,7 +233,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
         DataManager.setInstance(new DataManager(new File(FunctionHelper.getWorldPath(), "FEData/json")));
-        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerPreInitEvent(e));
+        ForgeEssentials.BUS.post(new FEModuleServerPreInitEvent(e));
     }
 
     @EventHandler
@@ -237,7 +243,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         BlockModListFile.dumpFMLRegistries();
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
 
-        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerInitEvent(e));
+        ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleServerInitEvent(e));
 
         FunctionHelper.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
         FECommandManager.registerCommands();
@@ -264,20 +270,20 @@ public class ForgeEssentials extends ConfigLoaderBase
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         CommandSetChecker.remove();
 
-        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
+        ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
     }
 
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent e)
     {
         PlayerInfo.discardAll();
-        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleEvent.FEModuleServerStopEvent(e));
+        ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleServerStopEvent(e));
     }
 
     @EventHandler
     public void serverStopped(FMLServerStoppedEvent e)
     {
-        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModuleServerStoppedEvent(e));
+        ForgeEssentials.BUS.post(new FEModuleServerStoppedEvent(e));
         Translator.save();
         FECommandManager.clearRegisteredCommands();
     }
@@ -314,8 +320,11 @@ public class ForgeEssentials extends ConfigLoaderBase
         debugMode = config.get(CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean(false);
 
         FORMAT_DATE = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date", "yyyy-MM-dd", "Date-only format").getString());
-        FORMAT_DATE_TIME = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date_time", "dd.MM HH:mm", "Date-only format").getString());
-        FORMAT_DATE_TIME_SECONDS = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date_time_seconds", "dd.MM HH:mm:ss", "Date-only format").getString());
+        FORMAT_DATE_TIME = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date_time", "dd.MM HH:mm", "Date and time format").getString());
+        FORMAT_DATE_TIME_SECONDS = new SimpleDateFormat(config.get(CONFIG_CAT, "format_date_time_seconds", "dd.MM HH:mm:ss",
+                "Date and time format with seconds").getString());
+        FORMAT_TIME = new SimpleDateFormat(config.get(CONFIG_CAT, "format_time", "HH:mm", "Time-only format").getString());
+        FORMAT_TIME_SECONDS = new SimpleDateFormat(config.get(CONFIG_CAT, "format_time", "HH:mm:ss", "Time-only format with seconds").getString());
 
         // ----------------------------------------
         // Other global configurations options

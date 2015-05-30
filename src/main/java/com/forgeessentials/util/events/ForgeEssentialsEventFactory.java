@@ -6,8 +6,9 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.misc.TeleportHelper;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -35,7 +36,7 @@ public class ForgeEssentialsEventFactory extends ServerEventHandler {
                 // Check, if the position was not changed by one of the event handlers
                 if (current.equals(new WarpPoint(e.player)))
                     // Move the player to his last position
-                    FunctionHelper.teleportPlayer(player, before);
+                    TeleportHelper.doTeleport(player, before);
             }
         }
         lastPlayerPosition.put(player.getPersistentID(), new WarpPoint(e.player));

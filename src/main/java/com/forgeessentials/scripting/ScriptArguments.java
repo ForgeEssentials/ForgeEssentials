@@ -545,7 +545,7 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            return FunctionHelper.getCurrentTimeString();
+            return ForgeEssentials.FORMAT_TIME.format(new Date());
         }
 
         @Override

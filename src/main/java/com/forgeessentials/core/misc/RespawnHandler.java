@@ -13,7 +13,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.PlayerInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -89,7 +88,7 @@ public class RespawnHandler
         {
             WarpPoint p = getPlayerSpawn(player, null, true);
             if (p != null)
-                FunctionHelper.teleportPlayer(player, p);
+                TeleportHelper.doTeleport(player, p);
         }
     }
 
@@ -102,7 +101,7 @@ public class RespawnHandler
 
         WarpPoint p = getPlayerSpawn(e.player, lastDeathLocation, true);
         if (p != null)
-            FunctionHelper.teleportPlayer((EntityPlayerMP) e.player, p);
+            TeleportHelper.doTeleport((EntityPlayerMP) e.player, p);
     }
 
 }

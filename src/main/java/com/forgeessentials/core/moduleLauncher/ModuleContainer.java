@@ -15,7 +15,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.core.moduleLauncher.FEModule.Reload;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 
@@ -212,7 +211,7 @@ public class ModuleContainer implements Comparable {
             return;
         }
 
-        FunctionHelper.FE_INTERNAL_EVENTBUS.register(module);
+        ForgeEssentials.BUS.register(module);
 
         // now for the fields...
         try

@@ -1,21 +1,22 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.OutputHandler;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import net.minecraft.command.ICommandSender;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
+import net.minecraft.command.ICommandSender;
+
+import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class ModuleLauncher {
     public ModuleLauncher()
@@ -122,7 +123,7 @@ public class ModuleLauncher {
             }
         }
         
-        FunctionHelper.FE_INTERNAL_EVENTBUS.post(new FEModulePreInitEvent(e));
+        ForgeEssentials.BUS.post(new FEModulePreInitEvent(e));
 
         ForgeEssentials.getConfigManager().load(false);
     }
@@ -137,7 +138,7 @@ public class ModuleLauncher {
     public void unregister(String moduleName)
     {
         ModuleContainer container = containerMap.get(moduleName);
-        FunctionHelper.FE_INTERNAL_EVENTBUS.unregister(container.module);
+        ForgeEssentials.BUS.unregister(container.module);
         containerMap.remove(moduleName);
     }
 

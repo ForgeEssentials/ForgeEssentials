@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,52 +27,34 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.server.CommandMessage;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.GroupEntry;
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.Translator;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventBus;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public final class FunctionHelper
 {
-
-    public static final char FORMAT_CHARACTER = '\u00a7';
-
-    public static final EventBus FE_INTERNAL_EVENTBUS = APIRegistry.getFEEventBus();
 
     /**
      * Try to parse integer or return defaultValue on failure
@@ -331,7 +312,18 @@ public final class FunctionHelper
         return placeInWorld(world, x, y, z, 2);
     }
 
-    // ------------------------------------------------------------
+    public static WorldPoint placeInWorld(WorldPoint p)
+    {
+        return p.setY(placeInWorld(p.getWorld(), p.getX(), p.getY(), p.getZ(), 2));
+    }
+
+    public static void placeInWorld(EntityPlayer player)
+    {
+        WorldPoint p = placeInWorld(new WorldPoint(player));
+        player.setPositionAndUpdate(p.getX() + 0.5, p.getX(), p.getX() + 0.5);
+    }
+
+    /* ------------------------------------------------------------ */
 
     /**
      * Apply potion effects to the player
@@ -373,7 +365,7 @@ public final class FunctionHelper
         }
     }
 
-    // ------------------------------------------------------------
+    /* ------------------------------------------------------------ */
 
     /**
      * Get player's looking-at spot.
@@ -517,27 +509,6 @@ public final class FunctionHelper
             }
         }
         return new ImmutablePair<String, Integer>(ID, meta);
-    }
-
-    public static final Pattern FORMAT_PATTERN;
-
-    static
-    {
-        String codes = "";
-        for (EnumChatFormatting code : EnumChatFormatting.values())
-            codes += code.getFormattingCode();
-        FORMAT_PATTERN = Pattern.compile(FORMAT_CHARACTER + "[" + codes + "]");
-    }
-
-    /**
-     * Strips any minecraft formatting codes
-     * 
-     * @param message
-     * @return
-     */
-    public static String stripFormatting(String message)
-    {
-        return FORMAT_PATTERN.matcher(message).replaceAll("");
     }
 
     // ------------------------------------------------------------
@@ -736,15 +707,6 @@ public final class FunctionHelper
     }
 
     /**
-     * @return the current Time in HH:mm format. 24hr clock.
-     */
-    public static String getCurrentTimeString()
-    {
-        Calendar c = Calendar.getInstance();
-        return String.format("%02d:%02d", c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
-    }
-
-    /**
      * @param text
      * @param search
      * @param replacement
@@ -754,181 +716,14 @@ public final class FunctionHelper
     {
         Pattern p = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(text);
-
         StringBuffer sb = new StringBuffer();
-
         while (m.find())
         {
             m.appendReplacement(sb, Matcher.quoteReplacement(replacement));
         }
 
         m.appendTail(sb);
-
         return sb.toString();
-    }
-
-    /**
-     * Uses & as identifier
-     *
-     * @param message
-     * @return
-     */
-    public static String formatColors(String message)
-    {
-        char[] b = message.toCharArray();
-        for (int i = 0; i < b.length - 1; i++)
-        {
-            if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1)
-            {
-                b[i] = FORMAT_CHARACTER;
-                b[i + 1] = Character.toLowerCase(b[i + 1]);
-            }
-        }
-        return new String(b);
-    }
-
-    /**
-     * Apply a set of {@link EnumChatFormatting} to a {@link ChatStyle}
-     * 
-     * @param chatStyle
-     * @param formattings
-     */
-    public static void applyFormatting(ChatStyle chatStyle, Collection<EnumChatFormatting> formattings)
-    {
-        for (EnumChatFormatting format : formattings)
-            applyFormatting(chatStyle, format);
-    }
-
-    /**
-     * Apply an {@link EnumChatFormatting} to a {@link ChatStyle}
-     * 
-     * @param chatStyle
-     * @param formatting
-     */
-    public static void applyFormatting(ChatStyle chatStyle, EnumChatFormatting formatting)
-    {
-        switch (formatting)
-        {
-        case BOLD:
-            chatStyle.setBold(true);
-            break;
-        case ITALIC:
-            chatStyle.setItalic(true);
-            break;
-        case OBFUSCATED:
-            chatStyle.setObfuscated(true);
-            break;
-        case STRIKETHROUGH:
-            chatStyle.setStrikethrough(true);
-            break;
-        case UNDERLINE:
-            chatStyle.setUnderlined(true);
-            break;
-        case RESET:
-            break;
-        default:
-            chatStyle.setColor(formatting);
-            break;
-        }
-    }
-
-    public static Collection<EnumChatFormatting> enumChatFormattings(String textFormats)
-    {
-        List<EnumChatFormatting> result = new ArrayList<EnumChatFormatting>();
-        for (int i = 0; i < textFormats.length(); i++)
-        {
-            char formatChar = textFormats.charAt(i);
-            for (EnumChatFormatting format : EnumChatFormatting.values())
-                if (format.getFormattingCode() == formatChar)
-                {
-                    result.add(format);
-                    break;
-                }
-        }
-        return result;
-    }
-
-    /**
-     * Uses the % char as identifier
-     *
-     * @param message
-     * @return
-     */
-    public static String format(String message)
-    {
-        message = replaceAllIgnoreCase(message, "%smile", "\u263A");
-        message = replaceAllIgnoreCase(message, "%copyrighted", "\u00A9");
-        message = replaceAllIgnoreCase(message, "%registered", "\u00AE");
-        message = replaceAllIgnoreCase(message, "%diamond", "\u2662");
-        message = replaceAllIgnoreCase(message, "%spade", "\u2664");
-        message = replaceAllIgnoreCase(message, "%club", "\u2667");
-        message = replaceAllIgnoreCase(message, "%heart", "\u2661");
-        message = replaceAllIgnoreCase(message, "%female", "\u2640");
-        message = replaceAllIgnoreCase(message, "%male", "\u2642");
-
-        // replace colors
-        message = replaceAllIgnoreCase(message, "%red", EnumChatFormatting.RED.toString());
-        message = replaceAllIgnoreCase(message, "%yellow", EnumChatFormatting.YELLOW.toString());
-        message = replaceAllIgnoreCase(message, "%black", EnumChatFormatting.BLACK.toString());
-        message = replaceAllIgnoreCase(message, "%darkblue", EnumChatFormatting.DARK_BLUE.toString());
-        message = replaceAllIgnoreCase(message, "%darkgreen", EnumChatFormatting.DARK_GREEN.toString());
-        message = replaceAllIgnoreCase(message, "%darkaqua", EnumChatFormatting.DARK_AQUA.toString());
-        message = replaceAllIgnoreCase(message, "%darkred", EnumChatFormatting.DARK_RED.toString());
-        message = replaceAllIgnoreCase(message, "%purple", EnumChatFormatting.DARK_PURPLE.toString());
-        message = replaceAllIgnoreCase(message, "%gold", EnumChatFormatting.GOLD.toString());
-        message = replaceAllIgnoreCase(message, "%grey", EnumChatFormatting.GRAY.toString());
-        message = replaceAllIgnoreCase(message, "%darkgrey", EnumChatFormatting.DARK_GRAY.toString());
-        message = replaceAllIgnoreCase(message, "%indigo", EnumChatFormatting.BLUE.toString());
-        message = replaceAllIgnoreCase(message, "%green", EnumChatFormatting.GREEN.toString());
-        message = replaceAllIgnoreCase(message, "%aqua", EnumChatFormatting.AQUA.toString());
-        message = replaceAllIgnoreCase(message, "%pink", EnumChatFormatting.LIGHT_PURPLE.toString());
-        message = replaceAllIgnoreCase(message, "%white", EnumChatFormatting.WHITE.toString());
-
-        // replace MC formating
-        message = replaceAllIgnoreCase(message, "%random", EnumChatFormatting.OBFUSCATED.toString());
-        message = replaceAllIgnoreCase(message, "%bold", EnumChatFormatting.BOLD.toString());
-        message = replaceAllIgnoreCase(message, "%strike", EnumChatFormatting.STRIKETHROUGH.toString());
-        message = replaceAllIgnoreCase(message, "%underline", EnumChatFormatting.UNDERLINE.toString());
-        message = replaceAllIgnoreCase(message, "%italics", EnumChatFormatting.ITALIC.toString());
-        message = replaceAllIgnoreCase(message, "%reset", EnumChatFormatting.RESET.toString());
-
-        return message;
-    }
-
-    /**
-     * instWarp a player to a point. Please use TeleportCenter!
-     *
-     * @param player
-     * @param p
-     */
-    public static void teleportPlayer(EntityPlayerMP player, WarpPoint p)
-    {
-        if (player.dimension != p.getDimension() && DimensionManager.isDimensionRegistered(p.getDimension()))
-        {
-            MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, p.getDimension());
-        }
-        player.playerNetServerHandler.setPlayerLocation(p.getX(), p.getY(), p.getZ(), p.getYaw(), p.getPitch());
-        player.prevPosX = player.posX = p.getX();
-        player.prevPosY = player.posY = p.getY();
-        player.prevPosZ = player.posZ = p.getZ();
-    }
-
-    /**
-     * instWarp a player to a point. Please use TeleportCenter!
-     *
-     * @param player
-     * @param world
-     */
-    public static void setPlayer(EntityPlayerMP player, Point point, World world)
-    {
-        if (player.dimension != world.provider.dimensionId)
-        {
-            MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, world.provider.dimensionId);
-        }
-        double x = point.getX(), y = point.getY(), z = point.getZ();
-        x = x < 0 ? x - 0.5 : x + 0.5;
-        z = z < 0 ? z - 0.5 : z + 0.5;
-        player.playerNetServerHandler.setPlayerLocation(x, y, z, player.rotationYaw, player.rotationPitch);
     }
 
     public static boolean isNumeric(String string)
@@ -942,44 +737,6 @@ public final class FunctionHelper
         {
             return false;
         }
-    }
-
-    public static String getPlayerPrefixSuffix(UserIdent player, boolean isSuffix)
-    {
-        String fix = APIRegistry.perms.getServerZone().getPlayerPermission(player, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
-        if (fix == null)
-            return "";
-        return fix;
-    }
-
-    public static String getPlayerGroupPrefixSuffix(UserIdent player, boolean isSuffix)
-    {
-        for (GroupEntry group : APIRegistry.perms.getPlayerGroups(player))
-        {
-            String s = APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
-            if (s != null)
-                return s;
-        }
-        return "";
-    }
-
-    public static String getFormattedPlayersOnline()
-    {
-        StringBuilder sb = new StringBuilder();
-        for (Object fakePlayer : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
-        {
-            EntityPlayer player = (EntityPlayer) fakePlayer;
-            String name = player.getDisplayName();
-            if (player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).hasKey("nickname"))
-            {
-                name = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
-            }
-            // name = getGroupRankString(player.getDisplayName()) + ":" + name;
-            sb.append(name + ", ");
-        }
-        if (sb.length() == 0)
-            return "";
-        return sb.toString().substring(0, sb.length() - 2);
     }
 
     public static void saveBookToFile(ItemStack book, File savefolder)
@@ -1446,76 +1203,6 @@ public final class FunctionHelper
         ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
-    }
-
-    public static JsonObject toJSON(ItemStack stack, Boolean listEnch) throws JsonParseException
-    {
-        JsonObject data = new JsonObject();
-        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display") && stack.stackTagCompound.getCompoundTag("display").hasKey("Name"))
-        {
-            data.add("item", new JsonPrimitive(stack.getDisplayName().replaceAll("item.", "").replaceAll("tile.", "")));
-        }
-        if (stack.stackSize != 1)
-        {
-            data.add("amount", new JsonPrimitive("" + stack.stackSize));
-        }
-        data.add("id", new JsonPrimitive("" + stack.getUnlocalizedName()));
-        if (stack.getItemDamage() != 0)
-        {
-            data.add("dam", new JsonPrimitive("" + stack.getItemDamage()));
-        }
-        data.add("name", new JsonPrimitive(stack.getDisplayName()));
-
-        if (listEnch)
-        {
-            JsonArray tempArgs = new JsonArray();
-            NBTTagList var10 = stack.getEnchantmentTagList();
-            if (var10 != null)
-            {
-                for (int var7 = 0; var7 < var10.tagCount(); ++var7)
-                {
-                    short var8 = (var10.getCompoundTagAt(var7)).getShort("id");
-                    short var9 = (var10.getCompoundTagAt(var7)).getShort("lvl");
-
-                    if (Enchantment.enchantmentsList[var8] != null)
-                    {
-                        tempArgs.add(new JsonPrimitive(Enchantment.enchantmentsList[var8].getTranslatedName(var9)));
-                    }
-                }
-                data.add("ench", tempArgs);
-            }
-        }
-
-        return data;
-    }
-
-    public static void findSafeY(EntityPlayer player)
-    {
-        int x = (int) player.posX;
-        int y = (int) player.posY;
-        int z = (int) player.posZ;
-        World w = player.worldObj;
-        if (w.getBlock(x, y, z) == Blocks.air)
-        {
-            if (w.getBlock(x, y + 1, z) == Blocks.air || w.getBlock(x, y - 1, z) == Blocks.air)
-                return;
-        }
-        else if (w.getBlock(x, y - 1, z) == Blocks.air && w.getBlock(x, y - 2, z) == Blocks.air)
-        {
-            return;
-        }
-        else
-        {
-            while (y < 256)
-            {
-                if (w.getBlock(x, y, z) == Blocks.air && w.getBlock(x, y + 1, z) == Blocks.air)
-                {
-                    player.setPositionAndUpdate(player.posX, y, player.posZ);
-                    return;
-                }
-                y++;
-            }
-        }
     }
 
 }

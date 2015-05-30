@@ -4,9 +4,9 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 // separate class from the main WEIntegration stuff so as to avoid nasty errors
@@ -65,6 +65,6 @@ public class WEIntegration
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
-        FunctionHelper.FE_INTERNAL_EVENTBUS.register(new WEIntegrationHandler());
+        ForgeEssentials.BUS.register(new WEIntegrationHandler());
     }
 }

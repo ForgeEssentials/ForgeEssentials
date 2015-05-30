@@ -50,7 +50,7 @@ public class CommandFly extends FEcmdModuleCommands
         if (!player.onGround)
             player.capabilities.isFlying = player.capabilities.allowFlying;
         if (!player.capabilities.allowFlying)
-            FunctionHelper.findSafeY(player);
+            FunctionHelper.placeInWorld(player);
         player.sendPlayerAbilities();
         OutputHandler.chatNotification(player, "Flying " + (player.capabilities.allowFlying ? "enabled" : "disabled"));
     }

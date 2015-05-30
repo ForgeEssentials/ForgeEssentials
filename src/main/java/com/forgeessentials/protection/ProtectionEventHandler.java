@@ -49,6 +49,7 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
@@ -563,7 +564,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             WarpPoint target = new WarpPoint(event.beforePoint.getDimension(), event.beforePoint.getX() - delta.xCoord,
                     event.beforePoint.getY() - delta.yCoord, event.beforePoint.getZ() - delta.zCoord, event.afterPoint.getPitch(), event.afterPoint.getYaw());
 
-            FunctionHelper.teleportPlayer((EntityPlayerMP) event.entityPlayer, target);
+            TeleportHelper.doTeleport((EntityPlayerMP) event.entityPlayer, target);
             event.setCanceled(true);
             return;
         }

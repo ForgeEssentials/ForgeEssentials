@@ -20,7 +20,8 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import java.util.List;
 
-public class CommandDoAs extends FEcmdModuleCommands {
+public class CommandDoAs extends FEcmdModuleCommands
+{
     @Override
     public String getCommandName()
     {
@@ -37,7 +38,7 @@ public class CommandDoAs extends FEcmdModuleCommands {
         }
         if ((sender instanceof EntityPlayerMP) && args[0].equals("[CONSOLE]"))
         {
-            EntityPlayerMP player = (EntityPlayerMP)sender;
+            EntityPlayerMP player = (EntityPlayerMP) sender;
 
             if (PermissionsManager.checkPermission(player, "fe.commands.doas.console"))
             {
@@ -108,7 +109,8 @@ public class CommandDoAs extends FEcmdModuleCommands {
         PermissionsManager.registerPermission("fe.commands.doas.console", RegisteredPermValue.OP);
     }
 
-    public class DummyCommandSender implements ICommandSender {
+    public class DummyCommandSender implements ICommandSender
+    {
 
         private EntityPlayer player;
 
@@ -117,33 +119,38 @@ public class CommandDoAs extends FEcmdModuleCommands {
             this.player = player;
         }
 
-        @Override public String getCommandSenderName()
+        @Override
+        public String getCommandSenderName()
         {
             return "FEServerDo";
         }
 
-        @Override public IChatComponent func_145748_c_()
+        @Override
+        public IChatComponent func_145748_c_()
         {
             return null;
         }
 
-        @Override public void addChatMessage(IChatComponent iChatComponent)
+        @Override
+        public void addChatMessage(IChatComponent iChatComponent)
         {
-            player.addChatMessage(iChatComponent);
-
+            OutputHandler.sendMessage(player, iChatComponent);
         }
 
-        @Override public boolean canCommandSenderUseCommand(int i, String s)
+        @Override
+        public boolean canCommandSenderUseCommand(int i, String s)
         {
             return true;
         }
 
-        @Override public ChunkCoordinates getPlayerCoordinates()
+        @Override
+        public ChunkCoordinates getPlayerCoordinates()
         {
             return null;
         }
 
-        @Override public World getEntityWorld()
+        @Override
+        public World getEntityWorld()
         {
             return null;
         }

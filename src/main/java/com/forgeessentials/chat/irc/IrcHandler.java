@@ -46,7 +46,6 @@ import com.forgeessentials.chat.irc.command.CommandReply;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -287,7 +286,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void sendPlayerMessage(ICommandSender sender, IChatComponent message)
     {
         if (isConnected())
-            sendMessage(String.format(mcHeader, sender.getCommandSenderName(), FunctionHelper.stripFormatting(message.getUnformattedText())));
+            sendMessage(String.format(mcHeader, sender.getCommandSenderName(), OutputHandler.stripFormatting(message.getUnformattedText())));
     }
 
     private void mcSendMessage(String message, User user)
@@ -296,14 +295,14 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
         String headerText = String.format(ircHeader, user.getNick());
         IChatComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
-        IChatComponent messageComponent = ModuleChat.filterChatLinks(FunctionHelper.formatColors(message));
+        IChatComponent messageComponent = ModuleChat.filterChatLinks(OutputHandler.formatColors(message));
         OutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
     }
 
     private void mcSendMessage(String message)
     {
         IChatComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
-        IChatComponent messageComponent = ModuleChat.filterChatLinks(FunctionHelper.formatColors(message));
+        IChatComponent messageComponent = ModuleChat.filterChatLinks(OutputHandler.formatColors(message));
         OutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
     }
 
@@ -385,7 +384,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)
-            sendMessage(FunctionHelper.stripFormatting(event.component.getUnformattedText()));
+            sendMessage(OutputHandler.stripFormatting(event.component.getUnformattedText()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

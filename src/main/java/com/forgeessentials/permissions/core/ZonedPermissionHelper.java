@@ -114,7 +114,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         rootZone.setPermissionDebugger(this);
 
         ServerZone serverZone = new ServerZone(rootZone);
-        APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
+        ForgeEssentials.BUS.post(new PermissionEvent.AfterLoad(serverZone));
         rootZone.setServerZone(serverZone);
 
         permissionDebugFilters.add("fe.protection.mobspawn");
@@ -141,7 +141,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         if (persistenceProvider != null)
         {
             OutputHandler.felog.fine("Saving permissions...");
-            APIRegistry.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
+            ForgeEssentials.BUS.post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
             dirty = false;
         }
@@ -164,7 +164,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 rootZone.setServerZone(serverZone);
                 serverZone.rebuildZonesMap();
                 dirty = false;
-                APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
+                ForgeEssentials.BUS.post(new PermissionEvent.AfterLoad(serverZone));
                 return true;
             }
         }
@@ -414,8 +414,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             if (point != null && new WorldPoint(player).distance(point) > 32)
                 continue;
-            player.addChatMessage(msgC1);
-            player.addChatMessage(msgC2);
+            OutputHandler.sendMessage(player, msgC1);
+            OutputHandler.sendMessage(player, msgC2);
         }
     }
 
@@ -515,12 +515,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         String exitMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
         if (exitMsg != null)
         {
-            OutputHandler.sendMessage(event.entityPlayer, FunctionHelper.formatColors(exitMsg));
+            OutputHandler.sendMessage(event.entityPlayer, OutputHandler.formatColors(exitMsg));
         }
         String entryMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, FEPermissions.ZONE_ENTRY_MESSAGE);
         if (entryMsg != null)
         {
-            OutputHandler.sendMessage(event.entityPlayer, FunctionHelper.formatColors(entryMsg));
+            OutputHandler.sendMessage(event.entityPlayer, OutputHandler.formatColors(entryMsg));
         }
     }
 
@@ -538,7 +538,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         ChatComponentTranslation msg = new ChatComponentTranslation("commands.generic.permission", new Object[0]);
         msg.getChatStyle().setColor(EnumChatFormatting.RED);
-        sender.addChatMessage(msg);
+        OutputHandler.sendMessage(sender, msg);
     }
 
     @SubscribeEvent

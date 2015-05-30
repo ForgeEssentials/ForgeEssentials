@@ -148,7 +148,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         IChatComponent chatMsg = new ChatComponentTranslation(command.getCommandUsage(sender));
         chatMsg.getChatStyle().setColor(color);
         chatMsg.getChatStyle().setChatClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getCommandName()));
-        sender.addChatMessage(chatMsg);
+        OutputHandler.sendMessage(sender, chatMsg);
     }
 
     public void showHelpPage(ICommandSender sender)

@@ -14,26 +14,26 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 
 public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
 {
 
     public static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + ".TimedMessage";
-    
+
     public static final String MESSAGES_HELP = "Each line is 1 message. You can use scripting arguments and color codes.";
-    
+
     public static final String[] MESSAGES_DEFAULT = new String[] { "\"This server uses ForgeEssentials\"", "\"Change these messages in the Chat config\"",
             "\"The timing can be changed there too!\"" };
 
     private boolean enabled;
 
     private int interval;
-    
+
     private boolean random;
-    
+
     public List<String> messages = new ArrayList<>();
-    
+
     public int currentMessageIdx;
 
     public TimedMessageHandler()
@@ -80,8 +80,8 @@ public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
         String message = messages.get(idx);
         for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
         {
-            String formattedMsg = FunctionHelper.formatColors(FunctionHelper.format(ScriptArguments.process(message, player)));
-            player.addChatMessage(new ChatComponentText(formattedMsg));
+            String formattedMsg = ModuleChat.processChatReplacements(null, ScriptArguments.process(message, player));
+            OutputHandler.sendMessage(player, new ChatComponentText(formattedMsg));
         }
         // OutputHandler.broadcast(new ChatComponentText(messages.get(currentMessageIdx)));
     }

@@ -1,13 +1,5 @@
 package com.forgeessentials.signtools;
 
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.FunctionHelper;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import net.minecraftforge.fe.event.world.SignEditEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
@@ -15,8 +7,18 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.fe.event.world.SignEditEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
 public class SignToolsModule extends ConfigLoaderBase
@@ -57,7 +59,7 @@ public class SignToolsModule extends ConfigLoaderBase
             {
                 if (e.text[i].contains("&"))
                 {
-                    e.text[i] = FunctionHelper.formatColors(e.text[i]);
+                    e.text[i] = OutputHandler.formatColors(e.text[i]);
                 }
             }
 

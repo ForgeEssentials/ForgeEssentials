@@ -2,7 +2,7 @@ package com.forgeessentials.util.events;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
@@ -15,7 +15,7 @@ public class ServerEventHandler {
 
     public ServerEventHandler()
     {
-        APIRegistry.getFEEventBus().register(this);
+        ForgeEssentials.BUS.register(this);
     }
 
     public ServerEventHandler(boolean forceRegister)

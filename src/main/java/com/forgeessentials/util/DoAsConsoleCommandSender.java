@@ -29,9 +29,9 @@ public class DoAsConsoleCommandSender implements ICommandSender
     }
 
     @Override
-    public void addChatMessage(IChatComponent p_145747_1_)
+    public void addChatMessage(IChatComponent message)
     {
-        sender.addChatMessage(p_145747_1_);
+        OutputHandler.sendMessage(sender, message);
     }
 
     @Override

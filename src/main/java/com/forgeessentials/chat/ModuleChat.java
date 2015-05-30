@@ -236,11 +236,11 @@ public class ModuleChat
         // Initialize header
         String playerCmd = "/msg " + event.player.getCommandSenderName() + " ";
         IChatComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
-        IChatComponent playerPrefix = clickChatComponent(FunctionHelper.getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
-        IChatComponent playerSuffix = clickChatComponent(FunctionHelper.getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
-        IChatComponent header = new ChatComponentTranslation(FunctionHelper.formatColors(ChatConfig.chatFormat), //
+        IChatComponent header = new ChatComponentTranslation(OutputHandler.formatColors(ChatConfig.chatFormat), //
                 groupPrefix != null ? groupPrefix : "", //
                 playerPrefix != null ? playerPrefix : "", //
                 playerText, //
@@ -249,14 +249,14 @@ public class ModuleChat
 
         // Apply colors
         if (event.message.contains("&") && ident.checkPermission(PERM_COLOR))
-            message = FunctionHelper.formatColors(message);
+            message = OutputHandler.formatColors(message);
 
         // Build message part with links
         IChatComponent messageComponent = filterChatLinks(message);
 
         String textFormats = APIRegistry.perms.getUserPermissionProperty(ident, ModuleChat.PERM_TEXTFORMAT);
         if (textFormats != null)
-            FunctionHelper.applyFormatting(messageComponent.getChatStyle(), FunctionHelper.enumChatFormattings(textFormats));
+            OutputHandler.applyFormatting(messageComponent.getChatStyle(), OutputHandler.enumChatFormattings(textFormats));
 
         // Finish complete message
         event.component = new ChatComponentTranslation("%s%s", header, messageComponent);
@@ -269,7 +269,7 @@ public class ModuleChat
             for (EntityPlayerMP player : FunctionHelper.getPlayerList())
             {
                 if (player.dimension == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
-                    player.addChatMessage(event.component);
+                    OutputHandler.sendMessage(player, event.component);
             }
             event.setCanceled(true);
         }
@@ -294,15 +294,23 @@ public class ModuleChat
         message = ScriptArguments.process(message);
         for (Entry<String, String> r : chatConstReplacements.entrySet())
             message = message.replaceAll("%" + r.getKey(), r.getValue());
-        message = FunctionHelper.formatColors(message);
+        message = OutputHandler.formatColors(message);
         return message;
     }
 
     public static IChatComponent clickChatComponent(String text, Action action, String uri)
     {
-        IChatComponent component = new ChatComponentText(FunctionHelper.formatColors(text));
+        IChatComponent component = new ChatComponentText(OutputHandler.formatColors(text));
         component.getChatStyle().setChatClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, uri));
         return component;
+    }
+
+    public static String getPlayerPrefixSuffix(UserIdent player, boolean isSuffix)
+    {
+        String fix = APIRegistry.perms.getServerZone().getPlayerPermission(player, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
+        if (fix == null)
+            return "";
+        return fix;
     }
 
     public static IChatComponent appendGroupPrefixSuffix(IChatComponent header, UserIdent ident, boolean isSuffix)
@@ -470,8 +478,8 @@ public class ModuleChat
                 new Object[] { target.func_145748_c_(), message });
         sentMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
         senderMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
-        target.addChatMessage(sentMsg);
-        sender.addChatMessage(senderMsg);
+        OutputHandler.sendMessage(target, sentMsg);
+        OutputHandler.sendMessage(sender, senderMsg);
         CommandReply.messageSent(sender, target);
         ModuleCommandsEventHandler.checkAfkMessage(target, message);
     }

@@ -64,7 +64,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 			player.noClip = Boolean.parseBoolean(args[0]);
 		}
 		if(!player.noClip)
-			FunctionHelper.findSafeY(player);
+			FunctionHelper.placeInWorld(player);
 		NetworkUtils.netHandler.sendTo(new Packet5Noclip(player.noClip), player);
 	}
 	
@@ -75,7 +75,7 @@ public class CommandNoClip extends FEcmdModuleCommands
 			if(!player.capabilities.isFlying)
 			{
 				player.noClip = false;
-				FunctionHelper.findSafeY(player);
+				FunctionHelper.placeInWorld(player);
 				if(!player.worldObj.isRemote)
 				{
 					NetworkUtils.netHandler.sendTo(new Packet5Noclip(player.noClip), (EntityPlayerMP) player);

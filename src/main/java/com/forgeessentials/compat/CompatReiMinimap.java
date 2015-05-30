@@ -1,6 +1,7 @@
 package com.forgeessentials.compat;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -40,7 +41,7 @@ public class CompatReiMinimap
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        e.player.addChatMessage(new ChatComponentText(getPermissionCodes(e.player)));
+        OutputHandler.sendMessage(e.player, new ChatComponentText(getPermissionCodes(e.player)));
     }
 
     public static String getPermissionCodes(EntityPlayer user)

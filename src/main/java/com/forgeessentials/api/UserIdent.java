@@ -14,7 +14,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
-import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.core.ForgeEssentials;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
@@ -198,7 +198,7 @@ public class UserIdent
 
         if (usernameIdent != null && usernameIdent != ident)
         {
-            FunctionHelper.FE_INTERNAL_EVENTBUS.post(new UserIdentInvalidatedEvent(usernameIdent, ident));
+            ForgeEssentials.BUS.post(new UserIdentInvalidatedEvent(usernameIdent, ident));
 
             // Change data for already existing references to old UserIdent
             usernameIdent.player = player;

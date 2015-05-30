@@ -10,9 +10,9 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.player.CommandAFK;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
@@ -71,7 +71,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         }
 
         PlayerAFKEvent event = new PlayerAFKEvent(player.getPlayerMP(), true);
-        APIRegistry.getFEEventBus().post(event);
+        ForgeEssentials.BUS.post(event);
 
         player.getPlayerMP().capabilities.disableDamage = true;
         if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
@@ -87,7 +87,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         if (!isAfk(player))
             return;
         PlayerAFKEvent event = new PlayerAFKEvent(player.getPlayerMP(), false);
-        APIRegistry.getFEEventBus().post(event);
+        ForgeEssentials.BUS.post(event);
 
         switch (player.getPlayerMP().theItemInWorldManager.getGameType())
         {

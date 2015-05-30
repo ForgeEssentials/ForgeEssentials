@@ -3,6 +3,7 @@ package com.forgeessentials.remote.command;
 import java.util.List;
 
 import com.forgeessentials.commons.network.Packet7Remote;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
@@ -21,6 +22,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 public class CommandRemote extends ForgeEssentialsCommandBase
@@ -195,8 +197,8 @@ public class CommandRemote extends ForgeEssentialsCommandBase
         qrLink.getChatStyle().setUnderlined(true);
         msg.appendSibling(qrLink);
 
-        args.sender.addChatMessage(msg);
-        args.sender.addChatMessage(new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
+        OutputHandler.sendMessage(args.sender, msg);
+        OutputHandler.sendMessage(args.sender, new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
     }
 
     @Override

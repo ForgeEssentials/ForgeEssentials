@@ -3,13 +3,6 @@ package com.forgeessentials.commands.item;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
-import com.forgeessentials.util.questioner.Questioner;
-import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
@@ -20,11 +13,19 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.FunctionHelper;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
+import com.forgeessentials.util.questioner.Questioner;
+import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.util.questioner.QuestionerStillActiveException;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
@@ -45,7 +46,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
 
     public CommandKit()
     {
-        APIRegistry.getFEEventBus().register(this);
+        ForgeEssentials.BUS.register(this);
     }
 
     @Override

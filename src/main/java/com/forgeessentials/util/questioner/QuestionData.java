@@ -58,7 +58,7 @@ public class QuestionData
         yesNoMessage.appendSibling(noMessage);
         yesNoMessage.appendSibling(new ChatComponentText(" " + Translator.format("(timeout: %d)", timeout)));
         
-        target.addChatMessage(yesNoMessage);
+        OutputHandler.sendMessage(target, yesNoMessage);
     }
 
     protected void doAnswer(Boolean answer)

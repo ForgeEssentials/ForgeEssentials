@@ -14,6 +14,7 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FunctionHelper;
+import com.forgeessentials.util.OutputHandler;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -240,7 +241,7 @@ public class Multiworld {
         // msg = "Leaving the Overworld.";
         // if (player.dimension > 1 || player.dimension < -1)
         // msg += " (#" + player.dimension + ")";
-        // player.addChatMessage(new ChatComponentText(msg));
+        // OutputHandler.sendMessage(player, new ChatComponentText(msg));
     }
 
     public static void displayWelcomeMessage(EntityPlayerMP player)
@@ -250,7 +251,7 @@ public class Multiworld {
         // msg = "Entering the Overworld.";
         // if (player.dimension > 1 || player.dimension < -1)
         // msg += " (#" + player.dimension + ")";
-        // player.addChatMessage(new ChatComponentText(msg));
+        // OutputHandler.sendMessage(player, new ChatComponentText(msg));
     }
 
 }

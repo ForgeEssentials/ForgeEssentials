@@ -48,6 +48,7 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
+import com.forgeessentials.protection.commands.CommandPlaceblock;
 import com.forgeessentials.protection.commands.CommandUpgradePermissions;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -128,6 +129,7 @@ public class ModuleProtection
         FECommandManager.registerCommand(new CommandItemPermission());
         FECommandManager.registerCommand(new CommandProtectionDebug());
         FECommandManager.registerCommand(new CommandUpgradePermissions());
+        // FECommandManager.registerCommand(new CommandPlaceblock());
     }
 
     public static String getItemName(Item item)
