@@ -134,9 +134,7 @@ public class ModuleLauncher
     public void reloadConfigs(ICommandSender sender)
     {
         ForgeEssentials.getConfigManager().load(true);
-        for (ModuleContainer module : containerMap.values())
-            module.runReload(sender);
-        APIRegistry.getFEEventBus().post(new ConfigReloadEvent());
+        APIRegistry.getFEEventBus().post(new ConfigReloadEvent(sender));
     }
 
     public void unregister(String moduleName)

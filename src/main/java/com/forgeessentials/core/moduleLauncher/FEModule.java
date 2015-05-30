@@ -53,16 +53,6 @@ public @interface FEModule
     Class<?> parentMod();
 
     /**
-     * this should be obvious, This is the method that will be called when the /reload command is called. Configs are
-     * relaoded just before this method is called.
-     */
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.METHOD })
-    public @interface Reload
-    {
-    }
-
-    /**
      * This field will be populated with an instance of this Module.
      */
     @Retention(RetentionPolicy.RUNTIME)
