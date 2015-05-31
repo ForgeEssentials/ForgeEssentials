@@ -35,6 +35,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -137,7 +138,7 @@ public class ModuleBackup extends ConfigLoaderBase
                 @Override
                 public void run()
                 {
-                    backup(world);
+                    backup(world, true);
                 }
             });
             thread.start();
@@ -156,7 +157,7 @@ public class ModuleBackup extends ConfigLoaderBase
                 @Override
                 public void run()
                 {
-                    backup(world);
+                    backup(world, true);
                 }
             });
             thread.start();
@@ -206,10 +207,19 @@ public class ModuleBackup extends ConfigLoaderBase
             {
                 try
                 {
+                    List<Integer> backupDims = new ArrayList<>();
+                    List<WorldServer> backupWorlds = new ArrayList<>();
                     for (WorldServer world : DimensionManager.getWorlds())
                         if (shouldBackup(world))
-                            backup(world);
+                        {
+                            backupDims.add(world.provider.dimensionId);
+                            backupWorlds.add(world);
+                        }
+                    ModuleBackup.notify(String.format("Starting backup of dimensions %s", StringUtils.join(backupDims, ", ")));
+                    for (WorldServer worldServer : backupWorlds)
+                        backup(worldServer, false);
                     cleanBackups();
+                    ModuleBackup.notify("Backup finished!");
                 }
                 finally
                 {
@@ -229,14 +239,15 @@ public class ModuleBackup extends ConfigLoaderBase
             return shouldBackup;
     }
 
-    private static synchronized void backup(WorldServer world)
+    private static synchronized void backup(WorldServer world, boolean notify)
     {
-        notify(String.format("Starting backup of dim %d...", world.provider.dimensionId));
+        if (notify)
+            notify(String.format("Starting backup of dim %d...", world.provider.dimensionId));
 
         // Save world
         if (!saveWorld(world))
         {
-            notify("Backup failed: Could not save world");
+            notify(String.format("Backup of dim %s failed: Could not save world", world.provider.dimensionId));
             return;
         }
 
@@ -247,7 +258,7 @@ public class ModuleBackup extends ConfigLoaderBase
         if (!backupDir.exists())
             if (!backupDir.mkdirs())
             {
-                notify("Backup failed: Could not create backup directory");
+                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.provider.dimensionId));
                 return;
             }
 
@@ -273,7 +284,8 @@ public class ModuleBackup extends ConfigLoaderBase
             ex.printStackTrace();
         }
 
-        notify("Backup finished");
+        if (notify)
+            notify("Backup finished");
     }
 
     private static List<File> enumWorldFiles(WorldServer world, File dir, List<File> files)
