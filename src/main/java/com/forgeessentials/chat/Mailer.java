@@ -73,6 +73,8 @@ public class Mailer extends ServerEventHandler
     {
         UserIdent user = UserIdent.get(event.player);
         Mails mailBag = getMailBag(user);
+        if (mailBag.mails.isEmpty())
+            return;
         Set<UserIdent> senders = new HashSet<>();
         for (Mail mail : mailBag.mails)
             senders.add(mail.sender);
