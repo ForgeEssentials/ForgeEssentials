@@ -44,6 +44,8 @@ public class ModulePermissions extends ConfigLoaderBase
 
     private static final String CONFIG_CAT = "Permissions";
 
+    private static final String PERSISTENCE_HELP = "Choose a permission persistence backend (flatfile, sql, json). DO NOT use SQL, unless you really need to use it.";
+
     public static ZonedPermissionHelper permissionHelper;
 
     private String persistenceBackend = "flatfile";
@@ -184,9 +186,7 @@ public class ModulePermissions extends ConfigLoaderBase
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile", "Choose a permission persistence backend (flatfile, sql, json)")
-                .getString();
-
+        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile", PERSISTENCE_HELP).getString();
         dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
     }
 
