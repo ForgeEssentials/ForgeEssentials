@@ -14,7 +14,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
@@ -198,7 +197,7 @@ public class UserIdent
 
         if (usernameIdent != null && usernameIdent != ident)
         {
-            ForgeEssentials.BUS.post(new UserIdentInvalidatedEvent(usernameIdent, ident));
+            APIRegistry.getFEEventBus().post(new UserIdentInvalidatedEvent(usernameIdent, ident));
 
             // Change data for already existing references to old UserIdent
             usernameIdent.player = player;
@@ -352,7 +351,7 @@ public class UserIdent
             if (uuid != null && ident.uuid != null)
                 return uuid.equals(ident.uuid);
             if (username != null && ident.username != null)
-                return username.equals(ident.username);
+                return username.equalsIgnoreCase(ident.username);
             return false;
         }
         else if (other instanceof String)
@@ -368,7 +367,7 @@ public class UserIdent
                     // The string was a username and not a UUID
                 }
             }
-            return username == null ? false : this.username.equals(other);
+            return username == null ? false : this.username.equalsIgnoreCase((String) other);
         }
         else if (other instanceof UUID)
         {
@@ -448,7 +447,7 @@ public class UserIdent
     public static EntityPlayerMP getPlayerByUsername(String name)
     {
         for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
-            if (player.getGameProfile().getName().equals(name))
+            if (player.getGameProfile().getName().equalsIgnoreCase(name))
                 return player;
         return null;
     }
@@ -467,7 +466,7 @@ public class UserIdent
         if (player != null)
             return player.getGameProfile().getId();
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
-            if (ident.uuid != null && username.equals(ident.getUsername()))
+            if (ident.uuid != null && username.equalsIgnoreCase(ident.getUsername()))
                 return ident.getUuid();
         return null;
     }
