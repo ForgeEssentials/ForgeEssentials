@@ -2,7 +2,6 @@ package com.forgeessentials.auth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
@@ -110,8 +109,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             if (!ModuleAuth.hasSession.contains(sender.getPersistentID()))
                 throw new TranslatedCommandException("Login required. Try /auth help.");
 
-            // check for players.. all the rest of these should be greated than 1.
-            UUID userID = UserIdent.getUuidByUsername(args[1]);
             boolean isLogged = true;
 
             // check if the player is logged.
@@ -135,8 +132,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 }
                 else
                 {
-                    ModuleAuth.hasSession.remove(userID);
-                    OutputHandler.chatConfirmation(sender, Translator.format("Player %s was logged out from the authentication service.", userID));
+                    ModuleAuth.hasSession.remove(player.getPersistentID());
+                    OutputHandler.chatConfirmation(sender, Translator.format("Player %s was logged out from the authentication service.", player.getCommandSenderName()));
                     OutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
                     return;
                 }
@@ -158,11 +155,11 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 if (!hasAdmin)
                     throw new PermissionDeniedException();
 
-                if (!PlayerPassData.isRegistered(userID))
-                    throw new TranslatedCommandException("Player %s is not registered!", userID);
+                if (!PlayerPassData.isRegistered(player.getPersistentID()))
+                    throw new TranslatedCommandException("Player %s is not registered!", player.getCommandSenderName());
 
-                PlayerPassData.setPassword(userID, null);
-                OutputHandler.chatConfirmation(sender, Translator.format("Player %s has been removed from the authentication service.", userID));
+                PlayerPassData.setPassword(player.getPersistentID(), null);
+                OutputHandler.chatConfirmation(sender, Translator.format("Player %s has been removed from the authentication service.", player.getCommandSenderName()));
                 return;
             }
 
@@ -202,8 +199,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase
 
             }
 
-            // check for players.. all the rest of these should be greated than 1.
-            UUID name = UserIdent.getUuidByUsername(args[1]);
             // check if the player is logged.
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
             if (player == null)
@@ -216,8 +211,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             {
                 if (!hasAdmin)
                     throw new PermissionDeniedException();
-                PlayerPassData.setPassword(name, args[2]);
-                OutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", name));
+                PlayerPassData.setPassword(player.getPersistentID(), args[2]);
+                OutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", player.getCommandSenderName()));
             }
         }
     }
@@ -246,8 +241,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             }
         }
 
-        // check for players.. all the rest of these should be greated than 1.
-        UUID userID = UserIdent.getUuidByUsername(args[1]);
         boolean isLogged = true;
 
         // check if the player is logged.
@@ -270,8 +263,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 }
                 else
                 {
-                    ModuleAuth.hasSession.remove(userID);
-                    OutputHandler.chatConfirmation(sender, Translator.format("Player %s was logged out from the authentication service.", userID));
+                    ModuleAuth.hasSession.remove(player.getPersistentID());
+                    OutputHandler.chatConfirmation(sender, Translator.format("Player %s was logged out from the authentication service.", player.getCommandSenderName()));
                     OutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
                     return;
                 }
@@ -283,9 +276,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             }
             else if (args[0].equalsIgnoreCase("unregister"))
             {
-                if (!PlayerPassData.isRegistered(userID))
+                if (!PlayerPassData.isRegistered(player.getPersistentID()))
                     throw new TranslatedCommandException("message.auth.error.notregisterred", args[1]);
-                PlayerPassData.setPassword(userID, null);
+                PlayerPassData.setPassword(player.getPersistentID(), null);
                 return;
             }
 
@@ -301,8 +294,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             // pasre setPass
             if (args[0].equalsIgnoreCase("setPass"))
             {
-                PlayerPassData.setPassword(userID, args[2]);
-                OutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", userID));
+                PlayerPassData.setPassword(player.getPersistentID(), args[2]);
+                OutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", player.getCommandSenderName()));
             }
         }
     }
