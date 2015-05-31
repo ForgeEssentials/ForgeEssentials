@@ -335,7 +335,7 @@ public class PermissionCommandParser
                 arguments.error(String.format("Expected zone identifier."));
                 return;
             }
-            zone = getZoneByName(arguments.sender, arguments.args.remove());
+            zone = parseZone(arguments, arguments.args.remove());
             if (zone == null)
                 return;
             parseUserInner(arguments, ident, zone);
@@ -759,7 +759,7 @@ public class PermissionCommandParser
                 }
                 return;
             }
-            zone = getZoneByName(arguments.sender, arguments.args.remove());
+            zone = parseZone(arguments, arguments.args.remove());
             if (zone == null)
                 return;
             parseGroupInner(arguments, group, zone);
@@ -1112,14 +1112,14 @@ public class PermissionCommandParser
         return completePermission(permission, APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
     }
 
-    public static Zone getZoneByName(ICommandSender sender, String zoneId)
+    public static Zone parseZone(CommandParserArgs arguments, String zoneId)
     {
         try
         {
             int intId = Integer.parseInt(zoneId);
             if (intId < 1)
             {
-                OutputHandler.chatError(sender, String.format("Zone ID must be greater than 0!"));
+                arguments.error(String.format("Zone ID must be greater than 0!"));
                 return null;
             }
 
@@ -1127,7 +1127,7 @@ public class PermissionCommandParser
             if (zone != null)
                 return zone;
 
-            OutputHandler.chatError(sender, String.format("No zone by the ID %s exists!", zoneId));
+            arguments.error(String.format("No zone by the ID %s exists!", zoneId));
             return null;
         }
         catch (NumberFormatException e)
@@ -1136,17 +1136,17 @@ public class PermissionCommandParser
                 if (wz.getName().equals(zoneId))
                     return wz;
 
-            if (!(sender instanceof EntityPlayerMP))
+            if (arguments.senderPlayer == null)
             {
-                OutputHandler.chatError(sender, Translator.translate("Cannot identify zones by name from console!"));
+                arguments.error(Translator.translate("Cannot identify zones by name from console!"));
                 return null;
             }
 
-            Zone zone = APIRegistry.perms.getServerZone().getWorldZone(((EntityPlayerMP) sender).dimension).getAreaZone(zoneId);
+            Zone zone = APIRegistry.perms.getServerZone().getWorldZone(arguments.senderPlayer.dimension).getAreaZone(zoneId);
             if (zone != null)
                 return zone;
 
-            OutputHandler.chatError(sender, String.format("No zone by the name %s exists!", zoneId));
+            arguments.error(String.format("No zone by the name %s exists!", zoneId));
             return null;
         }
     }

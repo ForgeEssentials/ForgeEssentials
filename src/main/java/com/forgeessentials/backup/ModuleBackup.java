@@ -56,8 +56,6 @@ public class ModuleBackup extends ConfigLoaderBase
 
     public static final String PERM = "fe.backup";
     public static final String PERM_NOTIFY = PERM + ".notify";
-    public static final String PERM_NOTIFY_SAVE = PERM_NOTIFY + ".save";
-    public static final String PERM_NOTIFY_BACKUP = PERM_NOTIFY + ".backup";
 
     public static final String CONFIG_CAT = "Backup";
     public static final String CONFIG_CAT_WORLDS = CONFIG_CAT + ".Worlds";
@@ -115,8 +113,7 @@ public class ModuleBackup extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        APIRegistry.perms.registerPermission(PERM_NOTIFY_SAVE, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_NOTIFY_BACKUP, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_NOTIFY, RegisteredPermValue.OP, "Backup notification permission");
         registerBackupTask();
         cleanBackups();
     }
@@ -170,10 +167,10 @@ public class ModuleBackup extends ConfigLoaderBase
     public void load(Configuration config, boolean isReload)
     {
         backupDefault = config.get(CONFIG_CAT, "backup_default", true, "Backup all worlds by default").getBoolean();
-        backupInterval = config.get(CONFIG_CAT, "backup_interval", 1, "Automatic backup interval in minutes (0 to disable)").getInt();
+        backupInterval = config.get(CONFIG_CAT, "backup_interval", 60, "Automatic backup interval in minutes (0 to disable)").getInt();
         backupOnLoad = config.get(CONFIG_CAT, "backup_on_load", true, "Always backup worlds when loaded (server starts)").getBoolean();
         backupOnUnload = config.get(CONFIG_CAT, "backup_on_unload", true, "Always backup when a world is unloaded").getBoolean();
-        keepBackups = config.get(CONFIG_CAT, "keep_backups", 10, "Keep at least this amount of last backups").getInt();
+        keepBackups = config.get(CONFIG_CAT, "keep_backups", 12, "Keep at least this amount of last backups").getInt();
         dailyBackups = config.get(CONFIG_CAT, "keep_daily_backups", 7, "Keep at least one daily backup for this last number of last days").getInt();
         weeklyBackups = config.get(CONFIG_CAT, "keep_weekly_backups", 8, "Keep at least one weekly backup for this last number of weeks").getInt();
 
@@ -436,7 +433,7 @@ public class ModuleBackup extends ConfigLoaderBase
         IChatComponent messageComponent = OutputHandler.notification(message);
         if (!MinecraftServer.getServer().isServerStopped())
             for (EntityPlayerMP player : ServerUtil.getPlayerList())
-                if (UserIdent.get(player).checkPermission(PERM_NOTIFY_BACKUP))
+                if (UserIdent.get(player).checkPermission(PERM_NOTIFY))
                     OutputHandler.sendMessage(player, messageComponent);
         OutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
     }
