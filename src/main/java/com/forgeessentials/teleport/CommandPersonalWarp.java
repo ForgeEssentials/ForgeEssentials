@@ -1,10 +1,14 @@
 package com.forgeessentials.teleport;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -44,7 +48,7 @@ public class CommandPersonalWarp extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/pwarp <name> [set|delete]: Set, delete or teleport to a personal warp.";
+        return "/pwarp <name> [set|delete]: Set/delete/teleport to pers. warps";
     }
 
     @Override
@@ -87,14 +91,25 @@ public class CommandPersonalWarp extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
+            arguments.confirm("/pwarp list: List personal warps");
             arguments.confirm(getCommandUsage(arguments.sender));
             return;
         }
 
         PersonalWarp warps = getWarps(arguments.senderPlayer);
 
-        arguments.tabComplete(warps.keySet());
+        Set<String> completeList = new HashSet<>();
+        completeList.add("list");
+        completeList.addAll(warps.keySet());
+        arguments.tabComplete(completeList);
+
         String warpName = arguments.remove().toLowerCase();
+
+        if (warpName.equals("list"))
+        {
+            arguments.confirm("Warps: " + StringUtils.join(warps.keySet(), ", "));
+            return;
+        }
 
         if (arguments.isEmpty())
         {

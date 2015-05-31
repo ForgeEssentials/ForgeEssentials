@@ -1,10 +1,14 @@
 package com.forgeessentials.teleport;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -42,7 +46,7 @@ public class CommandWarp extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/warp <name> [set|delete]: Set, delete or teleport to a warp point.";
+        return "/warp <name> [set|delete]: Set/delete/teleport to a warp point";
     }
 
     @Override
@@ -82,14 +86,25 @@ public class CommandWarp extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
+            arguments.confirm("/warp list: List warps");
             arguments.confirm(getCommandUsage(arguments.sender));
             return;
         }
 
         Map<String, Warp> warps = getWarps();
 
-        arguments.tabComplete(warps.keySet());
+        Set<String> completeList = new HashSet<>();
+        completeList.add("list");
+        completeList.addAll(warps.keySet());
+        arguments.tabComplete(completeList);
+
         String warpName = arguments.remove().toLowerCase();
+
+        if (warpName.equals("list"))
+        {
+            arguments.confirm("Warps: " + StringUtils.join(warps.keySet(), ", "));
+            return;
+        }
 
         if (arguments.isEmpty())
         {
@@ -132,5 +147,4 @@ public class CommandWarp extends ParserCommandBase
             }
         }
     }
-
 }
