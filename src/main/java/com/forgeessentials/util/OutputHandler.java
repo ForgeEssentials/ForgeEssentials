@@ -59,7 +59,7 @@ public final class OutputHandler extends ConfigLoaderBase
     public static void sendMessage(ICommandSender recipient, IChatComponent message)
     {
         if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).playerNetServerHandler == null)
-            felog.info("Fakeplayer %s: " + message.getUnformattedText());
+            felog.info(String.format("Fakeplayer %s: %s", recipient.getCommandSenderName(), message.getUnformattedText()));
         else
             recipient.addChatMessage(message);
     }
