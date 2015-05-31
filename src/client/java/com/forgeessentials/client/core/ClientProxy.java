@@ -2,17 +2,6 @@ package com.forgeessentials.client.core;
 
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 import static com.forgeessentials.commons.network.NetworkUtils.netHandler;
-
-import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet0Handshake;
-import com.forgeessentials.commons.network.Packet1SelectionUpdate;
-import com.forgeessentials.commons.network.Packet5Noclip;
-import com.forgeessentials.commons.network.Packet6Speed;
-import com.forgeessentials.commons.network.Packet7Remote;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -25,21 +14,34 @@ import com.forgeessentials.client.network.C7HandlerRemote;
 import com.forgeessentials.client.remote.QRRenderer;
 import com.forgeessentials.client.util.DummyProxy;
 import com.forgeessentials.commons.VersionUtils;
+import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.Packet0Handshake;
+import com.forgeessentials.commons.network.Packet1SelectionUpdate;
+import com.forgeessentials.commons.network.Packet5Noclip;
+import com.forgeessentials.commons.network.Packet6Speed;
+import com.forgeessentials.commons.network.Packet7Remote;
 import com.forgeessentials.commons.selections.Selection;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends DummyProxy
 {
     private ClientConfig config;
-    
+
     private VersionUtils version;
+
+    private boolean sentHandshake = true;
 
     private static Selection selection;
 
@@ -55,8 +57,7 @@ public class ClientProxy extends DummyProxy
             config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));
             config.init();
         }
-        netHandler.registerMessage(new IMessageHandler<Packet1SelectionUpdate, IMessage>()
-        {
+        netHandler.registerMessage(new IMessageHandler<Packet1SelectionUpdate, IMessage>() {
             @Override
             public IMessage onMessage(Packet1SelectionUpdate message, MessageContext ctx)
             {
@@ -102,11 +103,17 @@ public class ClientProxy extends DummyProxy
     }
 
     @SubscribeEvent
-    public void onPlayerLogin(PlayerLoggedInEvent e)
+    public void onPlayerLogin(PlayerLoggedInEvent event)
     {
-        if (ForgeEssentialsClient.instance.serverHasFE)
+        sentHandshake = false;
+    }
+
+    @SubscribeEvent
+    public void clientTickEvent(TickEvent.ClientTickEvent event)
+    {
+        if (!sentHandshake && ForgeEssentialsClient.instance.serverHasFE)
         {
-            System.out.println("Dispatching FE handshake packet");
+            sentHandshake = true;
             NetworkUtils.netHandler.sendToServer(new Packet0Handshake());
         }
     }

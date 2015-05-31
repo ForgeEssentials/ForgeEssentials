@@ -149,7 +149,6 @@ public class ForgeEssentials extends ConfigLoaderBase
             @Override
             public IMessage onMessage(Packet0Handshake message, MessageContext ctx)
             {
-                System.out.println("Received handshake packet");
                 PlayerInfo.get(ctx.getServerHandler().playerEntity).setHasFEClient(true);
                 return null;
             }
