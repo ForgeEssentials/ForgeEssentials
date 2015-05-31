@@ -98,6 +98,8 @@ public class ModuleChat
 
     public Censor censor;
 
+    public Mailer mailer;
+
     public IrcHandler ircHandler;
 
     public TimedMessageHandler timedMessageHandler;
@@ -115,6 +117,7 @@ public class ModuleChat
         timedMessageHandler = new TimedMessageHandler();
         ircHandler = new IrcHandler();
         censor = new Censor();
+        mailer = new Mailer();
 
         setupChatReplacements();
     }

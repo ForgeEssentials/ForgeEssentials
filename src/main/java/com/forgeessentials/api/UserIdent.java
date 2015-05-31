@@ -1,6 +1,7 @@
 package com.forgeessentials.api;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -447,6 +448,49 @@ public class UserIdent
     {
         GameProfile profile = MinecraftServer.getServer().func_152358_ax().func_152652_a(uuid);
         return profile;
+    }
+
+    public static String join(Iterable<UserIdent> users, String glue)
+    {
+        StringBuilder sb = new StringBuilder();
+        Iterator<UserIdent> it = users.iterator();
+        if (it.hasNext())
+        {
+            while (true)
+            {
+                sb.append(it.next().getUsernameOrUuid());
+                if (it.hasNext())
+                    sb.append(glue);
+                else
+                    break;
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String join(Iterable<UserIdent> users, String glue, String lastGlue)
+    {
+        StringBuilder sb = new StringBuilder();
+        Iterator<UserIdent> it = users.iterator();
+        if (it.hasNext())
+        {
+            UserIdent next = it.next();
+            while (true)
+            {
+                sb.append(next.getUsernameOrUuid());
+                if (it.hasNext())
+                {
+                    next = it.next();
+                    if (it.hasNext())
+                        sb.append(glue);
+                    else
+                        sb.append(lastGlue);
+                }
+                else
+                    break;
+            }
+        }
+        return sb.toString();
     }
 
 }

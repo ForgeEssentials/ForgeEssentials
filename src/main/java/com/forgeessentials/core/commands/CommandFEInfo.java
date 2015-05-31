@@ -3,7 +3,6 @@ package com.forgeessentials.core.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commons.VersionUtils;
