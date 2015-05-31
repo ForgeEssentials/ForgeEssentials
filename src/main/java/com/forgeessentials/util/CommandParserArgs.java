@@ -14,7 +14,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionContext;
 
 import org.apache.commons.lang3.StringUtils;
@@ -155,10 +154,10 @@ public class CommandParserArgs
             if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
                 result.add(knownPlayerIdent.getUsernameOrUuid());
         }
-        for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
-            if (CommandBase.doesStringStartWith(arg, ((EntityPlayerMP) player).getGameProfile().getName()))
-                result.add(((EntityPlayerMP) player).getGameProfile().getName());
+            if (CommandBase.doesStringStartWith(arg, player.getCommandSenderName()))
+                result.add(player.getCommandSenderName());
         }
         return new ArrayList<String>(result);
     }

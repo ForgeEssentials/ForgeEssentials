@@ -299,10 +299,10 @@ public final class OutputHandler extends ConfigLoaderBase
     /* ------------------------------------------------------------ */
 
     public static final long SECOND = 1;
-    public static final long MINUTE = 60 * SECOND;
-    public static final long HOUR = 60 * MINUTE;
-    public static final long DAY = 24 * HOUR;
-    public static final long WEEK = 7 * DAY;
+    public static final long MINUTE_SECONDS = 60 * SECOND;
+    public static final long HOUR_SECONDS = 60 * MINUTE_SECONDS;
+    public static final long DAY_SECONDS = 24 * HOUR_SECONDS;
+    public static final long WEEK_SECONDS = 7 * DAY_SECONDS;
 
     /**
      * Gets a nice string with only needed elements. Max time is weeks
@@ -312,14 +312,14 @@ public final class OutputHandler extends ConfigLoaderBase
      */
     public static String formatTimeDurationReadable(long time, boolean showSeconds)
     {
-        long weeks = time / WEEK;
-        time -= WEEK * weeks;
-        long days = time / DAY;
-        time -= DAY * days;
-        long hours = time / HOUR;
-        time -= HOUR * hours;
-        long minutes = time / MINUTE;
-        time -= MINUTE * minutes;
+        long weeks = time / WEEK_SECONDS;
+        time -= WEEK_SECONDS * weeks;
+        long days = time / DAY_SECONDS;
+        time -= DAY_SECONDS * days;
+        long hours = time / HOUR_SECONDS;
+        time -= HOUR_SECONDS * hours;
+        long minutes = time / MINUTE_SECONDS;
+        time -= MINUTE_SECONDS * minutes;
         long seconds = time / SECOND;
 
         StringBuilder sb = new StringBuilder();
