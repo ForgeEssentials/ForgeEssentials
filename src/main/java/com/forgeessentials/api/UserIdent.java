@@ -458,7 +458,8 @@ public class UserIdent
         {
             while (true)
             {
-                sb.append(it.next().getUsernameOrUuid());
+                UserIdent next = it.next();
+                sb.append(next == null ? "server" : next.getUsernameOrUuid());
                 if (it.hasNext())
                     sb.append(glue);
                 else
@@ -477,7 +478,7 @@ public class UserIdent
             UserIdent next = it.next();
             while (true)
             {
-                sb.append(next.getUsernameOrUuid());
+                sb.append(next == null ? "server" : next.getUsernameOrUuid());
                 if (it.hasNext())
                 {
                     next = it.next();

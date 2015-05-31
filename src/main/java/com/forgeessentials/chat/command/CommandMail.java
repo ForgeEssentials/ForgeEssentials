@@ -53,25 +53,27 @@ public class CommandMail extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm("usage");
+            arguments.confirm("/mail read: Read next mail");
+            arguments.confirm("/mail readall: Read all mails");
+            arguments.confirm("/mail send <player> <msg...>: Send a mail");
             return;
         }
 
-        arguments.tabComplete("readnext", "readall", "send");
+        arguments.tabComplete("read", "readall", "send");
         String subArg = arguments.remove().toLowerCase();
         switch (subArg)
         {
-        case "readnext":
+        case "read":
         {
             if (arguments.senderPlayer == null)
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
             if (arguments.isTabCompletion)
                 return;
-            Mails mails = Mailer.getMails(arguments.ident);
-            if (mails.isEmpty())
+            Mails mailBag = Mailer.getMailBag(arguments.ident);
+            if (mailBag.mails.isEmpty())
                 throw new TranslatedCommandException("You have no mails to read");
-            readMail(arguments.sender, mails.remove(0));
-            Mailer.saveMails(arguments.ident, mails);
+            readMail(arguments.sender, mailBag.mails.remove(0));
+            Mailer.saveMails(arguments.ident, mailBag);
             break;
         }
         case "readall":
@@ -80,13 +82,13 @@ public class CommandMail extends ParserCommandBase
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
             if (arguments.isTabCompletion)
                 return;
-            Mails mails = Mailer.getMails(arguments.ident);
-            if (mails.isEmpty())
+            Mails mailBag = Mailer.getMailBag(arguments.ident);
+            if (mailBag.mails.isEmpty())
                 throw new TranslatedCommandException("You have no mails to read");
-            for (Mail mail : mails)
+            for (Mail mail : mailBag.mails)
                 readMail(arguments.sender, mail);
-            mails.clear();
-            Mailer.saveMails(arguments.ident, mails);
+            mailBag.mails.clear();
+            Mailer.saveMails(arguments.ident, mailBag);
             break;
         }
         case "send":
@@ -96,19 +98,19 @@ public class CommandMail extends ParserCommandBase
                 return;
             if (arguments.isEmpty())
                 throw new TranslatedCommandException("No message specified");
-            UserIdent sender = arguments.ident != null ? arguments.ident : UserIdent.get("Server");
-            Mailer.sendMail(sender, receiver, arguments.toString());
+            Mailer.sendMail(arguments.ident, receiver, arguments.toString());
+            arguments.confirm(Translator.format("You sent a mail to %s", receiver.getUsernameOrUuid()));
             break;
         }
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subArg);
         }
     }
 
     public static void readMail(ICommandSender sender, Mail mail)
     {
         OutputHandler.chatNotification(sender,
-                Translator.format("Mail from %s on the %s:", mail.sender.getUsernameOrUuid(), FEConfig.FORMAT_DATE_TIME.format(mail.timestamp)));
+                Translator.format("Mail from %s on the %s", mail.sender.getUsernameOrUuid(), FEConfig.FORMAT_DATE_TIME.format(mail.timestamp)));
         OutputHandler.chatConfirmation(sender, OutputHandler.formatColors(mail.message));
     }
 

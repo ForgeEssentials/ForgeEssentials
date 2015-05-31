@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import com.forgeessentials.api.UserIdent;
@@ -46,11 +46,21 @@ public class Mailer extends ServerEventHandler
 
     }
 
-    public static class Mails extends ArrayList<Mail>
+    public static class Mails
     {
+
+        public UserIdent user;
+
+        public List<Mail> mails = new ArrayList<Mail>();
+
+        public Mails(UserIdent user)
+        {
+            this.user = user;
+        }
+
     }
 
-    private static Map<UserIdent, Mails> mailsMap = new HashMap<>();
+    private static Map<UserIdent, Mails> mailBags = new HashMap<>();
 
     @SubscribeEvent
     public void serverStartingEvent(FEModuleServerInitEvent event)
@@ -62,9 +72,9 @@ public class Mailer extends ServerEventHandler
     public void playerLoggedInEvent(PlayerLoggedInEvent event)
     {
         UserIdent user = UserIdent.get(event.player);
-        Mails mails = getMails(user);
+        Mails mailBag = getMailBag(user);
         Set<UserIdent> senders = new HashSet<>();
-        for (Mail mail : mails)
+        for (Mail mail : mailBag.mails)
             senders.add(mail.sender);
         String message = Translator.format("You hav unread mails from %s. Use /mail to read.", UserIdent.join(senders, ", ", " and "));
         OutputHandler.chatConfirmation(event.player, message);
@@ -73,11 +83,11 @@ public class Mailer extends ServerEventHandler
     public static void loadAllMails()
     {
         Map<String, Mails> loadedMails = DataManager.getInstance().loadAll(Mails.class);
-        mailsMap.clear();
-        for (Entry<String, Mails> mailsEntry : loadedMails.entrySet())
+        mailBags.clear();
+        for (Mails mailBag : loadedMails.values())
             try
             {
-                mailsMap.put(UserIdent.fromString(mailsEntry.getKey()), mailsEntry.getValue());
+                mailBags.put(mailBag.user, mailBag);
             }
             catch (IllegalArgumentException e)
             {
@@ -90,22 +100,25 @@ public class Mailer extends ServerEventHandler
         if (mails == null)
             DataManager.getInstance().delete(Mails.class, user.toString());
         else
-            DataManager.getInstance().save(mails, user.toString());
+            DataManager.getInstance().save(mails, user.getOrGenerateUuid().toString());
     }
 
-    public static Mails getMails(UserIdent user)
+    public static Mails getMailBag(UserIdent user)
     {
-        Mails mails = mailsMap.get(user);
+        Mails mails = mailBags.get(user);
         if (mails == null)
-            mails = new Mails();
+            mails = new Mails(user);
         return mails;
     }
 
     public static void sendMail(UserIdent sender, UserIdent recipent, String message)
     {
-        Mails mails = getMails(recipent);
-        mails.add(new Mail(sender, message));
-        saveMails(recipent, mails);
+        Mails mailBag = getMailBag(recipent);
+        mailBag.mails.add(new Mail(sender, message));
+        saveMails(recipent, mailBag);
+        if (recipent.hasPlayer())
+            OutputHandler.chatNotification(recipent.getPlayer(),
+                    Translator.format("You have a new mail from %s", sender == null ? "the server" : sender.getUsernameOrUuid()));
     }
 
 }
