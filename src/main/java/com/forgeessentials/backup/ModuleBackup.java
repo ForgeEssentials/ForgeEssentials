@@ -73,6 +73,8 @@ public class ModuleBackup extends ConfigLoaderBase
 
     public static boolean backupOnUnload;
 
+    public static boolean backupOnLoad;
+
     public static int keepBackups;
 
     public static int dailyBackups;
@@ -127,12 +129,31 @@ public class ModuleBackup extends ConfigLoaderBase
     }
 
     @SubscribeEvent
+    public void worldLoadEvent(WorldEvent.Load event)
+    {
+        if (!FMLCommonHandler.instance().getEffectiveSide().isServer() || !backupOnLoad)
+            return;
+        final WorldServer world = (WorldServer) event.world;
+        if (shouldBackup(world))
+        {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run()
+                {
+                    backup(world);
+                }
+            });
+            thread.start();
+        }
+    }
+
+    @SubscribeEvent
     public void worldUnloadEvent(WorldEvent.Unload event)
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer() || !backupOnUnload)
             return;
         final WorldServer world = (WorldServer) event.world;
-        if (backupOnUnload && shouldBackup(world))
+        if (shouldBackup(world))
         {
             Thread thread = new Thread(new Runnable() {
                 @Override
@@ -150,6 +171,7 @@ public class ModuleBackup extends ConfigLoaderBase
     {
         backupDefault = config.get(CONFIG_CAT, "backup_default", true, "Backup all worlds by default").getBoolean();
         backupInterval = config.get(CONFIG_CAT, "backup_interval", 1, "Automatic backup interval in minutes (0 to disable)").getInt();
+        backupOnLoad = config.get(CONFIG_CAT, "backup_on_load", true, "Always backup worlds when loaded (server starts)").getBoolean();
         backupOnUnload = config.get(CONFIG_CAT, "backup_on_unload", true, "Always backup when a world is unloaded").getBoolean();
         keepBackups = config.get(CONFIG_CAT, "keep_backups", 10, "Keep at least this amount of last backups").getInt();
         dailyBackups = config.get(CONFIG_CAT, "keep_daily_backups", 7, "Keep at least one daily backup for this last number of last days").getInt();
@@ -210,7 +232,7 @@ public class ModuleBackup extends ConfigLoaderBase
             return shouldBackup;
     }
 
-    private static void backup(WorldServer world)
+    private static synchronized void backup(WorldServer world)
     {
         notify(String.format("Starting backup of dim %d...", world.provider.dimensionId));
 
