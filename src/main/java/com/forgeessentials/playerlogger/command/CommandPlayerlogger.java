@@ -65,7 +65,7 @@ public class CommandPlayerlogger extends ParserCommandBase
             showStats(arguments.sender);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 

@@ -103,7 +103,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
                 parseEntryExitMessage(sender, worldZone, args, arg.equals("entry"));
                 break;
             default:
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND);
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
             }
         }
     }
