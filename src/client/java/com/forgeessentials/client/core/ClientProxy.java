@@ -3,6 +3,7 @@ package com.forgeessentials.client.core;
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 import static com.forgeessentials.commons.network.NetworkUtils.netHandler;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
@@ -39,13 +40,20 @@ public class ClientProxy extends DummyProxy
 {
     private ClientConfig config;
 
-    private VersionUtils version;
+    protected VersionUtils version;
 
-    private boolean sentHandshake = true;
+    protected boolean sentHandshake = true;
 
     private static Selection selection;
 
     private static ResourceLocation qrCode;
+
+    public static ClientProxy INSTANCE;
+
+    public ClientProxy()
+    {
+        INSTANCE = this;
+    }
 
     @Override
     public void doPreInit(FMLPreInitializationEvent e)
@@ -85,6 +93,7 @@ public class ClientProxy extends DummyProxy
             MinecraftForge.EVENT_BUS.register(new CUIRenderrer());
         }
         MinecraftForge.EVENT_BUS.register(new QRRenderer());
+        ClientCommandHandler.instance.registerCommand(new FEClientCommand());
     }
 
     @SubscribeEvent
