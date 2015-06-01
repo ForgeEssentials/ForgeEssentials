@@ -338,6 +338,8 @@ public class ModuleBackup extends ConfigLoaderBase
     private static void cleanBackups()
     {
         File baseDir = new File(moduleDir, DimensionManager.getWorld(0).getWorldInfo().getWorldName());
+        if (!baseDir.exists())
+            return;
         for (File backupDir : baseDir.listFiles())
         {
             if (!backupDir.isDirectory())
