@@ -24,6 +24,10 @@ public class ChatConfig extends ConfigLoaderBase
 
     private static final String LOGIN_MESSAGE = "Login message shown each time the player logs in (supports script arguments)";
 
+    private static final String DEFAULT_WELCOME_MESSAGE = "New player @player joined the server!";
+
+    private static final String[] DEFAULT_LOGIN_MESSAGE = new String[] { "Welcome @player.", "This server is running ForgeEssentials" };
+
     public static String gamemodeCreative;
 
     public static String gamemodeAdventure;
@@ -54,8 +58,8 @@ public class ChatConfig extends ConfigLoaderBase
             chatFormat = "%s%s<%s>%s%s ";
         }
 
-        welcomeMessage = config.get("Chat", "WelcomeMessage", "Welcome %username to the server!", WELCOME_MESSAGE).getString();
-        loginMessage = config.get("Chat", "LoginMessage", "Welcome %username to the server!", LOGIN_MESSAGE).getStringList();
+        welcomeMessage = config.get("Chat", "WelcomeMessage", DEFAULT_WELCOME_MESSAGE, WELCOME_MESSAGE).getString();
+        loginMessage = config.get("Chat", "LoginMessage", DEFAULT_LOGIN_MESSAGE, LOGIN_MESSAGE).getStringList();
 
         config.addCustomCategoryComment(CAT_GM, "Gamemode names");
         gamemodeSurvival = config.get(CAT_GM, "Survival", "survival").getString();
