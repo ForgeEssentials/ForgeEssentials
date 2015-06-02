@@ -202,7 +202,6 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                     em.clear();
                 }
             }
-            this.notify();
         }
     }
 
