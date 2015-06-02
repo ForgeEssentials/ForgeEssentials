@@ -140,12 +140,32 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     }
 
     @Override
-    public synchronized void run()
+    public void run()
     {
         while (!eventQueue.isEmpty())
         {
             synchronized (this)
             {
+                if (em == null)
+                    return;
+                if (!em.isOpen())
+                {
+                    OutputHandler.felog.severe("[PL] Playerlogger database closed. Trying to reconnect...");
+                    try
+                    {
+                        em = entityManagerFactory.createEntityManager();
+                    }
+                    catch (IllegalStateException e)
+                    {
+                        OutputHandler.felog.severe("[PL] ------------------------------------------------------------------------");
+                        OutputHandler.felog.severe("[PL] Fatal error! Database connection was lost and could not be reestablished");
+                        OutputHandler.felog.severe("[PL] Stopping playerlogger!");
+                        OutputHandler.felog.severe("[PL] ------------------------------------------------------------------------");
+                        em = null;
+                        eventQueue.clear();
+                        return;
+                    }
+                }
                 try
                 {
                     em.getTransaction().begin();
@@ -161,12 +181,26 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                     // System.out.println(String.format("%d: Wrote %d playerlogger entries", System.currentTimeMillis()
                     // % (1000 * 60), count));
                 }
-                catch (Exception e)
+                catch (Exception e1)
                 {
-                    em.getTransaction().rollback();
-                    e.printStackTrace();
+                    OutputHandler.felog.severe("[PL] Exception while persisting playerlogger entries");
+                    e1.printStackTrace();
+                    try
+                    {
+                        em.getTransaction().rollback();
+                    }
+                    catch (Exception e2)
+                    {
+                        OutputHandler.felog.severe("[PL] Exception while rolling back changes!");
+                        e2.printStackTrace();
+                        em.close();
+                        return;
+                    }
                 }
-                em.clear();
+                finally
+                {
+                    em.clear();
+                }
             }
             this.notify();
         }
@@ -241,6 +275,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     protected void logEvent(PlayerLoggerEvent<?> event)
     {
+        if (em == null)
+            return;
         eventQueue.add(event);
         startThread();
     }
@@ -386,6 +422,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void multiPlaceEvent(BlockEvent.MultiPlaceEvent e)
     {
+        if (em == null)
+            return;
         for (BlockSnapshot snapshot : e.getReplacedBlockSnapshots())
             eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, e.player)));
         startThread();
