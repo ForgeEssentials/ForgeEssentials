@@ -80,10 +80,9 @@ public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
         String message = messages.get(idx);
         for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
         {
-            String formattedMsg = ModuleChat.processChatReplacements(null, ScriptArguments.process(message, player));
+            String formattedMsg = ModuleChat.processChatReplacements(null, ScriptArguments.processSafe(message, player));
             OutputHandler.sendMessage(player, new ChatComponentText(formattedMsg));
         }
-        // OutputHandler.broadcast(new ChatComponentText(messages.get(currentMessageIdx)));
     }
 
     @Override

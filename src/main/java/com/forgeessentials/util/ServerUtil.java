@@ -202,7 +202,7 @@ public abstract class ServerUtil
      */
     public static <T> T[] dropFirst(T[] array)
     {
-        return Arrays.copyOfRange(array, 1, array.length - 1);
+        return Arrays.copyOfRange(array, 1, array.length);
     }
 
     /* ------------------------------------------------------------ */

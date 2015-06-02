@@ -155,14 +155,14 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     public void showHelpPage(ICommandSender sender)
     {
         if (messages.length == 0)
-            showHelpPage(sender, 0);
+            showHelpPage(sender, 1);
         for (int i = 0; i < messages.length; i++)
-            OutputHandler.chatConfirmation(sender, ScriptArguments.process(messages[i], sender));
+            OutputHandler.chatConfirmation(sender, ScriptArguments.processSafe(messages[i], sender));
     }
 
     public void showHelpPage(ICommandSender sender, int page)
     {
-        fixer.processCommand(sender, new String[] { "" + page });
+        fixer.processCommand(sender, new String[] { Integer.toString(page) });
     }
 
     protected List<ICommand> getSortedPossibleCommands(ICommandSender sender)

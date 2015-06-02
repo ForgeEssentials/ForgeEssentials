@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
@@ -102,17 +103,33 @@ public class TaskRegistry extends ServerEventHandler
 
     public void schedule(TimerTask task, long time)
     {
-        timer.schedule(task, time);
+        try
+        {
+            timer.schedule(task, time);
+        }
+        catch (IllegalStateException e)
+        {
+            OutputHandler.felog.warning("Could not schedule timer");
+            e.printStackTrace();
+        }
+    }
+
+    public void scheduleRepeated(TimerTask task, long delay, long interval)
+    {
+        try
+        {
+            timer.scheduleAtFixedRate(task, delay, interval);
+        }
+        catch (IllegalStateException e)
+        {
+            OutputHandler.felog.warning("Could not schedule timer");
+            e.printStackTrace();
+        }
     }
 
     public void scheduleRepeated(TimerTask task, long interval)
     {
         scheduleRepeated(task, interval, interval);
-    }
-
-    public void scheduleRepeated(TimerTask task, long delay, long interval)
-    {
-        timer.scheduleAtFixedRate(task, delay, interval);
     }
 
     public void remove(TimerTask task)
