@@ -22,6 +22,8 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.BlockSnapshot;
@@ -119,8 +121,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             properties.setProperty("hibernate.connection.url", "jdbc:h2:" + PlayerLoggerConfig.databaseUrl);
             break;
         case "mysql":
-            properties.setProperty("hibernate.connection.url", "jdbc:mysql://" + PlayerLoggerConfig.databaseUrl); // e.g.:
-                                                                                                                  // jdbc:mysql://localhost:3306/forgeessentials
+            // e.g.: jdbc:mysql://localhost:3306/forgeessentials
+            properties.setProperty("hibernate.connection.url", "jdbc:mysql://" + PlayerLoggerConfig.databaseUrl);
             break;
         default:
             throw new RuntimeException("PlayerLogger database type must be either h2 or mysql.");
@@ -358,7 +360,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     }
 
     /* ------------------------------------------------------------ */
-    /* Block events */
+    /* World events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void worldLoad(WorldEvent.Load e)
@@ -399,6 +401,17 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     public void explosionEvent(ExplosionEvent.Detonate e)
     {
         logEvent(new LogEventExplosion(e));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerInteractEvent(PlayerInteractEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.useBlock == Result.DENY && event.useItem == Result.DENY))
+            return;
+        ItemStack itemStack = event.entityPlayer.getCurrentEquippedItem();
+        if (event.useBlock != Result.ALLOW && itemStack != null && itemStack.getItem() instanceof ItemBlock)
+            return;
+        logEvent(new LogEventInteract(event));
     }
 
     /* ------------------------------------------------------------ */
@@ -463,14 +476,6 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /* ------------------------------------------------------------ */
     /* Interact events */
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerInteractEvent(PlayerInteractEvent event)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.useBlock == Result.DENY && event.useItem == Result.DENY))
-            return;
-        logEvent(new LogEventInteract(event));
-    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void attackEntityEvent(AttackEntityEvent e)

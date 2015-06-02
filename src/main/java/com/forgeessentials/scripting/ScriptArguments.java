@@ -111,6 +111,8 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
+            if (sender == null)
+                throw new MissingPlayerException();
             return sender.getCommandSenderName();
         }
 
@@ -125,6 +127,8 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
+            if (sender == null)
+                throw new MissingPlayerException();
             return sender.getCommandSenderName();
         }
 

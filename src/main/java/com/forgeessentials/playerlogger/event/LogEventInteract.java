@@ -14,15 +14,9 @@ import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
 public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
 {
 
-    // public Block block;
-
-    // public int metadata;
-
     public LogEventInteract(PlayerInteractEvent event)
     {
         super(event);
-        // block = event.world.getBlock(event.x, event.y, event.z);
-        // metadata = event.world.getBlockMetadata(event.x, event.y, event.z);
     }
 
     @Override
