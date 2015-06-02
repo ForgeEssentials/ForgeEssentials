@@ -1,4 +1,4 @@
-package com.forgeessentials.worldborder;
+package com.forgeessentials.commands.util;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,23 +18,25 @@ import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
 import net.minecraft.world.gen.ChunkProviderServer;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commands.world.CommandFiller;
+import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.ITickTask;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.worldborder.ModuleWorldBorder;
+import com.forgeessentials.worldborder.WorldBorder;
 
 /**
  * Does the actual filling, with limited chuncks per tick.
- *
- * @author Dries007
- * @author gnif
  */
 
 public class TickTaskFill implements ITickTask
 {
+
+    private static final int WORLD_BORDER = 6;
 
     public ICommandSender sender;
 
@@ -85,22 +87,32 @@ public class TickTaskFill implements ITickTask
 
         this.sender = sender;
         world = worldToFill;
-        border = ModuleWorldBorder.getBorder(APIRegistry.perms.getServerZone().getWorldZone(world).getName(), false);
-        if (border == null || border.shapeByte == 0 || border.rad == 0)
+        border = ModuleWorldBorder.getInstance().getBorder(world);
+        if (border == null || !border.isEnabled())
         {
             OutputHandler.chatError(sender, "You need to set the worldborder first!");
             return;
         }
 
-        X = minX = (border.center.getX() - border.rad - ModuleWorldBorder.overGenerate) / 16;
-        Z = minZ = (border.center.getZ() - border.rad - ModuleWorldBorder.overGenerate) / 16;
-        maxX = (border.center.getX() + border.rad + ModuleWorldBorder.overGenerate) / 16;
-        maxZ = (border.center.getZ() + border.rad + ModuleWorldBorder.overGenerate) / 16;
-        centerX = border.center.getX() / 16;
-        centerZ = border.center.getZ() / 16;
-        rad = (border.rad + ModuleWorldBorder.overGenerate) / 16;
+        centerX = border.getCenter().getX() / 16;
+        centerZ = border.getCenter().getZ() / 16;
+        X = minX = centerX - border.getSize().getX() / 16 - WORLD_BORDER;
+        Z = minZ = centerZ - border.getSize().getZ() / 16 - WORLD_BORDER;
+        maxX = centerX + border.getSize().getX() / 16 + WORLD_BORDER;
+        maxZ = centerZ + border.getSize().getZ() / 16 + WORLD_BORDER;
+        rad = Math.max(border.getSize().getX(), border.getSize().getZ()) / 16 + WORLD_BORDER;
 
-        todo = border.getETA();
+        switch (border.getShape())
+        {
+        case BOX:
+        default:
+            todo = (long) Math.pow(rad * 2, 2);
+            break;
+        case CYLINDER:
+        case ELLIPSOID:
+            todo = (long) (Math.pow(rad, 2) * Math.PI);
+            break;
+        }
 
         OutputHandler.debug("Filler for :" + world.provider.dimensionId);
         OutputHandler.debug("MinX=" + minX + " MaxX=" + maxX);
@@ -123,7 +135,7 @@ public class TickTaskFill implements ITickTask
         setupWriteChunkToNBT();
         TaskRegistry.getInstance().schedule(this);
 
-        OutputHandler.chatWarning(sender, String.format("This filler will take about %d at current speed", getETA()));
+        OutputHandler.chatWarning(sender, String.format("This filler will take about %s at current speed", getETA()));
     }
 
     private String getETA()
@@ -150,20 +162,19 @@ public class TickTaskFill implements ITickTask
 
         for (int i = 0; i < speed; i++)
         {
-            /*
-             * skip over chunks that already exist (we use the region cache so as to not load them)
-             */
-            while (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), X, Z).chunkExists(X & 0x1F, Z & 0x1F))
-            {
-                --todo;
-                if (next())
-                    return;
-            }
+            // TODO: Disabled until population works properly
 
-            /*
-             * get and populate the chunk manually so that it does not get fully loaded in, this saves ram and increases
-             * performance
-             */
+            // // skip over chunks that already exist (we use the region cache so as to not load them)
+            // while (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), X, Z).chunkExists(X & 0x1F, Z
+            // & 0x1F))
+            // {
+            // --todo;
+            // if (next())
+            // return;
+            // }
+
+            // get and populate the chunk manually so that it does not get fully loaded in, this saves ram and increases
+            // performance
             ChunkProviderServer provider = (ChunkProviderServer) world.getChunkProvider();
 
             Chunk chunk = provider.currentChunkProvider.loadChunk(X, Z);
@@ -179,8 +190,8 @@ public class TickTaskFill implements ITickTask
 
     private boolean next()
     {
-        // 1 = square
-        if (border.shapeByte == 1)
+        // square
+        if (border.getShape() == AreaShape.BOX)
         {
             if (X <= maxX)
             {
@@ -200,8 +211,8 @@ public class TickTaskFill implements ITickTask
                 }
             }
         }
-        // 2 = round
-        else if (border.shapeByte == 2)
+        // round
+        else
         {
             while (true)
             {
@@ -223,18 +234,12 @@ public class TickTaskFill implements ITickTask
                     }
                 }
 
-                if (rad >= ModuleWorldBorder.getDistanceRound(centerX, centerZ, X, Z))
-                {
+                double dx = centerX - X;
+                double dz = centerZ - Z;
+                if (Math.sqrt(dx * dx + dz * dz) < rad)
                     break;
-                }
             }
         }
-        else
-        {
-            isComplete = true;
-            throw new RuntimeException("WTF?" + border.shapeByte);
-        }
-
         return false;
     }
 

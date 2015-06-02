@@ -1,185 +1,197 @@
 package com.forgeessentials.worldborder;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
-import com.forgeessentials.worldborder.Effects.IEffect;
+import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
-/**
- * Bounces players back into the border if they pass it. No bypass permissions available, If needed, tell me on github.
- *
- * @author Dries007
- */
 @FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class)
-public class ModuleWorldBorder
+public class ModuleWorldBorder extends ServerEventHandler
 {
 
-    public static boolean logToConsole = true;
+    public static final String PERM = "fe.worldborder";
+    public static final String PERM_ADMIN = PERM + ".admin";
 
-    private static Map<String, WorldBorder> borderMap = new HashMap<String, WorldBorder>();
+    public static final int DEFAULT_SIZE = 32768;
 
-    public static Map<Integer, IEffect[]> effectsList = new HashMap<Integer, IEffect[]>();
+    private static ModuleWorldBorder instance;
 
-    public static int overGenerate = 345;
+    private Map<WorldServer, WorldBorder> borders = new HashMap<>();
 
-    public static void loadAll()
+    public ModuleWorldBorder()
     {
-        borderMap = DataManager.getInstance().loadAll(WorldBorder.class);
+        super();
+        instance = this;
+        DataManager.addDataType(new WorldBorderEffectType());
     }
 
-    public static void saveAll()
+    public static ModuleWorldBorder getInstance()
     {
-        for (WorldBorder wb : borderMap.values())
-        {
-            wb.save();
-        }
+        return instance;
+    }
 
-        for (TickTaskFill filler : CommandFiller.map.values())
+    @SubscribeEvent
+    public void moduleInitEvent(FEModuleInitEvent event)
+    {
+        FECommandManager.registerCommand(new CommandWorldBorder());
+    }
+
+    @SubscribeEvent
+    public void serverStartingEvent(FEModuleServerInitEvent event)
+    {
+        APIRegistry.perms.registerPermissionDescription(PERM, "Worldborder permissions");
+    }
+
+    @SubscribeEvent
+    public void worldLoadEvent(WorldEvent.Load event)
+    {
+        if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+            return;
+
+        WorldBorder border = WorldBorder.load(event.world);
+        if (border != null)
         {
-            filler.stop();
+            border.world = event.world;
+            borders.put((WorldServer) event.world, border);
         }
     }
 
-    public static void registerEffects(int dist, IEffect[] effects)
+    @SubscribeEvent
+    public void worldUnLoadEvent(WorldEvent.Unload event)
     {
-        effectsList.put(dist, effects);
+        if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+            return;
+        borders.remove(event.world);
     }
 
-    public static void executeClosestEffects(WorldBorder wb, double dd, EntityPlayerMP player)
+    @SubscribeEvent
+    public void playerMoveEvent(PlayerMoveEvent event)
     {
-        int d = (int) Math.abs(dd);
-        if (logToConsole)
+        EntityPlayerMP player = event.getPlayer();
+        WorldBorder border = getBorder(event.after.getWorld());
+        if (border != null && border.isEnabled())
         {
-            OutputHandler.felog.info(player.getDisplayName() + " passed the worldborder by " + d + " blocks.");
-        }
-        for (int i = d; i >= 0; i--)
-        {
-            if (effectsList.isEmpty())
-                continue;
-            if (effectsList.containsKey(i))
+            double minBorderDistance = Double.MAX_VALUE;
+            Point p1 = border.getArea().getLowPoint();
+            Point p2 = border.getArea().getHighPoint();
+            switch (border.getShape())
             {
-                for (IEffect effect : effectsList.get(i))
+            case BOX:
+            {
+                minBorderDistance = Math.min(minBorderDistance, event.after.getX() - p1.getX());
+                minBorderDistance = Math.min(minBorderDistance, event.after.getZ() - p1.getZ());
+                minBorderDistance = Math.min(minBorderDistance, p2.getX() - event.after.getX());
+                minBorderDistance = Math.min(minBorderDistance, p2.getZ() - event.after.getZ());
+                break;
+            }
+            case ELLIPSOID:
+            case CYLINDER:
+            {
+                Point delta = event.after.toWorldPoint();
+                delta.subtract(border.getCenter());
+                minBorderDistance = Math.sqrt(delta.getX() * delta.getX() + delta.getZ() * delta.getZ());
+                break;
+            }
+            default:
+                OutputHandler.felog.severe("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld().provider.dimensionId);
+                borders.remove(event.after.getWorld());
+                return;
+            }
+
+            // Check which effects are active
+            Set<WorldBorderEffect> newActiveEffects = new HashSet<>();
+            for (WorldBorderEffect effect : border.getEffects())
+                if (minBorderDistance <= effect.getTiggerDistance())
+                    newActiveEffects.add(effect);
+
+            // Deactivate old effects and update current ones
+            Set<WorldBorderEffect> activeEffects = border.getOrCreateActiveEffects(player);
+            for (Iterator<WorldBorderEffect> iterator = activeEffects.iterator(); iterator.hasNext();)
+            {
+                WorldBorderEffect effect = iterator.next();
+                if (!newActiveEffects.contains(effect))
                 {
-                    effect.execute(wb, player);
+                    // Remove effect that got out of range
+                    effect.deactivate(border, player);
+                    iterator.remove();
+                }
+                else
+                {
+                    // Update effect
+                    effect.playerMove(border, event);
+                }
+            }
+
+            // Add new effects
+            for (WorldBorderEffect effect : newActiveEffects)
+            {
+                activeEffects.add(effect);
+                effect.activate(border, player);
+                effect.playerMove(border, event);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void serverTickEvent(TickEvent.ServerTickEvent event)
+    {
+        // Tick effects
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        {
+            WorldBorder border = getBorder(player.worldObj);
+            if (border != null)
+            {
+                Set<WorldBorderEffect> effects = border.getActiveEffects(player);
+                if (effects != null)
+                {
+                    for (WorldBorderEffect effect : effects)
+                    {
+                        effect.tick(border, player);
+                    }
                 }
             }
         }
     }
 
-    public static Vector2 getDirectionVector(Point center, EntityPlayerMP player)
+    public WorldBorder getBorder(World world)
     {
-        Vector2 vecp = new Vector2(center.getX() - player.posX, center.getZ() - player.posZ);
-        vecp.normalize();
-        vecp.multiply(-1);
-        return vecp;
+        return borders.get(world);
     }
 
-    public static int getDistanceRound(Point center, EntityPlayer player)
+    public WorldBorder getBorder(WorldServer world, WorldPoint center)
     {
-        double difX = center.getX() - player.posX;
-        double difZ = center.getZ() - player.posZ;
-
-        return (int) Math.sqrt((difX * difX) + (difZ * difZ));
-    }
-
-    public static int getDistanceRound(int centerX, int centerZ, int x, int z)
-    {
-        double difX = centerX - x;
-        double difZ = centerZ - z;
-
-        return (int) Math.sqrt((difX * difX) + (difZ * difZ));
-    }
-
-    @SubscribeEvent
-    public void load(FEModuleInitEvent e)
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-        ForgeEssentials.getConfigManager().registerLoader("WorldBorder", new ConfigWorldBorder());
-
-        FECommandManager.registerCommand(new CommandWB());
-        FECommandManager.registerCommand(new CommandFiller());
-    }
-
-    @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
-    {
-        APIRegistry.perms.registerPermission("fe.worldborder.admin", RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission("fe.worldborder.filler", RegisteredPermValue.OP);
-    }
-
-    /*
-     * Penalty part
-     */
-
-    @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent e)
-    {
-        loadAll();
-    }
-
-    @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
-    {
-        saveAll();
-    }
-
-    /*
-     * Static Helper Methods
-     */
-
-    public static void checkBorder(EntityPlayerMP player, String name)
-    {
-        WorldBorder border = borderMap.get(name);
-        if (border != null)
-            border.check(player);
-    }
-
-    public static WorldBorder getBorder(String name, boolean createIfNull)
-    {
-        WorldBorder border = borderMap.get(name);
-        if (border == null && createIfNull)
+        WorldBorder border = borders.get(world);
+        if (border == null)
         {
-            border = new WorldBorder(name);
-            borderMap.put(name, border);
+            border = new WorldBorder(center, DEFAULT_SIZE, DEFAULT_SIZE);
+            border.world = world;
+            borders.put(world, border);
         }
         return border;
     }
 
-    @SubscribeEvent
-    public void playerMove(PlayerMoveEvent e)
-    {
-        checkBorder((EntityPlayerMP) e.entityPlayer, APIRegistry.perms.getServerZone().getWorldZone(e.entityPlayer.worldObj).getName());
-        checkBorder((EntityPlayerMP) e.entityPlayer, APIRegistry.perms.getServerZone().getName());
-    }
-
-    @SubscribeEvent
-    public void worldUnLoad(WorldEvent.Unload e)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            return;
-        Zone zone = APIRegistry.perms.getServerZone().getWorldZone(e.world);
-        borderMap.remove(zone.getName());
-    }
 }
