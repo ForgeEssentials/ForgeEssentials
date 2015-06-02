@@ -28,7 +28,7 @@ public class ScriptParser
     public static interface ScriptArgument
     {
 
-        public String process(ICommandSender sender);
+        public String process(ICommandSender sender) throws ScriptException;
 
         public String getHelp();
 

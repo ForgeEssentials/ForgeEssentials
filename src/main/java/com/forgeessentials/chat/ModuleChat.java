@@ -294,7 +294,7 @@ public class ModuleChat
 
     public static String processChatReplacements(ICommandSender sender, String message)
     {
-        message = ScriptArguments.process(message);
+        message = ScriptArguments.processSafe(message, sender);
         for (Entry<String, String> r : chatConstReplacements.entrySet())
             message = message.replaceAll("%" + r.getKey(), r.getValue());
         message = OutputHandler.formatColors(message);

@@ -24,6 +24,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
+import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -54,17 +55,12 @@ public final class ScriptArguments
 
     public static final Pattern ARGUMENT_PATTERN = Pattern.compile("@\\{?(\\w+)\\}?");
 
-    public static String process(String text)
-    {
-        return process(text, null, null);
-    }
-
-    public static String process(String text, ICommandSender sender)
+    public static String process(String text, ICommandSender sender) throws ScriptException
     {
         return process(text, sender, null);
     }
 
-    public static String process(String text, ICommandSender sender, List<?> args)
+    public static String process(String text, ICommandSender sender, List<?> args) throws ScriptException
     {
         Matcher m = ARGUMENT_PATTERN.matcher(text);
         StringBuffer sb = new StringBuffer();
@@ -74,6 +70,49 @@ public final class ScriptArguments
             ScriptArgument argument = get(modifier);
             if (argument != null)
                 m.appendReplacement(sb, argument.process(sender));
+            else if (args == null)
+                m.appendReplacement(sb, m.group());
+            else
+                try
+                {
+                    int idx = Integer.parseInt(modifier);
+                    if (args == null || idx >= args.size())
+                        throw new SyntaxException("Missing argument @%d", idx);
+                    m.appendReplacement(sb, args.get(idx).toString());
+                }
+                catch (NumberFormatException e)
+                {
+                    m.appendReplacement(sb, m.group());
+                }
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
+    public static String processSafe(String text, ICommandSender sender)
+    {
+        return processSafe(text, sender, null);
+    }
+
+    public static String processSafe(String text, ICommandSender sender, List<?> args)
+    {
+        Matcher m = ARGUMENT_PATTERN.matcher(text);
+        StringBuffer sb = new StringBuffer();
+        while (m.find())
+        {
+            String modifier = m.group(1).toLowerCase();
+            ScriptArgument argument = get(modifier);
+            if (argument != null)
+            {
+                try
+                {
+                    m.appendReplacement(sb, argument.process(sender));
+                }
+                catch (ScriptException e)
+                {
+                    m.appendReplacement(sb, m.group());
+                }
+            }
             else if (args == null)
                 m.appendReplacement(sb, m.group());
             else
