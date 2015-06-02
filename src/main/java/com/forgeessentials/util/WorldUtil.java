@@ -84,7 +84,7 @@ public abstract class WorldUtil
     public static void placeInWorld(EntityPlayer player)
     {
         WorldPoint p = placeInWorld(new WorldPoint(player));
-        player.setPositionAndUpdate(p.getX() + 0.5, p.getX(), p.getX() + 0.5);
+        player.setPositionAndUpdate(p.getX() + 0.5, p.getY(), p.getZ() + 0.5);
     }
 
     /* ------------------------------------------------------------ */
