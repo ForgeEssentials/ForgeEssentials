@@ -24,7 +24,6 @@ import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TickTaskHandler;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
@@ -107,9 +106,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     private TeleportHelper teleportHelper;
 
     @SuppressWarnings("unused")
-    private TickTaskHandler tickTaskHandler;
-
-    @SuppressWarnings("unused")
     private Questioner questioner;
 
     @SuppressWarnings("unused")
@@ -175,7 +171,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         factory = new ForgeEssentialsEventFactory();
         wandHandler = new SelectionEventHandler();
         teleportHelper = new TeleportHelper();
-        tickTaskHandler = new TickTaskHandler();
         questioner = new Questioner();
         ForgeEssentials.BUS.register(new CompatReiMinimap());
 

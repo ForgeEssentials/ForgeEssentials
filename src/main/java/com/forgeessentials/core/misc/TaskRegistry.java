@@ -17,14 +17,10 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 public class TaskRegistry extends ServerEventHandler
 {
 
-    public static interface ITickTask
+    public static interface TickTask
     {
 
-        public void tick();
-
-        public void onComplete();
-
-        public boolean isComplete();
+        public boolean tick();
 
         public boolean editsBlocks();
 
@@ -34,7 +30,7 @@ public class TaskRegistry extends ServerEventHandler
 
     public static int MAX_BLOCK_TASKS = 6;
 
-    protected ConcurrentLinkedQueue<ITickTask> tickTasks = new ConcurrentLinkedQueue<>();
+    protected ConcurrentLinkedQueue<TickTask> tickTasks = new ConcurrentLinkedQueue<>();
 
     private Timer timer = new Timer();
 
@@ -64,12 +60,12 @@ public class TaskRegistry extends ServerEventHandler
 
     /* ------------------------------------------------------------ */
 
-    public void schedule(ITickTask task)
+    public void schedule(TickTask task)
     {
         tickTasks.add(task);
     }
 
-    public void remove(ITickTask task)
+    public void remove(TickTask task)
     {
         tickTasks.remove(task);
     }
@@ -78,23 +74,17 @@ public class TaskRegistry extends ServerEventHandler
     public void onTick(TickEvent.ServerTickEvent e)
     {
         int blockTaskCount = 0;
-        for (Iterator<ITickTask> iterator = tickTasks.iterator(); iterator.hasNext();)
+        for (Iterator<TickTask> iterator = tickTasks.iterator(); iterator.hasNext();)
         {
-            ITickTask task = iterator.next();
-            if (task.isComplete())
-            {
-                task.onComplete();
-                iterator.remove();
-                continue;
-            }
-
+            TickTask task = iterator.next();
             if (task.editsBlocks())
             {
                 if (blockTaskCount >= MAX_BLOCK_TASKS)
                     continue;
                 blockTaskCount++;
             }
-            task.tick();
+            if (task.tick())
+                iterator.remove();
         }
     }
 

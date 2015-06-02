@@ -38,8 +38,8 @@ import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commands.world.CommandButcher;
-import com.forgeessentials.commands.world.CommandFiller;
 import com.forgeessentials.commands.world.CommandFindblock;
+import com.forgeessentials.commands.world.CommandPregen;
 import com.forgeessentials.commands.world.CommandPush;
 import com.forgeessentials.commands.world.CommandRemove;
 import com.forgeessentials.commands.world.CommandTime;
@@ -99,7 +99,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandTempBan());
         FECommandManager.registerCommand(new CommandFly());
         FECommandManager.registerCommand(new CommandHelp());
-        FECommandManager.registerCommand(new CommandFiller());
+        FECommandManager.registerCommand(new CommandPregen());
     }
 
     public static CommandsEventHandler oldEventHandler = new CommandsEventHandler();

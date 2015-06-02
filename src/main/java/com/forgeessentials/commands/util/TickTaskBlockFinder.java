@@ -9,12 +9,12 @@ import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.TaskRegistry.ITickTask;
+import com.forgeessentials.core.misc.TaskRegistry.TickTask;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.registry.GameData;
 
-public class TickTaskBlockFinder implements ITickTask
+public class TickTaskBlockFinder implements TickTask
 {
 
     private World world;
@@ -80,15 +80,15 @@ public class TickTaskBlockFinder implements ITickTask
     }
 
     @Override
-    public void tick()
+    public boolean tick()
     {
         int speedcounter = 0;
-        while (!isComplete() && speedcounter < speed)
+        while (speedcounter < speed)
         {
             speedcounter++;
 
             int y = world.getActualHeight();
-            while (!isComplete() && y >= 0)
+            while (results.size() >= targetAmount && y >= 0)
             {
                 Block b = world.getBlock(centerX + i, y, centerZ + j);
                 if (b.equals(block) && (meta == -1 || world.getBlockMetadata(centerX + i, y, centerZ + j) == meta))
@@ -123,30 +123,18 @@ public class TickTaskBlockFinder implements ITickTask
                 }
             }
         }
-    }
-
-    private void msg(String string)
-    {
-        OutputHandler.chatNotification(player, string);
-    }
-
-    @Override
-    public void onComplete()
-    {
-        if (results.isEmpty())
+        if (results.size() >= targetAmount || segment_length > targetRange)
         {
-            msg("Found nothing withing target range.");
+            if (results.isEmpty())
+            {
+                msg("Found nothing withing target range.");
+            }
+            else
+            {
+                msg("Stoped looking for " + blockName);
+            }
         }
-        else
-        {
-            msg("Stoped looking for " + blockName);
-        }
-    }
-
-    @Override
-    public boolean isComplete()
-    {
-        return results.size() >= targetAmount || segment_length > targetRange;
+        return false;
     }
 
     @Override
@@ -154,4 +142,10 @@ public class TickTaskBlockFinder implements ITickTask
     {
         return false;
     }
+
+    private void msg(String string)
+    {
+        OutputHandler.chatNotification(player, string);
+    }
+
 }

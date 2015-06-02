@@ -26,8 +26,8 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.EnumMobType;
-import com.forgeessentials.core.misc.TickTaskHandler;
-import com.forgeessentials.core.misc.TickTaskHandler.TickTask;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.TaskRegistry.TickTask;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
@@ -60,7 +60,6 @@ public class CommandButcherTickTask implements TickTask
     private int minChunkZ;
     private int killCount;
     private int tickKillCount;
-    private boolean isComplete;
 
     private static final int MAX_TICK_KILLS = 1;
 
@@ -90,7 +89,7 @@ public class CommandButcherTickTask implements TickTask
         try
         {
             ButcherMobType mobT = CommandButcherTickTask.ButcherMobType.valueOf(mobType.toUpperCase());
-            TickTaskHandler.schedule(new CommandButcherTickTask(sender, world, mobT, aabb, radius));
+            TaskRegistry.getInstance().schedule(new CommandButcherTickTask(sender, world, mobT, aabb, radius));
         }
         catch (IllegalArgumentException e)
         {
@@ -99,15 +98,11 @@ public class CommandButcherTickTask implements TickTask
     }
 
     @Override
-    public void tick()
+    public boolean tick()
     {
-        if (isComplete)
-            return;
         tickKillCount = 0;
         if (radius < -1)
-        {
-            isComplete = true;
-        }
+            return true;
         else if (radius == -1)
         {
             for (Object entity : world.loadedEntityList)
@@ -115,9 +110,9 @@ public class CommandButcherTickTask implements TickTask
                 {
                     checkEntity((EntityLiving) entity);
                     if (tickKillCount >= 32)
-                        return;
+                        return false;
                 }
-            isComplete = true;
+            OutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
         }
         else
         {
@@ -131,11 +126,12 @@ public class CommandButcherTickTask implements TickTask
                         {
                             checkEntity(entity);
                             if (tickKillCount >= MAX_TICK_KILLS)
-                                return;
+                                return false;
                         }
                     }
-            isComplete = true;
+            OutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
         }
+        return true;
     }
 
     private void checkEntity(EntityLiving entity)
@@ -216,15 +212,9 @@ public class CommandButcherTickTask implements TickTask
     }
 
     @Override
-    public void onComplete()
+    public boolean editsBlocks()
     {
-        OutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
-    }
-
-    @Override
-    public boolean isComplete()
-    {
-        return isComplete;
+        return false;
     }
 
 }
