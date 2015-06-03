@@ -10,6 +10,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
@@ -35,8 +36,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class CommandKit extends FEcmdModuleCommands implements ConfigurableCommand
 {
 
-    public static final String PERM = COMMANDS_PERM + ".kit";
-    public static final String PERM_ADMIN = COMMANDS_PERM + ".admin";
+    public static final String PERM = ModuleCommands.PERM + ".kit";
+    public static final String PERM_ADMIN = ModuleCommands.PERM + ".admin";
     public static final String PERM_BYPASS_COOLDOWN = PERM + ".bypasscooldown";
 
     public static final String[] tabCompletionArg2 = new String[] { "set", "del" };

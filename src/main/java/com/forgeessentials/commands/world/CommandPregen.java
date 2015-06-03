@@ -20,7 +20,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -92,7 +92,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     @Override
     public String getPermissionNode()
     {
-        return FEcmdModuleCommands.COMMANDS_PERM + ".pregen";
+        return ModuleCommands.PERM + ".pregen";
     }
 
     @Override

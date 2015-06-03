@@ -3,6 +3,7 @@ package com.forgeessentials.commands;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.item.CommandBind;
 import com.forgeessentials.commands.item.CommandCraft;
+import com.forgeessentials.commands.item.CommandDechant;
 import com.forgeessentials.commands.item.CommandDrop;
 import com.forgeessentials.commands.item.CommandEnchant;
 import com.forgeessentials.commands.item.CommandEnderchest;
@@ -58,10 +59,13 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ModuleCommands
 {
 
+    public static final String PERM = "fe.commands";
+
     static
     {
         FECommandManager.registerCommand(new CommandTime());
         FECommandManager.registerCommand(new CommandEnchant());
+        FECommandManager.registerCommand(new CommandDechant());
         FECommandManager.registerCommand(new CommandLocate());
         FECommandManager.registerCommand(new CommandRules());
         FECommandManager.registerCommand(new CommandModlist());

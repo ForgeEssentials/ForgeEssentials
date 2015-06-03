@@ -20,20 +20,20 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandEnchant extends ParserCommandBase
+public class CommandDechant extends ParserCommandBase
 {
-    private static final String PERM = ModuleCommands.PERM + ".enchant";
+    private static final String PERM = ModuleCommands.PERM + ".dechant";
 
     @Override
     public String getCommandName()
     {
-        return "enchant";
+        return "dechant";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/enchant (<name> [lvl])*: Enchants the current item";
+        return "/dechant <name>: Removes an enchantment from the current item";
     }
 
     @Override
@@ -60,11 +60,13 @@ public class CommandEnchant extends ParserCommandBase
         ItemStack stack = arguments.senderPlayer.getCurrentEquippedItem();
         if (stack == null)
             throw new TranslatedCommandException("You are not holding a valid item");
+        @SuppressWarnings("unchecked")
+        Map<Integer, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
         List<String> validEnchantmentNames = new ArrayList<>();
         Map<String, Enchantment> validEnchantments = new HashMap<>();
         for (Enchantment enchantment : Enchantment.enchantmentsList)
-            if (enchantment != null && enchantment.canApplyAtEnchantingTable(stack))
+            if (enchantment != null && enchantments.containsKey(enchantment.effectId))
             {
                 String name = StatCollector.translateToLocal(enchantment.getName()).replaceAll(" ", "");
                 validEnchantmentNames.add(name);
@@ -75,12 +77,10 @@ public class CommandEnchant extends ParserCommandBase
         {
             if (arguments.isTabCompletion)
                 return;
-            arguments.confirm(Translator.format("Possible enchantments: %s", StringUtils.join(validEnchantmentNames, ", ")));
+            arguments.confirm(Translator.format("Possible dechantments: %s", StringUtils.join(validEnchantmentNames, ", ")));
             return;
         }
 
-        @SuppressWarnings("unchecked")
-        Map<Integer, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
         while (!arguments.isEmpty())
         {
             arguments.tabComplete(validEnchantmentNames);
@@ -88,13 +88,7 @@ public class CommandEnchant extends ParserCommandBase
             Enchantment enchantment = validEnchantments.get(name.toLowerCase());
             if (enchantment == null)
                 throw new TranslatedCommandException("Invalid enchantment name %s!", name);
-
-            if (arguments.isEmpty())
-            {
-                enchantments.put(enchantment.effectId, enchantment.getMaxLevel());
-                break;
-            }
-            enchantments.put(enchantment.effectId, Math.min(enchantment.getMaxLevel(), arguments.parseInt()));
+            enchantments.remove(enchantment.effectId);
         }
         EnchantmentHelper.setEnchantments(enchantments, stack);
     }
