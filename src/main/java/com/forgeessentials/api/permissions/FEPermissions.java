@@ -13,6 +13,7 @@ public final class FEPermissions
 
     public static final String MSG_NOT_ENOUGH_ARGUMENTS = "Not enough arguments!";
     public static final String MSG_INVALID_SYNTAX = "Invalid syntax!";
+    public static final String MSG_INVALID_ARGUMENT = "Invalid argument %s!";
 
     // ------------------------------------------------
     // -- Internal permissions

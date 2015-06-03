@@ -245,6 +245,27 @@ public class CommandParserArgs
         }
     }
 
+    public boolean parseBoolean()
+    {
+        checkTabCompletion();
+        String value = remove().toLowerCase();
+        switch (value)
+        {
+        case "off":
+        case "false":
+        case "disable":
+        case "disabled":
+            return false;
+        case "on":
+        case "true":
+        case "enable":
+        case "enabled":
+            return true;
+        default:
+            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_ARGUMENT, value);
+        }
+    }
+
     public void checkTabCompletion()
     {
         if (isTabCompletion && size() == 1)

@@ -38,6 +38,8 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     private WorldServer world;
 
+    private boolean fullPregen;
+
     private int speed;
 
     private AreaShape shape;
@@ -81,7 +83,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/pregen start [speed] [dim]";
+        return "/pregen start [speed] [true|false] [dim]";
     }
 
     @Override
@@ -114,6 +116,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             else
             {
                 arguments.confirm("No pregen running");
+                arguments.notify("/pregen start [speed] [do-populate] [dim]");
             }
             return;
         }
@@ -143,15 +146,19 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             return;
         }
 
-        speed = 1;
+        speed = 2;
+        fullPregen = false;
         world = null;
         if (!arguments.isEmpty())
         {
             speed = arguments.parseInt();
-
             if (!arguments.isEmpty())
             {
-                world = (WorldServer) arguments.senderPlayer.worldObj;
+                fullPregen = arguments.parseBoolean();
+                if (!arguments.isEmpty())
+                {
+                    world = (WorldServer) arguments.senderPlayer.worldObj;
+                }
             }
         }
         if (world == null)
@@ -224,9 +231,16 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                 if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F))
                     continue;
 
-                Chunk chunk = providerServer.currentChunkProvider.loadChunk(x, z);
-                chunk.populateChunk(providerServer, providerServer, x, z);
-                saveChunk(providerServer, chunk);
+                if (fullPregen)
+                {
+                    providerServer.provideChunk(x, z);
+                }
+                else
+                {
+                    Chunk chunk = providerServer.currentChunkProvider.loadChunk(x, z);
+                    chunk.populateChunk(providerServer, providerServer, x, z);
+                    saveChunk(providerServer, chunk);
+                }
                 break;
             }
         }
