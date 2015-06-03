@@ -329,6 +329,11 @@ public class ModuleBackup extends ConfigLoaderBase
             OutputHandler.felog.severe(String.format("Could not save world %d", world.provider.dimensionId));
             return false;
         }
+        catch (Exception e)
+        {
+            OutputHandler.felog.severe("Error while saving world");
+            return false;
+        }
         finally
         {
             world.levelSaving = oldLevelSaving;

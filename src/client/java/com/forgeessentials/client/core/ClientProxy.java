@@ -101,7 +101,6 @@ public class ClientProxy extends DummyProxy
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             selection = null;
-
     }
 
     @SubscribeEvent
