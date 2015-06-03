@@ -44,13 +44,15 @@ public abstract class WorldUtil
      */
     public static int placeInWorld(World world, int x, int y, int z, int h)
     {
-        if (isFree(world, x, y, z, h))
+        if (y >= 0 && isFree(world, x, y, z, h))
         {
             while (isFree(world, x, y - 1, z, h) && y > 0)
                 y--;
         }
         else
         {
+            if (y < 0)
+                y = 0;
             y++;
             while (y + h < world.getHeight() && !isFree(world, x, y, z, h))
                 y++;

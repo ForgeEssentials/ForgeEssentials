@@ -55,12 +55,6 @@ public class Grave
         if (!PermissionsManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST))
             return null;
 
-        if (player.posY < 0)
-        {
-            OutputHandler.chatWarning(player, "No deathchest for you as you fell out of the world!");
-            return null;
-        }
-
         int xp = 0;
         Double xpModifier = ServerUtil.tryParseDouble(APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_XP));
         if (xpModifier != null)
