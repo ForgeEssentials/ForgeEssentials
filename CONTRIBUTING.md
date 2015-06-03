@@ -1,3 +1,7 @@
+## Using the FE API
+
+[See here for more information.](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Developer-documentation)
+
 ##Developing on FE itself/Building FE (not for the faint of heart)
 
 
