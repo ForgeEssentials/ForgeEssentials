@@ -251,7 +251,7 @@ public abstract class ServerUtil
      * @param dimID
      * @return -1 if error
      */
-    public static double getTPS(int dimID)
+    public static double getWorldTPS(int dimID)
     {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         long sum = 0L;
@@ -268,26 +268,19 @@ public abstract class ServerUtil
     }
 
     /**
-     * Get tps.
-     *
-     * @return -1 if error
+     * Server's ticks per second
+     * 
+     * @return
      */
     public static double getTPS()
     {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        long tickSum = 0L;
-        long[] ticks = server.tickTimeArray;
-        for (int i = 0; i < ticks.length; ++i)
-        {
-            long var7 = ticks[i];
-            tickSum += var7;
-        }
-
-        double tps = (double) tickSum / (double) ticks.length * 1.0E-6D;
-        if (tps < 50)
-            return 20;
-        else
-            return 1000 / tps;
+        double tickSum = 0;
+        for (int i = 0; i < server.tickTimeArray.length; ++i)
+            tickSum += server.tickTimeArray[i];
+        tickSum /= server.tickTimeArray.length;
+        double tps = 1000000000 / tickSum;
+        return tps; // tps > 20 ? 20 : tps;
     }
 
     public static WorldServer getOverworld()
@@ -364,6 +357,5 @@ public abstract class ServerUtil
         else
             OutputHandler.felog.severe(String.format("Could not find command /%s to replace", command));
     }
-
 
 }

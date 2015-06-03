@@ -575,7 +575,7 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            return new DecimalFormat("#").format(ServerUtil.getTPS());
+            return new DecimalFormat("#").format(Math.min(20, ServerUtil.getTPS()));
         }
 
         @Override
