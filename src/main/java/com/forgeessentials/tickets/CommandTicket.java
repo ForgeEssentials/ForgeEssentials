@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.util.ServerUtil;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
@@ -109,7 +113,15 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             msg = msg.substring(1);
             Ticket t = new Ticket(sender, args[1], msg);
             ModuleTickets.ticketList.add(t);
-            OutputHandler.chatNotification(sender, c + Translator.format("message.confim.ticketPost", t.id));
+            OutputHandler.chatNotification(sender, c + Translator.format("Your ticket with ID %d has been posted.", t.id));
+
+            // notify any ticket-admins that are online
+            IChatComponent messageComponent = OutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getCommandSenderName()));
+                if (!MinecraftServer.getServer().isServerStopped())
+                    for (EntityPlayerMP player : ServerUtil.getPlayerList())
+                        if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
+                            OutputHandler.sendMessage(player, messageComponent);
+                OutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
             return;
         }
 
@@ -121,13 +133,13 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             TeleportHelper.teleport((EntityPlayerMP) sender, ModuleTickets.getID(id).point);
         }
 
-        if (args[0].equalsIgnoreCase("del") && permcheck(sender, "admin"))
+        if (args[0].equalsIgnoreCase("del") || args[0].equalsIgnoreCase("close") && permcheck(sender, "admin"))
         {
             if (args.length != 2)
                 throw new TranslatedCommandException("Usage: /ticket del <id>");
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
             ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
-            OutputHandler.chatConfirmation(sender, c + Translator.format("Your ticket has been posted. ID: %d", id));
+            OutputHandler.chatConfirmation(sender, c + Translator.format("Your ticket has been removed. ID: %d", id));
         }
     }
 
