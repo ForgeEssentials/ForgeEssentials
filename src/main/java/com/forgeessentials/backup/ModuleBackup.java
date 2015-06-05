@@ -296,7 +296,7 @@ public class ModuleBackup extends ConfigLoaderBase
         {
             // Exclude directories of other worlds
             for (WorldServer otherWorld : DimensionManager.getWorlds())
-                if (otherWorld != world && otherWorld.getChunkSaveLocation().equals(file))
+                if (otherWorld.provider.dimensionId != world.provider.dimensionId && otherWorld.getChunkSaveLocation().equals(file))
                     continue mainLoop;
 
             if (file.isDirectory())
