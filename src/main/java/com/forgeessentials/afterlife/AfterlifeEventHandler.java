@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -52,6 +53,11 @@ public class AfterlifeEventHandler extends ServerEventHandler
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
+        else if (e.action == Action.LEFT_CLICK_BLOCK)
+        {
+            grave.remove(true);
+            return;
+        }
 
         // Block block = e.entity.worldObj.getBlock(e.x, e.y, e.z);
         // if (block != Blocks.skull && block != Blocks.chest && block != Blocks.fence)
