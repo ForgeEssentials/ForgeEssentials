@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.player;
 
+import com.forgeessentials.api.permissions.PermissionEvent.Group;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -62,10 +63,41 @@ public class CommandAFK extends FEcmdModuleCommands
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         UserIdent ident = UserIdent.get(sender);
-        int autoTime = ServerUtil.parseIntDefault(ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
-        int warmup = ServerUtil.parseIntDefault(ident.getPermissionProperty(PERM_WARMUP), 0);
-        PlayerInfo.get(sender).setActive(autoTime * 1000 - warmup * 1000);
-        OutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
+
+        // expected syntax: /afk timeout <group|player> <timeout>
+        // to set custom afk timeout for yourself, replace <player> with your own username
+        if (args[0].equalsIgnoreCase("timeout"))
+        {
+            UserIdent applyTo = UserIdent.get(args[1], true);
+            if (applyTo != null)
+            {
+                APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOTIME, args[2]);
+            }
+            else
+            {
+                APIRegistry.perms.setGroupPermissionProperty(args[1], PERM_AUTOTIME, args[2]);
+            }
+        }
+        // expected syntax: /afk timeout <group|player> [true|false}
+        else if (args[0].equalsIgnoreCase("autokick"))
+        {
+            UserIdent applyTo = UserIdent.get(args[1], true);
+            if (applyTo != null)
+            {
+                APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOKICK, args[2]);
+            }
+            else
+            {
+                APIRegistry.perms.setGroupPermissionProperty(args[1], PERM_AUTOKICK, args[2]);
+            }
+        }
+        else
+        {
+            int autoTime = ServerUtil.parseIntDefault(ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
+            int warmup = ServerUtil.parseIntDefault(ident.getPermissionProperty(PERM_WARMUP), 0);
+            PlayerInfo.get(sender).setActive(autoTime * 1000 - warmup * 1000);
+            OutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
+        }
     }
 
 }
