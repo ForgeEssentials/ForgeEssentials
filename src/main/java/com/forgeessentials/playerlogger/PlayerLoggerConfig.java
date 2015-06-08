@@ -19,7 +19,7 @@ public class PlayerLoggerConfig extends ConfigLoaderBase
     public void load(Configuration config, boolean isReload)
     {
         config.addCustomCategoryComment(CAT, "PlayerLogger config");
-        databaseType = config.get(CAT, "DB_type", "h2", "Database type. Available types are h2 and mysql.").getString();
+        databaseType = config.get(CAT, "DB_type", "h2", "Database typ (h2 / mysql). DO NOT USE MYSQL UNLESS YOU REALLY NEED TO!").getString();
         databaseUrl = config.get(CAT, "DB_url", "ForgeEssentials/playerlogger",
                 "Database url. Filename for H2 or server address for MySql (e.g., \"localhost:3306/forgeessentials\").").getString();
         databaseUsername = config.get(CAT, "DB_user", "forgeessentials", "Database type. Available types are h2 and mysql.").getString();
