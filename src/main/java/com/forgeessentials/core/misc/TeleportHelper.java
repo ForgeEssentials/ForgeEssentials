@@ -95,6 +95,12 @@ public class TeleportHelper extends ServerEventHandler
             }
         }
 
+        if (point == null)
+        {
+            OutputHandler.chatError(player, Translator.translate("Unable to teleport! Invalid destination point.."));
+            return;
+        }
+
         // Get and check teleport warmup
         int teleportWarmup = ServerUtil.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_WARMUP), 0);
         if (teleportWarmup <= 0)

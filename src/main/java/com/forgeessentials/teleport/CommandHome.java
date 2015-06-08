@@ -32,8 +32,8 @@ public class CommandHome extends ForgeEssentialsCommandBase
         if (args.length == 0)
         {
             WarpPoint home = PlayerInfo.get(sender.getPersistentID()).getHome();
-            if (home == null)
-                throw new TranslatedCommandException("No home set. Use \"/home set\" first.");
+            if (home == null || home.getDimension()!= sender.dimension)
+                throw new TranslatedCommandException("No home set in this dimension. Use \"/home set\" first.");
             TeleportHelper.teleport(sender, home);
         }
         else
