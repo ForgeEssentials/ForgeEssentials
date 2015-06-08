@@ -46,18 +46,13 @@ public class AfterlifeEventHandler extends ServerEventHandler
     {
         if (e.entity.worldObj.isRemote)
             return;
-        if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
+        if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.LEFT_CLICK_BLOCK)
             return;
 
         WorldPoint point = new WorldPoint(e.entity.worldObj, e.x, e.y, e.z);
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
-        else if (e.action == Action.LEFT_CLICK_BLOCK)
-        {
-            grave.remove(true);
-            return;
-        }
 
         // Block block = e.entity.worldObj.getBlock(e.x, e.y, e.z);
         // if (block != Blocks.skull && block != Blocks.chest && block != Blocks.fence)

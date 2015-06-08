@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -74,6 +75,16 @@ public class TeleportHelper extends ServerEventHandler
 
     public static void teleport(EntityPlayerMP player, WarpPoint point)
     {
+        if (point.getWorld() == null)
+        {
+            DimensionManager.initDimension(point.getDimension());
+            if (point.getWorld() == null)
+            {
+                OutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));
+                return;
+            }
+        }
+
         // Check permissions
         if (!APIRegistry.perms.checkPermission(player, TELEPORT_FROM))
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
@@ -93,12 +104,6 @@ public class TeleportHelper extends ServerEventHandler
                 OutputHandler.chatNotification(player, Translator.format("Cooldown still active. %d seconds to go.", cooldownDuration / 1000));
                 return;
             }
-        }
-
-        if (point == null)
-        {
-            OutputHandler.chatError(player, Translator.translate("Unable to teleport! Invalid destination point.."));
-            return;
         }
 
         // Get and check teleport warmup
