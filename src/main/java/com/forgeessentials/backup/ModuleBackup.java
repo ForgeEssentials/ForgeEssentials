@@ -3,6 +3,7 @@ package com.forgeessentials.backup;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,6 +17,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -60,7 +63,11 @@ public class ModuleBackup extends ConfigLoaderBase
 
     public static final String CONFIG_CAT = "Backup";
     public static final String CONFIG_CAT_WORLDS = CONFIG_CAT + ".Worlds";
+
     public static final String WORLDS_HELP = "Add world configurations in the format \"B:1=true\"";
+
+    private static final String EXCLUDE_PATTERNS_HELP = "Define file patterns (regex) that should be excluded from each backup";
+    public static final String[] DEFAULT_EXCLUDE_PATTERNS = new String[] { "DIM-?\\d+", "FEMultiworld", "FEData_backup", "DimensionalDoors", };
 
     public static final SimpleDateFormat FILE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH-mm");
 
@@ -81,6 +88,8 @@ public class ModuleBackup extends ConfigLoaderBase
     public static int weeklyBackups;
 
     public static Map<Integer, Boolean> backupOverrides = new HashMap<>();
+
+    public static List<Pattern> exludePatterns = new ArrayList<>();
 
     private static Runnable backupTask = new Runnable() {
         @Override
@@ -104,10 +113,7 @@ public class ModuleBackup extends ConfigLoaderBase
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        // Register configuration
-        ForgeEssentials.getConfigManager().registerLoader(CONFIG_CAT, this);
         // FECommandManager.registerCommand(new CommandBackup());
-
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -191,6 +197,20 @@ public class ModuleBackup extends ConfigLoaderBase
             }
         }
 
+        String[] exludePatternValues = config.get(CONFIG_CAT, "exclude_patterns", DEFAULT_EXCLUDE_PATTERNS, EXCLUDE_PATTERNS_HELP).getStringList();
+        exludePatterns.clear();
+        for (String pattern : exludePatternValues)
+        {
+            try
+            {
+                exludePatterns.add(Pattern.compile(pattern, Pattern.CASE_INSENSITIVE));
+            }
+            catch (PatternSyntaxException e)
+            {
+                OutputHandler.felog.severe(String.format("Invalid backup exclude pattern %s", pattern));
+            }
+        }
+
         if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning())
             registerBackupTask();
     }
@@ -266,22 +286,29 @@ public class ModuleBackup extends ConfigLoaderBase
         try (FileOutputStream fileStream = new FileOutputStream(backupFile); //
                 ZipOutputStream zipStream = new ZipOutputStream(fileStream);)
         {
+            OutputHandler.felog.info(String.format("Listing files for backup of world %d", world.provider.dimensionId));
             for (File file : enumWorldFiles(world, world.getChunkSaveLocation(), null))
             {
-                String fileName = baseUri.relativize(file.toURI()).getPath();
-
-                ZipEntry ze = new ZipEntry(fileName);
-                zipStream.putNextEntry(ze);
+                String relativePath = baseUri.relativize(file.toURI()).getPath();
                 try (FileInputStream in = new FileInputStream(file))
                 {
+                    ZipEntry ze = new ZipEntry(relativePath);
+                    zipStream.putNextEntry(ze);
                     IOUtils.copy(in, zipStream);
+                }
+                catch (IOException e)
+                {
+                    OutputHandler.felog.warning(String.format("Unable to backup file %s", relativePath));
                 }
             }
             zipStream.closeEntry();
         }
         catch (Exception ex)
         {
+            OutputHandler.felog.severe(String.format("Severe error during backup of dim %d", world.provider.dimensionId));
             ex.printStackTrace();
+            if (notify)
+                notify(String.format("Error during backup of dim %d", world.provider.dimensionId));
         }
 
         if (notify)
@@ -292,17 +319,23 @@ public class ModuleBackup extends ConfigLoaderBase
     {
         if (files == null)
             files = new ArrayList<>();
+
         mainLoop: for (File file : dir.listFiles())
         {
+            if (!file.isDirectory())
+            {
+                files.add(file);
+                continue;
+            }
+
             // Exclude directories of other worlds
             for (WorldServer otherWorld : DimensionManager.getWorlds())
                 if (otherWorld.provider.dimensionId != world.provider.dimensionId && otherWorld.getChunkSaveLocation().equals(file))
                     continue mainLoop;
-
-            if (file.isDirectory())
-                enumWorldFiles(world, file, files);
-            else
-                files.add(file);
+            for (Pattern pattern : exludePatterns)
+                if (pattern.matcher(file.getName()).matches())
+                    continue mainLoop;
+            enumWorldFiles(world, file, files);
         }
         return files;
     }
