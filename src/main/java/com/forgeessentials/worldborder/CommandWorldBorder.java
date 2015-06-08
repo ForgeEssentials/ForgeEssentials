@@ -50,17 +50,20 @@ public class CommandWorldBorder extends ParserCommandBase
 
         if (arguments.isEmpty())
         {
+            arguments.confirm("/wb enable|disable");
+            arguments.confirm("/wb center here: Set worldborder center");
+            arguments.confirm("/wb size <xz> [z]: Set worldborder size");
             WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.worldObj);
             if (border == null)
             {
                 arguments.error("No worldborder set for this world");
                 return;
             }
-            arguments.confirm("Worldborder info:");
-            arguments.confirm("  center  = " + border.getCenter());
-            arguments.confirm("  size    = " + border.getSize().getX() + " x " + border.getSize().getZ());
-            arguments.confirm("  start   = " + border.getArea().getLowPoint());
-            arguments.confirm("  end     = " + border.getArea().getHighPoint());
+            arguments.notify("Worldborder info:");
+            arguments.notify("  center  = " + border.getCenter());
+            arguments.notify("  size    = " + border.getSize().getX() + " x " + border.getSize().getZ());
+            arguments.notify("  start   = " + border.getArea().getLowPoint());
+            arguments.notify("  end     = " + border.getArea().getHighPoint());
             if (border.isEnabled())
                 arguments.confirm("  enabled = true");
             else
@@ -104,6 +107,7 @@ public class CommandWorldBorder extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm(String.format("Worldborder center at %s", border.getCenter()));
+            arguments.confirm("/wb center here: Set worldborder center");
             return;
         }
 
@@ -129,6 +133,7 @@ public class CommandWorldBorder extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm(String.format("Worldborder size: %d x %d", border.getSize().getX(), border.getSize().getZ()));
+            arguments.confirm("/wb size <xz> [z]: Set worldborder size");
             return;
         }
         int xSize = arguments.parseInt();
