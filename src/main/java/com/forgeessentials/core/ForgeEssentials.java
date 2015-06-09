@@ -17,6 +17,7 @@ import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.CommandFEInfo;
+import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
@@ -176,6 +177,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         // Register commands
         FECommandManager.registerCommand(new CommandFEInfo());
+        FECommandManager.registerCommand(new CommandFeSettings());
         FECommandManager.registerCommand(new CommandWand());
         FECommandManager.registerCommand(new CommandUuid());
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))

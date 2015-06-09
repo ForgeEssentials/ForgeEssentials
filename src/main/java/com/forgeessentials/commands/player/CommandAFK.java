@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.player;
 
-import com.forgeessentials.api.permissions.PermissionEvent.Group;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
@@ -8,6 +7,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
@@ -25,6 +25,11 @@ public class CommandAFK extends FEcmdModuleCommands
     public static final String PERM_AUTOTIME = PERM + ".autotime";
 
     public static final String PERM_AUTOKICK = PERM + ".autokick";
+
+    public CommandAFK()
+    {
+        CommandFeSettings.addAlias("afktime", PERM_AUTOTIME);
+    }
 
     @Override
     public String getCommandName()

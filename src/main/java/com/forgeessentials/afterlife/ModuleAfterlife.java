@@ -6,6 +6,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -65,6 +66,13 @@ public class ModuleAfterlife extends ConfigLoaderBase
                 "Ratio of XP that you want to allow someone to keep in a grave. 1 keeps all XP, 0 disables XP recovery.");
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_SAFETIME, "300",
                 "Time in seconds a grave is protected. After this time anyone can take all stuff");
+
+        CommandFeSettings.addAlias("respawn_hp", PERM_HP);
+        CommandFeSettings.addAlias("respawn_food", PERM_FOOD);
+        CommandFeSettings.addAlias("grave_enable", PERM_DEATHCHEST);
+        CommandFeSettings.addAlias("grave_safetime", PERM_DEATHCHEST_SAFETIME);
+        CommandFeSettings.addAlias("grave_recoverable_xp", PERM_DEATHCHEST_XP);
+        CommandFeSettings.addAlias("grave_fence", PERM_DEATHCHEST_FENCE);
     }
 
     @SubscribeEvent
