@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -39,7 +40,7 @@ public class CUIComms
             String cmd = e.command.getCommandName();
             for (String weCmd : worldEditSelectionCommands)
             {
-                if (cmd.equals(weCmd))
+                if (cmd.equals(weCmd)&& !(e.sender instanceof FakePlayer))
                 {
                     updatedSelectionPlayers.add((EntityPlayerMP) e.sender);
                     return;
