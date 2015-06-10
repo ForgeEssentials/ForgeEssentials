@@ -4,8 +4,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 public class SelectionHandler
@@ -24,7 +24,7 @@ public class SelectionHandler
             }
             catch (ClassNotFoundException | InstantiationException | IllegalAccessException e3)
             {
-                OutputHandler.felog.warning("There was a problem starting the WorldEdit selection provider. Switching to FE's own provider.");
+                ForgeEssentials.log.warn("There was a problem starting the WorldEdit selection provider. Switching to FE's own provider.");
             }
         }
         return new PlayerInfoSelectionProvider();
@@ -40,7 +40,7 @@ public class SelectionHandler
             }
             catch (NullPointerException e)
             {
-                OutputHandler.felog.severe("Error sending selection update to player");
+                ForgeEssentials.log.error("Error sending selection update to player");
             }
         }
     }

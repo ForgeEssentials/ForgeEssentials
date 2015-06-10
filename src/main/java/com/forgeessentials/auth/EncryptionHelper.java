@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 
 import org.apache.logging.log4j.Level;
 
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.core.ForgeEssentials;
 
 public class EncryptionHelper
 {
@@ -44,7 +44,7 @@ public class EncryptionHelper
         }
         catch (Throwable t)
         {
-            OutputHandler.felog.log(Level.ERROR, "Unable to hash password", t);
+            ForgeEssentials.log.log(Level.ERROR, "Unable to hash password", t);
         }
 
         return "";

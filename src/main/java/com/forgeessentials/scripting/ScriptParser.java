@@ -11,7 +11,7 @@ import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.core.ForgeEssentials;
 
 public class ScriptParser
 {
@@ -114,7 +114,7 @@ public class ScriptParser
             }
             catch (CommandException e)
             {
-                OutputHandler.felog.info(String.format("Silent script command /%s %s failed: %s", cmd, StringUtils.join(args, " "), e.getMessage()));
+                ForgeEssentials.log.info(String.format("Silent script command /%s %s failed: %s", cmd, StringUtils.join(args, " "), e.getMessage()));
             }
         }
         else if (cmd.length() > 2 && cmd.charAt(0) == '$' && cmd.charAt(1) == '/')
@@ -128,7 +128,7 @@ public class ScriptParser
             }
             catch (CommandException e)
             {
-                OutputHandler.felog.info(String.format("Silent script command /%s %s failed: %s", cmd, StringUtils.join(args, " "), e.getMessage()));
+                ForgeEssentials.log.info(String.format("Silent script command /%s %s failed: %s", cmd, StringUtils.join(args, " "), e.getMessage()));
             }
         }
         else

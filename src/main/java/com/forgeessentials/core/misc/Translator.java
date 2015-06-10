@@ -14,7 +14,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.OutputHandler;
 
 public final class Translator
 {
@@ -52,7 +51,7 @@ public final class Translator
         }
         catch (IOException e)
         {
-            OutputHandler.felog.severe("Error writing translation file.");
+            ForgeEssentials.log.error("Error writing translation file.");
         }
     }
 
@@ -70,7 +69,7 @@ public final class Translator
         }
         catch (IOException e)
         {
-            OutputHandler.felog.warning("Error loading translation file.");
+            ForgeEssentials.log.warn("Error loading translation file.");
         }
     }
 

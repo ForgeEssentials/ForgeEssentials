@@ -2,6 +2,7 @@ package com.forgeessentials.util;
 
 import java.util.IllegalFormatException;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.google.common.base.Throwables;
 
 public enum EnumDBType
@@ -35,7 +36,7 @@ public enum EnumDBType
         }
         catch (ClassNotFoundException e)
         {
-            OutputHandler.felog.severe("Could not load the " + this + " JDBC Driver! Does it exist in the lib directory?");
+            ForgeEssentials.log.error("Could not load the " + this + " JDBC Driver! Does it exist in the lib directory?");
             Throwables.propagateIfPossible(e);
         }
     }

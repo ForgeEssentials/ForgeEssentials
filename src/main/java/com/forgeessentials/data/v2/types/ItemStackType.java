@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.data.v2.DataManager.DataType;
-import com.forgeessentials.util.OutputHandler;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -76,7 +76,7 @@ public class ItemStackType implements DataType<ItemStack>
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.severe(String.format("Error parsing data: %s", json.toString()));
+            ForgeEssentials.log.error(String.format("Error parsing data: %s", json.toString()));
             e.printStackTrace();
             return null;
         }

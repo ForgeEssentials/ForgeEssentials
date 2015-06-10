@@ -14,7 +14,7 @@ import com.forgeessentials.client.network.C6HandlerSpeed;
 import com.forgeessentials.client.network.C7HandlerRemote;
 import com.forgeessentials.client.remote.QRRenderer;
 import com.forgeessentials.client.util.DummyProxy;
-import com.forgeessentials.commons.VersionUtils;
+import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
@@ -40,8 +40,6 @@ public class ClientProxy extends DummyProxy
 {
     private ClientConfig config;
 
-    protected VersionUtils version;
-
     protected boolean sentHandshake = true;
 
     private static Selection selection;
@@ -58,8 +56,10 @@ public class ClientProxy extends DummyProxy
     @Override
     public void doPreInit(FMLPreInitializationEvent e)
     {
-        version = new VersionUtils(e.getSourceFile());
-        feclientlog.info("Build information: Build number is: " + version.getBuildNumber() + ", build hash is: " + version.getBuildHash());
+        BuildInfo.getBuildInfo(e.getSourceFile());
+        feclientlog.info(String.format("Running ForgeEssentials client %s #%d (%s)", //
+                BuildInfo.VERSION, BuildInfo.getBuildNumber(), BuildInfo.getBuildHash()));
+
         if (FMLCommonHandler.instance().getSide().isClient())
         {
             config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));

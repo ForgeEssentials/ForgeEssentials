@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.data.v2.types.UserIdentType;
-import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -147,12 +147,12 @@ public class DataManager implements ExclusionStrategy
         }
         catch (JsonParseException e)
         {
-            OutputHandler.felog.severe(String.format("Error parsing data file \"%s\"", file.getAbsolutePath()));
+            ForgeEssentials.log.error(String.format("Error parsing data file \"%s\"", file.getAbsolutePath()));
             e.printStackTrace();
         }
         catch (IOException e)
         {
-            OutputHandler.felog.severe(String.format("Error loading data file \"%s\"", file.getAbsolutePath()));
+            ForgeEssentials.log.error(String.format("Error loading data file \"%s\"", file.getAbsolutePath()));
             e.printStackTrace();
         }
         return null;
@@ -169,12 +169,12 @@ public class DataManager implements ExclusionStrategy
         }
         catch (JsonParseException e)
         {
-            OutputHandler.felog.severe(String.format("Error parsing data file \"%s\"", file.getAbsolutePath()));
+            ForgeEssentials.log.error(String.format("Error parsing data file \"%s\"", file.getAbsolutePath()));
             e.printStackTrace();
         }
         catch (IOException e)
         {
-            OutputHandler.felog.severe(String.format("Error loading data file \"%s\"", file.getAbsolutePath()));
+            ForgeEssentials.log.error(String.format("Error loading data file \"%s\"", file.getAbsolutePath()));
             e.printStackTrace();
         }
         return null;

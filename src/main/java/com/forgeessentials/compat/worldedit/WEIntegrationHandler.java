@@ -2,8 +2,8 @@ package com.forgeessentials.compat.worldedit;
 
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.selections.SelectionHandler;
@@ -22,7 +22,7 @@ public class WEIntegrationHandler
     {
         if (WEIntegration.disable)
         {
-            OutputHandler.felog.severe("Requested to force-disable WorldEdit.");
+            ForgeEssentials.log.error("Requested to force-disable WorldEdit.");
             // if (Loader.isModLoaded("WorldEdit"))
             // MinecraftForge.EVENT_BUS.unregister(ForgeWorldEdit.inst); //forces worldedit forge NOT to load
             ModuleLauncher.instance.unregister("WEIntegrationTools");

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.forgeessentials.util.events.ConfigReloadEvent;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -27,6 +26,7 @@ import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.command.CommandTimedTask;
 import com.forgeessentials.scripting.command.PatternCommand;
 import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -68,7 +68,7 @@ public class ModuleScripting extends ServerEventHandler
         }
         catch (FileNotFoundException e)
         {
-            OutputHandler.felog.info("Unable to write script arguments file");
+            ForgeEssentials.log.info("Unable to write script arguments file");
         }
         try (PrintWriter writer = new PrintWriter(new File(moduleDir, "methods.txt")))
         {
@@ -83,7 +83,7 @@ public class ModuleScripting extends ServerEventHandler
         }
         catch (FileNotFoundException e)
         {
-            OutputHandler.felog.info("Unable to write script arguments file");
+            ForgeEssentials.log.info("Unable to write script arguments file");
         }
     }
 
@@ -114,7 +114,7 @@ public class ModuleScripting extends ServerEventHandler
                 }
                 catch (IOException e1)
                 {
-                    OutputHandler.felog.severe(String.format("Error reading script %s", file.getName()));
+                    ForgeEssentials.log.error(String.format("Error reading script %s", file.getName()));
                     continue;
                 }
             }
@@ -185,7 +185,7 @@ public class ModuleScripting extends ServerEventHandler
             catch (CommandException e)
             {
                 OutputHandler.chatError(sender, e.getMessage());
-                // OutputHandler.felog.info(String.format("Error in script \"%s\": %s", script.getKey(),
+                // ForgeEssentials.log.info(String.format("Error in script \"%s\": %s", script.getKey(),
                 // e.getMessage()));
             }
             catch (MissingPermissionException e)
@@ -195,7 +195,7 @@ public class ModuleScripting extends ServerEventHandler
             }
             catch (ScriptException e)
             {
-                OutputHandler.felog.severe(String.format("Error in script \"%s\": %s", script.getKey(), e.getMessage()));
+                ForgeEssentials.log.error(String.format("Error in script \"%s\": %s", script.getKey(), e.getMessage()));
             }
         }
     }

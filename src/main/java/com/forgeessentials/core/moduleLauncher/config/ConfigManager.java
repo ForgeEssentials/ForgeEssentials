@@ -8,7 +8,7 @@ import java.util.Set;
 
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.core.ForgeEssentials;
 
 public class ConfigManager
 {
@@ -77,7 +77,7 @@ public class ConfigManager
 
     public void load(boolean reload)
     {
-        OutputHandler.felog.finer("Loading configuration files");
+        ForgeEssentials.log.debug("Loading configuration files");
         boolean changed = false;
         for (ConfigFile file : configFiles.values())
         {
@@ -97,7 +97,7 @@ public class ConfigManager
             if (changed)
                 file.config.save();
         }
-        OutputHandler.felog.finer("Finished loading configuration files");
+        ForgeEssentials.log.debug("Finished loading configuration files");
     }
 
     public void load(String configName)
@@ -112,7 +112,7 @@ public class ConfigManager
 
     public void saveAll()
     {
-        OutputHandler.felog.finer("Saving configuration files");
+        ForgeEssentials.log.debug("Saving configuration files");
         for (ConfigFile file : configFiles.values())
         {
             file.config.load();

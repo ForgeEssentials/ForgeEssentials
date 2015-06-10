@@ -9,7 +9,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fe.server.CommandHandlerForge;
 
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.core.ForgeEssentials;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -22,7 +22,7 @@ public class CommandSetChecker
 
     public static void remove()
     {
-        OutputHandler.felog.finest("Running duplicate command removal process!");
+        ForgeEssentials.log.debug("Running duplicate command removal process!");
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
         if (server.getCommandManager() instanceof CommandHandler)
@@ -33,7 +33,7 @@ public class CommandSetChecker
                 HashMultimap<String, ICommand> duplicates = HashMultimap.create();
 
                 Set<ICommand> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), FIELDNAME);
-                OutputHandler.felog.finer("commandSet size: " + cmdList.size());
+                ForgeEssentials.log.debug("commandSet size: " + cmdList.size());
 
                 ICommand keep;
                 for (ICommand cmd : cmdList)
@@ -41,7 +41,7 @@ public class CommandSetChecker
                     keep = initials.put(cmd.getCommandName(), cmd);
                     if (keep != null)
                     {
-                        OutputHandler.felog.finer("Duplicate command found! Name:" + keep.getCommandName());
+                        ForgeEssentials.log.debug("Duplicate command found! Name:" + keep.getCommandName());
                         duplicates.put(cmd.getCommandName(), cmd);
                         duplicates.put(cmd.getCommandName(), keep);
                         continue;
@@ -85,13 +85,13 @@ public class CommandSetChecker
                         {
                             toRemove.add(cmd);
                             cmdClass = cmd.getClass();
-                            OutputHandler.felog.finer("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
+                            ForgeEssentials.log.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
                         }
                         else
                         {
                             toRemove.add(keep);
                             cmdClass = keep.getClass();
-                            OutputHandler.felog.finer("Removing command '" + keep.getCommandName() + "' from class: " + cmdClass.getName());
+                            ForgeEssentials.log.debug("Removing command '" + keep.getCommandName() + "' from class: " + cmdClass.getName());
 
                             keep = cmd;
                             kept = other;
@@ -101,12 +101,12 @@ public class CommandSetChecker
                 }
 
                 cmdList.removeAll(toRemove);
-                OutputHandler.felog.finer("commandSet size: " + cmdList.size());
+                ForgeEssentials.log.debug("commandSet size: " + cmdList.size());
                 ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, FIELDNAME);
             }
             catch (Exception e)
             {
-                OutputHandler.felog.finer("Something broke: " + e.getLocalizedMessage());
+                ForgeEssentials.log.debug("Something broke: " + e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }
@@ -129,8 +129,8 @@ public class CommandSetChecker
         }
         catch (Exception e)
         {
-            OutputHandler.felog.finer("Can't remove " + cmd.getCommandName());
-            OutputHandler.felog.finer("" + e.getLocalizedMessage());
+            ForgeEssentials.log.debug("Can't remove " + cmd.getCommandName());
+            ForgeEssentials.log.debug("" + e.getLocalizedMessage());
             e.printStackTrace();
             return -1;
         }

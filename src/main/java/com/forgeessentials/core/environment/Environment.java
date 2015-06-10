@@ -1,6 +1,6 @@
 package com.forgeessentials.core.environment;
 
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.core.ForgeEssentials;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -39,13 +39,13 @@ public class Environment
             }
             catch (ClassNotFoundException cnfe)
             {
-                OutputHandler.felog.warning("Found WorldEdit, but not FE WorldEdit-module. You cannot use WorldEdit for FE without it.");
+                ForgeEssentials.log.warn("Found WorldEdit, but not FE WorldEdit-module. You cannot use WorldEdit for FE without it.");
             }
         }
 
         if (Boolean.parseBoolean(System.getProperty("forgeessentials.developermode.we")))
         {
-            OutputHandler.felog.warning("WorldEdit integration tools force disabled.");
+            ForgeEssentials.log.warn("WorldEdit integration tools force disabled.");
             hasWorldEdit = false;
             return;
         }
@@ -57,25 +57,23 @@ public class Environment
         String modName = FMLCommonHandler.instance().getModName();
         if (modName.contains("cauldron"))
         {
-            OutputHandler.felog.severe("You are attempting to run FE on Cauldron. This is completely unsupported.");
+            ForgeEssentials.log.error("You are attempting to run FE on Cauldron. This is completely unsupported.");
 
             // good luck setting this - i had a very hard time doing so during debugging
             if (System.getProperty(ALLOW_CAULDRON) != null && Boolean.parseBoolean(System.getProperty(ALLOW_CAULDRON)))
             {
-                OutputHandler.felog.severe("Bad things may happen. By setting the environment variable you are proceeding at your own risk.");
-                OutputHandler.felog.severe("DO NOT BOTHER ANYONE IF YOU RUN INTO ISSUES.");
-                OutputHandler.felog.severe("You are highly recommended to uninstall FE and use bukkit plugins instead.");
+                ForgeEssentials.log.error("Bad things may happen. By setting the environment variable you are proceeding at your own risk.");
+                ForgeEssentials.log.error("DO NOT BOTHER ANYONE IF YOU RUN INTO ISSUES.");
+                ForgeEssentials.log.error("You are highly recommended to uninstall FE and use bukkit plugins instead.");
                 hasCauldron = true;
                 return;
             }
 
-            OutputHandler.felog.severe("Bad things may happen. DO NOT BOTHER ANYONE ABOUT THIS CRASH - YOU WILL BE IGNORED");
-            OutputHandler.felog.severe("Please uninstall FE from this Cauldron server installation. We recommend to use bukkit plugins instead.");
-            OutputHandler.felog.severe("The server will now shut down as a precaution against data loss.");
+            ForgeEssentials.log.error("Bad things may happen. DO NOT BOTHER ANYONE ABOUT THIS CRASH - YOU WILL BE IGNORED");
+            ForgeEssentials.log.error("Please uninstall FE from this Cauldron server installation. We recommend to use bukkit plugins instead.");
+            ForgeEssentials.log.error("The server will now shut down as a precaution against data loss.");
             throw new RuntimeException("Sanity check failed: Detected Cauldron, bad things may happen to your server. Shutting down as a precaution.");
         }
-
-        OutputHandler.felog.fine("Check passed, it's all good to go!");
     }
 
     public static boolean isClient()

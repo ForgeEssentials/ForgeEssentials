@@ -14,7 +14,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
-import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.Loader;
@@ -55,7 +54,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.info("Error trying to load " + data.getClassName() + " as a FEModule!");
+            ForgeEssentials.log.info("Error trying to load " + data.getClassName() + " as a FEModule!");
             e.printStackTrace();
 
             isCore = false;
@@ -81,16 +80,14 @@ public class ModuleContainer implements Comparable
         {
             if (!ForgeEssentials.getConfigManager().getMainConfig().get("Core.Modules", name, annot.defaultModule()).getBoolean(true))
             {
-                OutputHandler.felog.info("Requested to disable module " + name);
+                ForgeEssentials.log.info("Requested to disable module " + name);
                 isLoadable = false;
                 return;
             }
         }
 
         // try getting the parent mod.. and register it.
-        {
-            mod = handleMod(annot.parentMod());
-        }
+        mod = handleMod(annot.parentMod());
 
         // check method annotations. they are all optional...
         Class[] params;
@@ -113,7 +110,7 @@ public class ModuleContainer implements Comparable
                 {
                     if (!(boolean) m.invoke(c.newInstance()))
                     {
-                        OutputHandler.felog.info("Requested to disable module " + name);
+                        ForgeEssentials.log.debug("Disabled module " + name);
                         isLoadable = false;
                         return;
                     }
@@ -136,44 +133,32 @@ public class ModuleContainer implements Comparable
             if (f.isAnnotationPresent(Instance.class))
             {
                 if (instance != null)
-                {
                     throw new RuntimeException("Only one field may be marked as Instance");
-                }
                 f.setAccessible(true);
                 instance = f.getName();
             }
             else if (f.isAnnotationPresent(Container.class))
             {
                 if (container != null)
-                {
                     throw new RuntimeException("Only one field may be marked as Container");
-                }
                 if (f.getType().equals(ModuleContainer.class))
-                {
                     throw new RuntimeException("This field must have the type ModuleContainer!");
-                }
                 f.setAccessible(true);
                 container = f.getName();
             }
             else if (f.isAnnotationPresent(ParentMod.class))
             {
                 if (parentMod != null)
-                {
                     throw new RuntimeException("Only one field may be marked as ParentMod");
-                }
                 f.setAccessible(true);
                 parentMod = f.getName();
             }
             else if (f.isAnnotationPresent(ModuleDir.class))
             {
                 if (moduleDir != null)
-                {
                     throw new RuntimeException("Only one field may be marked as ModuleDir");
-                }
                 if (!File.class.isAssignableFrom(f.getType()))
-                {
                     throw new RuntimeException("This field must be the type File!");
-                }
                 f.setAccessible(true);
                 moduleDir = f.getName();
             }
@@ -192,7 +177,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.warning(name + " could not be instantiated. FE will not load this module.");
+            ForgeEssentials.log.warn(name + " could not be instantiated. FE will not load this module.");
             e.printStackTrace();
             isLoadable = false;
             return;
@@ -236,7 +221,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.info("Error populating fields of " + name);
+            ForgeEssentials.log.info("Error populating fields of " + name);
             Throwables.propagate(e);
         }
     }
@@ -256,7 +241,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.info("Error while invoking Reload method for " + name);
+            ForgeEssentials.log.info("Error while invoking Reload method for " + name);
             Throwables.propagate(e);
         }
     }
@@ -310,33 +295,28 @@ public class ModuleContainer implements Comparable
         return (11 + name.hashCode()) * 29 + className.hashCode();
     }
 
-    private static Object handleMod(Class c)
+    private static Object handleMod(Class modClass)
     {
         String modid;
         Object obj = null;
 
         ModContainer contain = null;
-        for (ModContainer container : Loader.instance().getModList())
+        for (ModContainer c : Loader.instance().getModList())
         {
-            if (container.getMod() != null && container.getMod().getClass().equals(c))
+            if (c.getMod() != null && c.getMod().getClass().equals(modClass))
             {
-                contain = container;
-                obj = container.getMod();
+                contain = c;
+                obj = c.getMod();
                 break;
             }
         }
 
         if (obj == null || contain == null)
-        {
-            throw new RuntimeException(c + " isn't an loaded mod class!");
-        }
+            throw new RuntimeException(modClass + " isn't an loaded mod class!");
 
-        modid = contain.getModId() + "--" + contain.getVersion();
-
-        if (modClasses.add(c))
-        {
-            OutputHandler.felog.info("Modules from " + modid + " are being loaded");
-        }
+        modid = contain.getModId() + "-" + contain.getVersion();
+        if (modClasses.add(modClass))
+            ForgeEssentials.log.info("Modules from " + modid + " are being loaded");
         return obj;
     }
 }

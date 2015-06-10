@@ -54,6 +54,7 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.protection.effect.CommandEffect;
@@ -371,7 +372,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (player.isPlayerSleeping())
                 sleepingPlayers++;
         float percentage = (float) sleepingPlayers / MinecraftServer.getServer().getCurrentPlayerCount();
-        OutputHandler.felog.finer(String.format("Players sleeping: %.0f%%", percentage * 100));
+        ForgeEssentials.log.debug(String.format("Players sleeping: %.0f%%", percentage * 100));
 
         if (percentage >= FEConfig.majoritySleep && percentage < 1)
         {
@@ -560,7 +561,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             GameType playerGm = player.theItemInWorldManager.getGameType();
             if (playerGm != gm)
             {
-                // OutputHandler.felog.info(String.format("Changing gamemode for %s from %s to %s",
+                // ForgeEssentials.log.info(String.format("Changing gamemode for %s from %s to %s",
                 // ident.getUsernameOrUUID(), playerGm.getName(), gm.getName()));
                 if (gm != GameType.CREATIVE)
                 {

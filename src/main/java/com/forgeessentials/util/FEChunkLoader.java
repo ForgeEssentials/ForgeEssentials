@@ -31,7 +31,7 @@ public class FEChunkLoader implements LoadingCallback
     {
         if (map.containsKey(world.provider.dimensionId))
         {
-            OutputHandler.debug(world.provider.dimensionId + " was already loaded. add 1 to count.");
+            ForgeEssentials.log.debug(world.provider.dimensionId + " was already loaded. add 1 to count.");
 
             Ticket ticket = map.get(world.provider.dimensionId);
             ticket.getModData().setInteger("count", ticket.getModData().getInteger("count") + 1);
@@ -42,12 +42,12 @@ public class FEChunkLoader implements LoadingCallback
             Ticket ticket = ForgeChunkManager.requestTicket(ForgeEssentials.instance, world, ForgeChunkManager.Type.NORMAL);
             if (ticket == null)
             {
-                OutputHandler.debug("Ticket was null ?");
+                ForgeEssentials.log.debug("Ticket was null ?");
                 return false;
             }
             else
             {
-                OutputHandler.debug("Force loaded " + world.provider.dimensionId);
+                ForgeEssentials.log.debug("Force loaded " + world.provider.dimensionId);
                 ForgeChunkManager.forceChunk(ticket, new ChunkCoordIntPair(0, 0));
                 ticket.getModData().setInteger("count", 1);
                 map.put(world.provider.dimensionId, ticket);
@@ -64,7 +64,7 @@ public class FEChunkLoader implements LoadingCallback
             ticket.getModData().setInteger("count", ticket.getModData().getInteger("count") - 1);
             if (ticket.getModData().getInteger("count") == 0)
             {
-                OutputHandler.debug(world.provider.dimensionId + " was removed fron the force loaded list.");
+                ForgeEssentials.log.debug(world.provider.dimensionId + " was removed fron the force loaded list.");
                 ForgeChunkManager.unforceChunk(ticket, new ChunkCoordIntPair(0, 0));
                 ForgeChunkManager.releaseTicket(ticket);
                 map.remove(world.provider.dimensionId);
@@ -72,13 +72,13 @@ public class FEChunkLoader implements LoadingCallback
             }
             else
             {
-                OutputHandler.debug(world.provider.dimensionId + " is still force loaded. " + ticket.getModData().getInteger("count") + " requests remain.");
+                ForgeEssentials.log.debug(world.provider.dimensionId + " is still force loaded. " + ticket.getModData().getInteger("count") + " requests remain.");
                 return false;
             }
         }
         else
         {
-            OutputHandler.debug(world.provider.dimensionId + " was not force loaded.");
+            ForgeEssentials.log.debug(world.provider.dimensionId + " was not force loaded.");
             return false;
         }
     }

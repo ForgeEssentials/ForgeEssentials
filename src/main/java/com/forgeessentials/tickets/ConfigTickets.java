@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import net.minecraftforge.common.config.Configuration;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.OutputHandler;
 
 public class ConfigTickets extends ConfigLoaderBase
 {
@@ -13,7 +13,7 @@ public class ConfigTickets extends ConfigLoaderBase
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        OutputHandler.felog.finer("Loading Tickets Config");
+        ForgeEssentials.log.debug("Loading Tickets Config");
         String cat = "Tickets";
 
         ModuleTickets.categories = Arrays.asList(config.get(cat, "categories", new String[] { "griefing", "overflow", "dispute" }).getStringList());

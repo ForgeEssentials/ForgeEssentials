@@ -10,7 +10,7 @@ import net.minecraft.entity.passive.EntityTameable;
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.api.EnumMobType.FEMob;
 import com.forgeessentials.api.EnumMobType.FEMob.IsTamed;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.core.ForgeEssentials;
 
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -19,7 +19,7 @@ public class MobTypeLoader
 {
     public static void preLoad(FMLPreInitializationEvent event)
     {
-        OutputHandler.felog.info("Discovering and loading FEMob data...");
+        ForgeEssentials.log.info("Discovering and loading FEMob data...");
         // started ASM handling for the module loading.
         Set<ASMData> data = event.getAsmData().getAll(FEMob.class.getName());
 
@@ -36,7 +36,7 @@ public class MobTypeLoader
             }
             catch (Exception e)
             {
-                OutputHandler.felog.info("Error trying to load " + asm.getClassName() + " as a FEMob!");
+                ForgeEssentials.log.info("Error trying to load " + asm.getClassName() + " as a FEMob!");
                 e.printStackTrace();
                 return;
             }

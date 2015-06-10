@@ -28,7 +28,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
@@ -131,7 +130,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
             }
             catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
             {
-                OutputHandler.felog.fine("Could not load FERemoteHandler " + asm.getClassName());
+                ForgeEssentials.log.debug("Could not load FERemoteHandler " + asm.getClassName());
             }
         }
     }
@@ -207,11 +206,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
                         server = new Server(port, bindAddress, sslCtxHelper.getSSLCtx());
                     }
                     else
-                        OutputHandler.felog.severe("[remote] Unable to load SSL certificate: File not found");
+                        ForgeEssentials.log.error("[remote] Unable to load SSL certificate: File not found");
                 }
                 catch (IOException | GeneralSecurityException e1)
                 {
-                    OutputHandler.felog.severe("[remote] Unable to load SSL certificate: " + e1.getMessage());
+                    ForgeEssentials.log.error("[remote] Unable to load SSL certificate: " + e1.getMessage());
                 }
             }
             else
@@ -221,7 +220,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         }
         catch (IOException e1)
         {
-            OutputHandler.felog.severe("[remote] Unable to start remote-server: " + e1.getMessage());
+            ForgeEssentials.log.error("[remote] Unable to start remote-server: " + e1.getMessage());
         }
     }
 

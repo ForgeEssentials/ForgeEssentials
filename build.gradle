@@ -54,8 +54,8 @@ minecraft {
     runDir = "rundir"
     ext.forgeVersion = "10.13.2.1291"
 
-    replaceIn "com/forgeessentials/commons/VersionUtils.java"
-    replace "%VERSION%", project.version
+    replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
+    replace "%FE_VERSION%", project.version
 
     //srgExtra "PK: org/spongepowered/asm com/forgeessentials/repackage/org_spongepowered/asm"
 }

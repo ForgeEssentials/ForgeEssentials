@@ -389,14 +389,14 @@ public class PlayerInfo implements Loadable
             if (newInventory == null)
                 newInventory = new ArrayList<>();
 
-            // OutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s",
+            // ForgeEssentials.log.info(String.format("Changing inventory group for %s from %s to %s",
             // ident.getUsernameOrUUID(), activeInventoryGroup, name));
             /*
-             * OutputHandler.felog.info("Items in old inventory:"); for (int i = 0; i <
+             * ForgeEssentials.log.info("Items in old inventory:"); for (int i = 0; i <
              * ident.getPlayer().inventory.getSizeInventory(); i++) { ItemStack itemStack =
-             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != null) OutputHandler.felog.info("  " +
-             * itemStack.getDisplayName()); } OutputHandler.felog.info("Items in new inventory:"); for (ItemStack
-             * itemStack : newInventory) if (itemStack != null) OutputHandler.felog.info("  " +
+             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != null) ForgeEssentials.log.info("  " +
+             * itemStack.getDisplayName()); } ForgeEssentials.log.info("Items in new inventory:"); for (ItemStack
+             * itemStack : newInventory) if (itemStack != null) ForgeEssentials.log.info("  " +
              * itemStack.getDisplayName());
              */
 

@@ -2,7 +2,7 @@ package com.forgeessentials.core.environment;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 
 import cpw.mods.fml.common.ICrashCallable;
@@ -23,8 +23,9 @@ public class FECrashCallable implements ICrashCallable
     {
         String modules = StringUtils.join(ModuleLauncher.getModuleList(), ", ");
         String n = System.getProperty("line.separator");
-        String returned = "Build information: Build number is: " + ForgeEssentials.version.getBuildNumber() + ", build hash is: "
-                + ForgeEssentials.version.getBuildHash() + ", Modules loaded: " + modules;
+        String returned = String.format("Running ForgeEssentials %s #%d (%s)", //
+                BuildInfo.VERSION, BuildInfo.getBuildNumber(), BuildInfo.getBuildHash());
+        returned += ". Modules loaded: " + modules;
 
         if (Environment.hasCauldron)
         {

@@ -43,6 +43,7 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.playerlogger.entity.ActionBlock;
 import com.forgeessentials.playerlogger.entity.Action_;
 import com.forgeessentials.playerlogger.entity.BlockData;
@@ -55,7 +56,6 @@ import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
 import com.forgeessentials.playerlogger.event.LogEventInteract;
 import com.forgeessentials.playerlogger.event.LogEventPlace;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.google.common.base.Charsets;
@@ -150,17 +150,17 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                     return;
                 if (!em.isOpen())
                 {
-                    OutputHandler.felog.severe("[PL] Playerlogger database closed. Trying to reconnect...");
+                    ForgeEssentials.log.error("[PL] Playerlogger database closed. Trying to reconnect...");
                     try
                     {
                         em = entityManagerFactory.createEntityManager();
                     }
                     catch (IllegalStateException e)
                     {
-                        OutputHandler.felog.severe("[PL] ------------------------------------------------------------------------");
-                        OutputHandler.felog.severe("[PL] Fatal error! Database connection was lost and could not be reestablished");
-                        OutputHandler.felog.severe("[PL] Stopping playerlogger!");
-                        OutputHandler.felog.severe("[PL] ------------------------------------------------------------------------");
+                        ForgeEssentials.log.error("[PL] ------------------------------------------------------------------------");
+                        ForgeEssentials.log.error("[PL] Fatal error! Database connection was lost and could not be reestablished");
+                        ForgeEssentials.log.error("[PL] Stopping playerlogger!");
+                        ForgeEssentials.log.error("[PL] ------------------------------------------------------------------------");
                         em = null;
                         eventQueue.clear();
                         return;
@@ -183,7 +183,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 }
                 catch (Exception e1)
                 {
-                    OutputHandler.felog.severe("[PL] Exception while persisting playerlogger entries");
+                    ForgeEssentials.log.error("[PL] Exception while persisting playerlogger entries");
                     e1.printStackTrace();
                     try
                     {
@@ -191,7 +191,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                     }
                     catch (Exception e2)
                     {
-                        OutputHandler.felog.severe("[PL] Exception while rolling back changes!");
+                        ForgeEssentials.log.error("[PL] Exception while rolling back changes!");
                         e2.printStackTrace();
                         em.close();
                         return;
@@ -347,7 +347,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         }
         catch (Exception ex)
         {
-            OutputHandler.felog.severe(ex.toString());
+            ForgeEssentials.log.error(ex.toString());
             ex.printStackTrace();
         }
         return null;

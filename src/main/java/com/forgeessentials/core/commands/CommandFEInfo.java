@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
-import com.forgeessentials.commons.VersionUtils;
+import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.asm.EventInjector;
@@ -37,7 +37,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return "fe.core.info";
+        return ForgeEssentials.PERM_INFO;
     }
 
     @Override
@@ -69,9 +69,8 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase
         }
         else if (args[0].equalsIgnoreCase("about"))
         {
-            OutputHandler.chatNotification(sender, "You are currently running ForgeEssentials version " + VersionUtils.FEVERSION);
-            OutputHandler.felog.info("Build information: Build number is: " + ForgeEssentials.version.getBuildNumber() + ", build hash is: "
-                    + ForgeEssentials.version.getBuildHash());
+            ForgeEssentials.log.info(String.format("Running ForgeEssentials %s #%d (%s)", //
+                    BuildInfo.VERSION, BuildInfo.getBuildNumber(), BuildInfo.getBuildHash()));
             OutputHandler
                     .chatNotification(sender,
                             "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");

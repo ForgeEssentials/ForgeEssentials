@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
@@ -315,7 +316,7 @@ public abstract class ServerUtil
         }
         catch (Exception e)
         {
-            OutputHandler.felog.severe(String.format("Error replacing command /%s", clazz.getClass().getName()));
+            ForgeEssentials.log.error(String.format("Error replacing command /%s", clazz.getClass().getName()));
             e.printStackTrace();
         }
         if (newCommand instanceof ForgeEssentialsCommandBase)
@@ -342,7 +343,7 @@ public abstract class ServerUtil
         }
         catch (Exception e)
         {
-            OutputHandler.felog.severe(String.format("Error replacing command /%s", oldCommand.getCommandName()));
+            ForgeEssentials.log.error(String.format("Error replacing command /%s", oldCommand.getCommandName()));
             e.printStackTrace();
         }
         if (newCommand instanceof ForgeEssentialsCommandBase)
@@ -355,7 +356,7 @@ public abstract class ServerUtil
         if (oldCommand != null)
             replaceCommand(oldCommand, newCommand);
         else
-            OutputHandler.felog.severe(String.format("Could not find command /%s to replace", command));
+            ForgeEssentials.log.error(String.format("Could not find command /%s to replace", command));
     }
 
 }

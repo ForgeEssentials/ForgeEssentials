@@ -141,7 +141,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         dirty = false;
         if (persistenceProvider != null)
         {
-            OutputHandler.felog.fine("Saving permissions...");
+            ForgeEssentials.log.debug("Saving permissions...");
             ForgeEssentials.BUS.post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
             dirty = false;
@@ -182,10 +182,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         // if (verbosePermissionDebug)
         // {
-        // OutputHandler.felog.fine("PERMISSIONS SET DIRTY");
+        // ForgeEssentials.log.fine("PERMISSIONS SET DIRTY");
         // StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         // for (int i = 2; i < stackTrace.length && i < 10; i++)
-        // OutputHandler.felog.fine("  " + stackTrace[i].toString());
+        // ForgeEssentials.log.fine("  " + stackTrace[i].toString());
         // }
         dirty = true;
         lastDirtyTime = System.currentTimeMillis();

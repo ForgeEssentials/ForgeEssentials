@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.forgeessentials.client.util.DummyProxy;
-import com.forgeessentials.commons.VersionUtils;
+import com.forgeessentials.commons.BuildInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -18,7 +18,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = VersionUtils.FEVERSION, guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true)
+@Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = BuildInfo.VERSION, guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true)
 public class ForgeEssentialsClient {
 
     public static Logger feclientlog;

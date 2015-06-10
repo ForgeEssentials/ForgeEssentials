@@ -32,10 +32,10 @@ import com.forgeessentials.api.NamedWorldHandler;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.multiworld.MultiworldException.Type;
 import com.forgeessentials.multiworld.gen.WorldTypeMultiworld;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.google.common.collect.ImmutableMap;
 
@@ -133,13 +133,13 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 switch (e.type)
                 {
                 case NO_PROVIDER:
-                    OutputHandler.felog.severe(String.format(e.type.error, world.provider));
+                    ForgeEssentials.log.error(String.format(e.type.error, world.provider));
                     break;
                 case NO_WORLDTYPE:
-                    OutputHandler.felog.severe(String.format(e.type.error, world.worldType));
+                    ForgeEssentials.log.error(String.format(e.type.error, world.worldType));
                     break;
                 default:
-                    OutputHandler.felog.severe(e.type.error);
+                    ForgeEssentials.log.error(e.type.error);
                     break;
                 }
 
@@ -445,7 +445,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 }
                 catch (IOException e)
                 {
-                    OutputHandler.felog.warning("Error deleting dimension files");
+                    ForgeEssentials.log.warn("Error deleting dimension files");
                 }
             }
         }
@@ -482,10 +482,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         {
             e.printStackTrace();
         }
-        OutputHandler.felog.info("[Multiworld] Available world providers:");
+        ForgeEssentials.log.debug("[Multiworld] Available world providers:");
         for (Entry<String, Integer> provider : worldProviderClasses.entrySet())
         {
-            OutputHandler.felog.info("# " + provider.getValue() + ":" + provider.getKey());
+            ForgeEssentials.log.debug("# " + provider.getValue() + ":" + provider.getKey());
         }
     }
 
@@ -530,9 +530,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             worldTypes.put(name, type);
         }
 
-        OutputHandler.felog.info("[Multiworld] Available world types:");
+        ForgeEssentials.log.debug("[Multiworld] Available world types:");
         for (String worldType : worldTypes.keySet())
-            OutputHandler.felog.info("# " + worldType);
+            ForgeEssentials.log.debug("# " + worldType);
     }
 
     public Map<String, WorldType> getWorldTypes()

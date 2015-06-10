@@ -28,8 +28,8 @@ import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
-import com.forgeessentials.util.OutputHandler;
 
 public class FlatfileProvider extends ZonePersistenceProvider
 {
@@ -252,7 +252,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
             File[] worldDirs = path.listFiles(directoryFilter);
             if (worldDirs == null)
             {
-                OutputHandler.felog.severe("Error loading permissions: invalid path");
+                ForgeEssentials.log.error("Error loading permissions: invalid path");
                 return null;
             }
             for (File worldPath : worldDirs)
@@ -267,7 +267,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
                 }
                 catch (NumberFormatException | IOException e)
                 {
-                    OutputHandler.felog.severe("Error reading world " + worldPath.getName());
+                    ForgeEssentials.log.error("Error reading world " + worldPath.getName());
                     continue;
                 }
 
@@ -293,7 +293,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
                     }
                     catch (NumberFormatException | IOException e)
                     {
-                        OutputHandler.felog.severe("Error reading area " + worldPath.getName() + "/" + areaPath.getName());
+                        ForgeEssentials.log.error("Error reading area " + worldPath.getName() + "/" + areaPath.getName());
                         continue;
                     }
 
@@ -331,7 +331,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
                 }
                 catch (IllegalArgumentException | IOException e)
                 {
-                    OutputHandler.felog.severe("Error reading server data " + serverFile.getName());
+                    ForgeEssentials.log.error("Error reading server data " + serverFile.getName());
                     serverZone.setMaxZoneId(maxId);
                 }
             }
@@ -344,7 +344,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
         }
         catch (Exception e)
         {
-            OutputHandler.felog.severe("Error loading permissions");
+            ForgeEssentials.log.error("Error loading permissions");
             e.printStackTrace();
             return null;
         }
@@ -366,7 +366,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
                 }
                 catch (IOException e)
                 {
-                    OutputHandler.felog.severe("Error reading permissions from " + path.getAbsolutePath());
+                    ForgeEssentials.log.error("Error reading permissions from " + path.getAbsolutePath());
                     continue;
                 }
 
@@ -377,7 +377,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
                 p.remove(FEPermissions.PLAYER_UUID);
                 if (username == null && uuid == null)
                 {
-                    OutputHandler.felog.severe("User identification missing in " + path.getAbsolutePath());
+                    ForgeEssentials.log.error("User identification missing in " + path.getAbsolutePath());
                     continue;
                 }
                 UserIdent ident = UserIdent.get(uuid, username);
@@ -403,7 +403,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
                 }
                 catch (IOException e)
                 {
-                    OutputHandler.felog.severe("Error reading permissions from " + path.getAbsolutePath());
+                    ForgeEssentials.log.error("Error reading permissions from " + path.getAbsolutePath());
                     continue;
                 }
 
