@@ -62,7 +62,7 @@ public class CommandTPA extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm("/tpa <player>: Request being teleportet to another player");
+            arguments.confirm("/tpa <player>: Request being teleported to another player");
             arguments.confirm("/tpa <player> <here|x y z>: Propose another player to be teleported");
             return;
         }
