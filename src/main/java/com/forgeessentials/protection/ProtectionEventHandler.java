@@ -716,6 +716,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static boolean isItemBanned(WorldPoint point, ItemStack stack)
     {
+        if (stack == null)
+            return false;
         return !APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.getItemBanPermission(stack));
     }
 
