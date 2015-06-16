@@ -175,12 +175,15 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void onXPPickup(PlayerPickupXpEvent e)
     {
-        UserIdent ident = UserIdent.get(e.entityPlayer);
-        double xpMultiplier = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
-        if (xpMultiplier <= 0)
-            return;
-        PlayerWallet wallet = getWallet(ident);
-        wallet.add(xpMultiplier * e.orb.xpValue);
+        if (e.entityPlayer instanceof EntityPlayerMP)
+        {
+            UserIdent ident = UserIdent.get(e.entityPlayer);
+            double xpMultiplier = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
+            if (xpMultiplier <= 0)
+                return;
+            PlayerWallet wallet = getWallet(ident);
+            wallet.add(xpMultiplier * e.orb.xpValue);
+        }
     }
 
     @SubscribeEvent

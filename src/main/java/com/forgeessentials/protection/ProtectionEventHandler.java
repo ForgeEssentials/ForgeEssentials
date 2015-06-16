@@ -141,10 +141,10 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.entityLiving == null)
             return;
 
-        if (event.entityLiving instanceof EntityPlayer)
+        if (event.entityLiving instanceof EntityPlayerMP)
         {
             // living -> player (fall-damage, mob, dispenser, lava)
-            EntityPlayer target = (EntityPlayer) event.entityLiving;
+            EntityPlayerMP target = (EntityPlayerMP) event.entityLiving;
             {
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + event.source.damageType;
                 if (ModuleProtection.isDebugMode(target))
@@ -158,7 +158,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
             if (event.source.getEntity() != null)
             {
-                // non-player-entity -> player (mob)
+                // non-player-entity (mob) -> player
                 Entity source = event.source.getEntity();
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + EntityList.getEntityString(source);
                 if (ModuleProtection.isDebugMode(target))
@@ -442,13 +442,14 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        if (isItemBanned(event.entityPlayer, event.item.getEntityItem()))
+        UserIdent ident = event.entityPlayer instanceof EntityPlayerMP ? UserIdent.get(event.entityPlayer) : null;
+        if (isItemBanned(ident, event.item.getEntityItem()))
         {
             event.setCanceled(true);
             event.item.setDead();
             return;
         }
-        if (isInventoryItemBanned(event.entityPlayer, event.item.getEntityItem()))
+        if (isInventoryItemBanned(ident, event.item.getEntityItem()))
         {
             event.setCanceled(true);
             return;
@@ -710,9 +711,9 @@ public class ProtectionEventHandler extends ServerEventHandler
         return false;
     }
 
-    public static boolean isItemBanned(EntityPlayer player, ItemStack stack)
+    public static boolean isItemBanned(UserIdent ident, ItemStack stack)
     {
-        return !APIRegistry.perms.checkUserPermission(UserIdent.get(player), ModuleProtection.getItemBanPermission(stack));
+        return !APIRegistry.perms.checkUserPermission(ident, ModuleProtection.getItemBanPermission(stack));
     }
 
     public static boolean isItemBanned(WorldPoint point, ItemStack stack)
@@ -722,24 +723,25 @@ public class ProtectionEventHandler extends ServerEventHandler
         return !APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.getItemBanPermission(stack));
     }
 
-    public static boolean isInventoryItemBanned(EntityPlayer player, ItemStack stack)
+    public static boolean isInventoryItemBanned(UserIdent ident, ItemStack stack)
     {
-        return !APIRegistry.perms.checkUserPermission(UserIdent.get(player), ModuleProtection.getItemInventoryPermission(stack));
+        return !APIRegistry.perms.checkUserPermission(ident, ModuleProtection.getItemInventoryPermission(stack));
     }
 
     public static void checkPlayerInventory(EntityPlayer player)
     {
+        UserIdent ident = player instanceof EntityPlayerMP ? UserIdent.get(player) : null;
         for (int slotIdx = 0; slotIdx < player.inventory.getSizeInventory(); slotIdx++)
         {
             ItemStack stack = player.inventory.getStackInSlot(slotIdx);
             if (stack != null)
             {
-                if (isItemBanned(player, stack))
+                if (isItemBanned(ident, stack))
                 {
                     player.inventory.setInventorySlotContents(slotIdx, null);
                     continue;
                 }
-                if (isInventoryItemBanned(player, stack))
+                if (isInventoryItemBanned(ident, stack))
                 {
                     EntityItem droppedItem = player.func_146097_a(stack, true, false);
                     droppedItem.motionX = 0;
