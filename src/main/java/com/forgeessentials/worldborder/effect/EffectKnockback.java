@@ -36,4 +36,5 @@ public class EffectKnockback extends WorldBorderEffect
             player.ridingEntity.setLocationAndAngles(p.getX(), p.getY(), p.getZ(), player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
         player.playerNetServerHandler.setPlayerLocation(p.getX(), p.getY(), p.getZ(), player.rotationYaw, player.rotationPitch);
     }
+    
 }

@@ -88,7 +88,7 @@ public class TeleportHelper extends ServerEventHandler
             {
                 return false;
             }
-            doTeleport(player, point);
+            checkedTeleport(player, point);
             OutputHandler.chatConfirmation(player, "Teleported.");
             return true;
         }
@@ -116,15 +116,16 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         // Check permissions
+        UserIdent ident = UserIdent.get(player);
         if (!APIRegistry.perms.checkPermission(player, TELEPORT_FROM))
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
-        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point.toWorldPoint(), TELEPORT_TO))
+        if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_TO))
             throw new TranslatedCommandException("You are not allowed to teleport to that location.");
-        if (player.dimension != point.getDimension() && !APIRegistry.perms.checkUserPermission(UserIdent.get(player), point.toWorldPoint(), TELEPORT_CROSSDIM))
+        if (player.dimension != point.getDimension() && !APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_CROSSDIM))
             throw new TranslatedCommandException("You are not allowed to teleport across dimensions.");
 
         // Get and check teleport cooldown
-        int teleportCooldown = ServerUtil.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_COOLDOWN), 0) * 1000;
+        int teleportCooldown = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, TELEPORT_COOLDOWN), 0) * 1000;
         if (teleportCooldown > 0)
         {
             PlayerInfo pi = PlayerInfo.get(player);
@@ -137,10 +138,10 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         // Get and check teleport warmup
-        int teleportWarmup = ServerUtil.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, TELEPORT_WARMUP), 0);
+        int teleportWarmup = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, TELEPORT_WARMUP), 0);
         if (teleportWarmup <= 0)
         {
-            doTeleport(player, point);
+            checkedTeleport(player, point);
             return;
         }
 
@@ -158,6 +159,8 @@ public class TeleportHelper extends ServerEventHandler
 
     public static boolean canTeleportTo(WarpPoint point)
     {
+        if (point.getY() < 0)
+            return false;
         Block block1 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ());
         Block block2 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
         boolean block1Free = !block1.getMaterial().isSolid() || block1.getBlockBoundsMaxX() < 1 || block1.getBlockBoundsMaxY() > 0;
@@ -165,7 +168,7 @@ public class TeleportHelper extends ServerEventHandler
         return block1Free && block2Free;
     }
 
-    public static void doTeleport(EntityPlayerMP player, WarpPoint point)
+    public static void checkedTeleport(EntityPlayerMP player, WarpPoint point)
     {
         if (!canTeleportTo(point))
         {
@@ -176,12 +179,19 @@ public class TeleportHelper extends ServerEventHandler
         PlayerInfo pi = PlayerInfo.get(player);
         pi.setLastTeleportOrigin(new WarpPoint(player));
         pi.setLastTeleportTime(System.currentTimeMillis());
-        if (point.toWorldPoint().equals(pi.getLastDeathLocation()))
-            pi.setLastDeathLocation(null);
+        pi.setLastDeathLocation(null);
 
+        doTeleport(player, point);
+    }
+
+    public static void doTeleport(EntityPlayerMP player, WarpPoint point)
+    {
+        // TODO: Handle teleportation of mounted entity
         player.mountEntity(null);
+
         if (player.dimension != point.getDimension())
-            MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, point.getDimension(), new SimpleTeleporter(point.getWorld()));
+            MinecraftServer.getServer().getConfigurationManager()
+                    .transferPlayerToDimension(player, point.getDimension(), new SimpleTeleporter(point.getWorld()));
         player.playerNetServerHandler.setPlayerLocation(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
 
@@ -189,7 +199,7 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (entity.dimension != point.getDimension())
             entity.travelToDimension(point.getDimension());
-        entity.setLocationAndAngles(point.getX(), point.getY() + 0.1, point.getZ(), point.getYaw(), point.getPitch());
+        entity.setLocationAndAngles(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
 
     @SubscribeEvent

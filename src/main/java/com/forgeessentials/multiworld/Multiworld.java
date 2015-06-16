@@ -226,7 +226,7 @@ public class Multiworld
         y = WorldUtil.placeInWorld(world, (int) x, (int) y, (int) z);
         WarpPoint target = new WarpPoint(world.provider.dimensionId, x, y, z, player.rotationPitch, player.rotationYaw);
         if (instant)
-            TeleportHelper.doTeleport(player, target);
+            TeleportHelper.checkedTeleport(player, target);
         else
             TeleportHelper.teleport(player, target);
 

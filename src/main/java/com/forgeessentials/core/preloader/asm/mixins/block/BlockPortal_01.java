@@ -41,7 +41,7 @@ public abstract class BlockPortal_01 extends BlockPortal
         else if (!world.isRemote)
         {
             if (entity instanceof EntityPlayerMP)
-                TeleportHelper.doTeleport((EntityPlayerMP) entity, portal.getTarget().toWarpPoint(entity.rotationPitch, entity.rotationYaw));
+                TeleportHelper.checkedTeleport((EntityPlayerMP) entity, portal.getTarget().toWarpPoint(entity.rotationPitch, entity.rotationYaw));
             else
                 TeleportHelper.doTeleportEntity(entity, portal.getTarget().toWarpPoint(entity.rotationPitch, entity.rotationYaw));
         }
