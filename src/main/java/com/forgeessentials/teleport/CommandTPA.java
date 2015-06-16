@@ -1,6 +1,7 @@
 package com.forgeessentials.teleport;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
@@ -109,7 +110,7 @@ public class CommandTPA extends ParserCommandBase
         else
         {
             arguments.checkPermission(PERM_LOCATION);
-            point = new WarpPoint(arguments.senderPlayer.worldObj, //
+            point = new WarpPoint((WorldServer) arguments.senderPlayer.worldObj, //
                     arguments.parseDouble(), arguments.parseDouble(), arguments.parseDouble(), //
                     player.getPlayer().rotationPitch, player.getPlayer().rotationYaw);
             locationName = point.toReadableString();

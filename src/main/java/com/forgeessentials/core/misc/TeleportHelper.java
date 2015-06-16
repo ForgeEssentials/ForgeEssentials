@@ -9,6 +9,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.Teleporter;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.api.APIRegistry;
@@ -24,6 +26,34 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class TeleportHelper extends ServerEventHandler
 {
+
+    public static class SimpleTeleporter extends Teleporter
+    {
+
+        public SimpleTeleporter(WorldServer world)
+        {
+            super(world);
+        }
+
+        @Override
+        public boolean placeInExistingPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
+        {
+            return false;
+        }
+
+        @Override
+        public void removeStalePortalLocations(long totalWorldTime)
+        {
+            /* do nothing */
+        }
+
+        @Override
+        public void placeInPortal(Entity entity, double x, double y, double z, float rotationYaw)
+        {
+            /* do nothing */
+        }
+
+    }
 
     public static class TeleportInfo
     {
@@ -151,7 +181,7 @@ public class TeleportHelper extends ServerEventHandler
 
         player.mountEntity(null);
         if (player.dimension != point.getDimension())
-            MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, point.getDimension());
+            MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(player, point.getDimension(), new SimpleTeleporter(point.getWorld()));
         player.playerNetServerHandler.setPlayerLocation(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
 

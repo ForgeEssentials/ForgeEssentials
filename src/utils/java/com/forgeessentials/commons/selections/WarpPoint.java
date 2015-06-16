@@ -1,12 +1,12 @@
 package com.forgeessentials.commons.selections;
 
-import com.google.gson.annotations.Expose;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+
+import com.google.gson.annotations.Expose;
 
 public class WarpPoint
 {
@@ -24,7 +24,7 @@ public class WarpPoint
     protected double zd;
 
     @Expose(serialize = false)
-    protected World world;
+    protected WorldServer world;
 
     // ------------------------------------------------------------
 
@@ -38,7 +38,7 @@ public class WarpPoint
         this.yaw = playerYaw;
     }
 
-    public WarpPoint(World world, double x, double y, double z, float playerPitch, float playerYaw)
+    public WarpPoint(WorldServer world, double x, double y, double z, float playerPitch, float playerYaw)
     {
         this.world = world;
         this.dim = world.provider.dimensionId;
@@ -71,7 +71,8 @@ public class WarpPoint
 
     public WarpPoint(Entity entity)
     {
-        this(entity.worldObj, entity.posX, entity.posY, entity.posZ, entity.rotationPitch, entity.rotationYaw);
+        this(entity.worldObj instanceof WorldServer ? (WorldServer) entity.worldObj : null, entity.posX, entity.posY, entity.posZ, entity.rotationPitch,
+                entity.rotationYaw);
     }
 
     public WarpPoint(WarpPoint point)
@@ -131,7 +132,7 @@ public class WarpPoint
         this.dim = dim;
     }
 
-    public World getWorld()
+    public WorldServer getWorld()
     {
         if (world == null || world.provider.dimensionId != dim)
             world = DimensionManager.getWorld(dim);
