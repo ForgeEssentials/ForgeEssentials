@@ -86,14 +86,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     protected boolean dirty = true;
 
     /**
-     * First time that permissions have been changed. At least one minute after this time, permissions will definitely
-     * be saved.
+     * First time that permissions have been changed. At least one minute after this time, permissions will definitely be saved.
      */
     protected long firstDirtyTime = 0;
 
     /**
-     * Last time that permissions have been changed. Five seconds after no more permissions have been changed, they will
-     * be saved.
+     * Last time that permissions have been changed. Five seconds after no more permissions have been changed, they will be saved.
      */
     protected long lastDirtyTime = 0;
 
@@ -911,15 +909,19 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public boolean checkUserPermission(UserIdent ident, String permissionNode)
     {
-        return checkBooleanPermission(getPermission(ident, ident != null && ident.hasPlayer() ? new WorldPoint(ident.getPlayerMP()) : null, null,
-                GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
+        WorldPoint point = null;
+        if (ident != null && ident.hasPlayer())
+            point = new WorldPoint(ident.getPlayerMP());
+        return checkBooleanPermission(getPermission(ident, point, null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
     @Override
     public String getUserPermissionProperty(UserIdent ident, String permissionNode)
     {
-        return getPermission(ident, ident.hasPlayer() ? new WorldPoint(ident.getPlayerMP()) : null, null, GroupEntry.toList(getPlayerGroups(ident)),
-                permissionNode, true);
+        WorldPoint point = null;
+        if (ident != null && ident.hasPlayer())
+            point = new WorldPoint(ident.getPlayerMP());
+        return getPermission(ident, point, null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
     }
 
     @Override
