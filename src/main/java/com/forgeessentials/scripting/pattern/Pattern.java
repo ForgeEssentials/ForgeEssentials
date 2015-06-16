@@ -35,6 +35,8 @@ public class Pattern
         {
             if (part.isEmpty())
                 continue;
+            if (regex.length() > 0)
+                regex.append(' ');
             if (part.charAt(0) == '@')
             {
                 switch (part.substring(1))
@@ -71,7 +73,7 @@ public class Pattern
             }
             else
             {
-                regex.append(java.util.regex.Pattern.quote(part + " "));
+                regex.append(java.util.regex.Pattern.quote(part));
             }
         }
         // Cut off final space

@@ -29,7 +29,7 @@ public class PatternParser<T extends Pattern>
 
     }
 
-    protected List<T> patterns;
+    protected List<T> patterns = new ArrayList<>();
 
     public void add(T pattern)
     {
