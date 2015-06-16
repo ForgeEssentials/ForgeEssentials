@@ -207,12 +207,13 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
+        UserIdent ident = event.getPlayer() instanceof EntityPlayerMP ? UserIdent.get(event.getPlayer()) : null;
         Block block = event.world.getBlock(event.x, event.y, event.z);
         String permission = ModuleProtection.getBlockBreakPermission(block, event.world, event.x, event.y, event.z);
         if (ModuleProtection.isDebugMode(event.getPlayer()))
             OutputHandler.chatNotification(event.getPlayer(), permission);
         WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.x, event.y, event.z);
-        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.getPlayer()), point, permission))
+        if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
             return;
@@ -224,8 +225,8 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-
-        UserIdent ident = UserIdent.get(event.player);
+        
+        UserIdent ident = event.player instanceof EntityPlayerMP ? UserIdent.get(event.player) : null;
         Block block = event.world.getBlock(event.x, event.y, event.z);
         String permission = ModuleProtection.getBlockPlacePermission(block, event.world, event.x, event.y, event.z);
         if (ModuleProtection.isDebugMode(event.player))
@@ -250,6 +251,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
+        UserIdent ident = event.player instanceof EntityPlayerMP ? UserIdent.get(event.player) : null;
         for (BlockSnapshot b : event.getReplacedBlockSnapshots())
         {
             Block block = event.world.getBlock(b.x, b.y, b.z);
@@ -257,7 +259,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (ModuleProtection.isDebugMode(event.player))
                 OutputHandler.chatNotification(event.player, permission);
             WorldPoint point = new WorldPoint(event.player.dimension, b.x, b.y, b.z);
-            if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.player), point, permission))
+            if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
             {
                 event.setCanceled(true);
                 return;
