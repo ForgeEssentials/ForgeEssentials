@@ -45,19 +45,18 @@ public class AuthEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerMove(PlayerMoveEvent event)
     {
-        UUID username = event.entityPlayer.getPersistentID();
-
+        if (!(event.entityPlayer instanceof EntityPlayerMP))
+            return;
+        
         if (event.before.getX() == event.after.getX() && event.before.getZ() == event.after.getZ())
         {
             return;
         }
-
         if (ModuleAuth.canMoveWithoutLogin)
         {
             return;
         }
-
-        if (!ModuleAuth.hasSession.contains(username))
+        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
@@ -67,8 +66,10 @@ public class AuthEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerChat(ServerChatEvent event)
     {
+        if (!(event.player instanceof EntityPlayerMP))
+            return;
+        
         UUID username = event.player.getPersistentID();
-
         if (!ModuleAuth.hasSession.contains(username))
         {
             event.setCanceled(true);
@@ -79,13 +80,14 @@ public class AuthEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerCommand(CommandEvent event)
     {
+        if (!(event.sender instanceof EntityPlayerMP))
+            return;
+        
         if (!(event.sender instanceof EntityPlayer))
         {
             return;
         }
-
         EntityPlayer player = (EntityPlayer) event.sender;
-
         if (!ModuleAuth.hasSession.contains(player.getPersistentID()) && !(event.command instanceof CommandAuth))
         {
             event.setCanceled(true);
@@ -96,9 +98,10 @@ public class AuthEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-        UUID username = event.entityPlayer.getPersistentID();
-
-        if (!ModuleAuth.hasSession.contains(username))
+        if (!(event.entityPlayer instanceof EntityPlayerMP))
+            return;
+        
+        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
@@ -108,9 +111,10 @@ public class AuthEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(EntityInteractEvent event)
     {
-        UUID username = event.entityPlayer.getPersistentID();
-
-        if (!ModuleAuth.hasSession.contains(username))
+        if (!(event.entityPlayer instanceof EntityPlayerMP))
+            return;
+        
+        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
@@ -120,9 +124,10 @@ public class AuthEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(MinecartInteractEvent event)
     {
-        UUID username = event.player.getPersistentID();
-
-        if (!ModuleAuth.hasSession.contains(username))
+        if (!(event.player instanceof EntityPlayerMP))
+            return;
+        
+        if (!ModuleAuth.hasSession.contains(event.player.getPersistentID()))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.player, "Login required. Try /auth help.");
@@ -132,14 +137,13 @@ public class AuthEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerTossItem(ItemTossEvent event)
     {
-        UUID username = event.player.getPersistentID();
+        if (!(event.player instanceof EntityPlayerMP))
+            return;
 
         boolean cancel = false;
-
-        if (!ModuleAuth.hasSession.contains(username))
+        if (!ModuleAuth.hasSession.contains(event.player.getPersistentID()))
         {
             cancel = true;
-
             OutputHandler.chatError(event.player, "Login required. Try /auth help.");
         }
 
@@ -155,9 +159,10 @@ public class AuthEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerPickupItem(EntityItemPickupEvent event)
     {
-        UUID username = event.entityPlayer.getPersistentID();
-
-        if (!ModuleAuth.hasSession.contains(username))
+        if (!(event.entityPlayer instanceof EntityPlayerMP))
+            return;
+        
+        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
@@ -167,13 +172,10 @@ public class AuthEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerHurt(LivingHurtEvent event)
     {
-        if (!(event.entityLiving instanceof EntityPlayer))
-        {
+        if (!(event.entityLiving instanceof EntityPlayerMP))
             return;
-        }
-
-        EntityPlayer player = (EntityPlayer) event.entityLiving;
-
+        
+        EntityPlayerMP player = (EntityPlayerMP) event.entityLiving;
         if (!ModuleAuth.hasSession.contains(player.getPersistentID()))
         {
             event.setCanceled(true);
@@ -184,9 +186,10 @@ public class AuthEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerAttack(AttackEntityEvent event)
     {
-        UUID username = event.entityPlayer.getPersistentID();
-
-        if (!ModuleAuth.hasSession.contains(username))
+        if (!(event.entityPlayer instanceof EntityPlayerMP))
+            return;
+        
+        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
         {
             event.setCanceled(true);
             OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
