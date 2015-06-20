@@ -22,7 +22,15 @@ public abstract class BuildInfo
 
     private static int buildNumberLatest = 0;
 
+    private static Thread checkVersionThread;
+
     public static final String VERSION = "%FE_VERSION%";
+
+    static
+    {
+        // Check for latest version asap
+        checkLatestVersion();
+    }
 
     public static void getBuildInfo(File jarFile)
     {
@@ -57,7 +65,64 @@ public abstract class BuildInfo
 
     public static void checkLatestVersion()
     {
-        new Thread(new VersionCheckThread()).start();
+        if (checkVersionThread != null && checkVersionThread.isAlive())
+            return;
+        checkVersionThread = new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                doCheckLatestVersion();
+            }
+        });
+        checkVersionThread.start();
+    }
+
+    private static void doCheckLatestVersion()
+    {
+        try
+        {
+            URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE/lastSuccessfulBuild/api/json");
+            URLConnection con = buildInfoUrl.openConnection();
+            con.setConnectTimeout(6);
+            con.setReadTimeout(12);
+            con.connect();
+            try (InputStreamReader is = new InputStreamReader(con.getInputStream()))
+            {
+                JsonObject versionInfo = new GsonBuilder().create().fromJson(is, JsonObject.class);
+                buildNumberLatest = versionInfo.get("number").getAsInt();
+            }
+            // TODO update to support milestone/recommended releases
+        }
+        catch (JsonSyntaxException | JsonIOException e)
+        {
+            System.err.println("Unable to parse version info");
+        }
+        catch (IOException e)
+        {
+            System.err.println("Unable to retrieve version info");
+        }
+    }
+
+    private static void joinCheckThread()
+    {
+        if (checkVersionThread != null)
+        {
+            try
+            {
+                checkVersionThread.join();
+                checkVersionThread = null;
+            }
+            catch (InterruptedException e)
+            {
+                /* do nothing */
+            }
+        }
+    }
+
+    public static void cancelVersionCheck()
+    {
+        // Set to null, which will disable joining of the thread and kill any possible delay
+        checkVersionThread = null;
     }
 
     public static String getBuildHash()
@@ -72,44 +137,14 @@ public abstract class BuildInfo
 
     public static int getBuildNumberLatest()
     {
+        joinCheckThread();
         return buildNumberLatest;
     }
 
     public static boolean isOutdated()
     {
+        joinCheckThread();
         return buildNumber > 0 && buildNumberLatest > buildNumber;
-    }
-
-    public static class VersionCheckThread implements Runnable
-    {
-
-        @Override
-        public void run()
-        {
-            try
-            {
-                URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE/lastSuccessfulBuild/api/json");
-                URLConnection con = buildInfoUrl.openConnection();
-                con.setConnectTimeout(5);
-                con.setReadTimeout(10);
-                con.connect();
-                try (InputStreamReader is = new InputStreamReader(con.getInputStream()))
-                {
-                    JsonObject versionInfo = new GsonBuilder().create().fromJson(is, JsonObject.class);
-                    buildNumberLatest = versionInfo.get("number").getAsInt();
-                }
-            }
-
-            // TODO update to support milestone/recommended releases
-            catch (JsonSyntaxException | JsonIOException e)
-            {
-                System.err.println("Unable to parse version info");
-            }
-            catch (IOException e)
-            {
-                System.err.println("Unable to retrieve version info");
-            }
-        }
     }
 
 }

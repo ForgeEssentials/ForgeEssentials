@@ -344,10 +344,11 @@ public class ForgeEssentials extends ConfigLoaderBase
             }
         }
 
-       // Show version notification
+        // Show version notification
         if (BuildInfo.isOutdated() && UserIdent.get(event.player).checkPermission(PERM_VERSIONINFO))
-            OutputHandler.chatWarning(event.player, String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
-                    BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
+            OutputHandler.chatWarning(event.player,
+                    String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
+                            BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -362,7 +363,8 @@ public class ForgeEssentials extends ConfigLoaderBase
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        versionCheck = config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean(true);
+        if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
+            BuildInfo.cancelVersionCheck();
         configManager.setUseCanonicalConfig(config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false,
                 "For modules that support it, place their configs in this file.").getBoolean(false));
         debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean(false);
