@@ -1,7 +1,6 @@
 package com.forgeessentials.client.core;
 
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
-import static com.forgeessentials.commons.network.NetworkUtils.netHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,6 +15,7 @@ import com.forgeessentials.client.remote.QRRenderer;
 import com.forgeessentials.client.util.DummyProxy;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
 import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.Packet5Noclip;
@@ -28,7 +28,6 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -65,7 +64,11 @@ public class ClientProxy extends DummyProxy
             config = new ClientConfig(new Configuration(e.getSuggestedConfigurationFile()));
             config.init();
         }
-        netHandler.registerMessage(new IMessageHandler<Packet1SelectionUpdate, IMessage>() {
+
+        // Register network messages
+        NetworkUtils.registerMessageProxy(Packet0Handshake.class, 0, Side.SERVER, new NullMessageHandler<Packet0Handshake>() {
+        });
+        NetworkUtils.registerMessage(new IMessageHandler<Packet1SelectionUpdate, IMessage>() {
             @Override
             public IMessage onMessage(Packet1SelectionUpdate message, MessageContext ctx)
             {
@@ -73,13 +76,13 @@ public class ClientProxy extends DummyProxy
                 return null;
             }
         }, Packet1SelectionUpdate.class, 1, Side.CLIENT);
-        netHandler.registerMessage(C5HandlerNoclip.class, Packet5Noclip.class, 5, Side.CLIENT);
-        netHandler.registerMessage(C6HandlerSpeed.class, Packet6Speed.class, 6, Side.CLIENT);
-        netHandler.registerMessage(C7HandlerRemote.class, Packet7Remote.class, 7, Side.CLIENT);
+        NetworkUtils.registerMessage(new C5HandlerNoclip(), Packet5Noclip.class, 5, Side.CLIENT);
+        NetworkUtils.registerMessage(new C6HandlerSpeed(), Packet6Speed.class, 6, Side.CLIENT);
+        NetworkUtils.registerMessage(new C7HandlerRemote(), Packet7Remote.class, 7, Side.CLIENT);
 
         if (!Loader.isModLoaded("ForgeEssentials"))
         {
-            NetworkUtils.initClientNullHandlers();
+            // NetworkUtils.initClientNullHandlers();
         }
     }
 
@@ -99,31 +102,24 @@ public class ClientProxy extends DummyProxy
     @SubscribeEvent
     public void connectionOpened(FMLNetworkEvent.ClientConnectedToServerEvent e)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            selection = null;
-    }
-
-    @SubscribeEvent
-    public void connectionClosed(FMLNetworkEvent.ClientDisconnectionFromServerEvent e)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            selection = null;
-    }
-
-    @SubscribeEvent
-    public void onPlayerLogin(PlayerLoggedInEvent event)
-    {
         sentHandshake = false;
+        selection = null;
     }
 
     @SubscribeEvent
     public void clientTickEvent(TickEvent.ClientTickEvent event)
     {
-        if (!sentHandshake && ForgeEssentialsClient.instance.serverHasFE)
+        if (!sentHandshake)
         {
             sentHandshake = true;
-            NetworkUtils.netHandler.sendToServer(new Packet0Handshake());
+            sendClientHandshake();
         }
+    }
+
+    public void sendClientHandshake()
+    {
+        if (ForgeEssentialsClient.instance.serverHasFE)
+            NetworkUtils.netHandler.sendToServer(new Packet0Handshake());
     }
 
     public static Selection getSelection()

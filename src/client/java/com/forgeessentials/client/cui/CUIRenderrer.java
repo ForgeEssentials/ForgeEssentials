@@ -98,7 +98,7 @@ public class CUIRenderrer
                         - RenderManager.renderPosY + 0.5, (float) (p1.getZ() + p2.getZ()) / 2 - RenderManager.renderPosZ + 0.5);
                 GL11.glScalef(1 + size.getX(), 1 + size.getY(), 1 + size.getZ());
                 if (seeThrough)
-                    GL11.glColor4f(0, 1, 1, ALPHA);
+                    GL11.glColor4f(0, 0, 1, ALPHA);
                 else
                     GL11.glColor3f(0, 1, 1);
                 renderBox();
