@@ -133,8 +133,6 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     private boolean debugMode = false;
 
-    private boolean versionCheck = true;
-
     public static ASMDataTable asmData;
 
     /* ------------------------------------------------------------ */
@@ -164,11 +162,6 @@ public class ForgeEssentials extends ConfigLoaderBase
             ((Logger) ForgeEssentials.log).setLevel(Level.DEBUG);
         else
             ((Logger) ForgeEssentials.log).setLevel(Level.INFO);
-
-        if (versionCheck)
-        {
-            BuildInfo.checkLatestVersion();
-        }
 
         // Register core submodules
         factory = new ForgeEssentialsEventFactory();
