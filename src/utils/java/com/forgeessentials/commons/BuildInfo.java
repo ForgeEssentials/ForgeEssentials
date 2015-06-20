@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
@@ -59,7 +60,11 @@ public abstract class BuildInfo
         try
         {
             URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE/lastSuccessfulBuild/api/json");
-            try (InputStreamReader is = new InputStreamReader(buildInfoUrl.openStream()))
+            URLConnection con = buildInfoUrl.openConnection();
+            con.setConnectTimeout(5);
+            con.setReadTimeout(10);
+            con.connect();
+            try (InputStreamReader is = new InputStreamReader(con.getInputStream()))
             {
                 JsonObject versionInfo = new GsonBuilder().create().fromJson(is, JsonObject.class);
                 buildNumberLatest = versionInfo.get("number").getAsInt();
