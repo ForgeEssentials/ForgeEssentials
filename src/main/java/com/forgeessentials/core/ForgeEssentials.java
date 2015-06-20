@@ -168,14 +168,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         if (versionCheck)
         {
             BuildInfo.checkLatestVersion();
-            if (BuildInfo.isOutdated())
-            {
-                ForgeEssentials.log.warn("-------------------------------------------------------------------------------------");
-                ForgeEssentials.log.warn(String.format("WARNING! Using ForgeEssentials build #%d, latest build is #%d",//
-                        BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
-                ForgeEssentials.log.warn("We highly recommend updating asap to get the latest important security- and bug-fixes");
-                ForgeEssentials.log.warn("-------------------------------------------------------------------------------------");
-            }
         }
 
         // Register core submodules
@@ -196,6 +188,15 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         FMLCommonHandler.instance().bus().register(this);
         ForgeEssentials.BUS.register(new CompatReiMinimap());
+
+        if (BuildInfo.isOutdated())
+        {
+            ForgeEssentials.log.warn("-------------------------------------------------------------------------------------");
+            ForgeEssentials.log.warn(String.format("WARNING! Using ForgeEssentials build #%d, latest build is #%d",//
+                    BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
+            ForgeEssentials.log.warn("We highly recommend updating asap to get the latest security and bug fixes");
+            ForgeEssentials.log.warn("-------------------------------------------------------------------------------------");
+        }
 
         ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleInitEvent(e));
     }
@@ -343,9 +344,9 @@ public class ForgeEssentials extends ConfigLoaderBase
             }
         }
 
-        // Show version notification
+       // Show version notification
         if (BuildInfo.isOutdated() && UserIdent.get(event.player).checkPermission(PERM_VERSIONINFO))
-            OutputHandler.chatWarning(event.player, String.format("ForgeEssentials build #%d outdated. Current build is #%d", //
+            OutputHandler.chatWarning(event.player, String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
                     BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
     }
 

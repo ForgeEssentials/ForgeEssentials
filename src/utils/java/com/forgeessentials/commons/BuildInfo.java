@@ -57,27 +57,7 @@ public abstract class BuildInfo
 
     public static void checkLatestVersion()
     {
-        try
-        {
-            URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE/lastSuccessfulBuild/api/json");
-            URLConnection con = buildInfoUrl.openConnection();
-            con.setConnectTimeout(5);
-            con.setReadTimeout(10);
-            con.connect();
-            try (InputStreamReader is = new InputStreamReader(con.getInputStream()))
-            {
-                JsonObject versionInfo = new GsonBuilder().create().fromJson(is, JsonObject.class);
-                buildNumberLatest = versionInfo.get("number").getAsInt();
-            }
-        }
-        catch (JsonSyntaxException | JsonIOException e)
-        {
-            System.err.println("Unable to parse version info");
-        }
-        catch (IOException e)
-        {
-            System.err.println("Unable to retrieve version info");
-        }
+        new Thread(new VersionCheckThread()).start();
     }
 
     public static String getBuildHash()
@@ -98,6 +78,38 @@ public abstract class BuildInfo
     public static boolean isOutdated()
     {
         return buildNumber > 0 && buildNumberLatest > buildNumber;
+    }
+
+    public static class VersionCheckThread implements Runnable
+    {
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE/lastSuccessfulBuild/api/json");
+                URLConnection con = buildInfoUrl.openConnection();
+                con.setConnectTimeout(5);
+                con.setReadTimeout(10);
+                con.connect();
+                try (InputStreamReader is = new InputStreamReader(con.getInputStream()))
+                {
+                    JsonObject versionInfo = new GsonBuilder().create().fromJson(is, JsonObject.class);
+                    buildNumberLatest = versionInfo.get("number").getAsInt();
+                }
+            }
+
+            // TODO update to support milestone/recommended releases
+            catch (JsonSyntaxException | JsonIOException e)
+            {
+                System.err.println("Unable to parse version info");
+            }
+            catch (IOException e)
+            {
+                System.err.println("Unable to retrieve version info");
+            }
+        }
     }
 
 }
