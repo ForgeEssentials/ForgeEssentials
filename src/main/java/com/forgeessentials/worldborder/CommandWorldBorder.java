@@ -23,7 +23,7 @@ public class CommandWorldBorder extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return null;
+        return "/wb: Configure worldborder";
     }
 
     @Override
