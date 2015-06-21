@@ -141,10 +141,19 @@ public class CommandTrade extends ParserCommandBase
                         InventoryPlayer inventory = arguments.senderPlayer.inventory;
                         inventory.mainInventory[inventory.currentItem] = null;
                         PlayerUtil.give(buyer.getPlayerMP(), currentItemStack);
-                        arguments.notify(Translator.format("Sold %d x %s to %s for %s each (total: %s)", itemStack.stackSize, itemStack.getDisplayName(),
-                                APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize)));
-                        OutputHandler.chatNotification(buyer.getPlayerMP(), Translator.format("Bought %d x %s from %s for %s each (total: %s)", itemStack.stackSize, itemStack.getDisplayName(),
-                                APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize)));
+
+                        String priceStr = APIRegistry.economy.toString(price);
+                        String totalPriceStr = APIRegistry.economy.toString(price * itemStack.stackSize);
+                        String buyerMsg = Translator.format("Bought %d x %s from %s for %s each (%s)", //
+                                itemStack.stackSize, itemStack.getDisplayName(), //
+                                arguments.ident.getUsernameOrUuid(), //
+                                priceStr, totalPriceStr);
+                        String sellerMsg = Translator.format("Sold %d x %s to %s for %s each (%s)", //
+                                itemStack.stackSize, itemStack.getDisplayName(), //
+                                buyer.getUsernameOrUuid(), //
+                                priceStr, totalPriceStr);
+                        arguments.notify(sellerMsg);
+                        OutputHandler.chatNotification(buyer.getPlayerMP(), buyerMsg);
                     }
                 };
                 try
@@ -182,5 +191,4 @@ public class CommandTrade extends ParserCommandBase
             throw new QuestionerStillActiveException.CommandException();
         }
     }
-
 }
