@@ -95,4 +95,21 @@ public class Censor extends ConfigLoaderBase
         return message;
     }
 
+    public String filterIRC(String message)
+    {
+        if (!enabled)
+            return message;
+        for (CensoredWord filter : filterList)
+        {
+            Matcher m = filter.pattern.matcher(message);
+            if (m.find())
+            {
+                if (filter.blank == null)
+                    filter.blank = Strings.repeat(censorSymbol, m.end() - m.start());
+                message = m.replaceAll(filter.blank);
+            }
+        }
+        return message;
+    }
+
 }
