@@ -69,31 +69,34 @@ public class CommandAFK extends FEcmdModuleCommands
     {
         UserIdent ident = UserIdent.get(sender);
 
-        // expected syntax: /afk timeout <group|player> <timeout>
-        // to set custom afk timeout for yourself, replace <player> with your own username
-        if (args[0].equalsIgnoreCase("timeout"))
+        if (args.length >= 1)
         {
-            UserIdent applyTo = UserIdent.get(args[1], true);
-            if (applyTo != null)
+            // expected syntax: /afk timeout <group|player> <timeout>
+            // to set custom afk timeout for yourself, replace <player> with your own username
+            if (args[0].equalsIgnoreCase("timeout"))
             {
-                APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOTIME, args[2]);
+                UserIdent applyTo = UserIdent.get(args[1], true);
+                if (applyTo != null)
+                {
+                    APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOTIME, args[2]);
+                }
+                else
+                {
+                    APIRegistry.perms.setGroupPermissionProperty(args[1], PERM_AUTOTIME, args[2]);
+                }
             }
-            else
+            // expected syntax: /afk timeout <group|player> [true|false}
+            else if (args[0].equalsIgnoreCase("autokick"))
             {
-                APIRegistry.perms.setGroupPermissionProperty(args[1], PERM_AUTOTIME, args[2]);
-            }
-        }
-        // expected syntax: /afk timeout <group|player> [true|false}
-        else if (args[0].equalsIgnoreCase("autokick"))
-        {
-            UserIdent applyTo = UserIdent.get(args[1], true);
-            if (applyTo != null)
-            {
-                APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOKICK, args[2]);
-            }
-            else
-            {
-                APIRegistry.perms.setGroupPermissionProperty(args[1], PERM_AUTOKICK, args[2]);
+                UserIdent applyTo = UserIdent.get(args[1], true);
+                if (applyTo != null)
+                {
+                    APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOKICK, args[2]);
+                }
+                else
+                {
+                    APIRegistry.perms.setGroupPermissionProperty(args[1], PERM_AUTOKICK, args[2]);
+                }
             }
         }
         else
