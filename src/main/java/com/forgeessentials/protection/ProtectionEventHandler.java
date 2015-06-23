@@ -91,10 +91,10 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
-        if (event.target == null)
+        if (event.target == null || !(event.entityPlayer instanceof EntityPlayerMP))
             return;
 
-        EntityPlayer source = event.entityPlayer;
+        EntityPlayerMP source = (EntityPlayerMP) event.entityPlayer;
         UserIdent sourceIdent = UserIdent.get(source);
         if (event.target instanceof EntityPlayer)
         {
