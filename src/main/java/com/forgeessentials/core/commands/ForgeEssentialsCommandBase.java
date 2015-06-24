@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
@@ -21,6 +22,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
 public abstract class ForgeEssentialsCommandBase extends CommandBase
@@ -133,6 +135,13 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
      */
     public void register()
     {
+        Map<?, ?> commandMap = ((CommandHandler) MinecraftServer.getServer().getCommandManager()).getCommands();
+        if (commandMap.containsKey(getCommandName()))
+            ForgeEssentials.log.error(String.format("Command %s registered twice", getCommandName()));
+        for (String alias : getCommandAliases())
+            if (commandMap.containsKey(alias))
+                ForgeEssentials.log.error(String.format("Command alias %s of command %s registered twice", alias, getCommandName()));
+
         if (getPermissionNode() != null && getDefaultPermission() != null)
         {
             CommandHandlerForge.registerCommand(this, getPermissionNode(), getDefaultPermission());

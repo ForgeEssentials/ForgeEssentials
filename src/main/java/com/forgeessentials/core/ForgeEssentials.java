@@ -28,7 +28,6 @@ import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
-import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -272,7 +271,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
 
         ServerUtil.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
-        FECommandManager.registerCommands();
 
         registerPermissions();
 
@@ -283,7 +281,8 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void serverStarted(FMLServerStartedEvent e)
     {
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
-        CommandSetChecker.remove();
+        // CommandSetChecker.remove();
+        FECommandManager.registerCommands();
 
         ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
     }
