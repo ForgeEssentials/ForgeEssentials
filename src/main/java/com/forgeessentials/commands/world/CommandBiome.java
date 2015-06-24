@@ -56,8 +56,12 @@ public class CommandBiome extends ParserCommandBase
         int z = (int) Math.floor(arguments.senderPlayer.posZ);
         if (arguments.isEmpty())
         {
-            arguments.confirm("Current biome: " + arguments.senderPlayer.worldObj.getBiomeGenForCoords(x, z).biomeName);
-            arguments.confirm("/febiome list: Show all registered biomes");
+            if (arguments.isTabCompletion)
+                return;
+            BiomeGenBase biome = arguments.senderPlayer.worldObj.getBiomeGenForCoords(x, z);
+            arguments.confirm("Current biome: " + biome.biomeName);
+            arguments.confirm("  " + biome.getClass().getName());
+            arguments.notify("/febiome list: Show all registered biomes");
             return;
         }
 
