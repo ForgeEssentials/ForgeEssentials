@@ -25,7 +25,7 @@ public class ModuleMultiworld extends ConfigLoaderBase
 {
 
     public static final String PERM_BASE = "fe.multiworld";
-    public static final String PERM_CREATE = PERM_BASE + ".create";
+    public static final String PERM_MANAGE = PERM_BASE + ".manage";
     public static final String PERM_DELETE = PERM_BASE + ".delete";
     public static final String PERM_LIST = PERM_BASE + ".list";
     public static final String PERM_TELEPORT = PERM_BASE + ".teleport";
@@ -47,7 +47,7 @@ public class ModuleMultiworld extends ConfigLoaderBase
     {
         multiworldManager.load();
 
-        PermissionsManager.registerPermission(PERM_CREATE, RegisteredPermValue.OP);
+        PermissionsManager.registerPermission(PERM_MANAGE, RegisteredPermValue.OP);
         PermissionsManager.registerPermission(PERM_DELETE, RegisteredPermValue.OP);
         PermissionsManager.registerPermission(PERM_LIST, RegisteredPermValue.TRUE);
     }
