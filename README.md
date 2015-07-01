@@ -20,7 +20,7 @@ especially a powerful permissions and protection system:
 
 #### For more information and tutorials, please read the [__WIKI__](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki) ####
 
-##### If you need help or have suggestions, join us on our IRC channel [*#forgeessentials*](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on [esper.net](http://esper.net). #####
+#### If you need help or have suggestions, join us on our IRC channel [*#forgeessentials*](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on [esper.net](http://esper.net). #####
 
 *******************
 
@@ -28,14 +28,19 @@ especially a powerful permissions and protection system:
 
 #####Note that this comes with WorldEdit build 3370. You can use any WorldEdit build above build 3349.#####
 
-ForgeEssentials for Minecraft 1.7.10 is still in **beta**!  
-Betas are to be considered unstable. Approach with caution. Please make backups before using / updating on a live server.
+ForgeEssentials for Minecraft 1.7.10 is still in **beta**!
+
+Betas are to be considered unstable and are to be approached with caution. Please make backups before using / updating on a live server.
 
 *******************
 
 Development Setup
 =================
-Please refer to CONTRIBUTING.md.
+If you are a modder and are interested in making a mod that extends the capabilities of Forge Essentials, or are looking to have increased levels of compatibility with Forge Essentials in your mod, please refer to the [developer documentation](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Developer-documentation).
+
+We welcome all pull requests from anyone interested in contributing to the mod. If you're planning something major, please speak with the team first.
+
+For assistance in setting up a workspace to contribute to ForgeEssentials, please refer to [CONTRIBUTING.md](https://github.com/ForgeEssentials/ForgeEssentialsMain/blob/develop/CONTRIBUTING.md).
 
 FE Team Members:
 ================
