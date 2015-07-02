@@ -139,7 +139,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         if (commandMap.containsKey(getCommandName()))
             ForgeEssentials.log.error(String.format("Command %s registered twice", getCommandName()));
         for (String alias : getCommandAliases())
-            if (commandMap.containsKey(alias))
+            if (alias != null &&commandMap.containsKey(alias))
                 ForgeEssentials.log.error(String.format("Command alias %s of command %s registered twice", alias, getCommandName()));
 
         if (getPermissionNode() != null && getDefaultPermission() != null)
