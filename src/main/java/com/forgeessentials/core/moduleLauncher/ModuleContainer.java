@@ -8,12 +8,14 @@ import java.util.HashSet;
 
 import net.minecraft.command.ICommandSender;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule.Container;
 import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
+import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.Loader;
@@ -54,7 +56,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            ForgeEssentials.log.info("Error trying to load " + data.getClassName() + " as a FEModule!");
+            OutputHandler.felog.info("Error trying to load " + data.getClassName() + " as a FEModule!");
             e.printStackTrace();
 
             isCore = false;
@@ -80,7 +82,7 @@ public class ModuleContainer implements Comparable
         {
             if (!ForgeEssentials.getConfigManager().getMainConfig().get("Core.Modules", name, annot.defaultModule()).getBoolean(true))
             {
-                ForgeEssentials.log.info("Requested to disable module " + name);
+                OutputHandler.felog.info("Requested to disable module " + name);
                 isLoadable = false;
                 return;
             }
@@ -110,7 +112,7 @@ public class ModuleContainer implements Comparable
                 {
                     if (!(boolean) m.invoke(c.newInstance()))
                     {
-                        ForgeEssentials.log.debug("Disabled module " + name);
+                        OutputHandler.felog.debug("Disabled module " + name);
                         isLoadable = false;
                         return;
                     }
@@ -177,13 +179,13 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            ForgeEssentials.log.warn(name + " could not be instantiated. FE will not load this module.");
+            OutputHandler.felog.warn(name + " could not be instantiated. FE will not load this module.");
             e.printStackTrace();
             isLoadable = false;
             return;
         }
 
-        ForgeEssentials.BUS.register(module);
+        APIRegistry.getFEEventBus().register(module);
 
         // now for the fields...
         try
@@ -221,7 +223,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            ForgeEssentials.log.info("Error populating fields of " + name);
+            OutputHandler.felog.info("Error populating fields of " + name);
             Throwables.propagate(e);
         }
     }
@@ -241,7 +243,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            ForgeEssentials.log.info("Error while invoking Reload method for " + name);
+            OutputHandler.felog.info("Error while invoking Reload method for " + name);
             Throwables.propagate(e);
         }
     }
@@ -316,7 +318,7 @@ public class ModuleContainer implements Comparable
 
         modid = contain.getModId() + "-" + contain.getVersion();
         if (modClasses.add(modClass))
-            ForgeEssentials.log.info("Modules from " + modid + " are being loaded");
+            OutputHandler.felog.info("Modules from " + modid + " are being loaded");
         return obj;
     }
 }

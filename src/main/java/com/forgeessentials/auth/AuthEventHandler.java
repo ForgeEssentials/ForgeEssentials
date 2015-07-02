@@ -16,7 +16,6 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 
@@ -39,7 +38,7 @@ public class AuthEventHandler
 
     public AuthEventHandler()
     {
-        ForgeEssentials.log.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
+        OutputHandler.felog.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

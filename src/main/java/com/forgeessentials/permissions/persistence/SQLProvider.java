@@ -26,9 +26,9 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.EnumDBType;
+import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Throwables;
 
 public class SQLProvider extends ZonePersistenceProvider
@@ -270,7 +270,7 @@ public class SQLProvider extends ZonePersistenceProvider
             // check versions
             if (!VERSION.equals(version))
             {
-                ForgeEssentials.log.info("Version of permission database incorrect. May not load permissions correctly!");
+                OutputHandler.felog.info("Version of permission database incorrect. May not load permissions correctly!");
             }
 
             if (version.equals("1.0"))
@@ -519,7 +519,7 @@ public class SQLProvider extends ZonePersistenceProvider
             // Check if server-zone could be created - otherwise save was corrupt or just not present
             if (serverZone == null)
             {
-                ForgeEssentials.log.error("Error loading permissions: Missing server-zone");
+                OutputHandler.felog.error("Error loading permissions: Missing server-zone");
                 db.createStatement().executeUpdate(TABLES.get(TABLE_ZONE).createTruncate());
                 return null;
             }
@@ -604,7 +604,7 @@ public class SQLProvider extends ZonePersistenceProvider
         }
         catch (Exception e)
         {
-            ForgeEssentials.log.error("Error loading permissions");
+            OutputHandler.felog.error("Error loading permissions");
             e.printStackTrace();
         }
         return null;

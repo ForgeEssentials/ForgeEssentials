@@ -29,7 +29,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 
@@ -37,10 +36,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.servervote.ConfigServerVote;
 import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
+import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLLog;
 
@@ -101,7 +100,7 @@ public class VoteReceiver extends Thread
         {
             server = new ServerSocket();
             server.bind(new InetSocketAddress(host, port));
-            ForgeEssentials.log.info("Votifier connection handler initialized!");
+            OutputHandler.felog.info("Votifier connection handler initialized!");
         }
         catch (Exception ex)
         {
@@ -189,7 +188,7 @@ public class VoteReceiver extends Thread
                 {
                     if (!ConfigServerVote.allowOfflineVotes)
                     {
-                        ForgeEssentials.log.debug("Player for vote not online, vote canceled.");
+                        OutputHandler.felog.debug("Player for vote not online, vote canceled.");
                         vote.setFeedback("notOnline");
                         vote.setCanceled(true);
                         return;

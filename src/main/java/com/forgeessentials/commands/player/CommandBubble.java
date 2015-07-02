@@ -11,7 +11,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.OutputHandler;
 
@@ -24,7 +23,7 @@ public class CommandBubble extends FEcmdModuleCommands
 
     public CommandBubble()
     {
-        ForgeEssentials.BUS.register(this);
+        APIRegistry.getFEEventBus().register(this);
     }
 
     @SubscribeEvent

@@ -22,7 +22,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.ForgeEssentials;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -55,7 +54,7 @@ public class ServerZone extends Zone
     public ServerZone()
     {
         super(1);
-        ForgeEssentials.BUS.post(new PermissionEvent.Initialize(this));
+        APIRegistry.getFEEventBus().post(new PermissionEvent.Initialize(this));
         addZone(this);
     }
 
@@ -175,7 +174,7 @@ public class ServerZone extends Zone
 
     public boolean createGroup(String name)
     {
-        if (ForgeEssentials.BUS.post(new PermissionEvent.Group.Create(this, name)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.Group.Create(this, name)))
             return false;
         setGroupPermission(name, FEPermissions.GROUP, true);
         setGroupPermissionProperty(name, FEPermissions.GROUP_PRIORITY, Integer.toString(FEPermissions.GROUP_PRIORITY_DEFAULT));
@@ -252,7 +251,7 @@ public class ServerZone extends Zone
         }
         if (!groupSet.contains(group))
         {
-            if (ForgeEssentials.BUS.post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+            if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
                 return false;
             groupSet.add(group);
         }
@@ -263,7 +262,7 @@ public class ServerZone extends Zone
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
-        if (ForgeEssentials.BUS.post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
             return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet != null)

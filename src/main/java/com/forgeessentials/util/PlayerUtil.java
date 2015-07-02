@@ -10,8 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
-import com.forgeessentials.core.ForgeEssentials;
-
 public abstract class PlayerUtil
 {
 
@@ -64,11 +62,11 @@ public abstract class PlayerUtil
             String[] effectValues = poisonEffect.split(":");
             if (effectValues.length < 2)
             {
-                ForgeEssentials.log.warn("Too few arguments for potion effects");
+                OutputHandler.felog.warn("Too few arguments for potion effects");
             }
             else if (effectValues.length > 3)
             {
-                ForgeEssentials.log.warn("Too many arguments for potion effects");
+                OutputHandler.felog.warn("Too many arguments for potion effects");
             }
             else
             {
@@ -83,7 +81,7 @@ public abstract class PlayerUtil
                 }
                 catch (NumberFormatException e)
                 {
-                    ForgeEssentials.log.warn("Invalid potion ID:duration:amplifier data.");
+                    OutputHandler.felog.warn("Invalid potion ID:duration:amplifier data.");
                 }
             }
         }

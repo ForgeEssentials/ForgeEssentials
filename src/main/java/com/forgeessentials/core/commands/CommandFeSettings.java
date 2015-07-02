@@ -36,7 +36,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
 
     public CommandFeSettings()
     {
-        ForgeEssentials.BUS.register(this);
+        APIRegistry.getFEEventBus().register(this);
         ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
     }
 

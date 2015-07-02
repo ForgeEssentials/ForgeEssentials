@@ -113,7 +113,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         rootZone.setPermissionDebugger(this);
 
         ServerZone serverZone = new ServerZone(rootZone);
-        ForgeEssentials.BUS.post(new PermissionEvent.AfterLoad(serverZone));
+        APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
         rootZone.setServerZone(serverZone);
 
         permissionDebugFilters.add("fe.protection.mobspawn");
@@ -139,8 +139,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         dirty = false;
         if (persistenceProvider != null)
         {
-            ForgeEssentials.log.debug("Saving permissions...");
-            ForgeEssentials.BUS.post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
+            OutputHandler.felog.debug("Saving permissions...");
+            APIRegistry.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
             dirty = false;
         }
@@ -163,7 +163,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 rootZone.setServerZone(serverZone);
                 serverZone.rebuildZonesMap();
                 dirty = false;
-                ForgeEssentials.BUS.post(new PermissionEvent.AfterLoad(serverZone));
+                APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
                 return true;
             }
         }
@@ -180,10 +180,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         // if (verbosePermissionDebug)
         // {
-        // ForgeEssentials.log.fine("PERMISSIONS SET DIRTY");
+        // OutputHandler.felog.fine("PERMISSIONS SET DIRTY");
         // StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         // for (int i = 2; i < stackTrace.length && i < 10; i++)
-        // ForgeEssentials.log.fine("  " + stackTrace[i].toString());
+        // OutputHandler.felog.fine("  " + stackTrace[i].toString());
         // }
         dirty = true;
         lastDirtyTime = System.currentTimeMillis();

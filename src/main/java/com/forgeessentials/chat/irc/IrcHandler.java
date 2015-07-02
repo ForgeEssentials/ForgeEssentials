@@ -132,7 +132,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     {
         for (String commandName : command.getCommandNames())
             if (commands.put(commandName, command) != null)
-                ForgeEssentials.log.warn(String.format("IRC command name %s used twice!", commandName));
+                OutputHandler.felog.warn(String.format("IRC command name %s used twice!", commandName));
     }
 
     public void connect()
@@ -140,7 +140,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (bot != null)
             disconnect();
 
-        ForgeEssentials.log.info("Initializing IRC connection");
+        OutputHandler.felog.info("Initializing IRC connection");
         bot = new PircBotX();
         bot.getListenerManager().addListener(this);
         bot.setName(botName);
@@ -156,29 +156,29 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
         try
         {
-            ForgeEssentials.log.info(String.format("Attempting to join IRC server %s on port %d", server, port));
+            OutputHandler.felog.info(String.format("Attempting to join IRC server %s on port %d", server, port));
             bot.connect(server, port, serverPassword.isEmpty() ? null : serverPassword);
             bot.identify(nickPassword);
 
-            ForgeEssentials.log.info("Attempting to join channels...");
+            OutputHandler.felog.info("Attempting to join channels...");
             for (String channel : channels)
             {
-                ForgeEssentials.log.info(String.format("Attempting to join #%s", channel));
+                OutputHandler.felog.info(String.format("Attempting to join #%s", channel));
                 bot.joinChannel(channel);
             }
-            ForgeEssentials.log.info("IRC bot connected");
+            OutputHandler.felog.info("IRC bot connected");
         }
         catch (NickAlreadyInUseException e)
         {
-            ForgeEssentials.log.warn("[IRC] Connection failed, assigned nick already in use");
+            OutputHandler.felog.warn("[IRC] Connection failed, assigned nick already in use");
         }
         catch (IOException e)
         {
-            ForgeEssentials.log.warn("[IRC] Connection failed, could not reach the server");
+            OutputHandler.felog.warn("[IRC] Connection failed, could not reach the server");
         }
         catch (IrcException e)
         {
-            ForgeEssentials.log.warn("[IRC] Connection failed: " + e.getMessage());
+            OutputHandler.felog.warn("[IRC] Connection failed: " + e.getMessage());
         }
     }
 
@@ -471,7 +471,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         }
         else
         {
-            ForgeEssentials.log.warn(String.format("The IRC bot was kicked from %s by %s: ", event.getChannel().getName(), event.getSource().getNick(),
+            OutputHandler.felog.warn(String.format("The IRC bot was kicked from %s by %s: ", event.getChannel().getName(), event.getSource().getNick(),
                     event.getReason()));
         }
     }

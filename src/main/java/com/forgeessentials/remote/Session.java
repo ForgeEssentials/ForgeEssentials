@@ -17,7 +17,7 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
-import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.OutputHandler;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -61,21 +61,21 @@ public class Session implements Runnable, RemoteSession
                     final String msg = sss.readNext();
                     if (msg == null)
                     {
-                        ForgeEssentials.log.warn("[remote] Connection closed: " + getRemoteHostname());
+                        OutputHandler.felog.warn("[remote] Connection closed: " + getRemoteHostname());
                         break;
                     }
                     processMessage(msg);
                 }
                 catch (IOException e)
                 {
-                    ForgeEssentials.log.warn("[remote] Socket error: " + e.getMessage());
+                    OutputHandler.felog.warn("[remote] Socket error: " + e.getMessage());
                     break;
                 }
             }
         }
         catch (IOException e)
         {
-            ForgeEssentials.log.warn("[remote] Error opening input stream.");
+            OutputHandler.felog.warn("[remote] Error opening input stream.");
         }
         close();
     }
@@ -92,7 +92,7 @@ public class Session implements Runnable, RemoteSession
         {
             JsonRemoteRequest request = getGson().fromJson(message, JsonRemoteRequest.class);
 
-            ForgeEssentials.log.info(String.format("[remote] Request [%s]: %s", request.id, request.data == null ? "null" : request.data.toString()));
+            OutputHandler.felog.info(String.format("[remote] Request [%s]: %s", request.id, request.data == null ? "null" : request.data.toString()));
 
             if (request.auth != null)
             {
@@ -157,14 +157,14 @@ public class Session implements Runnable, RemoteSession
             catch (Exception e)
             {
                 sendMessage(RemoteResponse.error(request, RemoteHandler.MSG_EXCEPTION));
-                ForgeEssentials.log.warn("[remote] Exception while handling message");
+                OutputHandler.felog.warn("[remote] Exception while handling message");
                 e.printStackTrace();
                 return;
             }
         }
         catch (IllegalArgumentException | JsonSyntaxException e)
         {
-            ForgeEssentials.log.warn("[remote] Message error: " + e.getMessage());
+            OutputHandler.felog.warn("[remote] Message error: " + e.getMessage());
             sendMessage(RemoteResponse.error(null, 0, e.getMessage()));
             close();
         }
@@ -285,7 +285,7 @@ public class Session implements Runnable, RemoteSession
      */
     public void close(String error, RemoteRequest<?> request)
     {
-        ForgeEssentials.log.warn(String.format("[remote] Error: %s. Terminating session to %s", error, getRemoteAddress()));
+        OutputHandler.felog.warn(String.format("[remote] Error: %s. Terminating session to %s", error, getRemoteAddress()));
         trySendMessage(RemoteResponse.error("close", request.rid, error));
         close();
     }

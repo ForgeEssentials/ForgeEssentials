@@ -193,7 +193,7 @@ public class ModuleBackup extends ConfigLoaderBase
             }
             catch (NumberFormatException e)
             {
-                ForgeEssentials.log.error("Invalid backup override entry!");
+                OutputHandler.felog.error("Invalid backup override entry!");
             }
         }
 
@@ -207,7 +207,7 @@ public class ModuleBackup extends ConfigLoaderBase
             }
             catch (PatternSyntaxException e)
             {
-                ForgeEssentials.log.error(String.format("Invalid backup exclude pattern %s", pattern));
+                OutputHandler.felog.error(String.format("Invalid backup exclude pattern %s", pattern));
             }
         }
 
@@ -286,7 +286,7 @@ public class ModuleBackup extends ConfigLoaderBase
         try (FileOutputStream fileStream = new FileOutputStream(backupFile); //
                 ZipOutputStream zipStream = new ZipOutputStream(fileStream);)
         {
-            ForgeEssentials.log.info(String.format("Listing files for backup of world %d", world.provider.dimensionId));
+            OutputHandler.felog.info(String.format("Listing files for backup of world %d", world.provider.dimensionId));
             for (File file : enumWorldFiles(world, world.getChunkSaveLocation(), null))
             {
                 String relativePath = baseUri.relativize(file.toURI()).getPath();
@@ -298,14 +298,14 @@ public class ModuleBackup extends ConfigLoaderBase
                 }
                 catch (IOException e)
                 {
-                    ForgeEssentials.log.warn(String.format("Unable to backup file %s", relativePath));
+                    OutputHandler.felog.warn(String.format("Unable to backup file %s", relativePath));
                 }
             }
             zipStream.closeEntry();
         }
         catch (Exception ex)
         {
-            ForgeEssentials.log.error(String.format("Severe error during backup of dim %d", world.provider.dimensionId));
+            OutputHandler.felog.error(String.format("Severe error during backup of dim %d", world.provider.dimensionId));
             ex.printStackTrace();
             if (notify)
                 notify(String.format("Error during backup of dim %d", world.provider.dimensionId));
@@ -359,12 +359,12 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         catch (MinecraftException e)
         {
-            ForgeEssentials.log.error(String.format("Could not save world %d", world.provider.dimensionId));
+            OutputHandler.felog.error(String.format("Could not save world %d", world.provider.dimensionId));
             return false;
         }
         catch (Exception e)
         {
-            ForgeEssentials.log.error("Error while saving world");
+            OutputHandler.felog.error("Error while saving world");
             return false;
         }
         finally
@@ -393,7 +393,7 @@ public class ModuleBackup extends ConfigLoaderBase
                 }
                 catch (ParseException e)
                 {
-                    ForgeEssentials.log.error(String.format("Could not parse backup file %s", backupFile.getAbsolutePath()));
+                    OutputHandler.felog.error(String.format("Could not parse backup file %s", backupFile.getAbsolutePath()));
                 }
             }
 
@@ -425,7 +425,7 @@ public class ModuleBackup extends ConfigLoaderBase
                 else if (backup.getKey().before(oldestBackup))
                 {
                     if (!backup.getValue().delete())
-                        ForgeEssentials.log.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
+                        OutputHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
                     it.remove();
                 }
             }
@@ -448,7 +448,7 @@ public class ModuleBackup extends ConfigLoaderBase
                     if (backup.getKey().after(nextDate))
                         break;
                     if (!backup.getValue().delete())
-                        ForgeEssentials.log.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
+                        OutputHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
                     it.remove();
                 }
                 oldestDailyBackup = nextDate;
@@ -472,7 +472,7 @@ public class ModuleBackup extends ConfigLoaderBase
                     if (backup.getKey().after(nextDate))
                         break;
                     if (!backup.getValue().delete())
-                        ForgeEssentials.log.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
+                        OutputHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
                     it.remove();
                 }
                 oldestWeeklyBackup = nextDate;

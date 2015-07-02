@@ -7,7 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
@@ -99,7 +99,7 @@ public class TaskRegistry extends ServerEventHandler
         }
         catch (IllegalStateException e)
         {
-            ForgeEssentials.log.warn("Could not schedule timer");
+            OutputHandler.felog.warn("Could not schedule timer");
             e.printStackTrace();
         }
     }
@@ -112,7 +112,7 @@ public class TaskRegistry extends ServerEventHandler
         }
         catch (IllegalStateException e)
         {
-            ForgeEssentials.log.warn("Could not schedule timer");
+            OutputHandler.felog.warn("Could not schedule timer");
             e.printStackTrace();
         }
     }

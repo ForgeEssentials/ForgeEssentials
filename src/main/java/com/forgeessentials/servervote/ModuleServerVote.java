@@ -46,7 +46,7 @@ public class ModuleServerVote
 
     public static void log(VoteEvent vote)
     {
-        ForgeEssentials.log.debug("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
+        OutputHandler.felog.debug("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
     }
 
     @SubscribeEvent
@@ -194,7 +194,7 @@ public class ModuleServerVote
         {
             for (ItemStack stack : ConfigServerVote.freeStuff)
             {
-                ForgeEssentials.log.debug(stack.toString());
+                OutputHandler.felog.debug(stack.toString());
                 player.inventory.addItemStackToInventory(stack.copy());
             }
         }

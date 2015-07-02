@@ -1,9 +1,11 @@
 package com.forgeessentials.compat.worldedit;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -21,7 +23,7 @@ public class WEIntegration
         if (prop != null && prop.equals("true"))
         { // FOR DEVS ONLY! THAT IS WHY IT IS A PROPERTY!!!
 
-            ForgeEssentials.log.error("Developer mode has been enabled, things may break.");
+            OutputHandler.felog.error("Developer mode has been enabled, things may break.");
             return true;
         }
         else
@@ -41,7 +43,7 @@ public class WEIntegration
 
         if (!Environment.hasWorldEdit())
         {
-            ForgeEssentials.log.error("You cannot run the FE integration tools for WorldEdit without installing WorldEdit Forge.");
+            OutputHandler.felog.error("You cannot run the FE integration tools for WorldEdit without installing WorldEdit Forge.");
             return false;
         }
 
@@ -53,8 +55,8 @@ public class WEIntegration
             }
             catch (ClassNotFoundException e)
             {
-                ForgeEssentials.log.error("ForgePermissionsProvider not found, are you using an old version of WorldEdit?");
-                ForgeEssentials.log.error("The FE integration tools for WorldEdit will not be loaded as your version of WorldEdit may be too old.");
+                OutputHandler.felog.error("ForgePermissionsProvider not found, are you using an old version of WorldEdit?");
+                OutputHandler.felog.error("The FE integration tools for WorldEdit will not be loaded as your version of WorldEdit may be too old.");
                 return false;
             }
         }
@@ -64,6 +66,6 @@ public class WEIntegration
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
-        ForgeEssentials.BUS.register(new WEIntegrationHandler());
+        APIRegistry.getFEEventBus().register(new WEIntegrationHandler());
     }
 }

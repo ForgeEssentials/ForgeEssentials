@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.remote.network.ChatResponse;
 import com.forgeessentials.util.OutputHandler;
 
@@ -63,7 +62,7 @@ public class RemoteCommandSender implements ICommandSender
             }
             catch (IOException e)
             {
-                ForgeEssentials.log.error("Error sending remote message: " + e.getMessage());
+                OutputHandler.felog.error("Error sending remote message: " + e.getMessage());
                 e.printStackTrace();
             }
         }

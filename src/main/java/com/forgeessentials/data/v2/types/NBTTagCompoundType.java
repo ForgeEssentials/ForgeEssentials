@@ -15,8 +15,8 @@ import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.data.v2.DataManager.DataType;
+import com.forgeessentials.util.OutputHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -190,7 +190,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        ForgeEssentials.log.error("Error parsing NBT data: Invalid data type");
+                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_SHORT:
@@ -213,7 +213,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        ForgeEssentials.log.error("Error parsing NBT data: Invalid data type");
+                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_INT:
@@ -233,7 +233,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        ForgeEssentials.log.error("Error parsing NBT data: Invalid data type");
+                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_INT_ARRAY:
@@ -248,7 +248,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        ForgeEssentials.log.error("Error parsing NBT data: Invalid data type");
+                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_FLOAT:
@@ -268,7 +268,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        ForgeEssentials.log.error("Error parsing NBT data: Invalid data type");
+                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_DOUBLE:
@@ -288,7 +288,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        ForgeEssentials.log.error("Error parsing NBT data: Invalid data type");
+                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_COMPOUND:
@@ -308,11 +308,11 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        ForgeEssentials.log.error("Error parsing NBT data: Invalid data type");
+                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 default:
-                    ForgeEssentials.log.error("Error parsing NBT data: Invalid data type");
+                    OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
                     break;
                 }
             }
@@ -320,7 +320,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
         }
         catch (Throwable e)
         {
-            ForgeEssentials.log.error(String.format("Error parsing data: %s", json.toString()));
+            OutputHandler.felog.error(String.format("Error parsing data: %s", json.toString()));
             e.printStackTrace();
             return null;
         }

@@ -69,7 +69,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase
         }
         else if (args[0].equalsIgnoreCase("about"))
         {
-            ForgeEssentials.log.info(String.format("Running ForgeEssentials %s #%d (%s)", //
+            OutputHandler.felog.info(String.format("Running ForgeEssentials %s #%d (%s)", //
                     BuildInfo.VERSION, BuildInfo.getBuildNumber(), BuildInfo.getBuildHash()));
             OutputHandler
                     .chatNotification(sender,

@@ -20,8 +20,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumChatFormatting;
 
-import com.forgeessentials.core.ForgeEssentials;
-
 public abstract class BookUtil
 {
 
@@ -65,7 +63,7 @@ public abstract class BookUtil
                     }
                     catch (Exception e)
                     {
-                        ForgeEssentials.log.info("Something went wrong...");
+                        OutputHandler.felog.info("Something went wrong...");
                     }
                 }
             }
@@ -108,7 +106,7 @@ public abstract class BookUtil
                 }
                 catch (Exception e)
                 {
-                    ForgeEssentials.log.warn("Error reading script: " + file.getName());
+                    OutputHandler.felog.warn("Error reading script: " + file.getName());
                 }
                 int part = 0;
                 int parts = lines.size() / 10 + 1;
@@ -182,7 +180,7 @@ public abstract class BookUtil
                 }
                 catch (Exception e)
                 {
-                    ForgeEssentials.log.warn("Error reading script: " + file.getName());
+                    OutputHandler.felog.warn("Error reading script: " + file.getName());
                 }
                 int part = 0;
                 int parts = lines.size() / 10 + 1;
@@ -246,7 +244,7 @@ public abstract class BookUtil
                 }
                 catch (Exception e)
                 {
-                    ForgeEssentials.log.warn("Error reading book: " + file.getName());
+                    OutputHandler.felog.warn("Error reading book: " + file.getName());
                 }
                 while (lines.size() != 0)
                 {
@@ -301,7 +299,7 @@ public abstract class BookUtil
                 }
                 catch (Exception e)
                 {
-                    ForgeEssentials.log.warn("Error reading book: " + file.getName());
+                    OutputHandler.felog.warn("Error reading book: " + file.getName());
                 }
                 while (lines.size() != 0)
                 {
@@ -371,7 +369,7 @@ public abstract class BookUtil
                     }
                     catch (Exception e)
                     {
-                        ForgeEssentials.log.warn("Error reading script: " + file.getName());
+                        OutputHandler.felog.warn("Error reading script: " + file.getName());
                     }
                     int part = 0;
                     int parts = lines.size() / 10 + 1;
@@ -451,7 +449,7 @@ public abstract class BookUtil
                     }
                     catch (Exception e)
                     {
-                        ForgeEssentials.log.warn("Error reading script: " + file.getName());
+                        OutputHandler.felog.warn("Error reading script: " + file.getName());
                     }
                     int part = 0;
                     int parts = lines.size() / 10 + 1;

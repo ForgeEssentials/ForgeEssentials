@@ -27,6 +27,7 @@ import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SQLProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -85,7 +86,7 @@ public class ModulePermissions extends ConfigLoaderBase
         }
         catch (IOException ex)
         {
-            ForgeEssentials.log.warn("Unable to create FEData backup");
+            OutputHandler.felog.warn("Unable to create FEData backup");
         }
 
         // Load permissions

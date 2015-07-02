@@ -55,7 +55,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
 
         if (!rulesFile.exists())
         {
-            ForgeEssentials.log.info("No rules file found. Generating with default rules..");
+            OutputHandler.felog.info("No rules file found. Generating with default rules..");
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rulesFile))))
             {
                 writer.write("# " + rulesFile.getName() + " | numbers are automatically added");
@@ -69,11 +69,11 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
                 rules.add("Do not grief");
                 writer.newLine();
 
-                ForgeEssentials.log.info("Completed generating rules file.");
+                OutputHandler.felog.info("Completed generating rules file.");
             }
             catch (IOException e)
             {
-                ForgeEssentials.log.error("Error writing the Rules file: " + rulesFile.getName());
+                OutputHandler.felog.error("Error writing the Rules file: " + rulesFile.getName());
             }
         }
         else
@@ -90,7 +90,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             }
             catch (IOException e)
             {
-                ForgeEssentials.log.error("Error writing the Rules file: " + rulesFile.getName());
+                OutputHandler.felog.error("Error writing the Rules file: " + rulesFile.getName());
             }
         }
 
@@ -101,7 +101,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
     {
         try
         {
-            ForgeEssentials.log.info("Saving rules");
+            OutputHandler.felog.info("Saving rules");
 
             if (!rulesFile.exists())
             {
@@ -126,11 +126,11 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             streamWriter.close();
             stream.close();
 
-            ForgeEssentials.log.info("Completed saving rules file.");
+            OutputHandler.felog.info("Completed saving rules file.");
         }
         catch (IOException e)
         {
-            ForgeEssentials.log.error("Error writing the Rules file: " + rulesFile.getName());
+            OutputHandler.felog.error("Error writing the Rules file: " + rulesFile.getName());
         }
     }
 

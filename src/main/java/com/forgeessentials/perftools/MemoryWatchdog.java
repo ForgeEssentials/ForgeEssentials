@@ -7,7 +7,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -37,7 +36,7 @@ public class MemoryWatchdog extends TimerTask
             {
                 if (FMLCommonHandler.instance().getEffectiveSide().isClient())
                 {
-                    ForgeEssentials.log.info("High memory use detected. " + percentage + "% of memory in use.");
+                    OutputHandler.felog.info("High memory use detected. " + percentage + "% of memory in use.");
                 }
                 else
                 {

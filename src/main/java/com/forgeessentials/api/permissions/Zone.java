@@ -16,11 +16,11 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.UserIdent.UserIdentInvalidatedEvent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.ForgeEssentials;
 
 /**
  * Zones are used to store permissions in a tree-like hierarchy. Each zone has it's own set of group- and
@@ -342,7 +342,7 @@ public abstract class Zone
      */
     public boolean setPlayerPermissionProperty(UserIdent ident, String permissionNode, String value)
     {
-        if (ident != null && !ForgeEssentials.BUS.post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, permissionNode, value)))
+        if (ident != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, permissionNode, value)))
         {
             getServerZone().registerPlayer(ident);
             PermissionList map = getOrCreatePlayerPermissions(ident);
@@ -379,7 +379,7 @@ public abstract class Zone
         if (ident != null)
         {
             PermissionList map = getPlayerPermissions(ident);
-            if (map != null && !ForgeEssentials.BUS.post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, permissionNode, null)))
+            if (map != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, permissionNode, null)))
             {
                 map.remove(permissionNode);
                 return true;
@@ -403,7 +403,7 @@ public abstract class Zone
 
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
-        if (ForgeEssentials.BUS.post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
             return false;
         Set<String> groups = getPlayerGroups(ident);
         groups.add(group);
@@ -413,7 +413,8 @@ public abstract class Zone
 
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
-        if (ForgeEssentials.BUS.post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+        if (APIRegistry.getFEEventBus().post(
+                new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
             return false;
         Set<String> groups = getPlayerGroups(ident);
         groups.remove(group);
@@ -529,7 +530,7 @@ public abstract class Zone
      */
     public boolean setGroupPermissionProperty(String group, String permissionNode, String value)
     {
-        if (group != null && !ForgeEssentials.BUS.post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, value)))
+        if (group != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, value)))
         {
             PermissionList map = getOrCreateGroupPermissions(group);
             if (value == null)
@@ -565,7 +566,7 @@ public abstract class Zone
         if (group != null)
         {
             PermissionList map = getGroupPermissions(group);
-            if (map != null && !ForgeEssentials.BUS.post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
+            if (map != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
             {
                 map.remove(permissionNode);
                 return true;

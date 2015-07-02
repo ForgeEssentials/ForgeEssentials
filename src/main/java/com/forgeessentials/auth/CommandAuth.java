@@ -10,8 +10,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.PermissionDeniedException;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -81,7 +81,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                     // login worked
                     ModuleAuth.hasSession.add(sender.getPersistentID());
                     OutputHandler.chatConfirmation(sender, "Login successful.");
-                    ForgeEssentials.BUS.post(new PlayerAuthLoginEvent(sender));
+                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent(sender));
                 }
                 else
                 {

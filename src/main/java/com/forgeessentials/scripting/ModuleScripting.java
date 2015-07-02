@@ -68,7 +68,7 @@ public class ModuleScripting extends ServerEventHandler
         }
         catch (FileNotFoundException e)
         {
-            ForgeEssentials.log.info("Unable to write script arguments file");
+            OutputHandler.felog.info("Unable to write script arguments file");
         }
         try (PrintWriter writer = new PrintWriter(new File(moduleDir, "methods.txt")))
         {
@@ -83,7 +83,7 @@ public class ModuleScripting extends ServerEventHandler
         }
         catch (FileNotFoundException e)
         {
-            ForgeEssentials.log.info("Unable to write script arguments file");
+            OutputHandler.felog.info("Unable to write script arguments file");
         }
     }
 
@@ -114,7 +114,7 @@ public class ModuleScripting extends ServerEventHandler
                 }
                 catch (IOException e1)
                 {
-                    ForgeEssentials.log.error(String.format("Error reading script %s", file.getName()));
+                    OutputHandler.felog.error(String.format("Error reading script %s", file.getName()));
                     continue;
                 }
             }
@@ -185,7 +185,7 @@ public class ModuleScripting extends ServerEventHandler
             catch (CommandException e)
             {
                 OutputHandler.chatError(sender, e.getMessage());
-                // ForgeEssentials.log.info(String.format("Error in script \"%s\": %s", script.getKey(),
+                // OutputHandler.felog.info(String.format("Error in script \"%s\": %s", script.getKey(),
                 // e.getMessage()));
             }
             catch (MissingPermissionException e)
@@ -195,7 +195,7 @@ public class ModuleScripting extends ServerEventHandler
             }
             catch (ScriptException e)
             {
-                ForgeEssentials.log.error(String.format("Error in script \"%s\": %s", script.getKey(), e.getMessage()));
+                OutputHandler.felog.error(String.format("Error in script \"%s\": %s", script.getKey(), e.getMessage()));
             }
         }
     }

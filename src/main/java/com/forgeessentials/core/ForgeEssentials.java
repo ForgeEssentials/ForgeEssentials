@@ -10,7 +10,6 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 
 import com.forgeessentials.api.APIRegistry;
@@ -60,7 +59,6 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.discovery.ASMDataTable;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -69,7 +67,6 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.eventhandler.EventBus;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -86,10 +83,6 @@ import cpw.mods.fml.relauncher.Side;
 @Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = BuildInfo.VERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
 public class ForgeEssentials extends ConfigLoaderBase
 {
-
-    public static final org.apache.logging.log4j.Logger log = LogManager.getLogger("ForgeEssentials");
-
-    public static final EventBus BUS = APIRegistry.getFEEventBus();
 
     @Instance(value = "ForgeEssentials")
     public static ForgeEssentials instance;
@@ -132,15 +125,11 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     private boolean debugMode = false;
 
-    public static ASMDataTable asmData;
-
     /* ------------------------------------------------------------ */
 
     public ForgeEssentials()
     {
         BuildInfo.getBuildInfo(FELaunchHandler.jarLocation);
-        ForgeEssentials.log.info(String.format("Running ForgeEssentials %s #%d (%s)", //
-                BuildInfo.VERSION, BuildInfo.getBuildNumber(), BuildInfo.getBuildHash()));
 
         Environment.check();
     }
@@ -148,8 +137,10 @@ public class ForgeEssentials extends ConfigLoaderBase
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        // Hack to allow accessing asmData at later point
-        asmData = event.getAsmData();
+        OutputHandler.felog = event.getModLog();
+
+        OutputHandler.felog.info(String.format("Running ForgeEssentials %s #%d (%s)", //
+                BuildInfo.VERSION, BuildInfo.getBuildNumber(), BuildInfo.getBuildHash()));
 
         // Initialize core configuration
         initializeConfigurationManager();
@@ -158,9 +149,9 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         // Set up logger level
         if (debugMode)
-            ((Logger) ForgeEssentials.log).setLevel(Level.DEBUG);
+            ((Logger) OutputHandler.felog).setLevel(Level.DEBUG);
         else
-            ((Logger) ForgeEssentials.log).setLevel(Level.INFO);
+            ((Logger) OutputHandler.felog).setLevel(Level.INFO);
 
         // Register core submodules
         factory = new ForgeEssentialsEventFactory();
@@ -179,24 +170,24 @@ public class ForgeEssentials extends ConfigLoaderBase
         registerCommands();
 
         FMLCommonHandler.instance().bus().register(this);
-        ForgeEssentials.BUS.register(new CompatReiMinimap());
+        APIRegistry.getFEEventBus().register(new CompatReiMinimap());
 
         if (BuildInfo.isOutdated())
         {
-            ForgeEssentials.log.warn("-------------------------------------------------------------------------------------");
-            ForgeEssentials.log.warn(String.format("WARNING! Using ForgeEssentials build #%d, latest build is #%d",//
+            OutputHandler.felog.warn("-------------------------------------------------------------------------------------");
+            OutputHandler.felog.warn(String.format("WARNING! Using ForgeEssentials build #%d, latest build is #%d",//
                     BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
-            ForgeEssentials.log.warn("We highly recommend updating asap to get the latest security and bug fixes");
-            ForgeEssentials.log.warn("-------------------------------------------------------------------------------------");
+            OutputHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
+            OutputHandler.felog.warn("-------------------------------------------------------------------------------------");
         }
 
-        ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
     }
 
     @EventHandler
     public void postLoad(FMLPostInitializationEvent e)
     {
-        ForgeEssentials.BUS.post(new FEModuleEvent.FEModulePostInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModulePostInitEvent(e));
         commandManager = new FECommandManager();
     }
 
@@ -260,7 +251,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
-        ForgeEssentials.BUS.post(new FEModuleServerPreInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleServerPreInitEvent(e));
     }
 
     @EventHandler
@@ -274,7 +265,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         registerPermissions();
 
-        ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleServerInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerInitEvent(e));
     }
 
     @EventHandler
@@ -284,20 +275,20 @@ public class ForgeEssentials extends ConfigLoaderBase
         // CommandSetChecker.remove();
         FECommandManager.registerCommands();
 
-        ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
     }
 
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent e)
     {
-        ForgeEssentials.BUS.post(new FEModuleEvent.FEModuleServerStopEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStopEvent(e));
         PlayerInfo.discardAll();
     }
 
     @EventHandler
     public void serverStopped(FMLServerStoppedEvent e)
     {
-        ForgeEssentials.BUS.post(new FEModuleServerStoppedEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
         FECommandManager.clearRegisteredCommands();
         Translator.save();
     }

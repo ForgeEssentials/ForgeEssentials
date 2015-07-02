@@ -14,7 +14,6 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
@@ -46,7 +45,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
 
     public CommandKit()
     {
-        ForgeEssentials.BUS.register(this);
+        APIRegistry.getFEEventBus().register(this);
     }
 
     @Override

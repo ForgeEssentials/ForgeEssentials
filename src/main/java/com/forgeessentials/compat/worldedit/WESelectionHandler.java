@@ -7,7 +7,7 @@ import net.minecraftforge.common.DimensionManager;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.sk89q.worldedit.IncompleteRegionException;
@@ -26,7 +26,7 @@ public class WESelectionHandler implements ISelectionProvider
 
     public WESelectionHandler()
     {
-        ForgeEssentials.log.info("WorldEdit selection provider started.");
+        OutputHandler.felog.info("WorldEdit selection provider started.");
     }
 
     @Override

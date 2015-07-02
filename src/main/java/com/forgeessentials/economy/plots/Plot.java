@@ -23,7 +23,6 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.OutputHandler;
@@ -144,7 +143,7 @@ public class Plot
             zone.setGroupPermissionProperty(GROUP_ALL, PERM_OWNER, owner.getOrGenerateUuid().toString());
         if (owner != null)
             zone.addPlayerToGroup(newOwner, GROUP_PLOT_OWNER);
-        ForgeEssentials.BUS.post(event);
+        APIRegistry.getFEEventBus().post(event);
     }
 
     public String getOwnerName()

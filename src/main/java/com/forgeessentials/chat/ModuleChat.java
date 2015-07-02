@@ -430,7 +430,7 @@ public class ModuleChat
                 File dir = logFile.getParentFile();
                 if (!dir.exists() && !dir.mkdirs())
                 {
-                    ForgeEssentials.log.warn(String.format("Could not create chat log directory %s!", logFile.getPath()));
+                    OutputHandler.felog.warn(String.format("Could not create chat log directory %s!", logFile.getPath()));
                 }
                 else
                 {
@@ -439,7 +439,7 @@ public class ModuleChat
             }
             catch (FileNotFoundException e)
             {
-                ForgeEssentials.log.error(String.format("Could not create chat log file %s.", logFile.getAbsolutePath()));
+                OutputHandler.felog.error(String.format("Could not create chat log file %s.", logFile.getAbsolutePath()));
             }
         }
     }

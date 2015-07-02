@@ -12,10 +12,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
@@ -134,7 +134,7 @@ public class PlayerInfo implements Loadable
             {
                 EntityPlayerMP player = UserIdent.getPlayerByUuid(uuid);
                 if (player != null)
-                    ForgeEssentials.BUS.post(new NoPlayerInfoEvent(player));
+                    APIRegistry.getFEEventBus().post(new NoPlayerInfoEvent(player));
                 info = new PlayerInfo(uuid);
             }
             playerInfoMap.put(uuid, info);
@@ -389,14 +389,14 @@ public class PlayerInfo implements Loadable
             if (newInventory == null)
                 newInventory = new ArrayList<>();
 
-            // ForgeEssentials.log.info(String.format("Changing inventory group for %s from %s to %s",
+            // OutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s",
             // ident.getUsernameOrUUID(), activeInventoryGroup, name));
             /*
-             * ForgeEssentials.log.info("Items in old inventory:"); for (int i = 0; i <
+             * OutputHandler.felog.info("Items in old inventory:"); for (int i = 0; i <
              * ident.getPlayer().inventory.getSizeInventory(); i++) { ItemStack itemStack =
-             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != null) ForgeEssentials.log.info("  " +
-             * itemStack.getDisplayName()); } ForgeEssentials.log.info("Items in new inventory:"); for (ItemStack
-             * itemStack : newInventory) if (itemStack != null) ForgeEssentials.log.info("  " +
+             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != null) OutputHandler.felog.info("  " +
+             * itemStack.getDisplayName()); } OutputHandler.felog.info("Items in new inventory:"); for (ItemStack
+             * itemStack : newInventory) if (itemStack != null) OutputHandler.felog.info("  " +
              * itemStack.getDisplayName());
              */
 

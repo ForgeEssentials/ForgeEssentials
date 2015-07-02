@@ -7,9 +7,9 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.ForgeEssentials;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -106,7 +106,7 @@ public class WorldZone extends Zone
 
     public boolean removeAreaZone(AreaZone zone)
     {
-        if (ForgeEssentials.BUS.post(new PermissionEvent.Zone.Delete(getServerZone(), zone)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.Zone.Delete(getServerZone(), zone)))
             return false;
         return serverZone.removeZone(zone) | areaZones.remove(zone);
     }

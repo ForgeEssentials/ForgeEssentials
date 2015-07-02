@@ -1,10 +1,5 @@
 package com.forgeessentials.protection;
 
-import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
-import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
-import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK;
-import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_AIR;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -54,7 +49,6 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.protection.effect.CommandEffect;
@@ -76,6 +70,11 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
+
+import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
+import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
+import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK;
+import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_AIR;
 
 public class ProtectionEventHandler extends ServerEventHandler
 {
@@ -374,7 +373,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (player.isPlayerSleeping())
                 sleepingPlayers++;
         float percentage = (float) sleepingPlayers / MinecraftServer.getServer().getCurrentPlayerCount();
-        ForgeEssentials.log.debug(String.format("Players sleeping: %.0f%%", percentage * 100));
+        OutputHandler.felog.debug(String.format("Players sleeping: %.0f%%", percentage * 100));
 
         if (percentage >= FEConfig.majoritySleep && percentage < 1)
         {
@@ -564,7 +563,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             GameType playerGm = player.theItemInWorldManager.getGameType();
             if (playerGm != gm)
             {
-                // ForgeEssentials.log.info(String.format("Changing gamemode for %s from %s to %s",
+                // OutputHandler.felog.info(String.format("Changing gamemode for %s from %s to %s",
                 // ident.getUsernameOrUUID(), playerGm.getName(), gm.getName()));
                 if (gm != GameType.CREATIVE)
                 {

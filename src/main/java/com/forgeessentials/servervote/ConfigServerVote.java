@@ -12,15 +12,14 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
-
 import javax.xml.bind.DatatypeConverter;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.util.OutputHandler;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -86,7 +85,7 @@ public class ConfigServerVote extends ConfigLoaderBase
 
             ItemStack stack = new ItemStack(item, amount, meta);
 
-            ForgeEssentials.log.debug(stack.getUnlocalizedName());
+            OutputHandler.felog.debug(stack.getUnlocalizedName());
 
             freeStuff.add(stack);
         }
@@ -104,7 +103,7 @@ public class ConfigServerVote extends ConfigLoaderBase
         {
             try
             {
-                ForgeEssentials.log.info("Generating RSA key pair...");
+                OutputHandler.felog.info("Generating RSA key pair...");
 
                 keyFolder.mkdirs();
                 KeyPairGenerator keygen = KeyPairGenerator.getInstance("RSA");
@@ -124,7 +123,7 @@ public class ConfigServerVote extends ConfigLoaderBase
                 out.write(DatatypeConverter.printBase64Binary(privateSpec.getEncoded()).getBytes());
                 out.close();
 
-                ForgeEssentials.log.info("RSA key pair made!");
+                OutputHandler.felog.info("RSA key pair made!");
             }
             catch (Exception e)
             {
@@ -135,7 +134,7 @@ public class ConfigServerVote extends ConfigLoaderBase
         {
             try
             {
-                ForgeEssentials.log.info("Loading RSA key pair...");
+                OutputHandler.felog.info("Loading RSA key pair...");
 
                 FileInputStream in = new FileInputStream(publicFile);
                 byte[] encodedPublicKey = new byte[(int) publicFile.length()];
@@ -156,7 +155,7 @@ public class ConfigServerVote extends ConfigLoaderBase
                 privateKey = keyFactory.generatePrivate(privateKeySpec);
 
                 keyPair = new KeyPair(publicKey, privateKey);
-                ForgeEssentials.log.info("RSA key pair loaded!");
+                OutputHandler.felog.info("RSA key pair loaded!");
             }
             catch (Exception e)
             {

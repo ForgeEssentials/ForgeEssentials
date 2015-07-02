@@ -11,6 +11,7 @@ import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.util.OutputHandler;
 import com.google.common.base.Strings;
 
 public class Censor extends ConfigLoaderBase
@@ -63,12 +64,12 @@ public class Censor extends ConfigLoaderBase
         censorSymbol = config.get(CONFIG_CATEGORY, "censorSymbol", "#", "Replace censored words with this character").getString();
         if (censorSymbol.length() > 1)
         {
-            ForgeEssentials.log.warn("Censor symbol is too long!");
+            OutputHandler.felog.warn("Censor symbol is too long!");
             censorSymbol = censorSymbol.substring(1);
         }
         else if (censorSymbol.isEmpty())
         {
-            ForgeEssentials.log.warn("Censor symbol is empty!");
+            OutputHandler.felog.warn("Censor symbol is empty!");
             censorSymbol = "#";
         }
         filterList.clear();

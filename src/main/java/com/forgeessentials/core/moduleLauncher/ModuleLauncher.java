@@ -11,6 +11,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 
@@ -32,7 +33,7 @@ public class ModuleLauncher
 
     public void preLoad(FMLPreInitializationEvent e)
     {
-        ForgeEssentials.log.info("Discovering and loading modules...");
+        OutputHandler.felog.info("Discovering and loading modules...");
 
         // started ASM handling for the module loading
         Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
@@ -66,7 +67,7 @@ public class ModuleLauncher
                 }
 
                 temp.createAndPopulate();
-                ForgeEssentials.log.debug("Discovered FE module " + temp.name);
+                OutputHandler.felog.debug("Discovered FE module " + temp.name);
             }
         }
 
@@ -117,16 +118,16 @@ public class ModuleLauncher
         {
             if (module.module instanceof ConfigLoader)
             {
-                ForgeEssentials.log.debug("Registering configuration for FE module " + module.name);
+                OutputHandler.felog.debug("Registering configuration for FE module " + module.name);
                 ForgeEssentials.getConfigManager().registerLoader(module.name, (ConfigLoader) module.module, false);
             }
             else
             {
-                ForgeEssentials.log.debug("No configuration for FE module " + module.name);
+                OutputHandler.felog.debug("No configuration for FE module " + module.name);
             }
         }
 
-        ForgeEssentials.BUS.post(new FEModulePreInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModulePreInitEvent(e));
 
         ForgeEssentials.getConfigManager().load(false);
     }
@@ -140,7 +141,7 @@ public class ModuleLauncher
     public void unregister(String moduleName)
     {
         ModuleContainer container = containerMap.get(moduleName);
-        ForgeEssentials.BUS.unregister(container.module);
+        APIRegistry.getFEEventBus().unregister(container.module);
         containerMap.remove(moduleName);
     }
 

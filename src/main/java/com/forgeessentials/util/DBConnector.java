@@ -11,7 +11,6 @@ import net.minecraftforge.common.config.Property;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.google.common.base.Throwables;
 
 public class DBConnector
@@ -173,7 +172,7 @@ public class DBConnector
                     }
                     else
                     {
-                        ForgeEssentials.log.warn("[FE+SQL] " + name + " Parent check failed, going to in-house.");
+                        OutputHandler.felog.warn("[FE+SQL] " + name + " Parent check failed, going to in-house.");
                     }
                 }
 
@@ -200,7 +199,7 @@ public class DBConnector
         }
         catch (Exception e)
         {
-            ForgeEssentials.log.log(Level.WARN, "[FE+SQL] " + name + " In-House check failed, going to default.", e);
+            OutputHandler.felog.log(Level.WARN, "[FE+SQL] " + name + " In-House check failed, going to default.", e);
         }
 
         try
@@ -231,7 +230,7 @@ public class DBConnector
         }
         catch (SQLException e)
         {
-            ForgeEssentials.log.error("[FE+SQL] " + name + " CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
+            OutputHandler.felog.error("[FE+SQL] " + name + " CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
             Throwables.propagate(e);
         }
 
@@ -268,7 +267,7 @@ public class DBConnector
         }
         catch (Exception e)
         {
-            ForgeEssentials.log.error("[FE+SQL] " + name + " Failed parent check: " + e);
+            OutputHandler.felog.error("[FE+SQL] " + name + " Failed parent check: " + e);
             return null;
         }
     }

@@ -28,12 +28,16 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
+import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.google.gson.Gson;
 
+import cpw.mods.fml.common.discovery.ASMDataTable;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
@@ -96,7 +100,15 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 
     protected PasskeyMap passkeys = new PasskeyMap();
 
+    private static ASMDataTable asmdata;
+
     /* ------------------------------------------------------------ */
+
+    @SubscribeEvent
+    public void getASMDataTable(FEModulePreInitEvent e)
+    {
+        asmdata = ((FMLPreInitializationEvent) e.getFMLEvent()).getAsmData();
+    }
 
     /**
      * Register remote module and basic handlers
@@ -116,7 +128,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 
     private void registerRemoteHandlers()
     {
-        for (ASMData asm : ForgeEssentials.asmData.getAll(FERemoteHandler.class.getName()))
+        for (ASMData asm : asmdata.getAll(FERemoteHandler.class.getName()))
         {
             try
             {
@@ -130,7 +142,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
             }
             catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
             {
-                ForgeEssentials.log.debug("Could not load FERemoteHandler " + asm.getClassName());
+                OutputHandler.felog.debug("Could not load FERemoteHandler " + asm.getClassName());
             }
         }
     }
@@ -206,11 +218,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
                         server = new Server(port, bindAddress, sslCtxHelper.getSSLCtx());
                     }
                     else
-                        ForgeEssentials.log.error("[remote] Unable to load SSL certificate: File not found");
+                        OutputHandler.felog.error("[remote] Unable to load SSL certificate: File not found");
                 }
                 catch (IOException | GeneralSecurityException e1)
                 {
-                    ForgeEssentials.log.error("[remote] Unable to load SSL certificate: " + e1.getMessage());
+                    OutputHandler.felog.error("[remote] Unable to load SSL certificate: " + e1.getMessage());
                 }
             }
             else
@@ -220,7 +232,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         }
         catch (IOException e1)
         {
-            ForgeEssentials.log.error("[remote] Unable to start remote-server: " + e1.getMessage());
+            OutputHandler.felog.error("[remote] Unable to start remote-server: " + e1.getMessage());
         }
     }
 
