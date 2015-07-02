@@ -26,7 +26,7 @@ import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.google.common.collect.ImmutableMap;
@@ -493,7 +493,7 @@ public final class ScriptArguments
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
             EntityPlayerMP _player = ((EntityPlayerMP) sender);
-            return OutputHandler.formatTimeDurationReadable(PlayerInfo.get(_player).getTimePlayed() / 1000, true);
+            return ChatOutputHandler.formatTimeDurationReadable(PlayerInfo.get(_player).getTimePlayed() / 1000, true);
         }
 
         @Override
@@ -544,7 +544,7 @@ public final class ScriptArguments
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
             EntityPlayerMP _player = ((EntityPlayerMP) sender);
-            return OutputHandler.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogout().getTime()) / 1000, true);
+            return ChatOutputHandler.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogout().getTime()) / 1000, true);
         }
 
         @Override
@@ -561,7 +561,7 @@ public final class ScriptArguments
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
             EntityPlayerMP _player = ((EntityPlayerMP) sender);
-            return OutputHandler.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogin().getTime()) / 1000, true);
+            return ChatOutputHandler.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogin().getTime()) / 1000, true);
         }
 
         @Override
@@ -646,7 +646,7 @@ public final class ScriptArguments
         public String process(ICommandSender sender)
         {
             RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-            return OutputHandler.formatTimeDurationReadable(rb.getUptime() / 1000, true);
+            return ChatOutputHandler.formatTimeDurationReadable(rb.getUptime() / 1000, true);
         }
 
         @Override

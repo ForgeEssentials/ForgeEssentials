@@ -22,6 +22,7 @@ import net.minecraft.world.WorldServer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -315,7 +316,7 @@ public abstract class ServerUtil
         }
         catch (Exception e)
         {
-            OutputHandler.felog.error(String.format("Error replacing command /%s", clazz.getClass().getName()));
+            LoggingHandler.felog.error(String.format("Error replacing command /%s", clazz.getClass().getName()));
             e.printStackTrace();
         }
         if (newCommand instanceof ForgeEssentialsCommandBase)
@@ -342,7 +343,7 @@ public abstract class ServerUtil
         }
         catch (Exception e)
         {
-            OutputHandler.felog.error(String.format("Error replacing command /%s", oldCommand.getCommandName()));
+            LoggingHandler.felog.error(String.format("Error replacing command /%s", oldCommand.getCommandName()));
             e.printStackTrace();
         }
         if (newCommand instanceof ForgeEssentialsCommandBase)
@@ -355,7 +356,7 @@ public abstract class ServerUtil
         if (oldCommand != null)
             replaceCommand(oldCommand, newCommand);
         else
-            OutputHandler.felog.error(String.format("Could not find command /%s to replace", command));
+            LoggingHandler.felog.error(String.format("Could not find command /%s to replace", command));
     }
 
 }

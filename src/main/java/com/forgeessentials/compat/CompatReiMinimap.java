@@ -6,7 +6,7 @@ import net.minecraftforge.permissions.PermissionsManager;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -42,7 +42,7 @@ public class CompatReiMinimap
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        OutputHandler.sendMessage(e.player, new ChatComponentText(getPermissionCodes(e.player)));
+        ChatOutputHandler.sendMessage(e.player, new ChatComponentText(getPermissionCodes(e.player)));
     }
 
     public static String getPermissionCodes(EntityPlayer user)

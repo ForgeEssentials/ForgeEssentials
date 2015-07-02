@@ -13,10 +13,10 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.playerlogger.command.CommandPlayerlogger;
 import com.forgeessentials.playerlogger.command.CommandRollback;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -54,14 +54,14 @@ public class ModulePlayerLogger
         }
         if (!erroredLibs.isEmpty())
         {
-            OutputHandler.felog.error("[ForgeEssentials] You are missing the following library files.");
+            LoggingHandler.felog.error("[ForgeEssentials] You are missing the following library files.");
             for (Object error : erroredLibs.toArray())
             {
                 System.err.println(error);
             }
 
-            OutputHandler.felog.error("[PlayerLogger] As the necessary files could not be loaded, PlayerLogger will be disabled.");
-            OutputHandler.felog.error("[PlayerLogger] Please verify that the necessary files are present if you wish to use PlayerLogger.");
+            LoggingHandler.felog.error("[PlayerLogger] As the necessary files could not be loaded, PlayerLogger will be disabled.");
+            LoggingHandler.felog.error("[PlayerLogger] Please verify that the necessary files are present if you wish to use PlayerLogger.");
             return false;
         }
         return true;

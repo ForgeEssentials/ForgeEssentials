@@ -16,8 +16,9 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerMoveEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -38,7 +39,7 @@ public class AuthEventHandler
 
     public AuthEventHandler()
     {
-        OutputHandler.felog.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
+        LoggingHandler.felog.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -58,7 +59,7 @@ public class AuthEventHandler
         if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
         {
             event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
         }
     }
 
@@ -72,7 +73,7 @@ public class AuthEventHandler
         if (!ModuleAuth.hasSession.contains(username))
         {
             event.setCanceled(true);
-            OutputHandler.chatError(event.player, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.player, "Login required. Try /auth help.");
         }
     }
 
@@ -90,7 +91,7 @@ public class AuthEventHandler
         if (!ModuleAuth.hasSession.contains(player.getPersistentID()) && !(event.command instanceof CommandAuth))
         {
             event.setCanceled(true);
-            OutputHandler.chatError(player, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(player, "Login required. Try /auth help.");
         }
     }
 
@@ -103,7 +104,7 @@ public class AuthEventHandler
         if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
         {
             event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
         }
     }
 
@@ -116,7 +117,7 @@ public class AuthEventHandler
         if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
         {
             event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
         }
     }
 
@@ -129,7 +130,7 @@ public class AuthEventHandler
         if (!ModuleAuth.hasSession.contains(event.player.getPersistentID()))
         {
             event.setCanceled(true);
-            OutputHandler.chatError(event.player, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.player, "Login required. Try /auth help.");
         }
     }
 
@@ -143,7 +144,7 @@ public class AuthEventHandler
         if (!ModuleAuth.hasSession.contains(event.player.getPersistentID()))
         {
             cancel = true;
-            OutputHandler.chatError(event.player, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.player, "Login required. Try /auth help.");
         }
 
         if (cancel)
@@ -164,7 +165,7 @@ public class AuthEventHandler
         if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
         {
             event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
         }
     }
 
@@ -178,7 +179,7 @@ public class AuthEventHandler
         if (!ModuleAuth.hasSession.contains(player.getPersistentID()))
         {
             event.setCanceled(true);
-            OutputHandler.chatError(player, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(player, "Login required. Try /auth help.");
         }
     }
 
@@ -191,7 +192,7 @@ public class AuthEventHandler
         if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
         {
             event.setCanceled(true);
-            OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
         }
     }
 
@@ -200,7 +201,7 @@ public class AuthEventHandler
      * event) { UUID username = event.entityPlayer.getPersistentID();
      * 
      * if (!ModuleAuth.hasSession.contains(username)) { event.setResult(Result.DENY);
-     * OutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help."); } }
+     * ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help."); } }
      */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -212,11 +213,11 @@ public class AuthEventHandler
         }
         if (!PlayerPassData.isRegistered(e.player.getPersistentID()))
         {
-            OutputHandler.chatError(e.player, "Registration required. Try /auth help.");
+            ChatOutputHandler.chatError(e.player, "Registration required. Try /auth help.");
         }
         else
         {
-            OutputHandler.chatError(e.player, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(e.player, "Login required. Try /auth help.");
         }
 
         maxcounter = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipslots - offset;

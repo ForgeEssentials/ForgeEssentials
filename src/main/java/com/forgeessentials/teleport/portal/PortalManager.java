@@ -15,10 +15,10 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.preloader.asm.EventInjector;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -45,7 +45,7 @@ public class PortalManager extends ServerEventHandler
         mixinLoaded = EventInjector.injectedPatches.contains("block.BlockPortal_01");
         if (!mixinLoaded)
         {
-            OutputHandler.felog.error("Unable to apply portal block mixin. Will revert to glass panes for portals.");
+            LoggingHandler.felog.error("Unable to apply portal block mixin. Will revert to glass panes for portals.");
             portalBlock = Blocks.glass_pane;
         }
     }

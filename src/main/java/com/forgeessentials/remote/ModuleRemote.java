@@ -28,11 +28,11 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.Gson;
 
 import cpw.mods.fml.common.discovery.ASMDataTable;
@@ -142,7 +142,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
             }
             catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
             {
-                OutputHandler.felog.debug("Could not load FERemoteHandler " + asm.getClassName());
+                LoggingHandler.felog.debug("Could not load FERemoteHandler " + asm.getClassName());
             }
         }
     }
@@ -218,11 +218,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
                         server = new Server(port, bindAddress, sslCtxHelper.getSSLCtx());
                     }
                     else
-                        OutputHandler.felog.error("[remote] Unable to load SSL certificate: File not found");
+                        LoggingHandler.felog.error("[remote] Unable to load SSL certificate: File not found");
                 }
                 catch (IOException | GeneralSecurityException e1)
                 {
-                    OutputHandler.felog.error("[remote] Unable to load SSL certificate: " + e1.getMessage());
+                    LoggingHandler.felog.error("[remote] Unable to load SSL certificate: " + e1.getMessage());
                 }
             }
             else
@@ -232,7 +232,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         }
         catch (IOException e1)
         {
-            OutputHandler.felog.error("[remote] Unable to start remote-server: " + e1.getMessage());
+            LoggingHandler.felog.error("[remote] Unable to start remote-server: " + e1.getMessage());
         }
     }
 

@@ -14,7 +14,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
 {
@@ -81,7 +81,7 @@ public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
         for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
         {
             String formattedMsg = ModuleChat.processChatReplacements(null, ScriptArguments.processSafe(message, player));
-            OutputHandler.sendMessage(player, new ChatComponentText(formattedMsg));
+            ChatOutputHandler.sendMessage(player, new ChatComponentText(formattedMsg));
         }
     }
 

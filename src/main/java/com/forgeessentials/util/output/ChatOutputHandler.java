@@ -1,4 +1,4 @@
-package com.forgeessentials.util;
+package com.forgeessentials.util.output;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,14 +16,11 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
 
-import org.apache.logging.log4j.Logger;
-
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.util.output.LoggingHandler;
 
-public final class OutputHandler extends ConfigLoaderBase
+public final class ChatOutputHandler extends ConfigLoaderBase
 {
-
-    public static Logger felog;
 
     public static final char COLOR_FORMAT_CHARACTER = '\u00a7';
 
@@ -55,7 +52,7 @@ public final class OutputHandler extends ConfigLoaderBase
     public static void sendMessage(ICommandSender recipient, IChatComponent message)
     {
         if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).playerNetServerHandler == null)
-            OutputHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getCommandSenderName(), message.getUnformattedText()));
+            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getCommandSenderName(), message.getUnformattedText()));
         else
             recipient.addChatMessage(message);
     }

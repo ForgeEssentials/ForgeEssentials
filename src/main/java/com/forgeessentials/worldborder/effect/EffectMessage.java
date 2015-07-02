@@ -3,7 +3,7 @@ package com.forgeessentials.worldborder.effect;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
@@ -37,7 +37,7 @@ public class EffectMessage extends WorldBorderEffect
 
     public void doEffect(EntityPlayerMP player)
     {
-        OutputHandler.chatError(player, ModuleChat.processChatReplacements(player, message));
+        ChatOutputHandler.chatError(player, ModuleChat.processChatReplacements(player, message));
     }
 
 }

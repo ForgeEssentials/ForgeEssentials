@@ -19,7 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -85,7 +85,7 @@ public class ConfigServerVote extends ConfigLoaderBase
 
             ItemStack stack = new ItemStack(item, amount, meta);
 
-            OutputHandler.felog.debug(stack.getUnlocalizedName());
+            LoggingHandler.felog.debug(stack.getUnlocalizedName());
 
             freeStuff.add(stack);
         }
@@ -103,7 +103,7 @@ public class ConfigServerVote extends ConfigLoaderBase
         {
             try
             {
-                OutputHandler.felog.info("Generating RSA key pair...");
+                LoggingHandler.felog.info("Generating RSA key pair...");
 
                 keyFolder.mkdirs();
                 KeyPairGenerator keygen = KeyPairGenerator.getInstance("RSA");
@@ -123,7 +123,7 @@ public class ConfigServerVote extends ConfigLoaderBase
                 out.write(DatatypeConverter.printBase64Binary(privateSpec.getEncoded()).getBytes());
                 out.close();
 
-                OutputHandler.felog.info("RSA key pair made!");
+                LoggingHandler.felog.info("RSA key pair made!");
             }
             catch (Exception e)
             {
@@ -134,7 +134,7 @@ public class ConfigServerVote extends ConfigLoaderBase
         {
             try
             {
-                OutputHandler.felog.info("Loading RSA key pair...");
+                LoggingHandler.felog.info("Loading RSA key pair...");
 
                 FileInputStream in = new FileInputStream(publicFile);
                 byte[] encodedPublicKey = new byte[(int) publicFile.length()];
@@ -155,7 +155,7 @@ public class ConfigServerVote extends ConfigLoaderBase
                 privateKey = keyFactory.generatePrivate(privateKeySpec);
 
                 keyPair = new KeyPair(publicKey, privateKey);
-                OutputHandler.felog.info("RSA key pair loaded!");
+                LoggingHandler.felog.info("RSA key pair loaded!");
             }
             catch (Exception e)
             {

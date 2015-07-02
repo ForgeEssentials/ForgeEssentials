@@ -16,7 +16,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPromote extends ForgeEssentialsCommandBase
 {
@@ -33,7 +33,7 @@ public class CommandPromote extends ForgeEssentialsCommandBase
     {
         if (arguments.isEmpty())
         {
-            OutputHandler.chatConfirmation(arguments.sender, "/promote <player> <group>");
+            ChatOutputHandler.chatConfirmation(arguments.sender, "/promote <player> <group>");
             return;
         }
 
@@ -68,14 +68,14 @@ public class CommandPromote extends ForgeEssentialsCommandBase
             if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), FEPermissions.GROUP_PROMOTION)))
             {
                 APIRegistry.perms.removePlayerFromGroup(ident, group.getGroup());
-                OutputHandler.chatConfirmation(arguments.sender, Translator.format("Removed %s from group %s", ident.getUsernameOrUuid(), group));
+                ChatOutputHandler.chatConfirmation(arguments.sender, Translator.format("Removed %s from group %s", ident.getUsernameOrUuid(), group));
                 if (ident.hasPlayer())
-                    OutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have been removed from the %s group", group));
+                    ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have been removed from the %s group", group));
             }
         APIRegistry.perms.addPlayerToGroup(ident, groupName);
-        OutputHandler.chatConfirmation(arguments.sender, Translator.format("Added %s to group %s", ident.getUsernameOrUuid(), groupName));
+        ChatOutputHandler.chatConfirmation(arguments.sender, Translator.format("Added %s to group %s", ident.getUsernameOrUuid(), groupName));
         if (ident.hasPlayer())
-            OutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have been added to the %s group", groupName));
+            ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have been added to the %s group", groupName));
     }
 
     @Override

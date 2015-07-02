@@ -7,7 +7,7 @@ import java.util.Set;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 public class ChatConfig extends ConfigLoaderBase
 {
@@ -54,7 +54,7 @@ public class ChatConfig extends ConfigLoaderBase
         }
         catch (IllegalFormatException e)
         {
-            OutputHandler.felog.error("Invalid chat format specified in chat config!");
+            LoggingHandler.felog.error("Invalid chat format specified in chat config!");
             chatFormat = "%s%s<%s>%s%s ";
         }
 

@@ -30,7 +30,7 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.TickTask;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandButcherTickTask implements TickTask
 {
@@ -112,7 +112,7 @@ public class CommandButcherTickTask implements TickTask
                     if (tickKillCount >= 32)
                         return false;
                 }
-            OutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
         }
         else
         {
@@ -129,7 +129,7 @@ public class CommandButcherTickTask implements TickTask
                                 return false;
                         }
                     }
-            OutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
         }
         return true;
     }

@@ -11,7 +11,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -58,8 +58,8 @@ public class CommandMute extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
             receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setBoolean("mute", true);
-            OutputHandler.chatError(sender, Translator.format("You muted %s.", args[0]));
-            OutputHandler.chatError(receiver, Translator.format("You were muted by %s.", sender.getCommandSenderName()));
+            ChatOutputHandler.chatError(sender, Translator.format("You muted %s.", args[0]));
+            ChatOutputHandler.chatError(receiver, Translator.format("You were muted by %s.", sender.getCommandSenderName()));
         }
     }
 

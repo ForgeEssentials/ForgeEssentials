@@ -11,8 +11,8 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPay extends ParserCommandBase
 {
@@ -73,7 +73,7 @@ public class CommandPay extends ParserCommandBase
 
         Wallet receiver = APIRegistry.economy.getWallet(player);
         receiver.add(amount);
-        OutputHandler.chatConfirmation(player.getPlayerMP(), Translator.format("You were paid %s from %s. You now have %s", //
+        ChatOutputHandler.chatConfirmation(player.getPlayerMP(), Translator.format("You were paid %s from %s. You now have %s", //
                 APIRegistry.economy.toString(amount), arguments.sender.getCommandSenderName(), receiver.toString()));
     }
 

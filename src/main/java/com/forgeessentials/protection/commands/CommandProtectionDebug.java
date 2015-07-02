@@ -6,7 +6,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandProtectionDebug extends ForgeEssentialsCommandBase
 {
@@ -23,12 +23,12 @@ public class CommandProtectionDebug extends ForgeEssentialsCommandBase
         if (ModuleProtection.isDebugMode(sender))
         {
             ModuleProtection.setDebugMode(sender, false);
-            OutputHandler.chatConfirmation(sender, "Turned protection debug-mode OFF");
+            ChatOutputHandler.chatConfirmation(sender, "Turned protection debug-mode OFF");
         }
         else
         {
             ModuleProtection.setDebugMode(sender, true);
-            OutputHandler.chatConfirmation(sender, "Turned protection debug-mode ON");
+            ChatOutputHandler.chatConfirmation(sender, "Turned protection debug-mode ON");
         }
     }
 

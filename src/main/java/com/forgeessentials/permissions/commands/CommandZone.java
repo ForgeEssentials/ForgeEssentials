@@ -23,7 +23,7 @@ import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.selections.SelectionHandler;
 
@@ -127,7 +127,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
     {
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST))
         {
-            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
         }
 
@@ -144,7 +144,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
                 limit = 1;
             }
         }
-        OutputHandler.chatConfirmation(sender, "List of areas (page #" + limit + "):");
+        ChatOutputHandler.chatConfirmation(sender, "List of areas (page #" + limit + "):");
         limit *= PAGE_SIZE;
         if (worldZone == null)
         {
@@ -157,7 +157,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
                     if (limit >= 0)
                     {
                         if (limit <= PAGE_SIZE)
-                            OutputHandler.chatConfirmation(sender, "#" + areaZone.getId() + ": " + areaZone.toString());
+                            ChatOutputHandler.chatConfirmation(sender, "#" + areaZone.getId() + ": " + areaZone.toString());
                         limit--;
                     }
                     else
@@ -176,7 +176,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
                 if (limit >= 0)
                 {
                     if (limit <= PAGE_SIZE)
-                        OutputHandler.chatConfirmation(sender, "#" + areaZone.getId() + ": " + areaZone.toString());
+                        ChatOutputHandler.chatConfirmation(sender, "#" + areaZone.getId() + ": " + areaZone.toString());
                     limit--;
                 }
                 else
@@ -193,7 +193,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
         {
             if (!redefine || !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_REDEFINE))
             {
-                OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+                ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
                 return;
             }
         }
@@ -275,7 +275,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
             zone.setArea(area);
             if (shape != null)
                 zone.setShape(shape);
-            OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been redefined.", zoneName));
+            ChatOutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been redefined.", zoneName));
         }
         else
         {
@@ -284,11 +284,11 @@ public class CommandZone extends ForgeEssentialsCommandBase
                 zone = new AreaZone(worldZone, zoneName, area);
                 if (shape != null)
                     zone.setShape(shape);
-                OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been defined.", zoneName));
+                ChatOutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been defined.", zoneName));
             }
             catch (EventCancelledException e)
             {
-                OutputHandler.chatError(sender, String.format("Defining area \"%s\" has been cancelled.", zoneName));
+                ChatOutputHandler.chatError(sender, String.format("Defining area \"%s\" has been cancelled.", zoneName));
             }
         }
     }
@@ -297,7 +297,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
     {
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_DELETE))
         {
-            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
         }
         if (worldZone == null)
@@ -326,18 +326,18 @@ public class CommandZone extends ForgeEssentialsCommandBase
         AreaZone zone = getAreaZone(worldZone, zoneName);
         if (zone == null)
         {
-            OutputHandler.chatError(sender, String.format("Area \"%s\" has does not exist!", zoneName));
+            ChatOutputHandler.chatError(sender, String.format("Area \"%s\" has does not exist!", zoneName));
             return;
         }
         zone.getWorldZone().removeAreaZone(zone);
-        OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been deleted.", zoneName));
+        ChatOutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been deleted.", zoneName));
     }
 
     private void parseSelect(ICommandSender sender, WorldZone worldZone, Queue<String> args)
     {
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_INFO))
         {
-            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
         }
 
@@ -369,7 +369,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
         AreaZone zone = getAreaZone(worldZone, zoneName);
         if (zone == null)
         {
-            OutputHandler.chatError(sender, String.format("Area \"%s\" has does not exist!", zoneName));
+            ChatOutputHandler.chatError(sender, String.format("Area \"%s\" has does not exist!", zoneName));
             return;
         }
         AreaBase area = zone.getArea();
@@ -377,14 +377,14 @@ public class CommandZone extends ForgeEssentialsCommandBase
         SelectionHandler.selectionProvider.setStart(player, area.getLowPoint());
         SelectionHandler.selectionProvider.setEnd(player, area.getHighPoint());
         SelectionHandler.sendUpdate(player);
-        OutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been selected.", zoneName));
+        ChatOutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been selected.", zoneName));
     }
 
     private void parseInfo(ICommandSender sender, WorldZone worldZone, Queue<String> args)
     {
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_INFO))
         {
-            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
         }
 
@@ -412,13 +412,13 @@ public class CommandZone extends ForgeEssentialsCommandBase
         AreaZone zone = getAreaZone(worldZone, zoneName);
         if (zone == null)
         {
-            OutputHandler.chatError(sender, String.format("Area \"%s\" has does not exist!", zoneName));
+            ChatOutputHandler.chatError(sender, String.format("Area \"%s\" has does not exist!", zoneName));
             return;
         }
         AreaBase area = zone.getArea();
-        OutputHandler.chatConfirmation(sender, String.format("Area \"%s\"", zoneName));
-        OutputHandler.chatNotification(sender, "  start = " + area.getLowPoint().toString());
-        OutputHandler.chatNotification(sender, "  end   = " + area.getHighPoint().toString());
+        ChatOutputHandler.chatConfirmation(sender, String.format("Area \"%s\"", zoneName));
+        ChatOutputHandler.chatNotification(sender, "  start = " + area.getLowPoint().toString());
+        ChatOutputHandler.chatNotification(sender, "  end   = " + area.getHighPoint().toString());
     }
 
     private void parseEntryExitMessage(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean isEntry)
@@ -431,7 +431,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
         }
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_SETTINGS))
         {
-            OutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+            ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
         }
 
@@ -473,11 +473,11 @@ public class CommandZone extends ForgeEssentialsCommandBase
 
     private static void help(ICommandSender sender)
     {
-        OutputHandler.chatConfirmation(sender, "/zone list [page]: Lists all zones");
-        OutputHandler.chatConfirmation(sender, "/zone info <zone>|here: Zone information");
-        OutputHandler.chatConfirmation(sender, "/zone define|redefine <zone-name>: define or redefine a zone.");
-        OutputHandler.chatConfirmation(sender, "/zone delete <zone-id>: Delete a zone.");
-        OutputHandler.chatConfirmation(sender, "/zone entry|exit <zone-id> <message|clear>: Set the zone entry/exit message.");
+        ChatOutputHandler.chatConfirmation(sender, "/zone list [page]: Lists all zones");
+        ChatOutputHandler.chatConfirmation(sender, "/zone info <zone>|here: Zone information");
+        ChatOutputHandler.chatConfirmation(sender, "/zone define|redefine <zone-name>: define or redefine a zone.");
+        ChatOutputHandler.chatConfirmation(sender, "/zone delete <zone-id>: Delete a zone.");
+        ChatOutputHandler.chatConfirmation(sender, "/zone entry|exit <zone-id> <message|clear>: Set the zone entry/exit message.");
     }
 
     @Override

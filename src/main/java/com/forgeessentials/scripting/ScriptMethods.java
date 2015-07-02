@@ -23,7 +23,7 @@ import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.google.common.collect.ImmutableMap;
 
@@ -67,7 +67,7 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            OutputHandler.chatConfirmation(sender, StringUtils.join(args, " "));
+            ChatOutputHandler.chatConfirmation(sender, StringUtils.join(args, " "));
             return true;
         }
 
@@ -82,7 +82,7 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            OutputHandler.chatNotification(sender, StringUtils.join(args, " "));
+            ChatOutputHandler.chatNotification(sender, StringUtils.join(args, " "));
             return true;
         }
 
@@ -97,7 +97,7 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            OutputHandler.chatWarning(sender, StringUtils.join(args, " "));
+            ChatOutputHandler.chatWarning(sender, StringUtils.join(args, " "));
             return true;
         }
 
@@ -112,7 +112,7 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            OutputHandler.chatError(sender, StringUtils.join(args, " "));
+            ChatOutputHandler.chatError(sender, StringUtils.join(args, " "));
             return true;
         }
 
@@ -127,7 +127,7 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            OutputHandler.chatError(sender, StringUtils.join(args, " "));
+            ChatOutputHandler.chatError(sender, StringUtils.join(args, " "));
             return false;
         }
 
@@ -142,7 +142,7 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            OutputHandler.broadcast(OutputHandler.confirmation(StringUtils.join(args, " ")));
+            ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(StringUtils.join(args, " ")));
             return true;
         }
 
@@ -157,7 +157,7 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            OutputHandler.broadcast(OutputHandler.notification(StringUtils.join(args, " ")));
+            ChatOutputHandler.broadcast(ChatOutputHandler.notification(StringUtils.join(args, " ")));
             return true;
         }
 
@@ -172,7 +172,7 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            OutputHandler.broadcast(OutputHandler.warning(StringUtils.join(args, " ")));
+            ChatOutputHandler.broadcast(ChatOutputHandler.warning(StringUtils.join(args, " ")));
             return true;
         }
 
@@ -187,7 +187,7 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            OutputHandler.broadcast(OutputHandler.error(StringUtils.join(args, " ")));
+            ChatOutputHandler.broadcast(ChatOutputHandler.error(StringUtils.join(args, " ")));
             return true;
         }
 
@@ -202,7 +202,7 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            OutputHandler.broadcast(OutputHandler.error(StringUtils.join(args, " ")));
+            ChatOutputHandler.broadcast(ChatOutputHandler.error(StringUtils.join(args, " ")));
             return false;
         }
 
@@ -328,7 +328,7 @@ public final class ScriptMethods
                 }
                 if (!src.withdraw(amount))
                 {
-                    OutputHandler.chatError(sender, Translator.translate("You can't afford that!"));
+                    ChatOutputHandler.chatError(sender, Translator.translate("You can't afford that!"));
                     return false;
                 }
                 if (dst != null)

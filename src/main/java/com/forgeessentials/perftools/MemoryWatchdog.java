@@ -7,7 +7,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraftforge.permissions.PermissionsManager;
 
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -36,11 +37,11 @@ public class MemoryWatchdog extends TimerTask
             {
                 if (FMLCommonHandler.instance().getEffectiveSide().isClient())
                 {
-                    OutputHandler.felog.info("High memory use detected. " + percentage + "% of memory in use.");
+                    LoggingHandler.felog.info("High memory use detected. " + percentage + "% of memory in use.");
                 }
                 else
                 {
-                    OutputHandler.sendMessage(server, "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
+                    ChatOutputHandler.sendMessage(server, "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
                 }
                 ServerConfigurationManager manager = server.getConfigurationManager();
                 for (String username : manager.getAllUsernames())
@@ -48,7 +49,7 @@ public class MemoryWatchdog extends TimerTask
                     EntityPlayerMP player = manager.func_152612_a(username);
                     if (PermissionsManager.checkPermission(player, PerfToolsModule.PERM_WARN))
                     {
-                        OutputHandler.chatNotification(player, "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
+                        ChatOutputHandler.chatNotification(player, "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
                     }
                 }
             }

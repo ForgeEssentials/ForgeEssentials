@@ -9,7 +9,7 @@ import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.WeatherTimeData;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 
 public class CommandWeather extends FEcmdModuleCommands
@@ -40,7 +40,7 @@ public class CommandWeather extends FEcmdModuleCommands
             String msg = doCmd(sender, DimensionManager.getWorld(parseInt(sender, args[0])), newArgs);
             if (msg != null)
             {
-                OutputHandler.chatConfirmation(sender, msg);
+                ChatOutputHandler.chatConfirmation(sender, msg);
             }
         }
         else
@@ -52,7 +52,7 @@ public class CommandWeather extends FEcmdModuleCommands
             }
             if (msg != null)
             {
-                OutputHandler.chatConfirmation(sender, msg);
+                ChatOutputHandler.chatConfirmation(sender, msg);
             }
         }
     }

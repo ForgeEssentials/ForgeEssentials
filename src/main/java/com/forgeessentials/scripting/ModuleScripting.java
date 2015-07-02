@@ -25,13 +25,14 @@ import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.command.CommandTimedTask;
 import com.forgeessentials.scripting.command.PatternCommand;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -68,7 +69,7 @@ public class ModuleScripting extends ServerEventHandler
         }
         catch (FileNotFoundException e)
         {
-            OutputHandler.felog.info("Unable to write script arguments file");
+            LoggingHandler.felog.info("Unable to write script arguments file");
         }
         try (PrintWriter writer = new PrintWriter(new File(moduleDir, "methods.txt")))
         {
@@ -83,7 +84,7 @@ public class ModuleScripting extends ServerEventHandler
         }
         catch (FileNotFoundException e)
         {
-            OutputHandler.felog.info("Unable to write script arguments file");
+            LoggingHandler.felog.info("Unable to write script arguments file");
         }
     }
 
@@ -114,7 +115,7 @@ public class ModuleScripting extends ServerEventHandler
                 }
                 catch (IOException e1)
                 {
-                    OutputHandler.felog.error(String.format("Error reading script %s", file.getName()));
+                    LoggingHandler.felog.error(String.format("Error reading script %s", file.getName()));
                     continue;
                 }
             }
@@ -184,18 +185,18 @@ public class ModuleScripting extends ServerEventHandler
             }
             catch (CommandException e)
             {
-                OutputHandler.chatError(sender, e.getMessage());
-                // OutputHandler.felog.info(String.format("Error in script \"%s\": %s", script.getKey(),
+                ChatOutputHandler.chatError(sender, e.getMessage());
+                // ChatOutputHandler.felog.info(String.format("Error in script \"%s\": %s", script.getKey(),
                 // e.getMessage()));
             }
             catch (MissingPermissionException e)
             {
                 if (!e.getMessage().isEmpty())
-                    OutputHandler.chatError(sender, e.getMessage());
+                    ChatOutputHandler.chatError(sender, e.getMessage());
             }
             catch (ScriptException e)
             {
-                OutputHandler.felog.error(String.format("Error in script \"%s\": %s", script.getKey(), e.getMessage()));
+                LoggingHandler.felog.error(String.format("Error in script \"%s\": %s", script.getKey(), e.getMessage()));
             }
         }
     }

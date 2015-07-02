@@ -11,7 +11,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -32,14 +32,14 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
         {
-            OutputHandler.chatError(sender, args[0] + " not found!");
+            ChatOutputHandler.chatError(sender, args[0] + " not found!");
         }
         else
         {
             int amount = parseIntWithMin(sender, args[1], 0);
-            OutputHandler.chatConfirmation(sender,
+            ChatOutputHandler.chatConfirmation(sender,
                     Translator.format("You requested %s to pay %s", player.getCommandSenderName(), APIRegistry.economy.toString(amount)));
-            OutputHandler.chatConfirmation(player,
+            ChatOutputHandler.chatConfirmation(player,
                     Translator.format("You have been requested to pay %s by %s", APIRegistry.economy.toString(amount), sender.getCommandSenderName()));
         }
     }
@@ -53,14 +53,15 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
         {
-            OutputHandler.chatError(sender, args[0] + " not found!");
+            ChatOutputHandler.chatError(sender, args[0] + " not found!");
         }
         else
         {
             int amount = parseIntWithMin(sender, args[1], 0);
-            OutputHandler.chatConfirmation(sender,
+            ChatOutputHandler.chatConfirmation(sender,
                     Translator.format("You requested %s to pay %s", player.getCommandSenderName(), APIRegistry.economy.toString(amount)));
-            OutputHandler.chatConfirmation(player, Translator.format("You have been requested to pay %s by the server", APIRegistry.economy.toString(amount)));
+            ChatOutputHandler
+                    .chatConfirmation(player, Translator.format("You have been requested to pay %s by the server", APIRegistry.economy.toString(amount)));
         }
     }
 

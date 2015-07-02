@@ -15,12 +15,12 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.player.CommandAFK;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEPlayerEvent.PlayerAFKEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -76,9 +76,9 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
         player.getPlayerMP().capabilities.disableDamage = true;
         if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
-            OutputHandler.broadcast(OutputHandler.confirmation(Translator.format("Player %s is now AFK", player.getUsernameOrUuid())));
+            ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(Translator.format("Player %s is now AFK", player.getUsernameOrUuid())));
         else
-            OutputHandler.chatConfirmation(player.getPlayer(), Translator.translate("You are now AFK"));
+            ChatOutputHandler.chatConfirmation(player.getPlayer(), Translator.translate("You are now AFK"));
 
         afkPlayers.add(player);
     }
@@ -102,9 +102,9 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         }
 
         if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
-            OutputHandler.broadcast(OutputHandler.confirmation(Translator.format("Player %s is not AFK any more", player.getUsernameOrUuid())));
+            ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(Translator.format("Player %s is not AFK any more", player.getUsernameOrUuid())));
         else
-            OutputHandler.chatConfirmation(player.getPlayer(), Translator.translate("You are not AFK any more"));
+            ChatOutputHandler.chatConfirmation(player.getPlayer(), Translator.translate("You are not AFK any more"));
 
         afkPlayers.remove(player);
     }
@@ -123,13 +123,13 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         UserIdent targetIdent = UserIdent.get((EntityPlayerMP) target);
         if (target instanceof EntityPlayerMP && isAfk(targetIdent))
         {
-            OutputHandler.notification(Translator.format("Player %s is currently AFK", targetIdent.getUsernameOrUuid()));
+            ChatOutputHandler.notification(Translator.format("Player %s is currently AFK", targetIdent.getUsernameOrUuid()));
             return;
         }
         String msg = message.getUnformattedText().toLowerCase();
         for (UserIdent player : afkPlayers)
             if (msg.contains(player.getUsernameOrUuid().toLowerCase()))
-                OutputHandler.notification(Translator.format("Player %s is currently AFK", player.getUsernameOrUuid()));
+                ChatOutputHandler.notification(Translator.format("Player %s is currently AFK", player.getUsernameOrUuid()));
     }
 
     /* ------------------------------------------------------------ */
@@ -157,7 +157,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         String msg = event.component.getUnformattedText().toLowerCase();
         for (UserIdent player : afkPlayers)
             if (msg.contains(player.getUsernameOrUuid().toLowerCase()))
-                OutputHandler.notification(Translator.format("Player %s is currently AFK", player.getUsernameOrUuid()));
+                ChatOutputHandler.notification(Translator.format("Player %s is currently AFK", player.getUsernameOrUuid()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -178,7 +178,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         if (!pi.checkTimeout("tempban"))
         {
             pi.ident.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You are still banned for %s",
-                    OutputHandler.formatTimeDurationReadable(pi.getRemainingTimeout("tempban") / 1000, true)));
+                    ChatOutputHandler.formatTimeDurationReadable(pi.getRemainingTimeout("tempban") / 1000, true)));
         }
     }
 

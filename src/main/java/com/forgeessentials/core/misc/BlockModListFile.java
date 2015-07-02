@@ -10,7 +10,7 @@ import net.minecraft.item.Item;
 
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -55,7 +55,7 @@ public class BlockModListFile
         }
         catch (Exception e)
         {
-            OutputHandler.felog.error("Error writing the modlist file: " + FEConfig.modlistLocation);
+            LoggingHandler.felog.error("Error writing the modlist file: " + FEConfig.modlistLocation);
         }
     }
 

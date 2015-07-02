@@ -11,7 +11,8 @@ import net.minecraft.world.World;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.network.ChatResponse;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 public class RemoteCommandSender implements ICommandSender
 {
@@ -50,19 +51,19 @@ public class RemoteCommandSender implements ICommandSender
     {
         if (session.getUserIdent().hasPlayer())
         {
-            OutputHandler.sendMessage(session.getUserIdent().getPlayer(), chatComponent);
+            ChatOutputHandler.sendMessage(session.getUserIdent().getPlayer(), chatComponent);
         }
         if (!session.isClosed())
         {
             try
             {
                 // TODO: Add second message WITH formatting
-                ChatResponse msg = new ChatResponse(null, OutputHandler.stripFormatting(chatComponent.getUnformattedText()));
+                ChatResponse msg = new ChatResponse(null, ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
                 session.sendMessage(new RemoteResponse<ChatResponse>(RemoteMessageID.CHAT, msg));
             }
             catch (IOException e)
             {
-                OutputHandler.felog.error("Error sending remote message: " + e.getMessage());
+                LoggingHandler.felog.error("Error sending remote message: " + e.getMessage());
                 e.printStackTrace();
             }
         }

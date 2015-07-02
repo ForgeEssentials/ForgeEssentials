@@ -25,7 +25,7 @@ import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.events.PlotEvent;
@@ -281,20 +281,20 @@ public class Plot
 
     public void printInfo(ICommandSender sender)
     {
-        OutputHandler.chatNotification(sender, String.format("#%d: \"%s\" at %s", zone.getId(), getName(), getCenter().toString()));
+        ChatOutputHandler.chatNotification(sender, String.format("#%d: \"%s\" at %s", zone.getId(), getName(), getCenter().toString()));
     }
 
     public void printDetails(ICommandSender sender)
     {
-        OutputHandler.chatNotification(sender, String.format("Plot #%d: %s", zone.getId(), getName()));
-        OutputHandler.chatNotification(sender, String.format("  Owner: %s", owner.getUsernameOrUuid()));
-        OutputHandler.chatNotification(sender,
+        ChatOutputHandler.chatNotification(sender, String.format("Plot #%d: %s", zone.getId(), getName()));
+        ChatOutputHandler.chatNotification(sender, String.format("  Owner: %s", owner.getUsernameOrUuid()));
+        ChatOutputHandler.chatNotification(sender,
                 String.format("  Location between %s and %s", zone.getArea().getHighPoint().toString(), zone.getArea().getLowPoint().toString()));
         long price = getPrice();
         if (price >= 0)
-            OutputHandler.chatNotification(sender, String.format("  Price: %d", price));
+            ChatOutputHandler.chatNotification(sender, String.format("  Price: %d", price));
         else
-            OutputHandler.chatNotification(sender, "  Not open for sale");
+            ChatOutputHandler.chatNotification(sender, "  Not open for sale");
     }
 
     /* ------------------------------------------------------------ */

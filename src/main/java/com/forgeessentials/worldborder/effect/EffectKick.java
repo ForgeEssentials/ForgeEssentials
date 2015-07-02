@@ -3,7 +3,7 @@ package com.forgeessentials.worldborder.effect;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
@@ -17,7 +17,7 @@ public class EffectKick extends WorldBorderEffect
     public void activate(WorldBorder border, EntityPlayerMP player)
     {
         // TODO: Maybe check if this is singleplayer and disable then?
-        OutputHandler.chatError(player, Translator.format("You have %d seconds to return inside the world border, or you will get kicked!", TIMEOUT));
+        ChatOutputHandler.chatError(player, Translator.format("You have %d seconds to return inside the world border, or you will get kicked!", TIMEOUT));
         PlayerInfo pi = PlayerInfo.get(player);
         pi.startTimeout(this.getClass().getName(), TIMEOUT);
     }

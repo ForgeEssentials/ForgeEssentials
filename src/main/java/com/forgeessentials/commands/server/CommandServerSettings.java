@@ -10,7 +10,7 @@ import net.minecraft.world.WorldSettings;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -42,8 +42,8 @@ public class CommandServerSettings extends FEcmdModuleCommands
         DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
         if (args.length == 0)
         {
-            OutputHandler.chatNotification(sender, "Available options:");
-            OutputHandler.chatNotification(sender, options.toString());
+            ChatOutputHandler.chatNotification(sender, "Available options:");
+            ChatOutputHandler.chatNotification(sender, options.toString());
             return;
         }
 
@@ -51,14 +51,14 @@ public class CommandServerSettings extends FEcmdModuleCommands
         {
             if (args.length == 1)
             {
-                OutputHandler.chatConfirmation(sender, "allowFlight: " + server.isFlightAllowed());
+                ChatOutputHandler.chatConfirmation(sender, "allowFlight: " + server.isFlightAllowed());
             }
             else
             {
                 server.setAllowFlight(Boolean.parseBoolean(args[1]));
                 server.setProperty("allow-flight", Boolean.parseBoolean(args[1]));
                 server.saveProperties();
-                OutputHandler.chatConfirmation(sender, "allowFlight: " + server.isFlightAllowed());
+                ChatOutputHandler.chatConfirmation(sender, "allowFlight: " + server.isFlightAllowed());
             }
             return;
         }
@@ -67,14 +67,14 @@ public class CommandServerSettings extends FEcmdModuleCommands
         {
             if (args.length == 1)
             {
-                OutputHandler.chatConfirmation(sender, "allowPVP: " + server.isPVPEnabled());
+                ChatOutputHandler.chatConfirmation(sender, "allowPVP: " + server.isPVPEnabled());
             }
             else
             {
                 server.setAllowPvp(Boolean.parseBoolean(args[1]));
                 server.setProperty("pvp", Boolean.parseBoolean(args[1]));
                 server.saveProperties();
-                OutputHandler.chatConfirmation(sender, "allowPVP: " + server.isPVPEnabled());
+                ChatOutputHandler.chatConfirmation(sender, "allowPVP: " + server.isPVPEnabled());
             }
             return;
         }
@@ -83,14 +83,14 @@ public class CommandServerSettings extends FEcmdModuleCommands
         {
             if (args.length == 1)
             {
-                OutputHandler.chatConfirmation(sender, "buildLimit: " + server.getBuildLimit());
+                ChatOutputHandler.chatConfirmation(sender, "buildLimit: " + server.getBuildLimit());
             }
             else
             {
                 server.setBuildLimit(parseIntWithMin(sender, args[1], 0));
                 server.setProperty("max-build-height", parseIntWithMin(sender, args[1], 0));
                 server.saveProperties();
-                OutputHandler.chatConfirmation(sender, "buildLimit: " + server.getBuildLimit());
+                ChatOutputHandler.chatConfirmation(sender, "buildLimit: " + server.getBuildLimit());
             }
             return;
         }
@@ -99,7 +99,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
         {
             if (args.length == 1)
             {
-                OutputHandler.chatConfirmation(sender, "MOTD: " + server.getMOTD());
+                ChatOutputHandler.chatConfirmation(sender, "MOTD: " + server.getMOTD());
             }
             else
             {
@@ -111,7 +111,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
                 server.setMOTD(msg.substring(1));
                 server.setProperty("motd", msg.substring(1));
                 server.saveProperties();
-                OutputHandler.chatConfirmation(sender, "MOTD: " + server.getMOTD());
+                ChatOutputHandler.chatConfirmation(sender, "MOTD: " + server.getMOTD());
             }
             return;
         }
@@ -120,13 +120,13 @@ public class CommandServerSettings extends FEcmdModuleCommands
         {
             if (args.length == 1)
             {
-                OutputHandler.chatConfirmation(sender, "spawnProtection: " + server.getSpawnProtectionSize());
+                ChatOutputHandler.chatConfirmation(sender, "spawnProtection: " + server.getSpawnProtectionSize());
             }
             else
             {
                 server.setProperty("spawn-protection", parseIntWithMin(sender, args[1], 0));
                 server.saveProperties();
-                OutputHandler.chatConfirmation(sender, "spawnProtection: " + server.getSpawnProtectionSize());
+                ChatOutputHandler.chatConfirmation(sender, "spawnProtection: " + server.getSpawnProtectionSize());
             }
             return;
         }
@@ -135,14 +135,14 @@ public class CommandServerSettings extends FEcmdModuleCommands
         {
             if (args.length == 1)
             {
-                OutputHandler.chatConfirmation(sender, "gamemode: " + server.getGameType().getName());
+                ChatOutputHandler.chatConfirmation(sender, "gamemode: " + server.getGameType().getName());
             }
             else
             {
                 server.setProperty("gamemode", args[1]);
                 server.setGameType(WorldSettings.GameType.getByID(Integer.parseInt(args[1])));
                 server.saveProperties();
-                OutputHandler.chatConfirmation(sender, "gamemode: " + server.getGameType().getName());
+                ChatOutputHandler.chatConfirmation(sender, "gamemode: " + server.getGameType().getName());
             }
             return;
 
@@ -152,14 +152,14 @@ public class CommandServerSettings extends FEcmdModuleCommands
         {
             if (args.length == 1)
             {
-                OutputHandler.chatConfirmation(sender, "difficulty: " + server.func_147135_j().name());
+                ChatOutputHandler.chatConfirmation(sender, "difficulty: " + server.func_147135_j().name());
             }
             else
             {
                 server.setProperty("difficulty", args[1]);
                 server.func_147139_a(EnumDifficulty.getDifficultyEnum(Integer.parseInt(args[1])));
                 server.saveProperties();
-                OutputHandler.chatConfirmation(sender, "difficulty: " + server.func_147135_j().name());
+                ChatOutputHandler.chatConfirmation(sender, "difficulty: " + server.func_147135_j().name());
             }
             return;
 

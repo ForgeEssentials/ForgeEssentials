@@ -9,7 +9,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet5Noclip;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.WorldUtil;
 
@@ -45,8 +45,8 @@ public class CommandNoClip extends FEcmdModuleCommands
     {
         if (!PlayerInfo.get(player).getHasFEClient())
         {
-            OutputHandler.chatError(player, "You need the FE client addon to use this command.");
-            OutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");
+            ChatOutputHandler.chatError(player, "You need the FE client addon to use this command.");
+            ChatOutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");
             return;
         }
 
@@ -80,7 +80,7 @@ public class CommandNoClip extends FEcmdModuleCommands
                 if (!player.worldObj.isRemote)
                 {
                     NetworkUtils.netHandler.sendTo(new Packet5Noclip(player.noClip), (EntityPlayerMP) player);
-                    OutputHandler.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");
+                    ChatOutputHandler.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");
                 }
             }
         }

@@ -14,7 +14,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -112,7 +112,7 @@ public class CommandGameMode extends FEcmdModuleCommands
         EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
         {
-            OutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
+            ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
             return;
         }
         setGameMode(sender, target, player.capabilities.isCreativeMode ? WorldSettings.GameType.SURVIVAL : WorldSettings.GameType.CREATIVE);
@@ -123,7 +123,7 @@ public class CommandGameMode extends FEcmdModuleCommands
         EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
         {
-            OutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
+            ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
             return;
         }
         setGameMode(sender, player, mode);
@@ -134,7 +134,7 @@ public class CommandGameMode extends FEcmdModuleCommands
         target.setGameType(mode);
         target.fallDistance = 0.0F;
         String modeName = StatCollector.translateToLocal("gameMode." + mode.getName());
-        OutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getCommandSenderName(), modeName));
+        ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getCommandSenderName(), modeName));
     }
 
     private WorldSettings.GameType getGameTypeFromString(String string)

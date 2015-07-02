@@ -16,7 +16,7 @@ import net.minecraftforge.common.DimensionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -81,7 +81,7 @@ public class TeleportHelper extends ServerEventHandler
         {
             if (playerPos.distance(new WarpPoint(player)) > 0.2)
             {
-                OutputHandler.chatWarning(player, "Teleport cancelled.");
+                ChatOutputHandler.chatWarning(player, "Teleport cancelled.");
                 return true;
             }
             if (System.currentTimeMillis() - start < timeout)
@@ -89,7 +89,7 @@ public class TeleportHelper extends ServerEventHandler
                 return false;
             }
             checkedTeleport(player, point);
-            OutputHandler.chatConfirmation(player, "Teleported.");
+            ChatOutputHandler.chatConfirmation(player, "Teleported.");
             return true;
         }
 
@@ -110,7 +110,7 @@ public class TeleportHelper extends ServerEventHandler
             DimensionManager.initDimension(point.getDimension());
             if (point.getWorld() == null)
             {
-                OutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));
+                ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));
                 return;
             }
         }
@@ -132,7 +132,7 @@ public class TeleportHelper extends ServerEventHandler
             long cooldownDuration = (pi.getLastTeleportTime() + teleportCooldown) - System.currentTimeMillis();
             if (cooldownDuration >= 0)
             {
-                OutputHandler.chatNotification(player, Translator.format("Cooldown still active. %d seconds to go.", cooldownDuration / 1000));
+                ChatOutputHandler.chatNotification(player, Translator.format("Cooldown still active. %d seconds to go.", cooldownDuration / 1000));
                 return;
             }
         }
@@ -147,14 +147,14 @@ public class TeleportHelper extends ServerEventHandler
 
         if (!canTeleportTo(point))
         {
-            OutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
             return;
         }
 
         // Setup timed teleport
         tpInfos.put(player.getPersistentID(), new TeleportInfo(player, point, teleportWarmup * 1000));
-        OutputHandler.chatNotification(player,
-                Translator.format("Teleporting. Please stand still for %s.", OutputHandler.formatTimeDurationReadable(teleportWarmup, true)));
+        ChatOutputHandler.chatNotification(player,
+                Translator.format("Teleporting. Please stand still for %s.", ChatOutputHandler.formatTimeDurationReadable(teleportWarmup, true)));
     }
 
     public static boolean canTeleportTo(WarpPoint point)
@@ -172,7 +172,7 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (!canTeleportTo(point))
         {
-            OutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
             return;
         }
 

@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.TickTask;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -145,7 +145,7 @@ public class TickTaskBlockFinder implements TickTask
 
     private void msg(String string)
     {
-        OutputHandler.chatNotification(player, string);
+        ChatOutputHandler.chatNotification(player, string);
     }
 
 }

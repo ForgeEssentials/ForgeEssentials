@@ -39,13 +39,14 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.selections.CommandDeselect;
 import com.forgeessentials.util.selections.CommandExpand;
@@ -137,9 +138,9 @@ public class ForgeEssentials extends ConfigLoaderBase
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        OutputHandler.felog = event.getModLog();
+        LoggingHandler.felog = event.getModLog();
 
-        OutputHandler.felog.info(String.format("Running ForgeEssentials %s #%d (%s)", //
+        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s #%d (%s)", //
                 BuildInfo.VERSION, BuildInfo.getBuildNumber(), BuildInfo.getBuildHash()));
 
         // Initialize core configuration
@@ -149,9 +150,9 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         // Set up logger level
         if (debugMode)
-            ((Logger) OutputHandler.felog).setLevel(Level.DEBUG);
+            ((Logger) LoggingHandler.felog).setLevel(Level.DEBUG);
         else
-            ((Logger) OutputHandler.felog).setLevel(Level.INFO);
+            ((Logger) LoggingHandler.felog).setLevel(Level.INFO);
 
         // Register core submodules
         factory = new ForgeEssentialsEventFactory();
@@ -174,11 +175,11 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         if (BuildInfo.isOutdated())
         {
-            OutputHandler.felog.warn("-------------------------------------------------------------------------------------");
-            OutputHandler.felog.warn(String.format("WARNING! Using ForgeEssentials build #%d, latest build is #%d",//
+            LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
+            LoggingHandler.felog.warn(String.format("WARNING! Using ForgeEssentials build #%d, latest build is #%d",//
                     BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
-            OutputHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
-            OutputHandler.felog.warn("-------------------------------------------------------------------------------------");
+            LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
+            LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
         }
 
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
@@ -199,7 +200,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         configManager = new ConfigManager(configDirectory, "main");
         configManager.registerLoader(configManager.getMainConfigName(), this);
         configManager.registerLoader(configManager.getMainConfigName(), new FEConfig());
-        configManager.registerLoader(configManager.getMainConfigName(), new OutputHandler());
+        configManager.registerLoader(configManager.getMainConfigName(), new ChatOutputHandler());
     }
 
     private void registerNetworkMessages()
@@ -329,7 +330,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         // Show version notification
         if (BuildInfo.isOutdated() && UserIdent.get(event.player).checkPermission(PERM_VERSIONINFO))
-            OutputHandler.chatWarning(event.player,
+            ChatOutputHandler.chatWarning(event.player,
                     String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
                             BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
     }

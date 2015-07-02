@@ -39,7 +39,7 @@ import net.minecraftforge.common.MinecraftForge;
 import com.forgeessentials.servervote.ConfigServerVote;
 import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLLog;
 
@@ -100,7 +100,7 @@ public class VoteReceiver extends Thread
         {
             server = new ServerSocket();
             server.bind(new InetSocketAddress(host, port));
-            OutputHandler.felog.info("Votifier connection handler initialized!");
+            LoggingHandler.felog.info("Votifier connection handler initialized!");
         }
         catch (Exception ex)
         {
@@ -188,7 +188,7 @@ public class VoteReceiver extends Thread
                 {
                     if (!ConfigServerVote.allowOfflineVotes)
                     {
-                        OutputHandler.felog.debug("Player for vote not online, vote canceled.");
+                        LoggingHandler.felog.debug("Player for vote not online, vote canceled.");
                         vote.setFeedback("notOnline");
                         vote.setCanceled(true);
                         return;

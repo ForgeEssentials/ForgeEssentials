@@ -17,9 +17,9 @@ import com.forgeessentials.commands.util.Kit;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
@@ -62,7 +62,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
          */
         if (args.length == 0)
         {
-            OutputHandler.chatNotification(sender, "Available kits:");
+            ChatOutputHandler.chatNotification(sender, "Available kits:");
             String msg = "";
             for (Kit kit : CommandDataManager.kits.values())
             {
@@ -71,7 +71,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
                     msg = kit.getName() + ", " + msg;
                 }
             }
-            OutputHandler.chatNotification(sender, msg);
+            ChatOutputHandler.chatNotification(sender, msg);
             return;
         }
         /*
@@ -101,8 +101,8 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
                     cooldown = parseIntWithMin(sender, args[2], -1);
                 }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
-                OutputHandler.chatConfirmation(sender,
-                        Translator.format("Kit created successfully. %s cooldown.", OutputHandler.formatTimeDurationReadable(cooldown, true)));
+                ChatOutputHandler.chatConfirmation(sender,
+                        Translator.format("Kit created successfully. %s cooldown.", ChatOutputHandler.formatTimeDurationReadable(cooldown, true)));
             }
             else
             {
@@ -128,7 +128,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
                 if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
                     throw new TranslatedCommandException("Kit %s does not exist.", args[0]);
                 CommandDataManager.removeKit(CommandDataManager.kits.get(args[0].toLowerCase()));
-                OutputHandler.chatConfirmation(sender, "Kit removed.");
+                ChatOutputHandler.chatConfirmation(sender, "Kit removed.");
             }
         }
 
@@ -226,8 +226,8 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
                     cooldown = parseIntWithMin(sender, args[2], -1);
                 }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
-                OutputHandler.chatConfirmation(sender,
-                        Translator.format("Kit created successfully. %s cooldown.", OutputHandler.formatTimeDurationReadable(cooldown, true)));
+                ChatOutputHandler.chatConfirmation(sender,
+                        Translator.format("Kit created successfully. %s cooldown.", ChatOutputHandler.formatTimeDurationReadable(cooldown, true)));
             }
         }
 

@@ -7,7 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandServerPerf extends ForgeEssentialsCommandBase
 {
@@ -23,15 +23,15 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        OutputHandler.chatNotification(sender, "Memory usage:");
-        OutputHandler.chatNotification(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
-        OutputHandler.chatNotification(sender, "Total: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
-        OutputHandler.chatNotification(sender, "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(sender, "Memory usage:");
+        ChatOutputHandler.chatNotification(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(sender, "Total: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(sender, "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
         long used = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        OutputHandler.chatNotification(sender, "Used: " + (used / 1024 / 1024) + " MiB");
-        OutputHandler.chatNotification(sender,
+        ChatOutputHandler.chatNotification(sender, "Used: " + (used / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(sender,
                 "Average tick time: " + formatNumbers.format(this.func_120035_a(MinecraftServer.getServer().tickTimeArray) * 1.0E-6D) + " ms");
-        OutputHandler.chatNotification(sender, "For TPS information, run /forge tps.");
+        ChatOutputHandler.chatNotification(sender, "For TPS information, run /forge tps.");
     }
 
     @Override

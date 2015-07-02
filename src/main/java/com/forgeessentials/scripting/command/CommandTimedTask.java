@@ -11,7 +11,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.scripting.TimedTask;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandTimedTask extends ForgeEssentialsCommandBase
 {
@@ -42,7 +42,7 @@ public class CommandTimedTask extends ForgeEssentialsCommandBase
     {
         if (args.length == 0)
         {
-            OutputHandler.chatNotification(sender, syntax);
+            ChatOutputHandler.chatNotification(sender, syntax);
         }
 
         else if (args[0].equalsIgnoreCase("create"))
@@ -55,21 +55,21 @@ public class CommandTimedTask extends ForgeEssentialsCommandBase
             TimedTask task = new TimedTask(Integer.parseInt(args[2]), command, args[1]);
             taskList.put(args[1], task);
             DataManager.getInstance().save(task, task.getName());
-            OutputHandler.chatConfirmation(sender, "Added timed task " + args[1]);
+            ChatOutputHandler.chatConfirmation(sender, "Added timed task " + args[1]);
         }
 
         else if (args[0].equalsIgnoreCase("remove"))
         {
             taskList.remove(args[1]);
             DataManager.getInstance().delete(TimedTask.class, args[1]);
-            OutputHandler.chatConfirmation(sender, "Removed timed task " + args[1]);
+            ChatOutputHandler.chatConfirmation(sender, "Removed timed task " + args[1]);
         }
         else if (args[0].equalsIgnoreCase("list"))
         {
-            OutputHandler.chatNotification(sender, "Listing all registered timed tasks");
+            ChatOutputHandler.chatNotification(sender, "Listing all registered timed tasks");
             for (Entry<String, TimedTask> task : taskList.entrySet())
             {
-                OutputHandler.chatNotification(sender, Translator.format("%s1 - %s2", task.getKey(), task.getValue().getCommand()));
+                ChatOutputHandler.chatNotification(sender, Translator.format("%s1 - %s2", task.getKey(), task.getValue().getCommand()));
             }
         }
 

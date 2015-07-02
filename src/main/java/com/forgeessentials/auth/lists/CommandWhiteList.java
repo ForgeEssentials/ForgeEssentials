@@ -7,7 +7,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.auth.AuthEventHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandWhiteList extends ForgeEssentialsCommandBase
 {
@@ -24,8 +24,8 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase
     {
         if (!AuthEventHandler.whitelist)
         {
-            OutputHandler.chatWarning(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
-            OutputHandler.chatWarning(sender, "Note that server.properties will take precedent over the auth config.");
+            ChatOutputHandler.chatWarning(sender, "The whitelist is not enabled. You can enable it in server.properties or your auth config file.");
+            ChatOutputHandler.chatWarning(sender, "Note that server.properties will take precedent over the auth config.");
 
         }
 
@@ -34,12 +34,12 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase
             if (AuthEventHandler.whitelist)
             {
                 AuthEventHandler.whitelist = false;
-                OutputHandler.chatConfirmation(sender, "FE Whitelist was on, it is now turned off.");
+                ChatOutputHandler.chatConfirmation(sender, "FE Whitelist was on, it is now turned off.");
             }
             else
             {
                 AuthEventHandler.whitelist = true;
-                OutputHandler.chatConfirmation(sender, "FE Whitelist was off, it is now turned on.");
+                ChatOutputHandler.chatConfirmation(sender, "FE Whitelist was off, it is now turned on.");
             }
         }
 

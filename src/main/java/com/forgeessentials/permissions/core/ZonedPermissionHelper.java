@@ -53,10 +53,11 @@ import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -139,7 +140,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         dirty = false;
         if (persistenceProvider != null)
         {
-            OutputHandler.felog.debug("Saving permissions...");
+            LoggingHandler.felog.debug("Saving permissions...");
             APIRegistry.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
             dirty = false;
@@ -180,10 +181,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         // if (verbosePermissionDebug)
         // {
-        // OutputHandler.felog.fine("PERMISSIONS SET DIRTY");
+        // ChatOutputHandler.felog.fine("PERMISSIONS SET DIRTY");
         // StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         // for (int i = 2; i < stackTrace.length && i < 10; i++)
-        // OutputHandler.felog.fine("  " + stackTrace[i].toString());
+        // ChatOutputHandler.felog.fine("  " + stackTrace[i].toString());
         // }
         dirty = true;
         lastDirtyTime = System.currentTimeMillis();
@@ -407,14 +408,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         if (ident != null && ident.hasPlayer())
             point = new WorldPoint(ident.getPlayerMP());
 
-        IChatComponent msgC1 = OutputHandler.confirmation(msg1);
-        IChatComponent msgC2 = OutputHandler.confirmation(msg2);
+        IChatComponent msgC1 = ChatOutputHandler.confirmation(msg1);
+        IChatComponent msgC2 = ChatOutputHandler.confirmation(msg2);
         for (EntityPlayerMP player : permissionDebugUsers)
         {
             if (point != null && new WorldPoint(player).distance(point) > 32)
                 continue;
-            OutputHandler.sendMessage(player, msgC1);
-            OutputHandler.sendMessage(player, msgC2);
+            ChatOutputHandler.sendMessage(player, msgC1);
+            ChatOutputHandler.sendMessage(player, msgC2);
         }
     }
 
@@ -514,12 +515,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         String exitMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
         if (exitMsg != null)
         {
-            OutputHandler.sendMessage(event.entityPlayer, OutputHandler.formatColors(exitMsg));
+            ChatOutputHandler.sendMessage(event.entityPlayer, ChatOutputHandler.formatColors(exitMsg));
         }
         String entryMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, FEPermissions.ZONE_ENTRY_MESSAGE);
         if (entryMsg != null)
         {
-            OutputHandler.sendMessage(event.entityPlayer, OutputHandler.formatColors(entryMsg));
+            ChatOutputHandler.sendMessage(event.entityPlayer, ChatOutputHandler.formatColors(entryMsg));
         }
     }
 
@@ -537,7 +538,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         ChatComponentTranslation msg = new ChatComponentTranslation("commands.generic.permission", new Object[0]);
         msg.getChatStyle().setColor(EnumChatFormatting.RED);
-        OutputHandler.sendMessage(sender, msg);
+        ChatOutputHandler.sendMessage(sender, msg);
     }
 
     @SubscribeEvent

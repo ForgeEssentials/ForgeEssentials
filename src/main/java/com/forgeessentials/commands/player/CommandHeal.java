@@ -12,7 +12,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -41,7 +41,7 @@ public class CommandHeal extends FEcmdModuleCommands
             }
             else
             {
-                OutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                ChatOutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
@@ -72,7 +72,7 @@ public class CommandHeal extends FEcmdModuleCommands
         target.heal(20);
         target.extinguish();
         target.getFoodStats().addStats(20, 1.0F);
-        OutputHandler.chatConfirmation(target, "You were healed.");
+        ChatOutputHandler.chatConfirmation(target, "You were healed.");
     }
 
     @Override

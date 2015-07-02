@@ -16,7 +16,7 @@ import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.remote.RemoteMessageID;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 @FERemoteHandler(id = RemoteMessageID.CHAT)
 public class SendChatHandler extends GenericRemoteHandler<String>
@@ -42,7 +42,7 @@ public class SendChatHandler extends GenericRemoteHandler<String>
         ChatComponentTranslation chatComponent = new ChatComponentTranslation("chat.type.text", header, request.data);
         ServerChatEvent event = new ServerChatEvent(player, request.data, chatComponent);
         if (!MinecraftForge.EVENT_BUS.post(event))
-            OutputHandler.broadcast(event.component);
+            ChatOutputHandler.broadcast(event.component);
         return null;
     }
 

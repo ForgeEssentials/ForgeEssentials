@@ -11,7 +11,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -40,7 +40,7 @@ public class CommandLocate extends FEcmdModuleCommands
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
         WorldPoint point = new WorldPoint(player);
-        OutputHandler.chatConfirmation(sender, Translator.format("%s is at %d, %d, %d in dim %d with gamemode %s", //
+        ChatOutputHandler.chatConfirmation(sender, Translator.format("%s is at %d, %d, %d in dim %d with gamemode %s", //
                 player.getCommandSenderName(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
                 player.theItemInWorldManager.getGameType().getName()));
     }

@@ -13,7 +13,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandBind extends FEcmdModuleCommands
 {
@@ -86,7 +86,7 @@ public class CommandBind extends FEcmdModuleCommands
                 is.getTagCompound().setTag("display", display);
                 is.getTagCompound().setTag("FEbinding", nbt);
             }
-            OutputHandler.chatConfirmation(sender, "Command bound to object.");
+            ChatOutputHandler.chatConfirmation(sender, "Command bound to object.");
         }
     }
 

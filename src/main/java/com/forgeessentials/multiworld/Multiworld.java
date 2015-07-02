@@ -241,7 +241,7 @@ public class Multiworld
         // msg = "Leaving the Overworld.";
         // if (player.dimension > 1 || player.dimension < -1)
         // msg += " (#" + player.dimension + ")";
-        // OutputHandler.sendMessage(player, new ChatComponentText(msg));
+        // ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
     }
 
     public static void displayWelcomeMessage(EntityPlayerMP player)
@@ -251,7 +251,7 @@ public class Multiworld
         // msg = "Entering the Overworld.";
         // if (player.dimension > 1 || player.dimension < -1)
         // msg += " (#" + player.dimension + ")";
-        // OutputHandler.sendMessage(player, new ChatComponentText(msg));
+        // ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
     }
 
 }

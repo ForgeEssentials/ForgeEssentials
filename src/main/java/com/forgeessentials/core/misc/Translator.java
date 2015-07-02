@@ -14,12 +14,12 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 public final class Translator
 {
 
-    public static final String TRANSLATOR_FILE = "translations.ini";
+    public static final String TRANSLATOR_FILE = "translations.cfg";
 
     public static final String COMMENT = "This is the automatically generated translation file.\n"
             + "All texts appearing here are found dynamically while running the server.\n" + "You can put translations after the \"=\" beind each entry.\n"
@@ -52,7 +52,7 @@ public final class Translator
         }
         catch (IOException e)
         {
-            OutputHandler.felog.error("Error writing translation file.");
+            LoggingHandler.felog.error("Error writing translation file.");
         }
     }
 
@@ -70,7 +70,7 @@ public final class Translator
         }
         catch (IOException e)
         {
-            OutputHandler.felog.warn("Error loading translation file.");
+            LoggingHandler.felog.warn("Error loading translation file.");
         }
     }
 

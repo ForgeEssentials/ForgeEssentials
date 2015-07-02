@@ -16,7 +16,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -61,7 +61,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
             }
 
             PlayerInfo.get(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-            OutputHandler.chatConfirmation(player, "Teleporting to spawn.");
+            ChatOutputHandler.chatConfirmation(player, "Teleporting to spawn.");
             TeleportHelper.teleport(player, point);
         }
     }

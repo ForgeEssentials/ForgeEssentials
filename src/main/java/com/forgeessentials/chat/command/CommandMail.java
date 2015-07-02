@@ -13,7 +13,7 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandMail extends ParserCommandBase
 {
@@ -109,9 +109,9 @@ public class CommandMail extends ParserCommandBase
 
     public static void readMail(ICommandSender sender, Mail mail)
     {
-        OutputHandler.chatNotification(sender,
+        ChatOutputHandler.chatNotification(sender,
                 Translator.format("Mail from %s on the %s", mail.sender.getUsernameOrUuid(), FEConfig.FORMAT_DATE_TIME.format(mail.timestamp)));
-        OutputHandler.chatConfirmation(sender, OutputHandler.formatColors(mail.message));
+        ChatOutputHandler.chatConfirmation(sender, ChatOutputHandler.formatColors(mail.message));
     }
 
 }

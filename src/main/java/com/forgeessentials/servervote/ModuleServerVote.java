@@ -16,10 +16,11 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -46,7 +47,7 @@ public class ModuleServerVote
 
     public static void log(VoteEvent vote)
     {
-        OutputHandler.felog.debug("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
+        LoggingHandler.felog.debug("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
     }
 
     @SubscribeEvent
@@ -180,21 +181,21 @@ public class ModuleServerVote
     {
         if (!ConfigServerVote.msgAll.equals(""))
         {
-            player.playerNetServerHandler.sendPacket(new S02PacketChat(new ChatComponentText(OutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll(
-                    "%service", vote.serviceName).replaceAll("%player", vote.player)))));
+            player.playerNetServerHandler.sendPacket(new S02PacketChat(new ChatComponentText(
+                    ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
         }
 
         if (!ConfigServerVote.msgVoter.equals(""))
         {
-            OutputHandler.sendMessage(player,
-                    OutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
+            ChatOutputHandler.sendMessage(player,
+                    ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
         }
 
         if (!ConfigServerVote.freeStuff.isEmpty())
         {
             for (ItemStack stack : ConfigServerVote.freeStuff)
             {
-                OutputHandler.felog.debug(stack.toString());
+                LoggingHandler.felog.debug(stack.toString());
                 player.inventory.addItemStackToInventory(stack.copy());
             }
         }

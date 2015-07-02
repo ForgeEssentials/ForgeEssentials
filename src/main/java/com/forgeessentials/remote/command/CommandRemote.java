@@ -21,7 +21,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 public class CommandRemote extends ForgeEssentialsCommandBase
@@ -196,8 +196,8 @@ public class CommandRemote extends ForgeEssentialsCommandBase
         qrLink.getChatStyle().setUnderlined(true);
         msg.appendSibling(qrLink);
 
-        OutputHandler.sendMessage(args.sender, msg);
-        OutputHandler.sendMessage(args.sender, new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
+        ChatOutputHandler.sendMessage(args.sender, msg);
+        ChatOutputHandler.sendMessage(args.sender, new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
     }
 
     @Override

@@ -15,7 +15,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.Loader;
@@ -56,7 +56,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.info("Error trying to load " + data.getClassName() + " as a FEModule!");
+            LoggingHandler.felog.info("Error trying to load " + data.getClassName() + " as a FEModule!");
             e.printStackTrace();
 
             isCore = false;
@@ -82,7 +82,7 @@ public class ModuleContainer implements Comparable
         {
             if (!ForgeEssentials.getConfigManager().getMainConfig().get("Core.Modules", name, annot.defaultModule()).getBoolean(true))
             {
-                OutputHandler.felog.info("Requested to disable module " + name);
+                LoggingHandler.felog.info("Requested to disable module " + name);
                 isLoadable = false;
                 return;
             }
@@ -112,7 +112,7 @@ public class ModuleContainer implements Comparable
                 {
                     if (!(boolean) m.invoke(c.newInstance()))
                     {
-                        OutputHandler.felog.debug("Disabled module " + name);
+                        LoggingHandler.felog.debug("Disabled module " + name);
                         isLoadable = false;
                         return;
                     }
@@ -179,7 +179,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.warn(name + " could not be instantiated. FE will not load this module.");
+            LoggingHandler.felog.warn(name + " could not be instantiated. FE will not load this module.");
             e.printStackTrace();
             isLoadable = false;
             return;
@@ -223,7 +223,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.info("Error populating fields of " + name);
+            LoggingHandler.felog.info("Error populating fields of " + name);
             Throwables.propagate(e);
         }
     }
@@ -243,7 +243,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.info("Error while invoking Reload method for " + name);
+            LoggingHandler.felog.info("Error while invoking Reload method for " + name);
             Throwables.propagate(e);
         }
     }
@@ -318,7 +318,7 @@ public class ModuleContainer implements Comparable
 
         modid = contain.getModId() + "-" + contain.getVersion();
         if (modClasses.add(modClass))
-            OutputHandler.felog.info("Modules from " + modid + " are being loaded");
+            LoggingHandler.felog.info("Modules from " + modid + " are being loaded");
         return obj;
     }
 }

@@ -13,7 +13,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
@@ -118,7 +118,7 @@ public class CommandTrade extends ParserCommandBase
                         }
                         else if (response == false)
                         {
-                            OutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Trade declined"));
+                            ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Trade declined"));
                             arguments.error(Translator.format("Player %s declined the trade", buyer.getUsernameOrUuid()));
                             return;
                         }
@@ -126,14 +126,14 @@ public class CommandTrade extends ParserCommandBase
                         ItemStack currentItemStack = arguments.senderPlayer.getCurrentEquippedItem();
                         if (!ItemStack.areItemStacksEqual(currentItemStack, itemStack) || !ItemStack.areItemStackTagsEqual(currentItemStack, itemStack))
                         {
-                            OutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Error in transaction"));
+                            ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Error in transaction"));
                             arguments.error(Translator.translate("You need to keep the item equipped until trade is finished!"));
                             return;
                         }
 
                         if (!buyerWallet.withdraw(price * itemStack.stackSize))
                         {
-                            OutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("You can't afford that"));
+                            ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("You can't afford that"));
                             return;
                         }
                         sellerWallet.add(price * itemStack.stackSize);
@@ -153,7 +153,7 @@ public class CommandTrade extends ParserCommandBase
                                 buyer.getUsernameOrUuid(), //
                                 priceStr, totalPriceStr);
                         arguments.notify(sellerMsg);
-                        OutputHandler.chatNotification(buyer.getPlayerMP(), buyerMsg);
+                        ChatOutputHandler.chatNotification(buyer.getPlayerMP(), buyerMsg);
                     }
                 };
                 try

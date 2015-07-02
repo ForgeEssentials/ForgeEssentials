@@ -12,8 +12,8 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandTempBan extends FEcmdModuleCommands
 {
@@ -78,6 +78,6 @@ public class CommandTempBan extends FEcmdModuleCommands
         pi.startTimeout("tempban", duration * 1000);
         if (player.hasPlayer())
             player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You have been banned for %s",
-                    OutputHandler.formatTimeDurationReadable(duration, true)));
+                    ChatOutputHandler.formatTimeDurationReadable(duration, true)));
     }
 }

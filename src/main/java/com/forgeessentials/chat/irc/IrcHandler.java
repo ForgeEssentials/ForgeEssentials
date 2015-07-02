@@ -46,7 +46,8 @@ import com.forgeessentials.chat.irc.command.CommandReply;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -132,7 +133,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     {
         for (String commandName : command.getCommandNames())
             if (commands.put(commandName, command) != null)
-                OutputHandler.felog.warn(String.format("IRC command name %s used twice!", commandName));
+                LoggingHandler.felog.warn(String.format("IRC command name %s used twice!", commandName));
     }
 
     public void connect()
@@ -140,7 +141,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (bot != null)
             disconnect();
 
-        OutputHandler.felog.info("Initializing IRC connection");
+        LoggingHandler.felog.info("Initializing IRC connection");
         bot = new PircBotX();
         bot.getListenerManager().addListener(this);
         bot.setName(botName);
@@ -156,29 +157,29 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
         try
         {
-            OutputHandler.felog.info(String.format("Attempting to join IRC server %s on port %d", server, port));
+            LoggingHandler.felog.info(String.format("Attempting to join IRC server %s on port %d", server, port));
             bot.connect(server, port, serverPassword.isEmpty() ? null : serverPassword);
             bot.identify(nickPassword);
 
-            OutputHandler.felog.info("Attempting to join channels...");
+            LoggingHandler.felog.info("Attempting to join channels...");
             for (String channel : channels)
             {
-                OutputHandler.felog.info(String.format("Attempting to join #%s", channel));
+                LoggingHandler.felog.info(String.format("Attempting to join #%s", channel));
                 bot.joinChannel(channel);
             }
-            OutputHandler.felog.info("IRC bot connected");
+            LoggingHandler.felog.info("IRC bot connected");
         }
         catch (NickAlreadyInUseException e)
         {
-            OutputHandler.felog.warn("[IRC] Connection failed, assigned nick already in use");
+            LoggingHandler.felog.warn("[IRC] Connection failed, assigned nick already in use");
         }
         catch (IOException e)
         {
-            OutputHandler.felog.warn("[IRC] Connection failed, could not reach the server");
+            LoggingHandler.felog.warn("[IRC] Connection failed, could not reach the server");
         }
         catch (IrcException e)
         {
-            OutputHandler.felog.warn("[IRC] Connection failed: " + e.getMessage());
+            LoggingHandler.felog.warn("[IRC] Connection failed: " + e.getMessage());
         }
     }
 
@@ -286,7 +287,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void sendPlayerMessage(ICommandSender sender, IChatComponent message)
     {
         if (isConnected())
-            sendMessage(String.format(mcHeader, sender.getCommandSenderName(), OutputHandler.stripFormatting(message.getUnformattedText())));
+            sendMessage(String.format(mcHeader, sender.getCommandSenderName(), ChatOutputHandler.stripFormatting(message.getUnformattedText())));
     }
 
     private void mcSendMessage(String message, User user)
@@ -296,16 +297,16 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
         String headerText = String.format(ircHeader, user.getNick());
         IChatComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
-        IChatComponent messageComponent = ModuleChat.filterChatLinks(OutputHandler.formatColors(filteredMessage));
-        OutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
+        IChatComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
+        ChatOutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
     }
 
     private void mcSendMessage(String message)
     {
         String filteredMessage = ModuleChat.instance.censor.filterIRC(message);
         IChatComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
-        IChatComponent messageComponent = ModuleChat.filterChatLinks(OutputHandler.formatColors(filteredMessage));
-        OutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
+        IChatComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
+        ChatOutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
     }
 
     public ICommandSender getIrcUser(String username)
@@ -386,7 +387,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)
-            sendMessage(OutputHandler.stripFormatting(event.component.getUnformattedText()));
+            sendMessage(ChatOutputHandler.stripFormatting(event.component.getUnformattedText()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -471,7 +472,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         }
         else
         {
-            OutputHandler.felog.warn(String.format("The IRC bot was kicked from %s by %s: ", event.getChannel().getName(), event.getSource().getNick(),
+            LoggingHandler.felog.warn(String.format("The IRC bot was kicked from %s by %s: ", event.getChannel().getName(), event.getSource().getNick(),
                     event.getReason()));
         }
     }

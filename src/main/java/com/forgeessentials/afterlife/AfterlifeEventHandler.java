@@ -11,7 +11,7 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -83,7 +83,7 @@ public class AfterlifeEventHandler extends ServerEventHandler
         if (grave.isProtected)
         {
             e.setCanceled(true);
-            OutputHandler.chatError(e.getPlayer(), Translator.translate("You may not defile the grave of a player"));
+            ChatOutputHandler.chatError(e.getPlayer(), Translator.translate("You may not defile the grave of a player"));
             return;
         }
         grave.remove(true);

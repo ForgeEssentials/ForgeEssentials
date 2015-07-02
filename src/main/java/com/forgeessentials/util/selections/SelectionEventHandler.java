@@ -7,7 +7,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.ServerEventHandler;
 
@@ -53,7 +53,7 @@ public class SelectionEventHandler extends ServerEventHandler
         {
             SelectionHandler.selectionProvider.setStart((EntityPlayerMP) event.entityPlayer, point);
             String message = Translator.format("Pos1 set to %d, %d, %d", event.x, event.y, event.z);
-            OutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
+            ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
             event.setCanceled(true);
         }
         // right Click
@@ -61,7 +61,7 @@ public class SelectionEventHandler extends ServerEventHandler
         {
             SelectionHandler.selectionProvider.setEnd((EntityPlayerMP) event.entityPlayer, point);
             String message = Translator.format("Pos2 set to %d, %d, %d", event.x, event.y, event.z);
-            OutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
+            ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
             event.setCanceled(true);
         }
     }

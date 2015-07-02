@@ -14,7 +14,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandRemove extends FEcmdModuleCommands
 {
@@ -64,7 +64,7 @@ public class CommandRemove extends FEcmdModuleCommands
             counter++;
             entity.setDead();
         }
-        OutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
+        ChatOutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
     }
 
     @SuppressWarnings("unchecked")
@@ -100,7 +100,7 @@ public class CommandRemove extends FEcmdModuleCommands
             counter++;
             entity.setDead();
         }
-        OutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
+        ChatOutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
     }
 
     @Override

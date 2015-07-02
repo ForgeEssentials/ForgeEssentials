@@ -30,7 +30,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class PermissionCommandParser
 {
@@ -1156,7 +1156,7 @@ public class PermissionCommandParser
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST_PERMS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
-        OutputHandler.chatNotification(sender, ident.getUsernameOrUuid() + " permissions:");
+        ChatOutputHandler.chatNotification(sender, ident.getUsernameOrUuid() + " permissions:");
 
         Map<Zone, Map<String, String>> userPerms = ModulePermissions.permissionHelper.enumUserPermissions(ident);
         for (Entry<Zone, Map<String, String>> zone : userPerms.entrySet())
@@ -1168,10 +1168,10 @@ public class PermissionCommandParser
                     continue;
                 if (!printedZone)
                 {
-                    OutputHandler.chatWarning(sender, "Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+                    ChatOutputHandler.chatWarning(sender, "Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
                     printedZone = true;
                 }
-                OutputHandler.chatNotification(sender, "  " + perm.getKey() + " = " + perm.getValue());
+                ChatOutputHandler.chatNotification(sender, "  " + perm.getKey() + " = " + perm.getValue());
             }
         }
         if (showGroupPerms)
@@ -1193,15 +1193,15 @@ public class PermissionCommandParser
                                 continue;
                             if (!printedGroup)
                             {
-                                OutputHandler.chatWarning(sender, "Group " + group);
+                                ChatOutputHandler.chatWarning(sender, "Group " + group);
                                 printedGroup = true;
                             }
                             if (!printedZone)
                             {
-                                OutputHandler.chatWarning(sender, "  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+                                ChatOutputHandler.chatWarning(sender, "  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
                                 printedZone = true;
                             }
-                            OutputHandler.chatNotification(sender, "    " + perm.getKey() + " = " + perm.getValue());
+                            ChatOutputHandler.chatNotification(sender, "    " + perm.getKey() + " = " + perm.getValue());
                         }
                     }
                 }
@@ -1225,10 +1225,10 @@ public class PermissionCommandParser
                         continue;
                     if (!printedZone)
                     {
-                        OutputHandler.chatWarning(sender, "  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+                        ChatOutputHandler.chatWarning(sender, "  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
                         printedZone = true;
                     }
-                    OutputHandler.chatNotification(sender, "    " + perm.getKey() + " = " + perm.getValue());
+                    ChatOutputHandler.chatNotification(sender, "    " + perm.getKey() + " = " + perm.getValue());
                 }
             }
         }
@@ -1236,12 +1236,12 @@ public class PermissionCommandParser
 
     public static void listZones(ICommandSender sender, WorldPoint location)
     {
-        OutputHandler.chatNotification(sender, "Zones at position " + location.toString());
+        ChatOutputHandler.chatNotification(sender, "Zones at position " + location.toString());
         for (Zone zone : APIRegistry.perms.getServerZone().getZonesAt(location))
         {
             if (zone.isHidden())
                 continue;
-            OutputHandler.chatNotification(sender, "  #" + zone.getId() + " " + zone.toString());
+            ChatOutputHandler.chatNotification(sender, "  #" + zone.getId() + " " + zone.toString());
         }
     }
 
@@ -1250,9 +1250,9 @@ public class PermissionCommandParser
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST_GROUPS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
-        OutputHandler.chatNotification(sender, "Groups:");
+        ChatOutputHandler.chatNotification(sender, "Groups:");
         for (String group : APIRegistry.perms.getServerZone().getGroups())
-            OutputHandler.chatNotification(sender, " - " + group);
+            ChatOutputHandler.chatNotification(sender, " - " + group);
     }
 
     public static void listUsers(ICommandSender sender)
@@ -1260,26 +1260,26 @@ public class PermissionCommandParser
         if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST_USERS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
-        OutputHandler.chatNotification(sender, "Known players:");
+        ChatOutputHandler.chatNotification(sender, "Known players:");
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
         {
-            OutputHandler.chatNotification(sender, " - " + ident.getUsernameOrUuid());
+            ChatOutputHandler.chatNotification(sender, " - " + ident.getUsernameOrUuid());
         }
 
-        OutputHandler.chatNotification(sender, "Online players:");
+        ChatOutputHandler.chatNotification(sender, "Online players:");
         for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
         {
-            OutputHandler.chatNotification(sender, " - " + ((EntityPlayerMP) player).getCommandSenderName());
+            ChatOutputHandler.chatNotification(sender, " - " + ((EntityPlayerMP) player).getCommandSenderName());
         }
     }
 
     public static void listGroupUsers(ICommandSender sender, String group)
     {
         Set<UserIdent> players = ModulePermissions.permissionHelper.getServerZone().getGroupPlayers().get(group);
-        OutputHandler.chatNotification(sender, "Players in group " + group + ":");
+        ChatOutputHandler.chatNotification(sender, "Players in group " + group + ":");
         if (players != null)
             for (UserIdent player : players)
-                OutputHandler.chatNotification(sender, "  " + player.getUsernameOrUuid());
+                ChatOutputHandler.chatNotification(sender, "  " + player.getUsernameOrUuid());
     }
 
 }

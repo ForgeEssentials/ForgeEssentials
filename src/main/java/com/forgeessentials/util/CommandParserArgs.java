@@ -23,6 +23,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 /**
  *
@@ -61,25 +62,25 @@ public class CommandParserArgs
     public void confirm(String message)
     {
         if (!isTabCompletion)
-            OutputHandler.chatConfirmation(sender, message);
+            ChatOutputHandler.chatConfirmation(sender, message);
     }
 
     public void notify(String message)
     {
         if (!isTabCompletion)
-            OutputHandler.chatNotification(sender, message);
+            ChatOutputHandler.chatNotification(sender, message);
     }
 
     public void warn(String message)
     {
         if (!isTabCompletion)
-            OutputHandler.chatWarning(sender, message);
+            ChatOutputHandler.chatWarning(sender, message);
     }
 
     public void error(String message)
     {
         if (!isTabCompletion)
-            OutputHandler.chatError(sender, message);
+            ChatOutputHandler.chatError(sender, message);
     }
 
     public int size()

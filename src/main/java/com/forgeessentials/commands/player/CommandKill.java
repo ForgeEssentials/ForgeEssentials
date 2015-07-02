@@ -13,7 +13,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -35,7 +35,7 @@ public class CommandKill extends FEcmdModuleCommands
             if (player != null)
             {
                 player.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
-                OutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
+                ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -43,7 +43,7 @@ public class CommandKill extends FEcmdModuleCommands
         else
         {
             sender.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
-            OutputHandler.chatError(sender, Translator.translate("You were killed. You probably deserved it."));
+            ChatOutputHandler.chatError(sender, Translator.translate("You were killed. You probably deserved it."));
         }
     }
 
@@ -56,7 +56,7 @@ public class CommandKill extends FEcmdModuleCommands
             if (player != null)
             {
                 player.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
-                OutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
+                ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);

@@ -3,7 +3,7 @@ package com.forgeessentials.worldborder;
 import java.lang.reflect.Type;
 
 import com.forgeessentials.data.v2.DataManager.DataType;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.worldborder.effect.EffectMessage;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -38,7 +38,7 @@ public class WorldBorderEffectType implements DataType<WorldBorderEffect>
         }
         catch (ClassNotFoundException e)
         {
-            OutputHandler.felog.error(String.format("Error parsing data: %s", json.toString()));
+            LoggingHandler.felog.error(String.format("Error parsing data: %s", json.toString()));
             e.printStackTrace();
             return null;
         }

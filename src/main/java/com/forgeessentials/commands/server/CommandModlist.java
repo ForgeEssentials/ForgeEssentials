@@ -4,7 +4,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -28,7 +28,7 @@ public class CommandModlist extends FEcmdModuleCommands
         int page = args.length == 0 ? 0 : parseIntBounded(sender, args[0], 1, pages) - 1;
         int min = Math.min(page * perPage, size);
 
-        OutputHandler.chatNotification(sender, String.format("--- Showing modlist page %1$d of %2$d ---", page + 1, pages));
+        ChatOutputHandler.chatNotification(sender, String.format("--- Showing modlist page %1$d of %2$d ---", page + 1, pages));
         for (int i = page * perPage; i < min + perPage; i++)
         {
             if (i >= size)
@@ -36,7 +36,7 @@ public class CommandModlist extends FEcmdModuleCommands
                 break;
             }
             ModContainer mod = Loader.instance().getModList().get(i);
-            OutputHandler.chatNotification(sender, mod.getName() + " - " + mod.getVersion());
+            ChatOutputHandler.chatNotification(sender, mod.getName() + " - " + mod.getVersion());
         }
     }
 

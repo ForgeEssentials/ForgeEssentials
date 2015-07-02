@@ -20,7 +20,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.WorldUtil;
 import com.google.gson.annotations.Expose;
@@ -147,7 +147,7 @@ public class Grave
     {
         if (!canOpen(player))
         {
-            OutputHandler.chatWarning(player, "This grave is still under divine protection.");
+            ChatOutputHandler.chatWarning(player, "This grave is still under divine protection.");
             return;
         }
 

@@ -12,7 +12,7 @@ import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -74,12 +74,12 @@ public class CommandBubble extends FEcmdModuleCommands
         if (toggleOn)
         {
             APIRegistry.perms.getServerZone().groupIncludeAdd(Zone.GROUP_DEFAULT, BUBBLE_GROUP);
-            OutputHandler.chatConfirmation(sender, "Activated bubble. Players are now unable to interact with the world.");
+            ChatOutputHandler.chatConfirmation(sender, "Activated bubble. Players are now unable to interact with the world.");
         }
         else
         {
             APIRegistry.perms.getServerZone().groupIncludeRemove(Zone.GROUP_DEFAULT, BUBBLE_GROUP);
-            OutputHandler.chatConfirmation(sender, "Deactivated bubble");
+            ChatOutputHandler.chatConfirmation(sender, "Deactivated bubble");
         }
     }
 

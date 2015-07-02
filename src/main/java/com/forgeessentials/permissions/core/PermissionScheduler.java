@@ -13,7 +13,7 @@ import net.minecraftforge.common.DimensionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.google.gson.annotations.Expose;
 
@@ -122,9 +122,9 @@ public class PermissionScheduler extends ServerEventHandler
 
             schedule.state = desiredState;
             if (schedule.state && schedule.onMessage != null)
-                OutputHandler.broadcast(OutputHandler.confirmation(schedule.onMessage));
+                ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(schedule.onMessage));
             if (!schedule.state && schedule.offMessage != null)
-                OutputHandler.broadcast(OutputHandler.confirmation(schedule.offMessage));
+                ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(schedule.offMessage));
         }
     }
 

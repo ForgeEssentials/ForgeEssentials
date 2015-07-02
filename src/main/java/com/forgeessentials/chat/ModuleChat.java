@@ -48,13 +48,14 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -205,14 +206,14 @@ public class ModuleChat
 
         if (!ident.checkPermission(PERM_CHAT))
         {
-            OutputHandler.chatWarning(event.player, "You don't have the permission to write in public chat.");
+            ChatOutputHandler.chatWarning(event.player, "You don't have the permission to write in public chat.");
             event.setCanceled(true);
             return;
         }
 
         if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
         {
-            OutputHandler.chatWarning(event.player, "You are currently muted.");
+            ChatOutputHandler.chatWarning(event.player, "You are currently muted.");
             event.setCanceled(true);
             return;
         }
@@ -243,7 +244,7 @@ public class ModuleChat
         IChatComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
-        IChatComponent header = new ChatComponentTranslation(OutputHandler.formatColors(ChatConfig.chatFormat), //
+        IChatComponent header = new ChatComponentTranslation(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
                 groupPrefix != null ? groupPrefix : "", //
                 playerPrefix != null ? playerPrefix : "", //
                 playerText, //
@@ -252,14 +253,14 @@ public class ModuleChat
 
         // Apply colors
         if (event.message.contains("&") && ident.checkPermission(PERM_COLOR))
-            message = OutputHandler.formatColors(message);
+            message = ChatOutputHandler.formatColors(message);
 
         // Build message part with links
         IChatComponent messageComponent = filterChatLinks(message);
 
         String textFormats = APIRegistry.perms.getUserPermissionProperty(ident, ModuleChat.PERM_TEXTFORMAT);
         if (textFormats != null)
-            OutputHandler.applyFormatting(messageComponent.getChatStyle(), OutputHandler.enumChatFormattings(textFormats));
+            ChatOutputHandler.applyFormatting(messageComponent.getChatStyle(), ChatOutputHandler.enumChatFormattings(textFormats));
 
         // Finish complete message
         event.component = new ChatComponentTranslation("%s%s", header, messageComponent);
@@ -272,7 +273,7 @@ public class ModuleChat
             for (EntityPlayerMP player : ServerUtil.getPlayerList())
             {
                 if (player.dimension == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
-                    OutputHandler.sendMessage(player, event.component);
+                    ChatOutputHandler.sendMessage(player, event.component);
             }
             event.setCanceled(true);
         }
@@ -288,7 +289,7 @@ public class ModuleChat
             return;
         if (!ChatConfig.mutedCommands.contains(event.command.getCommandName()))
             return;
-        OutputHandler.chatWarning(event.sender, "You are currently muted.");
+        ChatOutputHandler.chatWarning(event.sender, "You are currently muted.");
         event.setCanceled(true);
     }
 
@@ -297,13 +298,13 @@ public class ModuleChat
         message = ScriptArguments.processSafe(message, sender);
         for (Entry<String, String> r : chatConstReplacements.entrySet())
             message = message.replaceAll("%" + r.getKey(), r.getValue());
-        message = OutputHandler.formatColors(message);
+        message = ChatOutputHandler.formatColors(message);
         return message;
     }
 
     public static IChatComponent clickChatComponent(String text, Action action, String uri)
     {
-        IChatComponent component = new ChatComponentText(OutputHandler.formatColors(text));
+        IChatComponent component = new ChatComponentText(ChatOutputHandler.formatColors(text));
         component.getChatStyle().setChatClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, uri));
         return component;
     }
@@ -387,7 +388,7 @@ public class ModuleChat
         if (!ChatConfig.welcomeMessage.isEmpty())
         {
             String message = processChatReplacements(event.getPlayer(), ChatConfig.welcomeMessage);
-            OutputHandler.broadcast(new ChatComponentText(message));
+            ChatOutputHandler.broadcast(new ChatComponentText(message));
         }
     }
 
@@ -403,7 +404,7 @@ public class ModuleChat
         for (String message : ChatConfig.loginMessage)
         {
             message = processChatReplacements(sender, message);
-            OutputHandler.sendMessage(sender, message);
+            ChatOutputHandler.sendMessage(sender, message);
         }
     }
 
@@ -430,7 +431,7 @@ public class ModuleChat
                 File dir = logFile.getParentFile();
                 if (!dir.exists() && !dir.mkdirs())
                 {
-                    OutputHandler.felog.warn(String.format("Could not create chat log directory %s!", logFile.getPath()));
+                    LoggingHandler.felog.warn(String.format("Could not create chat log directory %s!", logFile.getPath()));
                 }
                 else
                 {
@@ -439,7 +440,7 @@ public class ModuleChat
             }
             catch (FileNotFoundException e)
             {
-                OutputHandler.felog.error(String.format("Could not create chat log file %s.", logFile.getAbsolutePath()));
+                LoggingHandler.felog.error(String.format("Could not create chat log file %s.", logFile.getAbsolutePath()));
             }
         }
     }
@@ -481,8 +482,8 @@ public class ModuleChat
                 new Object[] { target.func_145748_c_(), message });
         sentMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
         senderMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
-        OutputHandler.sendMessage(target, sentMsg);
-        OutputHandler.sendMessage(sender, senderMsg);
+        ChatOutputHandler.sendMessage(target, sentMsg);
+        ChatOutputHandler.sendMessage(sender, senderMsg);
         CommandReply.messageSent(sender, target);
         ModuleCommandsEventHandler.checkAfkMessage(target, message);
     }

@@ -13,7 +13,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -33,14 +33,14 @@ public class CommandBurn extends FEcmdModuleCommands
             if (args[0].toLowerCase().equals("me"))
             {
                 sender.setFire(15);
-                OutputHandler.chatError(sender, "Ouch! Hot!");
+                ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
             else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
-                    OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
+                    ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
                     player.setFire(15);
                 }
                 else
@@ -52,7 +52,7 @@ public class CommandBurn extends FEcmdModuleCommands
             if (args[0].toLowerCase().equals("me"))
             {
                 sender.setFire(parseInt(sender, args[1]));
-                OutputHandler.chatError(sender, "Ouch! Hot!");
+                ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
             else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
@@ -60,7 +60,7 @@ public class CommandBurn extends FEcmdModuleCommands
                 if (player != null)
                 {
                     player.setFire(parseIntWithMin(sender, args[1], 0));
-                    OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
+                    ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
                 }
                 else
                     throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -84,7 +84,7 @@ public class CommandBurn extends FEcmdModuleCommands
         if (player != null)
         {
             player.setFire(time);
-            OutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
+            ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
         }
         else
             throw new CommandException("Player %s does not exist, or is not online.", args[0]);

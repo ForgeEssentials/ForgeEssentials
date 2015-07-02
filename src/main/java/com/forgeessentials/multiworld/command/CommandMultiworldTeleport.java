@@ -17,7 +17,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 /**
  * @author Olee
@@ -120,7 +120,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase
             msg += multiworld.getName();
         }
         msg = Translator.format(msg + " at [%.0f, %.0f, %.0f]", x, y, z);
-        OutputHandler.chatConfirmation(player, msg);
+        ChatOutputHandler.chatConfirmation(player, msg);
         Multiworld.teleport(player, world, x, y, z, false);
     }
 

@@ -55,12 +55,13 @@ import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
 import com.forgeessentials.protection.effect.PotionEffect;
 import com.forgeessentials.protection.effect.ZoneEffect;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
@@ -114,7 +115,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         String permission = ModuleProtection.PERM_DAMAGE_TO + "." + EntityList.getEntityString(target);
         if (ModuleProtection.isDebugMode(source))
-            OutputHandler.chatNotification(source, permission);
+            ChatOutputHandler.chatNotification(source, permission);
         if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
         {
             event.setCanceled(true);
@@ -123,7 +124,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         permission = MobType.getMobType(target).getDamageToPermission();
         if (ModuleProtection.isDebugMode(source))
-            OutputHandler.chatNotification(source, permission);
+            ChatOutputHandler.chatNotification(source, permission);
         if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
         {
             event.setCanceled(true);
@@ -147,7 +148,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             {
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + event.source.damageType;
                 if (ModuleProtection.isDebugMode(target))
-                    OutputHandler.chatNotification(target, permission);
+                    ChatOutputHandler.chatNotification(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
                     event.setCanceled(true);
@@ -161,7 +162,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 Entity source = event.source.getEntity();
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + EntityList.getEntityString(source);
                 if (ModuleProtection.isDebugMode(target))
-                    OutputHandler.chatNotification(target, permission);
+                    ChatOutputHandler.chatNotification(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
                     event.setCanceled(true);
@@ -169,7 +170,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 }
                 permission = MobType.getMobType(source).getDamageByPermission();
                 if (ModuleProtection.isDebugMode(target))
-                    OutputHandler.chatNotification(target, permission);
+                    ChatOutputHandler.chatNotification(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
                     event.setCanceled(true);
@@ -189,7 +190,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         WorldPoint point = new WorldPoint(event.entityPlayer.dimension, (int) event.target.posX, (int) event.target.posY, (int) event.target.posZ);
         String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(event.target);
         if (ModuleProtection.isDebugMode(event.entityPlayer))
-            OutputHandler.chatNotification(event.entityPlayer, permission);
+            ChatOutputHandler.chatNotification(event.entityPlayer, permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_INTERACT_ENTITY))
         {
             event.setCanceled(true);
@@ -210,7 +211,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         Block block = event.world.getBlock(event.x, event.y, event.z);
         String permission = ModuleProtection.getBlockBreakPermission(block, event.world, event.x, event.y, event.z);
         if (ModuleProtection.isDebugMode(event.getPlayer()))
-            OutputHandler.chatNotification(event.getPlayer(), permission);
+            ChatOutputHandler.chatNotification(event.getPlayer(), permission);
         WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.x, event.y, event.z);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
@@ -229,7 +230,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         Block block = event.world.getBlock(event.x, event.y, event.z);
         String permission = ModuleProtection.getBlockPlacePermission(block, event.world, event.x, event.y, event.z);
         if (ModuleProtection.isDebugMode(event.player))
-            OutputHandler.chatNotification(event.player, permission);
+            ChatOutputHandler.chatNotification(event.player, permission);
         WorldPoint point = new WorldPoint(event.player.dimension, event.x, event.y, event.z);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
@@ -238,7 +239,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE)) == GameType.CREATIVE
                 && stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, point, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
         {
-            OutputHandler.chatError(event.player, Translator.translate("Cannot place block outside creative area"));
+            ChatOutputHandler.chatError(event.player, Translator.translate("Cannot place block outside creative area"));
             event.setCanceled(true);
             return;
         }
@@ -256,7 +257,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             Block block = event.world.getBlock(b.x, b.y, b.z);
             String permission = ModuleProtection.getBlockPlacePermission(block, event.world, event.x, event.y, event.z);
             if (ModuleProtection.isDebugMode(event.player))
-                OutputHandler.chatNotification(event.player, permission);
+                ChatOutputHandler.chatNotification(event.player, permission);
             WorldPoint point = new WorldPoint(event.player.dimension, b.x, b.y, b.z);
             if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
             {
@@ -313,7 +314,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             Block block = event.world.getBlock(event.x, event.y, event.z);
             String permission = ModuleProtection.getBlockInteractPermission(block, event.world, event.x, event.y, event.z);
             if (ModuleProtection.isDebugMode(event.entityPlayer))
-                OutputHandler.chatNotification(event.entityPlayer, permission);
+                ChatOutputHandler.chatNotification(event.entityPlayer, permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             event.useBlock = allow ? ALLOW : DENY;
         }
@@ -324,7 +325,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             String permission = ModuleProtection.getItemUsePermission(stack);
             if (ModuleProtection.isDebugMode(event.entityPlayer))
-                OutputHandler.chatNotification(event.entityPlayer, permission);
+                ChatOutputHandler.chatNotification(event.entityPlayer, permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             event.useItem = allow ? ALLOW : DENY;
         }
@@ -335,7 +336,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             // If entity is in creative area, but player not, deny interaction
             event.useBlock = DENY;
             if (event.action != LEFT_CLICK_BLOCK)
-                OutputHandler.chatError(event.entityPlayer, Translator.translate("Cannot interact with creative area if not in creative mode."));
+                ChatOutputHandler.chatError(event.entityPlayer, Translator.translate("Cannot interact with creative area if not in creative mode."));
         }
     }
 
@@ -352,7 +353,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_SLEEP))
         {
             event.result = EnumStatus.NOT_POSSIBLE_HERE;
-            OutputHandler.sendMessage(event.entityPlayer, Translator.translate("You are not allowed to sleep here"));
+            ChatOutputHandler.sendMessage(event.entityPlayer, Translator.translate("You are not allowed to sleep here"));
             return;
         }
         checkMajoritySleep = true;
@@ -373,7 +374,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (player.isPlayerSleeping())
                 sleepingPlayers++;
         float percentage = (float) sleepingPlayers / MinecraftServer.getServer().getCurrentPlayerCount();
-        OutputHandler.felog.debug(String.format("Players sleeping: %.0f%%", percentage * 100));
+        LoggingHandler.felog.debug(String.format("Players sleeping: %.0f%%", percentage * 100));
 
         if (percentage >= FEConfig.majoritySleep && percentage < 1)
         {
@@ -563,7 +564,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             GameType playerGm = player.theItemInWorldManager.getGameType();
             if (playerGm != gm)
             {
-                // OutputHandler.felog.info(String.format("Changing gamemode for %s from %s to %s",
+                // ChatOutputHandler.felog.info(String.format("Changing gamemode for %s from %s to %s",
                 // ident.getUsernameOrUUID(), playerGm.getName(), gm.getName()));
                 if (gm != GameType.CREATIVE)
                 {
@@ -759,7 +760,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout("zone_denied_message"))
         {
-            OutputHandler.chatError(player, ModuleProtection.MSG_ZONE_DENIED);
+            ChatOutputHandler.chatError(player, ModuleProtection.MSG_ZONE_DENIED);
             pi.startTimeout("zone_denied_message", 4000);
         }
     }

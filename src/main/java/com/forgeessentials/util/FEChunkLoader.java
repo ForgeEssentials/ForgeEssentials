@@ -10,6 +10,7 @@ import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.output.LoggingHandler;
 
 public class FEChunkLoader implements LoadingCallback
 {
@@ -31,7 +32,7 @@ public class FEChunkLoader implements LoadingCallback
     {
         if (map.containsKey(world.provider.dimensionId))
         {
-            OutputHandler.felog.debug(world.provider.dimensionId + " was already loaded. add 1 to count.");
+            LoggingHandler.felog.debug(world.provider.dimensionId + " was already loaded. add 1 to count.");
 
             Ticket ticket = map.get(world.provider.dimensionId);
             ticket.getModData().setInteger("count", ticket.getModData().getInteger("count") + 1);
@@ -42,12 +43,12 @@ public class FEChunkLoader implements LoadingCallback
             Ticket ticket = ForgeChunkManager.requestTicket(ForgeEssentials.instance, world, ForgeChunkManager.Type.NORMAL);
             if (ticket == null)
             {
-                OutputHandler.felog.debug("Ticket was null ?");
+                LoggingHandler.felog.debug("Ticket was null ?");
                 return false;
             }
             else
             {
-                OutputHandler.felog.debug("Force loaded " + world.provider.dimensionId);
+                LoggingHandler.felog.debug("Force loaded " + world.provider.dimensionId);
                 ForgeChunkManager.forceChunk(ticket, new ChunkCoordIntPair(0, 0));
                 ticket.getModData().setInteger("count", 1);
                 map.put(world.provider.dimensionId, ticket);
@@ -64,7 +65,7 @@ public class FEChunkLoader implements LoadingCallback
             ticket.getModData().setInteger("count", ticket.getModData().getInteger("count") - 1);
             if (ticket.getModData().getInteger("count") == 0)
             {
-                OutputHandler.felog.debug(world.provider.dimensionId + " was removed fron the force loaded list.");
+                LoggingHandler.felog.debug(world.provider.dimensionId + " was removed fron the force loaded list.");
                 ForgeChunkManager.unforceChunk(ticket, new ChunkCoordIntPair(0, 0));
                 ForgeChunkManager.releaseTicket(ticket);
                 map.remove(world.provider.dimensionId);
@@ -72,13 +73,13 @@ public class FEChunkLoader implements LoadingCallback
             }
             else
             {
-                OutputHandler.felog.debug(world.provider.dimensionId + " is still force loaded. " + ticket.getModData().getInteger("count") + " requests remain.");
+                LoggingHandler.felog.debug(world.provider.dimensionId + " is still force loaded. " + ticket.getModData().getInteger("count") + " requests remain.");
                 return false;
             }
         }
         else
         {
-            OutputHandler.felog.debug(world.provider.dimensionId + " was not force loaded.");
+            LoggingHandler.felog.debug(world.provider.dimensionId + " was not force loaded.");
             return false;
         }
     }

@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.TimerTask;
 
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -20,7 +20,7 @@ public class VanillaServiceChecker extends TimerTask
     public VanillaServiceChecker()
     {
         online = oldOnline = check();
-        OutputHandler.felog.info("VanillaServiceChecker initialized. Vanilla online mode: '" + ModuleAuth.vanillaMode() + "' Mojang login servers: '" + online
+        LoggingHandler.felog.info("VanillaServiceChecker initialized. Vanilla online mode: '" + ModuleAuth.vanillaMode() + "' Mojang login servers: '" + online
                 + "'");
     }
 

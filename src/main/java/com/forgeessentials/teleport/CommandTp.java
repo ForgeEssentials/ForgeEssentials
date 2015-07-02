@@ -17,7 +17,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 
@@ -141,8 +141,8 @@ public class CommandTp extends ForgeEssentialsCommandBase
         }
         else
         {
-            OutputHandler.chatError(sender, Translator.translate("Improper syntax. Please try this instead:"));
-            OutputHandler.chatNotification(sender, getCommandUsage(sender));
+            ChatOutputHandler.chatError(sender, Translator.translate("Improper syntax. Please try this instead:"));
+            ChatOutputHandler.chatNotification(sender, getCommandUsage(sender));
         }
     }
 

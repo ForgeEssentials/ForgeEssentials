@@ -11,9 +11,9 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -33,7 +33,7 @@ public class ModuleLauncher
 
     public void preLoad(FMLPreInitializationEvent e)
     {
-        OutputHandler.felog.info("Discovering and loading modules...");
+        LoggingHandler.felog.info("Discovering and loading modules...");
 
         // started ASM handling for the module loading
         Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
@@ -67,7 +67,7 @@ public class ModuleLauncher
                 }
 
                 temp.createAndPopulate();
-                OutputHandler.felog.debug("Discovered FE module " + temp.name);
+                LoggingHandler.felog.debug("Discovered FE module " + temp.name);
             }
         }
 
@@ -118,12 +118,12 @@ public class ModuleLauncher
         {
             if (module.module instanceof ConfigLoader)
             {
-                OutputHandler.felog.debug("Registering configuration for FE module " + module.name);
+                LoggingHandler.felog.debug("Registering configuration for FE module " + module.name);
                 ForgeEssentials.getConfigManager().registerLoader(module.name, (ConfigLoader) module.module, false);
             }
             else
             {
-                OutputHandler.felog.debug("No configuration for FE module " + module.name);
+                LoggingHandler.felog.debug("No configuration for FE module " + module.name);
             }
         }
 

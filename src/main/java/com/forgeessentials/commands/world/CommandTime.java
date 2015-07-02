@@ -14,7 +14,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.WeatherTimeData;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 
 public class CommandTime extends FEcmdModuleCommands
@@ -44,7 +44,7 @@ public class CommandTime extends FEcmdModuleCommands
             String msg = doCmd(sender, DimensionManager.getWorld(parseInt(sender, args[0])), newArgs);
             if (msg != null)
             {
-                OutputHandler.chatConfirmation(sender, msg);
+                ChatOutputHandler.chatConfirmation(sender, msg);
             }
         }
         else
@@ -56,7 +56,7 @@ public class CommandTime extends FEcmdModuleCommands
             }
             if (msg != null)
             {
-                OutputHandler.chatConfirmation(sender, msg);
+                ChatOutputHandler.chatConfirmation(sender, msg);
             }
         }
     }
@@ -74,7 +74,7 @@ public class CommandTime extends FEcmdModuleCommands
             String msg = doCmd(sender, DimensionManager.getWorld(parseInt(sender, args[0])), newArgs);
             if (msg != null)
             {
-                OutputHandler.chatConfirmation(sender, msg);
+                ChatOutputHandler.chatConfirmation(sender, msg);
             }
         }
         else
@@ -86,7 +86,7 @@ public class CommandTime extends FEcmdModuleCommands
             }
             if (msg != null)
             {
-                OutputHandler.chatConfirmation(sender, msg);
+                ChatOutputHandler.chatConfirmation(sender, msg);
             }
         }
     }

@@ -16,7 +16,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
 import com.forgeessentials.data.v2.DataManager.DataType;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -190,7 +190,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
+                        LoggingHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_SHORT:
@@ -213,7 +213,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
+                        LoggingHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_INT:
@@ -233,7 +233,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
+                        LoggingHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_INT_ARRAY:
@@ -248,7 +248,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
+                        LoggingHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_FLOAT:
@@ -268,7 +268,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
+                        LoggingHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_DOUBLE:
@@ -288,7 +288,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
+                        LoggingHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 case JSON_COMPOUND:
@@ -308,11 +308,11 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     }
                     else
                     {
-                        OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
+                        LoggingHandler.felog.error("Error parsing NBT data: Invalid data type");
                     }
                     break;
                 default:
-                    OutputHandler.felog.error("Error parsing NBT data: Invalid data type");
+                    LoggingHandler.felog.error("Error parsing NBT data: Invalid data type");
                     break;
                 }
             }
@@ -320,7 +320,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.error(String.format("Error parsing data: %s", json.toString()));
+            LoggingHandler.felog.error(String.format("Error parsing data: %s", json.toString()));
             e.printStackTrace();
             return null;
         }

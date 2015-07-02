@@ -13,7 +13,7 @@ import com.forgeessentials.chat.TimedMessageHandler;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandTimedMessages extends ForgeEssentialsCommandBase
 {
@@ -28,7 +28,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBase
     {
         if (args.length == 0)
         {
-            OutputHandler.chatConfirmation(sender, "Possible options: select, broadcast, add, del.");
+            ChatOutputHandler.chatConfirmation(sender, "Possible options: select, broadcast, add, del.");
             return;
         }
 
@@ -38,7 +38,8 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBase
             {
                 int id = parseIntBounded(sender, args[1], 0, TimedMessageHandler.getInstance().messages.size());
                 TimedMessageHandler.getInstance().currentMessageIdx = id;
-                OutputHandler.chatConfirmation(sender, "You have selected \"" + TimedMessageHandler.getInstance().messages.get(id) + "\" as the next message.");
+                ChatOutputHandler
+                        .chatConfirmation(sender, "You have selected \"" + TimedMessageHandler.getInstance().messages.get(id) + "\" as the next message.");
                 return;
             }
             catch (Exception e)
@@ -68,7 +69,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBase
             try
             {
                 String msg = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
-                OutputHandler.chatConfirmation(sender, msg);
+                ChatOutputHandler.chatConfirmation(sender, msg);
                 TimedMessageHandler.getInstance().messages.add(msg);
                 ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_CATEGORY);
                 return;
@@ -85,7 +86,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBase
             try
             {
                 int id = parseIntBounded(sender, args[1], 0, TimedMessageHandler.getInstance().messages.size());
-                OutputHandler.chatConfirmation(sender, "Message \"" + TimedMessageHandler.getInstance().messages.get(id) + "\" removed.");
+                ChatOutputHandler.chatConfirmation(sender, "Message \"" + TimedMessageHandler.getInstance().messages.get(id) + "\" removed.");
                 TimedMessageHandler.getInstance().messages.remove(id);
                 return;
             }

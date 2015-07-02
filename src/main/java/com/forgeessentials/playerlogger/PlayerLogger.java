@@ -54,9 +54,9 @@ import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
 import com.forgeessentials.playerlogger.event.LogEventInteract;
 import com.forgeessentials.playerlogger.event.LogEventPlace;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Charsets;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -149,17 +149,17 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                     return;
                 if (!em.isOpen())
                 {
-                    OutputHandler.felog.error("[PL] Playerlogger database closed. Trying to reconnect...");
+                    LoggingHandler.felog.error("[PL] Playerlogger database closed. Trying to reconnect...");
                     try
                     {
                         em = entityManagerFactory.createEntityManager();
                     }
                     catch (IllegalStateException e)
                     {
-                        OutputHandler.felog.error("[PL] ------------------------------------------------------------------------");
-                        OutputHandler.felog.error("[PL] Fatal error! Database connection was lost and could not be reestablished");
-                        OutputHandler.felog.error("[PL] Stopping playerlogger!");
-                        OutputHandler.felog.error("[PL] ------------------------------------------------------------------------");
+                        LoggingHandler.felog.error("[PL] ------------------------------------------------------------------------");
+                        LoggingHandler.felog.error("[PL] Fatal error! Database connection was lost and could not be reestablished");
+                        LoggingHandler.felog.error("[PL] Stopping playerlogger!");
+                        LoggingHandler.felog.error("[PL] ------------------------------------------------------------------------");
                         em = null;
                         eventQueue.clear();
                         return;
@@ -182,7 +182,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 }
                 catch (Exception e1)
                 {
-                    OutputHandler.felog.error("[PL] Exception while persisting playerlogger entries");
+                    LoggingHandler.felog.error("[PL] Exception while persisting playerlogger entries");
                     e1.printStackTrace();
                     try
                     {
@@ -190,7 +190,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                     }
                     catch (Exception e2)
                     {
-                        OutputHandler.felog.error("[PL] Exception while rolling back changes!");
+                        LoggingHandler.felog.error("[PL] Exception while rolling back changes!");
                         e2.printStackTrace();
                         em.close();
                         return;
@@ -346,7 +346,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         }
         catch (Exception ex)
         {
-            OutputHandler.felog.error(ex.toString());
+            LoggingHandler.felog.error(ex.toString());
             ex.printStackTrace();
         }
         return null;

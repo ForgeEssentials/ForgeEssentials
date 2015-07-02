@@ -9,7 +9,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 
@@ -104,7 +104,7 @@ public class CommandAFK extends FEcmdModuleCommands
             int autoTime = ServerUtil.parseIntDefault(ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
             int warmup = ServerUtil.parseIntDefault(ident.getPermissionProperty(PERM_WARMUP), 0);
             PlayerInfo.get(sender).setActive(autoTime * 1000 - warmup * 1000);
-            OutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
         }
     }
 

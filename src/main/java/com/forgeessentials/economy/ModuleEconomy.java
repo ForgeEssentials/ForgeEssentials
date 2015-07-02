@@ -36,7 +36,7 @@ import com.forgeessentials.economy.commands.CommandSellCommand;
 import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.plots.PlotManager;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -132,7 +132,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static void confirmNewWalletAmount(UserIdent ident, Wallet wallet)
     {
         if (ident.hasPlayer())
-            OutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
+            ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
     }
 
     public static int tryRemoveItems(EntityPlayerMP player, ItemStack itemStack, int amount)

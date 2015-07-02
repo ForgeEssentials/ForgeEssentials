@@ -10,7 +10,7 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandExpand extends ForgeEssentialsCommandBase
 {
@@ -112,7 +112,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
                     SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
                 }
             }
-            OutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
+            ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
             return;
         }
         else if (args.length == 2)
@@ -207,7 +207,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
             }
             else
                 throw new TranslatedCommandException("Invalid Direction");
-            OutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
+            ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
             return;
         }
         else

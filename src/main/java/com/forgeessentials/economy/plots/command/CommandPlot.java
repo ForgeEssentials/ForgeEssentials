@@ -30,7 +30,7 @@ import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
@@ -594,7 +594,7 @@ public class CommandPlot extends ParserCommandBase
                             }
                             else if (response == false)
                             {
-                                OutputHandler.chatError(plot.getOwner().getPlayerMP(), Translator.translate("Trade declined"));
+                                ChatOutputHandler.chatError(plot.getOwner().getPlayerMP(), Translator.translate("Trade declined"));
                                 arguments.error(Translator.format("%s declined to sell you plot \"%s\" for %s", //
                                         plot.getOwner().getUsernameOrUuid(), plot.getName(), buyPriceStr));
                                 return;
@@ -643,7 +643,7 @@ public class CommandPlot extends ParserCommandBase
             sellerWallet.add(price);
             if (plot.getOwner().hasPlayer())
             {
-                OutputHandler.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", //
+                ChatOutputHandler.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", //
                         plot.getName(), arguments.senderPlayer.getCommandSenderName(), priceStr));
                 ModuleEconomy.confirmNewWalletAmount(plot.getOwner(), sellerWallet);
             }

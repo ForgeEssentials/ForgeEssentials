@@ -7,7 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.Set;
 
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -75,7 +75,7 @@ public class CallableMap
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.error("Error stripping methods from class! " + obj.getClass().getName());
+            LoggingHandler.felog.error("Error stripping methods from class! " + obj.getClass().getName());
         }
     }
 
@@ -117,7 +117,7 @@ public class CallableMap
         }
         catch (Throwable e)
         {
-            OutputHandler.felog.error("Error stripping methods from class! " + c.getName());
+            LoggingHandler.felog.error("Error stripping methods from class! " + c.getName());
         }
     }
 

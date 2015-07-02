@@ -33,7 +33,8 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 public class CommandRules extends FEcmdModuleCommands implements ConfigurableCommand
 {
@@ -55,7 +56,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
 
         if (!rulesFile.exists())
         {
-            OutputHandler.felog.info("No rules file found. Generating with default rules..");
+            LoggingHandler.felog.info("No rules file found. Generating with default rules..");
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rulesFile))))
             {
                 writer.write("# " + rulesFile.getName() + " | numbers are automatically added");
@@ -69,11 +70,11 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
                 rules.add("Do not grief");
                 writer.newLine();
 
-                OutputHandler.felog.info("Completed generating rules file.");
+                LoggingHandler.felog.info("Completed generating rules file.");
             }
             catch (IOException e)
             {
-                OutputHandler.felog.error("Error writing the Rules file: " + rulesFile.getName());
+                LoggingHandler.felog.error("Error writing the Rules file: " + rulesFile.getName());
             }
         }
         else
@@ -90,7 +91,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             }
             catch (IOException e)
             {
-                OutputHandler.felog.error("Error writing the Rules file: " + rulesFile.getName());
+                LoggingHandler.felog.error("Error writing the Rules file: " + rulesFile.getName());
             }
         }
 
@@ -101,7 +102,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
     {
         try
         {
-            OutputHandler.felog.info("Saving rules");
+            LoggingHandler.felog.info("Saving rules");
 
             if (!rulesFile.exists())
             {
@@ -126,11 +127,11 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             streamWriter.close();
             stream.close();
 
-            OutputHandler.felog.info("Completed saving rules file.");
+            LoggingHandler.felog.info("Completed saving rules file.");
         }
         catch (IOException e)
         {
-            OutputHandler.felog.error("Error writing the Rules file: " + rulesFile.getName());
+            LoggingHandler.felog.error("Error writing the Rules file: " + rulesFile.getName());
         }
     }
 
@@ -147,7 +148,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
         {
             for (String rule : rules)
             {
-                OutputHandler.chatNotification(sender, rule);
+                ChatOutputHandler.chatNotification(sender, rule);
             }
             return;
         }
@@ -160,7 +161,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
 
             for (int i = 0; i < rules.size(); i++)
             {
-                map.put(EnumChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", EnumChatFormatting.RESET + OutputHandler.formatColors(rules.get(i)));
+                map.put(EnumChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", EnumChatFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
             }
 
             SortedSet<String> keys = new TreeSet<String>(map.keySet());
@@ -183,18 +184,18 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
 
             if (args[0].equalsIgnoreCase("help"))
             {
-                OutputHandler.chatNotification(sender, " - /rules [#]");
+                ChatOutputHandler.chatNotification(sender, " - /rules [#]");
                 if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
                 {
-                    OutputHandler.chatNotification(sender, " - /rules &lt;#> [changedRule]");
-                    OutputHandler.chatNotification(sender, " - /rules add &lt;newRule>");
-                    OutputHandler.chatNotification(sender, " - /rules remove &lt;#>");
-                    OutputHandler.chatNotification(sender, " - /rules move &lt;#> &lt;#>");
+                    ChatOutputHandler.chatNotification(sender, " - /rules &lt;#> [changedRule]");
+                    ChatOutputHandler.chatNotification(sender, " - /rules add &lt;newRule>");
+                    ChatOutputHandler.chatNotification(sender, " - /rules remove &lt;#>");
+                    ChatOutputHandler.chatNotification(sender, " - /rules move &lt;#> &lt;#>");
                 }
                 return;
             }
 
-            OutputHandler.chatNotification(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            ChatOutputHandler.chatNotification(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
             return;
         }
 
@@ -209,7 +210,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             index = parseIntBounded(sender, args[1], 1, rules.size());
 
             rules.remove(index - 1);
-            OutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
         }
         else if (args[0].equalsIgnoreCase("add"))
         {
@@ -218,9 +219,9 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = OutputHandler.formatColors(newRule);
+            newRule = ChatOutputHandler.formatColors(newRule);
             rules.add(newRule);
-            OutputHandler.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
         }
         else if (args[0].equalsIgnoreCase("move"))
         {
@@ -233,12 +234,12 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             if (index < rules.size())
             {
                 rules.add(index - 1, temp);
-                OutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
             }
             else
             {
                 rules.add(temp);
-                OutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to last position.", args[1]));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to last position.", args[1]));
             }
         }
         else if (args[0].equalsIgnoreCase("change"))
@@ -250,9 +251,9 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = OutputHandler.formatColors(newRule);
+            newRule = ChatOutputHandler.formatColors(newRule);
             rules.set(index - 1, newRule);
-            OutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
         else
             throw new TranslatedCommandException(getCommandUsage(sender));
@@ -266,7 +267,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
         {
             for (String rule : rules)
             {
-                OutputHandler.sendMessage(sender, rule);
+                ChatOutputHandler.sendMessage(sender, rule);
             }
             return;
         }
@@ -274,15 +275,15 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
         {
             if (args[0].equalsIgnoreCase("help"))
             {
-                OutputHandler.chatConfirmation(sender, " - /rules [#]");
-                OutputHandler.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
-                OutputHandler.chatConfirmation(sender, " - /rules add &lt;newRule>");
-                OutputHandler.chatConfirmation(sender, " - /rules remove &lt;#>");
-                OutputHandler.chatConfirmation(sender, " - /rules move &lt;#> &lt;#>");
+                ChatOutputHandler.chatConfirmation(sender, " - /rules [#]");
+                ChatOutputHandler.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
+                ChatOutputHandler.chatConfirmation(sender, " - /rules add &lt;newRule>");
+                ChatOutputHandler.chatConfirmation(sender, " - /rules remove &lt;#>");
+                ChatOutputHandler.chatConfirmation(sender, " - /rules move &lt;#> &lt;#>");
 
             }
 
-            OutputHandler.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            ChatOutputHandler.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
             return;
         }
 
@@ -293,7 +294,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             index = parseIntBounded(sender, args[1], 1, rules.size());
 
             rules.remove(index - 1);
-            OutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
         }
         else if (args[0].equalsIgnoreCase("add"))
         {
@@ -302,9 +303,9 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = OutputHandler.formatColors(newRule);
+            newRule = ChatOutputHandler.formatColors(newRule);
             rules.add(newRule);
-            OutputHandler.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
         }
         else if (args[0].equalsIgnoreCase("move"))
         {
@@ -317,12 +318,12 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             if (index < rules.size())
             {
                 rules.add(index - 1, temp);
-                OutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
             }
             else
             {
                 rules.add(temp);
-                OutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to last position.", args[1]));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to last position.", args[1]));
             }
         }
         else if (args[0].equalsIgnoreCase("change"))
@@ -334,9 +335,9 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = OutputHandler.formatColors(newRule);
+            newRule = ChatOutputHandler.formatColors(newRule);
             rules.set(index - 1, newRule);
-            OutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
         else
         {

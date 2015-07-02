@@ -14,7 +14,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 
 public class CommandHome extends ForgeEssentialsCommandBase
@@ -56,7 +56,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
                 PlayerInfo info = PlayerInfo.get(player.getPersistentID());
                 info.setHome(p);
                 info.save();
-                OutputHandler.chatConfirmation(sender, Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
             }
             else
                 throw new TranslatedCommandException("Unknown subcommand");

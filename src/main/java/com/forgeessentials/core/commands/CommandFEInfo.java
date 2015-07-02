@@ -9,7 +9,8 @@ import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.asm.EventInjector;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 public class CommandFEInfo extends ForgeEssentialsCommandBase
 {
@@ -45,15 +46,15 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase
     {
         if (args.length == 0)
         {
-            OutputHandler.chatNotification(sender, "/feinfo reload Reloads all configs.");
-            OutputHandler.chatNotification(sender, "/feinfo modules Prints a list of loaded FE modules");
-            OutputHandler.chatNotification(sender, "/feinfo about About ForgeEssentials");
+            ChatOutputHandler.chatNotification(sender, "/feinfo reload Reloads all configs.");
+            ChatOutputHandler.chatNotification(sender, "/feinfo modules Prints a list of loaded FE modules");
+            ChatOutputHandler.chatNotification(sender, "/feinfo about About ForgeEssentials");
         }
         else if (args[0].equalsIgnoreCase("reload"))
         {
-            OutputHandler.chatNotification(sender, "Reloading ForgeEssentials configs. May not work for all settings!");
+            ChatOutputHandler.chatNotification(sender, "Reloading ForgeEssentials configs. May not work for all settings!");
             ModuleLauncher.instance.reloadConfigs(sender);
-            OutputHandler.chatNotification(sender, "Done!");
+            ChatOutputHandler.chatNotification(sender, "Done!");
         }
         else if (args[0].equalsIgnoreCase("modules"))
         {
@@ -65,22 +66,22 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase
                 buff.append(str);
                 sep = ", ";
             }
-            OutputHandler.chatNotification(sender, "Currently loaded modules: " + buff.toString());
+            ChatOutputHandler.chatNotification(sender, "Currently loaded modules: " + buff.toString());
         }
         else if (args[0].equalsIgnoreCase("about"))
         {
-            OutputHandler.felog.info(String.format("Running ForgeEssentials %s #%d (%s)", //
+            LoggingHandler.felog.info(String.format("Running ForgeEssentials %s #%d (%s)", //
                     BuildInfo.VERSION, BuildInfo.getBuildNumber(), BuildInfo.getBuildHash()));
-            OutputHandler
+            ChatOutputHandler
                     .chatNotification(sender,
                             "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
         }
         else if (args[0].equalsIgnoreCase("debug"))
         {
-            OutputHandler.chatNotification(sender, "Injected patches:");
+            ChatOutputHandler.chatNotification(sender, "Injected patches:");
             for (String s : EventInjector.injectedPatches)
             {
-                OutputHandler.chatNotification(sender, s);
+                ChatOutputHandler.chatNotification(sender, s);
             }
         }
     }

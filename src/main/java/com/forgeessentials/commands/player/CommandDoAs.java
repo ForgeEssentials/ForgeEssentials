@@ -13,7 +13,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.DoAsConsoleCommandSender;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -31,7 +31,7 @@ public class CommandDoAs extends FEcmdModuleCommands
     {
         if (args.length == 0)
         {
-            OutputHandler.chatError(sender, getCommandUsage(sender));
+            ChatOutputHandler.chatError(sender, getCommandUsage(sender));
             return;
         }
         if ((sender instanceof EntityPlayerMP) && args[0].equals("[CONSOLE]"))
@@ -61,9 +61,9 @@ public class CommandDoAs extends FEcmdModuleCommands
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player != null)
         {
-            OutputHandler.chatWarning(player, Translator.format("Player %s is attempting to issue a command as you.", sender.getCommandSenderName()));
+            ChatOutputHandler.chatWarning(player, Translator.format("Player %s is attempting to issue a command as you.", sender.getCommandSenderName()));
             FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, cmd.toString());
-            OutputHandler.chatConfirmation(sender, Translator.format("Successfully issued command as %s", args[0]));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Successfully issued command as %s", args[0]));
         }
         else
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);

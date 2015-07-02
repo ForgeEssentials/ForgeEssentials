@@ -12,7 +12,7 @@ import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
 import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPlayerlogger extends ParserCommandBase
 {
@@ -76,7 +76,7 @@ public class CommandPlayerlogger extends ParserCommandBase
         {
             TypedQuery<Long> qActionCount = logger.buildCountQuery(Action.class, null, null);
             long actionCount = qActionCount.getSingleResult();
-            OutputHandler.chatConfirmation(sender, String.format("Logged action count: %s", actionCount));
+            ChatOutputHandler.chatConfirmation(sender, String.format("Logged action count: %s", actionCount));
         }
     }
 

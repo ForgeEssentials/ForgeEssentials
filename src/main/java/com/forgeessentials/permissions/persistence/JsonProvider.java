@@ -27,7 +27,7 @@ import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -63,7 +63,7 @@ public class JsonProvider extends ZonePersistenceProvider
         }
         catch (IOException e)
         {
-            OutputHandler.felog.error("Could not load groups data: " + e.getMessage());
+            LoggingHandler.felog.error("Could not load groups data: " + e.getMessage());
             return;
         }
         for (String group : groupsData.groups.keySet())
@@ -92,7 +92,7 @@ public class JsonProvider extends ZonePersistenceProvider
         }
         catch (IOException e)
         {
-            OutputHandler.felog.error("Could not load groups data: " + e.getMessage());
+            LoggingHandler.felog.error("Could not load groups data: " + e.getMessage());
             return;
         }
         for (String uuid : usersData.users.keySet())
@@ -123,7 +123,7 @@ public class JsonProvider extends ZonePersistenceProvider
         }
         catch (IOException e)
         {
-            OutputHandler.felog.error("Failed to get list of world files: " + e.getMessage());
+            LoggingHandler.felog.error("Failed to get list of world files: " + e.getMessage());
         }
         for (File file : files)
         {
@@ -135,7 +135,7 @@ public class JsonProvider extends ZonePersistenceProvider
             }
             catch (IOException e)
             {
-                OutputHandler.felog.error(String.format("Failed to load world file &s: &s", file.getName(), e.getMessage()));
+                LoggingHandler.felog.error(String.format("Failed to load world file &s: &s", file.getName(), e.getMessage()));
                 return;
             }
             WorldZone wz = new WorldZone(serverZone, wzd.dimId, wzd.id);
@@ -189,7 +189,7 @@ public class JsonProvider extends ZonePersistenceProvider
         }
         catch (IOException e)
         {
-            OutputHandler.felog.error("Failed to save groups.json: " + e.getMessage());
+            LoggingHandler.felog.error("Failed to save groups.json: " + e.getMessage());
         }
     }
 
@@ -208,7 +208,7 @@ public class JsonProvider extends ZonePersistenceProvider
         }
         catch (IOException e)
         {
-            OutputHandler.felog.error("Failed to save users.json: " + e.getMessage());
+            LoggingHandler.felog.error("Failed to save users.json: " + e.getMessage());
         }
     }
 
@@ -239,7 +239,7 @@ public class JsonProvider extends ZonePersistenceProvider
             }
             catch (IOException e)
             {
-                OutputHandler.felog.error(String.format("Failed to save world_%d.json: %s", wzDimId, e.getMessage()));
+                LoggingHandler.felog.error(String.format("Failed to save world_%d.json: %s", wzDimId, e.getMessage()));
             }
         }
     }

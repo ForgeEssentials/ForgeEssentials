@@ -18,7 +18,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 
 public class CommandTicket extends ForgeEssentialsCommandBase
@@ -70,7 +70,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("Usage: /ticket view <id>");
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
             Ticket t = ModuleTickets.getID(id);
-            OutputHandler.chatNotification(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
+            ChatOutputHandler.chatNotification(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
         }
 
         if (args[0].equalsIgnoreCase("list") && permcheck(sender, "view"))
@@ -81,20 +81,20 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             {
                 page = parseIntBounded(sender, args[1], 0, pages);
             }
-            OutputHandler.chatNotification(sender, c + "--- Ticket List ---");
+            ChatOutputHandler.chatNotification(sender, c + "--- Ticket List ---");
             for (int i = page * 7; i < (page + 1) * 7; i++)
             {
                 try
                 {
                     Ticket t = ModuleTickets.ticketList.get(i);
-                    OutputHandler.chatNotification(sender, "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
+                    ChatOutputHandler.chatNotification(sender, "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
                 }
                 catch (Exception e)
                 {
                     break;
                 }
             }
-            OutputHandler.chatNotification(sender, c + Translator.format("--- Page %1$d of %2$d ---", page, pages));
+            ChatOutputHandler.chatNotification(sender, c + Translator.format("--- Page %1$d of %2$d ---", page, pages));
             return;
         }
 
@@ -113,15 +113,15 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             msg = msg.substring(1);
             Ticket t = new Ticket(sender, args[1], msg);
             ModuleTickets.ticketList.add(t);
-            OutputHandler.chatNotification(sender, c + Translator.format("Your ticket with ID %d has been posted.", t.id));
+            ChatOutputHandler.chatNotification(sender, c + Translator.format("Your ticket with ID %d has been posted.", t.id));
 
             // notify any ticket-admins that are online
-            IChatComponent messageComponent = OutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getCommandSenderName()));
+            IChatComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getCommandSenderName()));
                 if (!MinecraftServer.getServer().isServerStopped())
                     for (EntityPlayerMP player : ServerUtil.getPlayerList())
                         if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
-                            OutputHandler.sendMessage(player, messageComponent);
-                OutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
+                            ChatOutputHandler.sendMessage(player, messageComponent);
+                ChatOutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
             return;
         }
 
@@ -139,7 +139,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("Usage: /ticket del <id>");
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
             ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
-            OutputHandler.chatConfirmation(sender, c + Translator.format("Your ticket has been removed. ID: %d", id));
+            ChatOutputHandler.chatConfirmation(sender, c + Translator.format("Your ticket has been removed. ID: %d", id));
         }
     }
 

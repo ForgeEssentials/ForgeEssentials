@@ -7,7 +7,7 @@ import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPing extends FEcmdModuleCommands implements ConfigurableCommand
 {
@@ -28,13 +28,13 @@ public class CommandPing extends FEcmdModuleCommands implements ConfigurableComm
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        OutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
+        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        OutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
+        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
     }
 
     @Override

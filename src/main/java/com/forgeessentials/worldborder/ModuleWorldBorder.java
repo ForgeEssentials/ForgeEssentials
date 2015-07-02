@@ -18,12 +18,12 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.OutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -117,7 +117,7 @@ public class ModuleWorldBorder extends ServerEventHandler
                 break;
             }
             default:
-                OutputHandler.felog.error("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld().provider.dimensionId);
+                LoggingHandler.felog.error("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld().provider.dimensionId);
                 borders.remove(event.after.getWorld());
                 return;
             }

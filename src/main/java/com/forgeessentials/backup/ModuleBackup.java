@@ -46,10 +46,11 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -193,7 +194,7 @@ public class ModuleBackup extends ConfigLoaderBase
             }
             catch (NumberFormatException e)
             {
-                OutputHandler.felog.error("Invalid backup override entry!");
+                LoggingHandler.felog.error("Invalid backup override entry!");
             }
         }
 
@@ -207,7 +208,7 @@ public class ModuleBackup extends ConfigLoaderBase
             }
             catch (PatternSyntaxException e)
             {
-                OutputHandler.felog.error(String.format("Invalid backup exclude pattern %s", pattern));
+                LoggingHandler.felog.error(String.format("Invalid backup exclude pattern %s", pattern));
             }
         }
 
@@ -286,7 +287,7 @@ public class ModuleBackup extends ConfigLoaderBase
         try (FileOutputStream fileStream = new FileOutputStream(backupFile); //
                 ZipOutputStream zipStream = new ZipOutputStream(fileStream);)
         {
-            OutputHandler.felog.info(String.format("Listing files for backup of world %d", world.provider.dimensionId));
+            LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.provider.dimensionId));
             for (File file : enumWorldFiles(world, world.getChunkSaveLocation(), null))
             {
                 String relativePath = baseUri.relativize(file.toURI()).getPath();
@@ -298,14 +299,14 @@ public class ModuleBackup extends ConfigLoaderBase
                 }
                 catch (IOException e)
                 {
-                    OutputHandler.felog.warn(String.format("Unable to backup file %s", relativePath));
+                    LoggingHandler.felog.warn(String.format("Unable to backup file %s", relativePath));
                 }
             }
             zipStream.closeEntry();
         }
         catch (Exception ex)
         {
-            OutputHandler.felog.error(String.format("Severe error during backup of dim %d", world.provider.dimensionId));
+            LoggingHandler.felog.error(String.format("Severe error during backup of dim %d", world.provider.dimensionId));
             ex.printStackTrace();
             if (notify)
                 notify(String.format("Error during backup of dim %d", world.provider.dimensionId));
@@ -359,12 +360,12 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         catch (MinecraftException e)
         {
-            OutputHandler.felog.error(String.format("Could not save world %d", world.provider.dimensionId));
+            LoggingHandler.felog.error(String.format("Could not save world %d", world.provider.dimensionId));
             return false;
         }
         catch (Exception e)
         {
-            OutputHandler.felog.error("Error while saving world");
+            LoggingHandler.felog.error("Error while saving world");
             return false;
         }
         finally
@@ -393,7 +394,7 @@ public class ModuleBackup extends ConfigLoaderBase
                 }
                 catch (ParseException e)
                 {
-                    OutputHandler.felog.error(String.format("Could not parse backup file %s", backupFile.getAbsolutePath()));
+                    LoggingHandler.felog.error(String.format("Could not parse backup file %s", backupFile.getAbsolutePath()));
                 }
             }
 
@@ -425,7 +426,7 @@ public class ModuleBackup extends ConfigLoaderBase
                 else if (backup.getKey().before(oldestBackup))
                 {
                     if (!backup.getValue().delete())
-                        OutputHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
+                        LoggingHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
                     it.remove();
                 }
             }
@@ -448,7 +449,7 @@ public class ModuleBackup extends ConfigLoaderBase
                     if (backup.getKey().after(nextDate))
                         break;
                     if (!backup.getValue().delete())
-                        OutputHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
+                        LoggingHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
                     it.remove();
                 }
                 oldestDailyBackup = nextDate;
@@ -472,7 +473,7 @@ public class ModuleBackup extends ConfigLoaderBase
                     if (backup.getKey().after(nextDate))
                         break;
                     if (!backup.getValue().delete())
-                        OutputHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
+                        LoggingHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
                     it.remove();
                 }
                 oldestWeeklyBackup = nextDate;
@@ -482,12 +483,12 @@ public class ModuleBackup extends ConfigLoaderBase
 
     private static void notify(String message)
     {
-        IChatComponent messageComponent = OutputHandler.notification(message);
+        IChatComponent messageComponent = ChatOutputHandler.notification(message);
         if (!MinecraftServer.getServer().isServerStopped())
             for (EntityPlayerMP player : ServerUtil.getPlayerList())
                 if (UserIdent.get(player).checkPermission(PERM_NOTIFY))
-                    OutputHandler.sendMessage(player, messageComponent);
-        OutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
+                    ChatOutputHandler.sendMessage(player, messageComponent);
+        ChatOutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
     }
 
 }

@@ -19,7 +19,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.OutputHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandSellCommand extends ForgeEssentialsCommandBase
 {
@@ -92,11 +92,11 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 
         if (foundStacks < amount)
         {
-            OutputHandler.chatError(player, Translator.format("You do not have enough %s to afford this", itemStack.getDisplayName()));
+            ChatOutputHandler.chatError(player, Translator.format("You do not have enough %s to afford this", itemStack.getDisplayName()));
             return;
         }
 
-        OutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
+        ChatOutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
                 amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(player).toString()));
 
         args = Arrays.copyOfRange(args, 4, args.length);
