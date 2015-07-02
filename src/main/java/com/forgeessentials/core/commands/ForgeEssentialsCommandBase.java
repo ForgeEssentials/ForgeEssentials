@@ -138,9 +138,13 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         Map<?, ?> commandMap = ((CommandHandler) MinecraftServer.getServer().getCommandManager()).getCommands();
         if (commandMap.containsKey(getCommandName()))
             OutputHandler.felog.error(String.format("Command %s registered twice", getCommandName()));
-        for (String alias : getCommandAliases())
-            if (alias != null &&commandMap.containsKey(alias))
-                OutputHandler.felog.error(String.format("Command alias %s of command %s registered twice", alias, getCommandName()));
+
+        if (getCommandAliases() != null && !getCommandAliases().isEmpty())
+        {
+            for (String alias : getCommandAliases())
+                if (alias != null && commandMap.containsKey(alias))
+                    OutputHandler.felog.error(String.format("Command alias %s of command %s registered twice", alias, getCommandName()));
+        }
 
         if (getPermissionNode() != null && getDefaultPermission() != null)
         {
