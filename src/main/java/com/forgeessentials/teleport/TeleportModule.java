@@ -59,23 +59,6 @@ public class TeleportModule
     @SuppressWarnings("unused")
     private RespawnHandler respawnHandler;
 
-    static
-    {
-        FECommandManager.registerCommand(new CommandBack());
-        FECommandManager.registerCommand(new CommandBed());
-        FECommandManager.registerCommand(new CommandHome());
-        FECommandManager.registerCommand(new CommandSpawn());
-        FECommandManager.registerCommand(new CommandTp());
-        FECommandManager.registerCommand(new CommandTppos());
-        FECommandManager.registerCommand(new CommandWarp());
-        FECommandManager.registerCommand(new CommandTPA());
-        FECommandManager.registerCommand(new CommandPersonalWarp());
-        FECommandManager.registerCommand(new CommandTop());
-        FECommandManager.registerCommand(new CommandPortal());
-        FECommandManager.registerCommand(new CommandSetSpawn());
-        FECommandManager.registerCommand(new CommandJump());
-    }
-
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
@@ -91,6 +74,20 @@ public class TeleportModule
     public void serverStarting(FEModuleServerInitEvent e)
     {
         portalManager.load();
+
+        FECommandManager.registerCommand(new CommandBack());
+        FECommandManager.registerCommand(new CommandBed());
+        FECommandManager.registerCommand(new CommandHome());
+        FECommandManager.registerCommand(new CommandSpawn());
+        FECommandManager.registerCommand(new CommandTp());
+        FECommandManager.registerCommand(new CommandTppos());
+        FECommandManager.registerCommand(new CommandWarp());
+        FECommandManager.registerCommand(new CommandTPA());
+        FECommandManager.registerCommand(new CommandPersonalWarp());
+        FECommandManager.registerCommand(new CommandTop());
+        FECommandManager.registerCommand(new CommandPortal());
+        FECommandManager.registerCommand(new CommandSetSpawn());
+        FECommandManager.registerCommand(new CommandJump());
 
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
