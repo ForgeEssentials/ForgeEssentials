@@ -255,6 +255,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, //
                     overworld.getWorldInfo().getWorldName(), world.dimensionId, worldSettings, //
                     overworld, mcServer.theProfiler, world);
+            // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
+            worldServer.provider.dimensionId = world.dimensionId;
             worldServer.addWorldAccess(new WorldManager(mcServer, worldServer));
             if (!mcServer.isSinglePlayer())
                 worldServer.getWorldInfo().setGameType(mcServer.getGameType());
