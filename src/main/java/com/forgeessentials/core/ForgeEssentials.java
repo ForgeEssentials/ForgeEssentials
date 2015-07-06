@@ -39,13 +39,13 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.selections.CommandDeselect;
@@ -305,8 +305,12 @@ public class ForgeEssentials extends ConfigLoaderBase
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
         APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_COOLDOWN, "0");
         APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_WARMUP, "0");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, RegisteredPermValue.TRUE, "Allow being teleported from a certain location / dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, RegisteredPermValue.TRUE,
+                "Allow being teleported from a certain location / dimension");
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, RegisteredPermValue.TRUE, "Allow being teleported to a certain location / dimension");
+
+        CommandFeSettings.addAlias("teleport_warmup", TeleportHelper.TELEPORT_WARMUP);
+        CommandFeSettings.addAlias("teleport_cooldown", TeleportHelper.TELEPORT_COOLDOWN);
     }
 
     /* ------------------------------------------------------------ */
