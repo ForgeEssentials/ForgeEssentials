@@ -5,7 +5,6 @@
     "player.MixinEntityPlayer_01",
     "network.MixinNetHandlerPlayServer_01",
     "network.MixinNetHandlerPlayServer_02",
-    "command.MixinCommandHandler_01",
-    "block.BlockPortal_01"
+    "command.MixinCommandHandler_01"
   ]
 }
