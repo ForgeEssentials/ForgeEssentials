@@ -91,17 +91,21 @@ public class CommandHandlerForge {
      */
     public static boolean canUse(ICommand command, ICommandSender sender)
     {
-        if (sender instanceof EntityPlayerMP && permMap.get(command.getCommandName()) != null)
+        if (!(sender instanceof EntityPlayerMP))
+            return true;
+        String permission = permMap.get(command.getCommandName());
+        if (permission == null)
         {
-            return PermissionsManager.checkPermission((EntityPlayerMP) sender, permMap.get(command.getCommandName()));
+            doPermissionReg(command);
+            permission = permMap.get(command.getCommandName());
         }
-        else 
-            return command.canCommandSenderUseCommand(sender);
+        return PermissionsManager.checkPermission((EntityPlayerMP) sender, permMap.get(command.getCommandName()));
+        // return command.canCommandSenderUseCommand(sender);
     }
 
     public static String getCommandPermission(String command)
     {
         return permMap.get(command);
     }
- 
+
 }
