@@ -3,7 +3,7 @@ package com.forgeessentials.remote;
 import java.io.IOException;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
@@ -29,7 +29,7 @@ public class RemoteCommandSender implements ICommandSender
         return session;
     }
 
-    public EntityPlayerMP getPlayer()
+    public EntityPlayer getPlayer()
     {
         return session.getUserIdent().getFakePlayer();
     }

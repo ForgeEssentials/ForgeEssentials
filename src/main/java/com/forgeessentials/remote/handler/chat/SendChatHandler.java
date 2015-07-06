@@ -36,7 +36,7 @@ public class SendChatHandler extends GenericRemoteHandler<String>
         if (request.data == null)
             error("Missing message");
 
-        EntityPlayerMP player = session.getUserIdent().getFakePlayer();
+        EntityPlayerMP player = (EntityPlayerMP) session.getUserIdent().getFakePlayer();
         String cmd = String.format("/msg %s ", player.getCommandSenderName());
         IChatComponent header = ModuleChat.clickChatComponent(player.getCommandSenderName(), Action.SUGGEST_COMMAND, cmd);
         ChatComponentTranslation chatComponent = new ChatComponentTranslation("chat.type.text", header, request.data);

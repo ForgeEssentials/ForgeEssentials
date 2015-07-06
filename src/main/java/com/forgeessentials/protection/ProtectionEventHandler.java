@@ -1,5 +1,10 @@
 package com.forgeessentials.protection;
 
+import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
+import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
+import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK;
+import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_AIR;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,12 +60,12 @@ import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
 import com.forgeessentials.protection.effect.PotionEffect;
 import com.forgeessentials.protection.effect.ZoneEffect;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -71,11 +76,6 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
-
-import static cpw.mods.fml.common.eventhandler.Event.Result.ALLOW;
-import static cpw.mods.fml.common.eventhandler.Event.Result.DENY;
-import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK;
-import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_AIR;
 
 public class ProtectionEventHandler extends ServerEventHandler
 {
@@ -90,11 +90,10 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-
-        if (event.target == null || !(event.entityPlayer instanceof EntityPlayerMP))
+        if (event.target == null)
             return;
 
-        EntityPlayerMP source = (EntityPlayerMP) event.entityPlayer;
+        EntityPlayer source = event.entityPlayer;
         UserIdent sourceIdent = UserIdent.get(source);
         if (event.target instanceof EntityPlayer)
         {
@@ -141,10 +140,10 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.entityLiving == null)
             return;
 
-        if (event.entityLiving instanceof EntityPlayerMP)
+        if (event.entityLiving instanceof EntityPlayer)
         {
             // living -> player (fall-damage, mob, dispenser, lava)
-            EntityPlayerMP target = (EntityPlayerMP) event.entityLiving;
+            EntityPlayer target = (EntityPlayer) event.entityLiving;
             {
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + event.source.damageType;
                 if (ModuleProtection.isDebugMode(target))
@@ -207,7 +206,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
-        UserIdent ident = event.getPlayer() instanceof EntityPlayerMP ? UserIdent.get(event.getPlayer()) : null;
+        UserIdent ident = UserIdent.get(event.getPlayer());
         Block block = event.world.getBlock(event.x, event.y, event.z);
         String permission = ModuleProtection.getBlockBreakPermission(block, event.world, event.x, event.y, event.z);
         if (ModuleProtection.isDebugMode(event.getPlayer()))
@@ -225,8 +224,8 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        
-        UserIdent ident = event.player instanceof EntityPlayerMP ? UserIdent.get(event.player) : null;
+
+        UserIdent ident = UserIdent.get(event.player);
         Block block = event.world.getBlock(event.x, event.y, event.z);
         String permission = ModuleProtection.getBlockPlacePermission(block, event.world, event.x, event.y, event.z);
         if (ModuleProtection.isDebugMode(event.player))
@@ -251,7 +250,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
-        UserIdent ident = event.player instanceof EntityPlayerMP ? UserIdent.get(event.player) : null;
+        UserIdent ident = UserIdent.get(event.player);
         for (BlockSnapshot b : event.getReplacedBlockSnapshots())
         {
             Block block = event.world.getBlock(b.x, b.y, b.z);
@@ -444,7 +443,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        UserIdent ident = event.entityPlayer instanceof EntityPlayerMP ? UserIdent.get(event.entityPlayer) : null;
+        UserIdent ident = UserIdent.get(event.entityPlayer);
         if (isItemBanned(ident, event.item.getEntityItem()))
         {
             event.setCanceled(true);
@@ -547,6 +546,8 @@ public class ProtectionEventHandler extends ServerEventHandler
     public void playerChangedZoneEvent(PlayerChangedZone event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+        if (!(event.entityPlayer instanceof EntityPlayerMP))
             return;
         EntityPlayerMP player = (EntityPlayerMP) event.entityPlayer;
         UserIdent ident = UserIdent.get(player);
@@ -732,7 +733,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static void checkPlayerInventory(EntityPlayer player)
     {
-        UserIdent ident = player instanceof EntityPlayerMP ? UserIdent.get(player) : null;
+        UserIdent ident = UserIdent.get(player);
         for (int slotIdx = 0; slotIdx < player.inventory.getSizeInventory(); slotIdx++)
         {
             ItemStack stack = player.inventory.getStackInSlot(slotIdx);

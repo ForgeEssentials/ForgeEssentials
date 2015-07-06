@@ -53,10 +53,10 @@ import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -406,7 +406,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
         WorldPoint point = null;
         if (ident != null && ident.hasPlayer())
-            point = new WorldPoint(ident.getPlayerMP());
+            point = new WorldPoint(ident.getPlayer());
 
         IChatComponent msgC1 = ChatOutputHandler.confirmation(msg1);
         IChatComponent msgC2 = ChatOutputHandler.confirmation(msg2);
@@ -912,7 +912,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         WorldPoint point = null;
         if (ident != null && ident.hasPlayer())
-            point = new WorldPoint(ident.getPlayerMP());
+            point = new WorldPoint(ident.getPlayer());
         return checkBooleanPermission(getPermission(ident, point, null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
@@ -921,7 +921,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         WorldPoint point = null;
         if (ident != null && ident.hasPlayer())
-            point = new WorldPoint(ident.getPlayerMP());
+            point = new WorldPoint(ident.getPlayer());
         return getPermission(ident, point, null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);
     }
 

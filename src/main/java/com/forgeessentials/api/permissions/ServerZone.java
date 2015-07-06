@@ -372,7 +372,7 @@ public class ServerZone extends Zone
         SortedSet<GroupEntry> result = getAdditionalPlayerGroups(ident);
         // Check groups added through zones
         if (point == null && ident != null && ident.hasPlayer())
-            point = new WorldPoint(ident.getPlayerMP());
+            point = new WorldPoint(ident.getPlayer());
         if (ident != null && point != null)
             for (Zone z : getZonesAt(point))
                 if (!(z instanceof ServerZone))
@@ -452,7 +452,7 @@ public class ServerZone extends Zone
         }
         else if (ident.hasPlayer())
         {
-            return getZonesAt(new WorldPoint(ident.getPlayerMP()));
+            return getZonesAt(new WorldPoint(ident.getPlayer()));
         }
         else
         {
@@ -488,7 +488,7 @@ public class ServerZone extends Zone
 
     public boolean isFakePlayer(UserIdent ident)
     {
-        return ident.hasPlayer() && ident.getPlayerMP() instanceof FakePlayer;
+        return ident.hasPlayer() && ident.getPlayer() instanceof FakePlayer;
     }
 
     public void registerPlayer(UserIdent ident)

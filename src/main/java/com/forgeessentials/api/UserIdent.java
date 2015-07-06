@@ -275,10 +275,10 @@ public class UserIdent
         return (EntityPlayerMP) player;
     }
 
-    public EntityPlayerMP getFakePlayer()
+    public EntityPlayer getFakePlayer()
     {
         if (player != null)
-            return (EntityPlayerMP) player;
+            return player;
         return FakePlayerFactory.get(MinecraftServer.getServer().worldServers[0], getGameProfile());
     }
 
