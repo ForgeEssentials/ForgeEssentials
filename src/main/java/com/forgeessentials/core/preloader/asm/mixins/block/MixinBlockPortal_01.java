@@ -22,8 +22,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Mixin(BlockPortal.class)
-public abstract class BlockPortal_01 extends BlockBreakable
+public abstract class MixinBlockPortal_01 extends BlockBreakable
 {
+
+    public MixinBlockPortal_01()
+    {
+        super(null, null, false);
+    }
 
     @Overwrite
     public void onEntityCollidedWithBlock(World world, int p_149670_2_, int p_149670_3_, int p_149670_4_, Entity entity)
