@@ -716,6 +716,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static boolean isItemBanned(UserIdent ident, ItemStack stack)
     {
+        if (stack == null)
+            return false;
         return !APIRegistry.perms.checkUserPermission(ident, ModuleProtection.getItemBanPermission(stack));
     }
 
@@ -728,6 +730,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static boolean isInventoryItemBanned(UserIdent ident, ItemStack stack)
     {
+        if (stack == null)
+            return false;
         return !APIRegistry.perms.checkUserPermission(ident, ModuleProtection.getItemInventoryPermission(stack));
     }
 
