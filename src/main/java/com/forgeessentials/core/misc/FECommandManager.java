@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -19,11 +20,15 @@ public class FECommandManager extends ConfigLoaderBase
         public void loadConfig(Configuration config, String category);
     }
 
-    private static Map<String, ForgeEssentialsCommandBase> commands = new HashMap<>();
+    public static final int COMMANDS_VERSION = 1;
 
-    private static Set<ForgeEssentialsCommandBase> registeredCommands = new HashSet<>();
+    protected static Map<String, ForgeEssentialsCommandBase> commands = new HashMap<>();
 
-    private static Configuration config;
+    protected static Set<ForgeEssentialsCommandBase> registeredCommands = new HashSet<>();
+
+    protected static Configuration config;
+
+    protected static boolean newMappings;
 
     public FECommandManager()
     {
@@ -34,6 +39,8 @@ public class FECommandManager extends ConfigLoaderBase
     public void load(Configuration config, boolean isReload)
     {
         FECommandManager.config = config;
+        if (config.get("CommandsConfig", "version", COMMANDS_VERSION).getInt() < COMMANDS_VERSION)
+            newMappings = true;
         for (ForgeEssentialsCommandBase command : commands.values())
             loadCommandConfig(command);
     }
@@ -43,7 +50,12 @@ public class FECommandManager extends ConfigLoaderBase
         if (config == null)
             return;
         String category = "Commands." + command.getCommandName();
-        command.setAliases(config.get(category, "aliases", command.getDefaultAliases()).getStringList());
+        Property aliasesProperty = config.get(category, "aliases", command.getDefaultAliases());
+        
+        if (newMappings)
+            aliasesProperty.set(command.getDefaultAliases());
+        command.setAliases(aliasesProperty.getStringList());
+        
         if (command instanceof ConfigurableCommand)
             ((ConfigurableCommand) command).loadConfig(config, category);
     }

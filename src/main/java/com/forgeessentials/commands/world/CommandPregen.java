@@ -27,8 +27,8 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.TickTask;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.worldborder.ModuleWorldBorder;
 import com.forgeessentials.worldborder.WorldBorder;
 
@@ -74,13 +74,13 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     @Override
     public String getCommandName()
     {
-        return "pregen";
+        return "fepregen";
     }
 
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[] { "filler" };
+        return new String[] { "pregen", "filler" };
     }
 
     @Override
