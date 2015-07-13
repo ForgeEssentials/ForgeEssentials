@@ -9,7 +9,6 @@ import net.minecraftforge.common.config.Configuration;
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.cui.CUIRenderrer;
 import com.forgeessentials.client.network.C5HandlerNoclip;
-import com.forgeessentials.client.network.C6HandlerSpeed;
 import com.forgeessentials.client.network.C7HandlerRemote;
 import com.forgeessentials.client.remote.QRRenderer;
 import com.forgeessentials.client.util.DummyProxy;
@@ -19,7 +18,6 @@ import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
 import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.Packet5Noclip;
-import com.forgeessentials.commons.network.Packet6Speed;
 import com.forgeessentials.commons.network.Packet7Remote;
 import com.forgeessentials.commons.selections.Selection;
 
@@ -66,7 +64,8 @@ public class ClientProxy extends DummyProxy
         }
 
         // Register network messages
-        NetworkUtils.registerMessageProxy(Packet0Handshake.class, 0, Side.SERVER, new NullMessageHandler<Packet0Handshake>() {
+        NetworkUtils.registerMessageProxy(Packet0Handshake.class, 0, Side.SERVER, new NullMessageHandler<Packet0Handshake>()
+        {
         });
         NetworkUtils.registerMessage(new IMessageHandler<Packet1SelectionUpdate, IMessage>() {
             @Override
@@ -77,7 +76,6 @@ public class ClientProxy extends DummyProxy
             }
         }, Packet1SelectionUpdate.class, 1, Side.CLIENT);
         NetworkUtils.registerMessage(new C5HandlerNoclip(), Packet5Noclip.class, 5, Side.CLIENT);
-        NetworkUtils.registerMessage(new C6HandlerSpeed(), Packet6Speed.class, 6, Side.CLIENT);
         NetworkUtils.registerMessage(new C7HandlerRemote(), Packet7Remote.class, 7, Side.CLIENT);
 
         if (!Loader.isModLoaded("ForgeEssentials"))

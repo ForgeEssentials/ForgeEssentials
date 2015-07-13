@@ -20,7 +20,6 @@ import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
 import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.Packet5Noclip;
-import com.forgeessentials.commons.network.Packet6Speed;
 import com.forgeessentials.commons.network.Packet7Remote;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
@@ -217,8 +216,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         NetworkUtils.registerMessageProxy(Packet1SelectionUpdate.class, 1, Side.CLIENT, new NullMessageHandler<Packet1SelectionUpdate>() {
         });
         NetworkUtils.registerMessageProxy(Packet5Noclip.class, 5, Side.CLIENT, new NullMessageHandler<Packet5Noclip>() {
-        });
-        NetworkUtils.registerMessageProxy(Packet6Speed.class, 6, Side.CLIENT, new NullMessageHandler<Packet6Speed>() {
         });
         NetworkUtils.registerMessageProxy(Packet7Remote.class, 7, Side.CLIENT, new NullMessageHandler<Packet7Remote>() {
         });

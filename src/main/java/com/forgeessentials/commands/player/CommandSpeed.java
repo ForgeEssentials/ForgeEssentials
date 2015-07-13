@@ -2,25 +2,23 @@ package com.forgeessentials.commands.player;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagFloat;
 import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet6Speed;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.PlayerInfo;
-
 public class CommandSpeed extends FEcmdModuleCommands
 {
     @Override
     public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
-        if (!PlayerInfo.get(player).getHasFEClient())
+        /*if (!PlayerInfo.get(player).getHasFEClient())
         {
             ChatOutputHandler.chatError(player, "You need the FE client addon to use this command.");
             ChatOutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");
             return;
-        }
+        }*/
 
         ChatOutputHandler.chatWarning(player, "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
         if (args.length >= 1)
@@ -30,9 +28,17 @@ public class CommandSpeed extends FEcmdModuleCommands
             if (args[0].equals("reset"))
             {
                 ChatOutputHandler.chatNotification(player, "Resetting speed to regular walking speed.");
-                NetworkUtils.netHandler.sendTo(new Packet6Speed(0.0F), player);
+                //NetworkUtils.netHandler.sendTo(new Packet6Speed(0.0F), player);
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                player.capabilities.writeCapabilitiesToNBT(tagCompound);
+                tagCompound.getCompoundTag("abilities").setTag("flySpeed", new NBTTagFloat(0.05F));
+                tagCompound.getCompoundTag("abilities").setTag("walkSpeed", new NBTTagFloat(0.1F));
+                player.capabilities.readCapabilitiesFromNBT(tagCompound);
+                player.sendPlayerAbilities();
                 return;
             }
+
+
 
             float speed = 0.05F;
 
@@ -44,7 +50,15 @@ public class CommandSpeed extends FEcmdModuleCommands
                 multiplier = 10;
             }
             speed = speed * multiplier;
-            NetworkUtils.netHandler.sendTo(new Packet6Speed(speed), player);
+            NBTTagCompound tagCompound = new NBTTagCompound();
+            player.capabilities.writeCapabilitiesToNBT(tagCompound);
+            tagCompound.getCompoundTag("abilities").setTag("flySpeed", new NBTTagFloat(speed));
+            tagCompound.getCompoundTag("abilities").setTag("walkSpeed", new NBTTagFloat(speed));
+            player.capabilities.readCapabilitiesFromNBT(tagCompound);
+            player.sendPlayerAbilities();
+
+            ChatOutputHandler.chatNotification(player, "Walk/fly speed set to " + speed);
+            //NetworkUtils.netHandler.sendTo(new Packet6Speed(speed), player);
         }
     }
 
