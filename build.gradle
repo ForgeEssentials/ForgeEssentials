@@ -28,7 +28,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.4.0-beta8"
+version = "1.4.0"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
@@ -295,7 +295,7 @@ publishing {
         mavenJava(MavenPublication) {
             groupId "com.forgeessentials"
             artifactId "forgeessentials"
-            version "1.4.0-SNAPSHOT"
+            version "1.4.0"
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
