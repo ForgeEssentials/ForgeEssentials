@@ -248,6 +248,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             speed--;
         for (int i = 0; i < speed; i++)
         {
+            int skippedChunks = 0;
             while (true)
             {
                 totalChunks++;
@@ -259,7 +260,13 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                 }
 
                 if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F))
-                    continue;
+                {
+                    skippedChunks++;
+                    if (skippedChunks > 100)
+                        break;
+                    else
+                        continue;
+                }
 
                 if (fullPregen)
                 {
