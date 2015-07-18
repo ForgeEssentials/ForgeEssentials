@@ -20,7 +20,7 @@ public class FECommandManager extends ConfigLoaderBase
         public void loadConfig(Configuration config, String category);
     }
 
-    public static final int COMMANDS_VERSION = 1;
+    public static final int COMMANDS_VERSION = 2;
 
     protected static Map<String, ForgeEssentialsCommandBase> commands = new HashMap<>();
 

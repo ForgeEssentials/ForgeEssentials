@@ -19,6 +19,12 @@ public class CommandWorldBorder extends ParserCommandBase
     {
         return "worldborder";
     }
+    
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[]{ "wb" };
+    }
 
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
