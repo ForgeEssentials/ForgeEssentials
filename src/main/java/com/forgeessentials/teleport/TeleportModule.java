@@ -1,7 +1,7 @@
 package com.forgeessentials.teleport;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
@@ -91,20 +91,20 @@ public class TeleportModule
 
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
-        APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, RegisteredPermValue.TRUE, "Allow returning to the last death location with back-command");
+        APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, PermissionLevel.TRUE, "Allow returning to the last death location with back-command");
         APIRegistry.perms
-                .registerPermission(PERM_BACK_ONTP, RegisteredPermValue.TRUE, "Allow returning to the last location before teleport with back-command");
-        APIRegistry.perms.registerPermission(PERM_BED_OTHERS, RegisteredPermValue.OP, "Allow teleporting to other player's bed location");
+                .registerPermission(PERM_BACK_ONTP, PermissionLevel.TRUE, "Allow returning to the last location before teleport with back-command");
+        APIRegistry.perms.registerPermission(PERM_BED_OTHERS, PermissionLevel.OP, "Allow teleporting to other player's bed location");
 
-        APIRegistry.perms.registerPermission(PERM_HOME, RegisteredPermValue.TRUE, "Allow usage of /home");
-        APIRegistry.perms.registerPermission(PERM_HOME_SET, RegisteredPermValue.TRUE, "Allow setting of home location");
-        APIRegistry.perms.registerPermission(PERM_HOME_OTHER, RegisteredPermValue.OP, "Allow setting other players home location");
+        APIRegistry.perms.registerPermission(PERM_HOME, PermissionLevel.TRUE, "Allow usage of /home");
+        APIRegistry.perms.registerPermission(PERM_HOME_SET, PermissionLevel.TRUE, "Allow setting of home location");
+        APIRegistry.perms.registerPermission(PERM_HOME_OTHER, PermissionLevel.OP, "Allow setting other players home location");
 
-        APIRegistry.perms.registerPermission(PERM_SPAWN_OTHERS, RegisteredPermValue.OP, "Allow setting other player's spawn");
-        APIRegistry.perms.registerPermission(PERM_TOP_OTHERS, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_TPA_SENDREQUEST, RegisteredPermValue.TRUE, "Allow sending teleport-to requests");
-        APIRegistry.perms.registerPermission(PERM_TPAHERE_SENDREQUEST, RegisteredPermValue.TRUE, "Allow sending teleport-here requests");
-        APIRegistry.perms.registerPermission(PERM_WARP_ADMIN, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_SPAWN_OTHERS, PermissionLevel.OP, "Allow setting other player's spawn");
+        APIRegistry.perms.registerPermission(PERM_TOP_OTHERS, PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(PERM_TPA_SENDREQUEST, PermissionLevel.TRUE, "Allow sending teleport-to requests");
+        APIRegistry.perms.registerPermission(PERM_TPAHERE_SENDREQUEST, PermissionLevel.TRUE, "Allow sending teleport-here requests");
+        APIRegistry.perms.registerPermission(PERM_WARP_ADMIN, PermissionLevel.OP);
     }
 
 }

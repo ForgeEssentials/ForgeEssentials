@@ -3,7 +3,7 @@ package com.forgeessentials.util.selections;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -54,9 +54,9 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
 }

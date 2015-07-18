@@ -2,7 +2,7 @@ package com.forgeessentials.afterlife;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
@@ -59,9 +59,9 @@ public class ModuleAfterlife extends ConfigLoaderBase
         APIRegistry.perms.registerPermissionDescription(PERM_HP, "Respawn HP");
         APIRegistry.perms.registerPermissionDescription(PERM_FOOD, "Respawn food");
 
-        APIRegistry.perms.registerPermission(PERM_DEATHCHEST, RegisteredPermValue.TRUE, "Allow creation of deathchests");
-        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_FENCE, RegisteredPermValue.TRUE, "Put the skull on a spike");
-        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_BYPASS, RegisteredPermValue.OP, "Bypass grave protection");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST, PermissionLevel.TRUE, "Allow creation of deathchests");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_FENCE, PermissionLevel.TRUE, "Put the skull on a spike");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_BYPASS, PermissionLevel.OP, "Bypass grave protection");
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_XP, "0.25",
                 "Ratio of XP that you want to allow someone to keep in a grave. 1 keeps all XP, 0 disables XP recovery.");
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_SAFETIME, "300",

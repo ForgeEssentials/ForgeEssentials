@@ -9,7 +9,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -21,8 +21,8 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandRemote extends ForgeEssentialsCommandBase
 {
@@ -234,9 +234,9 @@ public class CommandRemote extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
 }

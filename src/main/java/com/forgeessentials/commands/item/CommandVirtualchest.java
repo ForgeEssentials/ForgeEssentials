@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.VirtualChest;
@@ -64,9 +64,9 @@ public class CommandVirtualchest extends FEcmdModuleCommands implements Configur
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

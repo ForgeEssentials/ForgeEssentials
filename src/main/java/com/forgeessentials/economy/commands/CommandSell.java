@@ -4,7 +4,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.economy.Wallet;
@@ -35,9 +35,9 @@ public class CommandSell extends ParserCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

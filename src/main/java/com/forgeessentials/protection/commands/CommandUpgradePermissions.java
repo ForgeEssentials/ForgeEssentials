@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
@@ -51,9 +51,9 @@ public class CommandUpgradePermissions extends ParserCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

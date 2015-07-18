@@ -2,8 +2,8 @@ package com.forgeessentials.chat.command;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ModuleChat;
@@ -52,13 +52,13 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_OTHERS, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_OTHERS, PermissionLevel.OP);
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
         }
         else if (args.length == 2)
         {
-            if (!PermissionsManager.checkPermission(sender, PERM_OTHERS))
+            if (!PermissionManager.checkPermission(sender, PERM_OTHERS))
                 throw new TranslatedCommandException("You don't have permissions for that.");
 
             EntityPlayerMP player = getPlayer(sender, args[0]);

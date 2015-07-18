@@ -24,7 +24,7 @@ public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonEle
     public QueryRemoteCapabilitiesHandler()
     {
         super(null, JsonElement.class);
-        // APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE,
+        // APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE,
         // "Allows querying capabilities (allowed handlers - should ALWAYS be granted)");
     }
 

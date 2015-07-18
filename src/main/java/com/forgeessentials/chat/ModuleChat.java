@@ -25,7 +25,7 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -48,13 +48,13 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -177,8 +177,8 @@ public class ModuleChat
         FECommandManager.registerCommand(new CommandIrcBot());
 
         APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
-        APIRegistry.perms.registerPermission(PERM_CHAT, RegisteredPermValue.TRUE, "Allow players to use the public chat");
-        APIRegistry.perms.registerPermission(PERM_COLOR, RegisteredPermValue.TRUE, "Allow players to use the public chat");
+        APIRegistry.perms.registerPermission(PERM_CHAT, PermissionLevel.TRUE, "Allow players to use the public chat");
+        APIRegistry.perms.registerPermission(PERM_COLOR, PermissionLevel.TRUE, "Allow players to use the public chat");
         APIRegistry.perms.registerPermissionProperty(PERM_TEXTFORMAT, "", "Textformat colors. USE ONLY THE COLOR CHARACTERS AND NO &");
         APIRegistry.perms.registerPermissionProperty(PERM_PLAYERFORMAT, "", "Text to show in front of the player name in chat messages");
         APIRegistry.perms.registerPermissionProperty(PERM_RANGE, "", "Send chat messages only to players in this range of the sender");

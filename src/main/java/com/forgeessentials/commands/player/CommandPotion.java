@@ -6,8 +6,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -82,7 +82,7 @@ public class CommandPotion extends FEcmdModuleCommands
         {
             sender.addPotionEffect(eff);
         }
-        else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
+        else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 
@@ -148,13 +148,13 @@ public class CommandPotion extends FEcmdModuleCommands
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

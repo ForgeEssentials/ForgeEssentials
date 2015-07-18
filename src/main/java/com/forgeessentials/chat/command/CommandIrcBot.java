@@ -1,7 +1,7 @@
 package com.forgeessentials.chat.command;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -29,9 +29,9 @@ public class CommandIrcBot extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

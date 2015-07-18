@@ -7,11 +7,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -186,9 +186,9 @@ public class CommandServerSettings extends FEcmdModuleCommands
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

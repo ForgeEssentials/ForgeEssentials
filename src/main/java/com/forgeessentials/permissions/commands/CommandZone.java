@@ -8,9 +8,9 @@ import java.util.Queue;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionContext;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionContext;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,8 +23,8 @@ import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.EventCancelledException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 
 public class CommandZone extends ForgeEssentialsCommandBase
@@ -125,7 +125,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 
     private static void parseList(ICommandSender sender, WorldZone worldZone, Queue<String> args)
     {
-        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_LIST))
+        if (!PermissionManager.checkPermission(sender, PERM_LIST))
         {
             ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
@@ -189,9 +189,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
 
     private void parseDefine(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean redefine)
     {
-        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_DEFINE))
+        if (!PermissionManager.checkPermission(sender, PERM_DEFINE))
         {
-            if (!redefine || !PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_REDEFINE))
+            if (!redefine || !PermissionManager.checkPermission(sender, PERM_REDEFINE))
             {
                 ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
                 return;
@@ -261,11 +261,8 @@ public class CommandZone extends ForgeEssentialsCommandBase
         if (area == null)
             throw new TranslatedCommandException("No selection available. Please select a region first.");
 
-        PermissionContext context = new PermissionContext();
-        context.setCommandSender(sender);
-        context.setTargetLocationStart(area.getLowPoint().toVec3());
-        context.setTargetLocationEnd(area.getHighPoint().toVec3());
-        if (!PermissionsManager.checkPermission(context, PERM_DEFINE))
+        PermissionContext context = new PermissionContext(sender).setTargetStart(area.getLowPoint().toVec3()).setTargetEnd(area.getHighPoint().toVec3());
+        if (!PermissionManager.checkPermission(context, PERM_DEFINE))
         {
             throw new TranslatedCommandException("You don't have the permission to define an area.");
         }
@@ -295,7 +292,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 
     private void parseDelete(ICommandSender sender, WorldZone worldZone, Queue<String> args)
     {
-        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_DELETE))
+        if (!PermissionManager.checkPermission(sender, PERM_DELETE))
         {
             ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
@@ -335,7 +332,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 
     private void parseSelect(ICommandSender sender, WorldZone worldZone, Queue<String> args)
     {
-        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_INFO))
+        if (!PermissionManager.checkPermission(sender, PERM_INFO))
         {
             ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
@@ -382,7 +379,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
 
     private void parseInfo(ICommandSender sender, WorldZone worldZone, Queue<String> args)
     {
-        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_INFO))
+        if (!PermissionManager.checkPermission(sender, PERM_INFO))
         {
             ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
@@ -429,7 +426,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
                 tabComplete.add("clear");
             return;
         }
-        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender), PERM_SETTINGS))
+        if (!PermissionManager.checkPermission(sender, PERM_SETTINGS))
         {
             ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
             return;
@@ -509,9 +506,9 @@ public class CommandZone extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
 }

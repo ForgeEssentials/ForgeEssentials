@@ -3,7 +3,7 @@ package com.forgeessentials.core.commands;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.core.ForgeEssentials;
@@ -87,9 +87,9 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,9 +40,9 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.FALSE;
+        return PermissionLevel.FALSE;
     }
 
     @Override

@@ -2,16 +2,16 @@ package com.forgeessentials.commands.player;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandAFK extends FEcmdModuleCommands
 {
@@ -44,18 +44,18 @@ public class CommandAFK extends FEcmdModuleCommands
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_ANNOUNCE, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERM_ANNOUNCE, PermissionLevel.TRUE);
         APIRegistry.perms.registerPermissionProperty(PERM_WARMUP, "10", "Time a player needs to wait before he can go afk with /afk");
         APIRegistry.perms.registerPermissionProperty(PERM_AUTOTIME, "480", "Auto afk time in seconds. Set to 0 to disable.");
-        APIRegistry.perms.registerPermission(PERM_AUTOKICK, RegisteredPermValue.FALSE, "Automatically kick a player, when he is AFK");
+        APIRegistry.perms.registerPermission(PERM_AUTOKICK, PermissionLevel.FALSE, "Automatically kick a player, when he is AFK");
     }
 
     @Override

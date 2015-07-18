@@ -13,7 +13,7 @@ import java.util.Set;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -118,8 +118,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     public void load(FEModuleInitEvent e)
     {
         APIRegistry.remoteManager = this;
-        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Allows login to remote module");
-        APIRegistry.perms.registerPermission(PERM_CONTROL, RegisteredPermValue.OP,
+        APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Allows login to remote module");
+        APIRegistry.perms.registerPermission(PERM_CONTROL, PermissionLevel.OP,
                 "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
 
         registerRemoteHandlers();
@@ -264,7 +264,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         handlers.put(id, handler);
         String perm = handler.getPermission();
         if (perm != null && APIRegistry.perms.getServerZone().getRootZone().getGroupPermission(Zone.GROUP_DEFAULT, perm) == null)
-            APIRegistry.perms.registerPermission(perm, RegisteredPermValue.OP);
+            APIRegistry.perms.registerPermission(perm, PermissionLevel.OP);
     }
 
     /*

@@ -29,7 +29,7 @@ import net.minecraft.tileentity.TileEntityBeacon;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permission.PermissionManager;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -170,7 +170,7 @@ public abstract class MixinNetHandlerPlayServer_02
                 {
                     playerEntity.addChatMessage(new ChatComponentTranslation("advMode.notEnabled", new Object[0]));
                 }
-                else if (PermissionsManager.checkPermission(playerEntity, "mc.cmdblocks") && playerEntity.capabilities.isCreativeMode)
+                else if (PermissionManager.checkPermission(playerEntity, "mc.cmdblocks") && playerEntity.capabilities.isCreativeMode)
                 {
                     packetbuffer = new PacketBuffer(Unpooled.wrappedBuffer(p_147349_1_.func_149558_e()));
 

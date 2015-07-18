@@ -5,18 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -46,11 +46,11 @@ public class ModuleTickets
     public void serverStarting(FEModuleServerInitEvent e)
     {
         loadAll();
-        APIRegistry.perms.registerPermission(PERMBASE + ".new", RegisteredPermValue.TRUE);
-        APIRegistry.perms.registerPermission(PERMBASE + ".view", RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(PERMBASE + ".new", PermissionLevel.TRUE);
+        APIRegistry.perms.registerPermission(PERMBASE + ".view", PermissionLevel.TRUE);
 
-        APIRegistry.perms.registerPermission(PERMBASE + ".tp", RegisteredPermValue.TRUE);
-        APIRegistry.perms.registerPermission(PERMBASE + ".admin", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERMBASE + ".tp", PermissionLevel.TRUE);
+        APIRegistry.perms.registerPermission(PERMBASE + ".admin", PermissionLevel.OP);
     }
 
     @SubscribeEvent
@@ -101,7 +101,7 @@ public class ModuleTickets
     @SubscribeEvent
     public void loadData(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (PermissionsManager.checkPermission(e.player, ModuleTickets.PERMBASE + ".admin"))
+        if (PermissionManager.checkPermission(e.player, ModuleTickets.PERMBASE + ".admin"))
         {
             if (!ModuleTickets.ticketList.isEmpty())
             {

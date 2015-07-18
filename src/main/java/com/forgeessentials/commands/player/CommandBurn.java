@@ -6,8 +6,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -35,7 +35,7 @@ public class CommandBurn extends FEcmdModuleCommands
                 sender.setFire(15);
                 ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
+            else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
@@ -54,7 +54,7 @@ public class CommandBurn extends FEcmdModuleCommands
                 sender.setFire(parseInt(sender, args[1]));
                 ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".others"))
+            else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
@@ -93,7 +93,7 @@ public class CommandBurn extends FEcmdModuleCommands
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
     }
 
     @Override
@@ -116,9 +116,9 @@ public class CommandBurn extends FEcmdModuleCommands
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

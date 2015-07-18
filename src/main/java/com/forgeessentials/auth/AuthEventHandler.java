@@ -14,7 +14,7 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -223,12 +223,12 @@ public class AuthEventHandler
         maxcounter = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipslots - offset;
         if (whitelist)
         {
-            if (!PermissionsManager.checkPermission(e.player, "fe.auth.isWhiteListed"))
+            if (!PermissionManager.checkPermission(e.player, "fe.auth.isWhiteListed"))
             {
                 ((EntityPlayerMP) e.player).playerNetServerHandler.kickPlayerFromServer(notwhitelisted);
             }
         }
-        if (PermissionsManager.checkPermission(e.player, "fe.auth.isVIP"))
+        if (PermissionManager.checkPermission(e.player, "fe.auth.isVIP"))
         {
             return;
         }

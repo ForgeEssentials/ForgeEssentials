@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
@@ -293,18 +293,18 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     protected void registerPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_VERSIONINFO, RegisteredPermValue.OP, "Shows notification to the player if FE version is outdated");
+        APIRegistry.perms.registerPermission(PERM_VERSIONINFO, PermissionLevel.OP, "Shows notification to the player if FE version is outdated");
 
-        APIRegistry.perms.registerPermission("mc.help", RegisteredPermValue.TRUE, "Help command");
+        APIRegistry.perms.registerPermission("mc.help", PermissionLevel.TRUE, "Help command");
 
         // Teleport
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5", "Allow bypassing teleport cooldown");
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
         APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_COOLDOWN, "0");
         APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_WARMUP, "0");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, RegisteredPermValue.TRUE,
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, PermissionLevel.TRUE,
                 "Allow being teleported from a certain location / dimension");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, RegisteredPermValue.TRUE, "Allow being teleported to a certain location / dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, PermissionLevel.TRUE, "Allow being teleported to a certain location / dimension");
 
         CommandFeSettings.addAlias("teleport_warmup", TeleportHelper.TELEPORT_WARMUP);
         CommandFeSettings.addAlias("teleport_cooldown", TeleportHelper.TELEPORT_COOLDOWN);

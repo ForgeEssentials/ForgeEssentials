@@ -17,20 +17,17 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fe.server.CommandHandlerForge;
-import net.minecraftforge.permissions.IContext;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionContext;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -51,8 +48,8 @@ import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -87,12 +84,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     protected boolean dirty = true;
 
     /**
-     * First time that permissions have been changed. At least one minute after this time, permissions will definitely be saved.
+     * First time that permissions have been changed. At least one minute after this time, permissions will definitely
+     * be saved.
      */
     protected long firstDirtyTime = 0;
 
     /**
-     * Last time that permissions have been changed. Five seconds after no more permissions have been changed, they will be saved.
+     * Last time that permissions have been changed. Five seconds after no more permissions have been changed, they will
+     * be saved.
      */
     protected long lastDirtyTime = 0;
 
@@ -211,6 +210,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         PermissionList defaultPerms = rootZone.getGroupPermissions(Zone.GROUP_DEFAULT);
         PermissionList opPerms = rootZone.getGroupPermissions(Zone.GROUP_OPERATORS);
+        opPerms.remove(null);
+        defaultPerms.remove(null);
 
         File file = new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE);
         File fileItems = new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_ITEMS_FILE);
@@ -235,27 +236,27 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                     BufferedWriter writerItems = new BufferedWriter(new FileWriter(fileItems));
                     BufferedWriter writerBlocks = new BufferedWriter(new FileWriter(fileBlocks)))
             {
-                writer.write("#// ---------- PERMISSIONS LIST ------------ \\\\#");
+                writer.write("#// ------------ PERMISSIONS LIST ---------- \\\\#");
                 writer.newLine();
-                writer.write("#// ---------------- " + FEConfig.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
+                writer.write("#// --------------- " + FEConfig.FORMAT_DATE_TIME.format(new Date()) + " ------------ \\\\#");
                 writer.newLine();
                 writer.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
                 writer.newLine();
                 writer.write("#// ---------------------------------------- \\\\#");
                 writer.newLine();
 
-                writerItems.write("#// ---------- PERMISSIONS LIST ITEMS ------ \\\\#");
+                writerItems.write("#// --------- PERMISSIONS LIST ITEMS ------- \\\\#");
                 writerItems.newLine();
-                writerItems.write("#// ---------------- " + FEConfig.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
+                writerItems.write("#// --------------- " + FEConfig.FORMAT_DATE_TIME.format(new Date()) + " ------------ \\\\#");
                 writerItems.newLine();
                 writerItems.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
                 writerItems.newLine();
                 writerItems.write("#// ---------------------------------------- \\\\#");
                 writerItems.newLine();
 
-                writerBlocks.write("#// ---------- PERMISSIONS LIST BLOCKS ----- \\\\#");
+                writerBlocks.write("#// -------- PERMISSIONS LIST BLOCKS ------- \\\\#");
                 writerBlocks.newLine();
-                writerBlocks.write("#// ---------------- " + FEConfig.FORMAT_DATE_TIME.format(new Date()) + " ------------- \\\\#");
+                writerBlocks.write("#// --------------- " + FEConfig.FORMAT_DATE_TIME.format(new Date()) + " ------------ \\\\#");
                 writerBlocks.newLine();
                 writerBlocks.write("#// ----------- Total amount: " + permCount + " --------- \\\\#");
                 writerBlocks.newLine();
@@ -490,6 +491,16 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         permissionDebugUsers.remove(e.player);
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void serverStarted(FEModuleServerPostInitEvent e)
+    {
+        // TODO This can be removed if the Permission API gets accepted!
+        @SuppressWarnings("unchecked")
+        Map<String, ICommand> commands = MinecraftServer.getServer().getCommandManager().getCommands();
+        for (ICommand command : commands.values())
+            PermissionManager.registerCommandPermission(command);
+    }
+
     @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
@@ -522,23 +533,6 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             ChatOutputHandler.sendMessage(event.entityPlayer, ChatOutputHandler.formatColors(entryMsg));
         }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void commandEvent(CommandEvent e)
-    {
-        if (!(e.command instanceof ForgeEssentialsCommandBase) && e.sender instanceof EntityPlayer && !CommandHandlerForge.canUse(e.command, e.sender))
-        {
-            e.setCanceled(true);
-            permissionDeniedMessage(e.sender);
-        }
-    }
-
-    public static void permissionDeniedMessage(ICommandSender sender)
-    {
-        ChatComponentTranslation msg = new ChatComponentTranslation("commands.generic.permission", new Object[0]);
-        msg.getChatStyle().setColor(EnumChatFormatting.RED);
-        ChatOutputHandler.sendMessage(sender, msg);
     }
 
     @SubscribeEvent
@@ -614,13 +608,13 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     }
 
     @Override
-    public void registerPermission(String permissionNode, PermissionsManager.RegisteredPermValue permLevel)
+    public void registerPermission(String permissionNode, PermissionLevel permLevel)
     {
-        if (permLevel == RegisteredPermValue.FALSE)
+        if (permLevel == PermissionLevel.FALSE)
             rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, false);
-        else if (permLevel == RegisteredPermValue.TRUE)
+        else if (permLevel == PermissionLevel.TRUE)
             rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, true);
-        else if (permLevel == RegisteredPermValue.OP)
+        else
         {
             rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, false);
             rootZone.setGroupPermission(Zone.GROUP_OPERATORS, permissionNode, true);
@@ -634,7 +628,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     }
 
     @Override
-    public void registerPermission(String permissionNode, RegisteredPermValue level, String description)
+    public void registerPermission(String permissionNode, PermissionLevel level, String description)
     {
         registerPermission(permissionNode, level);
         registerPermissionDescription(permissionNode, description);
@@ -687,77 +681,36 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // ------------------------------------------------------------
     // -- IPermissionProvider
     // ------------------------------------------------------------
-    /**
-     * Will return the player if set or the commandSender, if it is an instance of {@link EntityPlayer}
-     */
-    protected static EntityPlayer contextGetPlayerOrCommandPlayer(IContext context)
-    {
-        return (context.getPlayer() != null) ? context.getPlayer() : (context.getCommandSender() instanceof EntityPlayer ? (EntityPlayer) context
-                .getCommandSender() : null);
-    }
-
-    protected static boolean contextIsConsole(IContext context)
-    {
-        return context.getPlayer() == null && context.getCommandSender() != null && !(context.getCommandSender() instanceof EntityPlayer)
-                && !(context.getCommandSender() instanceof CommandBlockLogic);
-    }
-
-    protected static boolean contextIsPlayer(IContext context)
-    {
-        return (context.getPlayer() != null) || (context.getCommandSender() instanceof EntityPlayer);
-    }
 
     @Override
-    public boolean checkPermission(IContext context, String permissionNode)
+    public boolean checkPermission(PermissionContext context, String permissionNode)
     {
-        if (contextIsConsole(context))
+        if (context.isConsole())
             return true;
 
-        UserIdent ident = null;
-        EntityPlayer player = contextGetPlayerOrCommandPlayer(context);
+        EntityPlayer player = context.getPlayer();
+        UserIdent ident = player == null ? null : UserIdent.get(player);
+        int dim = context.getDimension();
         WorldPoint loc = null;
         WorldArea area = null;
-        int dim = 0;
-
-        if (player != null)
-        {
-            ident = UserIdent.get(player);
-            // TODO: should be changed to context.getDimension()
-            dim = player.dimension;
-        }
 
         if (context.getTargetLocationStart() != null)
         {
             if (context.getTargetLocationEnd() != null)
-            {
                 area = new WorldArea(dim, new Point(context.getTargetLocationStart()), new Point(context.getTargetLocationEnd()));
-            }
             else
-            {
                 loc = new WorldPoint(dim, context.getTargetLocationStart());
-            }
         }
         else if (context.getSourceLocationStart() != null)
         {
             if (context.getSourceLocationEnd() != null)
-            {
                 area = new WorldArea(dim, new Point(context.getSourceLocationStart()), new Point(context.getSourceLocationEnd()));
-            }
             else
-            {
                 loc = new WorldPoint(dim, context.getSourceLocationStart());
-            }
-        }
-        else
-        {
-            if (player != null)
-            {
-                loc = new WorldPoint(player);
-            }
         }
 
         SortedSet<GroupEntry> groups = getPlayerGroups(ident);
-        if (context.getCommandSender() instanceof CommandBlockLogic)
+        if (context.getSender() instanceof CommandBlockLogic)
             groups.add(new GroupEntry(rootZone.getServerZone(), Zone.GROUP_CMDBLOCKS));
         return checkBooleanPermission(getPermission(ident, loc, area, GroupEntry.toList(groups), permissionNode, false));
     }

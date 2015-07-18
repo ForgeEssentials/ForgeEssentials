@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.launchwrapper.Launch;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
@@ -89,8 +89,8 @@ public class ModulePlayerLogger
 
     private void registerPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Player logger permisssions");
-        APIRegistry.perms.registerPermission(PERM_WAND, RegisteredPermValue.OP, "Allow usage of player loggger wand (clock)");
+        APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Player logger permisssions");
+        APIRegistry.perms.registerPermission(PERM_WAND, PermissionLevel.OP, "Allow usage of player loggger wand (clock)");
     }
 
     @SubscribeEvent

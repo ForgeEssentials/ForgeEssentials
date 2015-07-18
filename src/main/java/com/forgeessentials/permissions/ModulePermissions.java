@@ -5,8 +5,8 @@ import java.io.IOException;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.io.FileUtils;
 
@@ -62,7 +62,7 @@ public class ModulePermissions extends ConfigLoaderBase
         permissionHelper = new ZonedPermissionHelper();
         permissionScheduler = new PermissionScheduler();
         APIRegistry.perms = permissionHelper;
-        PermissionsManager.setPermProvider(permissionHelper);
+        PermissionManager.setPermissionProvider(permissionHelper);
 
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
@@ -137,7 +137,7 @@ public class ModulePermissions extends ConfigLoaderBase
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PRIORITY, "Group priority");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_INCLUDES, "Groups that are included using the included group's priority");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PARENTS, "Groups that are included using the including group's priority");
-        APIRegistry.perms.registerPermission(FEPermissions.GROUP_PROMOTION, RegisteredPermValue.FALSE, "Unlock this group for promotion with /promote");
+        APIRegistry.perms.registerPermission(FEPermissions.GROUP_PROMOTION, PermissionLevel.FALSE, "Unlock this group for promotion with /promote");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER, "Player information");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_GROUPS, "Comma separated list of player groups");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_NAME, "Player name");
@@ -147,40 +147,40 @@ public class ModulePermissions extends ConfigLoaderBase
         APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_ENTRY_MESSAGE, "Zone entry message");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_EXIT_MESSAGE, "Zone exit message");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.SPAWN_LOC, "Player spawn location property");
-        APIRegistry.perms.registerPermission(FEPermissions.SPAWN_BED, RegisteredPermValue.TRUE, "Player spawn at bed if available");
+        APIRegistry.perms.registerPermission(FEPermissions.SPAWN_BED, PermissionLevel.TRUE, "Player spawn at bed if available");
 
         APIRegistry.perms.registerPermissionDescription(CommandZone.PERM_NODE, "Permission nodes for area-management command");
-        APIRegistry.perms.registerPermission(CommandZone.PERM_ALL, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(CommandZone.PERM_LIST, RegisteredPermValue.TRUE);
-        APIRegistry.perms.registerPermission(CommandZone.PERM_INFO, RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission(CommandZone.PERM_ALL, PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(CommandZone.PERM_LIST, PermissionLevel.TRUE);
+        APIRegistry.perms.registerPermission(CommandZone.PERM_INFO, PermissionLevel.TRUE);
 
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM, RegisteredPermValue.TRUE, "Basic usage of permission-management command");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_ALL, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM, PermissionLevel.TRUE, "Basic usage of permission-management command");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_ALL, PermissionLevel.OP);
 
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER, RegisteredPermValue.OP, "Allow basic access to users (displays infos)");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_PERMS, RegisteredPermValue.OP, "Allow modifying user permissions");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_SPAWN, RegisteredPermValue.OP, "Allow setting user spawn");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_FIX, RegisteredPermValue.OP, "Allow setting user prefix / suffix");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER, PermissionLevel.OP, "Allow basic access to users (displays infos)");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_PERMS, PermissionLevel.OP, "Allow modifying user permissions");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_SPAWN, PermissionLevel.OP, "Allow setting user spawn");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_FIX, PermissionLevel.OP, "Allow setting user prefix / suffix");
 
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP, RegisteredPermValue.OP, "Allow basic access to groups (displays infos)");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_PERMS, RegisteredPermValue.OP, "Allow modifying group permissions");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_SPAWN, RegisteredPermValue.OP, "Allow setting group spawn");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_FIX, RegisteredPermValue.OP, "Allow setting group prefix / suffix");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP, PermissionLevel.OP, "Allow basic access to groups (displays infos)");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_PERMS, PermissionLevel.OP, "Allow modifying group permissions");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_SPAWN, PermissionLevel.OP, "Allow setting group spawn");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_FIX, PermissionLevel.OP, "Allow setting group prefix / suffix");
 
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_USERS, RegisteredPermValue.OP, "Allow listing users");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_GROUPS, RegisteredPermValue.OP, "Allow listing groups");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_ZONES, RegisteredPermValue.OP, "Allow listing zones");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_PERMS, RegisteredPermValue.TRUE,
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_USERS, PermissionLevel.OP, "Allow listing users");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_GROUPS, PermissionLevel.OP, "Allow listing groups");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_ZONES, PermissionLevel.OP, "Allow listing zones");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_PERMS, PermissionLevel.TRUE,
                 "Allow listing all permissions affecting current user");
 
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_TEST, RegisteredPermValue.TRUE, "Allow testing permission nodes");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_RELOAD, RegisteredPermValue.OP, "Allow reloading changed permission files");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_SAVE, RegisteredPermValue.OP, "Allow force-saving permission files");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_DEBUG, RegisteredPermValue.TRUE, "Allow using permission-debug command");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_TEST, PermissionLevel.TRUE, "Allow testing permission nodes");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_RELOAD, PermissionLevel.OP, "Allow reloading changed permission files");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_SAVE, PermissionLevel.OP, "Allow force-saving permission files");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_DEBUG, PermissionLevel.TRUE, "Allow using permission-debug command");
 
         // Other
-        APIRegistry.perms.registerPermission("fe.perm.autoPromote", RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission("fe.core.info", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission("fe.perm.autoPromote", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission("fe.core.info", PermissionLevel.OP);
     }
 
     @Override

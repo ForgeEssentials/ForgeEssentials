@@ -7,8 +7,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -16,8 +16,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.PermissionDeniedException;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -40,7 +40,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("command.auth.usage");
         }
 
-        boolean hasAdmin = PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin");
+        boolean hasAdmin = PermissionManager.checkPermission(sender, getPermissionNode() + ".admin");
 
         // one arg? must be help.
         if (args.length == 1)
@@ -356,9 +356,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
 }

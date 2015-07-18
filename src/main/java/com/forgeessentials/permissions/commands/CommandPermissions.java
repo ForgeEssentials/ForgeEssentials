@@ -1,7 +1,7 @@
 package com.forgeessentials.permissions.commands;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.util.CommandParserArgs;
@@ -40,9 +40,9 @@ public class CommandPermissions extends ParserCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

@@ -8,7 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -54,13 +54,13 @@ public class CommandReply extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return null;
+        return ModuleChat.PERM + ".reply";
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

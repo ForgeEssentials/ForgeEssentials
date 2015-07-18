@@ -5,8 +5,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
@@ -32,7 +32,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
         {
             top(sender);
         }
-        else if (args.length == 1 && PermissionsManager.checkPermission(sender, TeleportModule.PERM_TOP_OTHERS))
+        else if (args.length == 1 && PermissionManager.checkPermission(sender, TeleportModule.PERM_TOP_OTHERS))
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
@@ -100,9 +100,9 @@ public class CommandTop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

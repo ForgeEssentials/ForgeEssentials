@@ -6,8 +6,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
@@ -66,7 +66,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
             String msg = "";
             for (Kit kit : CommandDataManager.kits.values())
             {
-                if (PermissionsManager.checkPermission(sender, getPermissionNode() + "." + kit.getName()))
+                if (PermissionManager.checkPermission(sender, getPermissionNode() + "." + kit.getName()))
                 {
                     msg = kit.getName() + ", " + msg;
                 }
@@ -81,7 +81,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
         {
             if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
                 throw new TranslatedCommandException("Kit %s does not exist.", args[0]);
-            if (!PermissionsManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
+            if (!PermissionManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
                 throw new TranslatedCommandException(
                         "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
             CommandDataManager.kits.get(args[0].toLowerCase()).giveKit(sender);
@@ -91,7 +91,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
         /*
          * Make kit
          */
-        if (args.length >= 2 && args[1].equalsIgnoreCase("set") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
+        if (args.length >= 2 && args[1].equalsIgnoreCase("set") && PermissionManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
             if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
             {
@@ -121,7 +121,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
         /*
          * Delete kit
          */
-        if (args.length == 2 && args[1].equalsIgnoreCase("del") && PermissionsManager.checkPermission(sender, getPermissionNode() + ".admin"))
+        if (args.length == 2 && args[1].equalsIgnoreCase("del") && PermissionManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
             if (args.length == 2)
             {
@@ -147,8 +147,8 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_ADMIN, RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(PERM_ADMIN, PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, PermissionLevel.OP);
     }
 
     @Override
@@ -167,9 +167,9 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

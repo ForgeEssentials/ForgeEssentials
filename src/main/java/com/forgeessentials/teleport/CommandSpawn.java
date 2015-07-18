@@ -5,9 +5,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionContext;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -16,8 +15,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -35,7 +34,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     {
         if (args.length >= 1)
         {
-            if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_SPAWN_OTHERS))
+            if (!PermissionManager.checkPermission(sender, TeleportModule.PERM_SPAWN_OTHERS))
             {
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
             }
@@ -74,7 +73,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         }
 
-        if (!PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(this), TeleportModule.PERM_SPAWN_OTHERS))
+        if (!PermissionManager.checkPermission(sender, this, TeleportModule.PERM_SPAWN_OTHERS))
         {
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         }
@@ -119,9 +118,9 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

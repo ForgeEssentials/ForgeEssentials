@@ -2,8 +2,8 @@ package com.forgeessentials.teleport;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -39,9 +39,9 @@ public class CommandBack extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
     {
         PlayerInfo pi = PlayerInfo.get(sender.getPersistentID());
         WarpPoint point = null;
-        if (PermissionsManager.checkPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
+        if (PermissionManager.checkPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
             point = pi.getLastDeathLocation();
         if (point == null)
             point = pi.getLastTeleportOrigin();

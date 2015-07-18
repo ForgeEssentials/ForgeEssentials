@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,7 +51,7 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
 
     protected String permission;
 
-    protected RegisteredPermValue permissionLevel = RegisteredPermValue.TRUE;
+    protected PermissionLevel permissionLevel = PermissionLevel.TRUE;
 
     protected Map<String, List<String>> patterns = new HashMap<>();
 
@@ -166,7 +166,7 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
         return permissionLevel;
     }

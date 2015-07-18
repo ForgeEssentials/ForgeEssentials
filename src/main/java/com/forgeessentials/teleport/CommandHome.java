@@ -5,8 +5,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
@@ -14,8 +14,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandHome extends ForgeEssentialsCommandBase
 {
@@ -43,13 +43,13 @@ public class CommandHome extends ForgeEssentialsCommandBase
                 EntityPlayerMP player = sender;
                 if (args.length == 2)
                 {
-                    if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_OTHER))
+                    if (!PermissionManager.checkPermission(sender, TeleportModule.PERM_HOME_OTHER))
                         throw new TranslatedCommandException("You don't have the permission to access other players home.");
                     player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
                     if (player == null)
                         throw new TranslatedCommandException("Player %s not found.", args[1]);
                 }
-                else if (!PermissionsManager.checkPermission(sender, TeleportModule.PERM_HOME_SET))
+                else if (!PermissionManager.checkPermission(sender, TeleportModule.PERM_HOME_SET))
                     throw new TranslatedCommandException("You don't have the permission to set your home location.");
 
                 WarpPoint p = new WarpPoint(sender);
@@ -89,9 +89,9 @@ public class CommandHome extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

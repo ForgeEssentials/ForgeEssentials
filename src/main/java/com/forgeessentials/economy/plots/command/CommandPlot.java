@@ -10,7 +10,7 @@ import java.util.TreeSet;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,8 +30,8 @@ import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.EventCancelledException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
@@ -86,9 +86,9 @@ public class CommandPlot extends ParserCommandBase
     }
 
     @Override
-    public PermissionsManager.RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return PermissionsManager.RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

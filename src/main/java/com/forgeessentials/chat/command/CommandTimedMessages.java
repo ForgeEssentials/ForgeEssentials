@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -129,9 +129,9 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
 
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 }

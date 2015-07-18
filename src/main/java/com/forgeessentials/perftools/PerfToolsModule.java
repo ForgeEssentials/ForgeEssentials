@@ -1,8 +1,8 @@
 package com.forgeessentials.perftools;
 
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
@@ -38,7 +38,7 @@ public class PerfToolsModule extends ConfigLoaderBase
         if (warn)
         {
             watchdog = new MemoryWatchdog();
-            PermissionsManager.registerPermission(PERM_WARN, RegisteredPermValue.OP);
+            PermissionManager.registerPermission(PERM_WARN, PermissionLevel.OP);
             TaskRegistry.getInstance().scheduleRepeated(watchdog, checkInterval * 60 * 1000);
         }
     }

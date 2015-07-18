@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.SortedSet;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permissions.IPermissionsProvider;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.IPermissionProvider;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -16,7 +16,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
  * 
  * @author Olee
  */
-public interface IPermissionsHelper extends IPermissionsProvider
+public interface IPermissionsHelper extends IPermissionProvider
 {
 
     // ---------------------------------------------------------------------------
@@ -90,7 +90,7 @@ public interface IPermissionsHelper extends IPermissionsProvider
      * @param description
      *            Description for the permission.
      */
-    void registerPermission(String permissionNode, RegisteredPermValue level, String description);
+    void registerPermission(String permissionNode, PermissionLevel level, String description);
 
     /**
      * Registers a permission property

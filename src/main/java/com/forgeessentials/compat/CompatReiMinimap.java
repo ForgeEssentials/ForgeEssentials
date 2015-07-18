@@ -2,12 +2,12 @@ package com.forgeessentials.compat;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -30,13 +30,13 @@ public class CompatReiMinimap
     public void registerPerms(FEModuleServerInitEvent e)
     {
         APIRegistry.perms.registerPermissionDescription(PERM, "Rei's minimap permissions");
-        PermissionsManager.registerPermission(PERM_CAVEMAP, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(PERM_RADAR_ANIMAL, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(PERM_RADAR_MOD, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(PERM_RADAR_OTHER, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(PERM_RADAR_PLAYER, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(PERM_RADAR_SLIME, RegisteredPermValue.TRUE);
-        PermissionsManager.registerPermission(PERM_RADAR_OTHER, RegisteredPermValue.TRUE);
+        PermissionManager.registerPermission(PERM_CAVEMAP, PermissionLevel.TRUE);
+        PermissionManager.registerPermission(PERM_RADAR_ANIMAL, PermissionLevel.TRUE);
+        PermissionManager.registerPermission(PERM_RADAR_MOD, PermissionLevel.TRUE);
+        PermissionManager.registerPermission(PERM_RADAR_OTHER, PermissionLevel.TRUE);
+        PermissionManager.registerPermission(PERM_RADAR_PLAYER, PermissionLevel.TRUE);
+        PermissionManager.registerPermission(PERM_RADAR_SLIME, PermissionLevel.TRUE);
+        PermissionManager.registerPermission(PERM_RADAR_OTHER, PermissionLevel.TRUE);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -48,31 +48,31 @@ public class CompatReiMinimap
     public static String getPermissionCodes(EntityPlayer user)
     {
         String MOTD = "\u00a7e\u00a7f";
-        if (PermissionsManager.checkPermission(user, PERM_CAVEMAP))
+        if (PermissionManager.checkPermission(user, PERM_CAVEMAP))
         {
             MOTD = "\u00a77" + MOTD;
         }
-        if (PermissionsManager.checkPermission(user, PERM_RADAR_SQUID))
+        if (PermissionManager.checkPermission(user, PERM_RADAR_SQUID))
         {
             MOTD = "\u00a76" + MOTD;
         }
-        if (PermissionsManager.checkPermission(user, PERM_RADAR_SLIME))
+        if (PermissionManager.checkPermission(user, PERM_RADAR_SLIME))
         {
             MOTD = "\u00a75" + MOTD;
         }
-        if (PermissionsManager.checkPermission(user, PERM_RADAR_MOD))
+        if (PermissionManager.checkPermission(user, PERM_RADAR_MOD))
         {
             MOTD = "\u00a74" + MOTD;
         }
-        if (PermissionsManager.checkPermission(user, PERM_RADAR_ANIMAL))
+        if (PermissionManager.checkPermission(user, PERM_RADAR_ANIMAL))
         {
             MOTD = "\u00a73" + MOTD;
         }
-        if (PermissionsManager.checkPermission(user, PERM_RADAR_PLAYER))
+        if (PermissionManager.checkPermission(user, PERM_RADAR_PLAYER))
         {
             MOTD = "\u00a72" + MOTD;
         }
-        if (PermissionsManager.checkPermission(user, PERM_CAVEMAP))
+        if (PermissionManager.checkPermission(user, PERM_CAVEMAP))
         {
             MOTD = "\u00a71" + MOTD;
         }

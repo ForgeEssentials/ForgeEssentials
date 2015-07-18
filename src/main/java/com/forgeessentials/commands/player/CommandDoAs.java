@@ -5,8 +5,8 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
@@ -38,7 +38,7 @@ public class CommandDoAs extends FEcmdModuleCommands
         {
             EntityPlayerMP player = (EntityPlayerMP) sender;
 
-            if (PermissionsManager.checkPermission(player, "fe.commands.doas.console"))
+            if (PermissionManager.checkPermission(player, "fe.commands.doas.console"))
             {
                 if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER && args.length >= 2)
                 {
@@ -89,9 +89,9 @@ public class CommandDoAs extends FEcmdModuleCommands
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class CommandDoAs extends FEcmdModuleCommands
     @Override
     public void registerExtraPermissions()
     {
-        PermissionsManager.registerPermission("fe.commands.doas.console", RegisteredPermValue.OP);
+        PermissionManager.registerPermission("fe.commands.doas.console", PermissionLevel.OP);
     }
 
 }

@@ -2,11 +2,11 @@ package com.forgeessentials.commands.player;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.WorldUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandFly extends FEcmdModuleCommands
 {
@@ -17,9 +17,9 @@ public class CommandFly extends FEcmdModuleCommands
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

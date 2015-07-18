@@ -6,7 +6,7 @@ import java.util.Set;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -56,16 +56,16 @@ public class CommandWarp extends ParserCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_SET, RegisteredPermValue.OP, "Allow setting warps");
-        APIRegistry.perms.registerPermission(PERM_DELETE, RegisteredPermValue.OP, "Allow deleting warps");
+        APIRegistry.perms.registerPermission(PERM_SET, PermissionLevel.OP, "Allow setting warps");
+        APIRegistry.perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allow deleting warps");
         APIRegistry.perms.registerPermissionProperty(PERM_LIMIT, "10", "Maximal warp count");
         APIRegistry.perms.registerPermissionPropertyOp(PERM_LIMIT, "false");
     }

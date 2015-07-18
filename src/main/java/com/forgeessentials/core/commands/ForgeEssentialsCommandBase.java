@@ -14,10 +14,8 @@ import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fe.server.CommandHandlerForge;
-import net.minecraftforge.permissions.PermissionContext;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.permission.PermissionObject;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -25,7 +23,7 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.LoggingHandler;
 
-public abstract class ForgeEssentialsCommandBase extends CommandBase
+public abstract class ForgeEssentialsCommandBase extends CommandBase implements PermissionObject
 {
 
     public List<String> aliases = new ArrayList<String>();
@@ -146,14 +144,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
                     LoggingHandler.felog.error(String.format("Command alias %s of command %s registered twice", alias, getCommandName()));
         }
 
-        if (getPermissionNode() != null && getDefaultPermission() != null)
-        {
-            CommandHandlerForge.registerCommand(this, getPermissionNode(), getDefaultPermission());
-        }
-        else
-        {
-            ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(this);
-        }
+        ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(this);
         registerExtraPermissions();
     }
 
@@ -166,24 +157,14 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     }
 
     /**
-     * Get the permission node
-     */
-    public abstract String getPermissionNode();
-
-    /**
      * Check, if the sender has permissions to use this command
      */
     public boolean checkCommandPermission(ICommandSender sender)
     {
         if (getPermissionNode() == null || getPermissionNode().isEmpty())
             return true;
-        return PermissionsManager.checkPermission(new PermissionContext().setCommandSender(sender).setCommand(this), getPermissionNode());
+        return PermissionManager.checkPermission(sender, this, getPermissionNode());
     }
-
-    /**
-     * Get the default permission level needed to use this command
-     */
-    public abstract RegisteredPermValue getDefaultPermission();
 
     // ------------------------------------------------------------
     // Utilities

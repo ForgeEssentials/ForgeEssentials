@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -32,7 +32,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
     public QueryPlayerHandler()
     {
         super(PERM, QueryPlayerRequest.class);
-        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.OP, "Allows querying player data");
+        APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Allows querying player data");
     }
 
     @Override

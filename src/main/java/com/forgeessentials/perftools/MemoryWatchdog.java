@@ -5,7 +5,7 @@ import java.util.TimerTask;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -47,7 +47,7 @@ public class MemoryWatchdog extends TimerTask
                 for (String username : manager.getAllUsernames())
                 {
                     EntityPlayerMP player = manager.func_152612_a(username);
-                    if (PermissionsManager.checkPermission(player, PerfToolsModule.PERM_WARN))
+                    if (PermissionManager.checkPermission(player, PerfToolsModule.PERM_WARN))
                     {
                         ChatOutputHandler.chatNotification(player, "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
                     }

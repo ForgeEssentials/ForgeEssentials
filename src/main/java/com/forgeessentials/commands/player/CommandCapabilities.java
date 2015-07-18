@@ -7,8 +7,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -79,7 +79,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
         }
         else if (args.length == 2)
         {
-            if (sender instanceof EntityPlayer && !PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+            if (sender instanceof EntityPlayer && !PermissionManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 throw new TranslatedCommandException("You don't have permissions for that.");
 
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
@@ -113,7 +113,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
         }
         else if (args.length == 3)
         {
-            if (sender instanceof EntityPlayer && !PermissionsManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+            if (sender instanceof EntityPlayer && !PermissionManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 throw new TranslatedCommandException("You don't have permissions for that.");
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
@@ -158,7 +158,7 @@ public class CommandCapabilities extends FEcmdModuleCommands
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
     }
 
     @Override
@@ -189,9 +189,9 @@ public class CommandCapabilities extends FEcmdModuleCommands
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

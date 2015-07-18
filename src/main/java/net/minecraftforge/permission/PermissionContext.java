@@ -1,23 +1,25 @@
-package net.minecraftforge.permissions;
+package net.minecraftforge.permission;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Vec3;
 
 /**
- * This is the base class for a context. A permission framework <i><b>might</b></i> subclass this context, to allow additional properties for the context.
+ * Class to hold all information regarding a permission check
  */
-public class PermissionContext implements IContext {
+public class PermissionContext
+{
 
     private EntityPlayer player;
 
-    private EntityPlayer targetPlayer;
+    private ICommandSender sender;
 
     private ICommand command;
 
-    private ICommandSender commandSender;
+    private int dimension;
 
     private Vec3 sourceLocationStart;
 
@@ -31,75 +33,89 @@ public class PermissionContext implements IContext {
 
     private Entity targetEntity;
 
-    @Override
+    public PermissionContext()
+    {
+    }
+
+    public PermissionContext(ICommandSender sender)
+    {
+        this.sender = sender;
+        if (sender instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) sender;
+            this.player = player;
+            this.dimension = player.dimension;
+            this.sourceLocationStart = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
+        }
+    }
+
+    public PermissionContext(ICommandSender sender, ICommand command)
+    {
+        this(sender);
+        this.command = command;
+    }
+
+    public ICommandSender getSender()
+    {
+        return sender;
+    }
+
     public EntityPlayer getPlayer()
     {
         return player;
     }
 
-    @Override
-    public EntityPlayer getTargetPlayer()
-    {
-        return targetPlayer;
-    }
-
-    @Override
     public ICommand getCommand()
     {
         return command;
     }
 
-    @Override
-    public ICommandSender getCommandSender()
+    public int getDimension()
     {
-        return commandSender;
+        return dimension;
     }
 
-    @Override
     public Vec3 getSourceLocationStart()
     {
         return sourceLocationStart;
     }
 
-    @Override
     public Vec3 getSourceLocationEnd()
     {
         return sourceLocationEnd;
     }
 
-    @Override
     public Vec3 getTargetLocationStart()
     {
         return targetLocationStart;
     }
 
-    @Override
     public Vec3 getTargetLocationEnd()
     {
         return targetLocationEnd;
     }
 
-    @Override
     public Entity getSourceEntity()
     {
         return sourceEntity;
     }
 
-    @Override
     public Entity getTargetEntity()
     {
         return targetEntity;
     }
 
-    public PermissionContext setPlayer(EntityPlayer player)
+    public PermissionContext setSender(ICommandSender sender)
     {
-        this.player = player;
+        if (sender instanceof EntityPlayer)
+            return setPlayer((EntityPlayer) sender);
+        this.sender = sender;
         return this;
     }
 
-    public PermissionContext setTargetPlayer(EntityPlayer player)
+    public PermissionContext setPlayer(EntityPlayer player)
     {
-        this.targetPlayer = player;
+        this.sender = this.player = player;
         return this;
     }
 
@@ -109,60 +125,56 @@ public class PermissionContext implements IContext {
         return this;
     }
 
-    public PermissionContext setCommandSender(ICommandSender sender)
+    public PermissionContext setDimension(int dimension)
     {
-        this.commandSender = sender;
+        this.dimension = dimension;
         return this;
     }
 
-    public PermissionContext setSourceLocationStart(Vec3 location)
+    public PermissionContext setSourceStart(Vec3 location)
     {
         this.sourceLocationStart = location;
         return this;
     }
 
-    public PermissionContext setSourceLocationEnd(Vec3 location)
+    public PermissionContext setSourceEnd(Vec3 location)
     {
         this.sourceLocationEnd = location;
         return this;
     }
 
-    public PermissionContext setTargetLocationStart(Vec3 location)
+    public PermissionContext setTargetStart(Vec3 location)
     {
         this.targetLocationStart = location;
         return this;
     }
 
-    public PermissionContext setTargetLocationEnd(Vec3 location)
+    public PermissionContext setTargetEnd(Vec3 location)
     {
         this.targetLocationEnd = location;
         return this;
     }
 
-    public PermissionContext setSourceEntity(Entity entity)
+    public PermissionContext setSource(Entity entity)
     {
         this.sourceEntity = entity;
         return this;
     }
 
-    public PermissionContext setTargetEntity(Entity entity)
+    public PermissionContext setTarget(Entity entity)
     {
         this.targetEntity = entity;
         return this;
     }
 
-    public PermissionContext()
-    {
-    }
-
     public boolean isConsole()
     {
-        return player == null && commandSender != null && !(commandSender instanceof EntityPlayer);
+        return player == null && (sender == null || sender instanceof MinecraftServer);
     }
 
     public boolean isPlayer()
     {
-        return (player instanceof EntityPlayer) || (commandSender instanceof EntityPlayer);
+        return player instanceof EntityPlayer;
     }
 
 }

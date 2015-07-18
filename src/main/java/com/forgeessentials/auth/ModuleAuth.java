@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.auth.lists.CommandVIP;
@@ -79,10 +79,10 @@ public class ModuleAuth extends ConfigLoaderBase
 
         onStatusChange();
 
-        APIRegistry.perms.registerPermission("fe.auth.admin", RegisteredPermValue.OP);
-        APIRegistry.perms.registerPermission("fe.auth", RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission("fe.auth.admin", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission("fe.auth", PermissionLevel.TRUE);
         APIRegistry.perms.registerPermission("fe.auth.vip", null);
-        APIRegistry.perms.registerPermission("fe.auth.whitelist", RegisteredPermValue.TRUE);
+        APIRegistry.perms.registerPermission("fe.auth.whitelist", PermissionLevel.TRUE);
     }
 
     public static boolean vanillaMode()

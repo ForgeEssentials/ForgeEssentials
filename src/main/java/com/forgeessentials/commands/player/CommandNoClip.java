@@ -3,15 +3,15 @@ package com.forgeessentials.commands.player;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet5Noclip;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.WorldUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandNoClip extends FEcmdModuleCommands
 {
@@ -35,9 +35,9 @@ public class CommandNoClip extends FEcmdModuleCommands
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

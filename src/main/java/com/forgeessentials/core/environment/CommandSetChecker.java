@@ -7,7 +7,7 @@ import java.util.Set;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fe.server.CommandHandlerForge;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.HashMultimap;
@@ -46,7 +46,7 @@ public class CommandSetChecker
                         duplicates.put(cmd.getCommandName(), keep);
                         continue;
                     }
-                    CommandHandlerForge.doPermissionReg(cmd);
+                    PermissionManager.registerCommandPermission(cmd);
                 }
 
                 Set<ICommand> toRemove = new HashSet<ICommand>();

@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.commands.player.CommandNoClip;
 import com.forgeessentials.util.PlayerUtil;
@@ -75,7 +75,7 @@ public class CommandsEventHandler extends ServerEventHandler
             {
                 if (e.entityPlayer.getCurrentEquippedItem().getItem() == Items.compass)
                 {
-                    if (PermissionsManager.checkPermission(e.entityPlayer, "fe.commands.jump"))
+                    if (PermissionManager.checkPermission(e.entityPlayer, "fe.commands.jump"))
                     {
                         MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(e.entityPlayer, 500);
                         if (mop != null)

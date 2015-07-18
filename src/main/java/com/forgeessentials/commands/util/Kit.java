@@ -5,12 +5,12 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.commands.item.CommandKit;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class Kit
 {
@@ -64,7 +64,7 @@ public class Kit
 
     public void giveKit(EntityPlayer player)
     {
-        if (!PermissionsManager.checkPermission(player, CommandKit.PERM_BYPASS_COOLDOWN) && cooldown > 0)
+        if (!PermissionManager.checkPermission(player, CommandKit.PERM_BYPASS_COOLDOWN) && cooldown > 0)
         {
             PlayerInfo pi = PlayerInfo.get(player.getPersistentID());
             long timeout = pi.getRemainingTimeout("KIT_" + name);

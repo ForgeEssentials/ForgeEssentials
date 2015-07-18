@@ -2,11 +2,11 @@ package com.forgeessentials.util.selections;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandDeselect extends ForgeEssentialsCommandBase
 {
@@ -53,9 +53,9 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
 
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 }

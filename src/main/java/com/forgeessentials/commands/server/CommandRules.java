@@ -24,8 +24,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
@@ -185,7 +185,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             if (args[0].equalsIgnoreCase("help"))
             {
                 ChatOutputHandler.chatNotification(sender, " - /rules [#]");
-                if (PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
+                if (PermissionManager.checkPermission(sender, getPermissionNode() + ".edit"))
                 {
                     ChatOutputHandler.chatNotification(sender, " - /rules &lt;#> [changedRule]");
                     ChatOutputHandler.chatNotification(sender, " - /rules add &lt;newRule>");
@@ -199,7 +199,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
             return;
         }
 
-        if (!PermissionsManager.checkPermission(sender, getPermissionNode() + ".edit"))
+        if (!PermissionManager.checkPermission(sender, getPermissionNode() + ".edit"))
             throw new TranslatedCommandException(
                     "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
 
@@ -355,7 +355,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", RegisteredPermValue.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", PermissionLevel.OP);
     }
 
     @Override
@@ -390,9 +390,9 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.forgeessentials.remote.handler.chat;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -26,7 +26,7 @@ public class PushChatHandler extends GenericRemoteHandler<EnableRequest>
     public PushChatHandler()
     {
         super(PERM, EnableRequest.class);
-        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows requesting chat push messages");
+        APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE, "Allows requesting chat push messages");
         MinecraftForge.EVENT_BUS.register(this);
     }
 

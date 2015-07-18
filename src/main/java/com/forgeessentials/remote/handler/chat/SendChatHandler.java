@@ -6,7 +6,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -27,7 +27,7 @@ public class SendChatHandler extends GenericRemoteHandler<String>
     public SendChatHandler()
     {
         super(PERM, String.class);
-        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows to send chat messages");
+        APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE, "Allows to send chat messages");
     }
 
     @Override

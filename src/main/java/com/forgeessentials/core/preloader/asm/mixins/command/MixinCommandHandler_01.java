@@ -13,7 +13,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.fe.server.CommandHandlerForge;
+import net.minecraftforge.permission.PermissionManager;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -47,7 +47,7 @@ public abstract class MixinCommandHandler_01
             {
                 Entry entry = (Entry) iterator.next();
 
-                if (CommandBase.doesStringStartWith(s1, (String) entry.getKey()) && CommandHandlerForge.canUse(((ICommand) entry.getValue()), p_71558_1_))
+                if (CommandBase.doesStringStartWith(s1, (String) entry.getKey()) && PermissionManager.checkPermission(p_71558_1_, (ICommand) entry.getValue()))
                 {
                     arraylist.add(entry.getKey());
                 }
@@ -81,7 +81,7 @@ public abstract class MixinCommandHandler_01
         {
             ICommand icommand = (ICommand) iterator.next();
 
-            if (CommandHandlerForge.canUse(icommand, p_71557_1_))
+            if (PermissionManager.checkPermission(p_71557_1_, icommand))
             {
                 arraylist.add(icommand);
             }
@@ -89,4 +89,5 @@ public abstract class MixinCommandHandler_01
 
         return arraylist;
     }
+
 }

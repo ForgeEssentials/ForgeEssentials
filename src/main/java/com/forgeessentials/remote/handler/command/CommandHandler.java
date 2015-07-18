@@ -5,8 +5,8 @@ import java.util.Arrays;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fe.server.CommandHandlerForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -15,7 +15,6 @@ import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.remote.RemoteCommandSender;
 import com.forgeessentials.remote.RemoteMessageID;
 
@@ -28,7 +27,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
     public CommandHandler()
     {
         super(PERM, String.class);
-        APIRegistry.perms.registerPermission(PERM, RegisteredPermValue.TRUE, "Allows to run commands remotely");
+        APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE, "Allows to run commands remotely");
     }
 
     @Override
@@ -47,12 +46,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
 
         RemoteCommandSender sender = new RemoteCommandSender(session);
 
-        boolean canUse;
-        if (command instanceof ForgeEssentialsCommandBase)
-            canUse = ((ForgeEssentialsCommandBase) command).checkCommandPermission(sender);
-        else
-            canUse = CommandHandlerForge.canUse(command, sender);
-        if (!canUse)
+        if (!PermissionManager.checkPermission(sender, command))
             error(RemoteHandler.MSG_NO_PERMISSION);
 
         try

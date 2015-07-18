@@ -15,8 +15,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.fe.server.CommandHandlerForge;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -77,7 +77,7 @@ public class CommandGetCommandBook extends FEcmdModuleCommands
         for (Object cmdObj : MinecraftServer.getServer().getCommandManager().getCommands().values())
         {
             ICommand cmd = (ICommand) cmdObj;
-            if (!CommandHandlerForge.canUse(cmd, sender))
+            if (!PermissionManager.checkPermission(sender, cmd))
                 continue;
 
             Set<String> commands = new HashSet<>();
@@ -91,7 +91,7 @@ public class CommandGetCommandBook extends FEcmdModuleCommands
                     commands.add("/" + alias);
             }
 
-            String perm = CommandHandlerForge.getCommandPermission(cmd.getCommandName());
+            String perm = PermissionManager.getCommandPermission(cmd);
             String text = EnumChatFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
                     (perm != null ? EnumChatFormatting.DARK_RED + perm + "\n\n" : '\n') + EnumChatFormatting.BLACK + cmd.getCommandUsage(sender);
             pages.add(text);
@@ -118,9 +118,9 @@ public class CommandGetCommandBook extends FEcmdModuleCommands
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

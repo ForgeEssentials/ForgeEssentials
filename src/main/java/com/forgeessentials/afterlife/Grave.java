@@ -13,16 +13,16 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraftforge.permissions.PermissionsManager;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.WorldUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
 public class Grave
@@ -52,7 +52,7 @@ public class Grave
 
     public static Grave createGrave(EntityPlayer player, List<EntityItem> drops)
     {
-        if (!PermissionsManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST))
+        if (!PermissionManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST))
             return null;
 
         int xp = 0;
@@ -77,7 +77,7 @@ public class Grave
     {
         this.xp = xp;
         this.owner = player.getPersistentID();
-        this.hasFencePost = PermissionsManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_FENCE);
+        this.hasFencePost = PermissionManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_FENCE);
         this.lastTick = System.currentTimeMillis();
         this.protTime = ServerUtil.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_SAFETIME), 0);
         if (protTime <= 0)
@@ -123,7 +123,7 @@ public class Grave
             return true;
         if (player.getUniqueID().equals(owner))
             return true;
-        if (PermissionsManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS))
+        if (PermissionManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS))
             return true;
         return false;
     }

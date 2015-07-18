@@ -14,7 +14,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permissions.PermissionContext;
+import net.minecraftforge.permission.PermissionContext;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,7 +51,7 @@ public class CommandParserArgs
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
-        this.permissionContext = new PermissionContext().setCommandSender(sender).setCommand(command);
+        this.permissionContext = new PermissionContext(sender, command);
     }
 
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender)

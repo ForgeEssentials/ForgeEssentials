@@ -2,9 +2,8 @@ package com.forgeessentials.compat.worldedit;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fe.server.CommandHandlerForge;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.sk89q.worldedit.forge.ForgePermissionsProvider;
 
@@ -14,20 +13,13 @@ public class PermissionsHandler implements ForgePermissionsProvider
     @Override
     public boolean hasPermission(EntityPlayerMP player, String permission)
     {
-        return PermissionsManager.checkPermission(player, permission);
+        return PermissionManager.checkPermission(player, permission);
     }
 
     @Override
     public void registerPermission(ICommand command, String permission)
     {
-        if (command != null)
-        {
-            CommandHandlerForge.registerCommand(command, permission, RegisteredPermValue.OP);
-        }
-        else
-        {
-            PermissionsManager.registerPermission(permission, RegisteredPermValue.OP);
-        }
+        PermissionManager.registerPermission(permission, PermissionLevel.OP);
     }
 
 }

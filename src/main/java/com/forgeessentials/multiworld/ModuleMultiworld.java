@@ -1,8 +1,8 @@
 package com.forgeessentials.multiworld;
 
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -47,9 +47,9 @@ public class ModuleMultiworld extends ConfigLoaderBase
     {
         multiworldManager.load();
 
-        PermissionsManager.registerPermission(PERM_MANAGE, RegisteredPermValue.OP);
-        PermissionsManager.registerPermission(PERM_DELETE, RegisteredPermValue.OP);
-        PermissionsManager.registerPermission(PERM_LIST, RegisteredPermValue.TRUE);
+        PermissionManager.registerPermission(PERM_MANAGE, PermissionLevel.OP);
+        PermissionManager.registerPermission(PERM_DELETE, PermissionLevel.OP);
+        PermissionManager.registerPermission(PERM_LIST, PermissionLevel.TRUE);
     }
 
     @SubscribeEvent

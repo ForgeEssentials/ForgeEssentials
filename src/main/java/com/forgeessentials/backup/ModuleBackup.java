@@ -34,7 +34,7 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -46,10 +46,10 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -121,7 +121,7 @@ public class ModuleBackup extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        APIRegistry.perms.registerPermission(PERM_NOTIFY, RegisteredPermValue.OP, "Backup notification permission");
+        APIRegistry.perms.registerPermission(PERM_NOTIFY, PermissionLevel.OP, "Backup notification permission");
         registerBackupTask();
         cleanBackups();
     }

@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -77,9 +77,9 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.OP;
+        return PermissionLevel.OP;
     }
 
     @Override

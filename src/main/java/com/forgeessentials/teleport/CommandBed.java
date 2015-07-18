@@ -9,8 +9,8 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
@@ -38,7 +38,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        if (args.length >= 1 && PermissionsManager.checkPermission(sender, TeleportModule.PERM_BED_OTHERS))
+        if (args.length >= 1 && PermissionManager.checkPermission(sender, TeleportModule.PERM_BED_OTHERS))
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
@@ -119,9 +119,9 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public RegisteredPermValue getDefaultPermission()
+    public PermissionLevel getPermissionLevel()
     {
-        return RegisteredPermValue.TRUE;
+        return PermissionLevel.TRUE;
     }
 
     @Override

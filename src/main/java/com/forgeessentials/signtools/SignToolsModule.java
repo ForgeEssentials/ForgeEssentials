@@ -8,8 +8,8 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fe.event.world.SignEditEvent;
-import net.minecraftforge.permissions.PermissionsManager;
-import net.minecraftforge.permissions.PermissionsManager.RegisteredPermValue;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -25,6 +25,7 @@ public class SignToolsModule extends ConfigLoaderBase
 {
 
     public static final String COLOURIZE_PERM = "fe.signs.colourize";
+    
     private static boolean allowSignCommands;
 
     @SubscribeEvent
@@ -37,7 +38,7 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void registerPerms(FEModuleServerInitEvent e)
     {
-        PermissionsManager.registerPermission(COLOURIZE_PERM, RegisteredPermValue.TRUE);
+        PermissionManager.registerPermission(COLOURIZE_PERM, PermissionLevel.TRUE);
     }
 
     /**
@@ -50,7 +51,7 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
-        if (!PermissionsManager.checkPermission(e.editor, COLOURIZE_PERM))
+        if (!PermissionManager.checkPermission(e.editor, COLOURIZE_PERM))
         {
             return;
         }
