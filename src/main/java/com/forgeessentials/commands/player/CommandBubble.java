@@ -2,8 +2,11 @@ package com.forgeessentials.commands.player;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -13,8 +16,6 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CommandBubble extends FEcmdModuleCommands
 {
@@ -50,13 +51,13 @@ public class CommandBubble extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         doCmd(sender, args);
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         doCmd(sender, args);
     }
@@ -90,7 +91,7 @@ public class CommandBubble extends FEcmdModuleCommands
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

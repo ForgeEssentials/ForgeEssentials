@@ -101,6 +101,11 @@ public class WarpPoint
     {
         return zd;
     }
+    
+    public BlockPos getBlockPos()
+    {
+        return new BlockPos(getBlockX(), getBlockY(), getBlockZ());
+    }
 
     public int getBlockX()
     {
@@ -251,5 +256,6 @@ public class WarpPoint
         h = h * 31 + dim;
         return h;
     }
+
 
 }

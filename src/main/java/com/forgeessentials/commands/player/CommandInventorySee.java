@@ -2,18 +2,17 @@ package com.forgeessentials.commands.player;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.PlayerInvChest;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 /**
  * Opens other player inventory.
@@ -34,7 +33,7 @@ public class CommandInventorySee extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args[0] == null)
             throw new TranslatedCommandException("You need to specify a player!");
@@ -55,10 +54,7 @@ public class CommandInventorySee extends FEcmdModuleCommands
         player.getNextWindowId();
 
         PlayerInvChest chest = new PlayerInvChest(victim, sender);
-        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, chest.getInventoryName(), chest.getSizeInventory(), true));
-        player.openContainer = new ContainerChest(player.inventory, chest);
-        player.openContainer.windowId = player.currentWindowId;
-        player.openContainer.addCraftingToCrafters(player);
+        player.displayGUIChest(chest);
     }
 
     @Override
@@ -68,7 +64,7 @@ public class CommandInventorySee extends FEcmdModuleCommands
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

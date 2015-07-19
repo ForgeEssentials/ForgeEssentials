@@ -8,19 +8,17 @@ import java.util.WeakHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Facing;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.playerlogger.entity.ActionBlock;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
-
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class PlayerLoggerEventHandler extends ServerEventHandler
 {
@@ -58,11 +56,11 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         WorldPoint point;
         if (event.action == Action.RIGHT_CLICK_BLOCK)
             point = new WorldPoint(event.entityPlayer.dimension, //
-                    event.x + Facing.offsetsXForSide[event.face], //
-                    event.y + Facing.offsetsYForSide[event.face], //
-                    event.z + Facing.offsetsZForSide[event.face]);
+                    event.pos.getX() + event.face.getFrontOffsetX(), //
+                    event.pos.getY() + event.face.getFrontOffsetY(), //
+                    event.pos.getZ() + event.face.getFrontOffsetZ());
         else
-            point = new WorldPoint(event.entityPlayer.dimension, event.x, event.y, event.z);
+            point = new WorldPoint(event.entityPlayer.dimension, event.pos);
 
         boolean newCheck = !point.equals(info.checkPoint);
         if (newCheck)

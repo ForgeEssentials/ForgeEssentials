@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.util.IChatComponent;
 
 import com.forgeessentials.api.UserIdent;
@@ -39,7 +40,7 @@ public class CommandMessage extends IrcCommandParser
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -55,7 +56,7 @@ public class CommandMessage extends IrcCommandParser
             return;
         }
 
-        IChatComponent msg = CommandBase.func_147176_a(arguments.sender, arguments.toArray(), 0, true);
+        IChatComponent msg = CommandBase.getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, true);
         ModuleChat.tell(arguments.sender, msg, player.getPlayer());
     }
 

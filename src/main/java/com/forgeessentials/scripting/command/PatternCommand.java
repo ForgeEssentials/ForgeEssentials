@@ -91,12 +91,12 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         processCommand(sender, StringUtils.join(args, " "));
     }
 
-    public void processCommand(ICommandSender sender, String cmd)
+    public void processCommand(ICommandSender sender, String cmd) throws CommandException
     {
         if (parser == null)
         {

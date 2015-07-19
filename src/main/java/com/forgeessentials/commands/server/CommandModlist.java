@@ -1,13 +1,13 @@
 package com.forgeessentials.commands.server;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
 
 public class CommandModlist extends FEcmdModuleCommands
 {
@@ -19,13 +19,13 @@ public class CommandModlist extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         int size = Loader.instance().getModList().size();
         int perPage = 7;
         int pages = (int) Math.ceil(size / (float) perPage);
 
-        int page = args.length == 0 ? 0 : parseIntBounded(sender, args[0], 1, pages) - 1;
+        int page = args.length == 0 ? 0 : parseInt(args[0], 1, pages) - 1;
         int min = Math.min(page * perPage, size);
 
         ChatOutputHandler.chatNotification(sender, String.format("--- Showing modlist page %1$d of %2$d ---", page + 1, pages));

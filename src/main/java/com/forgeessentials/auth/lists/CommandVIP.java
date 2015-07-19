@@ -1,5 +1,6 @@
 package com.forgeessentials.auth.lists;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -17,7 +18,7 @@ public class CommandVIP extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length >= 2 && args[0].equalsIgnoreCase("add"))
         {

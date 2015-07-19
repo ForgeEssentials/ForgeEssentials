@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.world.ChunkPosition;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.event.world.ExplosionEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
@@ -21,14 +21,14 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
     public LogEventExplosion(ExplosionEvent.Detonate event)
     {
         super(event);
-        for (ChunkPosition blockPos : event.getAffectedBlocks())
-            blocks.add(new CachedBlockData(event.world, blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ));
+        for (BlockPos blockPos : event.getAffectedBlocks())
+            blocks.add(new CachedBlockData(event.world, blockPos));
     }
 
     @Override
     public void process(EntityManager em)
     {
-        WorldData worldData = getWorld(event.world.provider.dimensionId);
+        WorldData worldData = getWorld(event.world.provider.getDimensionId());
         for (CachedBlockData blockData : blocks)
         {
             ActionBlock action = new ActionBlock();
@@ -38,9 +38,9 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
             action.metadata = blockData.metadata;
             action.entity = getTileEntityBlob(blockData.tileEntity);
             action.type = ActionBlockType.DETONATE;
-            action.x = blockData.x;
-            action.y = blockData.y;
-            action.z = blockData.z;
+            action.x = blockData.pos.getX();
+            action.y = blockData.pos.getY();
+            action.z = blockData.pos.getZ();
             em.persist(action);
         }
     }

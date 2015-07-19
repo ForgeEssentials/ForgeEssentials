@@ -1,5 +1,6 @@
 package com.forgeessentials.teleport;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
@@ -59,7 +60,7 @@ public class CommandTPA extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -76,10 +77,10 @@ public class CommandTPA extends ParserCommandBase
             try
             {
                 arguments.confirm(Translator.format("Waiting for response by %s", player.getUsernameOrUuid()));
-                Questioner.add(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getCommandSenderName()),
+                Questioner.add(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getName()),
                         new QuestionerCallback() {
                             @Override
-                            public void respond(Boolean response)
+                            public void respond(Boolean response) throws CommandException
                             {
                                 if (response == null)
                                     arguments.error("TPA request timed out");
@@ -105,7 +106,7 @@ public class CommandTPA extends ParserCommandBase
         {
             arguments.checkPermission(PERM_HERE);
             point = new WarpPoint(arguments.senderPlayer);
-            locationName = arguments.sender.getCommandSenderName();
+            locationName = arguments.sender.getName();
             arguments.remove();
         }
         else
@@ -123,7 +124,7 @@ public class CommandTPA extends ParserCommandBase
         {
             Questioner.add(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
                 @Override
-                public void respond(Boolean response)
+                public void respond(Boolean response) throws CommandException
                 {
                     if (response == null)
                         arguments.error("TPA request timed out");

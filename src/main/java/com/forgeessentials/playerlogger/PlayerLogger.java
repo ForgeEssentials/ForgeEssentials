@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NonUniqueResultException;
@@ -39,6 +40,12 @@ import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -54,18 +61,11 @@ import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
 import com.forgeessentials.playerlogger.event.LogEventInteract;
 import com.forgeessentials.playerlogger.event.LogEventPlace;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Charsets;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class PlayerLogger extends ServerEventHandler implements Runnable
 {
@@ -328,7 +328,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         Long id = blockTypeCache.get(block);
         if (id != null)
             return em.getReference(BlockData.class, id);
-        BlockData data = getBlock(GameData.getBlockRegistry().getNameForObject(block));
+        BlockData data = getBlock(ServerUtil.getBlockName(block));
         blockTypeCache.put(block, data.id);
         return data;
     }
@@ -399,12 +399,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void worldLoad(WorldEvent.Load e)
     {
-        WorldData world = em.find(WorldData.class, e.world.provider.dimensionId);
+        WorldData world = em.find(WorldData.class, e.world.provider.getDimensionId());
         if (world == null)
         {
             em.getTransaction().begin();
             world = new WorldData();
-            world.id = e.world.provider.dimensionId;
+            world.id = e.world.provider.getDimensionId();
             world.name = e.world.provider.getDimensionName();
             em.persist(world);
             em.getTransaction().commit();

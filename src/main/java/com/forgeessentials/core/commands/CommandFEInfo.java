@@ -2,7 +2,9 @@ package com.forgeessentials.core.commands;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commons.BuildInfo;
@@ -42,7 +44,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -93,16 +95,13 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
             return getListOfStringsMatchingLastWord(args, options);
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
 }

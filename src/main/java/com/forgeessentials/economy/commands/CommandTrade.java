@@ -1,5 +1,6 @@
 package com.forgeessentials.economy.commands;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -53,7 +54,7 @@ public class CommandTrade extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws net.minecraft.command.CommandException
     {
         if (arguments.isEmpty())
         {
@@ -95,7 +96,7 @@ public class CommandTrade extends ParserCommandBase
 
         QuestionerCallback sellerHandler = new QuestionerCallback() {
             @Override
-            public void respond(Boolean response)
+            public void respond(Boolean response) throws CommandException
             {
                 if (response == null)
                 {
@@ -161,11 +162,11 @@ public class CommandTrade extends ParserCommandBase
                     String message;
                     if (itemStack.stackSize == 1)
                         message = Translator.format("Buy one %s for %s from %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price),
-                                arguments.sender.getCommandSenderName());
+                                arguments.sender.getName());
                     else
                         message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?", itemStack.stackSize, itemStack.getDisplayName(),
                                 APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize),
-                                arguments.sender.getCommandSenderName());
+                                arguments.sender.getName());
                     Questioner.add(buyer.getPlayerMP(), message, buyerHandler, 60);
                     arguments.confirm(Translator.format("Waiting on %s...", buyer.getUsernameOrUuid()));
                 }
@@ -191,4 +192,5 @@ public class CommandTrade extends ParserCommandBase
             throw new QuestionerStillActiveException.CommandException();
         }
     }
+    
 }

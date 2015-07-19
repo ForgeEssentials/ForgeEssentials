@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
@@ -142,7 +144,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -195,7 +197,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
                 return;
             }
 
-            ChatOutputHandler.chatNotification(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            ChatOutputHandler.chatNotification(sender, rules.get(parseInt(args[0], 1, rules.size()) - 1));
             return;
         }
 
@@ -207,7 +209,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
 
         if (args[0].equalsIgnoreCase("remove"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             rules.remove(index - 1);
             ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
@@ -225,12 +227,11 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
         }
         else if (args[0].equalsIgnoreCase("move"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             String temp = rules.remove(index - 1);
 
-            index = parseIntWithMin(sender, args[2], 1);
-
+            index = parseInt(args[2], 1, Integer.MAX_VALUE);
             if (index < rules.size())
             {
                 rules.add(index - 1, temp);
@@ -244,7 +245,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
         }
         else if (args[0].equalsIgnoreCase("change"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             String newRule = "";
             for (int i = 2; i < args.length; i++)
@@ -261,7 +262,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -283,7 +284,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
 
             }
 
-            ChatOutputHandler.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            ChatOutputHandler.sendMessage(sender, rules.get(parseInt(args[0], 1, rules.size()) - 1));
             return;
         }
 
@@ -291,7 +292,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
 
         if (args[0].equalsIgnoreCase("remove"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             rules.remove(index - 1);
             ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
@@ -309,12 +310,11 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
         }
         else if (args[0].equalsIgnoreCase("move"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             String temp = rules.remove(index - 1);
 
-            index = parseIntWithMin(sender, args[2], 1);
-
+            index = parseInt(args[2], 1, Integer.MAX_VALUE);
             if (index < rules.size())
             {
                 rules.add(index - 1, temp);
@@ -328,7 +328,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
         }
         else if (args[0].equalsIgnoreCase("change"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             String newRule = "";
             for (int i = 2; i < args.length; i++)
@@ -359,7 +359,7 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

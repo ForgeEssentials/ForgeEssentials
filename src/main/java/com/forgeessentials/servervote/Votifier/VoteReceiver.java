@@ -29,19 +29,19 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLLog;
 
 import com.forgeessentials.servervote.ConfigServerVote;
 import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * Like 90% copied from Votifier github: https://github.com/vexsoftware/votifier I only changed the init code and the
@@ -183,7 +183,7 @@ public class VoteReceiver extends Thread
 
                 ModuleServerVote.log(vote);
 
-                EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(vote.player);
+                EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(vote.player);
                 if (player == null)
                 {
                     if (!ConfigServerVote.allowOfflineVotes)

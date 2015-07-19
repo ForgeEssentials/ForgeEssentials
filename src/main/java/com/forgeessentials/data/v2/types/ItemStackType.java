@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.data.v2.DataManager.DataType;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -14,8 +15,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
-
-import net.minecraftforge.fml.common.registry.GameData;
 
 public class ItemStackType implements DataType<ItemStack>
 {
@@ -43,7 +42,7 @@ public class ItemStackType implements DataType<ItemStack>
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context)
     {
         JsonObject result = new JsonObject();
-        result.add(ITEM_ID, new JsonPrimitive(GameData.getItemRegistry().getNameForObject(src.getItem())));
+        result.add(ITEM_ID, new JsonPrimitive(GameData.getItemRegistry().getNameForObject(src.getItem()).toString()));
         result.add(STACK_SIZE, new JsonPrimitive(src.stackSize));
         result.add(DAMAGE, new JsonPrimitive(src.getItemDamage()));
         if (src.getTagCompound() != null)

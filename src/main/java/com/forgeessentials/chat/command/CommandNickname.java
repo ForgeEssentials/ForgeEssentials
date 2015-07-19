@@ -1,11 +1,13 @@
 package com.forgeessentials.chat.command;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -62,7 +64,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -80,7 +82,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
         else if (args.length == 2)
         {
             if (!PermissionManager.checkPermission(sender, PERM_OTHERS))
-                throw new TranslatedCommandException("You don't have permissions for that.");
+                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
             EntityPlayerMP player = getPlayer(sender, args[0]);
             if (args[1].equalsIgnoreCase("del"))
@@ -101,7 +103,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 2)
         {

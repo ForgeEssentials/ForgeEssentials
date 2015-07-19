@@ -11,7 +11,7 @@ public class CommandEffect extends ZoneEffect
     public CommandEffect(EntityPlayerMP player, int interval, String command)
     {
         super(player, interval, false);
-        command = command.replaceAll("%p", player.getCommandSenderName());
+        command = command.replaceAll("%p", player.getName());
         command = command.replaceAll("%u", player.getPersistentID().toString());
         command = command.replaceAll("%x", Integer.toString((int) Math.floor(player.posX)));
         command = command.replaceAll("%y", Integer.toString((int) Math.floor(player.posY)));

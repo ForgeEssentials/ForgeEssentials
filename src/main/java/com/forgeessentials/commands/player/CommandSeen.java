@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -44,14 +45,14 @@ public class CommandSeen extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         CommandParserArgs arguments = new CommandParserArgs(this, args, sender);
         parse(arguments);
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
         try
@@ -65,7 +66,7 @@ public class CommandSeen extends FEcmdModuleCommands
         return arguments.tabCompletion;
     }
 
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
@@ -83,7 +84,8 @@ public class CommandSeen extends FEcmdModuleCommands
 
         PlayerInfo pi = PlayerInfo.get(player.getUuid());
         long t = (System.currentTimeMillis() - pi.getLastLogout().getTime()) / 1000;
-        arguments.confirm(Translator.format("Player %s was last seen %s ago", player.getUsernameOrUuid(), ChatOutputHandler.formatTimeDurationReadable(t, false)));
+        arguments.confirm(Translator.format("Player %s was last seen %s ago", player.getUsernameOrUuid(),
+                ChatOutputHandler.formatTimeDurationReadable(t, false)));
         PlayerInfo.discard(pi.ident.getUuid());
     }
 

@@ -1,7 +1,5 @@
 package com.forgeessentials.remote.command;
 
-import java.util.List;
-
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
@@ -17,6 +15,7 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet7Remote;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
@@ -24,7 +23,7 @@ import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandRemote extends ForgeEssentialsCommandBase
+public class CommandRemote extends ParserCommandBase
 {
 
     @Override
@@ -35,17 +34,12 @@ public class CommandRemote extends ForgeEssentialsCommandBase
 
     private static final String[] parseMainArgs = { "regen", "setkey", "kick", "start", "stop", "block", "qr" };
 
-    @Override
-    public void processCommand(ICommandSender sender, String[] vargs)
-    {
-        CommandParserArgs args = new CommandParserArgs(this, vargs, sender);
-        parse(args);
-    }
-
     /**
      * @param args
+     * @throws CommandException 
      */
-    public void parse(CommandParserArgs args)
+    @Override
+    public void parse(CommandParserArgs args) throws CommandException
     {
         if (args.isTabCompletion && args.size() == 1)
         {
@@ -198,21 +192,6 @@ public class CommandRemote extends ForgeEssentialsCommandBase
 
         ChatOutputHandler.sendMessage(args.sender, msg);
         ChatOutputHandler.sendMessage(args.sender, new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] vargs)
-    {
-        try
-        {
-            CommandParserArgs args = new CommandParserArgs(this, vargs, sender, true);
-            parse(args);
-            return args.tabCompletion;
-        }
-        catch (CommandException e)
-        {
-            return null;
-        }
     }
 
     @Override

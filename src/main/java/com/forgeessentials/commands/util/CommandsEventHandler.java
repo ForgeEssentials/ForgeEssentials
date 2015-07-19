@@ -6,11 +6,15 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.commands.player.CommandNoClip;
@@ -18,10 +22,6 @@ import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class CommandsEventHandler extends ServerEventHandler
 {
@@ -80,13 +80,15 @@ public class CommandsEventHandler extends ServerEventHandler
                         MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(e.entityPlayer, 500);
                         if (mop != null)
                         {
-                            int x = mop.blockX;
-                            int y = mop.blockY;
-                            int z = mop.blockZ;
-                            while (y < e.entityPlayer.worldObj.getHeight() + 2
-                                    && (!e.entityPlayer.worldObj.isAirBlock(x, y, z) || !e.entityPlayer.worldObj.isAirBlock(x, y + 1, z)))
-                                y++;
-                            ((EntityPlayerMP) e.entityPlayer).setPositionAndUpdate(x + 0.5, y, z + 0.5);
+                            BlockPos pos1 = mop.func_178782_a();
+                            BlockPos pos2 = new BlockPos(pos1.getX(), pos1.getY() + 1, pos1.getZ());
+                            while (pos1.getY() < e.entityPlayer.worldObj.getHeight() + 2
+                                    && (!e.entityPlayer.worldObj.isAirBlock(pos1) || !e.entityPlayer.worldObj.isAirBlock(pos2)))
+                            {
+                                pos1 = pos2;
+                                pos2 = new BlockPos(pos1.getX(), pos1.getY() + 1, pos1.getZ());
+                            }
+                            ((EntityPlayerMP) e.entityPlayer).setPositionAndUpdate(pos1.getX() + 0.5, pos1.getY(), pos1.getZ() + 0.5);
                         }
                     }
                 }
@@ -124,15 +126,15 @@ public class CommandsEventHandler extends ServerEventHandler
         /*
          * Time settings
          */
-        if (!CommandDataManager.WTmap.containsKey(e.world.provider.dimensionId))
+        if (!CommandDataManager.WTmap.containsKey(e.world.provider.getDimensionId()))
         {
-            WeatherTimeData wt = new WeatherTimeData(e.world.provider.dimensionId);
+            WeatherTimeData wt = new WeatherTimeData(e.world.provider.getDimensionId());
             wt.freezeTime = e.world.getWorldTime();
-            CommandDataManager.WTmap.put(e.world.provider.dimensionId, wt);
+            CommandDataManager.WTmap.put(e.world.provider.getDimensionId(), wt);
         }
         else
         {
-            WeatherTimeData wt = CommandDataManager.WTmap.get(e.world.provider.dimensionId);
+            WeatherTimeData wt = CommandDataManager.WTmap.get(e.world.provider.getDimensionId());
             /*
              * Weather part
              */

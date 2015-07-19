@@ -74,7 +74,7 @@ public class NamedWorldArea extends WorldArea
                 WorldServer world = APIRegistry.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
-                    this.dim = world.provider.dimensionId;
+                    this.dim = world.provider.getDimensionId();
                     isLinked = true;
                     isValid = true;
                 }

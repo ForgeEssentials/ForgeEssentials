@@ -157,7 +157,7 @@ public class ServerZone extends Zone
 
     public WorldZone getWorldZone(World world)
     {
-        return getWorldZone(world.provider.dimensionId);
+        return getWorldZone(world.provider.getDimensionId());
     }
 
     // ------------------------------------------------------------
@@ -314,7 +314,7 @@ public class ServerZone extends Zone
         SortedSet<GroupEntry> result = getStoredPlayerGroupEntries(ident);
         if (ident != null)
         {
-            if (MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getFakePlayer().getGameProfile()))
+            if (MinecraftServer.getServer().getConfigurationManager().canSendCommands(ident.getFakePlayer().getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }

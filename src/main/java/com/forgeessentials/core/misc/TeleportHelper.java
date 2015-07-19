@@ -6,23 +6,24 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
-
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class TeleportHelper extends ServerEventHandler
 {
@@ -36,7 +37,7 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         @Override
-        public boolean placeInExistingPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
+        public boolean func_180620_b(Entity entity, float yaw)
         {
             return false;
         }
@@ -48,9 +49,8 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         @Override
-        public void placeInPortal(Entity entity, double x, double y, double z, float rotationYaw)
+        public void func_180266_a(Entity entity, float yaw)
         {
-            /* do nothing */
         }
 
     }
@@ -103,7 +103,7 @@ public class TeleportHelper extends ServerEventHandler
 
     private static Map<UUID, TeleportInfo> tpInfos = new HashMap<>();
 
-    public static void teleport(EntityPlayerMP player, WarpPoint point)
+    public static void teleport(EntityPlayerMP player, WarpPoint point) throws CommandException
     {
         if (point.getWorld() == null)
         {
@@ -161,8 +161,8 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (point.getY() < 0)
             return false;
-        Block block1 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ());
-        Block block2 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
+        Block block1 = point.getWorld().getBlockState(point.getBlockPos()).getBlock();
+        Block block2 = point.getWorld().getBlockState(new BlockPos(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ())).getBlock();
         boolean block1Free = !block1.getMaterial().isSolid() || block1.getBlockBoundsMaxX() < 1 || block1.getBlockBoundsMaxY() > 0;
         boolean block2Free = !block2.getMaterial().isSolid() || block2.getBlockBoundsMaxX() < 1 || block2.getBlockBoundsMaxY() > 0;
         return block1Free && block2Free;

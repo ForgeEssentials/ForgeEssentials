@@ -1,5 +1,6 @@
 package com.forgeessentials.chat.command;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
@@ -14,7 +15,7 @@ public class CommandMessageReplacement extends CommandMessage
 {
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 2)
         {
@@ -34,7 +35,7 @@ public class CommandMessageReplacement extends CommandMessage
             }
             else
             {
-                IChatComponent message = func_147176_a(sender, args, 1, !(sender instanceof EntityPlayer));
+                IChatComponent message = getChatComponentFromNthArg(sender, args, 1, !(sender instanceof EntityPlayer));
                 ModuleChat.tell(sender, message, target);
             }
         }

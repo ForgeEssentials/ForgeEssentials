@@ -1,5 +1,6 @@
 package com.forgeessentials.economy.commands;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -48,7 +49,7 @@ public class CommandPay extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Player needed");
@@ -74,7 +75,7 @@ public class CommandPay extends ParserCommandBase
         Wallet receiver = APIRegistry.economy.getWallet(player);
         receiver.add(amount);
         ChatOutputHandler.chatConfirmation(player.getPlayerMP(), Translator.format("You were paid %s from %s. You now have %s", //
-                APIRegistry.economy.toString(amount), arguments.sender.getCommandSenderName(), receiver.toString()));
+                APIRegistry.economy.toString(amount), arguments.sender.getName(), receiver.toString()));
     }
 
 }

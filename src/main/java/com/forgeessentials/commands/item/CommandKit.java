@@ -3,9 +3,12 @@ package com.forgeessentials.commands.item;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -23,8 +26,6 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
-
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
@@ -55,7 +56,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(final EntityPlayerMP sender, final String[] args) throws CommandException
     {
         /*
          * Print kits
@@ -93,13 +94,10 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
          */
         if (args.length >= 2 && args[1].equalsIgnoreCase("set") && PermissionManager.checkPermission(sender, getPermissionNode() + ".admin"))
         {
+            final int cooldown = (args.length == 3) ? parseInt(args[2], -1, Integer.MAX_VALUE) : -1;
+
             if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
             {
-                int cooldown = -1;
-                if (args.length == 3)
-                {
-                    cooldown = parseIntWithMin(sender, args[2], -1);
-                }
                 new Kit(sender, args[0].toLowerCase(), cooldown);
                 ChatOutputHandler.chatConfirmation(sender,
                         Translator.format("Kit created successfully. %s cooldown.", ChatOutputHandler.formatTimeDurationReadable(cooldown, true)));
@@ -108,7 +106,21 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
             {
                 try
                 {
-                    Questioner.add(sender, Translator.format("Kit %s already exists. overwrite?", args[0].toLowerCase()), new HandleKitOverrides(sender, args));
+                    QuestionerCallback callback = new QuestionerCallback() {
+                        @Override
+                        public void respond(Boolean response)
+                        {
+                            if (response != null && response == true)
+                            {
+                                new Kit(sender, args[0].toLowerCase(), cooldown);
+                                ChatOutputHandler.chatConfirmation(
+                                        sender,
+                                        Translator.format("Kit created successfully. %s cooldown.",
+                                                ChatOutputHandler.formatTimeDurationReadable(cooldown, true)));
+                            }
+                        }
+                    };
+                    Questioner.add(sender, Translator.format("Kit %s already exists. overwrite?", args[0].toLowerCase()), callback);
                 }
                 catch (QuestionerStillActiveException e)
                 {
@@ -152,7 +164,7 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 0)
         {
@@ -200,37 +212,6 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
         {
             kit.giveKit(e.entityPlayer);
         }
-    }
-
-    static class HandleKitOverrides implements QuestionerCallback
-    {
-
-        private String[] args;
-
-        private EntityPlayerMP sender;
-
-        private HandleKitOverrides(EntityPlayerMP sender, String[] args)
-        {
-            this.args = args;
-            this.sender = sender;
-        }
-
-        @Override
-        public void respond(Boolean response)
-        {
-            if (response != null && response == true)
-            {
-                int cooldown = -1;
-                if (args.length == 3)
-                {
-                    cooldown = parseIntWithMin(sender, args[2], -1);
-                }
-                new Kit(sender, args[0].toLowerCase(), cooldown);
-                ChatOutputHandler.chatConfirmation(sender,
-                        Translator.format("Kit created successfully. %s cooldown.", ChatOutputHandler.formatTimeDurationReadable(cooldown, true)));
-            }
-        }
-
     }
 
 }

@@ -504,7 +504,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
-        getServerZone().getWorldZone(e.world.provider.dimensionId);
+        getServerZone().getWorldZone(e.world.provider.getDimensionId());
     }
 
     @SubscribeEvent

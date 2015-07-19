@@ -1,11 +1,9 @@
 package com.forgeessentials.permissions.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionContext;
@@ -21,13 +19,14 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 
-public class CommandZone extends ForgeEssentialsCommandBase
+public class CommandZone extends ParserCommandBase
 {
 
     public static final String PERM_NODE = "fe.perm.zone";
@@ -56,51 +55,50 @@ public class CommandZone extends ForgeEssentialsCommandBase
         return new String[] { "zone" };
     }
 
-    public void parse(ICommandSender sender, Queue<String> args)
+    @Override
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
-        if (tabCompleteMode && args.size() == 1)
+        if (tabCompleteMode && arguments.size() == 1)
         {
-            tabComplete = getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
+            tabComplete = getListOfStringsMatchingLastWord(arguments.peek(), parseMainArgs);
             return;
         }
-        if (args.isEmpty())
+        if (arguments.isEmpty())
         {
-            help(sender);
+            help(arguments.sender);
         }
         else
         {
             // Get world
             WorldZone worldZone = null;
-            if (sender instanceof EntityPlayerMP)
-            {
-                worldZone = APIRegistry.perms.getServerZone().getWorldZone(((EntityPlayerMP) sender).dimension);
-            }
+            if (arguments.hasPlayer())
+                worldZone = APIRegistry.perms.getServerZone().getWorldZone(arguments.senderPlayer.dimension);
 
-            String arg = args.remove().toLowerCase();
+            String arg = arguments.remove().toLowerCase();
             switch (arg)
             {
             case "help":
-                help(sender);
+                help(arguments.sender);
                 break;
             case "select":
-                parseSelect(sender, worldZone, args);
+                parseSelect(arguments.sender, worldZone, arguments.args);
                 break;
             case "info":
-                parseInfo(sender, worldZone, args);
+                parseInfo(arguments.sender, worldZone, arguments.args);
                 break;
             case "list":
-                parseList(sender, worldZone, args);
+                parseList(arguments.sender, worldZone, arguments.args);
                 break;
             case "define":
             case "redefine":
-                parseDefine(sender, worldZone, args, arg.equals("redefine"));
+                parseDefine(arguments.sender, worldZone, arguments.args, arg.equals("redefine"));
                 break;
             case "delete":
-                parseDelete(sender, worldZone, args);
+                parseDelete(arguments.sender, worldZone, arguments.args);
                 break;
             case "exit":
             case "entry":
-                parseEntryExitMessage(sender, worldZone, args, arg.equals("entry"));
+                parseEntryExitMessage(arguments.sender, worldZone, arguments.args, arg.equals("entry"));
                 break;
             default:
                 throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
@@ -123,7 +121,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
         return worldZone.getAreaZone(arg);
     }
 
-    private static void parseList(ICommandSender sender, WorldZone worldZone, Queue<String> args)
+    private static void parseList(ICommandSender sender, WorldZone worldZone, Queue<String> args) throws CommandException
     {
         if (!PermissionManager.checkPermission(sender, PERM_LIST))
         {
@@ -187,7 +185,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
         }
     }
 
-    private void parseDefine(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean redefine)
+    private void parseDefine(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean redefine) throws CommandException
     {
         if (!PermissionManager.checkPermission(sender, PERM_DEFINE))
         {
@@ -290,7 +288,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
         }
     }
 
-    private void parseDelete(ICommandSender sender, WorldZone worldZone, Queue<String> args)
+    private void parseDelete(ICommandSender sender, WorldZone worldZone, Queue<String> args) throws CommandException
     {
         if (!PermissionManager.checkPermission(sender, PERM_DELETE))
         {
@@ -330,7 +328,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
         ChatOutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been deleted.", zoneName));
     }
 
-    private void parseSelect(ICommandSender sender, WorldZone worldZone, Queue<String> args)
+    private void parseSelect(ICommandSender sender, WorldZone worldZone, Queue<String> args) throws CommandException
     {
         if (!PermissionManager.checkPermission(sender, PERM_INFO))
         {
@@ -377,7 +375,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
         ChatOutputHandler.chatConfirmation(sender, String.format("Area \"%s\" has been selected.", zoneName));
     }
 
-    private void parseInfo(ICommandSender sender, WorldZone worldZone, Queue<String> args)
+    private void parseInfo(ICommandSender sender, WorldZone worldZone, Queue<String> args) throws CommandException
     {
         if (!PermissionManager.checkPermission(sender, PERM_INFO))
         {
@@ -418,7 +416,7 @@ public class CommandZone extends ForgeEssentialsCommandBase
         ChatOutputHandler.chatNotification(sender, "  end   = " + area.getHighPoint().toString());
     }
 
-    private void parseEntryExitMessage(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean isEntry)
+    private void parseEntryExitMessage(ICommandSender sender, WorldZone worldZone, Queue<String> args, boolean isEntry) throws CommandException
     {
         if (tabCompleteMode)
         {
@@ -460,14 +458,6 @@ public class CommandZone extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
-    {
-        LinkedList<String> argsList = new LinkedList<String>(Arrays.asList(args));
-        tabCompleteMode = false;
-        parse(sender, argsList);
-    }
-
     private static void help(ICommandSender sender)
     {
         ChatOutputHandler.chatConfirmation(sender, "/zone list [page]: Lists all zones");
@@ -487,16 +477,6 @@ public class CommandZone extends ForgeEssentialsCommandBase
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        LinkedList<String> argsList = new LinkedList<String>(Arrays.asList(args));
-        tabCompleteMode = true;
-        tabComplete = new ArrayList<String>();
-        parse(sender, argsList);
-        return tabComplete;
     }
 
     @Override

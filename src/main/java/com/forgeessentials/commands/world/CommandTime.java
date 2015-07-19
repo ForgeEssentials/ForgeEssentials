@@ -2,8 +2,10 @@ package com.forgeessentials.commands.world;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permission.PermissionLevel;
@@ -32,7 +34,7 @@ public class CommandTime extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length != 0 && ServerUtil.isNumeric(args[0]))
         {
@@ -41,7 +43,7 @@ public class CommandTime extends FEcmdModuleCommands
             {
                 newArgs[i] = args[i + 1];
             }
-            String msg = doCmd(sender, DimensionManager.getWorld(parseInt(sender, args[0])), newArgs);
+            String msg = doCmd(sender, DimensionManager.getWorld(parseInt(args[0])), newArgs);
             if (msg != null)
             {
                 ChatOutputHandler.chatConfirmation(sender, msg);
@@ -62,7 +64,7 @@ public class CommandTime extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length != 0 && ServerUtil.isNumeric(args[0]))
         {
@@ -71,7 +73,7 @@ public class CommandTime extends FEcmdModuleCommands
             {
                 newArgs[i] = args[i + 1];
             }
-            String msg = doCmd(sender, DimensionManager.getWorld(parseInt(sender, args[0])), newArgs);
+            String msg = doCmd(sender, DimensionManager.getWorld(parseInt(args[0])), newArgs);
             if (msg != null)
             {
                 ChatOutputHandler.chatConfirmation(sender, msg);
@@ -91,7 +93,7 @@ public class CommandTime extends FEcmdModuleCommands
         }
     }
 
-    public String doCmd(ICommandSender sender, World world, String[] args)
+    public String doCmd(ICommandSender sender, World world, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -112,9 +114,9 @@ public class CommandTime extends FEcmdModuleCommands
             }
             else
             {
-                world.setWorldTime(parseInt(sender, args[1]));
+                world.setWorldTime(parseInt(args[1]));
             }
-            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
+            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.getDimensionId());
             wt.freezeTime = world.getWorldTime();
             return Translator.format("Set time to %s.", args[1]);
         }
@@ -125,22 +127,22 @@ public class CommandTime extends FEcmdModuleCommands
                 throw new TranslatedCommandException(
                         "Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
             }
-            world.setWorldTime(world.getWorldTime() + parseInt(sender, args[1]));
-            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
+            world.setWorldTime(world.getWorldTime() + parseInt(args[1]));
+            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.getDimensionId());
             wt.freezeTime = world.getWorldTime();
             return Translator.format("Added %d to the current time.", args[1]);
 
         }
         case "freeze":
         {
-            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
+            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.getDimensionId());
             wt.freezeTime = world.getWorldTime();
             wt.timeFreeze = !wt.timeFreeze;
             return "Time freeze" + (wt.timeFreeze ? "on" : "off");
         }
         case "lock":
         {
-            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
+            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.getDimensionId());
             if (args.length == 1)
             {
                 wt.timeSpecified = !wt.timeSpecified;
@@ -178,7 +180,7 @@ public class CommandTime extends FEcmdModuleCommands
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

@@ -1,5 +1,6 @@
 package com.forgeessentials.auth.lists;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -20,7 +21,7 @@ public class CommandWhiteList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (!AuthEventHandler.whitelist)
         {

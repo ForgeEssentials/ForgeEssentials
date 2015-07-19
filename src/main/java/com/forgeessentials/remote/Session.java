@@ -105,7 +105,7 @@ public class Session implements Runnable, RemoteSession
             }
 
             // Check if user was banned
-            if (ident != null && MinecraftServer.getServer().getConfigurationManager().func_152608_h().func_152702_a(ident.getGameProfile()))
+            if (ident != null && MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().isBanned(ident.getGameProfile()))
             {
                 close("banned", request);
                 return;
@@ -304,6 +304,7 @@ public class Session implements Runnable, RemoteSession
     /**
      * Get the Gson instance from ModuleRemote
      */
+    @Override
     public Gson getGson()
     {
         return ModuleRemote.getInstance().getGson();

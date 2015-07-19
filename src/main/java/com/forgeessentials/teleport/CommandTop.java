@@ -2,9 +2,12 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -13,8 +16,6 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandTop extends ForgeEssentialsCommandBase
 {
@@ -26,7 +27,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -47,7 +48,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -63,11 +64,11 @@ public class CommandTop extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("Improper syntax. Please try this instead: <player>");
     }
 
-    public void top(EntityPlayerMP player)
+    public void top(EntityPlayerMP player) throws CommandException
     {
         WarpPoint point = new WarpPoint(player);
         point.setY(player.worldObj.getActualHeight());
-        while (player.worldObj.getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ()) == Blocks.air)
+        while (player.worldObj.getBlockState(point.getBlockPos()).getBlock() == Blocks.air)
         {
             point.setY(point.getY() - 1);
         }
@@ -87,7 +88,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

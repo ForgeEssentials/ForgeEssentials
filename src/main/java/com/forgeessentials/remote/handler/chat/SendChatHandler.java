@@ -37,12 +37,12 @@ public class SendChatHandler extends GenericRemoteHandler<String>
             error("Missing message");
 
         EntityPlayerMP player = (EntityPlayerMP) session.getUserIdent().getFakePlayer();
-        String cmd = String.format("/msg %s ", player.getCommandSenderName());
-        IChatComponent header = ModuleChat.clickChatComponent(player.getCommandSenderName(), Action.SUGGEST_COMMAND, cmd);
+        String cmd = String.format("/msg %s ", player.getName());
+        IChatComponent header = ModuleChat.clickChatComponent(player.getName(), Action.SUGGEST_COMMAND, cmd);
         ChatComponentTranslation chatComponent = new ChatComponentTranslation("chat.type.text", header, request.data);
         ServerChatEvent event = new ServerChatEvent(player, request.data, chatComponent);
         if (!MinecraftForge.EVENT_BUS.post(event))
-            ChatOutputHandler.broadcast(event.component);
+            ChatOutputHandler.broadcast(event.getComponent());
         return null;
     }
 

@@ -117,7 +117,7 @@ public class ModuleWorldBorder extends ServerEventHandler
                 break;
             }
             default:
-                LoggingHandler.felog.error("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld().provider.dimensionId);
+                LoggingHandler.felog.error("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld().provider.getDimensionId());
                 borders.remove(event.after.getWorld());
                 return;
             }

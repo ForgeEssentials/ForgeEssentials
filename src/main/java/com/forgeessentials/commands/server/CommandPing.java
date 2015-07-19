@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.server;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
@@ -26,13 +27,13 @@ public class CommandPing extends FEcmdModuleCommands implements ConfigurableComm
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
     }

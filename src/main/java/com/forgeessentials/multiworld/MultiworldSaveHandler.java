@@ -148,9 +148,9 @@ public class MultiworldSaveHandler implements ISaveHandler
     }
 
     @Override
-    public IPlayerFileData getSaveHandler()
+    public IPlayerFileData getPlayerNBTManager()
     {
-        return parent.getSaveHandler();
+        return parent.getPlayerNBTManager();
     }
 
     @Override

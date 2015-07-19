@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -108,7 +109,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -144,7 +145,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     /* ------------------------------------------------------------ */
 
-    private void parseStart(CommandParserArgs arguments)
+    private void parseStart(CommandParserArgs arguments) throws CommandException
     {
         if (running)
         {
@@ -274,13 +275,21 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                 }
                 else
                 {
-                    Chunk chunk = providerServer.currentChunkProvider.loadChunk(x, z);
-                    chunk.populateChunk(providerServer, providerServer, x, z);
-                    saveChunk(providerServer, chunk);
+                    try
+                    {
+                        Chunk chunk = providerServer.chunkLoader.loadChunk(world, x, z);
+                        chunk.populateChunk(providerServer, providerServer, x, z);
+                        saveChunk(providerServer, chunk);
+                    }
+                    catch (Exception exception)
+                    {
+                        // logger.error("Couldn\'t load chunk", exception);
+                    }
                 }
 
-                if (providerServer.getLoadedChunkCount() > 256)
-                    providerServer.unloadChunksIfNotNearSpawn(x, z);
+                // TODO 1.8 check
+                // if (providerServer.getLoadedChunkCount() > 256)
+                // providerServer.unloadChunksIfNotNearSpawn(x, z);
 
                 break;
             }
@@ -359,7 +368,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     private static void saveChunk(ChunkProviderServer provider, Chunk chunk)
     {
-        AnvilChunkLoader loader = (AnvilChunkLoader) provider.currentChunkLoader;
+        AnvilChunkLoader loader = (AnvilChunkLoader) provider.chunkLoader;
         try
         {
             NBTTagCompound chunkTag = new NBTTagCompound();

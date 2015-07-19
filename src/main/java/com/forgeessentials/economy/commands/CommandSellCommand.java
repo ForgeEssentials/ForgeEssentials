@@ -3,6 +3,7 @@ package com.forgeessentials.economy.commands;
 import java.util.Arrays;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -64,7 +65,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
      * Expected structure: "/sellcommand <player> <item> <amount> <meta> <command [args]>"
      */
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 5)
             throw new InvalidSyntaxException(getCommandUsage(sender));
@@ -75,8 +76,8 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
             throw new PlayerNotFoundException();
 
         String itemName = args[1];
-        int amount = parseInt(sender, args[2]);
-        int meta = parseInt(sender, args[3]);
+        int amount = parseInt(args[2]);
+        int meta = parseInt(args[3]);
 
         Item item = CommandBase.getItemByText(ident.getPlayerMP(), itemName);
         ItemStack itemStack = new ItemStack(item, amount, meta);
@@ -117,4 +118,5 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
             }
         }
     }
+    
 }

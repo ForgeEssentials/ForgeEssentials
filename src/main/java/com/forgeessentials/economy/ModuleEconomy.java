@@ -14,6 +14,10 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.registry.GameData;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,17 +40,12 @@ import com.forgeessentials.economy.commands.CommandSellCommand;
 import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.plots.PlotManager;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.registry.GameData;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 /**
  * Economy module.
@@ -265,7 +264,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     public static String getItemIdentifier(ItemStack itemStack)
     {
-        String id = GameData.getItemRegistry().getNameForObject(itemStack.getItem());
+        String id = ServerUtil.getItemName(itemStack.getItem());
         if (itemStack.getItemDamage() == 0 || itemStack.getItemDamage() == 32767)
             return id;
         else
@@ -298,7 +297,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                 for (Item item : GameData.getItemRegistry().typeSafeIterable())
                     if (entry.getKey().equals(item.getUnlocalizedName()))
                     {
-                        String id = GameData.getItemRegistry().getNameForObject(item);
+                        String id = ServerUtil.getItemName(item);
                         config.get(CATEGORY_ITEM, id, DEFAULT_ITEM_PRICE).set(entry.getValue().getInt(DEFAULT_ITEM_PRICE));;
                         break;
                     }

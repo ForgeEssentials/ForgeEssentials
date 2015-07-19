@@ -19,7 +19,7 @@ public class ScriptParser
     public static interface ScriptMethod
     {
 
-        public boolean process(ICommandSender sender, String[] args);
+        public boolean process(ICommandSender sender, String[] args) throws CommandException;
 
         public String getHelp();
 
@@ -69,17 +69,17 @@ public class ScriptParser
         return actionArgs;
     }
 
-    public static void run(List<String> script)
+    public static void run(List<String> script) throws CommandException
     {
         run(script, null);
     }
 
-    public static void run(List<String> script, ICommandSender sender)
+    public static void run(List<String> script, ICommandSender sender) throws CommandException
     {
         run(script, sender, null);
     }
 
-    public static boolean run(List<String> script, ICommandSender sender, List<String> args)
+    public static boolean run(List<String> script, ICommandSender sender, List<String> args) throws CommandException
     {
         for (String action : script)
             if (!run(action, sender, args))
@@ -87,7 +87,7 @@ public class ScriptParser
         return true;
     }
 
-    public static boolean run(String action, ICommandSender sender, List<String> argumentValues)
+    public static boolean run(String action, ICommandSender sender, List<String> argumentValues) throws CommandException
     {
         String[] args = action.split(" ", 2);
         String cmd = args[0].toLowerCase();

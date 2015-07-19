@@ -8,24 +8,28 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public abstract class ServerUtil
 {
@@ -93,7 +97,7 @@ public abstract class ServerUtil
         }
     }
 
-    public static double parseYLocation(ICommandSender sender, double relative, String value)
+    public static double parseYLocation(ICommandSender sender, double relative, String value) throws CommandException
     {
         boolean isRelative = value.startsWith("~");
         if (isRelative && Double.isNaN(relative))
@@ -103,7 +107,7 @@ public abstract class ServerUtil
         {
             if (isRelative)
                 value = value.substring(1);
-            d1 += CommandBase.parseDouble(sender, value);
+            d1 += CommandBase.parseDouble(value);
         }
         return d1;
     }
@@ -292,6 +296,30 @@ public abstract class ServerUtil
     public static long getOverworldTime()
     {
         return MinecraftServer.getServer().worldServers[0].getWorldInfo().getWorldTime();
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public static String getItemName(Item item)
+    {
+        return GameData.getItemRegistry().getNameForObject(item).toString();
+    }
+
+    public static String getItemPermission(Item item)
+    {
+        ResourceLocation loc = (ResourceLocation) GameData.getItemRegistry().getNameForObject(item);
+        return loc.getResourceDomain() + '.' + loc.getResourcePath();
+    }
+
+    public static String getBlockName(Block block)
+    {
+        return GameData.getBlockRegistry().getNameForObject(block).toString();
+    }
+
+    public static String getBlockPermission(Block block)
+    {
+        ResourceLocation loc = (ResourceLocation) GameData.getBlockRegistry().getNameForObject(block);
+        return loc.getResourceDomain() + '.' + loc.getResourcePath();
     }
 
     /* ------------------------------------------------------------ */

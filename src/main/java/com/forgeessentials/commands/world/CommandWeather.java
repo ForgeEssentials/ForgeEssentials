@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.world;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -28,7 +29,7 @@ public class CommandWeather extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length != 0 && ServerUtil.isNumeric(args[0]))
         {
@@ -37,7 +38,7 @@ public class CommandWeather extends FEcmdModuleCommands
             {
                 newArgs[i] = args[i + 1];
             }
-            String msg = doCmd(sender, DimensionManager.getWorld(parseInt(sender, args[0])), newArgs);
+            String msg = doCmd(sender, DimensionManager.getWorld(parseInt(args[0])), newArgs);
             if (msg != null)
             {
                 ChatOutputHandler.chatConfirmation(sender, msg);
@@ -57,13 +58,13 @@ public class CommandWeather extends FEcmdModuleCommands
         }
     }
 
-    public String doCmd(ICommandSender sender, World world, String[] args)
+    public String doCmd(ICommandSender sender, World world, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
             throw new TranslatedCommandException(getCommandUsage(sender));
         }
-        WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.dimensionId);
+        WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.getDimensionId());
         wt.weatherSpecified = true;
 
         if (args[0].equalsIgnoreCase("rain"))

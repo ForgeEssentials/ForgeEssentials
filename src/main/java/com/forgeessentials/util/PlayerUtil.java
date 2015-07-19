@@ -45,8 +45,8 @@ public abstract class PlayerUtil
     public static void give(EntityPlayer player, ItemStack item)
     {
         EntityItem entityitem = player.dropPlayerItemWithRandomChoice(item, false);
-        entityitem.delayBeforeCanPickup = 0;
-        entityitem.func_145797_a(player.getCommandSenderName());
+        entityitem.setNoPickupDelay();
+        entityitem.setOwner(player.getName());
     }
 
     /**

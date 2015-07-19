@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -84,7 +85,7 @@ public class CommandButcherTickTask implements TickTask
         this(sender, world, CommandButcherTickTask.ButcherMobType.valueOf(mobType.toUpperCase()), aabb, radius);
     }
 
-    public static void schedule(ICommandSender sender, World world, String mobType, AxisAlignedBB aabb, int radius)
+    public static void schedule(ICommandSender sender, World world, String mobType, AxisAlignedBB aabb, int radius) throws CommandException
     {
         try
         {
@@ -121,7 +122,7 @@ public class CommandButcherTickTask implements TickTask
                     if (world.getChunkProvider().chunkExists(chunkX, chunkZ))
                     {
                         List<EntityLiving> list = new LinkedList<EntityLiving>();
-                        world.getChunkFromChunkCoords(chunkX, chunkZ).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, null);
+                        world.getChunkFromChunkCoords(chunkX, chunkZ).func_177430_a(EntityLiving.class, aabb, list, null);
                         for (EntityLiving entity : list)
                         {
                             checkEntity(entity);

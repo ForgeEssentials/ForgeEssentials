@@ -13,6 +13,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
@@ -89,18 +90,22 @@ public class Grave
         point.setY(WorldUtil.placeInWorld(player.worldObj, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1));
         if (hasFencePost)
         {
-            player.worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.fence);
+            player.worldObj.setBlockState(point.getBlockPos(), Blocks.oak_fence.getDefaultState());
             point.setY(point.getY() + 1);
         }
-        FEskullTe.createPlayerSkull(player.getGameProfile(), player.worldObj, point.getX(), point.getY(), point.getZ());
+        FEskullTe.createPlayerSkull(player.getGameProfile(), player.worldObj, point.getBlockPos());
     }
 
     public void updateBlocks()
     {
-        if (point.getWorld().getBlock(point.getX(), point.getY(), point.getZ()) != Blocks.skull)
-            FEskullTe.createPlayerSkull(UserIdent.getGameProfileByUuid(owner), point.getWorld(), point.getX(), point.getY(), point.getZ());
-        if (hasFencePost && point.getWorld().getBlock(point.getX(), point.getY() - 1, point.getZ()) != Blocks.fence)
-            point.getWorld().setBlock(point.getX(), point.getY() - 1, point.getZ(), Blocks.fence);
+        if (point.getWorld().getBlockState(point.getBlockPos()) != Blocks.skull.getDefaultState())
+            FEskullTe.createPlayerSkull(UserIdent.getGameProfileByUuid(owner), point.getWorld(), point.getBlockPos());
+        if (hasFencePost)
+        {
+            BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
+            if (point.getWorld().getBlockState(fencePos) != Blocks.oak_fence.getDefaultState())
+                point.getWorld().setBlockState(fencePos, Blocks.oak_fence.getDefaultState());
+        }
     }
 
     public void update()
@@ -162,9 +167,9 @@ public class Grave
         if (player.openContainer != player.inventoryContainer)
             player.closeScreen();
         player.getNextWindowId();
-        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, invGrave.getInventoryName(), invGrave.getSizeInventory(),
-                true));
-        player.openContainer = new ContainerChest(player.inventory, invGrave);
+        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, "minecraft:chest", invGrave.getDisplayName(), invGrave
+                .getSizeInventory()));
+        player.openContainer = new ContainerChest(player.inventory, invGrave, player);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addCraftingToCrafters(player);
     }
@@ -184,9 +189,13 @@ public class Grave
         if (dropItems)
             dropItems();
 
-        point.getWorld().setBlock(point.getX(), point.getY(), point.getZ(), Blocks.air);
-        if (hasFencePost && point.getWorld().getBlock(point.getX(), point.getY() - 1, point.getZ()) == Blocks.fence)
-            point.getWorld().setBlock(point.getX(), point.getY() - 1, point.getZ(), Blocks.air);
+        point.getWorld().setBlockToAir(point.getBlockPos());
+        if (hasFencePost)
+        {
+            BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
+            if (point.getWorld().getBlockState(fencePos) == Blocks.oak_fence.getDefaultState())
+                point.getWorld().setBlockToAir(fencePos);
+        }
 
         DataManager.getInstance().delete(Grave.class, point.toString());
         graves.remove(point);

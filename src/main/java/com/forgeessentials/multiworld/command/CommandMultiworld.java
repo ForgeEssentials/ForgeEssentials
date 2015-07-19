@@ -53,7 +53,7 @@ public class CommandMultiworld extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -90,8 +90,9 @@ public class CommandMultiworld extends ParserCommandBase
 
     /**
      * Create a new multiworld
+     * @throws CommandException 
      */
-    public static void parseCreate(CommandParserArgs arguments)
+    public static void parseCreate(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(ModuleMultiworld.PERM_MANAGE);
 
@@ -163,8 +164,9 @@ public class CommandMultiworld extends ParserCommandBase
 
     /**
      * Delete a multiworld
+     * @throws CommandException 
      */
-    public static void parseDelete(CommandParserArgs arguments)
+    public static void parseDelete(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(ModuleMultiworld.PERM_DELETE);
         Multiworld world = parseWorld(arguments);
@@ -173,7 +175,7 @@ public class CommandMultiworld extends ParserCommandBase
         arguments.confirm("Deleted multiworld " + world.getName());
     }
 
-    public static void parseInfo(CommandParserArgs arguments)
+    public static void parseInfo(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(ModuleMultiworld.PERM_MANAGE);
         Multiworld world = parseWorld(arguments);
@@ -187,7 +189,7 @@ public class CommandMultiworld extends ParserCommandBase
     /**
      * Print lists of multiworlds, available providers and available world-types
      */
-    public static void parseList(CommandParserArgs arguments)
+    public static void parseList(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(ModuleMultiworld.PERM_LIST);
         arguments.tabComplete("worlds", "providers", "worldtypes");
@@ -219,7 +221,7 @@ public class CommandMultiworld extends ParserCommandBase
         }
     }
 
-    public static void parseGamerule(CommandParserArgs arguments)
+    public static void parseGamerule(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(ModuleMultiworld.PERM_MANAGE);
         Multiworld world = parseWorld(arguments);
@@ -258,7 +260,7 @@ public class CommandMultiworld extends ParserCommandBase
         arguments.confirm(Translator.format("Set gamerule %s = %s for world %s", rule, value, world.getName()));
     }
 
-    public static Multiworld parseWorld(CommandParserArgs arguments)
+    public static Multiworld parseWorld(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Too few arguments!");

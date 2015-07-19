@@ -2,6 +2,7 @@ package com.forgeessentials.util.selections;
 
 //Depreciated
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
@@ -27,7 +28,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
     {
         Selection sel = SelectionHandler.selectionProvider.getSelection(player);
         if (sel == null)

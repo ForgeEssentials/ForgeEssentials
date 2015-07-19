@@ -3,18 +3,19 @@ package com.forgeessentials.commands.world;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-
-import net.minecraftforge.fml.common.registry.GameData;
 
 public class CommandFindblock extends FEcmdModuleCommands implements ConfigurableCommand
 {
@@ -46,17 +47,17 @@ public class CommandFindblock extends FEcmdModuleCommands implements Configurabl
      * syntax: /fb <block> [max distance, def = 20 * 16] [amount of blocks, def = 1] [speed, def = 10]
      */
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length < 2)
         {
             throw new TranslatedCommandException(getCommandUsage(sender));
         }
         String id = args[0];
-        int meta = parseInt(sender, args[1]);
-        int range = (args.length < 2) ? defaultRange : parseIntWithMin(sender, args[2], 1);
-        int amount = (args.length < 3) ? defaultCount : parseIntWithMin(sender, args[3], 1);
-        int speed = (args.length < 4) ? defaultSpeed : parseIntWithMin(sender, args[4], 1);
+        int meta = parseInt(args[1]);
+        int range = (args.length < 2) ? defaultRange : parseInt(args[2], 1, Integer.MAX_VALUE);
+        int amount = (args.length < 3) ? defaultCount : parseInt(args[3], 1, Integer.MAX_VALUE);
+        int speed = (args.length < 4) ? defaultSpeed : parseInt(args[4], 1, Integer.MAX_VALUE);
 
         new TickTaskBlockFinder(sender, id, meta, range, amount, speed);
     }
@@ -68,7 +69,7 @@ public class CommandFindblock extends FEcmdModuleCommands implements Configurabl
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -91,10 +92,7 @@ public class CommandFindblock extends FEcmdModuleCommands implements Configurabl
         {
             return getListOfStringsMatchingLastWord(args, defaultSpeed + "");
         }
-        else
-        {
-            throw new TranslatedCommandException(getCommandUsage(sender));
-        }
+        return null;
     }
 
     @Override

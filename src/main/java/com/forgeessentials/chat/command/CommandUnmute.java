@@ -2,9 +2,12 @@ package com.forgeessentials.chat.command;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -12,8 +15,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandUnmute extends ForgeEssentialsCommandBase
 {
@@ -49,7 +50,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -59,12 +60,12 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
 
             receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("mute");
             ChatOutputHandler.chatError(sender, Translator.format("You unmuted %s.", args[0]));
-            ChatOutputHandler.chatError(receiver, Translator.format("You were unmuted by %s.", sender.getCommandSenderName()));
+            ChatOutputHandler.chatError(receiver, Translator.format("You were unmuted by %s.", sender.getName()));
         }
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

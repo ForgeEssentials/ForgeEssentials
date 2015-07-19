@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -73,7 +74,7 @@ public class PermissionCommandParser
     private static final String[] parseGroupIncludeArgs = { "add", "remove", "clear" };
     private static final String[] parseSpawnArgs = { "here", "clear", "bed" };
 
-    public static void parseMain(CommandParserArgs arguments)
+    public static void parseMain(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
@@ -169,7 +170,7 @@ public class PermissionCommandParser
     // -- Listings
     // ------------------------------------------------------------
 
-    public static void parseList(CommandParserArgs arguments)
+    public static void parseList(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion)
         {
@@ -209,7 +210,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseTest(CommandParserArgs arguments)
+    public static void parseTest(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.args.isEmpty())
             throw new TranslatedCommandException("Missing permission argument!");
@@ -253,7 +254,7 @@ public class PermissionCommandParser
     // -- User
     // ------------------------------------------------------------
 
-    public static void parseUser(CommandParserArgs arguments)
+    public static void parseUser(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(PERM_USER);
         if (arguments.args.isEmpty())
@@ -277,7 +278,7 @@ public class PermissionCommandParser
         parseUserInner(arguments, ident, null);
     }
 
-    public static void parseUserInner(CommandParserArgs arguments, UserIdent ident, Zone zone)
+    public static void parseUserInner(CommandParserArgs arguments, UserIdent ident, Zone zone) throws CommandException
     {
         // Display help or player info
         if (arguments.args.isEmpty())
@@ -375,7 +376,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseUserPrefixSuffix(CommandParserArgs arguments, UserIdent ident, Zone zone, boolean isSuffix)
+    public static void parseUserPrefixSuffix(CommandParserArgs arguments, UserIdent ident, Zone zone, boolean isSuffix) throws CommandException
     {
         arguments.checkPermission(PERM_USER_FIX);
         if (arguments.isTabCompletion)
@@ -405,7 +406,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseUserPermissions(CommandParserArgs arguments, UserIdent ident, Zone zone, PermissionAction type)
+    public static void parseUserPermissions(CommandParserArgs arguments, UserIdent ident, Zone zone, PermissionAction type) throws CommandException
     {
         arguments.checkPermission(PERM_USER_PERMS);
         if (arguments.args.isEmpty())
@@ -459,7 +460,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseUserSpawn(CommandParserArgs arguments, UserIdent ident, Zone zone)
+    public static void parseUserSpawn(CommandParserArgs arguments, UserIdent ident, Zone zone) throws CommandException
     {
         arguments.checkPermission(PERM_USER_SPAWN);
         if (arguments.args.isEmpty())
@@ -509,10 +510,10 @@ public class PermissionCommandParser
                 throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             try
             {
-                int x = CommandBase.parseInt(arguments.sender, loc);
-                int y = CommandBase.parseInt(arguments.sender, arguments.args.remove());
-                int z = CommandBase.parseInt(arguments.sender, arguments.args.remove());
-                int dimension = CommandBase.parseInt(arguments.sender, arguments.args.remove());
+                int x = CommandBase.parseInt(loc);
+                int y = CommandBase.parseInt(arguments.args.remove());
+                int z = CommandBase.parseInt(arguments.args.remove());
+                int dimension = CommandBase.parseInt(arguments.args.remove());
                 point = new WorldPoint(dimension, x, y, z);
             }
             catch (NumberFormatException e)
@@ -618,7 +619,7 @@ public class PermissionCommandParser
     // -- Group
     // ------------------------------------------------------------
 
-    public static void parseGroup(CommandParserArgs arguments)
+    public static void parseGroup(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(PERM_GROUP);
         if (arguments.args.isEmpty())
@@ -680,13 +681,13 @@ public class PermissionCommandParser
         parseGroupInner(arguments, group, null);
     }
 
-    public static void parseGlobal(CommandParserArgs arguments)
+    public static void parseGlobal(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(PERM_GROUP);
         parseGroupInner(arguments, Zone.GROUP_DEFAULT, null);
     }
 
-    public static void parseGroupInner(CommandParserArgs arguments, String group, Zone zone)
+    public static void parseGroupInner(CommandParserArgs arguments, String group, Zone zone) throws CommandException
     {
         // Display help or player info
         if (arguments.args.isEmpty())
@@ -805,7 +806,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseGroupPrefixSuffix(CommandParserArgs arguments, String group, Zone zone, boolean isSuffix)
+    public static void parseGroupPrefixSuffix(CommandParserArgs arguments, String group, Zone zone, boolean isSuffix) throws CommandException
     {
         arguments.checkPermission(PERM_GROUP_FIX);
         if (arguments.isTabCompletion)
@@ -835,7 +836,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseGroupPermissions(CommandParserArgs arguments, String group, Zone zone, PermissionAction type)
+    public static void parseGroupPermissions(CommandParserArgs arguments, String group, Zone zone, PermissionAction type) throws CommandException
     {
         arguments.checkPermission(PERM_GROUP_PERMS);
         if (arguments.args.isEmpty())
@@ -891,7 +892,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseGroupSpawn(CommandParserArgs arguments, String group, Zone zone)
+    public static void parseGroupSpawn(CommandParserArgs arguments, String group, Zone zone) throws CommandException
     {
         arguments.checkPermission(PERM_GROUP_SPAWN);
         if (arguments.args.isEmpty())
@@ -949,10 +950,10 @@ public class PermissionCommandParser
                 throw new TranslatedCommandException("Too few arguments!");
             try
             {
-                int x = CommandBase.parseInt(arguments.sender, loc);
-                int y = CommandBase.parseInt(arguments.sender, arguments.args.remove());
-                int z = CommandBase.parseInt(arguments.sender, arguments.args.remove());
-                int dimension = CommandBase.parseInt(arguments.sender, arguments.args.remove());
+                int x = CommandBase.parseInt(loc);
+                int y = CommandBase.parseInt(arguments.args.remove());
+                int z = CommandBase.parseInt(arguments.args.remove());
+                int dimension = CommandBase.parseInt(arguments.args.remove());
                 point = new WorldPoint(dimension, x, y, z);
             }
             catch (NumberFormatException e)
@@ -975,7 +976,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseGroupPriority(CommandParserArgs arguments, String group)
+    public static void parseGroupPriority(CommandParserArgs arguments, String group) throws CommandException
     {
         arguments.checkPermission(PERM_GROUP_PERMS);
         if (arguments.args.isEmpty())
@@ -995,7 +996,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseGroupInclude(CommandParserArgs arguments, String group, boolean isParent)
+    public static void parseGroupInclude(CommandParserArgs arguments, String group, boolean isParent) throws CommandException
     {
         arguments.checkPermission(PERM_GROUP_PERMS);
         if (arguments.isTabCompletion && arguments.args.size() == 1)
@@ -1130,7 +1131,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void listUserPermissions(ICommandSender sender, UserIdent ident, boolean showGroupPerms)
+    public static void listUserPermissions(ICommandSender sender, UserIdent ident, boolean showGroupPerms) throws CommandException
     {
         if (!PermissionManager.checkPermission(sender, PERM_LIST_PERMS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
@@ -1224,7 +1225,7 @@ public class PermissionCommandParser
         }
     }
 
-    public static void listGroups(ICommandSender sender)
+    public static void listGroups(ICommandSender sender) throws CommandException
     {
         if (!PermissionManager.checkPermission(sender, PERM_LIST_GROUPS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
@@ -1234,7 +1235,7 @@ public class PermissionCommandParser
             ChatOutputHandler.chatNotification(sender, " - " + group);
     }
 
-    public static void listUsers(ICommandSender sender)
+    public static void listUsers(ICommandSender sender) throws CommandException
     {
         if (!PermissionManager.checkPermission(sender, PERM_LIST_USERS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
@@ -1248,7 +1249,7 @@ public class PermissionCommandParser
         ChatOutputHandler.chatNotification(sender, "Online players:");
         for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
         {
-            ChatOutputHandler.chatNotification(sender, " - " + ((EntityPlayerMP) player).getCommandSenderName());
+            ChatOutputHandler.chatNotification(sender, " - " + ((EntityPlayerMP) player).getName());
         }
     }
 

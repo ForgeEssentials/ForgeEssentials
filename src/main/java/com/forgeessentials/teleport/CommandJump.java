@@ -1,7 +1,9 @@
 package com.forgeessentials.teleport;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -20,13 +22,14 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         MovingObjectPosition mo = PlayerUtil.getPlayerLookingSpot(sender, 500);
         if (mo == null)
             throw new TranslatedCommandException("The spot you are looking at is too far away to teleport.");
-        TeleportHelper.teleport(sender, new WarpPoint(sender.getEntityWorld().provider.dimensionId, mo.blockX, mo.blockY + 1, mo.blockZ, sender.rotationPitch,
-                sender.rotationYaw));
+        BlockPos pos = mo.func_178782_a();
+        TeleportHelper.teleport(sender, new WarpPoint(sender.getEntityWorld().provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(),
+                sender.rotationPitch, sender.rotationYaw));
     }
 
     @Override

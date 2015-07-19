@@ -1,18 +1,16 @@
 package com.forgeessentials.teleport;
 
-import java.util.List;
-
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandSetSpawn extends ForgeEssentialsCommandBase
+public class CommandSetSpawn extends ParserCommandBase
 {
 
     public static final String PERM_SETSPAWN = "fe.perm.setspawn";
@@ -24,21 +22,13 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
-        PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
         PermissionCommandParser.parseGroupSpawn(arguments, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
-        return arguments.tabCompletion;
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
     }

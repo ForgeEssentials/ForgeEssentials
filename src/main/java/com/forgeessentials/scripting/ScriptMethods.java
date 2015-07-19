@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.DimensionManager;
@@ -23,8 +24,8 @@ import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
 
 public final class ScriptMethods
@@ -255,7 +256,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod teleport = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args) throws CommandException
         {
             if (args.length < 1)
                 throw new SyntaxException("Missing player argument for teleport");

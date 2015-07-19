@@ -1,155 +1,148 @@
 package com.forgeessentials.teleport;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.EnumSet;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.command.WrongUsageException;
+import net.minecraft.command.server.CommandTeleport;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.play.server.S08PacketPlayerPosLook;
+import net.minecraft.network.play.server.S08PacketPlayerPosLook.EnumFlags;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.permission.PermissionObject;
 
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
-public class CommandTp extends ForgeEssentialsCommandBase
+public class CommandTp extends CommandTeleport implements PermissionObject
 {
 
-    /**
-     * Spawn point for each dimension
-     */
-    public static HashMap<Integer, Point> spawnPoints = new HashMap<Integer, Point>();
-
     @Override
-    public String getCommandName()
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
-        return "tp";
-    }
-
-    @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
-    {
-        if (args.length == 1)
+        if (args.length < 1)
         {
-            EntityPlayer target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (PlayerSelector.hasArguments(args[0]))
-            {
-                target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            }
-            if (target == null)
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-            TeleportHelper.teleport(sender, new WarpPoint(target));
-        }
-        else if (args.length == 2 && PermissionManager.checkPermission(sender, TeleportModule.PERM_TP_OTHERS))
-        {
-
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
-                EntityPlayer target = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
-
-                if (target != null)
-                {
-                    PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
-                    playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-                    WarpPoint point = new WarpPoint(target);
-                    TeleportHelper.teleport(player, point);
-                }
-                else
-                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[1]);
-            }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-        }
-        else if (args.length >= 3)
-        {
-            if (args.length == 3)
-            {
-                EntityPlayerMP player = sender;
-                double x = func_110666_a(sender, player.posX, args[0]);
-                double y = ServerUtil.parseYLocation(sender, player.posY, args[1]);
-                double z = func_110666_a(sender, player.posZ, args[2]);
-                PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
-                playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-                TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
-            }
-            else if (args.length == 4)
-            {
-                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-                if (player != null)
-                {
-                    double x = func_110666_a(sender, player.posX, args[1]);
-                    double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
-                    double z = func_110666_a(sender, player.posZ, args[3]);
-                    PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
-                    playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-                    TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
-                }
-                else
-                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-            }
-            else
-                throw new TranslatedCommandException("Improper syntax. Please try this instead: /tp [player] <player|<x> <y> <z>>");
-        }
-        else
-            throw new TranslatedCommandException("Improper syntax. Please try this instead: /tp [player] <player|<x> <y> <z>>");
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-        if (args.length == 2)
-        {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
-                EntityPlayer target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-                if (PlayerSelector.hasArguments(args[1]))
-                {
-                    target = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
-                }
-                if (target == null)
-                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[1]);
-                TeleportHelper.teleport(player, new WarpPoint(target));
-            }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-        }
-        else if (args.length == 4)
-        {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
-                double x = func_110666_a(sender, player.posX, args[1]);
-                double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
-                double z = func_110666_a(sender, player.posZ, args[3]);
-                TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
-            }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            throw new WrongUsageException("commands.tp.usage", new Object[0]);
         }
         else
         {
-            ChatOutputHandler.chatError(sender, Translator.translate("Improper syntax. Please try this instead:"));
-            ChatOutputHandler.chatNotification(sender, getCommandUsage(sender));
-        }
-    }
+            byte b0 = 0;
+            Entity entity;
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
+            if (args.length != 2 && args.length != 4 && args.length != 6)
+            {
+                entity = getCommandSenderAsPlayer(sender);
+            }
+            else
+            {
+                entity = func_175768_b(sender, args[0]);
+                b0 = 1;
+            }
+
+            if (args.length != 1 && args.length != 2)
+            {
+                if (args.length < b0 + 3)
+                {
+                    throw new WrongUsageException("commands.tp.usage", new Object[0]);
+                }
+                else if (entity.worldObj != null)
+                {
+                    int i = b0 + 1;
+                    CommandBase.CoordinateArg argX = func_175770_a(entity.posX, args[b0], true);
+                    CommandBase.CoordinateArg argY = func_175767_a(entity.posY, args[i++], 0, 0, false);
+                    CommandBase.CoordinateArg argZ = func_175770_a(entity.posZ, args[i++], true);
+                    CommandBase.CoordinateArg argYaw = func_175770_a(entity.rotationYaw, args.length > i ? args[i++] : "~", false);
+                    CommandBase.CoordinateArg argPitch = func_175770_a(entity.rotationPitch, args.length > i ? args[i] : "~", false);
+                    float f;
+
+                    if (entity instanceof EntityPlayerMP)
+                    {
+                        EnumSet<EnumFlags> enumset = EnumSet.noneOf(S08PacketPlayerPosLook.EnumFlags.class);
+                        if (argX.func_179630_c())
+                            enumset.add(S08PacketPlayerPosLook.EnumFlags.X);
+                        if (argY.func_179630_c())
+                            enumset.add(S08PacketPlayerPosLook.EnumFlags.Y);
+                        if (argZ.func_179630_c())
+                            enumset.add(S08PacketPlayerPosLook.EnumFlags.Z);
+                        if (argPitch.func_179630_c())
+                            enumset.add(S08PacketPlayerPosLook.EnumFlags.X_ROT);
+                        if (argYaw.func_179630_c())
+                            enumset.add(S08PacketPlayerPosLook.EnumFlags.Y_ROT);
+
+                        f = (float) argYaw.func_179629_b();
+                        if (!argYaw.func_179630_c())
+                            f = MathHelper.wrapAngleTo180_float(f);
+
+                        float f1 = (float) argPitch.func_179629_b();
+                        if (!argPitch.func_179630_c())
+                            f1 = MathHelper.wrapAngleTo180_float(f1);
+
+                        if (f1 > 90.0F || f1 < -90.0F)
+                        {
+                            f1 = MathHelper.wrapAngleTo180_float(180.0F - f1);
+                            f = MathHelper.wrapAngleTo180_float(f + 180.0F);
+                        }
+
+                        WarpPoint pos = new WarpPoint(entity.worldObj.provider.getDimensionId(), argX.func_179629_b(), argY.func_179629_b(),
+                                argZ.func_179629_b(), f, f1);
+                        TeleportHelper.teleport((EntityPlayerMP) entity, pos);
+                    }
+                    else
+                    {
+                        float f2 = (float) MathHelper.wrapAngleTo180_double(argYaw.func_179628_a());
+                        f = (float) MathHelper.wrapAngleTo180_double(argPitch.func_179628_a());
+
+                        if (f > 90.0F || f < -90.0F)
+                        {
+                            f = MathHelper.wrapAngleTo180_float(180.0F - f);
+                            f2 = MathHelper.wrapAngleTo180_float(f2 + 180.0F);
+                        }
+
+                        entity.setLocationAndAngles(argX.func_179628_a(), argY.func_179628_a(), argZ.func_179628_a(), f2, f);
+                        entity.setRotationYawHead(f2);
+                    }
+
+                    notifyOperators(sender, this, "commands.tp.success.coordinates", new Object[] { entity.getName(), Double.valueOf(argX.func_179628_a()),
+                            Double.valueOf(argY.func_179628_a()), Double.valueOf(argZ.func_179628_a()) });
+                }
+            }
+            else
+            {
+                Entity targetEntity = func_175768_b(sender, args[args.length - 1]);
+                if (targetEntity instanceof EntityPlayerMP)
+                {
+                    WarpPoint pos = new WarpPoint(targetEntity.worldObj.provider.getDimensionId(), targetEntity.posX, targetEntity.posY, targetEntity.posZ,
+                            targetEntity.rotationYaw, targetEntity.rotationPitch);
+                    TeleportHelper.teleport((EntityPlayerMP) targetEntity, pos);
+                    return;
+                }
+                if (targetEntity.worldObj != entity.worldObj)
+                {
+                    throw new CommandException("commands.tp.notSameDimension", new Object[0]);
+                }
+                else
+                {
+                    entity.mountEntity((Entity) null);
+
+                    if (entity instanceof EntityPlayerMP)
+                    {
+                        ((EntityPlayerMP) entity).playerNetServerHandler.setPlayerLocation(targetEntity.posX, targetEntity.posY, targetEntity.posZ,
+                                targetEntity.rotationYaw, targetEntity.rotationPitch);
+                    }
+                    else
+                    {
+                        entity.setLocationAndAngles(targetEntity.posX, targetEntity.posY, targetEntity.posZ, targetEntity.rotationYaw,
+                                targetEntity.rotationPitch);
+                    }
+
+                    notifyOperators(sender, this, "commands.tp.success", new Object[] { targetEntity.getName(), targetEntity.getName() });
+                }
+            }
+        }
     }
 
     @Override
@@ -159,28 +152,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        if (args.length == 1 || args.length == 2)
-        {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.OP;
     }
 
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-
-        return "/tp [player] <player|<x> <y> <z>> Teleport to a location.";
-    }
 }

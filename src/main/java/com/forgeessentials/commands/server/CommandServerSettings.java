@@ -3,17 +3,18 @@ package com.forgeessentials.commands.server;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandServerSettings extends FEcmdModuleCommands
 {
@@ -33,7 +34,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
         {
@@ -87,8 +88,9 @@ public class CommandServerSettings extends FEcmdModuleCommands
             }
             else
             {
-                server.setBuildLimit(parseIntWithMin(sender, args[1], 0));
-                server.setProperty("max-build-height", parseIntWithMin(sender, args[1], 0));
+                int limit = parseInt(args[1], 16, Integer.MAX_VALUE);
+                server.setBuildLimit(limit);
+                server.setProperty("max-build-height", limit);
                 server.saveProperties();
                 ChatOutputHandler.chatConfirmation(sender, "buildLimit: " + server.getBuildLimit());
             }
@@ -124,7 +126,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
             }
             else
             {
-                server.setProperty("spawn-protection", parseIntWithMin(sender, args[1], 0));
+                server.setProperty("spawn-protection", parseInt(args[1], 0));
                 server.saveProperties();
                 ChatOutputHandler.chatConfirmation(sender, "spawnProtection: " + server.getSpawnProtectionSize());
             }
@@ -152,14 +154,14 @@ public class CommandServerSettings extends FEcmdModuleCommands
         {
             if (args.length == 1)
             {
-                ChatOutputHandler.chatConfirmation(sender, "difficulty: " + server.func_147135_j().name());
+                ChatOutputHandler.chatConfirmation(sender, "difficulty: " + server.getDifficulty().name());
             }
             else
             {
                 server.setProperty("difficulty", args[1]);
-                server.func_147139_a(EnumDifficulty.getDifficultyEnum(Integer.parseInt(args[1])));
+                server.setDifficultyForAllWorlds(EnumDifficulty.getDifficultyEnum(Integer.parseInt(args[1])));
                 server.saveProperties();
-                ChatOutputHandler.chatConfirmation(sender, "difficulty: " + server.func_147135_j().name());
+                ChatOutputHandler.chatConfirmation(sender, "difficulty: " + server.getDifficulty().name());
             }
             return;
 
@@ -173,16 +175,13 @@ public class CommandServerSettings extends FEcmdModuleCommands
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
             return getListOfStringsMatchingLastWord(args, options);
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     @Override

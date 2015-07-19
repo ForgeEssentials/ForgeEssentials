@@ -2,6 +2,7 @@ package com.forgeessentials.perftools;
 
 import java.text.DecimalFormat;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
@@ -21,7 +22,7 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         ChatOutputHandler.chatNotification(sender, "Memory usage:");
         ChatOutputHandler.chatNotification(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");

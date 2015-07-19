@@ -2,12 +2,14 @@ package com.forgeessentials.commands.item;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -32,7 +34,7 @@ public class CommandBind extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0 || !(args[0].equalsIgnoreCase("left") || args[0].equalsIgnoreCase("right") || args[0].equalsIgnoreCase("clear")))
         {
@@ -46,9 +48,7 @@ public class CommandBind extends FEcmdModuleCommands
         {
             ItemStack is = sender.inventory.getCurrentItem();
             if (!is.hasTagCompound())
-            {
-                is.stackTagCompound = new NBTTagCompound();
-            }
+                is.setTagCompound(new NBTTagCompound());
             if (args[0].equalsIgnoreCase("clear"))
             {
                 is.getTagCompound().removeTag("FEbinding");
@@ -97,7 +97,7 @@ public class CommandBind extends FEcmdModuleCommands
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

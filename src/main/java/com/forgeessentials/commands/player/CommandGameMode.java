@@ -6,8 +6,10 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.WorldSettings;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -15,8 +17,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandGameMode extends FEcmdModuleCommands
 {
@@ -33,7 +33,7 @@ public class CommandGameMode extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         WorldSettings.GameType gm;
         switch (args.length)
@@ -67,7 +67,7 @@ public class CommandGameMode extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         WorldSettings.GameType gm;
         switch (args.length)
@@ -134,7 +134,7 @@ public class CommandGameMode extends FEcmdModuleCommands
         target.setGameType(mode);
         target.fallDistance = 0.0F;
         String modeName = StatCollector.translateToLocal("gameMode." + mode.getName());
-        ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getCommandSenderName(), modeName));
+        ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getName(), modeName));
     }
 
     private WorldSettings.GameType getGameTypeFromString(String string)
@@ -164,7 +164,7 @@ public class CommandGameMode extends FEcmdModuleCommands
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

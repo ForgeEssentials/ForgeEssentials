@@ -2,6 +2,7 @@ package com.forgeessentials.afterlife;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import com.forgeessentials.api.UserIdent;
@@ -15,14 +16,14 @@ public class FEskullTe extends TileEntitySkull
     {
         // Set player profile
         if (player != null)
-            func_152106_a(player);
+            setPlayerProfile(player);
     }
 
-    public static FEskullTe createPlayerSkull(GameProfile player, World world, int x, int y, int z)
+    public static FEskullTe createPlayerSkull(GameProfile player, World world, BlockPos pos)
     {
         FEskullTe skull = new FEskullTe(player);
-        world.setBlock(x, y, z, Blocks.skull, 1, 1);
-        world.setTileEntity(x, y, z, skull);
+        world.setBlockState(pos, Blocks.skull.getStateFromMeta(1), 1);
+        world.setTileEntity(pos, skull);
         return skull;
     }
 
@@ -30,7 +31,7 @@ public class FEskullTe extends TileEntitySkull
     public void invalidate()
     {
         super.invalidate();
-        WorldPoint point = new WorldPoint(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+        WorldPoint point = new WorldPoint(worldObj, pos.getX(), pos.getY(), pos.getZ());
         Grave grave = Grave.graves.get(point.toString());
         if (grave == null)
             return;
@@ -41,7 +42,7 @@ public class FEskullTe extends TileEntitySkull
             if (owner.hasPlayer())
             {
                 // createPlayerSkull(owner.getPlayer(), worldObj, point.getX(), point.getY(), point.getZ());
-                worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.chest);
+                worldObj.setBlockState(pos, Blocks.chest.getDefaultState());
             }
         }
         else

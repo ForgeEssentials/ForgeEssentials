@@ -1,5 +1,6 @@
 package com.forgeessentials.worldborder;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
@@ -19,11 +20,11 @@ public class CommandWorldBorder extends ParserCommandBase
     {
         return "worldborder";
     }
-    
+
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[]{ "wb" };
+        return new String[] { "wb" };
     }
 
     @Override
@@ -51,7 +52,7 @@ public class CommandWorldBorder extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
 
         if (arguments.isEmpty())
@@ -108,7 +109,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
     }
 
-    public void parseCenter(CommandParserArgs arguments, WorldBorder border)
+    public void parseCenter(CommandParserArgs arguments, WorldBorder border) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -134,7 +135,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
     }
 
-    private void parseRadius(CommandParserArgs arguments, WorldBorder border)
+    private void parseRadius(CommandParserArgs arguments, WorldBorder border) throws CommandException
     {
         if (arguments.isEmpty())
         {

@@ -1,9 +1,9 @@
 package com.forgeessentials.protection;
 
-import static net.minecraftforge.fml.common.eventhandler.Event.Result.ALLOW;
-import static net.minecraftforge.fml.common.eventhandler.Event.Result.DENY;
 import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK;
 import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_AIR;
+import static net.minecraftforge.fml.common.eventhandler.Event.Result.ALLOW;
+import static net.minecraftforge.fml.common.eventhandler.Event.Result.DENY;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
@@ -43,6 +44,15 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -67,15 +77,6 @@ import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class ProtectionEventHandler extends ServerEventHandler
 {
@@ -207,11 +208,11 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
 
         UserIdent ident = UserIdent.get(event.getPlayer());
-        Block block = event.world.getBlock(event.x, event.y, event.z);
-        String permission = ModuleProtection.getBlockBreakPermission(block, event.world, event.x, event.y, event.z);
+        IBlockState blockState = event.world.getBlockState(event.pos);
+        String permission = ModuleProtection.getBlockBreakPermission(blockState);
         if (ModuleProtection.isDebugMode(event.getPlayer()))
             ChatOutputHandler.chatNotification(event.getPlayer(), permission);
-        WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.x, event.y, event.z);
+        WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.pos);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
@@ -226,11 +227,11 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
 
         UserIdent ident = UserIdent.get(event.player);
-        Block block = event.world.getBlock(event.x, event.y, event.z);
-        String permission = ModuleProtection.getBlockPlacePermission(block, event.world, event.x, event.y, event.z);
+        IBlockState blockState = event.world.getBlockState(event.pos);
+        String permission = ModuleProtection.getBlockPlacePermission(blockState);
         if (ModuleProtection.isDebugMode(event.player))
             ChatOutputHandler.chatNotification(event.player, permission);
-        WorldPoint point = new WorldPoint(event.player.dimension, event.x, event.y, event.z);
+        WorldPoint point = new WorldPoint(event.player.dimension, event.pos);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
@@ -253,11 +254,11 @@ public class ProtectionEventHandler extends ServerEventHandler
         UserIdent ident = UserIdent.get(event.player);
         for (BlockSnapshot b : event.getReplacedBlockSnapshots())
         {
-            Block block = event.world.getBlock(b.x, b.y, b.z);
-            String permission = ModuleProtection.getBlockPlacePermission(block, event.world, event.x, event.y, event.z);
+            IBlockState blockState = event.world.getBlockState(b.pos);
+            String permission = ModuleProtection.getBlockPlacePermission(blockState);
             if (ModuleProtection.isDebugMode(event.player))
                 ChatOutputHandler.chatNotification(event.player, permission);
-            WorldPoint point = new WorldPoint(event.player.dimension, b.x, b.y, b.z);
+            WorldPoint point = new WorldPoint(event.player.dimension, b.pos);
             if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
             {
                 event.setCanceled(true);
@@ -274,12 +275,13 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
-        int cx = (int) Math.floor(event.explosion.explosionX);
-        int cy = (int) Math.floor(event.explosion.explosionY);
-        int cz = (int) Math.floor(event.explosion.explosionZ);
-        WorldArea area = new WorldArea(event.world, new Point(cx - event.explosion.explosionSize, cy - event.explosion.explosionSize, cz
-                - event.explosion.explosionSize), new Point(cx + event.explosion.explosionSize, cy + event.explosion.explosionSize, cz
-                + event.explosion.explosionSize));
+        Vec3 position = event.explosion.getPosition();
+        int cx = (int) Math.floor(position.xCoord);
+        int cy = (int) Math.floor(position.yCoord);
+        int cz = (int) Math.floor(position.zCoord);
+        float size = ReflectionHelper.getPrivateValue(Explosion.class, event.explosion, "field_77280_f", "explosionSize");
+
+        WorldArea area = new WorldArea(event.world, new Point(cx - size, cy - size, cz - size), new Point(cx + size, cy + size, cz + size));
         if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
         {
             event.setCanceled(true);
@@ -300,18 +302,18 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(event.entityPlayer);
             if (mop == null)
-                point = new WorldPoint(event.entityPlayer.dimension, event.x, event.y, event.z);
+                point = new WorldPoint(event.entityPlayer.dimension, event.pos);
             else
-                point = new WorldPoint(event.entityPlayer.dimension, mop.blockX, mop.blockY, mop.blockZ);
+                point = new WorldPoint(event.entityPlayer.dimension, mop.func_178782_a());
         }
         else
-            point = new WorldPoint(event.entityPlayer.dimension, event.x, event.y, event.z);
+            point = new WorldPoint(event.entityPlayer.dimension, event.pos);
 
         // Check for block interaction
         if (event.action == Action.RIGHT_CLICK_BLOCK || event.action == Action.LEFT_CLICK_BLOCK)
         {
-            Block block = event.world.getBlock(event.x, event.y, event.z);
-            String permission = ModuleProtection.getBlockInteractPermission(block, event.world, event.x, event.y, event.z);
+            IBlockState blockState = event.world.getBlockState(event.pos);
+            String permission = ModuleProtection.getBlockInteractPermission(blockState);
             if (ModuleProtection.isDebugMode(event.entityPlayer))
                 ChatOutputHandler.chatNotification(event.entityPlayer, permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
@@ -348,7 +350,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
 
         UserIdent ident = UserIdent.get(event.entityPlayer);
-        WorldPoint point = new WorldPoint(event.entity.dimension, event.x, event.y, event.z);
+        WorldPoint point = new WorldPoint(event.entity.dimension, event.pos);
         if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_SLEEP))
         {
             event.result = EnumStatus.NOT_POSSIBLE_HERE;
@@ -466,7 +468,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.entity instanceof EntityItem)
         {
             // 1) Do nothing if the whole world is creative!
-            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.world.provider.dimensionId);
+            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.world.provider.getDimensionId());
             if (stringToGameType(worldZone.getGroupPermission(Zone.GROUP_DEFAULT, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
             {
                 // 2) If creative mode is set for any group at the location where the block was destroyed, prevent drops
@@ -485,10 +487,10 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
-        WorldPoint point = new WorldPoint(event.world, event.x, event.y, event.z);
+        WorldPoint point = new WorldPoint(event.world, event.pos);
 
         // 1) Do nothing if the whole world is creative!
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.world.provider.dimensionId);
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.world.provider.getDimensionId());
         if (stringToGameType(worldZone.getGroupPermission(Zone.GROUP_DEFAULT, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
         {
             // 2) If creative mode is set for any group at the location where the block was destroyed, prevent drops
@@ -604,7 +606,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (event.afterZone instanceof AreaZone)
             {
                 center = ((AreaZone) event.afterZone).getArea().getCenter().toVec3();
-                center.yCoord = event.beforePoint.getY();
+                center = new Vec3(center.xCoord, event.beforePoint.getY(), center.zCoord);
             }
             Vec3 delta = event.beforePoint.toVec3().subtract(center).normalize();
             WarpPoint target = new WarpPoint(event.beforePoint.getDimension(), event.beforePoint.getX() - delta.xCoord,

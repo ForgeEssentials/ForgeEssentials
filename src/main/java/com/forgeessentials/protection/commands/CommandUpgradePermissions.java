@@ -7,8 +7,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -20,8 +22,7 @@ import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
-
-import net.minecraftforge.fml.common.registry.GameData;
+import com.forgeessentials.util.ServerUtil;
 
 public class CommandUpgradePermissions extends ParserCommandBase
 {
@@ -57,7 +58,7 @@ public class CommandUpgradePermissions extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         arguments.confirm("Upgrading permissions...");
         upgradePermissions(APIRegistry.perms.getServerZone());
@@ -87,7 +88,7 @@ public class CommandUpgradePermissions extends ParserCommandBase
         id = match.group(1);
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
             if (id.equals(block.getUnlocalizedName()))
-                return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.') + match.group(2);
+                return ServerUtil.getBlockPermission(block) + match.group(2);
         return null;
     }
 
@@ -99,7 +100,7 @@ public class CommandUpgradePermissions extends ParserCommandBase
         id = match.group(1);
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (id.equals(item.getUnlocalizedName()))
-                return GameData.getItemRegistry().getNameForObject(item).replace(':', '.') + match.group(2);
+                return ServerUtil.getItemPermission(item) + match.group(2);
         return null;
     }
 

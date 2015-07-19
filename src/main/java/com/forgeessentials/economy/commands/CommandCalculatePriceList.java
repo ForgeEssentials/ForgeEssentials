@@ -30,6 +30,7 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.permission.PermissionLevel;
@@ -39,8 +40,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
-
-import net.minecraftforge.fml.common.registry.GameData;
+import com.forgeessentials.util.ServerUtil;
 
 public class CommandCalculatePriceList extends ParserCommandBase
 {
@@ -79,11 +79,6 @@ public class CommandCalculatePriceList extends ParserCommandBase
     public static List<ItemStack> castItemStackList(List itemStackList)
     {
         return itemStackList;
-    }
-
-    public static String getItemId(Item item)
-    {
-        return GameData.getItemRegistry().getNameForObject(item);
     }
 
     @Override
@@ -153,7 +148,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                 changedAnyPrice = false;
 
                 @SuppressWarnings("unchecked")
-                Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.smelting().getSmeltingList());
+                Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.instance().getSmeltingList());
                 @SuppressWarnings("unchecked")
                 List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
 
@@ -168,7 +163,8 @@ public class CommandCalculatePriceList extends ParserCommandBase
                         List<?> recipeItems = getRecipeItems(recipe);
                         if (recipeItems == null)
                             continue;
-                        craftRecipes.write(String.format("%s:%d\n", getItemId(recipe.getRecipeOutput().getItem()), recipe.getRecipeOutput().getItemDamage()));
+                        craftRecipes.write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()), recipe.getRecipeOutput()
+                                .getItemDamage()));
                         for (Object stacks : recipeItems)
                             if (stacks != null)
                             {
@@ -181,7 +177,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                                 else
                                     stack = (ItemStack) stacks;
                                 if (stack != null)
-                                    craftRecipes.write(String.format("  %s:%d\n", getItemId(stack.getItem()), stack.getItemDamage()));
+                                    craftRecipes.write(String.format("  %s:%d\n", ServerUtil.getItemName(stack.getItem()), stack.getItemDamage()));
                             }
                     }
                 }
@@ -207,8 +203,8 @@ public class CommandCalculatePriceList extends ParserCommandBase
                                 priceMap.put(ModuleEconomy.getItemIdentifier(recipe.getRecipeOutput()), price);
                                 changedPrice = true;
 
-                                String msg = String.format("%s:%d = %.0f -> %s", getItemId(recipe.getRecipeOutput().getItem()), recipe.getRecipeOutput()
-                                        .getItemDamage(), resultPrice == null ? 0 : resultPrice, (int) price);
+                                String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()), recipe
+                                        .getRecipeOutput().getItemDamage(), resultPrice == null ? 0 : resultPrice, (int) price);
                                 for (Object stacks : getRecipeItems(recipe))
                                     if (stacks != null)
                                     {
@@ -222,7 +218,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                                             stack = (ItemStack) stacks;
                                         if (stack != null)
                                             msg += String.format("\n  %.0f - %s:%d", priceMap.get(ModuleEconomy.getItemIdentifier(stack)),
-                                                    getItemId(stack.getItem()), stack.getItemDamage());
+                                                    ServerUtil.getItemName(stack.getItem()), stack.getItemDamage());
                                     }
                                 writer.write(msg + "\n");
                             }
@@ -241,8 +237,9 @@ public class CommandCalculatePriceList extends ParserCommandBase
                             if (resultPrice == null || outPrice < resultPrice)
                             {
                                 priceMap.put(ModuleEconomy.getItemIdentifier(recipe.getValue()), outPrice);
-                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", getItemId(recipe.getValue().getItem()), recipe.getValue()
-                                        .getItemDamage(), resultPrice == null ? 0 : resultPrice, (int) outPrice, getItemId(recipe.getKey().getItem())));
+                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()), recipe.getValue()
+                                        .getItemDamage(), resultPrice == null ? 0 : resultPrice, (int) outPrice, ServerUtil.getItemName(recipe.getKey()
+                                        .getItem())));
                                 changedPrice = true;
                             }
                         }
@@ -262,7 +259,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
 
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
         {
-            String id = getItemId(item);
+            String id = ServerUtil.getItemName(item);
             if (!priceMapFull.containsKey(id))
                 priceMapFull.put(id, 0.0);
         }

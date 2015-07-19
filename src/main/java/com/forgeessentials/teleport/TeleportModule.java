@@ -1,6 +1,9 @@
 package com.forgeessentials.teleport;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -12,9 +15,6 @@ import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
 public class TeleportModule
@@ -71,7 +71,7 @@ public class TeleportModule
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerInitEvent event)
     {
         portalManager.load();
 
@@ -79,7 +79,6 @@ public class TeleportModule
         FECommandManager.registerCommand(new CommandBed());
         FECommandManager.registerCommand(new CommandHome());
         FECommandManager.registerCommand(new CommandSpawn());
-        FECommandManager.registerCommand(new CommandTp());
         FECommandManager.registerCommand(new CommandTppos());
         FECommandManager.registerCommand(new CommandWarp());
         FECommandManager.registerCommand(new CommandTPA());
@@ -89,11 +88,12 @@ public class TeleportModule
         FECommandManager.registerCommand(new CommandSetSpawn());
         FECommandManager.registerCommand(new CommandJump());
 
+        ((FMLServerStartingEvent) event.getFMLEvent()).registerServerCommand(new CommandTp());
+
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
         APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, PermissionLevel.TRUE, "Allow returning to the last death location with back-command");
-        APIRegistry.perms
-                .registerPermission(PERM_BACK_ONTP, PermissionLevel.TRUE, "Allow returning to the last location before teleport with back-command");
+        APIRegistry.perms.registerPermission(PERM_BACK_ONTP, PermissionLevel.TRUE, "Allow returning to the last location before teleport with back-command");
         APIRegistry.perms.registerPermission(PERM_BED_OTHERS, PermissionLevel.OP, "Allow teleporting to other player's bed location");
 
         APIRegistry.perms.registerPermission(PERM_HOME, PermissionLevel.TRUE, "Allow usage of /home");

@@ -13,12 +13,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 import com.forgeessentials.util.ServerUtil;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
-
-import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class UserIdent
 {
@@ -65,7 +64,7 @@ public class UserIdent
     {
         this.player = player;
         this.uuid = player.getPersistentID();
-        this.username = player.getCommandSenderName();
+        this.username = player.getName();
         byUuid.put(uuid, this);
         byUsername.put(username.toLowerCase(), this);
     }
@@ -76,7 +75,7 @@ public class UserIdent
         if (player != null)
         {
             this.uuid = player.getPersistentID();
-            this.username = player.getCommandSenderName();
+            this.username = player.getName();
             byUuid.put(uuid, this);
             byUsername.put(username.toLowerCase(), this);
         }
@@ -141,7 +140,7 @@ public class UserIdent
         if (ident != null)
             return ident;
 
-        ident = byUsername.get(player.getCommandSenderName().toLowerCase());
+        ident = byUsername.get(player.getName().toLowerCase());
         if (ident != null)
             return ident;
 
@@ -189,7 +188,7 @@ public class UserIdent
     public static synchronized void login(EntityPlayer player)
     {
         UserIdent ident = byUuid.get(player.getPersistentID());
-        UserIdent usernameIdent = byUsername.get(player.getCommandSenderName().toLowerCase());
+        UserIdent usernameIdent = byUsername.get(player.getName().toLowerCase());
 
         if (ident == null)
         {
@@ -202,7 +201,7 @@ public class UserIdent
             }
         }
         ident.player = player;
-        ident.username = player.getCommandSenderName();
+        ident.username = player.getName();
         ident.uuid = player.getPersistentID();
         ident.gameProfile = null;
 
@@ -212,7 +211,7 @@ public class UserIdent
 
             // Change data for already existing references to old UserIdent
             usernameIdent.player = player;
-            usernameIdent.username = player.getCommandSenderName();
+            usernameIdent.username = player.getName();
 
             // Replace entry in username map by the one from uuid map
             byUsername.remove(usernameIdent.username.toLowerCase());
@@ -425,7 +424,7 @@ public class UserIdent
 
     public static EntityPlayerMP getPlayerByUsername(String username)
     {
-        return MinecraftServer.getServer().getConfigurationManager().func_152612_a(username);
+        return MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(username);
     }
 
     public static EntityPlayerMP getPlayerByMatchOrUsername(ICommandSender sender, String match)
@@ -446,7 +445,7 @@ public class UserIdent
 
     public static GameProfile getGameProfileByUuid(UUID uuid)
     {
-        GameProfile profile = MinecraftServer.getServer().func_152358_ax().func_152652_a(uuid);
+        GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().func_152652_a(uuid);
         return profile;
     }
 

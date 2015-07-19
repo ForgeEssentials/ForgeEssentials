@@ -1,9 +1,8 @@
 package com.forgeessentials.commands.item;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -41,7 +40,7 @@ public class CommandVirtualchest extends FEcmdModuleCommands implements Configur
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         EntityPlayerMP player = sender;
         if (player.openContainer != player.inventoryContainer)
@@ -51,10 +50,7 @@ public class CommandVirtualchest extends FEcmdModuleCommands implements Configur
         player.getNextWindowId();
 
         VirtualChest chest = new VirtualChest(player);
-        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, name, size, true));
-        player.openContainer = new ContainerChest(player.inventory, chest);
-        player.openContainer.windowId = player.currentWindowId;
-        player.openContainer.addCraftingToCrafters(player);
+        player.displayGUIChest(chest);
     }
 
     @Override

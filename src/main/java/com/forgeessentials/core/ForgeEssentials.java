@@ -324,7 +324,7 @@ public class ForgeEssentials extends ConfigLoaderBase
             Matcher matcher = pattern.matcher(event.player.getGameProfile().getName());
             if (matcher.find())
             {
-                String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getCommandSenderName());
+                String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getName());
                 ((EntityPlayerMP) event.player).playerNetServerHandler.kickPlayerFromServer(msg);
             }
         }

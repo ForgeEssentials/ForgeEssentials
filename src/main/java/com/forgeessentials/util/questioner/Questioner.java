@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.util.events.ServerEventHandler;
-
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class Questioner extends ServerEventHandler
 {
@@ -50,24 +52,24 @@ public class Questioner extends ServerEventHandler
         add(target, question, callback, DEFAULT_TIMEOUT);
     }
 
-    public static synchronized void answer(ICommandSender target, Boolean answer)
+    public static synchronized void answer(ICommandSender target, Boolean answer) throws CommandException
     {
         QuestionData question = questions.remove(target);
         if (question != null)
             question.doAnswer(answer);
     }
 
-    public static void cancel(ICommandSender target)
+    public static void cancel(ICommandSender target) throws CommandException
     {
         answer(target, null);
     }
 
-    public static void confirm(ICommandSender target)
+    public static void confirm(ICommandSender target) throws CommandException
     {
         answer(target, true);
     }
 
-    public static void deny(ICommandSender target)
+    public static void deny(ICommandSender target) throws CommandException
     {
         answer(target, false);
     }
@@ -79,7 +81,18 @@ public class Questioner extends ServerEventHandler
         {
             for (Entry<ICommandSender, QuestionData> question : questions.entrySet())
                 if (question.getValue().isTimeout())
-                    cancel(question.getKey());
+                {
+                    try
+                    {
+                        cancel(question.getKey());
+                    }
+                    catch (CommandException e)
+                    {
+                        ChatComponentTranslation msg = new ChatComponentTranslation(e.getMessage(), e.getErrorOjbects());
+                        msg.getChatStyle().setColor(EnumChatFormatting.RED);
+                        question.getValue().getTarget().addChatMessage(msg);
+                    }
+                }
         }
     }
 

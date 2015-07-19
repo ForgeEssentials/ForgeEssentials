@@ -3,11 +3,13 @@ package com.forgeessentials.signtools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fe.event.world.SignEditEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -17,8 +19,6 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderB
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
 public class SignToolsModule extends ConfigLoaderBase
@@ -75,20 +75,20 @@ public class SignToolsModule extends ConfigLoaderBase
      */
 
     @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent e)
+    public void onPlayerInteract(PlayerInteractEvent event)
     {
-        if (!allowSignCommands || !e.action.equals(Action.RIGHT_CLICK_BLOCK))
+        if (!allowSignCommands || !event.action.equals(Action.RIGHT_CLICK_BLOCK))
         {
             return;
         }
 
-        TileEntity te = e.entityPlayer.worldObj.getTileEntity(e.x, e.y, e.z);
+        TileEntity te = event.entityPlayer.worldObj.getTileEntity(event.pos);
         if (te != null)
         {
             if (te instanceof TileEntitySign)
             {
-                String[] signText = ((TileEntitySign) te).signText;
-                if (!signText[0].equals("[command]"))
+                IChatComponent[] signText = ((TileEntitySign) te).signText;
+                if (!signText[0].getUnformattedTextForChat().equals("[command]"))
                 {
                     return;
                 }
@@ -96,8 +96,8 @@ public class SignToolsModule extends ConfigLoaderBase
                 else
                 {
                     String send = signText[1] + " " + signText[2] + " " + signText[3];
-                    MinecraftServer.getServer().getCommandManager().executeCommand(e.entityPlayer, send);
-                    e.setCanceled(true);
+                    MinecraftServer.getServer().getCommandManager().executeCommand(event.entityPlayer, send);
+                    event.setCanceled(true);
                 }
 
             }

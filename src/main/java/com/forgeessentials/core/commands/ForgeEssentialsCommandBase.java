@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -62,7 +64,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
     // Command processing
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (sender instanceof EntityPlayerMP)
         {
@@ -78,17 +80,17 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         }
     }
 
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
-        throw new TranslatedCommandException("Command %s is not implemented for players", getCommandName());
+        throw new TranslatedCommandException("This command cannot be used as player");
     }
 
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
-        throw new TranslatedCommandException("Command %s is not implemented for console", getCommandName());
+        throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
-    public void processCommandBlock(CommandBlockLogic block, String[] args)
+    public void processCommandBlock(CommandBlockLogic block, String[] args) throws CommandException
     {
         processCommandConsole(block, args);
     }
@@ -99,28 +101,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
     @Override
     public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
-        if (!(sender instanceof EntityPlayer) && !canConsoleUseCommand())
-            return canCommandSenderUseCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-        if (!checkCommandPermission(sender))
+        if (!canConsoleUseCommand() && !(sender instanceof EntityPlayer))
             return false;
         return true;
-    }
-
-    protected static boolean canCommandSenderUseCommandException(String msg)
-    {
-        // Find out if, if canCommandSenderUseCommand was called from within executeCommand method of CommandHandler.
-        // Only if it's called from there, it's safe to throw an exception.
-        final String className = CommandHandler.class.getName();
-        final String methodName = "executeCommand";
-        for (StackTraceElement s : Thread.currentThread().getStackTrace())
-            if (s.getClassName().equals(className))
-            {
-                if (s.getClassName().equals(methodName))
-                    throw new TranslatedCommandException(msg);
-                break;
-            }
-        // Just return false instead of an exception
-        return false;
     }
 
     public abstract boolean canConsoleUseCommand();
@@ -235,17 +218,18 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
      * @param string
      * @param relativeStart
      * @return
+     * @throws NumberInvalidException
      */
-    public static int parseInt(ICommandSender sender, String string, int relativeStart)
+    public static int parseInt(String string, int relativeStart) throws NumberInvalidException
     {
         if (string.startsWith("~"))
         {
             string = string.substring(1);
-            return relativeStart + parseInt(sender, string);
+            return relativeStart + parseInt(string);
         }
         else
         {
-            return parseInt(sender, string);
+            return parseInt(string);
         }
     }
 
@@ -257,16 +241,16 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
      * @param relativeStart
      * @return
      */
-    public static double parseDouble(ICommandSender sender, String string, double relativeStart)
+    public static double parseDouble(String string, double relativeStart) throws NumberInvalidException
     {
         if (string.startsWith("~"))
         {
             string = string.substring(1);
-            return relativeStart + parseInt(sender, string);
+            return relativeStart + parseInt(string);
         }
         else
         {
-            return parseInt(sender, string);
+            return parseInt(string);
         }
     }
 

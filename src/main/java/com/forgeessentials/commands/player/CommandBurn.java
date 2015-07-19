@@ -6,6 +6,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -14,8 +16,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandBurn extends FEcmdModuleCommands
 {
@@ -26,7 +26,7 @@ public class CommandBurn extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -51,7 +51,7 @@ public class CommandBurn extends FEcmdModuleCommands
         {
             if (args[0].toLowerCase().equals("me"))
             {
-                sender.setFire(parseInt(sender, args[1]));
+                sender.setFire(parseInt(args[1]));
                 ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
             else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
@@ -59,7 +59,7 @@ public class CommandBurn extends FEcmdModuleCommands
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
-                    player.setFire(parseIntWithMin(sender, args[1], 0));
+                    player.setFire(parseInt(args[1], 0, Integer.MAX_VALUE));
                     ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
                 }
                 else
@@ -73,12 +73,12 @@ public class CommandBurn extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         int time = 15;
         if (args.length == 2)
         {
-            time = parseIntWithMin(sender, args[1], 0);
+            time = parseInt(args[1], 0, Integer.MAX_VALUE);
         }
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player != null)
@@ -103,7 +103,7 @@ public class CommandBurn extends FEcmdModuleCommands
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

@@ -17,7 +17,6 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
-import com.forgeessentials.util.output.LoggingHandler;
 
 public final class ChatOutputHandler extends ConfigLoaderBase
 {
@@ -52,7 +51,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     public static void sendMessage(ICommandSender recipient, IChatComponent message)
     {
         if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).playerNetServerHandler == null)
-            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getCommandSenderName(), message.getUnformattedText()));
+            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getName(), message.getUnformattedText()));
         else
             recipient.addChatMessage(message);
     }
@@ -207,7 +206,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     {
         String codes = "";
         for (EnumChatFormatting code : EnumChatFormatting.values())
-            codes += code.getFormattingCode();
+            codes += code.toString().charAt(1);
         FORMAT_CODE_PATTERN = Pattern.compile(COLOR_FORMAT_CHARACTER + "[" + codes + "]");
     }
 
@@ -280,7 +279,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         {
             char formatChar = textFormats.charAt(i);
             for (EnumChatFormatting format : EnumChatFormatting.values())
-                if (format.getFormattingCode() == formatChar)
+                if (format.toString().charAt(1) == formatChar)
                 {
                     result.add(format);
                     break;

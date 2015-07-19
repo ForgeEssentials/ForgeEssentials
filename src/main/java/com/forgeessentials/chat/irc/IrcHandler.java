@@ -22,6 +22,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -48,11 +52,6 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 
 public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoader
 {
@@ -287,7 +286,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void sendPlayerMessage(ICommandSender sender, IChatComponent message)
     {
         if (isConnected())
-            sendMessage(String.format(mcHeader, sender.getCommandSenderName(), ChatOutputHandler.stripFormatting(message.getUnformattedText())));
+            sendMessage(String.format(mcHeader, sender.getName(), ChatOutputHandler.stripFormatting(message.getUnformattedText())));
     }
 
     private void mcSendMessage(String message, User user)
@@ -387,21 +386,21 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)
-            sendMessage(ChatOutputHandler.stripFormatting(event.component.getUnformattedText()));
+            sendMessage(ChatOutputHandler.stripFormatting(event.getComponent().getUnformattedText()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoginEvent(PlayerLoggedInEvent event)
     {
         if (showGameEvents)
-            sendMessage(Translator.format("%s joined the game", event.player.getCommandSenderName()));
+            sendMessage(Translator.format("%s joined the game", event.player.getName()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoginEvent(PlayerLoggedOutEvent event)
     {
         if (showGameEvents)
-            sendMessage(Translator.format("%s left the game", event.player.getCommandSenderName()));
+            sendMessage(Translator.format("%s left the game", event.player.getName()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -410,7 +409,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (!(event.entityLiving instanceof EntityPlayer))
             return;
         if (showGameEvents)
-            sendMessage(Translator.format("%s died", event.entityLiving.getCommandSenderName()));
+            sendMessage(Translator.format("%s died", event.entityLiving.getName()));
     }
 
     /* ------------------------------------------------------------ */

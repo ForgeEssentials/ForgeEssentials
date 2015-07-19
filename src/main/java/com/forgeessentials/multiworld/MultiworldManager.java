@@ -16,14 +16,18 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldManager;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldSettings;
-import net.minecraft.world.WorldSettings.GameType;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
+import net.minecraftforge.fml.common.network.FMLOutboundHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 import org.apache.commons.io.FileUtils;
 
@@ -38,13 +42,6 @@ import com.forgeessentials.multiworld.gen.WorldTypeMultiworld;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.ImmutableMap;
-
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
-import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
-import net.minecraftforge.fml.common.network.FMLOutboundHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * 
@@ -249,18 +246,18 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             if (overworld == null)
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
-            WorldSettings worldSettings = new WorldSettings(world.seed, GameType.SURVIVAL, world.mapFeaturesEnabled, false, world.worldTypeObj);
 
             // Create WorldServer with settings
-            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, //
-                    overworld.getWorldInfo().getWorldName(), world.dimensionId, worldSettings, //
-                    overworld, mcServer.theProfiler, world);
+            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, overworld.getWorldInfo(), //
+                    world.dimensionId, overworld, mcServer.theProfiler, world);
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
-            worldServer.provider.dimensionId = world.dimensionId;
+            worldServer.provider.setDimension(world.dimensionId);
             worldServer.addWorldAccess(new WorldManager(mcServer, worldServer));
+
+            mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
             if (!mcServer.isSinglePlayer())
                 worldServer.getWorldInfo().setGameType(mcServer.getGameType());
-            mcServer.func_147139_a(mcServer.func_147135_j());
+
             world.updateWorldSettings();
             world.worldLoaded = true;
             world.error = false;
@@ -413,10 +410,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         {
             WorldServer world = it.next();
             // Check with DimensionManager, whether the world is still loaded
-            if (DimensionManager.getWorld(world.provider.dimensionId) == null)
+            if (DimensionManager.getWorld(world.provider.getDimensionId()) == null)
             {
-                if (DimensionManager.isDimensionRegistered(world.provider.dimensionId))
-                    DimensionManager.unregisterDimension(world.provider.dimensionId);
+                if (DimensionManager.isDimensionRegistered(world.provider.getDimensionId()))
+                    DimensionManager.unregisterDimension(world.provider.getDimensionId());
                 it.remove();
             }
         }
@@ -431,12 +428,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         {
             WorldServer world = it.next();
             // Check with DimensionManager, whether the world is still loaded
-            if (DimensionManager.getWorld(world.provider.dimensionId) == null)
+            if (DimensionManager.getWorld(world.provider.getDimensionId()) == null)
             {
                 try
                 {
-                    if (DimensionManager.isDimensionRegistered(world.provider.dimensionId))
-                        DimensionManager.unregisterDimension(world.provider.dimensionId);
+                    if (DimensionManager.isDimensionRegistered(world.provider.getDimensionId()))
+                        DimensionManager.unregisterDimension(world.provider.getDimensionId());
 
                     File path = world.getChunkSaveLocation(); // new
                                                               // File(world.getSaveHandler().getWorldDirectory(),

@@ -25,6 +25,10 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -56,11 +60,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
 public class ModuleChat
@@ -220,13 +219,13 @@ public class ModuleChat
 
         if (CommandPm.getTarget(event.player) != null)
         {
-            tell(event.player, event.component, CommandPm.getTarget(event.player));
+            tell(event.player, event.getComponent(), CommandPm.getTarget(event.player));
             event.setCanceled(true);
             return;
         }
 
         // Log chat message
-        logChatMessage(event.player.getCommandSenderName(), event.message);
+        logChatMessage(event.player.getName(), event.message);
 
         // Initialize parameters
         String message = processChatReplacements(event.player, censor.filter(event.player, event.message));
@@ -238,7 +237,7 @@ public class ModuleChat
             playerFormat = "";
 
         // Initialize header
-        String playerCmd = "/msg " + event.player.getCommandSenderName() + " ";
+        String playerCmd = "/msg " + event.player.getName() + " ";
         IChatComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
         IChatComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
@@ -263,7 +262,7 @@ public class ModuleChat
             ChatOutputHandler.applyFormatting(messageComponent.getChatStyle(), ChatOutputHandler.enumChatFormattings(textFormats));
 
         // Finish complete message
-        event.component = new ChatComponentTranslation("%s%s", header, messageComponent);
+        event.setComponent(new ChatComponentTranslation("%s%s", header, messageComponent));
 
         // Handle chat range
         Double range = ServerUtil.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));
@@ -273,7 +272,7 @@ public class ModuleChat
             for (EntityPlayerMP player : ServerUtil.getPlayerList())
             {
                 if (player.dimension == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
-                    ChatOutputHandler.sendMessage(player, event.component);
+                    ChatOutputHandler.sendMessage(player, event.getComponent());
             }
             event.setCanceled(true);
         }
@@ -468,7 +467,7 @@ public class ModuleChat
     {
         String nickname = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
         if (nickname == null || nickname.isEmpty())
-            nickname = player.getCommandSenderName();
+            nickname = player.getName();
         return nickname;
     }
 
@@ -476,10 +475,10 @@ public class ModuleChat
 
     public static void tell(ICommandSender sender, IChatComponent message, ICommandSender target)
     {
-        ChatComponentTranslation sentMsg = new ChatComponentTranslation("commands.message.display.incoming", new Object[] { sender.func_145748_c_(),
+        ChatComponentTranslation sentMsg = new ChatComponentTranslation("commands.message.display.incoming", new Object[] { sender.getDisplayName(),
                 message.createCopy() });
         ChatComponentTranslation senderMsg = new ChatComponentTranslation("commands.message.display.outgoing",
-                new Object[] { target.func_145748_c_(), message });
+                new Object[] { target.getDisplayName(), message });
         sentMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
         senderMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
         ChatOutputHandler.sendMessage(target, sentMsg);
@@ -487,5 +486,4 @@ public class ModuleChat
         CommandReply.messageSent(sender, target);
         ModuleCommandsEventHandler.checkAfkMessage(target, message);
     }
-
 }

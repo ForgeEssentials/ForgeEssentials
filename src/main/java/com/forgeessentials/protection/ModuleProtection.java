@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -37,7 +38,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -49,11 +51,9 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.protection.commands.CommandUpgradePermissions;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameData;
 
 @FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false)
 public class ModuleProtection
@@ -204,7 +204,7 @@ public class ModuleProtection
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
-                String itemPerm = "." + getItemId(item) + Zone.ALL_PERMS;
+                String itemPerm = "." + ServerUtil.getItemPermission(item) + Zone.ALL_PERMS;
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, PermissionLevel.TRUE, "USE " + getItemName(item));
                 APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, PermissionLevel.TRUE, "INVENTORY " + getItemName(item));
                 APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, PermissionLevel.TRUE, "EXIST " + getItemName(item));
@@ -214,11 +214,10 @@ public class ModuleProtection
         // Register blocks
         APIRegistry.perms.registerPermission(PERM_BREAK + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow breaking blocks");
         APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow placing blocks");
-        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, PermissionLevel.TRUE,
-                "Allow interacting with blocks (button, chest, workbench)");
+        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
-            String blockPerm = "." + getBlockId(block) + Zone.ALL_PERMS;
+            String blockPerm = "." + ServerUtil.getBlockPermission(block) + Zone.ALL_PERMS;
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, PermissionLevel.TRUE, "BREAK " + block.getLocalizedName());
             APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, PermissionLevel.TRUE, "PLACE " + block.getLocalizedName());
             APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, PermissionLevel.TRUE, "INTERACT " + block.getLocalizedName());
@@ -269,37 +268,32 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static String getBlockId(Block block)
-    {
-        return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.');
-    }
-
     public static String getBlockPermission(Block block, int meta)
     {
         if (meta == 0 || meta == 32767)
-            return getBlockId(block);
+            return ServerUtil.getBlockPermission(block);
         else
-            return getBlockId(block) + "." + meta;
+            return ServerUtil.getBlockPermission(block) + "." + meta;
     }
 
-    public static String getBlockPermission(Block block, World world, int x, int y, int z)
+    public static String getBlockPermission(IBlockState blockState)
     {
-        return getBlockPermission(block, block.getDamageValue(world, x, y, z));
+        return getBlockPermission(blockState.getBlock(), blockState.getBlock().getMetaFromState(blockState));
     }
 
-    public static String getBlockBreakPermission(Block block, World world, int x, int y, int z)
+    public static String getBlockBreakPermission(IBlockState blockState)
     {
-        return ModuleProtection.PERM_BREAK + "." + getBlockPermission(block, world, x, y, z);
+        return ModuleProtection.PERM_BREAK + "." + getBlockPermission(blockState);
     }
 
-    public static String getBlockPlacePermission(Block block, World world, int x, int y, int z)
+    public static String getBlockPlacePermission(IBlockState blockState)
     {
-        return ModuleProtection.PERM_PLACE + "." + getBlockPermission(block, world, x, y, z);
+        return ModuleProtection.PERM_PLACE + "." + getBlockPermission(blockState);
     }
 
-    public static String getBlockInteractPermission(Block block, World world, int x, int y, int z)
+    public static String getBlockInteractPermission(IBlockState blockState)
     {
-        return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(block, world, x, y, z);
+        return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(blockState);
     }
 
     public static String getBlockBreakPermission(Block block, int meta)
@@ -319,18 +313,13 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static String getItemId(Item item)
-    {
-        return GameData.getItemRegistry().getNameForObject(item).replace(':', '.');
-    }
-
     public static String getItemPermission(ItemStack stack, boolean checkMeta)
     {
         int dmg = stack.getItemDamage();
         if (!checkMeta || dmg == 0 || dmg == 32767)
-            return getItemId(stack.getItem());
+            return ServerUtil.getItemPermission(stack.getItem());
         else
-            return getItemId(stack.getItem()) + "." + dmg;
+            return ServerUtil.getItemPermission(stack.getItem()) + "." + dmg;
     }
 
     public static String getItemPermission(ItemStack stack)

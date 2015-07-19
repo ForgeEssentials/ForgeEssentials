@@ -5,8 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -38,7 +40,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] argsArray)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] argsArray, BlockPos pos)
     {
         switch (argsArray.length)
         {
@@ -53,7 +55,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] argsArray)
+    public void processCommand(ICommandSender sender, String[] argsArray) throws CommandException
     {
         EntityPlayerMP player = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
         Queue<String> args = new LinkedList<>(Arrays.asList(argsArray));
@@ -82,16 +84,16 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase
         {
             if (args.size() < 3)
                 throw new TranslatedCommandException("Too few arguments for location.");
-            x = parseDouble(sender, args.remove());
-            y = parseDouble(sender, args.remove());
-            z = parseDouble(sender, args.remove());
+            x = parseDouble(args.remove());
+            y = parseDouble(args.remove());
+            z = parseDouble(args.remove());
         }
 
         Multiworld multiworld = ModuleMultiworld.getMultiworldManager().getMultiworld(worldName);
         WorldServer world = multiworld != null ? multiworld.getWorldServer() : APIRegistry.namedWorldHandler.getWorld(worldName);
         if (world == null)
             throw new TranslatedCommandException("Could not find world " + worldName);
-        int dimId = world.provider.dimensionId;
+        int dimId = world.provider.getDimensionId();
 
         // if (dimId < 0 || dimId == 1)
         // throw new TranslatedCommandException("You are not allowed to teleport to that dimension");

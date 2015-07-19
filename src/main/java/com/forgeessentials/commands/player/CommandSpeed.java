@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.player;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -8,18 +9,12 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.output.ChatOutputHandler;
+
 public class CommandSpeed extends FEcmdModuleCommands
 {
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
     {
-        /*if (!PlayerInfo.get(player).getHasFEClient())
-        {
-            ChatOutputHandler.chatError(player, "You need the FE client addon to use this command.");
-            ChatOutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");
-            return;
-        }*/
-
         ChatOutputHandler.chatWarning(player, "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
         if (args.length >= 1)
         {
@@ -28,7 +23,7 @@ public class CommandSpeed extends FEcmdModuleCommands
             if (args[0].equals("reset"))
             {
                 ChatOutputHandler.chatNotification(player, "Resetting speed to regular walking speed.");
-                //NetworkUtils.netHandler.sendTo(new Packet6Speed(0.0F), player);
+                // NetworkUtils.netHandler.sendTo(new Packet6Speed(0.0F), player);
                 NBTTagCompound tagCompound = new NBTTagCompound();
                 player.capabilities.writeCapabilitiesToNBT(tagCompound);
                 tagCompound.getCompoundTag("abilities").setTag("flySpeed", new NBTTagFloat(0.05F));
@@ -38,11 +33,9 @@ public class CommandSpeed extends FEcmdModuleCommands
                 return;
             }
 
-
-
             float speed = 0.05F;
 
-            int multiplier = parseInt(player, args[0]);
+            int multiplier = parseInt(args[0]);
 
             if (multiplier >= 10)
             {
@@ -58,7 +51,7 @@ public class CommandSpeed extends FEcmdModuleCommands
             player.sendPlayerAbilities();
 
             ChatOutputHandler.chatNotification(player, "Walk/fly speed set to " + speed);
-            //NetworkUtils.netHandler.sendTo(new Packet6Speed(speed), player);
+            // NetworkUtils.netHandler.sendTo(new Packet6Speed(speed), player);
         }
     }
 

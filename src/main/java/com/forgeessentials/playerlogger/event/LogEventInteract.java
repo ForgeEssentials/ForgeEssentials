@@ -27,13 +27,14 @@ public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
         ActionBlock action = new ActionBlock();
         action.time = new Date();
         action.player = getPlayer(event.entityPlayer.getPersistentID());
-        action.world = getWorld(event.world.provider.dimensionId);
+        action.world = getWorld(event.world.provider.getDimensionId());
         // action.block = getBlock(block);
         // action.metadata = metadata;
         action.type = event.action == Action.LEFT_CLICK_BLOCK ? ActionBlockType.USE_LEFT : ActionBlockType.USE_RIGHT;
-        action.x = event.x;
-        action.y = event.y;
-        action.z = event.z;
+        action.x = event.pos.getX();
+        action.y = event.pos.getY();
+        action.z = event.pos.getZ();
         em.persist(action);
     }
+    
 }

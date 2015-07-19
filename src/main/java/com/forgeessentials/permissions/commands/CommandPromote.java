@@ -1,9 +1,9 @@
 package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -12,13 +12,13 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandPromote extends ForgeEssentialsCommandBase
+public class CommandPromote extends ParserCommandBase
 {
 
     public static final String PERM_NODE = "fe.perm.promote";
@@ -29,7 +29,32 @@ public class CommandPromote extends ForgeEssentialsCommandBase
         return "promote";
     }
 
-    public void parse(CommandParserArgs arguments)
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/promote <player> <group>: Promote a user to another group";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return PERM_NODE;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -76,44 +101,6 @@ public class CommandPromote extends ForgeEssentialsCommandBase
         ChatOutputHandler.chatConfirmation(arguments.sender, Translator.format("Added %s to group %s", ident.getUsernameOrUuid(), groupName));
         if (ident.hasPlayer())
             ChatOutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been added to the %s group", groupName));
-    }
-
-    @Override
-    public void processCommand(ICommandSender sender, String[] args)
-    {
-        parse(new CommandParserArgs(this, args, sender));
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM_NODE;
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
-        parse(arguments);
-        return arguments.tabCompletion;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/promote <player> <group>: Promote a user to another group";
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
     }
 
 }

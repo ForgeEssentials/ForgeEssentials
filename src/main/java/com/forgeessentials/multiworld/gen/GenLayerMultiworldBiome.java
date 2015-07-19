@@ -2,6 +2,7 @@ package com.forgeessentials.multiworld.gen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -18,6 +19,8 @@ import com.forgeessentials.multiworld.WorldServerMultiworld;
  */
 public class GenLayerMultiworldBiome extends GenLayer
 {
+    
+    protected Random random = new Random();
 
     @SuppressWarnings("unchecked")
     protected List<BiomeEntry>[] biomes = new ArrayList[BiomeManager.BiomeType.values().length];
@@ -124,7 +127,7 @@ public class GenLayerMultiworldBiome extends GenLayer
         int totalWeight = WeightedRandom.getTotalWeight(biomeList);
         int rand = nextInt(totalWeight / 10) * 10;
         int weight = rand + (BiomeManager.isTypeListModded(type) ? nextInt(Math.min(10, totalWeight - rand)) : 0);
-
-        return (BiomeEntry) WeightedRandom.getItem(biomeList, weight);
+        return (BiomeEntry) WeightedRandom.getRandomItem(random, biomeList, weight);
     }
+    
 }

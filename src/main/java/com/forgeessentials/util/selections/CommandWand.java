@@ -2,6 +2,7 @@ package com.forgeessentials.util.selections;
 
 //Depreciated
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -25,7 +26,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {

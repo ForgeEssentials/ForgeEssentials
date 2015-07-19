@@ -109,12 +109,12 @@ public class CommandParserArgs
     }
 
     @Deprecated
-    public UserIdent parsePlayer()
+    public UserIdent parsePlayer() throws CommandException
     {
         return parsePlayer(true);
     }
 
-    public UserIdent parsePlayer(boolean mustExist)
+    public UserIdent parsePlayer(boolean mustExist) throws CommandException
     {
         if (isTabCompletion && size() == 1)
         {
@@ -157,13 +157,13 @@ public class CommandParserArgs
         }
         for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
-            if (CommandBase.doesStringStartWith(arg, player.getCommandSenderName()))
-                result.add(player.getCommandSenderName());
+            if (CommandBase.doesStringStartWith(arg, player.getName()))
+                result.add(player.getName());
         }
         return new ArrayList<String>(result);
     }
 
-    public void checkPermission(String perm)
+    public void checkPermission(String perm) throws CommandException
     {
         if (!isTabCompletion && sender != null && !hasPermission(perm))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
@@ -174,7 +174,7 @@ public class CommandParserArgs
         return APIRegistry.perms.checkPermission(permissionContext, perm);
     }
 
-    public void tabComplete(String... completionList)
+    public void tabComplete(String... completionList) throws CancelParsingException
     {
         if (!isTabCompletion || args.size() != 1)
             return;
@@ -182,7 +182,7 @@ public class CommandParserArgs
         throw new CancelParsingException();
     }
 
-    public void tabComplete(Collection<String> completionList)
+    public void tabComplete(Collection<String> completionList) throws CancelParsingException
     {
         if (!isTabCompletion || args.size() != 1)
             return;
@@ -190,7 +190,7 @@ public class CommandParserArgs
         throw new CancelParsingException();
     }
 
-    public int parseInt()
+    public int parseInt() throws CommandException
     {
         checkTabCompletion();
         String value = remove();
@@ -204,7 +204,7 @@ public class CommandParserArgs
         }
     }
 
-    public long parseLong()
+    public long parseLong() throws CommandException
     {
         checkTabCompletion();
         String value = remove();
@@ -218,7 +218,7 @@ public class CommandParserArgs
         }
     }
 
-    public Float parseFloat()
+    public Float parseFloat() throws CommandException
     {
         checkTabCompletion();
         String value = remove();
@@ -232,7 +232,7 @@ public class CommandParserArgs
         }
     }
 
-    public Double parseDouble()
+    public Double parseDouble() throws CommandException
     {
         checkTabCompletion();
         String value = remove();
@@ -246,7 +246,7 @@ public class CommandParserArgs
         }
     }
 
-    public boolean parseBoolean()
+    public boolean parseBoolean() throws CommandException
     {
         checkTabCompletion();
         String value = remove().toLowerCase();
@@ -267,7 +267,7 @@ public class CommandParserArgs
         }
     }
 
-    public void checkTabCompletion()
+    public void checkTabCompletion() throws CommandException
     {
         if (isTabCompletion && size() == 1)
             throw new CancelParsingException();
@@ -283,7 +283,7 @@ public class CommandParserArgs
 
     }
 
-    public void requirePlayer()
+    public void requirePlayer() throws CommandException
     {
         if (senderPlayer == null)
             throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);

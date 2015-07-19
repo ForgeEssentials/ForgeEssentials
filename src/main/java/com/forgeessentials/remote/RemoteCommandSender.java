@@ -2,10 +2,13 @@ package com.forgeessentials.remote;
 
 import java.io.IOException;
 
+import net.minecraft.command.CommandResultStats.Type;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import com.forgeessentials.api.remote.RemoteResponse;
@@ -35,15 +38,15 @@ public class RemoteCommandSender implements ICommandSender
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
         return session.getUserIdent().getUsernameOrUuid();
     }
 
     @Override
-    public IChatComponent func_145748_c_()
+    public IChatComponent getDisplayName()
     {
-        return getPlayer().func_145748_c_();
+        return getPlayer().getDisplayName();
     }
 
     @Override
@@ -76,15 +79,39 @@ public class RemoteCommandSender implements ICommandSender
     }
 
     @Override
-    public ChunkCoordinates getPlayerCoordinates()
+    public BlockPos getPosition()
     {
-        return getPlayer().getPlayerCoordinates();
+        return getPlayer().getPosition();
+    }
+
+    @Override
+    public Vec3 getPositionVector()
+    {
+        return getPlayer().getPositionVector();
     }
 
     @Override
     public World getEntityWorld()
     {
         return getPlayer().getEntityWorld();
+    }
+
+    @Override
+    public Entity getCommandSenderEntity()
+    {
+        return getPlayer().getCommandSenderEntity();
+    }
+
+    @Override
+    public boolean sendCommandFeedback()
+    {
+        return getPlayer().sendCommandFeedback();
+    }
+
+    @Override
+    public void func_174794_a(Type p_174794_1_, int p_174794_2_)
+    {
+        getPlayer().func_174794_a(p_174794_1_, p_174794_2_);
     }
 
 }
