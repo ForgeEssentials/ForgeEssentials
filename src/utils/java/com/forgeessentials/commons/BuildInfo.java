@@ -24,7 +24,7 @@ public abstract class BuildInfo
 
     private static Thread checkVersionThread;
 
-    public static final String VERSION = "1.4.0"; // update manually because gradle is a derp
+    public static final String VERSION = "1.4.1"; // update manually because gradle is a derp
 
     static
     {

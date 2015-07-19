@@ -28,14 +28,18 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.4.0"
+version = "1.4.1"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 project.ext.build = '0'
-if (System.getenv('BUILD_NUMBER') != null)
+if (System.getenv('BUILD_NUMBER') != null) {
     project.ext.build = System.getenv('BUILD_NUMBER')
+
+}
+
+version = version + "." + project.ext.build
 
 import org.ajoberstar.grgit.Grgit
 
@@ -50,9 +54,9 @@ if (JavaVersion.current().isJava8Compatible()) {
 }
 
 minecraft {
-    version = "1.7.10-10.13.2.1291"
+    version = "1.7.10-10.13.4.1448-1.7.10"
     runDir = "rundir"
-    ext.forgeVersion = "10.13.2.1291"
+    ext.forgeVersion = "10.13.4.1448-1.7.10"
 
     replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
     replace "%FE_VERSION%", project.version
@@ -295,7 +299,7 @@ publishing {
         mavenJava(MavenPublication) {
             groupId "com.forgeessentials"
             artifactId "forgeessentials"
-            version "1.4.0"
+            version "1.4-SNAPSHOT"
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
