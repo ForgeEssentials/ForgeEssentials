@@ -3,7 +3,20 @@ package net.minecraftforge.permission;
 public enum PermissionLevel
 {
 
-    TRUE(0), OP_1(1), OP_2(2), OP_3(3), OP(4), FALSE(5);
+    TRUE(0),
+
+    @Deprecated
+    OP_1(1),
+
+    @Deprecated
+    OP_2(2),
+
+    @Deprecated
+    OP_3(3),
+
+    OP(4),
+
+    FALSE(5);
 
     private int opLevel;
 
