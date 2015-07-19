@@ -33,6 +33,7 @@ public class ModulePlayerLogger
     @SuppressWarnings("unused")
     private PlayerLoggerEventHandler eventHandler;
 
+    /*
     @Preconditions
     public boolean checkLibraries()
     {
@@ -66,6 +67,7 @@ public class ModulePlayerLogger
         }
         return true;
     }
+    */
 
 
     @SubscribeEvent
