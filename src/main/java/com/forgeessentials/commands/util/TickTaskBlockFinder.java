@@ -12,7 +12,7 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.TickTask;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameData;
 
 public class TickTaskBlockFinder implements TickTask
 {

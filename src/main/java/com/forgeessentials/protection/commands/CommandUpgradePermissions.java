@@ -21,7 +21,7 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
 
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameData;
 
 public class CommandUpgradePermissions extends ParserCommandBase
 {

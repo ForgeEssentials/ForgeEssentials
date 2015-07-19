@@ -16,7 +16,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandGameMode extends FEcmdModuleCommands
 {

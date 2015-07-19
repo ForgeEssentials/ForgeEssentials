@@ -14,7 +14,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandRepair extends FEcmdModuleCommands
 {

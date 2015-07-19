@@ -5,10 +5,10 @@ import net.minecraft.util.EnumChatFormatting;
 
 import com.forgeessentials.commons.network.Packet5Noclip;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class C5HandlerNoclip implements IMessageHandler<Packet5Noclip, IMessage>
 {

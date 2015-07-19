@@ -10,7 +10,7 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 /**
  * Warns those with permission when the memory usage passes a certain percentage threshold

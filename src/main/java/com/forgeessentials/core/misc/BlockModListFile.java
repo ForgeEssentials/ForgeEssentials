@@ -12,9 +12,9 @@ import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.registry.GameData;
 
 public class BlockModListFile
 {

@@ -6,8 +6,8 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 
 public class CommandModlist extends FEcmdModuleCommands
 {

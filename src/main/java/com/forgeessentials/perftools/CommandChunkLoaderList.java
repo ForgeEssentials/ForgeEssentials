@@ -20,8 +20,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.HashMultimap;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 
 public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 {

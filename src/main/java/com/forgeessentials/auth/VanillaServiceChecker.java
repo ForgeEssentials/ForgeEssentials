@@ -7,7 +7,7 @@ import java.util.TimerTask;
 
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class VanillaServiceChecker extends TimerTask
 {

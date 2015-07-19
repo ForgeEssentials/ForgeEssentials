@@ -20,8 +20,8 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
 {

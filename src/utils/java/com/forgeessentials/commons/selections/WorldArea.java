@@ -10,7 +10,7 @@ public class WorldArea extends AreaBase
     public WorldArea(World world, Point start, Point end)
     {
         super(start, end);
-        dim = world.provider.dimensionId;
+        dim = world.provider.getDimensionId();
     }
 
     public WorldArea(int dim, Point start, Point end)
@@ -28,7 +28,7 @@ public class WorldArea extends AreaBase
     public WorldArea(World world, AreaBase area)
     {
         super(area.getHighPoint(), area.getLowPoint());
-        dim = world.provider.dimensionId;
+        dim = world.provider.getDimensionId();
     }
 
     public int getDimension()

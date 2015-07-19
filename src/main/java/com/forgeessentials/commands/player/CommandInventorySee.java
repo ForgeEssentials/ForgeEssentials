@@ -13,7 +13,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.PlayerInvChest;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 /**
  * Opens other player inventory.

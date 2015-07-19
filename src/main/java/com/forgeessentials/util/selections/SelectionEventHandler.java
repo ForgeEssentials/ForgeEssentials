@@ -11,9 +11,9 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.ServerEventHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class SelectionEventHandler extends ServerEventHandler
 {

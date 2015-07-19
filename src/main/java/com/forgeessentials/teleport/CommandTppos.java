@@ -14,7 +14,7 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.ServerUtil;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandTppos extends ForgeEssentialsCommandBase
 {

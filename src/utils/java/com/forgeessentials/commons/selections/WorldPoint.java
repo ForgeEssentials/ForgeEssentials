@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -29,21 +29,21 @@ public class WorldPoint extends Point {
         dim = dimension;
     }
 
-    public WorldPoint(int dimension, ChunkCoordinates location)
+    public WorldPoint(int dimension, BlockPos location)
     {
-        this(dimension, location.posX, location.posY, location.posZ);
+        this(dimension, location.getX(), location.getY(), location.getZ());
     }
     
     public WorldPoint(World world, int x, int y, int z)
     {
         super(x, y, z);
-        this.dim = world.provider.dimensionId;
+        this.dim = world.provider.getDimensionId();
         this.world = world;
     }
 
-    public WorldPoint(World world, ChunkCoordinates location)
+    public WorldPoint(World world, BlockPos location)
     {
-        this(world, location.posX, location.posY, location.posZ);
+        this(world, location.getX(), location.getY(), location.getZ());
     }
 
     public WorldPoint(Entity entity)
@@ -109,7 +109,7 @@ public class WorldPoint extends Point {
 
     public World getWorld()
     {
-        if (world != null && world.provider.dimensionId != dim)
+        if (world != null && world.provider.getDimensionId() != dim)
             return world;
         world = DimensionManager.getWorld(dim);
         return world;

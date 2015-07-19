@@ -17,7 +17,7 @@ import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameData;
 
 public class CommandSell extends ParserCommandBase
 {

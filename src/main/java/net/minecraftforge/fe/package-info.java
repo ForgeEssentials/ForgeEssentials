@@ -8,4 +8,4 @@
 @API(owner = "ForgeEssentials", provides = "Forge-FEHooks", apiVersion = "1291.1")
 package net.minecraftforge.fe;
 
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;

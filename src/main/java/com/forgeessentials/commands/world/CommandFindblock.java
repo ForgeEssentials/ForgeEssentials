@@ -14,7 +14,7 @@ import com.forgeessentials.commands.util.TickTaskBlockFinder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameData;
 
 public class CommandFindblock extends FEcmdModuleCommands implements ConfigurableCommand
 {

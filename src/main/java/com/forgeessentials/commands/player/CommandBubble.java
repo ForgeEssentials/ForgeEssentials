@@ -14,7 +14,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CommandBubble extends FEcmdModuleCommands
 {

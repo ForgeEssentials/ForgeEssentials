@@ -18,7 +18,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class)
 public class ModulePlayerLogger

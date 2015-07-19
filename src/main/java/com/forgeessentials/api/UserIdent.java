@@ -18,7 +18,7 @@ import com.forgeessentials.util.ServerUtil;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class UserIdent
 {

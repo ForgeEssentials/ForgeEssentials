@@ -18,9 +18,9 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 
 @SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable

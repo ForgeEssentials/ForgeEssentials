@@ -24,8 +24,8 @@ import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public abstract class ServerUtil
 {

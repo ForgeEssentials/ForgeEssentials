@@ -21,7 +21,7 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandTp extends ForgeEssentialsCommandBase
 {

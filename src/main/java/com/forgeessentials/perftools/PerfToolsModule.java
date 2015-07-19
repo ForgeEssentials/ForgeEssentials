@@ -13,7 +13,7 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderB
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "perftools", parentMod = ForgeEssentials.class)
 public class PerfToolsModule extends ConfigLoaderBase

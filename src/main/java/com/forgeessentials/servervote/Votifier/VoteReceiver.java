@@ -41,7 +41,7 @@ import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.FMLLog;
+import net.minecraftforge.fml.common.FMLLog;
 
 /**
  * Like 90% copied from Votifier github: https://github.com/vexsoftware/votifier I only changed the init code and the

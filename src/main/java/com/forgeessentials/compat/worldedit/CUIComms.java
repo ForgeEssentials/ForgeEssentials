@@ -11,10 +11,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.util.selections.SelectionHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 // i said no, but olee is a shithead -.-
 // temporary until i can get around to proper implementation of WECUI protocol

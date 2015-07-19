@@ -24,7 +24,7 @@ import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.

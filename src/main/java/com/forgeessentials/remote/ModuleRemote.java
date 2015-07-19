@@ -35,10 +35,10 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.Gson;
 
-import cpw.mods.fml.common.discovery.ASMDataTable;
-import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager

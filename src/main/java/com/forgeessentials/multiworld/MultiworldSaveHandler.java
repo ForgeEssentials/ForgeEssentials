@@ -14,8 +14,8 @@ import net.minecraft.world.storage.IPlayerFileData;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.StartupQuery;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.StartupQuery;
 
 /**
  * 

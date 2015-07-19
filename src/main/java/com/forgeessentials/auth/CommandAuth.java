@@ -19,7 +19,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandAuth extends ForgeEssentialsCommandBase
 {

@@ -52,8 +52,8 @@ import com.forgeessentials.protection.commands.CommandUpgradePermissions;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameData;
 
 @FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false)
 public class ModuleProtection

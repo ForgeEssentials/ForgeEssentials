@@ -5,9 +5,9 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 public class RespawnDebuffHandler
 {

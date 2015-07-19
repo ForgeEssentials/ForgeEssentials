@@ -28,7 +28,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.4.0"
+version = "1.8.0"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
@@ -50,9 +50,9 @@ if (JavaVersion.current().isJava8Compatible()) {
 }
 
 minecraft {
-    version = "1.7.10-10.13.2.1291"
+    version = "1.8-11.14.3.1450"
     runDir = "rundir"
-    ext.forgeVersion = "10.13.2.1291"
+    ext.forgeVersion = "11.14.3.1450"
 
     replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
     replace "%FE_VERSION%", project.version

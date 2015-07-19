@@ -11,7 +11,7 @@ import com.forgeessentials.api.remote.AbstractRemoteHandler;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 
-import cpw.mods.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 
 /**
  * This is the central access point for all FE API functions

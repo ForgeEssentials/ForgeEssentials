@@ -15,8 +15,8 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.DoAsConsoleCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class CommandDoAs extends FEcmdModuleCommands
 {

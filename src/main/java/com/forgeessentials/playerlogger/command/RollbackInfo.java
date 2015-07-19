@@ -18,7 +18,7 @@ import com.forgeessentials.playerlogger.entity.ActionBlock;
 import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
 import com.google.common.collect.Lists;
 
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameData;
 
 public class RollbackInfo
 {

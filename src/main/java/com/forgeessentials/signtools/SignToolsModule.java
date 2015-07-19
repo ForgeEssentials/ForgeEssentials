@@ -18,7 +18,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
 public class SignToolsModule extends ConfigLoaderBase

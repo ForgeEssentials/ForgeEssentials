@@ -116,7 +116,7 @@ public abstract class PlayerUtil
     public static MovingObjectPosition getPlayerLookingSpot(EntityPlayer player, double maxDistance)
     {
         Vec3 lookAt = player.getLook(1);
-        Vec3 playerPos = Vec3.createVectorHelper(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
+        Vec3 playerPos = new Vec3(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
         Vec3 pos1 = playerPos.addVector(0, player.getEyeHeight(), 0);
         Vec3 pos2 = pos1.addVector(lookAt.xCoord * maxDistance, lookAt.yCoord * maxDistance, lookAt.zCoord * maxDistance);
         return player.worldObj.rayTraceBlocks(pos1, pos2);

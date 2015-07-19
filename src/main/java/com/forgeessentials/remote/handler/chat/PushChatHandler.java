@@ -14,8 +14,8 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.remote.network.ChatResponse;
 import com.forgeessentials.remote.network.EnableRequest;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @FERemoteHandler(id = RemoteMessageID.PUSH_CHAT)
 public class PushChatHandler extends GenericRemoteHandler<EnableRequest>

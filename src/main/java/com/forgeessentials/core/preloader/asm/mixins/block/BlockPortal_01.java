@@ -17,8 +17,8 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.teleport.portal.Portal;
 import com.forgeessentials.teleport.portal.PortalManager;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mixin(BlockPortal.class)
 public abstract class BlockPortal_01 extends BlockPortal

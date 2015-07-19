@@ -19,7 +19,7 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandBed extends ForgeEssentialsCommandBase
 {

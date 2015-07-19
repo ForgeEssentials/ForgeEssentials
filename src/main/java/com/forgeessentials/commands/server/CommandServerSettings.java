@@ -13,7 +13,7 @@ import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandServerSettings extends FEcmdModuleCommands
 {

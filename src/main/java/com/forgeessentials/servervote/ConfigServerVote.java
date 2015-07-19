@@ -21,7 +21,7 @@ import net.minecraftforge.common.config.Configuration;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameData;
 
 public class ConfigServerVote extends ConfigLoaderBase
 {

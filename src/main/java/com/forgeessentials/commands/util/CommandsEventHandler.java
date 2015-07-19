@@ -19,9 +19,9 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class CommandsEventHandler extends ServerEventHandler
 {
