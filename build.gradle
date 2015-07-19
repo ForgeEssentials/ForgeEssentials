@@ -34,8 +34,12 @@ archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 project.ext.build = '0'
-if (System.getenv('BUILD_NUMBER') != null)
+if (System.getenv('BUILD_NUMBER') != null) {
     project.ext.build = System.getenv('BUILD_NUMBER')
+
+}
+
+version = version + "." + project.ext.build
 
 import org.ajoberstar.grgit.Grgit
 
@@ -295,7 +299,8 @@ publishing {
         mavenJava(MavenPublication) {
             groupId "com.forgeessentials"
             artifactId "forgeessentials"
-            version "1.4.0"
+            version "1.8.0"
+            version "1.8-SNAPSHOT"
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')

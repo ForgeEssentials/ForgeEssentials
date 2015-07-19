@@ -160,8 +160,9 @@ public class ModuleProtection
 
         // ----------------------------------------
         // Damage
-        APIRegistry.perms.registerPermission(PERM_DAMAGE_TO, PermissionLevel.TRUE, "Allow damaging entities");
-        APIRegistry.perms.registerPermission(PERM_DAMAGE_BY, PermissionLevel.TRUE, "Allow getting hurt by entities");
+        
+        APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow damaging entities");
+        APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow getting hurt by entities");
         for (Class<?> entityClass : damageEntityClasses)
         {
             APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + "." + entityClass.getSimpleName(), PermissionLevel.TRUE);
