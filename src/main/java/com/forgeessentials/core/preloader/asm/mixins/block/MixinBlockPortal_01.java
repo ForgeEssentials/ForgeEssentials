@@ -1,6 +1,7 @@
 package com.forgeessentials.core.preloader.asm.mixins.block;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBreakable;
 import net.minecraft.block.BlockPortal;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,10 +22,14 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Mixin(BlockPortal.class)
-public abstract class BlockPortal_01 extends BlockPortal
+public abstract class MixinBlockPortal_01 extends BlockBreakable
 {
 
-    @Override
+    public MixinBlockPortal_01()
+    {
+        super(null, null, false);
+    }
+
     @Overwrite
     public void onEntityCollidedWithBlock(World world, int p_149670_2_, int p_149670_3_, int p_149670_4_, Entity entity)
     {
@@ -47,7 +52,6 @@ public abstract class BlockPortal_01 extends BlockPortal
         }
     }
 
-    @Override
     @Overwrite
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess p_149646_1_, int p_149646_2_, int p_149646_3_, int p_149646_4_, int side)
@@ -76,7 +80,6 @@ public abstract class BlockPortal_01 extends BlockPortal
         return true;
     }
 
-    @Override
     @Overwrite
     public boolean func_150000_e(World p_150000_1_, int p_150000_2_, int p_150000_3_, int p_150000_4_)
     {
@@ -104,7 +107,6 @@ public abstract class BlockPortal_01 extends BlockPortal
         return false;
     }
 
-    @Override
     @Overwrite
     public void setBlockBoundsBasedOnState(IBlockAccess p_149719_1_, int p_149719_2_, int p_149719_3_, int p_149719_4_)
     {
@@ -151,7 +153,6 @@ public abstract class BlockPortal_01 extends BlockPortal
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
      * their own) Args: x, y, z, neighbor Block
      */
-    @Override
     @Overwrite
     public void onNeighborBlockChange(World p_149695_1_, int p_149695_2_, int p_149695_3_, int p_149695_4_, Block p_149695_5_)
     {
