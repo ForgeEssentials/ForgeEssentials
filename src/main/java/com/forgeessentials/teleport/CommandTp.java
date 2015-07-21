@@ -10,7 +10,6 @@ import net.minecraft.command.server.CommandTeleport;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.network.play.server.S08PacketPlayerPosLook.EnumFlags;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionObject;
@@ -22,6 +21,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
 {
 
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 1)
@@ -61,7 +61,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
 
                     if (entity instanceof EntityPlayerMP)
                     {
-                        EnumSet<EnumFlags> enumset = EnumSet.noneOf(S08PacketPlayerPosLook.EnumFlags.class);
+                        EnumSet enumset = EnumSet.noneOf(S08PacketPlayerPosLook.EnumFlags.class);
                         if (argX.func_179630_c())
                             enumset.add(S08PacketPlayerPosLook.EnumFlags.X);
                         if (argY.func_179630_c())
