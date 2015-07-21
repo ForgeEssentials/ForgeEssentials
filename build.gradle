@@ -122,7 +122,9 @@ dependencies {
     //myCompile 'org.eclipse.persistence:eclipselink:2.6.0'
 
     // WE integration
-    myCompile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.2-SNAPSHOT:dev'
+    // myCompile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.2-SNAPSHOT:dev'
+    myCompile files('lib/worldedit-core-6.1.1-SNAPSHOT-dist.jar')
+    myCompile files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dev.jar')
 
     // mixins
     shade 'org.spongepowered:mixin:0.4.3'
@@ -133,7 +135,8 @@ dependencies {
     serverLibs 'org.hibernate:hibernate-entitymanager:4.3.7.Final'
     //serverLibs 'org.eclipse.persistence:eclipselink:2.6.0'
     
-    includeMod files('lib/worldedit-forge-mc1.7.10-6.0.2-SNAPSHOT-dist.jar')
+    includeMod files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dist.jar')
+    includeMod files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dev.jar')
 }
 
 //libraries
