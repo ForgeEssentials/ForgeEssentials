@@ -28,9 +28,9 @@ especially a powerful permissions and protection system:
 
 #####Note that this comes with WorldEdit 6.1.1 custom build.#####
 
-ForgeEssentials for Minecraft 1.8 is still in **beta**!
+ForgeEssentials for Minecraft 1.8 is still in **experimental**!
 
-Betas are to be considered unstable and are to be approached with caution. Please make backups before using / updating on a live server.
+Experimentals are to be considered highly unstable and are to be approached with caution. Please make backups before using / updating on a live server.
 
 *******************
 
