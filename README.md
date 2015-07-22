@@ -1,7 +1,7 @@
 ForgeEssentialsMain [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain)
 ===================
 
-The code on this branch is for Minecraft 1.7.10. File issues at the issue tracker.
+The code on this branch is for Minecraft 1.8. File issues at the issue tracker.
 
 *******************
 
@@ -24,11 +24,11 @@ especially a powerful permissions and protection system:
 
 *******************
 
-#### Download for the latest builds on [Jenkins](http://ci.forgeessentials.com/job/FE/). or releases on [Curseforge](http://minecraft.curseforge.com/mc-mods/74735) ####
+#### Download for the latest builds on [the ForgeEssentials site] (http://files.forgeessentials.com/), [Jenkins](http://ci.forgeessentials.com/job/FE/), or releases on [Curseforge](http://minecraft.curseforge.com/mc-mods/74735) ####
 
-#####Note that this comes with WorldEdit build 3370. You can use any WorldEdit build above build 3349.#####
+#####Note that this comes with WorldEdit 6.1.1 custom build.#####
 
-ForgeEssentials for Minecraft 1.7.10 is still in **beta**!
+ForgeEssentials for Minecraft 1.8 is still in **beta**!
 
 Betas are to be considered unstable and are to be approached with caution. Please make backups before using / updating on a live server.
 
