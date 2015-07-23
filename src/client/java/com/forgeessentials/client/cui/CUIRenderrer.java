@@ -2,6 +2,7 @@ package com.forgeessentials.client.cui;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -34,10 +35,11 @@ public class CUIRenderrer
         if (sel == null || sel.getDimension() != FMLClientHandler.instance().getClient().thePlayer.dimension)
             return;
 
-        // RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-        int renderPosX = 0; // renderManager.renderPosX;
-        int renderPosY = 0; // renderManager.renderPosY;
-        int renderPosZ = 0; // renderManager.renderPosZ;
+        double renderPosX = TileEntityRendererDispatcher.staticPlayerX;
+        double renderPosY = TileEntityRendererDispatcher.staticPlayerY;
+        double renderPosZ = TileEntityRendererDispatcher.staticPlayerZ;
+        GL11.glPushMatrix();
+        GL11.glTranslated(-renderPosX + 0.5, -renderPosY + 0.5, -renderPosZ + 0.5);
 
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -64,7 +66,7 @@ public class CUIRenderrer
             {
                 Point p = sel.getStart();
                 GL11.glPushMatrix();
-                GL11.glTranslated(p.getX() - renderPosX + 0.5, p.getY() - renderPosY + 0.5, p.getZ() - renderPosZ + 0.5);
+                GL11.glTranslated(p.getX(), p.getY(), p.getZ());
                 GL11.glScalef(0.96F, 0.96F, 0.96F);
                 if (seeThrough)
                     GL11.glColor4f(1, 0, 0, ALPHA);
@@ -79,7 +81,7 @@ public class CUIRenderrer
             {
                 Point p = sel.getEnd();
                 GL11.glPushMatrix();
-                GL11.glTranslated(p.getX() - renderPosX + 0.5, p.getY() - renderPosY + 0.5, p.getZ() - renderPosZ + 0.5);
+                GL11.glTranslated(p.getX(), p.getY(), p.getZ());
                 GL11.glScalef(0.98F, 0.98F, 0.98F);
                 if (seeThrough)
                     GL11.glColor4f(0, 1, 0, ALPHA);
@@ -96,8 +98,7 @@ public class CUIRenderrer
                 Point p2 = sel.getEnd();
                 Point size = sel.getSize();
                 GL11.glPushMatrix();
-                GL11.glTranslated((float) (p1.getX() + p2.getX()) / 2 - renderPosX + 0.5, (float) (p1.getY() + p2.getY()) / 2 - renderPosY + 0.5,
-                        (float) (p1.getZ() + p2.getZ()) / 2 - renderPosZ + 0.5);
+                GL11.glTranslated((float) (p1.getX() + p2.getX()) / 2, (float) (p1.getY() + p2.getY()) / 2, (float) (p1.getZ() + p2.getZ()) / 2);
                 GL11.glScalef(1 + size.getX(), 1 + size.getY(), 1 + size.getZ());
                 if (seeThrough)
                     GL11.glColor4f(0, 0, 1, ALPHA);
@@ -112,6 +113,7 @@ public class CUIRenderrer
             seeThrough = false;
         }
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glPopMatrix();
     }
 
     /**
@@ -161,7 +163,7 @@ public class CUIRenderrer
         renderer.addVertex(-0.5, 0.5, -0.5);
         renderer.addVertex(-0.5, 0.5, 0.5);
 
-        renderer.draw();
+        Tessellator.getInstance().draw();
     }
 
 }
