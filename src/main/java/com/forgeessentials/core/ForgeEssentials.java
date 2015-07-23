@@ -214,16 +214,14 @@ public class ForgeEssentials extends ConfigLoaderBase
             }
         }, Packet0Handshake.class, 0, Side.SERVER);
         NetworkUtils.registerMessageProxy(Packet1SelectionUpdate.class, 1, Side.CLIENT, new NullMessageHandler<Packet1SelectionUpdate>() {
+            /* dummy */
         });
         NetworkUtils.registerMessageProxy(Packet5Noclip.class, 5, Side.CLIENT, new NullMessageHandler<Packet5Noclip>() {
+            /* dummy */
         });
         NetworkUtils.registerMessageProxy(Packet7Remote.class, 7, Side.CLIENT, new NullMessageHandler<Packet7Remote>() {
+            /* dummy */
         });
-
-        if (!Loader.isModLoaded("ForgeEssentialsClient"))
-        {
-            // NetworkUtils.initServerNullHandlers();
-        }
     }
 
     private void registerCommands()
@@ -270,7 +268,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void serverStarted(FMLServerStartedEvent e)
     {
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
-        
+
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
         FECommandManager.registerCommands();
@@ -302,8 +300,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
         APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_COOLDOWN, "0");
         APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_WARMUP, "0");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, PermissionLevel.TRUE,
-                "Allow being teleported from a certain location / dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, PermissionLevel.TRUE, "Allow being teleported from a certain location / dimension");
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, PermissionLevel.TRUE, "Allow being teleported to a certain location / dimension");
 
         CommandFeSettings.addAlias("teleport_warmup", TeleportHelper.TELEPORT_WARMUP);

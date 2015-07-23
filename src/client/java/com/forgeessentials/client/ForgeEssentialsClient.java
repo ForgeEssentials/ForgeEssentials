@@ -2,13 +2,6 @@ package com.forgeessentials.client;
 
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.forgeessentials.client.util.DummyProxy;
-import com.forgeessentials.commons.BuildInfo;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -18,33 +11,38 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = "ForgeEssentialsClient", name = "Forge Essentials Client Addon", version = BuildInfo.VERSION, guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true)
-public class ForgeEssentialsClient {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-    public static Logger feclientlog;
+import com.forgeessentials.client.util.DummyProxy;
+import com.forgeessentials.commons.BuildInfo;
+
+@Mod(modid = "ForgeEssentialsClient", name = "ForgeEssentials Client Addon", version = BuildInfo.VERSION, guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true)
+public class ForgeEssentialsClient
+{
+
+    public static final Logger feclientlog = LogManager.getLogger("forgeessentials");
 
     @SidedProxy(clientSide = "com.forgeessentials.client.core.ClientProxy", serverSide = "com.forgeessentials.client.util.DummyProxy")
-    public static DummyProxy proxy;
-
-    public boolean serverHasFE;
-
-    public static boolean allowCUI;
-    public static boolean allowQRCodeRender;
+    protected static DummyProxy proxy;
 
     @Instance("ForgeEssentialsClient")
-    public static ForgeEssentialsClient instance;
+    protected static ForgeEssentialsClient instance;
+
+    private static boolean serverHasFE;
+    public static boolean allowCUI;
+    public static boolean allowQRCodeRender;
 
     @NetworkCheckHandler
     public boolean getServerMods(Map<String, String> map, Side side)
     {
-        if (!side.equals(Side.SERVER))
+        if (side.equals(Side.SERVER))
         {
-            return true;
-        }
-        if (map.containsKey("ForgeEssentials"))
-        {
-            serverHasFE = true;
-            feclientlog.info("The server is running ForgeEssentials.");
+            if (map.containsKey("ForgeEssentials"))
+            {
+                serverHasFE = true;
+                feclientlog.info("The server is running ForgeEssentials.");
+            }
         }
         return true;
     }
@@ -52,12 +50,8 @@ public class ForgeEssentialsClient {
     @EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
-        feclientlog = LogManager.getLogger("forgeessentials");
-
-        if (FMLCommonHandler.instance().getSide().isServer())
-        {
-            feclientlog.error("ForgeEssentialsClient should not be installed on a server! It will be automatically disabled.");
-        }
+        if (e.getSide() == Side.SERVER)
+            feclientlog.error("ForgeEssentials client does nothing on servers. You should remove it!");
         proxy.doPreInit(e);
     }
 
@@ -65,6 +59,11 @@ public class ForgeEssentialsClient {
     public void load(FMLInitializationEvent e)
     {
         proxy.load(e);
+    }
+
+    public static boolean serverHasFE()
+    {
+        return serverHasFE;
     }
 
 }

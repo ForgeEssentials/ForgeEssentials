@@ -37,6 +37,8 @@ public class ClientProxy extends DummyProxy
 {
     private ClientConfig config;
 
+    protected int clientTimeTicked;
+
     protected boolean sentHandshake = true;
 
     private static Selection selection;
@@ -64,8 +66,8 @@ public class ClientProxy extends DummyProxy
         }
 
         // Register network messages
-        NetworkUtils.registerMessageProxy(Packet0Handshake.class, 0, Side.SERVER, new NullMessageHandler<Packet0Handshake>()
-        {
+        NetworkUtils.registerMessageProxy(Packet0Handshake.class, 0, Side.SERVER, new NullMessageHandler<Packet0Handshake>() {
+            /* dummy */
         });
         NetworkUtils.registerMessage(new IMessageHandler<Packet1SelectionUpdate, IMessage>() {
             @Override
@@ -77,11 +79,6 @@ public class ClientProxy extends DummyProxy
         }, Packet1SelectionUpdate.class, 1, Side.CLIENT);
         NetworkUtils.registerMessage(new C5HandlerNoclip(), Packet5Noclip.class, 5, Side.CLIENT);
         NetworkUtils.registerMessage(new C7HandlerRemote(), Packet7Remote.class, 7, Side.CLIENT);
-
-        if (!Loader.isModLoaded("ForgeEssentials"))
-        {
-            // NetworkUtils.initClientNullHandlers();
-        }
     }
 
     @Override
@@ -100,6 +97,7 @@ public class ClientProxy extends DummyProxy
     @SubscribeEvent
     public void connectionOpened(FMLNetworkEvent.ClientConnectedToServerEvent e)
     {
+        clientTimeTicked = 0;
         sentHandshake = false;
         selection = null;
     }
@@ -107,7 +105,8 @@ public class ClientProxy extends DummyProxy
     @SubscribeEvent
     public void clientTickEvent(TickEvent.ClientTickEvent event)
     {
-        if (!sentHandshake)
+        clientTimeTicked++;
+        if (!sentHandshake && clientTimeTicked > 20)
         {
             sentHandshake = true;
             sendClientHandshake();
@@ -116,7 +115,7 @@ public class ClientProxy extends DummyProxy
 
     public void sendClientHandshake()
     {
-        if (ForgeEssentialsClient.instance.serverHasFE)
+        if (ForgeEssentialsClient.serverHasFE())
             NetworkUtils.netHandler.sendToServer(new Packet0Handshake());
     }
 
