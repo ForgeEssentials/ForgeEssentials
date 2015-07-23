@@ -6,7 +6,7 @@
 package com.forgeessentials.compat;
 
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.command.CommandHelp;
@@ -17,32 +17,24 @@ import net.minecraft.server.MinecraftServer;
 public class HelpFixer extends CommandHelp
 {
 
-    @SuppressWarnings("unchecked")
+    public static boolean hideWorldEditCommands = true;
+
     @Override
+    @SuppressWarnings("unchecked")
     public List<ICommand> getSortedPossibleCommands(ICommandSender sender)
     {
         List<ICommand> list = MinecraftServer.getServer().getCommandManager().getPossibleCommands(sender);
-        Collections.sort(list, new Comparator<ICommand>() {
-            @Override
-            public int compare(ICommand o1, ICommand o2)
+        if (hideWorldEditCommands)
+        {
+            for (Iterator<ICommand> it = list.iterator(); it.hasNext();)
             {
-                return o1.getCommandName().compareTo(o2.getCommandName());
+                ICommand command = it.next();
+                if (command.getClass().getName().startsWith("com.sk89q.worldedit"))
+                    it.remove();
             }
-        });
+        }
+        Collections.sort(list);
         return list;
-    }
-
-    @Override
-    public int compareTo(Object o)
-    {
-        if (o instanceof ICommand)
-        {
-            return this.compareTo((ICommand) o);
-        }
-        else
-        {
-            return 0;
-        }
     }
 
 }
