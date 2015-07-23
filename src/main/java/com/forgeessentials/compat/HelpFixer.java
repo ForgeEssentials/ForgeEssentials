@@ -29,7 +29,7 @@ public class HelpFixer extends CommandHelp
             for (Iterator<ICommand> it = list.iterator(); it.hasNext();)
             {
                 ICommand command = it.next();
-                if (command.getClass().getName().startsWith("com.sk89q.worldedit"))
+                if (command.getClass().getName().startsWith("com.sk89q.worldedit") && !command.getCommandName().equals("/help"))
                     it.remove();
             }
         }
