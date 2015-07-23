@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ClientConfig
 {
 
-    public static Configuration config;
+    private static Configuration config;
 
     public ClientConfig(Configuration config)
     {
@@ -24,10 +24,10 @@ public class ClientConfig
 
     public void init()
     {
-        config.load();
-        config.addCustomCategoryComment(Configuration.CATEGORY_GENERAL, "Configure ForgeEssentials Client addon features.");
+        getConfig().load();
+        getConfig().addCustomCategoryComment(Configuration.CATEGORY_GENERAL, "Configure ForgeEssentials Client addon features.");
         syncConfig();
-        config.save();
+        getConfig().save();
     }
 
     @SubscribeEvent
@@ -39,10 +39,16 @@ public class ClientConfig
 
     public void syncConfig()
     {
-        ForgeEssentialsClient.allowCUI = config.getBoolean("allowCUI", Configuration.CATEGORY_GENERAL, true, "Set to false to disable graphical selections.");
-        ForgeEssentialsClient.allowQRCodeRender = config.get(Configuration.CATEGORY_GENERAL, "allowQRCodeRender", true,
+        ForgeEssentialsClient.allowCUI = getConfig().getBoolean("allowCUI", Configuration.CATEGORY_GENERAL, true,
+                "Set to false to disable graphical selections.");
+        ForgeEssentialsClient.allowQRCodeRender = getConfig().get(Configuration.CATEGORY_GENERAL, "allowQRCodeRender", true,
                 "Set to false to disable QR code rendering when you enter /remote qr..").getBoolean(true);
 
+    }
+
+    public static Configuration getConfig()
+    {
+        return config;
     }
 
 }

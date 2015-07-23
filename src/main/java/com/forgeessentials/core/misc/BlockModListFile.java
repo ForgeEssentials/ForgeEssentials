@@ -87,7 +87,7 @@ public class BlockModListFile
         }
         catch (Exception e)
         {
-
+            /* do nothing */
         }
     }
 

@@ -8,13 +8,13 @@ import com.forgeessentials.client.core.ClientConfig;
 
 import cpw.mods.fml.client.config.GuiConfig;
 
-public class FEConfigGUI extends GuiConfig {
+public class FEConfigGUI extends GuiConfig
+{
 
     public FEConfigGUI(GuiScreen parentScreen)
     {
-        super(parentScreen,
-                new ConfigElement<Object>(ClientConfig.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(),
-                "TestMod", false, false, "FE Client Addon Config");
+        super(parentScreen, new ConfigElement<Object>(ClientConfig.getConfig().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), "TestMod",
+                false, false, "FE Client Addon Config");
     }
-    
+
 }
