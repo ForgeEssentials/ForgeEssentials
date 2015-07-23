@@ -269,11 +269,11 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverStarted(FMLServerStartedEvent e)
     {
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
+        
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
         FECommandManager.registerCommands();
-
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
     }
 
     @EventHandler
