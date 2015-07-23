@@ -136,7 +136,6 @@ dependencies {
     //serverLibs 'org.eclipse.persistence:eclipselink:2.6.0'
     
     includeMod files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dist.jar')
-    includeMod files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dev.jar')
 }
 
 //libraries
