@@ -27,9 +27,9 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     public String[] getDefaultAliases()
     {
         if (type)
-            return new String[] { "accept", "allow", "give" };
+            return new String[] { "accept", "allow" };
         else
-            return new String[] { "decline", "deny", "take" };
+            return new String[] { "decline", "deny" };
     }
 
     @Override

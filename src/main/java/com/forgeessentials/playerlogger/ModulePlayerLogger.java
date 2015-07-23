@@ -1,22 +1,16 @@
 package com.forgeessentials.playerlogger;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.playerlogger.command.CommandPlayerlogger;
 import com.forgeessentials.playerlogger.command.CommandRollback;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
-import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -68,7 +62,6 @@ public class ModulePlayerLogger
         return true;
     }
     */
-
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)

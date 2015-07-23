@@ -66,7 +66,7 @@ public class FECommandManager extends ConfigLoaderBase
         if (config != null)
         {
             loadCommandConfig(command);
-            command.register();
+            // command.register();
         }
     }
 
