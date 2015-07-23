@@ -76,8 +76,8 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
@@ -150,7 +150,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     {
         IChatComponent chatMsg = new ChatComponentTranslation(command.getCommandUsage(sender));
         chatMsg.getChatStyle().setColor(color);
-        chatMsg.getChatStyle().setChatClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getCommandName()));
+        chatMsg.getChatStyle().setChatClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getCommandName() + " "));
         ChatOutputHandler.sendMessage(sender, chatMsg);
     }
 

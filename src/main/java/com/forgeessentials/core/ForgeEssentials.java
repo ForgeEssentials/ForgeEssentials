@@ -353,6 +353,8 @@ public class ForgeEssentials extends ConfigLoaderBase
         configManager.setUseCanonicalConfig(config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false,
                 "For modules that support it, place their configs in this file.").getBoolean(false));
         debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean(false);
+        HelpFixer.hideWorldEditCommands = config.get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true,
+                "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
     }
 
     /* ------------------------------------------------------------ */
