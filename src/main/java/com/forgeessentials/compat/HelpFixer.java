@@ -24,10 +24,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 
-/**
- * @author Bjoern Zeutzheim
- *
- */
 public class HelpFixer extends CommandHelp
 {
 
