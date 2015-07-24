@@ -78,7 +78,7 @@ public class FELaunchHandler implements ITweaker
 
         // Enable FastCraft compatibility mode
         System.setProperty("fastcraft.asm.permissive", "true");
-        
+
         // Setup directories
         gameDirectory = gameDir;
 
@@ -159,8 +159,10 @@ public class FELaunchHandler implements ITweaker
                     else
                     {
                         file.getParentFile().mkdirs();
-                        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
-                        IOUtils.copy(zIn, out);
+                        try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file)))
+                        {
+                            IOUtils.copy(zIn, out);
+                        }
                     }
                 }
             }
