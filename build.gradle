@@ -173,7 +173,7 @@ jar {
                 "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
                 "TweakOrder": "0",
                 "FMLCorePluginContainsFMLMod": "true",
-                "ForceLoadAsMod": "true"
+                "ForceLoadAsMod": "true",
         )
     }
     configurations.shade.each { dep ->
@@ -214,17 +214,21 @@ task clientJar(dependsOn: "jar", type: Jar) {
         attributes(
         		"BuildID": project.ext.gitCommitHash,
                 "Build-Number": project.ext.build,
+                /*
                 "TweakClass": "com.forgeessentials.client.mixin.FEClientLaunchHandler",
                 "TweakOrder": "0",
                 "FMLCorePluginContainsFMLMod": "true",
-                "ForceLoadAsMod": "true"
+                "ForceLoadAsMod": "true",
+                */
         )
     }
+    /*
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {
             include "org/spongepowered/asm/**"
         }
     }
+    */
 }
 
 //core DEOBF use for development
