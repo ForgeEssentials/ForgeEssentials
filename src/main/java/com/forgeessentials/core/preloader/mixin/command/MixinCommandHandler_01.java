@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.asm.mixins.command;
+package com.forgeessentials.core.preloader.mixin.command;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.asm;
+package com.forgeessentials.core.preloader.mixin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +11,15 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 /**
  * Mixin config for FE hooks. Likely to be permanent until Forge gets its act together.
  */
-public class EventInjector implements IMixinConfigPlugin
+public class FEMixinConfig implements IMixinConfigPlugin
 {
 
-    public static List<String> injectedPatches = new ArrayList<String>();
+    protected static List<String> injectedPatches = new ArrayList<String>();
 
     @Override
     public void onLoad(String mixinPackage)
     {
-
+        /* do nothing */
     }
 
     @Override
@@ -29,27 +29,27 @@ public class EventInjector implements IMixinConfigPlugin
     }
 
     @Override
-    public boolean shouldApplyMixin(String targetClassName, String mixinClassName)
-    {
-        return true;
-    }
-
-    @Override
-    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets)
-    {
-
-    }
-
-    @Override
     public List<String> getMixins()
     {
         return null;
     }
 
     @Override
+    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets)
+    {
+        /* do nothing */
+    }
+
+    @Override
+    public boolean shouldApplyMixin(String targetClassName, String mixinClassName)
+    {
+        return true;
+    }
+
+    @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo)
     {
-
+        /* do nothing */
     }
 
     @Override
@@ -57,4 +57,10 @@ public class EventInjector implements IMixinConfigPlugin
     {
         injectedPatches.add(mixinInfo.getName());
     }
+
+    public static List<String> getInjectedPatches()
+    {
+        return injectedPatches;
+    }
+
 }

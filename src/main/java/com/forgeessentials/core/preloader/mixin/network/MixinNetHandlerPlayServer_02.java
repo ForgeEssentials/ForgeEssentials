@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.asm.mixins.network;
+package com.forgeessentials.core.preloader.mixin.network;
 
 import io.netty.buffer.Unpooled;
 
@@ -31,6 +31,8 @@ import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.permission.PermissionManager;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,6 +42,10 @@ import com.google.common.base.Charsets;
 @Mixin(NetHandlerPlayServer.class)
 public abstract class MixinNetHandlerPlayServer_02
 {
+
+    // @Shadow
+    private static final Logger logger = LogManager.getLogger(NetHandlerPlayServer.class);
+
     @Shadow
     public EntityPlayerMP playerEntity;
 
@@ -86,7 +92,7 @@ public abstract class MixinNetHandlerPlayServer_02
             }
             catch (Exception exception4)
             {
-                NetHandlerPlayServer.logger.error("Couldn\'t handle book info", exception4);
+                logger.error("Couldn\'t handle book info", exception4);
                 return;
             }
             finally
@@ -131,7 +137,7 @@ public abstract class MixinNetHandlerPlayServer_02
             }
             catch (Exception exception3)
             {
-                NetHandlerPlayServer.logger.error("Couldn\'t sign book", exception3);
+                logger.error("Couldn\'t sign book", exception3);
                 return;
             }
             finally
@@ -161,7 +167,7 @@ public abstract class MixinNetHandlerPlayServer_02
                 }
                 catch (Exception exception2)
                 {
-                    NetHandlerPlayServer.logger.error("Couldn\'t select trade", exception2);
+                    logger.error("Couldn\'t select trade", exception2);
                 }
             }
             else if ("MC|AdvCdm".equals(p_147349_1_.func_149559_c()))
@@ -209,7 +215,7 @@ public abstract class MixinNetHandlerPlayServer_02
                     }
                     catch (Exception exception1)
                     {
-                        NetHandlerPlayServer.logger.error("Couldn\'t set command block", exception1);
+                        logger.error("Couldn\'t set command block", exception1);
                     }
                     finally
                     {
@@ -244,7 +250,7 @@ public abstract class MixinNetHandlerPlayServer_02
                     }
                     catch (Exception exception)
                     {
-                        NetHandlerPlayServer.logger.error("Couldn\'t set beacon", exception);
+                        logger.error("Couldn\'t set beacon", exception);
                     }
                 }
             }
@@ -268,4 +274,5 @@ public abstract class MixinNetHandlerPlayServer_02
             }
         }
     }
+    
 }

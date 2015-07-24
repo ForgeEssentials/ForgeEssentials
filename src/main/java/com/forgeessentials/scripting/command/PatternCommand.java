@@ -129,7 +129,7 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
             }
             catch (SyntaxException e)
             {
-                throw new TranslatedCommandException("Error in script of pattern command \"%s\"", name);
+                throw new TranslatedCommandException("Error in script \"%s\": %s", name, e.getMessage());
             }
             catch (ScriptException e)
             {

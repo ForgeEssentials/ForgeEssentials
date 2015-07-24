@@ -128,7 +128,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
-        BuildInfo.getBuildInfo(FELaunchHandler.jarLocation);
+        BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
 
         Environment.check();
     }

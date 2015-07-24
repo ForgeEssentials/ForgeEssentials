@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.asm.mixins.block;
+package com.forgeessentials.core.preloader.mixin.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPortal;

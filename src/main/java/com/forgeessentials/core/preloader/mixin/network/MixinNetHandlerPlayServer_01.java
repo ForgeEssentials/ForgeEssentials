@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.asm.mixins.network;
+package com.forgeessentials.core.preloader.mixin.network;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;

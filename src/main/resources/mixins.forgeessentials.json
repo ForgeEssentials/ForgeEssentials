@@ -1,6 +1,6 @@
 {
-  "package": "com.forgeessentials.core.preloader.asm.mixins",
-  "plugin": "com.forgeessentials.core.preloader.asm.EventInjector",
+  "package": "com.forgeessentials.core.preloader.mixin",
+  "plugin": "com.forgeessentials.core.preloader.mixin.FEMixinConfig",
   "mixins": [
     "player.MixinEntityPlayer_01",
     "network.MixinNetHandlerPlayServer_01",

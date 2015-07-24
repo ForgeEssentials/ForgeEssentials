@@ -1,53 +1,58 @@
 package com.forgeessentials.core.preloader;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.net.URI;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import net.minecraft.launchwrapper.ITweaker;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
-import com.forgeessentials.core.preloader.classloading.FEClassLoader;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 public class FELaunchHandler implements ITweaker
 {
 
-    public static File mcLocation, jarLocation;
-    public static boolean runtimeDeobfEnabled;
-    private static ITweaker mixinTweaker;
+    protected static final Logger launchLog = LogManager.getLogger("ForgeEssentials");
 
-    @Override
-    public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
-    {
-        // fastcraft compat hack
-        System.setProperty("fastcraft.asm.permissive", "true");
+    public static final String FE_DIRECTORY = "ForgeEssentials";
 
-        mcLocation = gameDir;
-        jarLocation = findJarFile();
-        runtimeDeobfEnabled = (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+    public static final String FE_LIB_VERSION = "1";
 
-        // initiate mixin tweaker
-
-        try
+    public static final FilenameFilter JAR_FILTER = new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name)
         {
-            Class<?> mixinTweakClass = Class.forName("org.spongepowered.asm.launch.MixinTweaker");
-            mixinTweaker = (ITweaker) mixinTweakClass.newInstance();
-            mixinTweaker.acceptOptions(args, gameDir, assetsDir, profile);
+            return name.endsWith(".jar");
         }
-        catch (Exception e)
-        {
-            System.err.println("[ForgeEssentials] There was a problem initiating the Mixin subsystem.");
-        }
-    }
+    };
 
-    @Override
-    public void injectIntoClassLoader(LaunchClassLoader launchClassLoader)
-    {
-        mixinTweaker.injectIntoClassLoader(launchClassLoader);
-        new FEClassLoader().extractLibs(mcLocation, launchClassLoader);
-    }
+    /* ------------------------------------------------------------ */
+
+    private static File gameDirectory;
+
+    private static File feDirectory;
+
+    private static File libDirectory;
+
+    private static File moduleDirectory;
+
+    private static File jarLocation;
+
+    /* ------------------------------------------------------------ */
 
     @Override
     public String getLaunchTarget()
@@ -61,17 +66,168 @@ public class FELaunchHandler implements ITweaker
         return new String[] {};
     }
 
-    private File findJarFile()
+    @Override
+    public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
     {
-        URI uri = null;
+        // Initialize Mixin
+        MixinBootstrap.init();
+        MixinEnvironment.getDefaultEnvironment().addConfiguration("mixins.forgeessentials.json");
+
+        // Enable FastCraft compatibility mode
+        System.setProperty("fastcraft.asm.permissive", "true");
+        
+        // Setup directories
+        gameDirectory = gameDir;
+
+        feDirectory = new File(gameDir, FE_DIRECTORY);
+        feDirectory.mkdirs();
+
+        moduleDirectory = new File(feDirectory, "modules");
+        moduleDirectory.mkdirs();
+
+        libDirectory = new File(feDirectory, "lib");
+
         try
         {
-            uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+            jarLocation = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
         }
         catch (URISyntaxException ex)
         {
+            launchLog.error("Could not get JAR location");
             ex.printStackTrace();
         }
-        return uri != null ? new File(uri) : null;
     }
+
+    @Override
+    public void injectIntoClassLoader(LaunchClassLoader classLoader)
+    {
+        if (shouldExtractLibraries())
+            extractLibraries();
+        loadLibraries(classLoader);
+        loadModules(classLoader);
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public boolean shouldExtractLibraries()
+    {
+        // boolean runtimeDeobfEnabled = (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+        if (!libDirectory.exists())
+            return true;
+        try
+        {
+            File versionFile = new File(libDirectory, "version.txt");
+            String version = FileUtils.readFileToString(versionFile);
+            return !FE_LIB_VERSION.equals(version);
+        }
+        catch (IOException e)
+        {
+            return true;
+        }
+    }
+
+    public void extractLibraries()
+    {
+        try
+        {
+            libDirectory.delete();
+            libDirectory.mkdirs();
+            // TODO Check for other stuff like WorldEdit!
+
+            InputStream libArchive = getClass().getResourceAsStream("/libraries.zip");
+            if (libArchive == null)
+            {
+                launchLog.warn("Could not find libraries.zip. Running in dev env?");
+                return;
+            }
+
+            launchLog.info("Extracting libraries");
+            try (ZipInputStream zIn = new ZipInputStream(libArchive))
+            {
+                ZipEntry zEntry;
+                while ((zEntry = zIn.getNextEntry()) != null)
+                {
+                    File file = new File(gameDirectory, zEntry.getName());
+                    if (zEntry.isDirectory())
+                    {
+                        file.mkdirs();
+                    }
+                    else
+                    {
+                        file.getParentFile().mkdirs();
+                        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+                        IOUtils.copy(zIn, out);
+                    }
+                }
+            }
+
+            File versionFile = new File(libDirectory, "version.txt");
+            try (FileWriter out = new FileWriter(versionFile))
+            {
+                out.write(FE_LIB_VERSION);
+            }
+        }
+        catch (IOException e)
+        {
+            launchLog.error("Error extraction libraries!");
+            e.printStackTrace();
+        }
+    }
+
+    /* ------------------------------------------------------------ */
+
+    private void loadLibraries(LaunchClassLoader classLoader)
+    {
+        for (File f : libDirectory.listFiles(JAR_FILTER))
+        {
+            try
+            {
+                classLoader.addURL(f.toURI().toURL());
+                launchLog.info(String.format("Added library %s to classpath", f.getAbsolutePath()));
+            }
+            catch (MalformedURLException e)
+            {
+                throw new RuntimeException(String.format("[ForgeEssentials] Error adding library %s to classpath: %s", f.getAbsolutePath(), e.getMessage()));
+            }
+        }
+    }
+
+    private void loadModules(LaunchClassLoader classLoader)
+    {
+        for (File f : moduleDirectory.listFiles(JAR_FILTER))
+        {
+            try
+            {
+                classLoader.addURL(f.toURI().toURL());
+                launchLog.info(String.format("Added module %s to classpath", f.getAbsolutePath()));
+            }
+            catch (MalformedURLException e)
+            {
+                throw new RuntimeException(String.format("[ForgeEssentials] Error adding module %s to classpath: %s", f.getAbsolutePath(), e.getMessage()));
+            }
+        }
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public static File getGameDirectory()
+    {
+        return gameDirectory;
+    }
+
+    public static File getJarLocation()
+    {
+        return jarLocation;
+    }
+
+    public static File getFeDirectory()
+    {
+        return feDirectory;
+    }
+
+    public static File getModuleDirectory()
+    {
+        return moduleDirectory;
+    }
+
 }
