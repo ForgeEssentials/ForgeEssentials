@@ -64,13 +64,12 @@ minecraft {
     //srgExtra "PK: org/spongepowered/asm com/forgeessentials/repackage/org_spongepowered/asm"
 }
 
-def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + 'mixins.srg'
 
+def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + 'mixins.srg'
 afterEvaluate {
     tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
     tasks.compileUtilsJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
     tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
-
 }
 
 
@@ -82,6 +81,7 @@ configurations {
     myCompile.extendsFrom shade
     compile.extendsFrom myCompile
 }
+
 
 sourceSets {
 
@@ -98,6 +98,7 @@ sourceSets {
     }
 }
 
+
 repositories {
     //mavenLocal()
     maven {
@@ -109,6 +110,7 @@ repositories {
         url = "http://repo.spongepowered.org/maven/"
     }
 }
+
 
 dependencies {
 
@@ -136,6 +138,7 @@ dependencies {
     includeMod files('lib/worldedit-forge-mc1.7.10-6.0.2-SNAPSHOT-dist.jar')
 }
 
+
 //libraries
 task completeZip(type: Zip) {
     archiveName = "libraries.zip"
@@ -156,10 +159,10 @@ task completeZip(type: Zip) {
 
 jar {
     dependsOn 'completeZip'
+    
     from project.sourceSets.main.output
-    exclude "com/forgeessentials/client/**"
-
     from project.sourceSets.utils.output
+    exclude "com/forgeessentials/client/**"
 
     classifier = 'server'
     appendix = project.minecraft.version
@@ -170,9 +173,7 @@ jar {
                 "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
                 "TweakOrder": "0",
                 "FMLCorePluginContainsFMLMod": "true",
-                "ForceLoadAsMod": "true",
-                "FMLAT": "forgeessentials_at.cfg",
-                "MixinConfigs": "mixins.forgeessentials.json"
+                "ForceLoadAsMod": "true"
         )
     }
     configurations.shade.each { dep ->
@@ -205,17 +206,25 @@ reobf.addExtraSrgFile mixinSrg
 //client
 task clientJar(dependsOn: "jar", type: Jar) {
     from sourceSets.client.output
+    from project.sourceSets.utils.output
+    
     classifier = "client"
     appendix = project.minecraft.version
-    include "**"
-
-    from project.sourceSets.utils.output
-    include "**"
     manifest {
-        attributes("BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
+        attributes(
+        		"BuildID": project.ext.gitCommitHash,
+                "Build-Number": project.ext.build,
+                "TweakClass": "com.forgeessentials.client.mixin.FEClientLaunchHandler",
+                "TweakOrder": "0",
+                "FMLCorePluginContainsFMLMod": "true",
+                "ForceLoadAsMod": "true"
+        )
     }
-
-
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
+            include "org/spongepowered/asm/**"
+        }
+    }
 }
 
 //core DEOBF use for development
@@ -242,9 +251,7 @@ task deobfJar(dependsOn: "jar", type: Jar) {
                 "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
                 "TweakOrder": "0",
                 "FMLCorePluginContainsFMLMod": "true",
-                "ForceLoadAsMod": "true",
-                "FMLAT": "forgeessentials_at.cfg",
-                "MixinConfigs": "mixins.forgeessentials.json"
+                "ForceLoadAsMod": "true"
         )
         classifier = 'deobf'
         appendix = project.minecraft.version
@@ -257,7 +264,10 @@ task sourceJar(type: Jar) {
     classifier = 'sources'
     appendix = project.minecraft.version
     manifest {
-        attributes("BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
+        attributes(
+        	"BuildID": project.ext.gitCommitHash, 
+        	"Build-Number": project.ext.build
+        )
     }
 }
 
@@ -266,7 +276,10 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     appendix = project.minecraft.version
     manifest {
-        attributes("BuildID": project.ext.gitCommitHash, "Build-Number": project.ext.build)
+        attributes(
+        	"BuildID": project.ext.gitCommitHash, 
+        	"Build-Number": project.ext.build
+        )
     }
 }
 

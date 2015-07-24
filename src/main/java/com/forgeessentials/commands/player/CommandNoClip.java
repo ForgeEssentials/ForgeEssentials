@@ -66,7 +66,9 @@ public class CommandNoClip extends FEcmdModuleCommands
         }
         if (!player.noClip)
             WorldUtil.placeInWorld(player);
+
         NetworkUtils.netHandler.sendTo(new Packet5Noclip(player.noClip), player);
+        ChatOutputHandler.chatConfirmation(player, "Noclip " + (player.noClip ? "enabled" : "disabled"));
     }
 
     public static void checkClip(EntityPlayer player)

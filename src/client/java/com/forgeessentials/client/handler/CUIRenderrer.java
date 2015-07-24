@@ -1,4 +1,4 @@
-package com.forgeessentials.client.cui;
+package com.forgeessentials.client.handler;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -8,21 +8,27 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.forgeessentials.client.core.ClientProxy;
+import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 //Depreciated
 @SideOnly(value = Side.CLIENT)
-public class CUIRenderrer
+public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMessage>
 {
 
     private static final float ALPHA = .25f;
+
+    private static Selection selection;
 
     @SubscribeEvent
     public void render(RenderWorldLastEvent event)
@@ -31,8 +37,7 @@ public class CUIRenderrer
         if (player == null)
             return;
 
-        Selection sel = ClientProxy.getSelection();
-        if (sel == null || sel.getDimension() != FMLClientHandler.instance().getClient().thePlayer.dimension)
+        if (selection == null || selection.getDimension() != FMLClientHandler.instance().getClient().thePlayer.dimension)
             return;
 
         GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -56,9 +61,9 @@ public class CUIRenderrer
             }
 
             // render start
-            if (sel.getStart() != null)
+            if (selection.getStart() != null)
             {
-                Point p = sel.getStart();
+                Point p = selection.getStart();
                 GL11.glPushMatrix();
                 GL11.glTranslated(p.getX() - RenderManager.renderPosX + 0.5, p.getY() - RenderManager.renderPosY + 0.5, p.getZ() - RenderManager.renderPosZ
                         + 0.5);
@@ -72,9 +77,9 @@ public class CUIRenderrer
             }
 
             // render end
-            if (sel.getEnd() != null)
+            if (selection.getEnd() != null)
             {
-                Point p = sel.getEnd();
+                Point p = selection.getEnd();
                 GL11.glPushMatrix();
                 GL11.glTranslated(p.getX() - RenderManager.renderPosX + 0.5, p.getY() - RenderManager.renderPosY + 0.5, p.getZ() - RenderManager.renderPosZ
                         + 0.5);
@@ -88,11 +93,11 @@ public class CUIRenderrer
             }
 
             // render box
-            if (sel.getStart() != null && sel.getEnd() != null)
+            if (selection.getStart() != null && selection.getEnd() != null)
             {
-                Point p1 = sel.getStart();
-                Point p2 = sel.getEnd();
-                Point size = sel.getSize();
+                Point p1 = selection.getStart();
+                Point p2 = selection.getEnd();
+                Point size = selection.getSize();
                 GL11.glPushMatrix();
                 GL11.glTranslated((float) (p1.getX() + p2.getX()) / 2 - RenderManager.renderPosX + 0.5, (float) (p1.getY() + p2.getY()) / 2
                         - RenderManager.renderPosY + 0.5, (float) (p1.getZ() + p2.getZ()) / 2 - RenderManager.renderPosZ + 0.5);
@@ -159,6 +164,19 @@ public class CUIRenderrer
         Tessellator.instance.addVertex(-0.5, 0.5, 0.5);
 
         Tessellator.instance.draw();
+    }
+
+    @Override
+    public IMessage onMessage(Packet1SelectionUpdate message, MessageContext ctx)
+    {
+        selection = message.getSelection();
+        return null;
+    }
+
+    @SubscribeEvent
+    public void connectionOpened(ClientConnectedToServerEvent e)
+    {
+        selection = null;
     }
 
 }

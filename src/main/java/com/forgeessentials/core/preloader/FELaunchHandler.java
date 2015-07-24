@@ -20,7 +20,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.launch.MixinTweaker;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 public class FELaunchHandler implements ITweaker
@@ -52,6 +52,8 @@ public class FELaunchHandler implements ITweaker
 
     private static File jarLocation;
 
+    private static MixinTweaker mixinTweaker;
+
     /* ------------------------------------------------------------ */
 
     @Override
@@ -70,7 +72,8 @@ public class FELaunchHandler implements ITweaker
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
     {
         // Initialize Mixin
-        MixinBootstrap.init();
+        mixinTweaker = new MixinTweaker();
+        mixinTweaker.acceptOptions(args, gameDir, assetsDir, profile);
         MixinEnvironment.getDefaultEnvironment().addConfiguration("mixins.forgeessentials.json");
 
         // Enable FastCraft compatibility mode
@@ -101,6 +104,7 @@ public class FELaunchHandler implements ITweaker
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader)
     {
+        mixinTweaker.injectIntoClassLoader(classLoader);
         if (shouldExtractLibraries())
             extractLibraries();
         loadLibraries(classLoader);
