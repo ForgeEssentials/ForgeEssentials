@@ -36,35 +36,35 @@ public class Pattern
             if (part.isEmpty())
                 continue;
             if (regex.length() > 0)
-                regex.append(' ');
+                regex.append("\\s+");
             if (part.charAt(0) == '@')
             {
                 switch (part.substring(1))
                 {
                 case "f":
-                    regex.append("([+-]?\\d+(?:\\.\\d+)?) ");
+                    regex.append("([+-]?\\d+(?:\\.\\d+)?)");
                     argumentTypes.add(ArgumentType.FLOAT);
                     break;
                 case "d":
-                    regex.append("([+-]?\\d+) ");
+                    regex.append("([+-]?\\d+)");
                     argumentTypes.add(ArgumentType.DECIMAL);
                     break;
                 case "p":
                 case "player":
-                    regex.append("(\\S+) ");
+                    regex.append("(\\S+)");
                     argumentTypes.add(ArgumentType.PLAYER);
                     break;
                 case "g":
                 case "group":
-                    regex.append("(\\S+) ");
+                    regex.append("(\\S+)");
                     argumentTypes.add(ArgumentType.GROUP);
                     break;
                 case "zone":
-                    regex.append("(\\d+) ");
+                    regex.append("(\\d+)");
                     argumentTypes.add(ArgumentType.ZONE);
                     break;
                 case "":
-                    regex.append("(\\S+) ");
+                    regex.append("(\\S+)");
                     argumentTypes.add(ArgumentType.NONE);
                     break;
                 default:
@@ -73,7 +73,8 @@ public class Pattern
             }
             else
             {
-                regex.append(java.util.regex.Pattern.quote(part));
+                regex.append(part);
+                // regex.append(java.util.regex.Pattern.quote(part));
             }
         }
         // Cut off final space

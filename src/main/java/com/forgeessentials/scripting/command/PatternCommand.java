@@ -98,6 +98,7 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
 
     public void processCommand(ICommandSender sender, String cmd)
     {
+        parser = null;
         if (parser == null)
         {
             try
@@ -128,7 +129,7 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
             }
             catch (SyntaxException e)
             {
-                throw new TranslatedCommandException("Error in script of pattern command %s", name);
+                throw new TranslatedCommandException("Error in script of pattern command \"%s\"", name);
             }
             catch (ScriptException e)
             {
