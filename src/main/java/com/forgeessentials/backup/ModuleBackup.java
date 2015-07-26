@@ -43,6 +43,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
@@ -114,8 +115,8 @@ public class ModuleBackup extends ConfigLoaderBase
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        // FECommandManager.registerCommand(new CommandBackup());
         MinecraftForge.EVENT_BUS.register(this);
+        FECommandManager.registerCommand(new CommandBackup());
     }
 
     @SubscribeEvent
@@ -241,6 +242,37 @@ public class ModuleBackup extends ConfigLoaderBase
                         backup(worldServer, false);
                     cleanBackups();
                     ModuleBackup.notify("Backup finished!");
+                }
+                finally
+                {
+                    backupThread = null;
+                }
+            }
+        });
+        backupThread.start();
+    }
+
+    public static void backup(int dimension)
+    {
+        if (backupThread != null)
+        {
+            ModuleBackup.notify("Backup still in progress");
+            return;
+        }
+        final WorldServer world = DimensionManager.getWorld(dimension);
+        if (world == null)
+        {
+            ModuleBackup.notify(String.format("Dimension %d does not exist or is not loaded", dimension));
+            return;
+        }
+        backupThread = new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    backup(world, true);
+                    cleanBackups();
                 }
                 finally
                 {
