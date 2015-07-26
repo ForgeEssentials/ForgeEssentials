@@ -14,24 +14,26 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.forgeessentials.client.util.DummyProxy;
+import com.forgeessentials.client.core.CommonProxy;
 import com.forgeessentials.commons.BuildInfo;
 
-@Mod(modid = "ForgeEssentialsClient", name = "ForgeEssentials Client Addon", version = BuildInfo.VERSION, guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true)
+@Mod(modid = ForgeEssentialsClient.MODID, name = "ForgeEssentials Client Addon", version = BuildInfo.VERSION, guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true)
 public class ForgeEssentialsClient
 {
+    
+    public static final String MODID = "ForgeEssentialsClient";
 
     public static final Logger feclientlog = LogManager.getLogger("forgeessentials");
 
-    @SidedProxy(clientSide = "com.forgeessentials.client.core.ClientProxy", serverSide = "com.forgeessentials.client.util.DummyProxy")
-    protected static DummyProxy proxy;
+    @SidedProxy(clientSide = "com.forgeessentials.client.core.ClientProxy", serverSide = "com.forgeessentials.client.core.CommonProxy")
+    protected static CommonProxy proxy;
 
     @Instance("ForgeEssentialsClient")
     protected static ForgeEssentialsClient instance;
 
-    private static boolean serverHasFE;
-    public static boolean allowCUI;
-    public static boolean allowQRCodeRender;
+    protected static boolean serverHasFE;
+
+    /* ------------------------------------------------------------ */
 
     @NetworkCheckHandler
     public boolean getServerMods(Map<String, String> map, Side side)
@@ -60,6 +62,8 @@ public class ForgeEssentialsClient
     {
         proxy.load(e);
     }
+
+    /* ------------------------------------------------------------ */
 
     public static boolean serverHasFE()
     {

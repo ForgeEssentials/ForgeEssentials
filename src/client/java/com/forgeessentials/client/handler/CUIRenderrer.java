@@ -1,4 +1,4 @@
-package com.forgeessentials.client.cui;
+package com.forgeessentials.client.handler;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -7,22 +7,28 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.forgeessentials.client.core.ClientProxy;
+import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
 //Depreciated
 @SideOnly(value = Side.CLIENT)
-public class CUIRenderrer
+public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMessage>
 {
 
     private static final float ALPHA = .25f;
+
+    private static Selection selection;
 
     @SubscribeEvent
     public void render(RenderWorldLastEvent event)
@@ -31,8 +37,7 @@ public class CUIRenderrer
         if (player == null)
             return;
 
-        Selection sel = ClientProxy.getSelection();
-        if (sel == null || sel.getDimension() != FMLClientHandler.instance().getClient().thePlayer.dimension)
+        if (selection == null || selection.getDimension() != FMLClientHandler.instance().getClient().thePlayer.dimension)
             return;
 
         double renderPosX = TileEntityRendererDispatcher.staticPlayerX;
@@ -62,9 +67,9 @@ public class CUIRenderrer
             }
 
             // render start
-            if (sel.getStart() != null)
+            if (selection.getStart() != null)
             {
-                Point p = sel.getStart();
+                Point p = selection.getStart();
                 GL11.glPushMatrix();
                 GL11.glTranslated(p.getX(), p.getY(), p.getZ());
                 GL11.glScalef(0.96F, 0.96F, 0.96F);
@@ -77,9 +82,9 @@ public class CUIRenderrer
             }
 
             // render end
-            if (sel.getEnd() != null)
+            if (selection.getEnd() != null)
             {
-                Point p = sel.getEnd();
+                Point p = selection.getEnd();
                 GL11.glPushMatrix();
                 GL11.glTranslated(p.getX(), p.getY(), p.getZ());
                 GL11.glScalef(0.98F, 0.98F, 0.98F);
@@ -92,11 +97,11 @@ public class CUIRenderrer
             }
 
             // render box
-            if (sel.getStart() != null && sel.getEnd() != null)
+            if (selection.getStart() != null && selection.getEnd() != null)
             {
-                Point p1 = sel.getStart();
-                Point p2 = sel.getEnd();
-                Point size = sel.getSize();
+                Point p1 = selection.getStart();
+                Point p2 = selection.getEnd();
+                Point size = selection.getSize();
                 GL11.glPushMatrix();
                 GL11.glTranslated((float) (p1.getX() + p2.getX()) / 2, (float) (p1.getY() + p2.getY()) / 2, (float) (p1.getZ() + p2.getZ()) / 2);
                 GL11.glScalef(1 + size.getX(), 1 + size.getY(), 1 + size.getZ());
@@ -164,6 +169,19 @@ public class CUIRenderrer
         renderer.addVertex(-0.5, 0.5, 0.5);
 
         Tessellator.getInstance().draw();
+    }
+
+    @Override
+    public IMessage onMessage(Packet1SelectionUpdate message, MessageContext ctx)
+    {
+        selection = message.getSelection();
+        return null;
+    }
+
+    @SubscribeEvent
+    public void connectionOpened(ClientConnectedToServerEvent e)
+    {
+        selection = null;
     }
 
 }

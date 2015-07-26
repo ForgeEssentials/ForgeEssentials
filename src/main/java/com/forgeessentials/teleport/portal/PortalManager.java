@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.preloader.asm.EventInjector;
+import com.forgeessentials.core.preloader.mixin.FEMixinConfig;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
@@ -42,7 +42,7 @@ public class PortalManager extends ServerEventHandler
     {
         super();
         instance = this;
-        mixinLoaded = EventInjector.injectedPatches.contains("block.BlockPortal_01");
+        mixinLoaded = FEMixinConfig.getInjectedPatches().contains("block.BlockPortal_01");
         if (!mixinLoaded)
         {
             LoggingHandler.felog.error("Unable to apply portal block mixin. Will revert to glass panes for portals.");

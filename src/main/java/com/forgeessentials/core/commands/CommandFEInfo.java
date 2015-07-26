@@ -10,7 +10,7 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.preloader.asm.EventInjector;
+import com.forgeessentials.core.preloader.mixin.FEMixinConfig;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -81,7 +81,7 @@ public class CommandFEInfo extends ForgeEssentialsCommandBase
         else if (args[0].equalsIgnoreCase("debug"))
         {
             ChatOutputHandler.chatNotification(sender, "Injected patches:");
-            for (String s : EventInjector.injectedPatches)
+            for (String s : FEMixinConfig.getInjectedPatches())
             {
                 ChatOutputHandler.chatNotification(sender, s);
             }

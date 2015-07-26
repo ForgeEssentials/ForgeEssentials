@@ -106,6 +106,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandHelp());
         FECommandManager.registerCommand(new CommandPregen());
         FECommandManager.registerCommand(new CommandBiome());
+        // FECommandManager.registerCommand(new CommandReach());
     }
 
     public static CommandsEventHandler oldEventHandler = new CommandsEventHandler();

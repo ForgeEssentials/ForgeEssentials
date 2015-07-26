@@ -32,6 +32,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
 
     // ------------------------------------------------------------
     // Command alias
+    
+    @Override
+    public abstract String getCommandUsage(ICommandSender sender);
 
     @Override
     public List<String> getCommandAliases()

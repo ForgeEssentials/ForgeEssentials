@@ -8,10 +8,11 @@ import net.minecraft.util.ChatComponentTranslation;
 import com.forgeessentials.commons.BuildInfo;
 
 /**
- * Note to olee: This command only exists within FEClient so ForgeEssentialsCommandBase or any of those parser stuff is not available to us.
+ * Note: This command only exists within FEClient so no FE server utilities can be used!
  */
 public class FEClientCommand extends CommandBase
 {
+    
     @Override
     public String getCommandName()
     {
@@ -21,7 +22,7 @@ public class FEClientCommand extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/feclient ForgeEssentials clientside command.";
+        return "/feclient [info|reinit]: ForgeEssentials client helper";
     }
 
     @Override
@@ -34,7 +35,7 @@ public class FEClientCommand extends CommandBase
         }
         else if (args[0].equalsIgnoreCase("reinit"))
         {
-            ClientProxy.INSTANCE.sentHandshake = false;
+            ClientProxy.resendHandshake();
             sender.addChatMessage(new ChatComponentText("Resent handshake packet to server."));
         }
         else if (args[0].equalsIgnoreCase("info"))
@@ -55,4 +56,5 @@ public class FEClientCommand extends CommandBase
     {
         return 0;
     }
+
 }
