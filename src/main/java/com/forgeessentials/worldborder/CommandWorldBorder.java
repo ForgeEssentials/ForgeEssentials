@@ -5,6 +5,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ParserCommandBase;
@@ -19,11 +20,11 @@ public class CommandWorldBorder extends ParserCommandBase
     {
         return "worldborder";
     }
-    
+
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[]{ "wb" };
+        return new String[] { "wb" };
     }
 
     @Override
@@ -59,6 +60,7 @@ public class CommandWorldBorder extends ParserCommandBase
             arguments.confirm("/wb enable|disable");
             arguments.confirm("/wb center here: Set worldborder center");
             arguments.confirm("/wb size <xz> [z]: Set worldborder size");
+            arguments.confirm("/wb shape box|ellipse: Set worldborder center");
             WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.worldObj);
             if (border == null)
             {
@@ -70,6 +72,7 @@ public class CommandWorldBorder extends ParserCommandBase
             arguments.notify("  size    = " + border.getSize().getX() + " x " + border.getSize().getZ());
             arguments.notify("  start   = " + border.getArea().getLowPoint());
             arguments.notify("  end     = " + border.getArea().getHighPoint());
+            arguments.notify("  shape   = " + (border.getShape() == AreaShape.BOX ? "box" : "ellipse"));
             if (border.isEnabled())
                 arguments.confirm("  enabled = true");
             else
@@ -79,7 +82,7 @@ public class CommandWorldBorder extends ParserCommandBase
 
         WorldBorder border = ModuleWorldBorder.getInstance().getBorder((WorldServer) arguments.senderPlayer.worldObj, new WorldPoint(arguments.senderPlayer));
 
-        arguments.tabComplete("center", "size", "enable", "disable");
+        arguments.tabComplete("center", "disable", "enable", "shape", "size");
         String subCommand = arguments.remove().toLowerCase();
         switch (subCommand)
         {
@@ -97,6 +100,9 @@ public class CommandWorldBorder extends ParserCommandBase
             border.save();
             arguments.confirm("Worldborder disabled");
             break;
+        case "shape":
+            parseShape(arguments, border);
+            break;
         case "center":
             parseCenter(arguments, border);
             break;
@@ -108,7 +114,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
     }
 
-    public void parseCenter(CommandParserArgs arguments, WorldBorder border)
+    public static void parseCenter(CommandParserArgs arguments, WorldBorder border)
     {
         if (arguments.isEmpty())
         {
@@ -134,7 +140,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
     }
 
-    private void parseRadius(CommandParserArgs arguments, WorldBorder border)
+    public static void parseRadius(CommandParserArgs arguments, WorldBorder border)
     {
         if (arguments.isEmpty())
         {
@@ -157,6 +163,37 @@ public class CommandWorldBorder extends ParserCommandBase
         border.updateArea();
         border.save();
         arguments.confirm(String.format("Worldborder size set to %d x %d", border.getSize().getX(), border.getSize().getZ()));
+    }
+
+    public static void parseShape(CommandParserArgs arguments, WorldBorder border)
+    {
+        if (arguments.isEmpty())
+        {
+            arguments.notify(String.format("Worldborder shape: %s", border.getShape() == AreaShape.BOX ? "box" : "ellipse"));
+            arguments.confirm("/wb shape box|ellipse");
+            return;
+        }
+
+        arguments.tabComplete("box", "ellipse");
+        if (arguments.isTabCompletion)
+            return;
+
+        String subCommand = arguments.remove().toLowerCase();
+        switch (subCommand)
+        {
+        case "box":
+            border.setShape(AreaShape.BOX);
+            border.save();
+            arguments.confirm("Worldborder shape set to box");
+            break;
+        case "ellipse":
+            border.setShape(AreaShape.ELLIPSOID);
+            border.save();
+            arguments.confirm("Worldborder shape set to ellipse");
+            break;
+        default:
+            throw new TranslatedCommandException("Unknown shape type %s", subCommand);
+        }
     }
 
 }
