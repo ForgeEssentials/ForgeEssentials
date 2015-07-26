@@ -1,353 +1,360 @@
+// Build repositories
 buildscript {
-    repositories {
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/releases/"
-        }
-        mavenCentral()
-        mavenLocal()
+	repositories {
+		maven {
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/releases/"
+		}
+		mavenCentral()
+		mavenLocal()
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+		jcenter()
 
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-        jcenter()
-
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
-        classpath 'org.ajoberstar:gradle-git:0.12.0'
-    }
+	}
+	dependencies {
+		classpath "net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT"
+		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
+		classpath "org.ajoberstar:gradle-git:0.12.0"
+	}
 
 }
 
-apply plugin: 'forge'
+// Set up FE required repositories
+repositories {
+	maven {
+		name = "sk89q"
+		url = "http://maven.sk89q.com/repo/"
+	}
+	maven {
+		name = "sponge"
+		url = "http://repo.spongepowered.org/maven/"
+	}
+}
 
-version = "1.4.1"
+apply plugin: "forge"
+
+/************************************************************
+ * General configuration
+ */
+
+// Get buildNumber from environment variable
+ext.buildNumber = "0"
+if (System.getenv("BUILD_NUMBER") != null) {
+	buildNumber = System.getenv("BUILD_NUMBER")
+
+}
+
+// Get commit hash
+import org.ajoberstar.grgit.Grgit
+def repo = Grgit.open(project.file("."))
+ext.gitCommitHash = repo.log().find().abbreviatedId
+
+// Set build properties
+ext.baseVersion = "1.4.1"
+version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-project.ext.build = '0'
-if (System.getenv('BUILD_NUMBER') != null) {
-    project.ext.build = System.getenv('BUILD_NUMBER')
 
-}
-
-version = version + "." + project.ext.build
-
-import org.ajoberstar.grgit.Grgit
-
-def repo = Grgit.open(project.file('.'))
-project.ext.gitCommitHash = repo.log().find().abbreviatedId
-
-if (JavaVersion.current().isJava8Compatible()) {
-    // Java 8 turns on doclint which we fail
-    tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-    }
-}
-
+// Set up forge options
 minecraft {
-    version = "1.7.10-10.13.4.1448-1.7.10"
-    runDir = "rundir"
-    ext.forgeVersion = "10.13.4.1448-1.7.10"
-
-    replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
-    replace "%FE_VERSION%", project.version
-
-    //srgExtra "PK: org/spongepowered/asm com/forgeessentials/repackage/org_spongepowered/asm"
+	version = "1.7.10-10.13.4.1448-1.7.10"
+	runDir = "rundir"
+	
+	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
+	replace "_VERSION_", project.version
 }
 
-
-def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + 'mixins.srg'
-afterEvaluate {
-    tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
-    tasks.compileUtilsJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
-    tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
+// Configure shared manifest
+ext.sharedManifest = manifest {
+	attributes (
+		"BuildID": gitCommitHash,
+		"BuildNumber": buildNumber,
+		"TweakOrder": "0",
+		"FMLCorePluginContainsFMLMod": "true",
+		"ForceLoadAsMod": "true",
+	)
 }
 
+/************************************************************
+ * Dependency configuration
+ */
 
+// Create dependency configurations
 configurations {
-    serverLibs
-    includeMod
-    shade
-    myCompile
-    myCompile.extendsFrom shade
-    compile.extendsFrom myCompile
+	includeMod
+	shade
+	shadeClient
+	serverLib
+	buildDep
+	compile.extendsFrom buildDep, shade, shadeClient, serverLib
 }
 
+// Configure dependencies (build-only, shaded and packed libraries)
+dependencies {
+	// IRC
+	serverLib "org.pircbotx:pircbotx:1.9"
+	
+	// Database libraries
+	serverLib "com.h2database:h2:1.3.175"
+	serverLib "mysql:mysql-connector-java:5.1.22"
+	serverLib "org.hibernate:hibernate-entitymanager:4.3.7.Final"
+	buildDep "org.hibernate:hibernate-jpamodelgen:4.3.7.Final"
+	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
+	
+	// WorldEdit
+	buildDep "com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.2-SNAPSHOT:dev"
+	includeMod files("lib/worldedit-forge-mc1.7.10-6.0.2-SNAPSHOT-dist.jar")
+
+	// Shade Mixin library
+	shade "org.spongepowered:mixin:0.4.3"
+	shadeClient "org.spongepowered:mixin:0.4.3"
+}
+
+/************************************************************
+ * Configure source sets (e.g., src/main)
+ */
 
 sourceSets {
-
-    utils {
-        compileClasspath = files(project.configurations.compile, project.sourceSets.api.output)
-    }
-
-    main {
-        compileClasspath = files(project.configurations.compile, project.sourceSets.utils.output, project.sourceSets.api.output)
-    }
-
-    client {
-        compileClasspath = files(project.configurations.compile, project.sourceSets.utils.output, project.sourceSets.api.output)
-    }
+	utils {
+		compileClasspath = files(configurations.compile, sourceSets.api.output)
+	}
+	main {
+		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+	}
+	client {
+		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+	}
 }
 
-
-repositories {
-    //mavenLocal()
-    maven {
-        name = "sk89q"
-        url = "http://maven.sk89q.com/repo/"
-    }
-    maven {
-        name = "sponge"
-        url = "http://repo.spongepowered.org/maven/"
-    }
+// Configure server resource processing
+project.processResources {
+	from (sourceSets.main.resources.srcDirs) {
+		include "mcmod.info"
+		expand (
+			"version": project.version, 
+			"mcversion": project.minecraft.version,
+		)
+	}
 }
 
-
-dependencies {
-
-    myCompile 'org.pircbotx:pircbotx:1.9' //chat - irc stuff
-
-    //datasaving
-    myCompile 'com.h2database:h2:1.3.175'
-    myCompile 'mysql:mysql-connector-java:5.1.22'
-    myCompile 'org.hibernate:hibernate-entitymanager:4.3.7.Final'
-    myCompile 'org.hibernate:hibernate-jpamodelgen:4.3.7.Final'
-    //myCompile 'org.eclipse.persistence:eclipselink:2.6.0'
-
-    // WE integration
-    myCompile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.2-SNAPSHOT:dev'
-
-    // mixins
-    shade 'org.spongepowered:mixin:0.4.3'
-
-    serverLibs 'org.pircbotx:pircbotx:1.9'
-    serverLibs 'com.h2database:h2:1.3.175'
-    serverLibs 'mysql:mysql-connector-java:5.1.22'
-    serverLibs 'org.hibernate:hibernate-entitymanager:4.3.7.Final'
-    //serverLibs 'org.eclipse.persistence:eclipselink:2.6.0'
-    
-    includeMod files('lib/worldedit-forge-mc1.7.10-6.0.2-SNAPSHOT-dist.jar')
+// Configure client resource processing
+project.processClientResources {
+	from (sourceSets.client.resources.srcDirs) {
+		include "mcmod.info"
+		expand (
+			"version": project.version, 
+			"mcversion": project.minecraft.version,
+		)
+	}
 }
 
+/************************************************************
+ * Configure server jar (default)
+ */
 
-//libraries
-task completeZip(type: Zip) {
-    archiveName = "libraries.zip"
-    destinationDir = jar.destinationDir
+// Pack libraries as zip file to include them in the jar file
+task serverLibArchive(type: Zip) {
+	archiveName = "libraries.zip"
+	destinationDir = jar.destinationDir
 
-    from(project.configurations.serverLibs) {
-        include '*'
-        into('ForgeEssentials/lib')
-    }
-    from(project.configurations.includeMod) {
-        include '*'
-        into('mods')
-    }
-    jar {
-        from fileTree(completeZip.archivePath)
-    }
+	from (configurations.serverLib.copyRecursive()) { into("ForgeEssentials/lib") }
+	from (configurations.includeMod) { into("mods") }
 }
 
+jar.doLast {
+	delete (serverLibArchive.archivePath)
+}
+
+// Configure server jar (default)
 jar {
-    dependsOn 'completeZip'
-    
-    from project.sourceSets.main.output
-    from project.sourceSets.utils.output
-    exclude "com/forgeessentials/client/**"
+	dependsOn "serverLibArchive"
+	classifier = "server"
+	appendix = minecraft.version
+	
+	from sourceSets.main.output
+	from sourceSets.utils.output
+	from fileTree(serverLibArchive.archivePath)
+	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
+		from (zipTree(artifact))
+	}
 
-    classifier = 'server'
-    appendix = project.minecraft.version
-    manifest {
-        attributes(
-                "BuildID": project.ext.gitCommitHash,
-                "Build-Number": project.ext.build,
-                "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
-                "TweakOrder": "0",
-                "FMLCorePluginContainsFMLMod": "true",
-                "ForceLoadAsMod": "true",
-        )
-    }
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)) {
-            include "org/spongepowered/asm/**"
-        }
-    }
+	manifest {
+		from sharedManifest
+		attributes (
+			"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
+		)
+	}
 }
 
-javadoc {
-    include "com/forgeessentials/api/**"
+/************************************************************
+ * Configure client jar
+ */
+
+task clientJar (dependsOn: "clientClasses", type: Jar) {
+	classifier = "client"
+	appendix = minecraft.version
+	
+	from sourceSets.client.output
+	from sourceSets.utils.output
+	configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
+		from (zipTree(artifact))
+	}
+	
+	manifest {
+		from sharedManifest
+		/*attributes (
+			"TweakClass": "com.forgeessentials.client.mixin.FEClientLaunchHandler",
+		)*/
+	}
 }
 
-processClientResources {
-    from(sourceSets.client.resources.srcDirs) {
-        expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeversion': project.minecraft.forgeVersion
-        include 'mcmod.info'
-    }
+/************************************************************
+ * Deobfuscated server jar
+ * Dependency name for maven = com.forgeessentials:forgeessentials:<version>:
+ */
+
+task deobfJar(dependsOn: "classes", type: Jar) {
+	classifier = "dev"
+	appendix = minecraft.version
+	
+	from sourceSets.main.output
+	from sourceSets.utils.output
+	
+	from (sourceSets.main.java) {
+		into ("src/")
+	}
+
+	manifest {
+		from sharedManifest
+		attributes (
+			"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
+		)
+	}
 }
 
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        expand 'version': project.version, 'mcversion': project.minecraft.version, 'forgeVersion': project.minecraft.forgeVersion
-        include 'mcmod.info'
-    }
-}
-
-reobf.addExtraSrgFile mixinSrg
-
-//client
-task clientJar(dependsOn: "jar", type: Jar) {
-    from sourceSets.client.output
-    from project.sourceSets.utils.output
-    
-    classifier = "client"
-    appendix = project.minecraft.version
-    manifest {
-        attributes(
-        		"BuildID": project.ext.gitCommitHash,
-                "Build-Number": project.ext.build,
-                /*
-                "TweakClass": "com.forgeessentials.client.mixin.FEClientLaunchHandler",
-                "TweakOrder": "0",
-                "FMLCorePluginContainsFMLMod": "true",
-                "ForceLoadAsMod": "true",
-                */
-        )
-    }
-    /*
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)) {
-            include "org/spongepowered/asm/**"
-        }
-    }
-    */
-}
-
-//core DEOBF use for development
-
-// to use: declare dependency com.forgeessentials:forgeessentials:<version>:
-task deobfJar(dependsOn: "jar", type: Jar) {
-    from project.sourceSets.main.output
-    include "**"
-
-    from project.sourceSets.api.output
-    include "**"
-
-    from project.sourceSets.utils.output
-    include "**"
-
-    from project.sourceSets.client.output
-    include "com/forgeessentials/**"
-    // config guis won't work, but who cares, anyway?
-
-    manifest {
-        attributes(
-                "BuildID": project.ext.gitCommitHash,
-                "Build-Number": project.ext.build,
-                "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
-                "TweakOrder": "0",
-                "FMLCorePluginContainsFMLMod": "true",
-                "ForceLoadAsMod": "true"
-        )
-        classifier = 'deobf'
-        appendix = project.minecraft.version
-    }
-}
+/************************************************************
+ * Configure Mixin tweaks 
+ */
 
 task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    include "com/forgeessentials/api/**"
-    classifier = 'sources'
-    appendix = project.minecraft.version
-    manifest {
-        attributes(
-        	"BuildID": project.ext.gitCommitHash, 
-        	"Build-Number": project.ext.build
-        )
-    }
+	classifier = "sources"
+	appendix = minecraft.version
+	
+	from sourceSets.main.allSource
+	
+	manifest {
+		from sharedManifest
+		attributes (
+			"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
+		)
+	}
+}
+
+/************************************************************
+ * Configure API javadoc
+ */
+
+javadoc {
+	include "com/forgeessentials/api/**"
+	classpath = sourceSets.main.compileClasspath + sourceSets.main.output
+	options.addBooleanOption("Xdoclint:reference,accessibility,html", true) // excluded: syntax, missing
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    from javadoc.destinationDir
-    classifier = 'javadoc'
-    appendix = project.minecraft.version
-    manifest {
-        attributes(
-        	"BuildID": project.ext.gitCommitHash, 
-        	"Build-Number": project.ext.build
-        )
-    }
+	classifier = "javadoc"
+	appendix = project.minecraft.version
+	
+	from javadoc.destinationDir
+	
+	manifest { from sharedManifest }
+}
+
+/************************************************************
+ * Configure reobfuscation
+ */
+
+def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
+afterEvaluate {
+	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
+	tasks.compileUtilsJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
+	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
 }
 
 reobf {
-    reobf(clientJar) { reobfSpec ->
-        reobfSpec.classpath = project.sourceSets.main.compileClasspath
-    }
+	addExtraSrgFile mixinSrg
+	reobf (clientJar) { reobfSpec ->
+		reobfSpec.classpath = sourceSets.main.compileClasspath
+	}
 }
 
+/************************************************************
+ * Others
+ */
+
+// Add default artifacts for task "build"
 artifacts {
-    archives clientJar
+	archives deobfJar
+	archives clientJar
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+	gradleVersion = "2.4"
 }
 
-task cleanLibFiles(dependsOn: "check", type: Delete) {
-    delete(completeZip.archivePath)
-}
+/************************************************************
+ * Configure maven publishing
+ */
 
-project.tasks.build.dependsOn "cleanLibFiles"
-
-apply plugin: 'maven-publish'
+apply plugin: "maven-publish"
 
 publishing {
-    tasks.publish.dependsOn 'build'
-    //artifactId = "forgeessentials"
-    publications {
-        mavenJava(MavenPublication) {
-            groupId "com.forgeessentials"
-            artifactId "forgeessentials"
-            version "1.4-SNAPSHOT"
+	tasks.publish.dependsOn "deobfJar"
 
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
+	publications {
+		mavenJava (MavenPublication) {
+			groupId "com.forgeessentials"
+			artifactId "forgeessentials"
+			version baseVersion
 
-                configurations.myCompile.allDependencies.each {
-                    def dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', it.group)
-                    dependencyNode.appendNode('artifactId', it.name)
-                    dependencyNode.appendNode('version', it.version)
-                }
-            }
+			artifact deobfJar
+			// artifact sourceJar
+			// artifact javadocJar
 
-            artifact sourceJar
-            artifact javadocJar
-            artifact deobfJar {
-                classifier ""
-            }
-        }
-    }
+			pom.withXml {
+				def dependenciesNode = asNode().appendNode("dependencies")
+				def allDeps = configurations.buildDep.allDependencies + 
+					configurations.serverLib.allDependencies + 
+					configurations.shade.allDependencies
+				allDeps.each {
+					def dependencyNode = dependenciesNode.appendNode("dependency")
+					dependencyNode.appendNode("groupId", it.group)
+					dependencyNode.appendNode("artifactId", it.name)
+					dependencyNode.appendNode("version", it.version)
+				}
+			}
+		}
+	}
 
-    repositories {
-        if (project.hasProperty('forgemaven_user') && project.hasProperty('forgemaven_password')) {
-            maven {
-                credentials {
-                    username project.forgemaven_user
-                    password project.forgemaven_password
-                }
-                url 'http://files.minecraftforge.net/maven/manage/upload'
-            }
-        } else {
-            maven { url "file://${project.projectDir}/build/repo" }
-        }
-    }
+	repositories {
+		if (project.hasProperty("forgemaven_user") && project.hasProperty("forgemaven_password")) {
+			maven {
+				credentials {
+					username project.forgemaven_user
+					password project.forgemaven_password
+				}
+				url "http://files.minecraftforge.net/maven/manage/upload"
+			}
+		} else {
+			maven { url "file://${project.projectDir}/build/repo" }
+		}
+	}
 }
