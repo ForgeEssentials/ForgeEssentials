@@ -176,10 +176,10 @@ public class Session implements Runnable, RemoteSession
      * @see com.forgeessentials.api.remote.RemoteSession#sendMessage(java.lang.Object)
      */
     @Override
-    public synchronized void sendMessage(RemoteResponse<?> response) throws IOException
+    public synchronized void sendMessage(RemoteResponse<?> message) throws IOException
     {
         OutputStreamWriter ow = new OutputStreamWriter(socket.getOutputStream());
-        ow.write(getGson().toJson(response) + SEPARATOR);
+        ow.write(getGson().toJson(message) + SEPARATOR);
         ow.flush();
     }
 
@@ -189,13 +189,13 @@ public class Session implements Runnable, RemoteSession
      * @see com.forgeessentials.api.remote.RemoteSession#sendMessage(java.lang.Object)
      */
     @Override
-    public boolean trySendMessage(RemoteResponse<?> response)
+    public boolean trySendMessage(RemoteResponse<?> message)
     {
         if (isClosed())
             return false;
         try
         {
-            sendMessage(response);
+            sendMessage(message);
             return true;
         }
         catch (IOException e)
@@ -304,6 +304,7 @@ public class Session implements Runnable, RemoteSession
     /**
      * Get the Gson instance from ModuleRemote
      */
+    @Override
     public Gson getGson()
     {
         return ModuleRemote.getInstance().getGson();

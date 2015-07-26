@@ -14,8 +14,6 @@ import com.google.gson.annotations.Expose;
 
 /**
  * {@link WorldZone} covers the entirety of a world. Third lowest in priority with next being {@link ServerZone}.
- * 
- * @author Olee
  */
 public class WorldZone extends Zone
 {
