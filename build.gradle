@@ -229,9 +229,9 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 	from sourceSets.main.output
 	from sourceSets.utils.output
 	
-	from (sourceSets.main.java) {
+	/*from (sourceSets.main.java) {
 		into ("src/")
-	}
+	}*/
 
 	manifest {
 		from sharedManifest
@@ -317,17 +317,17 @@ task wrapper(type: Wrapper) {
 apply plugin: "maven-publish"
 
 publishing {
-	tasks.publish.dependsOn "deobfJar"
+	tasks.publish.dependsOn "build"
 
 	publications {
 		mavenJava (MavenPublication) {
 			groupId "com.forgeessentials"
 			artifactId "forgeessentials"
-			version baseVersion
+			version baseVersion + "-SNAPSHOT"
 
 			artifact deobfJar
-			// artifact sourceJar
-			// artifact javadocJar
+			artifact sourceJar
+			artifact javadocJar
 
 			pom.withXml {
 				def dependenciesNode = asNode().appendNode("dependencies")
