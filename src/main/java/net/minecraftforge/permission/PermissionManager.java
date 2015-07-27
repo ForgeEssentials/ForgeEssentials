@@ -29,7 +29,7 @@ public final class PermissionManager
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    protected void commandEvent(CommandEvent event)
+    public void commandEvent(CommandEvent event)
     {
         if (!checkPermission(event.sender, event.command))
         {
