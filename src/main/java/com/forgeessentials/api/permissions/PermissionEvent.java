@@ -21,8 +21,6 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * <li>{@link PermissionEvent.Zone.Create}
  * <li>{@link PermissionEvent.Zone.Delete}
  * </ul>
- * 
- * @author Olee
  */
 public class PermissionEvent extends Event
 {

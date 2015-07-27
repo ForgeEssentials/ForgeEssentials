@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 import com.forgeessentials.api.economy.Economy;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
-import com.forgeessentials.api.remote.AbstractRemoteHandler;
 import com.forgeessentials.api.remote.FERemoteHandler;
+import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 
 import net.minecraftforge.fml.common.eventhandler.EventBus;
@@ -36,8 +36,8 @@ public class APIRegistry
     public static NamedWorldHandler namedWorldHandler = new NamedWorldHandler.DefaultNamedWorldHandler();
 
     /**
-     * This manager allows registering custom {@link AbstractRemoteHandler}s for remote-module. Please be careful to use
-     * unique names in your handlers for {@link AbstractRemoteHandler#getID()}
+     * This manager allows registering custom {@link RemoteHandler}s for remote-module. Please be careful to use unique
+     * IDs when registering handlers.
      * 
      * Using this instance to register handlers is deprecated. Use the {@link FERemoteHandler} annotation instead.
      */

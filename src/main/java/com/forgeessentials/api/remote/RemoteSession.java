@@ -15,20 +15,17 @@ public interface RemoteSession
     /**
      * Sends a message to the client. Throws a {@link SessionClosedException}, if the session was already closed.
      * 
-     * @param obj
-     * @throws SessionClosedException
+     * @param message
      * @throws IOException
      */
-    void sendMessage(RemoteResponse<?> response) throws IOException;
+    void sendMessage(RemoteResponse<?> message) throws IOException;
 
     /**
      * Sends a message to the client. Throws a {@link SessionClosedException}, if the session was already closed.
      * 
-     * @param obj
-     * @throws SessionClosedException
-     * @throws IOException
+     * @param message
      */
-    boolean trySendMessage(RemoteResponse<?> response);
+    boolean trySendMessage(RemoteResponse<?> message);
 
     /**
      * Transforms a generic request into one with the correctly deserialized data

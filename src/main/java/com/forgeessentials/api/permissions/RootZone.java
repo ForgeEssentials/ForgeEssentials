@@ -7,8 +7,6 @@ import com.forgeessentials.commons.selections.WorldPoint;
 /**
  * {@link RootZone} is the root of the permission tree and has the lowest priority of all zones. It's purpose is to hold
  * default permissions, which have been set by {@link IPermissionsHelper#registerPermissionProperty(String, String)}
- * 
- * @author Olee
  */
 public class RootZone extends Zone
 {

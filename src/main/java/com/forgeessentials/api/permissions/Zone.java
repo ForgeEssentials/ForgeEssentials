@@ -30,9 +30,6 @@ import com.forgeessentials.commons.selections.WorldPoint;
  * <pre>
  * {@link RootZone} &gt; {@link ServerZone} &gt; {@link WorldZone} &gt; {@link AreaZone}
  * </pre>
- * 
- * 
- * @author Olee
  */
 public abstract class Zone
 {
@@ -403,7 +400,8 @@ public abstract class Zone
 
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
-        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+        if (APIRegistry.getFEEventBus()
+                .post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
             return false;
         Set<String> groups = getPlayerGroups(ident);
         groups.add(group);
@@ -463,7 +461,7 @@ public abstract class Zone
     /**
      * Gets the group permissions for the specified group, or null if not present.
      * 
-     * @param group
+     * @param group Group
      */
     public PermissionList getGroupPermissions(String group)
     {
@@ -473,7 +471,7 @@ public abstract class Zone
     /**
      * Gets the group permissions for the specified group. If no permission-map is present, a new one is created.
      * 
-     * @param group
+     * @param group Group
      */
     public PermissionList getOrCreateGroupPermissions(String group)
     {
@@ -566,7 +564,8 @@ public abstract class Zone
         if (group != null)
         {
             PermissionList map = getGroupPermissions(group);
-            if (map != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
+            if (map != null
+                    && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
             {
                 map.remove(permissionNode);
                 return true;

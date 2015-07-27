@@ -27,8 +27,6 @@ import com.google.gson.annotations.Expose;
 /**
  * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being
  * {@link RootZone}.
- * 
- * @author Olee
  */
 public class ServerZone extends Zone
 {

@@ -13,8 +13,6 @@ import com.forgeessentials.commons.selections.WorldPoint;
 
 /**
  * {@link IPermissionsHelper} is the primary access-point to the permissions-system.
- * 
- * @author Olee
  */
 public interface IPermissionsHelper extends IPermissionProvider
 {
@@ -79,13 +77,16 @@ public interface IPermissionsHelper extends IPermissionProvider
      */
     String getPermissionDescription(String permissionNode);
 
+    @Override
+    public void registerPermission(String permission, PermissionLevel level);
+
     /**
      * This is where permissions are registered with their default value. This function also allows to register a
      * description.
      * 
      * @param permissionNode
      * @param level
-     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionsProvider}
+     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionProvider}
      *            whether a player should be allowed to access this permission by default, or as operator only.
      * @param description
      *            Description for the permission.

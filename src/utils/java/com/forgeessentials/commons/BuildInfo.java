@@ -44,7 +44,7 @@ public abstract class BuildInfo
                     buildHash = manifest.getMainAttributes().getValue("BuildID");
                     try
                     {
-                        buildNumber = Integer.parseInt(manifest.getMainAttributes().getValue("Build-Number"));
+                        buildNumber = Integer.parseInt(manifest.getMainAttributes().getValue("BuildNumber"));
                     }
                     catch (NumberFormatException e)
                     {
