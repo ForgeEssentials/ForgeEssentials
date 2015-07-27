@@ -83,8 +83,8 @@ public abstract class BuildInfo
         {
             URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE/lastSuccessfulBuild/api/json");
             URLConnection con = buildInfoUrl.openConnection();
-            con.setConnectTimeout(6);
-            con.setReadTimeout(12);
+            con.setConnectTimeout(6000);
+            con.setReadTimeout(12000);
             con.connect();
             try (InputStreamReader is = new InputStreamReader(con.getInputStream()))
             {
