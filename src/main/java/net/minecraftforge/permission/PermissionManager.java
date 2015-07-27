@@ -1,9 +1,12 @@
 package net.minecraftforge.permission;
 
+import java.util.Map;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
@@ -93,6 +96,20 @@ public final class PermissionManager
         String permission = getCommandPermission(command);
         PermissionLevel level = getCommandLevel(command);
         registerPermission(permission, level);
+    }
+
+    /**
+     * <b>FOR INTERNAL USE ONLY</b> <br>
+     * TODO This method should be removed in the PR
+     * 
+     * @param command
+     */
+    public static void registerCommandPermissions()
+    {
+        @SuppressWarnings("unchecked")
+        Map<String, ICommand> commands = MinecraftServer.getServer().getCommandManager().getCommands();
+        for (ICommand command : commands.values())
+            registerCommandPermission(command);
     }
 
     /* ------------------------------------------------------------ */

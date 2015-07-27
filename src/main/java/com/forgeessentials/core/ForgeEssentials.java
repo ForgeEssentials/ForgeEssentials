@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
@@ -277,6 +278,20 @@ public class ForgeEssentials extends ConfigLoaderBase
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
         FECommandManager.registerCommands();
+        
+        // Do permission registration in first server tick.
+        // TODO This can be removed if the Permission API gets accepted!
+        FMLCommonHandler.instance().bus().register(new CommandPermissionRegistrationHandler());
+    }
+
+    public static final class CommandPermissionRegistrationHandler
+    {
+        @SubscribeEvent
+        public void serverTickEvent(ServerTickEvent event)
+        {
+            PermissionManager.registerCommandPermissions();
+            FMLCommonHandler.instance().bus().unregister(this);
+        }
     }
 
     @EventHandler

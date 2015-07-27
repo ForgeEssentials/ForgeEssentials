@@ -17,17 +17,14 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import net.minecraft.command.ICommand;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.permission.PermissionContext;
 import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -49,7 +46,6 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -489,16 +485,6 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public void playerLoggedOut(PlayerLoggedOutEvent e)
     {
         permissionDebugUsers.remove(e.player);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void serverStarted(FEModuleServerPostInitEvent e)
-    {
-        // TODO This can be removed if the Permission API gets accepted!
-        @SuppressWarnings("unchecked")
-        Map<String, ICommand> commands = MinecraftServer.getServer().getCommandManager().getCommands();
-        for (ICommand command : commands.values())
-            PermissionManager.registerCommandPermission(command);
     }
 
     @SubscribeEvent
