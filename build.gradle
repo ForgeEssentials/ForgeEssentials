@@ -324,7 +324,7 @@ publishing {
 			groupId "com.forgeessentials"
 			artifactId "forgeessentials"
 			version baseVersion + "-SNAPSHOT"
-			if (project.hasProperty("PUBLISH_RELEASE"))
+			if (System.getenv("PUBLISH_RELEASE"))
 				version baseVersion
 
 			artifact deobfJar
