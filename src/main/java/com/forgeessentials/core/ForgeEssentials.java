@@ -72,6 +72,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -278,7 +279,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
         FECommandManager.registerCommands();
-        
+
         // Do permission registration in first server tick.
         // TODO This can be removed if the Permission API gets accepted!
         FMLCommonHandler.instance().bus().register(new CommandPermissionRegistrationHandler());
@@ -358,6 +359,12 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         PlayerInfo.logout(event.player.getPersistentID());
         UserIdent.logout(event.player);
+    }
+
+    @SubscribeEvent
+    public void playerRespawnEvent(PlayerRespawnEvent e)
+    {
+        UserIdent.get(e.player);
     }
 
     /* ------------------------------------------------------------ */

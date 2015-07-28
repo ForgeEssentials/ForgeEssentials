@@ -138,14 +138,14 @@ public class UserIdent
             throw new IllegalArgumentException();
 
         UserIdent ident = byUuid.get(player.getPersistentID());
-        if (ident != null)
-            return ident;
-
-        ident = byUsername.get(player.getCommandSenderName().toLowerCase());
-        if (ident != null)
-            return ident;
-
-        return new UserIdent(player);
+        if (ident == null)
+        {
+            ident = byUsername.get(player.getCommandSenderName().toLowerCase());
+            if (ident == null)
+                ident = new UserIdent(player);
+        }
+        ident.player = player;
+        return ident;
     }
 
     public static synchronized UserIdent get(String uuidOrUsername, ICommandSender sender, boolean mustExist)
@@ -265,6 +265,11 @@ public class UserIdent
         return username == null ? uuid.toString() : username;
     }
 
+    public void refreshPlayer()
+    {
+        player = UserIdent.getPlayerByUuid(uuid);
+    }
+
     public EntityPlayer getPlayer()
     {
         return player;
@@ -290,8 +295,8 @@ public class UserIdent
     }
 
     /**
-     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that
-     * there is always a UUID available (for example for storage in maps).
+     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that there is always a UUID available (for example for storage in
+     * maps).
      * 
      * @return
      */
