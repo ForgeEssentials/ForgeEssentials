@@ -9,6 +9,7 @@ import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.io.FileUtils;
+import org.mcstats.Metrics.Plotter;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -70,6 +71,14 @@ public class ModulePermissions extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandZone());
         FECommandManager.registerCommand(new CommandPermissions());
         FECommandManager.registerCommand(new CommandPromote());
+
+        ForgeEssentials.getMcStatsGeneralGraph().addPlotter(new Plotter("Areas") {
+            @Override
+            public int getValue()
+            {
+                return permissionHelper.getZones().size() - permissionHelper.getServerZone().getWorldZones().size() - 2;
+            }
+        });
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

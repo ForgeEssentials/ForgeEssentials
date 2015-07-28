@@ -12,6 +12,9 @@ import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
+import org.mcstats.ConstantPlotter;
+import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -83,11 +86,13 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@Mod(modid = "ForgeEssentials", name = "Forge Essentials", version = BuildInfo.VERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
+@Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", version = BuildInfo.BASE_VERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
-    @Instance(value = "ForgeEssentials")
+    public static final String MODID = "ForgeEssentials";
+
+    @Instance(value = MODID)
     public static ForgeEssentials instance;
 
     /* ------------------------------------------------------------ */
@@ -100,55 +105,55 @@ public class ForgeEssentials extends ConfigLoaderBase
     /* ------------------------------------------------------------ */
     /* ForgeEssentials core submodules */
 
-    private ConfigManager configManager;
+    protected static ConfigManager configManager;
 
-    private ModuleLauncher moduleLauncher;
+    protected static ModuleLauncher moduleLauncher;
 
-    @SuppressWarnings("unused")
-    private TaskRegistry tasks = new TaskRegistry();
+    protected static TaskRegistry tasks = new TaskRegistry();
 
-    @SuppressWarnings("unused")
-    private SelectionEventHandler wandHandler;
+    protected static SelectionEventHandler wandHandler;
 
-    @SuppressWarnings("unused")
-    private ForgeEssentialsEventFactory factory;
+    protected static ForgeEssentialsEventFactory factory;
 
-    @SuppressWarnings("unused")
-    private TeleportHelper teleportHelper;
+    protected static TeleportHelper teleportHelper;
 
-    @SuppressWarnings("unused")
-    private Questioner questioner;
+    protected static Questioner questioner;
 
-    @SuppressWarnings("unused")
-    private FECommandManager commandManager;
+    protected static FECommandManager commandManager;
+
+    protected static Metrics mcStats;
+
+    protected static Graph mcStatsGeneralGraph;
 
     /* ------------------------------------------------------------ */
 
-    private File configDirectory;
+    protected File configDirectory;
 
-    private boolean debugMode = false;
+    protected boolean debugMode = false;
 
     /* ------------------------------------------------------------ */
 
     public ForgeEssentials()
     {
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
-
         Environment.check();
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         LoggingHandler.felog = event.getModLog();
-
-        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s #%d (%s)", //
-                BuildInfo.VERSION, BuildInfo.getBuildNumber(), BuildInfo.getBuildHash()));
+        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
 
         // Initialize core configuration
-        initializeConfigurationManager();
-        registerNetworkMessages();
         Translator.load();
+        initConfiguration();
+        registerNetworkMessages();
+        
+        // Init McStats
+        mcStats = new Metrics(MODID + "New", BuildInfo.BASE_VERSION);
+        mcStatsGeneralGraph = mcStats.createGraph("general");
 
         // Set up logger level
         if (debugMode)
@@ -161,6 +166,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         wandHandler = new SelectionEventHandler();
         teleportHelper = new TeleportHelper();
         questioner = new Questioner();
+        APIRegistry.getFEEventBus().register(new CompatReiMinimap());
 
         // Load submodules
         moduleLauncher = new ModuleLauncher();
@@ -172,9 +178,13 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         registerCommands();
 
-        FMLCommonHandler.instance().bus().register(this);
-        APIRegistry.getFEEventBus().register(new CompatReiMinimap());
-
+        // Init McStats
+        mcStats.createGraph("build_type").addPlotter(new ConstantPlotter(BuildInfo.getBuildType(), 1));
+        mcStats.createGraph("server_type").addPlotter(new ConstantPlotter(e.getSide() == Side.SERVER ? "server" : "client", 1));
+        Graph gModules = mcStats.createGraph("modules");
+        for (String module : ModuleLauncher.getModuleList())
+            gModules.addPlotter(new ConstantPlotter(module, 1));
+        
         if (BuildInfo.isOutdated())
         {
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
@@ -196,7 +206,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
-    private void initializeConfigurationManager()
+    private void initConfiguration()
     {
         configDirectory = new File(ServerUtil.getBaseDir(), "/ForgeEssentials");
         configManager = new ConfigManager(configDirectory, "main");
@@ -260,6 +270,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverStarting(FMLServerStartingEvent e)
     {
+        mcStats.start();
         BlockModListFile.makeModList();
         BlockModListFile.dumpFMLRegistries();
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
@@ -305,6 +316,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverStopped(FMLServerStoppedEvent e)
     {
+        mcStats.stop();
         APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
         FECommandManager.clearRegisteredCommands();
         Translator.save();
@@ -385,7 +397,17 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public static ConfigManager getConfigManager()
     {
-        return instance.configManager;
+        return configManager;
+    }
+
+    public static Metrics getMcStats()
+    {
+        return mcStats;
+    }
+
+    public static Graph getMcStatsGeneralGraph()
+    {
+        return mcStatsGeneralGraph;
     }
 
     public static File getFEDirectory()
