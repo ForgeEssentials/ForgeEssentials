@@ -12,13 +12,13 @@ import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
-import org.mcstats.ConstantPlotter;
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.BuildInfo;
+import com.forgeessentials.commons.mcstats.ConstantPlotter;
+import com.forgeessentials.commons.mcstats.Metrics;
+import com.forgeessentials.commons.mcstats.Metrics.Graph;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
 import com.forgeessentials.commons.network.Packet0Handshake;

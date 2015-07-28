@@ -9,10 +9,10 @@ import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.io.FileUtils;
-import org.mcstats.Metrics.Plotter;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.mcstats.Metrics.Plotter;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;

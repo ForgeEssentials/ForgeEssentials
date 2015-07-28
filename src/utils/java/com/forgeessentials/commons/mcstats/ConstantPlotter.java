@@ -1,6 +1,6 @@
-package org.mcstats;
+package com.forgeessentials.commons.mcstats;
 
-import org.mcstats.Metrics.Plotter;
+import com.forgeessentials.commons.mcstats.Metrics.Plotter;
 
 public class ConstantPlotter extends Plotter
 {
