@@ -26,9 +26,9 @@ import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
 
 public final class ScriptArguments
@@ -76,9 +76,9 @@ public final class ScriptArguments
                 try
                 {
                     int idx = Integer.parseInt(modifier);
-                    if (args == null || idx >= args.size())
+                    if (args == null || idx < 1 || idx > args.size())
                         throw new SyntaxException("Missing argument @%d", idx);
-                    m.appendReplacement(sb, args.get(idx).toString());
+                    m.appendReplacement(sb, args.get(idx - 1).toString());
                 }
                 catch (NumberFormatException e)
                 {
@@ -667,6 +667,7 @@ public final class ScriptArguments
             }
             catch (Exception e)
             {
+                /* do nothing */
             }
             return Integer.toString(online);
         }
