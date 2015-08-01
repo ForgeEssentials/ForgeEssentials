@@ -32,6 +32,7 @@ import com.forgeessentials.commands.player.CommandSeen;
 import com.forgeessentials.commands.player.CommandSmite;
 import com.forgeessentials.commands.player.CommandSpeed;
 import com.forgeessentials.commands.player.CommandTempBan;
+import com.forgeessentials.commands.player.CommandVanish;
 import com.forgeessentials.commands.server.CommandGetCommandBook;
 import com.forgeessentials.commands.server.CommandHelp;
 import com.forgeessentials.commands.server.CommandModlist;
@@ -108,6 +109,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandPregen());
         FECommandManager.registerCommand(new CommandBiome());
         FECommandManager.registerCommand(new CommandReach());
+        FECommandManager.registerCommand(new CommandVanish());
     }
 
     public static CommandsEventHandler oldEventHandler = new CommandsEventHandler();

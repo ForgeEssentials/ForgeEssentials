@@ -67,7 +67,7 @@ public class RespawnHandler
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerDeath(LivingDeathEvent e)
     {
-        if (e.entityLiving instanceof EntityPlayer)
+        if (e.entityLiving instanceof EntityPlayerMP)
         {
             EntityPlayerMP player = (EntityPlayerMP) e.entityLiving;
             PlayerInfo pi = PlayerInfo.get(player.getPersistentID());

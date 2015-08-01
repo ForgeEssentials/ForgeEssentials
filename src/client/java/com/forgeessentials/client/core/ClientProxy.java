@@ -70,8 +70,7 @@ public class ClientProxy extends CommonProxy
     public void doPreInit(FMLPreInitializationEvent event)
     {
         BuildInfo.getBuildInfo(event.getSourceFile());
-        feclientlog.info(String.format("Running ForgeEssentials client %s #%d (%s)", //
-                BuildInfo.VERSION, BuildInfo.getBuildNumber(), BuildInfo.getBuildHash()));
+        feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
 
         // Initialize configuration
         config = new Configuration(event.getSuggestedConfigurationFile());

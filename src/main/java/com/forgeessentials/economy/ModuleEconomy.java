@@ -26,6 +26,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Economy;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
@@ -109,6 +110,12 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionDescription(PERM_PRICE, "Default prices for items in economy");
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHTOLL, "",
                 "Penalty for players to pay when they die. If set to lesser than 1, value is taken as a factor of the player's wallet balance.");
+
+        CommandFeSettings.addAlias("money_per_xp", PERM_XP_MULTIPLIER);
+        CommandFeSettings.addAlias("start_budget", PERM_STARTBUDGET);
+        CommandFeSettings.addAlias("currency_name", PERM_CURRENCY);
+        CommandFeSettings.addAlias("currency_name_singular", PERM_CURRENCY_SINGULAR);
+        CommandFeSettings.addAlias("death_toll", PERM_DEATHTOLL);
 
         PlotManager.serverStarting();
     }

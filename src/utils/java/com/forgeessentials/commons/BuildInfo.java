@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
@@ -16,6 +17,8 @@ import com.google.gson.JsonSyntaxException;
 public abstract class BuildInfo
 {
 
+    private static final String BUILD_TYPE_NIGHTLY = "nightly";
+
     private static String buildHash = "N/A";
 
     private static int buildNumber = 0;
@@ -24,12 +27,34 @@ public abstract class BuildInfo
 
     private static Thread checkVersionThread;
 
-    public static final String VERSION = "1.8.0"; // update manually because gradle is a derp
+    private static Thread checkBuildTypesThread;
+
+    private static Properties buildTypes = new Properties();
+
+    public static final String MC_BASE_VERSION = "1.7.10";
+
+    public static final String BASE_VERSION = "1.8.0"; // update manually because gradle is a derp
 
     static
     {
         // Check for latest version asap
-        checkLatestVersion();
+        checkVersionThread = new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                doCheckLatestVersion();
+            }
+        });
+        checkVersionThread.start();
+
+        checkBuildTypesThread = new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                doCheckBuildTypes();
+            }
+        });
+        checkBuildTypesThread.start();
     }
 
     public static void getBuildInfo(File jarFile)
@@ -54,27 +79,13 @@ public abstract class BuildInfo
             }
             else
             {
-                System.err.println(String.format("Unable to get FE version information (dev env / %s)", VERSION));
+                System.err.println(String.format("Unable to get FE version information (dev env / %s)", BASE_VERSION));
             }
         }
         catch (IOException e1)
         {
-            System.err.println(String.format("Unable to get FE version information (%s)", VERSION));
+            System.err.println(String.format("Unable to get FE version information (%s)", BASE_VERSION));
         }
-    }
-
-    public static void checkLatestVersion()
-    {
-        if (checkVersionThread != null && checkVersionThread.isAlive())
-            return;
-        checkVersionThread = new Thread(new Runnable() {
-            @Override
-            public void run()
-            {
-                doCheckLatestVersion();
-            }
-        });
-        checkVersionThread.start();
     }
 
     private static void doCheckLatestVersion()
@@ -103,19 +114,50 @@ public abstract class BuildInfo
         }
     }
 
-    private static void joinCheckThread()
+    private static void joinVersionThread()
     {
-        if (checkVersionThread != null)
+        if (checkVersionThread == null)
+            return;
+        try
         {
-            try
-            {
-                checkVersionThread.join();
-                checkVersionThread = null;
-            }
-            catch (InterruptedException e)
-            {
-                /* do nothing */
-            }
+            checkVersionThread.join();
+            checkVersionThread = null;
+        }
+        catch (InterruptedException e)
+        {
+            /* do nothing */
+        }
+    }
+
+    private static void doCheckBuildTypes()
+    {
+        try
+        {
+            URL buildInfoUrl = new URL("http://files.forgeessentials.com/buildtypes_" + MC_BASE_VERSION + ".txt");
+            URLConnection con = buildInfoUrl.openConnection();
+            con.setConnectTimeout(6000);
+            con.setReadTimeout(12000);
+            con.connect();
+            buildTypes.load(con.getInputStream());
+        }
+        catch (IOException e)
+        {
+            System.err.println("Unable to retrieve build types");
+        }
+    }
+
+    private static void joinBuildTypeThread()
+    {
+        if (checkBuildTypesThread == null)
+            return;
+        try
+        {
+            checkBuildTypesThread.join();
+            checkBuildTypesThread = null;
+        }
+        catch (InterruptedException e)
+        {
+            /* do nothing */
         }
     }
 
@@ -123,6 +165,13 @@ public abstract class BuildInfo
     {
         // Set to null, which will disable joining of the thread and kill any possible delay
         checkVersionThread = null;
+    }
+
+    public static String getFullVersion()
+    {
+        if (buildNumber == 0)
+            return BASE_VERSION;
+        return BASE_VERSION + '.' + buildNumber;
     }
 
     public static String getBuildHash()
@@ -137,14 +186,20 @@ public abstract class BuildInfo
 
     public static int getBuildNumberLatest()
     {
-        joinCheckThread();
+        joinVersionThread();
         return buildNumberLatest;
     }
 
     public static boolean isOutdated()
     {
-        joinCheckThread();
+        joinVersionThread();
         return buildNumber > 0 && buildNumberLatest > buildNumber;
+    }
+
+    public static String getBuildType()
+    {
+        joinBuildTypeThread();
+        return buildTypes.getProperty(Integer.toString(buildNumber), BUILD_TYPE_NIGHTLY);
     }
 
 }
