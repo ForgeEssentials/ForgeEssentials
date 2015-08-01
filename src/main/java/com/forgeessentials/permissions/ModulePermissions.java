@@ -12,8 +12,8 @@ import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commons.mcstats.Metrics.Plotter;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.mcstats.Metrics.Plotter;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
