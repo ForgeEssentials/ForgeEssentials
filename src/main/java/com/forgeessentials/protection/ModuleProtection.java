@@ -45,12 +45,14 @@ import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.protection.commands.CommandUpgradePermissions;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameData;
@@ -77,6 +79,7 @@ public class ModuleProtection
     public final static String PERM_INVENTORY = BASE_PERM + ".inventory";
     public final static String PERM_EXIST = BASE_PERM + ".exist";
     public final static String PERM_EXPLOSION = BASE_PERM + ".explosion";
+    public final static String PERM_NEEDSFOOD = BASE_PERM + ".needsfood";
 
     public final static String PERM_MOBSPAWN = BASE_PERM + ".mobspawn";
     public final static String PERM_MOBSPAWN_NATURAL = PERM_MOBSPAWN + ".natural";
@@ -151,6 +154,7 @@ public class ModuleProtection
         // ----------------------------------------
         // Other
         APIRegistry.perms.registerPermission(PERM_SLEEP, PermissionLevel.TRUE, "Allow players to sleep in beds");
+        APIRegistry.perms.registerPermission(PERM_NEEDSFOOD, PermissionLevel.TRUE, "If denied to a player, their hunger bar will not deplete.");
         APIRegistry.perms.registerPermission(PERM_PVP, PermissionLevel.TRUE, "If denied for at least one of two fighting players, PvP will be disabled");
         APIRegistry.perms.registerPermissionProperty(PERM_GAMEMODE, "-1", "Force gamemode (-1 = none / default, 0 = survival, 1 = creative, 2 = adventure)");
         APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default",
@@ -241,6 +245,12 @@ public class ModuleProtection
                         "Apply potion effects to players who enter this area. Comma separated list of \"ID:duration:amplifier\" pairs. See http://www.minecraftwiki.net/wiki/Potion_effects#Parameters");
         APIRegistry.perms.registerPermissionProperty(ZONE_POTION_INTERVAL, "2000",
                 "Time interval in milliseconds for applying potion-effects. Zero = once only.");
+    }
+
+    @SubscribeEvent
+    public void postServerStart(FEModuleServerPostInitEvent e)
+    {
+        TaskRegistry.getInstance().scheduleRepeated(new HungerHelper(), 60 * 1000);
     }
 
     @SubscribeEvent
