@@ -11,11 +11,10 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
-import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
-import com.forgeessentials.remote.RemoteCommandSender;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.remote.RemoteMessageID;
 
 @FERemoteHandler(id = RemoteMessageID.COMMAND)
@@ -31,37 +30,41 @@ public class CommandHandler extends GenericRemoteHandler<String>
     }
 
     @Override
-    protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<String> request)
+    protected RemoteResponse<?> handleData(final RemoteSession session, final RemoteRequest<String> request)
     {
         if (request.data == null)
             error("Missing command");
 
-        String[] args = request.data.split(" ");
-        String commandName = args[0];
-        args = Arrays.copyOfRange(args, 1, args.length);
+        String[] cmdLine = request.data.split(" ");
+        String commandName = cmdLine[0];
+        final String[] args = Arrays.copyOfRange(cmdLine, 1, cmdLine.length);
 
-        ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(commandName);
+        final ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(commandName);
         if (command == null)
             error(String.format("Command \"%s\" not found", commandName));
 
-        RemoteCommandSender sender = new RemoteCommandSender(session);
+        checkPermission(session, PermissionManager.getCommandPermission(command));
 
-        if (!PermissionManager.checkPermission(sender, command))
-            error(RemoteHandler.MSG_NO_PERMISSION);
-
-        try
-        {
-            command.processCommand(sender, args);
-        }
-        catch (CommandException e)
-        {
-            error(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            error("Exception: " + e.getMessage());
-        }
-        return success(request);
+        TaskRegistry.runLater(new Runnable() {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    command.processCommand(session.getUserIdent().getFakePlayer(), args);
+                    session.trySendMessage(RemoteResponse.success(request));
+                }
+                catch (CommandException e)
+                {
+                    session.trySendMessage(RemoteResponse.error(request, e.getMessage()));
+                }
+                catch (Exception e)
+                {
+                    session.trySendMessage(RemoteResponse.error(request, "Exception: " + e.getMessage()));
+                }
+            }
+        });
+        return null;
     }
 
 }
