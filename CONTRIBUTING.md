@@ -1,44 +1,27 @@
-## Using the FE API
+# Integrating ForgeEssentials with another mod
+To use ForgeEssentials and its powerful permission framework with from another mod, please take a look at the [developer documentation in the wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Developer-documentation).
 
-[See here for more information.](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Developer-documentation)
-
-## Developing on FE itself/Building FE (not for the faint of heart)
-
-You need to install [msysgit](http://git-scm.com/) first. Once you have installed msysgit, open Bash (or cmd or whatever you told the installer to use) and run the following commands:
-
-    git clone https://github.com/ForgeEssentials/ForgeEssentialsMain.git
-    git submodule init
-    git submodule update
-    
-These commands download the FE source code and configure it as the buildscripts expect the repos to be.
-
+# Developing ForgeEssentials
+- Download ForgeEssentials with git
+- Run ForgeGradle setup  
+  (E.g., `./gradlew setupDecompWorkspace eclipse` when using eclipse)
+- Configure the annotation processor as outlined [below](#Configuring-Annotation-Processing)
+- Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler` to the launch arguments of the server
+- Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --tweakClass com.forgeessentials.client.mixin.FEClientLaunchHandler` to the launch arguments of the client
 From here, you may refer to ForgeGradle instructions for importing a project.
 
-*Note: FE is built on Java 7. As such, you will need either a JDK 7 or 8 installed and configured.*
+# Configuring Annotation Processing
+If you open ForgeEssentials in your IDE, you must turn on annotation processing, or your IDE will complain that it cannot find classes like `Action_`. You also might need to manually add `hibernate-jpamodelgen-4.3.7.jar` as annotation processor. Please refer to the respective IDE documentation on how to do this.
 
-### Additional steps (all very important):
+### Eclipse
+- Go to `Project Properties` > `Java Compiler` > `Annotation processing`
+  - Check `Enable annotation processing`
+- Go to `Project Properties` > `Java Compiler` > `Annotation processing` > `Factory Path`
+  - Add the `hibernate-jpamodelgen-4.3.7.jar`.  
+    To find its location, check the referenced libraries in the project settings. It should be located somewhere in  
+    `$HOME/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-jpamodelgen/4.3.7.Final`
 
-#### Configuring the mixin injector (VERY IMPORTANT, OR EVENTS WILL NOT FIRE!!!)
-
-Open your IDE run configs, and select the preconfigured "Minecraft Client" run configuration.
-
-Under "Program Arguments", add the following:
-
-    --tweakClass com.forgeessentials.core.preloader.FELaunchHandler
-
-Repeat for the "Minecraft Server" run configuration.
-
-#### Enabling annotation processing
-
-If you intend to use the debugging features of your IDE, you must turn on annotation processing, or your IDE will complain that it cannot find classes like `Action_`.
-
-Please refer to the respective IDE documentation on how to do this.
-
-For Eclipse, you may need to add the referenced dependencies hibernate-jpamodelgen.jar and mixin.jar (names may differ) as annotation processors.
-
-## Notes:
-1. Please consider squashing all commits before initially submitting pull requests.
-
-2. For a local .gitignore use .git/info/exclude
-
-3. If you have any questions, hop on IRC.
+# Notes
+1. Please consider squashing all commits before initially submitting pull requests
+2. For a local `.gitignore` use `.git/info/exclude`
+3. If you have any questions, join us on IRC
