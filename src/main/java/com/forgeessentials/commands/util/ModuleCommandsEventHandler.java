@@ -36,7 +36,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     public void register()
     {
         super.register();
-        TaskRegistry.getInstance().scheduleRepeated(this, 1000 * 2);
+        TaskRegistry.scheduleRepeated(this, 1000 * 2);
     }
 
     @Override

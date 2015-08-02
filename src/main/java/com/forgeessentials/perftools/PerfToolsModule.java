@@ -39,7 +39,7 @@ public class PerfToolsModule extends ConfigLoaderBase
         {
             watchdog = new MemoryWatchdog();
             PermissionManager.registerPermission(PERM_WARN, PermissionLevel.OP);
-            TaskRegistry.getInstance().scheduleRepeated(watchdog, checkInterval * 60 * 1000);
+            TaskRegistry.scheduleRepeated(watchdog, checkInterval * 60 * 1000);
         }
     }
 

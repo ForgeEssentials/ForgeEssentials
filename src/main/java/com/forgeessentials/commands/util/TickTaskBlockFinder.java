@@ -76,7 +76,7 @@ public class TickTaskBlockFinder implements TickTask
         blockName = stack.getItem() != null ? stack.getDisplayName() : GameData.getBlockRegistry().getNameForObject(block);
 
         msg("Start the hunt for " + blockName);
-        TaskRegistry.getInstance().schedule(this);
+        TaskRegistry.schedule(this);
     }
 
     @Override

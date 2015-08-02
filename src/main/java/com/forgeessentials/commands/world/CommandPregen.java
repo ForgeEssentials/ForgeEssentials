@@ -200,7 +200,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         totalTicks = 0;
         totalChunks = 0;
 
-        TaskRegistry.getInstance().schedule(this);
+        TaskRegistry.schedule(this);
         arguments.confirm("Pregen started");
     }
 

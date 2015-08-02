@@ -30,11 +30,13 @@ public class TaskRegistry extends ServerEventHandler
 
     public static int MAX_BLOCK_TASKS = 6;
 
-    protected ConcurrentLinkedQueue<TickTask> tickTasks = new ConcurrentLinkedQueue<>();
+    protected static ConcurrentLinkedQueue<TickTask> tickTasks = new ConcurrentLinkedQueue<>();
 
-    private Timer timer = new Timer();
+    protected static ConcurrentLinkedQueue<Runnable> runLater = new ConcurrentLinkedQueue<>();
 
-    private Map<Runnable, TimerTask> runnableTasks = new HashMap<>();
+    protected static Timer timer = new Timer();
+
+    protected static Map<Runnable, TimerTask> runnableTasks = new HashMap<>();
 
     /* ------------------------------------------------------------ */
 
@@ -60,19 +62,28 @@ public class TaskRegistry extends ServerEventHandler
 
     /* ------------------------------------------------------------ */
 
-    public void schedule(TickTask task)
+    public static void schedule(TickTask task)
     {
         tickTasks.add(task);
     }
 
-    public void remove(TickTask task)
+    public static void remove(TickTask task)
     {
         tickTasks.remove(task);
     }
 
-    @SubscribeEvent
-    public void onTick(TickEvent.ServerTickEvent e)
+    public static void runLater(Runnable task)
     {
+        runLater.add(task);
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent.ServerTickEvent event)
+    {
+        for (Runnable task : runLater)
+            task.run();
+        runLater.clear();
+
         int blockTaskCount = 0;
         for (Iterator<TickTask> iterator = tickTasks.iterator(); iterator.hasNext();)
         {
@@ -91,7 +102,7 @@ public class TaskRegistry extends ServerEventHandler
     /* ------------------------------------------------------------ */
     /* Timers */
 
-    public void schedule(TimerTask task, long time)
+    public static void schedule(TimerTask task, long time)
     {
         try
         {
@@ -104,7 +115,7 @@ public class TaskRegistry extends ServerEventHandler
         }
     }
 
-    public void scheduleRepeated(TimerTask task, long delay, long interval)
+    public static void scheduleRepeated(TimerTask task, long delay, long interval)
     {
         try
         {
@@ -117,12 +128,12 @@ public class TaskRegistry extends ServerEventHandler
         }
     }
 
-    public void scheduleRepeated(TimerTask task, long interval)
+    public static void scheduleRepeated(TimerTask task, long interval)
     {
         scheduleRepeated(task, interval, interval);
     }
 
-    public void remove(TimerTask task)
+    public static void remove(TimerTask task)
     {
         task.cancel();
         timer.purge();
@@ -131,7 +142,7 @@ public class TaskRegistry extends ServerEventHandler
     /* ------------------------------------------------------------ */
     /* Runnable compatibility */
 
-    protected TimerTask getTimerTask(final Runnable task, final boolean repeated)
+    protected static TimerTask getTimerTask(final Runnable task, final boolean repeated)
     {
         TimerTask timerTask = runnableTasks.get(task);
         if (timerTask == null)
@@ -150,22 +161,22 @@ public class TaskRegistry extends ServerEventHandler
         return timerTask;
     }
 
-    public void schedule(Runnable task, long time)
+    public static void schedule(Runnable task, long time)
     {
         schedule(getTimerTask(task, false), time);
     }
 
-    public void scheduleRepeated(Runnable task, long interval)
+    public static void scheduleRepeated(Runnable task, long interval)
     {
         scheduleRepeated(task, interval, interval);
     }
 
-    public void scheduleRepeated(Runnable task, long delay, long interval)
+    public static void scheduleRepeated(Runnable task, long delay, long interval)
     {
         scheduleRepeated(getTimerTask(task, true), delay, interval);
     }
 
-    public void remove(Runnable task)
+    public static void remove(Runnable task)
     {
         TimerTask timerTask = runnableTasks.remove(task);
         if (timerTask != null)
