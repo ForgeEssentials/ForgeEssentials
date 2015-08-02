@@ -52,7 +52,7 @@ public class CommandFEInfo extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.notify(String.format("Running ForgeEssentials %s", BuildInfo.getFullVersion()));
+            arguments.notify(String.format("Running ForgeEssentials %s-%s", BuildInfo.getFullVersion(), BuildInfo.getBuildType()));
             if (BuildInfo.isOutdated())
                 arguments.error(String.format("Outdated! Latest build is #%d", BuildInfo.getBuildNumberLatest()));
             arguments.confirm("/feinfo reload: Reload FE configs");

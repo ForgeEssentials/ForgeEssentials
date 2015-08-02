@@ -183,7 +183,8 @@ public class ForgeEssentials extends ConfigLoaderBase
         Graph gModules = mcStats.createGraph("modules");
         for (String module : ModuleLauncher.getModuleList())
             gModules.addPlotter(new ConstantPlotter(module, 1));
-        
+
+        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
         if (BuildInfo.isOutdated())
         {
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
