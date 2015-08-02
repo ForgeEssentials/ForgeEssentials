@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.google.gson.annotations.Expose;
+
 /**
  *
  */
@@ -21,6 +23,7 @@ public class PlayerData
     public Long id;
 
     @Column(name = "uuid", length = 36)
+    @Expose(serialize = false)
     public String uuid;
 
 }

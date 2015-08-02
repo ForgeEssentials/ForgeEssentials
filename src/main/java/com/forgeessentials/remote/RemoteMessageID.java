@@ -18,4 +18,7 @@ public abstract class RemoteMessageID
     public static final String COMMAND_LIST = "command_list";
     public static final String COMMAND_COMPLETE = "command_complete";
 
+    public static final String PL_QUERY_LOG_COMMANDS = "pl.log.commands";
+    public static final String PL_QUERY_LOG_BLOCKS = "pl.log.blocks";
+    
 }
