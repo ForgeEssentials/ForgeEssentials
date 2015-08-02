@@ -61,7 +61,7 @@ public class Session implements Runnable, RemoteSession
                     final String msg = sss.readNext();
                     if (msg == null)
                     {
-                        LoggingHandler.felog.warn("[remote] Connection closed: " + getRemoteHostname());
+                        // LoggingHandler.felog.warn("[remote] Connection closed: " + getRemoteHostname());
                         break;
                     }
                     processMessage(msg);
