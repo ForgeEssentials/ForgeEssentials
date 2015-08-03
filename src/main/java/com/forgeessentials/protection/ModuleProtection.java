@@ -84,7 +84,7 @@ public class ModuleProtection
     public final static String PERM_EXIST = BASE_PERM + ".exist";
     public final static String PERM_EXPLOSION = BASE_PERM + ".explosion";
     public final static String PERM_NEEDSFOOD = BASE_PERM + ".needsfood";
-    private static final String PERM_PRESSUREPLATE = BASE_PERM + ".pressureplate";
+    public static final String PERM_PRESSUREPLATE = BASE_PERM + ".pressureplate";
 
     public final static String PERM_MOBSPAWN = BASE_PERM + ".mobspawn";
     public final static String PERM_MOBSPAWN_NATURAL = PERM_MOBSPAWN + ".natural";

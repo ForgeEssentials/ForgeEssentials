@@ -346,17 +346,16 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
+        UserIdent ident = null;
         if (event.entity instanceof EntityPlayerMP)
         {
             EntityPlayerMP player = (EntityPlayerMP) event.entity;
-            UserIdent ident = UserIdent.get(player);
-
-            String permission = ModuleProtection.BASE_PERM + ".pressureplate";
+            ident = UserIdent.get(player);
             if (ModuleProtection.isDebugMode(player))
-                ChatOutputHandler.chatNotification(player, permission);
-            if (!APIRegistry.perms.checkUserPermission(ident, permission))
-                event.setCanceled(true);
+                ChatOutputHandler.chatNotification(player, ModuleProtection.PERM_PRESSUREPLATE);
         }
+        if (!APIRegistry.perms.checkUserPermission(ident, ModuleProtection.PERM_PRESSUREPLATE))
+            event.setCanceled(true);
     }
 
     /* ------------------------------------------------------------ */
