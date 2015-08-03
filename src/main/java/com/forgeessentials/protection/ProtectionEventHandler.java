@@ -43,6 +43,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fe.event.world.PressurePlateEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -336,6 +337,25 @@ public class ProtectionEventHandler extends ServerEventHandler
             event.useBlock = DENY;
             if (event.action != LEFT_CLICK_BLOCK)
                 ChatOutputHandler.chatError(event.entityPlayer, Translator.translate("Cannot interact with creative area if not in creative mode."));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void pressurePlateEvent(PressurePlateEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+
+        if (event.entity instanceof EntityPlayerMP)
+        {
+            EntityPlayerMP player = (EntityPlayerMP) event.entity;
+            UserIdent ident = UserIdent.get(player);
+
+            String permission = ModuleProtection.BASE_PERM + ".pressureplate";
+            if (ModuleProtection.isDebugMode(player))
+                ChatOutputHandler.chatNotification(player, permission);
+            if (!APIRegistry.perms.checkUserPermission(ident, permission))
+                event.setCanceled(true);
         }
     }
 

@@ -69,6 +69,7 @@ public class ModuleAfterlife extends ConfigLoaderBase
 
         CommandFeSettings.addAlias("respawn_hp", PERM_HP);
         CommandFeSettings.addAlias("respawn_food", PERM_FOOD);
+        CommandFeSettings.addAlias("respawn_debuffs", PERM_DEBUFFS);
         CommandFeSettings.addAlias("grave_enable", PERM_DEATHCHEST);
         CommandFeSettings.addAlias("grave_safetime", PERM_DEATHCHEST_SAFETIME);
         CommandFeSettings.addAlias("grave_recoverable_xp", PERM_DEATHCHEST_XP);
