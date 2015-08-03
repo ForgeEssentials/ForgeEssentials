@@ -31,7 +31,7 @@ public abstract class BuildInfo
 
     private static Properties buildTypes = new Properties();
 
-    public static final String MC_BASE_VERSION = "1.7.10";
+    public static final String MC_BASE_VERSION = "1.8";
 
     public static final String BASE_VERSION = "1.8.0"; // update manually because gradle is a derp
 

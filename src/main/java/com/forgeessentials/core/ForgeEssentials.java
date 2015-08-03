@@ -134,6 +134,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
+        LoggingHandler.init();
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
         FMLCommonHandler.instance().bus().register(this);
@@ -149,7 +150,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         Translator.load();
         initConfiguration();
         registerNetworkMessages();
-        
+
         // Init McStats
         mcStats = new Metrics(MODID + "New", BuildInfo.BASE_VERSION);
         mcStatsGeneralGraph = mcStats.createGraph("general");
@@ -184,7 +185,8 @@ public class ForgeEssentials extends ConfigLoaderBase
         for (String module : ModuleLauncher.getModuleList())
             gModules.addPlotter(new ConstantPlotter(module, 1));
 
-        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
+        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(),
+                BuildInfo.getBuildHash()));
         if (BuildInfo.isOutdated())
         {
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");

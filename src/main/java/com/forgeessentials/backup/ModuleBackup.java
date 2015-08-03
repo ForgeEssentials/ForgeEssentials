@@ -128,9 +128,9 @@ public class ModuleBackup extends ConfigLoaderBase
 
     private void registerBackupTask()
     {
-        TaskRegistry.getInstance().remove(backupTask);
+        TaskRegistry.remove(backupTask);
         if (backupInterval > 0)
-            TaskRegistry.getInstance().scheduleRepeated(backupTask, 1000 * 60 * backupInterval);
+            TaskRegistry.scheduleRepeated(backupTask, 1000 * 60 * backupInterval);
     }
 
     @SubscribeEvent

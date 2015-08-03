@@ -54,9 +54,9 @@ public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
     public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
-        TaskRegistry.getInstance().remove(this);
+        TaskRegistry.remove(this);
         if (enabled)
-            TaskRegistry.getInstance().scheduleRepeated(this, interval * 1000);
+            TaskRegistry.scheduleRepeated(this, interval * 1000);
     }
 
     @Override

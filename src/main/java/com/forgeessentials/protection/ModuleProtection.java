@@ -249,7 +249,7 @@ public class ModuleProtection
     @SubscribeEvent
     public void postServerStart(FEModuleServerPostInitEvent e)
     {
-        TaskRegistry.getInstance().scheduleRepeated(new HungerHelper(), 60 * 1000);
+        TaskRegistry.scheduleRepeated(new HungerHelper(), 60 * 1000);
     }
 
     @SubscribeEvent

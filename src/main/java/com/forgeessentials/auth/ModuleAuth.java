@@ -74,7 +74,7 @@ public class ModuleAuth extends ConfigLoaderBase
         if (checkVanillaAuthStatus && !forceEnabled)
         {
             vanillaCheck = new VanillaServiceChecker();
-            TaskRegistry.getInstance().scheduleRepeated(vanillaCheck, checkInterval * 60 * 1000);
+            TaskRegistry.scheduleRepeated(vanillaCheck, checkInterval * 60 * 1000);
         }
 
         onStatusChange();

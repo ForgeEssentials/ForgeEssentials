@@ -6,9 +6,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
@@ -20,12 +23,15 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.Expose;
 
 public class DataManager implements ExclusionStrategy
 {
+    
+    public static final String DEFAULT_GROUP = "default";
 
     public static interface DataType<T> extends JsonSerializer<T>, JsonDeserializer<T>
     {
@@ -43,6 +49,10 @@ public class DataManager implements ExclusionStrategy
     private static boolean formatsChanged;
 
     private File basePath;
+
+    private Set<String> defaultSerializationGroups = new HashSet<String>(Arrays.asList(DEFAULT_GROUP));
+
+    private Set<String> serializationGroups = defaultSerializationGroups;
 
     static
     {
@@ -91,7 +101,7 @@ public class DataManager implements ExclusionStrategy
     {
         try (FileWriter out = new FileWriter(getTypeFile(src.getClass(), key)))
         {
-            getGson().toJson(src, out);
+            toJson(src, out);
         }
         catch (Throwable e)
         {
@@ -186,6 +196,11 @@ public class DataManager implements ExclusionStrategy
         Expose expose = f.getAnnotation(Expose.class);
         if (expose != null && (!expose.serialize() || !expose.deserialize()))
             return true;
+
+        SerializationGroup groupAnnot = f.getAnnotation(SerializationGroup.class);
+        if (groupAnnot != null && !serializationGroups.contains(groupAnnot.name()))
+            return true;
+
         return false;
     }
 
@@ -211,6 +226,34 @@ public class DataManager implements ExclusionStrategy
             gson = builder.create();
         }
         return gson;
+    }
+
+    public String toJson(Object src, String... groups)
+    {
+        try
+        {
+            if (groups.length > 0)
+                serializationGroups = new HashSet<String>(Arrays.asList(groups));
+            return getGson().toJson(src);
+        }
+        finally
+        {
+            serializationGroups = defaultSerializationGroups;
+        }
+    }
+
+    public void toJson(Object src, Appendable writer, String... groups) throws JsonIOException
+    {
+        try
+        {
+            if (groups.length > 0)
+                serializationGroups = new HashSet<String>(Arrays.asList(groups));
+            getGson().toJson(src, writer);
+        }
+        finally
+        {
+            serializationGroups = defaultSerializationGroups;
+        }
     }
 
     private File getTypePath(Class<?> clazz)

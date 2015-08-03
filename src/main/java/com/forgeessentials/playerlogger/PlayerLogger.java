@@ -47,9 +47,14 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-import com.forgeessentials.commons.selections.Selection;
+import org.hibernate.jpa.criteria.predicate.CompoundPredicate;
+
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.playerlogger.entity.ActionBlock;
+import com.forgeessentials.playerlogger.entity.ActionCommand;
 import com.forgeessentials.playerlogger.entity.Action_;
 import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.BlockData_;
@@ -363,34 +368,98 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return changes;
     }
 
-    public List<ActionBlock> getBlockChanges(Selection area, Date startTime)
+    protected CompoundPredicate getActionPredicate(Root<? extends Action> root, WorldArea area, Date startTime, Date endTime)
     {
-        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
-        Root<ActionBlock> cRoot = cQuery.from(ActionBlock.class);
-        cQuery.select(cRoot);
-        cQuery.where(cBuilder.and(cBuilder.greaterThanOrEqualTo(cRoot.get(Action_.time), cBuilder.literal(startTime)),
-                cBuilder.equal(cRoot.<Integer> get(Action_.world.getName()), cBuilder.literal(area.getDimension())), //
-                cBuilder.between(cRoot.get(Action_.x), cBuilder.literal(area.getLowPoint().getX()), cBuilder.literal(area.getHighPoint().getX())), //
-                cBuilder.between(cRoot.get(Action_.y), cBuilder.literal(area.getLowPoint().getY()), cBuilder.literal(area.getHighPoint().getY())), //
-                cBuilder.between(cRoot.get(Action_.z), cBuilder.literal(area.getLowPoint().getZ()), cBuilder.literal(area.getHighPoint().getZ()))));
-        cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
-        return executeQuery(em.createQuery(cQuery));
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CompoundPredicate predicate = (CompoundPredicate) cb.and();
+        if (area != null)
+        {
+            predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(area.getDimension())));
+            Point lp = area.getLowPoint();
+            Point hp = area.getHighPoint();
+            predicate.getExpressions().add(cb.between(root.get(Action_.x), cb.literal(lp.getX()), cb.literal(hp.getX())));
+            predicate.getExpressions().add(cb.between(root.get(Action_.y), cb.literal(lp.getY()), cb.literal(hp.getY())));
+            predicate.getExpressions().add(cb.between(root.get(Action_.z), cb.literal(lp.getZ()), cb.literal(hp.getZ())));
+        }
+        if (startTime != null)
+            predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get(Action_.time), cb.literal(startTime)));
+        if (endTime != null)
+            predicate.getExpressions().add(cb.lessThanOrEqualTo(root.get(Action_.time), cb.literal(endTime)));
+        return predicate;
     }
 
-    public List<ActionBlock> getBlockChanges(WorldPoint point, Date startTime, int maxResults)
+    protected CompoundPredicate getActionPredicate(Root<? extends Action> root, WorldPoint point, Date startTime, Date endTime)
+    {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CompoundPredicate predicate = (CompoundPredicate) cb.and();
+        if (point != null)
+        {
+            predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(point.getDimension())));
+            predicate.getExpressions().add(cb.equal(root.get(Action_.x), cb.literal(point.getX())));
+            predicate.getExpressions().add(cb.equal(root.get(Action_.y), cb.literal(point.getY())));
+            predicate.getExpressions().add(cb.equal(root.get(Action_.z), cb.literal(point.getZ())));
+        }
+        if (startTime != null)
+            predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get(Action_.time), cb.literal(startTime)));
+        if (endTime != null)
+            predicate.getExpressions().add(cb.lessThanOrEqualTo(root.get(Action_.time), cb.literal(endTime)));
+        return predicate;
+    }
+
+    public List<ActionBlock> getLoggedBlockChanges(WorldArea area, Date startTime, Date endTime, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
         Root<ActionBlock> cRoot = cQuery.from(ActionBlock.class);
         cQuery.select(cRoot);
-        cQuery.where(cBuilder.and(cBuilder.equal(cRoot.<Integer> get(Action_.world.getName()), cBuilder.literal(point.getDimension())), //
-                cBuilder.equal(cRoot.get(Action_.x), cBuilder.literal(point.getX())), //
-                cBuilder.equal(cRoot.get(Action_.y), cBuilder.literal(point.getY())), //
-                cBuilder.equal(cRoot.get(Action_.z), cBuilder.literal(point.getZ())), //
-                cBuilder.lessThan(cRoot.get(Action_.time), cBuilder.literal(startTime))));
+        cQuery.where(getActionPredicate(cRoot, area, startTime, endTime));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
-        return executeQuery(em.createQuery(cQuery).setMaxResults(maxResults));
+        TypedQuery<ActionBlock> query = em.createQuery(cQuery);
+        if (maxResults > 0)
+            query.setMaxResults(maxResults);
+        return executeQuery(query);
+    }
+
+    public List<ActionBlock> getLoggedBlockChanges(WorldPoint point, Date startTime, Date endTime, int maxResults)
+    {
+        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
+        Root<ActionBlock> cRoot = cQuery.from(ActionBlock.class);
+        cQuery.select(cRoot);
+        cQuery.where(getActionPredicate(cRoot, point, startTime, endTime));
+        cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
+        TypedQuery<ActionBlock> query = em.createQuery(cQuery);
+        if (maxResults > 0)
+            query.setMaxResults(maxResults);
+        return executeQuery(query);
+    }
+
+    public List<ActionCommand> getLoggedCommands(WorldArea area, Date startTime, Date endTime, int maxResults)
+    {
+        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<ActionCommand> cQuery = cBuilder.createQuery(ActionCommand.class);
+        Root<ActionCommand> cRoot = cQuery.from(ActionCommand.class);
+        cQuery.select(cRoot);
+        cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
+        cQuery.where(getActionPredicate(cRoot, area, startTime, endTime));
+        TypedQuery<ActionCommand> query = em.createQuery(cQuery);
+        if (maxResults > 0)
+            query.setMaxResults(maxResults);
+        return executeQuery(query);
+    }
+
+    public List<ActionCommand> getLoggedCommands(WorldPoint point, Date startTime, Date endTime, int maxResults)
+    {
+        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<ActionCommand> cQuery = cBuilder.createQuery(ActionCommand.class);
+        Root<ActionCommand> cRoot = cQuery.from(ActionCommand.class);
+        cQuery.select(cRoot);
+        cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
+        cQuery.where(getActionPredicate(cRoot, point, startTime, endTime));
+        TypedQuery<ActionCommand> query = em.createQuery(cQuery);
+        if (maxResults > 0)
+            query.setMaxResults(maxResults);
+        return executeQuery(query);
     }
 
     /* ------------------------------------------------------------ */

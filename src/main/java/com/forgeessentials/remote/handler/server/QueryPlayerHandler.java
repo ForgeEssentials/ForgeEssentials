@@ -25,7 +25,7 @@ import com.google.gson.JsonPrimitive;
 public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
 {
 
-    public static final String PERM = PERM_REMOTE + ".query.player";
+    public static final String PERM = PERM_REMOTE + ".player.query";
     public static final String PERM_LOCATION = PERM + ".location";
     public static final String PERM_DETAIL = PERM + ".detail";
 

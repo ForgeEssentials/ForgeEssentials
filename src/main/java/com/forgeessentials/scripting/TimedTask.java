@@ -20,7 +20,7 @@ public class TimedTask extends TimerTask
         this.interval = interval;
         this.command = command;
         this.name = name;
-        TaskRegistry.getInstance().scheduleRepeated(this, interval * 1000);
+        TaskRegistry.scheduleRepeated(this, interval * 1000);
     }
 
     @Override

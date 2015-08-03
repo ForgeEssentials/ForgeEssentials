@@ -90,7 +90,7 @@ public class CommandButcherTickTask implements TickTask
         try
         {
             ButcherMobType mobT = CommandButcherTickTask.ButcherMobType.valueOf(mobType.toUpperCase());
-            TaskRegistry.getInstance().schedule(new CommandButcherTickTask(sender, world, mobT, aabb, radius));
+            TaskRegistry.schedule(new CommandButcherTickTask(sender, world, mobT, aabb, radius));
         }
         catch (IllegalArgumentException e)
         {
