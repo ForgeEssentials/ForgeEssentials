@@ -12,8 +12,10 @@ public class LoggingHandler
 
     public static final PatternLayout MC_PATTERN = PatternLayout.createLayout("[%d{HH:mm:ss}] [%t/%p] [%c]: %m%n", null, null, null, null);
 
+    public static final int MAX_LOG_LENGTH = 2000;
+
     // TODO: Make STDERR appear in log!
-    public static final QueueLogAppender logCache = new QueueLogAppender("fe_server_log_queue", null, MC_PATTERN, false, 500);
+    public static final QueueLogAppender logCache = new QueueLogAppender("fe_server_log_queue", null, MC_PATTERN, false, MAX_LOG_LENGTH);
 
     public static Logger felog;
 
