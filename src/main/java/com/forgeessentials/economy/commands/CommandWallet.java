@@ -17,6 +17,9 @@ import com.forgeessentials.util.ServerUtil;
 public class CommandWallet extends ParserCommandBase
 {
 
+    public static final String PERM = ModuleEconomy.PERM_COMMAND + ".wallet";
+    public static final String PERM_MODIFY = PERM + ".modify";
+
     @Override
     public String getCommandName()
     {
@@ -26,7 +29,7 @@ public class CommandWallet extends ParserCommandBase
     @Override
     public String getPermissionNode()
     {
-        return ModuleEconomy.PERM_COMMAND + ".wallet";
+        return PERM;
     }
 
     @Override
@@ -35,6 +38,12 @@ public class CommandWallet extends ParserCommandBase
         return PermissionLevel.TRUE;
     }
 
+    @Override
+    public void registerExtraPermissions()
+    {
+        APIRegistry.perms.registerPermission(PERM_MODIFY, PermissionLevel.OP, "Allows modifying wallets");
+    }
+    
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
@@ -58,7 +67,7 @@ public class CommandWallet extends ParserCommandBase
             return;
         }
 
-        UserIdent player = arguments.parsePlayer(true);
+        UserIdent player = arguments.parsePlayer(true, false);
         Wallet wallet = APIRegistry.economy.getWallet(player);
 
         if (arguments.isEmpty())
@@ -66,12 +75,11 @@ public class CommandWallet extends ParserCommandBase
             arguments.confirm(Translator.format("Wallet of %s contains %s", player.getUsernameOrUuid(), wallet.toString()));
             return;
         }
-        if (arguments.isTabCompletion)
-        {
-            arguments.tabComplete(new String[] { "set", "add", "remove" });
-            return;
-        }
+        
+        arguments.tabComplete(new String[] { "set", "add", "remove" });
         String subCommand = arguments.remove().toLowerCase();
+
+        arguments.checkPermission(PERM_MODIFY);
 
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing value");
