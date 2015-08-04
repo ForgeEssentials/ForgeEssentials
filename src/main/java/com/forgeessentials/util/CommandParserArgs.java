@@ -111,10 +111,16 @@ public class CommandParserArgs
     @Deprecated
     public UserIdent parsePlayer()
     {
-        return parsePlayer(true);
+        return parsePlayer(true, false);
     }
 
+    @Deprecated
     public UserIdent parsePlayer(boolean mustExist)
+    {
+        return parsePlayer(mustExist, false);
+    }
+
+    public UserIdent parsePlayer(boolean mustExist, boolean mustBeOnline)
     {
         if (isTabCompletion && size() == 1)
         {
@@ -142,6 +148,8 @@ public class CommandParserArgs
                 UserIdent ident = UserIdent.get(name, sender, mustExist);
                 if (mustExist && (ident == null || !ident.hasUuid()))
                     throw new TranslatedCommandException("Player %s not found", name);
+                else if (mustBeOnline && !ident.isOnline())
+                    throw new TranslatedCommandException("Player %s is not online", name);
                 return ident;
             }
         }

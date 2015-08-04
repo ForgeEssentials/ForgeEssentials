@@ -329,6 +329,11 @@ public class UserIdent
         return gameProfile;
     }
 
+    public boolean isOnline()
+    {
+        return MinecraftServer.getServer().getConfigurationManager().playerEntityList.contains(player);
+    }
+
     /* ------------------------------------------------------------ */
 
     public static UserIdent fromString(String string)
