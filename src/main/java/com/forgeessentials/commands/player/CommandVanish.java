@@ -80,7 +80,7 @@ public class CommandVanish extends ParserCommandBase
         {
             if (!arguments.hasPermission(PERM_OTHERS))
                 throw new TranslatedCommandException("You don't have permission to vanish other players");
-            player = arguments.parsePlayer(true);
+            player = arguments.parsePlayer(true, true);
         }
         if (arguments.isTabCompletion)
             return;

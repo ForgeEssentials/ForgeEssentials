@@ -70,7 +70,7 @@ public class CommandSeen extends FEcmdModuleCommands
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
 
-        UserIdent player = arguments.parsePlayer(false);
+        UserIdent player = arguments.parsePlayer(false, false);
 
         if (player.hasPlayer())
         {

@@ -61,7 +61,7 @@ public class CommandPromote extends ParserCommandBase
             return;
         }
 
-        UserIdent ident = arguments.parsePlayer(false);
+        UserIdent ident = arguments.parsePlayer(false, false);
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Wrong syntax. Use \"/promote <player> <group>\"");
 

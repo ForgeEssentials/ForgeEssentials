@@ -68,7 +68,7 @@ public class CommandTempBan extends FEcmdModuleCommands
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        UserIdent player = arguments.parsePlayer(true);
+        UserIdent player = arguments.parsePlayer(true, false);
 
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);

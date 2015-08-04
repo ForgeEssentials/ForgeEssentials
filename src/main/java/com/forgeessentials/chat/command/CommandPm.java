@@ -80,7 +80,7 @@ public class CommandPm extends ParserCommandBase
         {
             if (arguments.size() != 1)
                 throw new TranslatedCommandException("You must first select a target with /pm <player>");
-            UserIdent player = arguments.parsePlayer(true);
+            UserIdent player = arguments.parsePlayer(true, true);
             if (arguments.isTabCompletion)
                 return;
             if (arguments.sender == player.getPlayer())

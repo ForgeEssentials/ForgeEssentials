@@ -11,7 +11,6 @@ import java.util.TreeSet;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +28,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class PermissionCommandParser
@@ -270,7 +270,7 @@ public class PermissionCommandParser
         }
 
         // Parse player
-        UserIdent ident = arguments.parsePlayer(false);
+        UserIdent ident = arguments.parsePlayer(false, false);
         if (!ident.hasUuid())
             arguments.error(String.format("Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername()));
 
@@ -1241,15 +1241,11 @@ public class PermissionCommandParser
 
         ChatOutputHandler.chatNotification(sender, "Known players:");
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
-        {
             ChatOutputHandler.chatNotification(sender, " - " + ident.getUsernameOrUuid());
-        }
 
         ChatOutputHandler.chatNotification(sender, "Online players:");
-        for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
-        {
-            ChatOutputHandler.chatNotification(sender, " - " + ((EntityPlayerMP) player).getCommandSenderName());
-        }
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            ChatOutputHandler.chatNotification(sender, " - " + player.getCommandSenderName());
     }
 
     public static void listGroupUsers(ICommandSender sender, String group)

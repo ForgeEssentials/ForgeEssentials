@@ -168,7 +168,7 @@ public class UserIdent
             EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
                     UserIdent.getPlayerByUsername(uuidOrUsername);
             if (player != null)
-                return get(player.getPersistentID());
+                return get(player);
 
             return mustExist ? null : new UserIdent(null, uuidOrUsername, null);
         }
