@@ -348,38 +348,48 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerLoggedInEvent(PlayerLoggedInEvent event)
     {
-        UserIdent.login(event.player);
-        PlayerInfo.login(event.player.getPersistentID());
-
-        if (FEConfig.checkSpacesInNames)
+        if (event.player instanceof EntityPlayerMP)
         {
-            Pattern pattern = Pattern.compile("\\s");
-            Matcher matcher = pattern.matcher(event.player.getGameProfile().getName());
-            if (matcher.find())
-            {
-                String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getCommandSenderName());
-                ((EntityPlayerMP) event.player).playerNetServerHandler.kickPlayerFromServer(msg);
-            }
-        }
+            EntityPlayerMP player = (EntityPlayerMP) event.player;
+            UserIdent.login(player);
+            PlayerInfo.login(player.getPersistentID());
 
-        // Show version notification
-        if (BuildInfo.isOutdated() && UserIdent.get(event.player).checkPermission(PERM_VERSIONINFO))
-            ChatOutputHandler.chatWarning(event.player,
-                    String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
-                            BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
+            if (FEConfig.checkSpacesInNames)
+            {
+                Pattern pattern = Pattern.compile("\\s");
+                Matcher matcher = pattern.matcher(player.getGameProfile().getName());
+                if (matcher.find())
+                {
+                    String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", player.getCommandSenderName());
+                    player.playerNetServerHandler.kickPlayerFromServer(msg);
+                }
+            }
+
+            // Show version notification
+            if (BuildInfo.isOutdated() && UserIdent.get(player).checkPermission(PERM_VERSIONINFO))
+                ChatOutputHandler.chatWarning(player,
+                        String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
+                                BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoggedOutEvent(PlayerLoggedOutEvent event)
     {
-        PlayerInfo.logout(event.player.getPersistentID());
-        UserIdent.logout(event.player);
+        if (event.player instanceof EntityPlayerMP)
+        {
+            PlayerInfo.logout(event.player.getPersistentID());
+            UserIdent.logout((EntityPlayerMP) event.player);
+        }
     }
 
     @SubscribeEvent
-    public void playerRespawnEvent(PlayerRespawnEvent e)
+    public void playerRespawnEvent(PlayerRespawnEvent event)
     {
-        UserIdent.get(e.player);
+        if (event.player instanceof EntityPlayerMP)
+        {
+            UserIdent.get((EntityPlayerMP) event.player);
+        }
     }
 
     /* ------------------------------------------------------------ */

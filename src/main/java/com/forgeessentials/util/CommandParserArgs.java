@@ -148,7 +148,7 @@ public class CommandParserArgs
                 UserIdent ident = UserIdent.get(name, sender, mustExist);
                 if (mustExist && (ident == null || !ident.hasUuid()))
                     throw new TranslatedCommandException("Player %s not found", name);
-                else if (mustBeOnline && !ident.isOnline())
+                else if (mustBeOnline && !ident.hasPlayer())
                     throw new TranslatedCommandException("Player %s is not online", name);
                 return ident;
             }
