@@ -331,7 +331,10 @@ public class UserIdent
 
     public boolean isOnline()
     {
-        return MinecraftServer.getServer().getConfigurationManager().playerEntityList.contains(player);
+        if (!hasPlayer())
+            return false;
+
+        else return MinecraftServer.getServer().getConfigurationManager().playerEntityList.contains(player);
     }
 
     /* ------------------------------------------------------------ */
