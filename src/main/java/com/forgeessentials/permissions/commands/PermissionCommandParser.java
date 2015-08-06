@@ -503,6 +503,7 @@ public class PermissionCommandParser
             return;
         }
         case "clear":
+            point = null;
             break;
         default:
             if (arguments.args.size() < 3)
@@ -943,6 +944,7 @@ public class PermissionCommandParser
             return;
         }
         case "clear":
+            point = null;
             break;
         default:
             if (arguments.args.size() < 3)

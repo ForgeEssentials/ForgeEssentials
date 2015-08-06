@@ -33,6 +33,8 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
     {
         super(PERM, QueryPlayerRequest.class);
         APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Allows querying player data");
+        APIRegistry.perms.registerPermission(PERM_LOCATION, PermissionLevel.OP, "View location");
+        APIRegistry.perms.registerPermission(PERM_DETAIL, PermissionLevel.OP, "View details (health, armor, etc.)");
     }
 
     @Override
