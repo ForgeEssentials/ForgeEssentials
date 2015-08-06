@@ -1,6 +1,7 @@
 package com.forgeessentials.remote.handler.server;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -25,9 +26,12 @@ import com.google.gson.JsonPrimitive;
 public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
 {
 
+    public static final String FLAG_LOCATION = "location";
+    public static final String FLAG_DETAIL = "detail";
+
     public static final String PERM = PERM_REMOTE + ".player.query";
-    public static final String PERM_LOCATION = PERM + ".location";
-    public static final String PERM_DETAIL = PERM + ".detail";
+    public static final String PERM_LOCATION = PERM + '.' + FLAG_LOCATION;
+    public static final String PERM_DETAIL = PERM + '.' + FLAG_DETAIL;
 
     public QueryPlayerHandler()
     {
@@ -41,17 +45,11 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
     protected RemoteResponse<QueryPlayerResponse> handleData(RemoteSession session, RemoteRequest<QueryPlayerRequest> request)
     {
         if (request.data != null && request.data.flags != null)
-            for (String flag : request.data.flags)
+            for (Iterator<String> it = request.data.flags.iterator(); it.hasNext();)
             {
-                switch (flag)
-                {
-                case "location":
-                    checkPermission(session, PERM_LOCATION);
-                    break;
-                case "detail":
-                    checkPermission(session, PERM_DETAIL);
-                    break;
-                }
+                String flag = it.next();
+                if (!APIRegistry.perms.checkUserPermission(session.getUserIdent(), PERM + '.' + flag))
+                    it.remove();
             }
 
         QueryPlayerResponse response = new QueryPlayerResponse();
@@ -80,10 +78,10 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
         {
             switch (flag)
             {
-            case "location":
+            case FLAG_LOCATION:
                 pi.data.put(flag, session.getGson().toJsonTree(new DataFloatLocation(ident.getPlayerMP())));
                 break;
-            case "detail":
+            case FLAG_DETAIL:
                 pi.data.put("health", new JsonPrimitive(ident.getPlayerMP().getHealth()));
                 pi.data.put("armor", new JsonPrimitive(ident.getPlayerMP().getTotalArmorValue()));
                 pi.data.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getFoodLevel()));
