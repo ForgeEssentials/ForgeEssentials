@@ -14,6 +14,8 @@ public class Environment
 
     protected static boolean hasCauldron = false;
 
+    protected static boolean hasSponge = false;
+
     private static final String ALLOW_CAULDRON = "forgeessentials.allowCauldron";
 
     public static void check()
@@ -39,7 +41,7 @@ public class Environment
             }
             catch (ClassNotFoundException cnfe)
             {
-                LoggingHandler.felog.warn("Found WorldEdit, but not FE WorldEdit-module. You cannot use WorldEdit for FE without it.");
+                LoggingHandler.felog.warn("Found WorldEdit Forge, but not FE WorldEdit-module. You cannot use WorldEdit for FE without it.");
             }
         }
 
@@ -84,6 +86,18 @@ public class Environment
     public static boolean hasWorldEdit()
     {
         return hasWorldEdit;
+    }
+
+    public static boolean hasSponge()
+    {
+        return hasSponge;
+    }
+
+    public static void registerSpongeCompatPlugin(boolean isWESpongePresent)
+    {
+        LoggingHandler.felog.info("Sponge environment plugin found, enabling Sponge compat.");
+        hasSponge = true;
+        hasWorldEdit = isWESpongePresent;
     }
 
 }

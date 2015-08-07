@@ -120,6 +120,9 @@ dependencies {
 	// Shade Mixin library
 	shade "org.spongepowered:mixin:0.4.4"
 	shadeClient "org.spongepowered:mixin:0.4.4"
+
+    // Sponge
+    buildDep "org.spongepowered:sponge:1.8-1446-2.1DEV-515"
 }
 
 /************************************************************
