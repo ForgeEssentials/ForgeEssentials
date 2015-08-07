@@ -122,6 +122,9 @@ dependencies {
 	// Shade Mixin library
 	shade group: "org.spongepowered", name: "mixin", version: "0.4.5-SNAPSHOT", changing: true
 	shadeClient group: "org.spongepowered", name: "mixin", version: "0.4.5-SNAPSHOT", changing: true
+
+    // Sponge
+    buildDep "org.spongepowered:sponge:1.8-1446-2.1DEV-515"
 }
 
 /************************************************************
