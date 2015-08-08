@@ -42,7 +42,7 @@ public class PortalManager extends ServerEventHandler
     {
         super();
         instance = this;
-        mixinLoaded = FEMixinConfig.getInjectedPatches().contains("block.BlockPortal_01");
+        mixinLoaded = FEMixinConfig.getInjectedPatches().contains("block.MixinBlockPortal_01");
         if (!mixinLoaded)
         {
             LoggingHandler.felog.error("Unable to apply portal block mixin. Will revert to glass panes for portals.");

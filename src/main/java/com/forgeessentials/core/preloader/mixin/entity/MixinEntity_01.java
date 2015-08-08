@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(Entity.class)
-public abstract class MixinEntity extends Entity
+public abstract class MixinEntity_01 extends Entity
 {
 
-    public MixinEntity(World world)
+    public MixinEntity_01(World world)
     {
         super(world);
     }
