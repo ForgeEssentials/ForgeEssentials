@@ -28,15 +28,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -60,7 +52,6 @@ import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
 import com.forgeessentials.playerlogger.event.LogEventInteract;
 import com.forgeessentials.playerlogger.event.LogEventPlace;
-import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Charsets;
@@ -69,7 +60,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.Side;
 
@@ -467,15 +457,15 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /* World events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public synchronized void worldLoad(WorldEvent.Load e)
+    public synchronized void worldLoad(WorldEvent.Load event)
     {
-        WorldData world = em.find(WorldData.class, e.world.provider.dimensionId);
+        WorldData world = em.find(WorldData.class, event.world.provider.dimensionId);
         if (world == null)
         {
             em.getTransaction().begin();
             world = new WorldData();
-            world.id = e.world.provider.dimensionId;
-            world.name = e.world.provider.getDimensionName();
+            world.id = event.world.provider.dimensionId;
+            world.name = event.world.provider.getDimensionName();
             em.persist(world);
             em.getTransaction().commit();
         }
@@ -488,25 +478,25 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void multiPlaceEvent(BlockEvent.MultiPlaceEvent e)
+    public void multiPlaceEvent(BlockEvent.MultiPlaceEvent event)
     {
         if (em == null)
             return;
-        for (BlockSnapshot snapshot : e.getReplacedBlockSnapshots())
-            eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, e.player)));
+        for (BlockSnapshot snapshot : event.getReplacedBlockSnapshots())
+            eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.player)));
         startThread();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void breakEvent(BlockEvent.BreakEvent e)
+    public void breakEvent(BlockEvent.BreakEvent event)
     {
-        logEvent(new LogEventBreak(e));
+        logEvent(new LogEventBreak(event));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void explosionEvent(ExplosionEvent.Detonate e)
+    public void explosionEvent(ExplosionEvent.Detonate event)
     {
-        logEvent(new LogEventExplosion(e));
+        logEvent(new LogEventExplosion(event));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -524,96 +514,96 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /* Other events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void commandEvent(CommandEvent e)
+    public void commandEvent(CommandEvent event)
     {
-        logEvent(new LogEventCommand(e));
+        logEvent(new LogEventCommand(event));
     }
 
     /* ------------------------------------------------------------ */
     /* Player events */
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerChangedDimensionEvent(PlayerEvent.PlayerChangedDimensionEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerChangedZoneEvent(PlayerChangedZone e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerOpenContainerEvent(PlayerOpenContainerEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void itemPickupEvent(EntityItemPickupEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void dropItemEvent(StartTracking e)
-    {
-        // TODO
-    }
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerChangedDimensionEvent(PlayerEvent.PlayerChangedDimensionEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerChangedZoneEvent(PlayerChangedZone event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerOpenContainerEvent(PlayerOpenContainerEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void itemPickupEvent(EntityItemPickupEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void dropItemEvent(StartTracking event)
+    // {
+    // // TODO
+    // }
 
     /* ------------------------------------------------------------ */
     /* Interact events */
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void attackEntityEvent(AttackEntityEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void livingHurtEvent(LivingHurtEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void entityInteractEvent(EntityInteractEvent e)
-    {
-        // TODO
-    }
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void attackEntityEvent(AttackEntityEvent e)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void livingHurtEvent(LivingHurtEvent e)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void entityInteractEvent(EntityInteractEvent e)
+    // {
+    // // TODO
+    // }
 
     /* ------------------------------------------------------------ */
     /* Spawn events */
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void checkSpawnEvent(CheckSpawn e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void specialSpawnEvent(SpecialSpawn e)
-    {
-        // TODO
-    }
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void checkSpawnEvent(CheckSpawn e)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void specialSpawnEvent(SpecialSpawn e)
+    // {
+    // // TODO
+    // }
 
 }
