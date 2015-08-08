@@ -107,7 +107,11 @@ public class UserIdent
         {
             UserIdent ident = byUsername.get(username.toLowerCase());
             if (ident != null)
+            {
+                if (uuid != null && ident.uuid == null)
+                    ident.uuid = uuid;
                 return ident;
+            }
         }
 
         return new UserIdent(uuid, username, UserIdent.getPlayerByUuid(uuid));
