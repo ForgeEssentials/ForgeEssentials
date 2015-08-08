@@ -9,6 +9,8 @@
  *
  * MixinEntityTracker_01 and EntityTrackerHelper: For /vanish
  *
+ * MixinItemInWorldManager_01: Fix a bug relating to mod compatibility and item use permissions
+ *
  * net.minecraftforge.fe support:
  *
  * MixinNetHandlerPlayServer_01: For net.minecraftforge.fe SignEditEvent
