@@ -157,7 +157,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
             }
             case "qr":
             {
-                UserIdent ident = args.parsePlayer(true, false);
+                UserIdent ident = args.parsePlayer(true, true);
                 if (!PlayerInfo.get(ident.getPlayerMP()).getHasFEClient())
                 {
                     showPasskey(args, args.ident);
