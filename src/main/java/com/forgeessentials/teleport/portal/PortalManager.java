@@ -183,8 +183,11 @@ public class PortalManager extends ServerEventHandler
             for (int ix = portal.getPortalArea().getLowPoint().getX(); ix <= portal.getPortalArea().getHighPoint().getX(); ix++)
                 for (int iy = portal.getPortalArea().getLowPoint().getY(); iy <= portal.getPortalArea().getHighPoint().getY(); iy++)
                     for (int iz = portal.getPortalArea().getLowPoint().getZ(); iz <= portal.getPortalArea().getHighPoint().getZ(); iz++)
-                        if (world.getBlock(ix, iy, iz) == Blocks.portal)
+                    {
+                        Block block = world.getBlock(ix, iy, iz);
+                        if (block == portalBlock || block == Blocks.portal)
                             world.setBlock(ix, iy, iz, Blocks.air);
+                    }
         }
     }
 
