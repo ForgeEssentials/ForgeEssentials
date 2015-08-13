@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -25,10 +26,12 @@ import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
+import cpw.mods.fml.common.registry.GameData;
+
 public class Grave
 {
 
-    public static Map<Point, Grave> graves = new HashMap<Point, Grave>();
+    protected static Map<Point, Grave> graves = new HashMap<Point, Grave>();
 
     protected WorldPoint point;
 
@@ -49,6 +52,9 @@ public class Grave
 
     @Expose(serialize = false)
     private long lastTick;
+
+    @Expose(serialize = false)
+    private Block block = Blocks.skull;
 
     public static Grave createGrave(EntityPlayer player, List<EntityItem> drops)
     {
@@ -85,6 +91,15 @@ public class Grave
         for (int i = 0; i < drops.size(); i++)
             inventory.add(drops.get(i).getEntityItem().copy());
 
+        // Get grave block
+        String blockName = APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_BLOCK);
+        if (blockName != null && !blockName.isEmpty())
+        {
+            Block b = GameData.getBlockRegistry().getObject(blockName);
+            if (b != null)
+                this.block = b;
+        }
+
         point = new WorldPoint(player);
         point.setY(WorldUtil.placeInWorld(player.worldObj, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1));
         if (hasFencePost)
@@ -92,15 +107,35 @@ public class Grave
             player.worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.fence);
             point.setY(point.getY() + 1);
         }
-        FEskullTe.createPlayerSkull(player.getGameProfile(), player.worldObj, point.getX(), point.getY(), point.getZ());
+        point.getWorld().setBlock(point.getX(), point.getY(), point.getZ(), block, 1, 1);
+        if (block == Blocks.skull)
+        {
+            FEskullTe skull = new FEskullTe(UserIdent.getGameProfileByUuid(owner));
+            point.getWorld().setTileEntity(point.getX(), point.getY(), point.getZ(), skull);
+        }
     }
 
     public void updateBlocks()
     {
-        if (point.getWorld().getBlock(point.getX(), point.getY(), point.getZ()) != Blocks.skull)
-            FEskullTe.createPlayerSkull(UserIdent.getGameProfileByUuid(owner), point.getWorld(), point.getX(), point.getY(), point.getZ());
-        if (hasFencePost && point.getWorld().getBlock(point.getX(), point.getY() - 1, point.getZ()) != Blocks.fence)
-            point.getWorld().setBlock(point.getX(), point.getY() - 1, point.getZ(), Blocks.fence);
+        int x = point.getX();
+        int y = point.getY();
+        int z = point.getZ();
+        Block graveBlock = point.getWorld().getBlock(x, y, z);
+        if (graveBlock != block && graveBlock != Blocks.chest)
+        {
+            point.getWorld().setBlock(x, y, z, block, 1, 1);
+            if (block == Blocks.skull)
+            {
+                FEskullTe skull = new FEskullTe(UserIdent.getGameProfileByUuid(owner));
+                point.getWorld().setTileEntity(x, y, z, skull);
+            }
+        }
+        if (hasFencePost)
+        {
+            Block fenceBlock = point.getWorld().getBlock(x, y - 1, z);
+            if (fenceBlock == Blocks.air)
+                point.getWorld().setBlock(x, y - 1, z, Blocks.fence);
+        }
     }
 
     public void update()

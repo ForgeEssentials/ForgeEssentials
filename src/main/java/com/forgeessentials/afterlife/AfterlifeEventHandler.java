@@ -23,18 +23,18 @@ public class AfterlifeEventHandler extends ServerEventHandler
     public List<Grave> newGraves = new ArrayList<>();
 
     @SubscribeEvent
-    public void playerDeathDropEvent(PlayerDropsEvent e)
+    public void playerDeathDropEvent(PlayerDropsEvent event)
     {
-        Grave grave = Grave.createGrave(e.entityPlayer, e.drops);
+        Grave grave = Grave.createGrave(event.entityPlayer, event.drops);
         if (grave != null)
         {
             newGraves.add(grave);
-            e.setCanceled(true);
+            event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
-    public void serverTickEvent(TickEvent.ServerTickEvent e)
+    public void serverTickEvent(TickEvent.ServerTickEvent event)
     {
         for (Grave grave : newGraves)
             grave.updateBlocks();
@@ -42,38 +42,34 @@ public class AfterlifeEventHandler extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void playerInteractEvent(PlayerInteractEvent e)
+    public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (e.entity.worldObj.isRemote)
+        if (event.entity.worldObj.isRemote)
             return;
-        if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.LEFT_CLICK_BLOCK)
+        if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.LEFT_CLICK_BLOCK)
             return;
 
-        WorldPoint point = new WorldPoint(e.entity.worldObj, e.x, e.y, e.z);
+        WorldPoint point = new WorldPoint(event.entity.worldObj, event.x, event.y, event.z);
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
 
-        // Block block = e.entity.worldObj.getBlock(e.x, e.y, e.z);
-        // if (block != Blocks.skull && block != Blocks.chest && block != Blocks.fence)
-        // return;
-
-        grave.interact((EntityPlayerMP) e.entityPlayer);
-        e.setCanceled(true);
+        grave.interact((EntityPlayerMP) event.entityPlayer);
+        event.setCanceled(true);
     }
 
     @SubscribeEvent
-    public void blockBreakEvent(BreakEvent e)
+    public void blockBreakEvent(BreakEvent event)
     {
-        if (e.world.isRemote)
+        if (event.world.isRemote)
             return;
 
-        WorldPoint point = new WorldPoint(e.world, e.x, e.y, e.z);
+        WorldPoint point = new WorldPoint(event.world, event.x, event.y, event.z);
         Grave grave = Grave.graves.get(point);
         if (grave == null)
         {
             // Check for fence post
-            point.setY(e.y + 1);
+            point.setY(event.y + 1);
             grave = Grave.graves.get(point);
             if (grave == null || !grave.hasFencePost)
                 return;
@@ -82,8 +78,8 @@ public class AfterlifeEventHandler extends ServerEventHandler
         grave.update();
         if (grave.isProtected)
         {
-            e.setCanceled(true);
-            ChatOutputHandler.chatError(e.getPlayer(), Translator.translate("You may not defile the grave of a player"));
+            event.setCanceled(true);
+            ChatOutputHandler.chatError(event.getPlayer(), Translator.translate("You may not defile the grave of a player"));
             return;
         }
         grave.remove(true);
