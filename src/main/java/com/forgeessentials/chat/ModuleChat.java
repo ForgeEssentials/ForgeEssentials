@@ -48,6 +48,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
+import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -211,7 +212,7 @@ public class ModuleChat
             return;
         }
 
-        if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
+        if (PlayerUtil.getPersistedTag(event.player, false).getBoolean("mute"))
         {
             ChatOutputHandler.chatWarning(event.player, "You are currently muted.");
             event.setCanceled(true);
@@ -285,7 +286,7 @@ public class ModuleChat
         if (!(event.sender instanceof EntityPlayerMP))
             return;
         EntityPlayerMP player = (EntityPlayerMP) event.sender;
-        if (!player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
+        if (!PlayerUtil.getPersistedTag(player, false).getBoolean("mute"))
             return;
         if (!ChatConfig.mutedCommands.contains(event.command.getCommandName()))
             return;
@@ -459,14 +460,14 @@ public class ModuleChat
     public static void setPlayerNickname(EntityPlayer player, String nickname)
     {
         if (nickname == null)
-            player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
+            PlayerUtil.getPersistedTag(player, false).removeTag("nickname");
         else
-            player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", nickname);
+            PlayerUtil.getPersistedTag(player, true).setString("nickname", nickname);
     }
 
     public static String getPlayerNickname(EntityPlayer player)
     {
-        String nickname = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
+        String nickname = PlayerUtil.getPersistedTag(player, false).getString("nickname");
         if (nickname == null || nickname.isEmpty())
             nickname = player.getCommandSenderName();
         return nickname;
