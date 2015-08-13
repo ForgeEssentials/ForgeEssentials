@@ -69,7 +69,7 @@ public class CommandRemote extends ParserCommandBase
             }
             case "regen":
             {
-                UserIdent ident = args.parsePlayer(false);
+                UserIdent ident = args.parsePlayer(false, false);
                 if (!ident.equals(args.ident))
                     args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isTabCompletion)
@@ -81,7 +81,7 @@ public class CommandRemote extends ParserCommandBase
             }
             case "setkey":
             {
-                UserIdent ident = args.parsePlayer(false);
+                UserIdent ident = args.parsePlayer(false, false);
                 if (!ident.equals(args.ident))
                     args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isEmpty())
@@ -96,7 +96,7 @@ public class CommandRemote extends ParserCommandBase
             }
             case "block":
             {
-                UserIdent ident = args.parsePlayer(true);
+                UserIdent ident = args.parsePlayer(true, false);
                 if (!ident.hasUuid())
                     throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUuid());
                 args.checkPermission(ModuleRemote.PERM_CONTROL);
@@ -108,7 +108,7 @@ public class CommandRemote extends ParserCommandBase
             }
             case "kick":
             {
-                UserIdent ident = args.parsePlayer(true);
+                UserIdent ident = args.parsePlayer(true, false);
                 if (!ident.hasUuid())
                     throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUuid());
                 args.checkPermission(ModuleRemote.PERM_CONTROL);
@@ -151,7 +151,7 @@ public class CommandRemote extends ParserCommandBase
             }
             case "qr":
             {
-                UserIdent ident = args.parsePlayer(true);
+                UserIdent ident = args.parsePlayer(true, true);
                 if (!PlayerInfo.get(ident.getPlayerMP()).getHasFEClient())
                 {
                     showPasskey(args, args.ident);

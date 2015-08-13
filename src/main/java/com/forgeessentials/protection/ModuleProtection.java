@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
@@ -34,6 +35,7 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -41,6 +43,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.PermissionEvent;
@@ -80,6 +83,7 @@ public class ModuleProtection
     public final static String PERM_EXIST = BASE_PERM + ".exist";
     public final static String PERM_EXPLOSION = BASE_PERM + ".explosion";
     public final static String PERM_NEEDSFOOD = BASE_PERM + ".needsfood";
+    public static final String PERM_PRESSUREPLATE = BASE_PERM + ".pressureplate";
 
     public final static String PERM_MOBSPAWN = BASE_PERM + ".mobspawn";
     public final static String PERM_MOBSPAWN_NATURAL = PERM_MOBSPAWN + ".natural";
@@ -161,6 +165,7 @@ public class ModuleProtection
                 "Inventory group property - can be set to any identifier to separate inventories for certain regions");
         APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, PermissionLevel.TRUE, "Allow interacting with entities (villagers, dogs, horses)");
         APIRegistry.perms.registerPermission(PERM_EXPLOSION, PermissionLevel.TRUE, "(global) Allows explosions.");
+        APIRegistry.perms.registerPermission(PERM_PRESSUREPLATE, PermissionLevel.TRUE, "Prevent players from triggering pressure plates");
 
         // ----------------------------------------
         // Damage
@@ -249,7 +254,15 @@ public class ModuleProtection
     @SubscribeEvent
     public void postServerStart(FEModuleServerPostInitEvent e)
     {
-        TaskRegistry.scheduleRepeated(new HungerHelper(), 60 * 1000);
+        TaskRegistry.scheduleRepeated(new TimerTask() {
+            @Override
+            public void run()
+            {
+                for (EntityPlayerMP p : ServerUtil.getPlayerList())
+                    if (!PermissionManager.checkPermission(p, ModuleProtection.PERM_NEEDSFOOD))
+                        p.getFoodStats().addStats(20, 1.0F);
+            }
+        }, 60 * 1000);
     }
 
     @SubscribeEvent

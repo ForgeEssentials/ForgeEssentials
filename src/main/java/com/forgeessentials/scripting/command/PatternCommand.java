@@ -11,6 +11,7 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -51,6 +52,8 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
 
     protected String permission;
 
+    protected Map<String, PermissionLevel> extraPermissions = new HashMap<>();
+
     protected PermissionLevel permissionLevel = PermissionLevel.TRUE;
 
     protected Map<String, List<String>> patterns = new HashMap<>();
@@ -68,8 +71,17 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
     }
 
     @Override
+    public void registerExtraPermissions()
+    {
+        for (Entry<String, PermissionLevel> perm : extraPermissions.entrySet())
+            APIRegistry.perms.registerPermission(perm.getKey(), perm.getValue(), String.format("Permission for Pattern command /%s", name));
+    }
+
+    @Override
     public void afterLoad()
     {
+        if (extraPermissions == null)
+            extraPermissions = new HashMap<>();
         patternCommands.put(name, this);
         register();
     }
@@ -98,7 +110,6 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
 
     public void processCommand(ICommandSender sender, String cmd) throws CommandException
     {
-        parser = null;
         if (parser == null)
         {
             try
@@ -170,6 +181,11 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
     public PermissionLevel getPermissionLevel()
     {
         return permissionLevel;
+    }
+
+    public Map<String, PermissionLevel> getExtraPermissions()
+    {
+        return extraPermissions;
     }
 
 }

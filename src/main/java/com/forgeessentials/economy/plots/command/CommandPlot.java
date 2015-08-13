@@ -346,7 +346,7 @@ public class CommandPlot extends ParserCommandBase
         arguments.tabComplete("add", "remove");
         String action = arguments.remove().toLowerCase();
 
-        UserIdent player = arguments.parsePlayer(true);
+        UserIdent player = arguments.parsePlayer(true, false);
         if (arguments.isTabCompletion)
             return;
 

@@ -6,6 +6,7 @@
 		"network.MixinNetHandlerPlayServer_01",
 		"network.MixinNetHandlerPlayServer_02",
 		"command.MixinCommandHandler_01",
-		"vanish.MixinEntityTracker"
+		"entity.MixinEntityTracker_01",
+		"entity.MixinEntity_01"
 	]
 }

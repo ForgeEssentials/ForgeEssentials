@@ -2,8 +2,6 @@ package com.forgeessentials.afterlife;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -14,17 +12,8 @@ public class FEskullTe extends TileEntitySkull
 
     public FEskullTe(GameProfile player)
     {
-        // Set player profile
         if (player != null)
             setPlayerProfile(player);
-    }
-
-    public static FEskullTe createPlayerSkull(GameProfile player, World world, BlockPos pos)
-    {
-        FEskullTe skull = new FEskullTe(player);
-        world.setBlockState(pos, Blocks.skull.getStateFromMeta(1), 1);
-        world.setTileEntity(pos, skull);
-        return skull;
     }
 
     @Override

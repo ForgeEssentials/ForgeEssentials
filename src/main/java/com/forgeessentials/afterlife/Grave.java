@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,6 +16,7 @@ import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
@@ -29,7 +32,7 @@ import com.google.gson.annotations.Expose;
 public class Grave
 {
 
-    public static Map<Point, Grave> graves = new HashMap<Point, Grave>();
+    protected static Map<Point, Grave> graves = new HashMap<Point, Grave>();
 
     protected WorldPoint point;
 
@@ -50,6 +53,9 @@ public class Grave
 
     @Expose(serialize = false)
     private long lastTick;
+
+    @Expose(serialize = false)
+    private IBlockState blockState = Blocks.skull.getDefaultState();
 
     public static Grave createGrave(EntityPlayer player, List<EntityItem> drops)
     {
@@ -86,6 +92,15 @@ public class Grave
         for (int i = 0; i < drops.size(); i++)
             inventory.add(drops.get(i).getEntityItem().copy());
 
+        // Get grave block
+        String blockName = APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_BLOCK);
+        if (blockName != null && !blockName.isEmpty())
+        {
+            Block b = GameData.getBlockRegistry().getObject(blockName);
+            if (b != null)
+                this.blockState = b.getDefaultState();
+        }
+
         point = new WorldPoint(player);
         point.setY(WorldUtil.placeInWorld(player.worldObj, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1));
         if (hasFencePost)
@@ -93,13 +108,26 @@ public class Grave
             player.worldObj.setBlockState(point.getBlockPos(), Blocks.oak_fence.getDefaultState());
             point.setY(point.getY() + 1);
         }
-        FEskullTe.createPlayerSkull(player.getGameProfile(), player.worldObj, point.getBlockPos());
+        point.getWorld().setBlockState(point.getBlockPos(), blockState);
+        if (blockState == Blocks.skull)
+        {
+            FEskullTe skull = new FEskullTe(UserIdent.getGameProfileByUuid(owner));
+            point.getWorld().setTileEntity(point.getBlockPos(), skull);
+        }
     }
 
     public void updateBlocks()
     {
-        if (point.getWorld().getBlockState(point.getBlockPos()) != Blocks.skull.getDefaultState())
-            FEskullTe.createPlayerSkull(UserIdent.getGameProfileByUuid(owner), point.getWorld(), point.getBlockPos());
+        IBlockState graveBlock = point.getWorld().getBlockState(point.getBlockPos());
+        if (graveBlock != blockState && graveBlock != Blocks.chest)
+        {
+            point.getWorld().setBlockState(point.getBlockPos(), blockState);
+            if (blockState == Blocks.skull)
+            {
+                FEskullTe skull = new FEskullTe(UserIdent.getGameProfileByUuid(owner));
+                point.getWorld().setTileEntity(point.getBlockPos(), skull);
+            }
+        }
         if (hasFencePost)
         {
             BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());

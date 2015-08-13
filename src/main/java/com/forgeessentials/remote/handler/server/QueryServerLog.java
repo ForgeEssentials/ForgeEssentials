@@ -29,7 +29,7 @@ public class QueryServerLog extends GenericRemoteHandler<Integer>
     @Override
     protected RemoteResponse<List<String>> handleData(RemoteSession session, RemoteRequest<Integer> request)
     {
-        return new RemoteResponse<List<String>>(request, LoggingHandler.getLatestLog(request.data == null ? 500 : request.data));
+        return new RemoteResponse<List<String>>(request, LoggingHandler.getLatestLog(request.data == null ? LoggingHandler.MAX_LOG_LENGTH : request.data));
     }
 
 }

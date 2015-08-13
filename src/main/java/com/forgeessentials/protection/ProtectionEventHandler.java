@@ -44,6 +44,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fe.event.world.PressurePlateEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -341,6 +342,24 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void pressurePlateEvent(PressurePlateEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+
+        UserIdent ident = null;
+        if (event.entity instanceof EntityPlayerMP)
+        {
+            EntityPlayerMP player = (EntityPlayerMP) event.entity;
+            ident = UserIdent.get(player);
+            if (ModuleProtection.isDebugMode(player))
+                ChatOutputHandler.chatNotification(player, ModuleProtection.PERM_PRESSUREPLATE);
+        }
+        if (!APIRegistry.perms.checkUserPermission(ident, ModuleProtection.PERM_PRESSUREPLATE))
+            event.setCanceled(true);
+    }
+
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -555,6 +574,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         UserIdent ident = UserIdent.get(player);
 
         String inventoryGroup = APIRegistry.perms.getUserPermissionProperty(ident, event.afterPoint.toWorldPoint(), ModuleProtection.PERM_INVENTORY_GROUP);
+        if (inventoryGroup == null)
+            inventoryGroup = "default";
 
         GameType lastGm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, event.beforePoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
         GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, event.afterPoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));

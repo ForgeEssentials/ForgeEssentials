@@ -239,8 +239,7 @@ public class ServerZone extends Zone
     @Override
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
-        if (!isFakePlayer(ident))
-            registerPlayer(ident);
+        registerPlayer(ident);
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
@@ -307,18 +306,18 @@ public class ServerZone extends Zone
         return result;
     }
 
-    public SortedSet<GroupEntry> getAdditionalPlayerGroups(UserIdent ident)
+    protected SortedSet<GroupEntry> getAdditionalPlayerGroups(UserIdent ident)
     {
         SortedSet<GroupEntry> result = getStoredPlayerGroupEntries(ident);
         if (ident != null)
         {
-            if (MinecraftServer.getServer().getConfigurationManager().canSendCommands(ident.getFakePlayer().getGameProfile()))
+            if (ident.hasPlayer() && ident.getPlayer() instanceof FakePlayer)
+            {
+                result.add(new GroupEntry(this, GROUP_FAKEPLAYERS));
+            }
+            if (MinecraftServer.getServer().getConfigurationManager().canSendCommands(ident.getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
-            }
-            if (result.isEmpty())
-            {
-                result.add(new GroupEntry(this, GROUP_GUESTS));
             }
         }
         result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
@@ -360,11 +359,6 @@ public class ServerZone extends Zone
         return groups;
     }
 
-    public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)
-    {
-        return getPlayerGroups(ident, null);
-    }
-
     public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident, WorldPoint point)
     {
         SortedSet<GroupEntry> result = getAdditionalPlayerGroups(ident);
@@ -375,12 +369,14 @@ public class ServerZone extends Zone
             for (Zone z : getZonesAt(point))
                 if (!(z instanceof ServerZone))
                     result.addAll(z.getStoredPlayerGroupEntries(ident));
+        if (result.isEmpty())
+            result.add(new GroupEntry(this, GROUP_GUESTS));
         return includeGroups(result);
     }
 
-    public String getPrimaryPlayerGroup(UserIdent ident)
+    public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)
     {
-        return getPrimaryPlayerGroup(ident, null);
+        return getPlayerGroups(ident, null);
     }
 
     public String getPrimaryPlayerGroup(UserIdent ident, WorldPoint point)
@@ -390,6 +386,11 @@ public class ServerZone extends Zone
             return it.next().getGroup();
         else
             return null;
+    }
+
+    public String getPrimaryPlayerGroup(UserIdent ident)
+    {
+        return getPrimaryPlayerGroup(ident, null);
     }
 
     // ------------------------------------------------------------
@@ -484,19 +485,10 @@ public class ServerZone extends Zone
 
     // ------------------------------------------------------------
 
-    public boolean isFakePlayer(UserIdent ident)
-    {
-        return ident.hasPlayer() && ident.getPlayer() instanceof FakePlayer;
-    }
-
     public void registerPlayer(UserIdent ident)
     {
         if (ident != null)
-        {
             knownPlayers.add(ident);
-            if (isFakePlayer(ident))
-                addPlayerToGroup(ident, GROUP_FAKEPLAYERS);
-        }
     }
 
     public Set<UserIdent> getKnownPlayers()

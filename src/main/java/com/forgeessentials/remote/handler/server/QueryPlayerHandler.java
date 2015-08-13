@@ -1,7 +1,10 @@
 package com.forgeessentials.remote.handler.server;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
@@ -15,77 +18,78 @@ import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
 import com.forgeessentials.remote.RemoteMessageID;
-import com.forgeessentials.remote.network.PlayerInfoResponse;
 import com.forgeessentials.remote.network.QueryPlayerRequest;
-import com.forgeessentials.remote.network.QueryPlayerResponse;
 import com.forgeessentials.util.ServerUtil;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_PLAYER)
 public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
 {
 
+    public static final String FLAG_LOCATION = "location";
+    public static final String FLAG_DETAIL = "detail";
+
     public static final String PERM = PERM_REMOTE + ".player.query";
-    public static final String PERM_LOCATION = PERM + ".location";
-    public static final String PERM_DETAIL = PERM + ".detail";
+    public static final String PERM_LOCATION = PERM + '.' + FLAG_LOCATION;
+    public static final String PERM_DETAIL = PERM + '.' + FLAG_DETAIL;
 
     public QueryPlayerHandler()
     {
         super(PERM, QueryPlayerRequest.class);
         APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Allows querying player data");
+        APIRegistry.perms.registerPermission(PERM_LOCATION, PermissionLevel.OP, "View location");
+        APIRegistry.perms.registerPermission(PERM_DETAIL, PermissionLevel.OP, "View details (health, armor, etc.)");
     }
 
     @Override
-    protected RemoteResponse<QueryPlayerResponse> handleData(RemoteSession session, RemoteRequest<QueryPlayerRequest> request)
+    protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<QueryPlayerRequest> request)
     {
         if (request.data != null && request.data.flags != null)
-            for (String flag : request.data.flags)
+            for (Iterator<String> it = request.data.flags.iterator(); it.hasNext();)
             {
-                switch (flag)
-                {
-                case "location":
-                    checkPermission(session, PERM_LOCATION);
-                    break;
-                case "detail":
-                    checkPermission(session, PERM_DETAIL);
-                    break;
-                }
+                String flag = it.next();
+                if (!APIRegistry.perms.checkUserPermission(session.getUserIdent(), PERM + '.' + flag))
+                    it.remove();
             }
 
-        QueryPlayerResponse response = new QueryPlayerResponse();
+        Map<UUID, Map<String, JsonElement>> players = new HashMap<>();
         if (request.data == null || request.data.name == null)
         {
             for (EntityPlayerMP player : ServerUtil.getPlayerList())
-                response.players.add(getPlayerInfoResponse(session, UserIdent.get(player), request.data == null ? null : request.data.flags));
+            {
+                UserIdent ident = UserIdent.get(player);
+                players.put(ident.getUuid(), getPlayerInfoResponse(session, ident, request.data == null ? null : request.data.flags));
+            }
         }
         else
         {
             UserIdent ident = UserIdent.get(request.data.name);
             if (!ident.hasPlayer())
                 error("player not found");
-            response.players.add(getPlayerInfoResponse(session, ident, request.data.flags));
+            players.put(ident.getUuid(), getPlayerInfoResponse(session, ident, request.data.flags));
         }
-        return new RemoteResponse<QueryPlayerResponse>(request, response);
+        return new RemoteResponse<Object>(request, players);
     }
 
-    public PlayerInfoResponse getPlayerInfoResponse(RemoteSession session, UserIdent ident, Set<String> flags)
+    public Map<String, JsonElement> getPlayerInfoResponse(RemoteSession session, UserIdent ident, Set<String> flags)
     {
-        PlayerInfoResponse pi = new PlayerInfoResponse(ident.getUuid().toString(), ident.getUsername());
+        Map<String, JsonElement> pi = new HashMap<>();
+        pi.put("name", new JsonPrimitive(ident.getUsername()));
         if (flags == null)
             return pi;
-        pi.data = new HashMap<>();
         for (String flag : flags)
         {
             switch (flag)
             {
-            case "location":
-                pi.data.put(flag, session.getGson().toJsonTree(new DataFloatLocation(ident.getPlayerMP())));
+            case FLAG_LOCATION:
+                pi.put(flag, session.getGson().toJsonTree(new DataFloatLocation(ident.getPlayerMP())));
                 break;
-            case "detail":
-                pi.data.put("health", new JsonPrimitive(ident.getPlayerMP().getHealth()));
-                pi.data.put("armor", new JsonPrimitive(ident.getPlayerMP().getTotalArmorValue()));
-                pi.data.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getFoodLevel()));
-                pi.data.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getSaturationLevel()));
+            case FLAG_DETAIL:
+                pi.put("health", new JsonPrimitive(ident.getPlayerMP().getHealth()));
+                pi.put("armor", new JsonPrimitive(ident.getPlayerMP().getTotalArmorValue()));
+                pi.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getFoodLevel()));
+                pi.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getSaturationLevel()));
                 break;
             }
         }

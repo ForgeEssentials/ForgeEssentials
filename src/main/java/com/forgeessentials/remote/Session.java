@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import net.minecraft.server.MinecraftServer;
 
@@ -92,7 +93,7 @@ public class Session implements Runnable, RemoteSession
         {
             JsonRemoteRequest request = getGson().fromJson(message, JsonRemoteRequest.class);
 
-            LoggingHandler.felog.info(String.format("[remote] Request [%s]: %s", request.id, request.data == null ? "null" : request.data.toString()));
+            LoggingHandler.felog.debug(String.format("[remote] Request [%s]: %s", request.id, request.data == null ? "null" : request.data.toString()));
 
             if (request.auth != null)
             {
@@ -178,7 +179,7 @@ public class Session implements Runnable, RemoteSession
     @Override
     public synchronized void sendMessage(RemoteResponse<?> message) throws IOException
     {
-        OutputStreamWriter ow = new OutputStreamWriter(socket.getOutputStream());
+        OutputStreamWriter ow = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
         ow.write(getGson().toJson(message) + SEPARATOR);
         ow.flush();
     }

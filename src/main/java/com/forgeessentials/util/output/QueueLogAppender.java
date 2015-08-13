@@ -36,9 +36,20 @@ public class QueueLogAppender extends AbstractAppender
     {
         while (queue.size() >= maxCapacity)
             queue.remove();
-        String line = getLayout().toSerializable(event).toString();
-        line = line.substring(0, line.length() - System.lineSeparator().length());
+        String line = trimTrailingNewlines(getLayout().toSerializable(event).toString());
         queue.add(line);
+    }
+
+    public static String trimTrailingNewlines(String string)
+    {
+        int i = string.length() - 1;
+        char c = string.charAt(i);
+        while (c == '\r' || c == '\n')
+        {
+            i--;
+            c = string.charAt(i);
+        }
+        return string.substring(0, i + 1);
     }
 
     public BlockingQueue<String> getQueue()

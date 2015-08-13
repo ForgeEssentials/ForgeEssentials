@@ -12,6 +12,7 @@ public abstract class RemoteMessageID
     public static final String QUERY_PLAYER = "query_player";
 
     public static final String QUERY_SERVER_LOG = "query_log_server";
+    public static final String QUERY_STATS = "query_stats";
 
     public static final String CHAT = "chat";
     public static final String PUSH_CHAT = "push_chat";

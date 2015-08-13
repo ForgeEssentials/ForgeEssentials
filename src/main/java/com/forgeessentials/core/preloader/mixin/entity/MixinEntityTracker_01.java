@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin.vanish;
+package com.forgeessentials.core.preloader.mixin.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EntityTracker.class)
-public abstract class MixinEntityTracker implements EntityTrackerHelper
+public abstract class MixinEntityTracker_01 implements EntityTrackerHelper
 {
 
     @Shadow

@@ -94,7 +94,7 @@ public class CommandMail extends ParserCommandBase
         }
         case "send":
         {
-            UserIdent receiver = arguments.parsePlayer(false);
+            UserIdent receiver = arguments.parsePlayer(false, false);
             if (arguments.isTabCompletion)
                 return;
             if (arguments.isEmpty())

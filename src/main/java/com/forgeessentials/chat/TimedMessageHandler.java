@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.config.Configuration;
 
@@ -14,6 +13,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 import com.forgeessentials.scripting.ScriptArguments;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
@@ -72,13 +72,12 @@ public class TimedMessageHandler extends ConfigLoaderBase implements Runnable
         send(currentMessageIdx);
     }
 
-    @SuppressWarnings("unchecked")
     public void send(int idx)
     {
         if (idx < 0 || idx >= messages.size())
             return;
         String message = messages.get(idx);
-        for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList)
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
             String formattedMsg = ModuleChat.processChatReplacements(null, ScriptArguments.processSafe(message, player));
             ChatOutputHandler.sendMessage(player, new ChatComponentText(formattedMsg));
