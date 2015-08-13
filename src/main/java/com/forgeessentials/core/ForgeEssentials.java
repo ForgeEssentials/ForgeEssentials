@@ -339,8 +339,8 @@ public class ForgeEssentials extends ConfigLoaderBase
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, PermissionLevel.TRUE, "Allow being teleported from a certain location / dimension");
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, PermissionLevel.TRUE, "Allow being teleported to a certain location / dimension");
 
-        CommandFeSettings.addAlias("teleport_warmup", TeleportHelper.TELEPORT_WARMUP);
-        CommandFeSettings.addAlias("teleport_cooldown", TeleportHelper.TELEPORT_COOLDOWN);
+        CommandFeSettings.addAlias("Teleport", "warmup", TeleportHelper.TELEPORT_WARMUP);
+        CommandFeSettings.addAlias("Teleport", "cooldown", TeleportHelper.TELEPORT_COOLDOWN);
     }
 
     /* ------------------------------------------------------------ */
