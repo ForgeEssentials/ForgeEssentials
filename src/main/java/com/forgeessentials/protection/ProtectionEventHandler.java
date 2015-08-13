@@ -572,6 +572,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         UserIdent ident = UserIdent.get(player);
 
         String inventoryGroup = APIRegistry.perms.getUserPermissionProperty(ident, event.afterPoint.toWorldPoint(), ModuleProtection.PERM_INVENTORY_GROUP);
+        if (inventoryGroup == null)
+            inventoryGroup = "default";
 
         GameType lastGm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, event.beforePoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
         GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, event.afterPoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
