@@ -2,7 +2,9 @@ package com.forgeessentials.remote.handler.server;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
@@ -16,10 +18,9 @@ import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
 import com.forgeessentials.remote.RemoteMessageID;
-import com.forgeessentials.remote.network.PlayerInfoResponse;
 import com.forgeessentials.remote.network.QueryPlayerRequest;
-import com.forgeessentials.remote.network.QueryPlayerResponse;
 import com.forgeessentials.util.ServerUtil;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_PLAYER)
@@ -42,7 +43,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
     }
 
     @Override
-    protected RemoteResponse<QueryPlayerResponse> handleData(RemoteSession session, RemoteRequest<QueryPlayerRequest> request)
+    protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<QueryPlayerRequest> request)
     {
         if (request.data != null && request.data.flags != null)
             for (Iterator<String> it = request.data.flags.iterator(); it.hasNext();)
@@ -52,40 +53,43 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
                     it.remove();
             }
 
-        QueryPlayerResponse response = new QueryPlayerResponse();
+        Map<UUID, Map<String, JsonElement>> players = new HashMap<>();
         if (request.data == null || request.data.name == null)
         {
             for (EntityPlayerMP player : ServerUtil.getPlayerList())
-                response.players.add(getPlayerInfoResponse(session, UserIdent.get(player), request.data == null ? null : request.data.flags));
+            {
+                UserIdent ident = UserIdent.get(player);
+                players.put(ident.getUuid(), getPlayerInfoResponse(session, ident, request.data == null ? null : request.data.flags));
+            }
         }
         else
         {
             UserIdent ident = UserIdent.get(request.data.name);
             if (!ident.hasPlayer())
                 error("player not found");
-            response.players.add(getPlayerInfoResponse(session, ident, request.data.flags));
+            players.put(ident.getUuid(), getPlayerInfoResponse(session, ident, request.data.flags));
         }
-        return new RemoteResponse<QueryPlayerResponse>(request, response);
+        return new RemoteResponse<Object>(request, players);
     }
 
-    public PlayerInfoResponse getPlayerInfoResponse(RemoteSession session, UserIdent ident, Set<String> flags)
+    public Map<String, JsonElement> getPlayerInfoResponse(RemoteSession session, UserIdent ident, Set<String> flags)
     {
-        PlayerInfoResponse pi = new PlayerInfoResponse(ident.getUuid().toString(), ident.getUsername());
+        Map<String, JsonElement> pi = new HashMap<>();
+        pi.put("name", new JsonPrimitive(ident.getUsername()));
         if (flags == null)
             return pi;
-        pi.data = new HashMap<>();
         for (String flag : flags)
         {
             switch (flag)
             {
             case FLAG_LOCATION:
-                pi.data.put(flag, session.getGson().toJsonTree(new DataFloatLocation(ident.getPlayerMP())));
+                pi.put(flag, session.getGson().toJsonTree(new DataFloatLocation(ident.getPlayerMP())));
                 break;
             case FLAG_DETAIL:
-                pi.data.put("health", new JsonPrimitive(ident.getPlayerMP().getHealth()));
-                pi.data.put("armor", new JsonPrimitive(ident.getPlayerMP().getTotalArmorValue()));
-                pi.data.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getFoodLevel()));
-                pi.data.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getSaturationLevel()));
+                pi.put("health", new JsonPrimitive(ident.getPlayerMP().getHealth()));
+                pi.put("armor", new JsonPrimitive(ident.getPlayerMP().getTotalArmorValue()));
+                pi.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getFoodLevel()));
+                pi.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getSaturationLevel()));
                 break;
             }
         }

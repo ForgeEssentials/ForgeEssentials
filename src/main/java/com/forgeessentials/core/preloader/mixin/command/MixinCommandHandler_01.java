@@ -3,7 +3,6 @@ package com.forgeessentials.core.preloader.mixin.command;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,69 +24,52 @@ import com.forgeessentials.util.ServerUtil;
 @Mixin(CommandHandler.class)
 public abstract class MixinCommandHandler_01
 {
-    @Shadow
-    private final Map commandMap = new HashMap();
 
     @Shadow
-    public Set commandSet = new HashSet();
+    private final Map<String, ICommand> commandMap = new HashMap();
 
-    // patch method
+    @Shadow
+    private final Set<ICommand> commandSet = new HashSet();
+
     @Overwrite
-    public List getPossibleCommands(ICommandSender p_71558_1_, String p_71558_2_)
+    public List<String> getPossibleCommands(ICommandSender sender, String p_71558_2_)
     {
-        String[] astring = p_71558_2_.split(" ", -1);
-        String s1 = astring[0];
+        String[] cmdLine = p_71558_2_.split(" ", -1);
+        String commandName = cmdLine[0];
 
-        if (astring.length == 1)
+        if (cmdLine.length == 1)
         {
-            List arraylist = new ArrayList();
-            Iterator iterator = commandMap.entrySet().iterator();
-
-            while (iterator.hasNext())
-            {
-                Entry entry = (Entry) iterator.next();
-
-                if (CommandBase.doesStringStartWith(s1, (String) entry.getKey()) && PermissionManager.checkPermission(p_71558_1_, (ICommand) entry.getValue()))
+            List commandNames = new ArrayList();
+            Set<ICommand> commandSet = new HashSet<>();
+            for (Entry<String, ICommand> cmd : commandMap.entrySet())
+                if (!commandSet.contains(cmd) && CommandBase.doesStringStartWith(commandName, cmd.getKey())
+                        && PermissionManager.checkPermission(sender, cmd.getValue()))
                 {
-                    arraylist.add(entry.getKey());
+                    commandNames.add(cmd.getKey());
+                    commandSet.add(cmd.getValue());
                 }
-            }
-
-            return arraylist;
+            return commandNames;
         }
         else
         {
-            if (astring.length > 1)
+            if (cmdLine.length > 1)
             {
-                ICommand icommand = (ICommand) commandMap.get(s1);
-
-                if (icommand != null)
-                {
-                    return icommand.addTabCompletionOptions(p_71558_1_, ServerUtil.dropFirst(astring));
-                }
+                ICommand cmd = commandMap.get(commandName);
+                if (cmd != null)
+                    return cmd.addTabCompletionOptions(sender, ServerUtil.dropFirst(cmdLine));
             }
-
             return null;
         }
     }
 
     @Overwrite
-    public List getPossibleCommands(ICommandSender p_71557_1_)
+    public List<ICommand> getPossibleCommands(ICommandSender sender)
     {
-        ArrayList arraylist = new ArrayList();
-        Iterator iterator = this.commandSet.iterator();
-
-        while (iterator.hasNext())
-        {
-            ICommand icommand = (ICommand) iterator.next();
-
-            if (PermissionManager.checkPermission(p_71557_1_, icommand))
-            {
-                arraylist.add(icommand);
-            }
-        }
-
-        return arraylist;
+        ArrayList commandNames = new ArrayList();
+        for (ICommand command : new HashSet<ICommand>(commandMap.values()))
+            if (PermissionManager.checkPermission(sender, command))
+                commandNames.add(command);
+        return commandNames;
     }
 
 }

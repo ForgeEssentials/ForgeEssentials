@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FileUtils;
 
@@ -25,13 +26,13 @@ import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.command.CommandTimedTask;
 import com.forgeessentials.scripting.command.PatternCommand;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -161,6 +162,8 @@ public class ModuleScripting extends ServerEventHandler
                     "/p user @player clear fe.protection.damageby.*", "echo God mode OFF", }));
             cmd.getPatterns().put("", Arrays.asList(new String[] { //
                     "echo Usage: /god on|off [player]", }));
+            cmd.getExtraPermissions().put("fe.commands.god", PermissionLevel.OP);
+            cmd.registerExtraPermissions();
         }
     }
 

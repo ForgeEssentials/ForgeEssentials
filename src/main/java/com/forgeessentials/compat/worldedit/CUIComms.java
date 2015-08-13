@@ -16,8 +16,10 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-// i said no, but olee is a shithead -.-
-// temporary until i can get around to proper implementation of WECUI protocol
+/**
+ * This class checks for player interactions which could modify the WorldEdit selection and sends a selection update to
+ * the client if it might be necessary.
+ */
 public class CUIComms
 {
 
@@ -40,7 +42,7 @@ public class CUIComms
             String cmd = e.command.getCommandName();
             for (String weCmd : worldEditSelectionCommands)
             {
-                if (cmd.equals(weCmd)&& !(e.sender instanceof FakePlayer))
+                if (cmd.equals(weCmd) && !(e.sender instanceof FakePlayer))
                 {
                     updatedSelectionPlayers.add((EntityPlayerMP) e.sender);
                     return;
@@ -60,9 +62,7 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        // if (ModuleLauncher.getModuleList().contains("WEIntegration") &&
-        // FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer() && event.entityPlayer != null)
+        if (event.entityPlayer instanceof EntityPlayerMP)
             updatedSelectionPlayers.add((EntityPlayerMP) event.entityPlayer);
     }
 

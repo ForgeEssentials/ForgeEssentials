@@ -7,6 +7,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
@@ -87,6 +88,20 @@ public abstract class PlayerUtil
                 }
             }
         }
+    }
+
+    /**
+     * Get the player persisted NBT tag
+     * 
+     * @param player
+     * @return
+     */
+    public static NBTTagCompound getPersistedTag(EntityPlayer player, boolean createIfMissing)
+    {
+        NBTTagCompound tag = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        if (createIfMissing)
+            player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+        return tag;
     }
 
     /* ------------------------------------------------------------ */

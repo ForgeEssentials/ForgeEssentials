@@ -47,9 +47,9 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
         config.save();
     }
 
-    public static void addAlias(String alias, String permission)
+    public static void addAlias(String category, String alias, String permission)
     {
-        aliases.put(alias, permission);
+        aliases.put(category + "." + alias, permission);
     }
 
     @Override
@@ -134,7 +134,8 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
                 defaultValue = "";
             String desc = APIRegistry.perms.getPermissionDescription(setting.getValue());
             String help = String.format("%s = %s\n%s", setting.getValue(), defaultValue, desc);
-            String value = config.get("Settings", setting.getKey(), "", help).getString();
+            String[] aliasParts = setting.getKey().split("\\.");
+            String value = config.get(aliasParts[0], aliasParts[1], "", help).getString();
             if (!value.isEmpty())
                 APIRegistry.perms.registerPermissionProperty(setting.getValue(), value);
         }

@@ -315,7 +315,7 @@ public class ServerZone extends Zone
             {
                 result.add(new GroupEntry(this, GROUP_FAKEPLAYERS));
             }
-            if (MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getFakePlayer().getGameProfile()))
+            if (MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }
