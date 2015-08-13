@@ -11,7 +11,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
-import net.minecraftforge.fe.event.player.PlayerPostInteractItemEvent;
+import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -33,64 +33,67 @@ public abstract class MixinItemInWorldManager_01
     abstract boolean isCreative();
 
     @Overwrite
-    public boolean activateBlockOrUseItem(EntityPlayer p_73078_1_, World p_73078_2_, ItemStack p_73078_3_, int p_73078_4_, int p_73078_5_, int p_73078_6_, int p_73078_7_, float p_73078_8_, float p_73078_9_, float p_73078_10_)
+    public boolean activateBlockOrUseItem(EntityPlayer player, World world, ItemStack item, int x, int y, int z, int side, float dx, float dy, float dz)
     {
-        PlayerInteractEvent event = ForgeEventFactory
-                .onPlayerInteract(p_73078_1_, Action.RIGHT_CLICK_BLOCK, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_2_);
+        PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_BLOCK, x, y, z, side, world);
         if (event.isCanceled())
         {
-            if (thisPlayerMP.playerNetServerHandler != null) // FE: Fix a Forge bug relating to null NSHs (fakeplayers)
-                thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73078_4_, p_73078_5_, p_73078_6_, theWorld));
+            // PATCH: Fix a Forge bug related to fake players
+            if (thisPlayerMP.playerNetServerHandler != null)
+                thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, theWorld));
             return false;
         }
 
-        // FE: Fix a Forge bug regarding destroyed items
-        if (event.useItem != Event.Result.DENY && p_73078_3_ != null && p_73078_3_.getItem().onItemUseFirst(p_73078_3_, p_73078_1_, p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_))
+        // PATCH: Fix a Forge bug allowing onItemUseFirst to trigger even if event.useItem is set to DENY
+        if (event.useItem != Event.Result.DENY && item != null && item.getItem().onItemUseFirst(item, player, world, x, y, z, side, dx, dy, dz))
         {
-            // FE: Add a PlayerLogger-friendly ItemInteractEvent
-            MinecraftForge.EVENT_BUS.post(new PlayerPostInteractItemEvent(p_73078_1_, p_73078_2_, p_73078_3_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_));
-            if (p_73078_3_.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, p_73078_3_);
+            // PATCH: Add event to get actual result of interaction
+            MinecraftForge.EVENT_BUS.post(new PlayerPostInteractEvent(player, world, item, x, y, z, side, dx, dy, dz));
+            if (item.stackSize <= 0)
+                ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, item);
             return true;
         }
 
-        Block block = p_73078_2_.getBlock(p_73078_4_, p_73078_5_, p_73078_6_);
-        boolean isAir = block.isAir(p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_);
-        boolean useBlock = !p_73078_1_.isSneaking() || p_73078_1_.getHeldItem() == null;
-        if (!useBlock) useBlock = p_73078_1_.getHeldItem().getItem().doesSneakBypassUse(p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_1_);
+        Block block = world.getBlock(x, y, z);
+        boolean useBlock = !player.isSneaking() || player.getHeldItem() == null;
+        if (!useBlock)
+            useBlock = player.getHeldItem().getItem().doesSneakBypassUse(world, x, y, z, player);
         boolean result = false;
 
         if (useBlock)
         {
             if (event.useBlock != Event.Result.DENY)
             {
-                result = block.onBlockActivated(p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_1_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_);
+                result = block.onBlockActivated(world, x, y, z, player, side, dx, dy, dz);
+                // PATCH: Add event to get actual result of interaction
+                if (result)
+                    MinecraftForge.EVENT_BUS.post(new PlayerPostInteractEvent(player, world, block, x, y, z, side, dx, dy, dz));
             }
             else
             {
-                if (thisPlayerMP.playerNetServerHandler != null) // FE: Fix a Forge bug relating to null NSHs (fakeplayers)
-                    thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73078_4_, p_73078_5_, p_73078_6_, theWorld));
+                // PATCH: Fix a Forge bug related to fake players
+                if (thisPlayerMP.playerNetServerHandler != null)
+                    thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, theWorld));
                 result = event.useItem != Event.Result.ALLOW;
             }
         }
 
-        if (p_73078_3_ != null && !result && event.useItem != Event.Result.DENY)
+        if (item != null && !result && event.useItem != Event.Result.DENY)
         {
-            int meta = p_73078_3_.getItemDamage();
-            int size = p_73078_3_.stackSize;
-            result = p_73078_3_.tryPlaceItemIntoWorld(p_73078_1_, p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_);
+            int meta = item.getItemDamage();
+            int size = item.stackSize;
+            result = item.tryPlaceItemIntoWorld(player, world, x, y, z, side, dx, dy, dz);
             if (isCreative())
             {
-                p_73078_3_.setItemDamage(meta);
-                p_73078_3_.stackSize = size;
+                item.setItemDamage(meta);
+                item.stackSize = size;
             }
-            if (p_73078_3_.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, p_73078_3_);
+            if (item.stackSize <= 0)
+                ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, item);
+            if (result)
+                MinecraftForge.EVENT_BUS.post(new PlayerPostInteractEvent(player, world, item, x, y, z, side, dx, dy, dz));
         }
 
-        /* Re-enable if this causes bukkit incompatibility, or re-write client side to only send a single packet per right click.
-        if (par3ItemStack != null && ((!result && event.useItem != Event.Result.DENY) || event.useItem == Event.Result.ALLOW))
-        {
-            this.tryUseItem(thisPlayerMP, par2World, par3ItemStack);
-        }*/
         return result;
     }
 }

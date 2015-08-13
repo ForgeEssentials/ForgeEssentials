@@ -22,16 +22,23 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBed;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemDoor;
+import net.minecraft.item.ItemRedstone;
+import net.minecraft.item.ItemSkull;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
 
 import org.hibernate.jpa.criteria.predicate.CompoundPredicate;
 
@@ -52,6 +59,7 @@ import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
 import com.forgeessentials.playerlogger.event.LogEventInteract;
 import com.forgeessentials.playerlogger.event.LogEventPlace;
+import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Charsets;
@@ -504,10 +512,23 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.useBlock == Result.DENY && event.useItem == Result.DENY))
             return;
-        ItemStack itemStack = event.entityPlayer.getCurrentEquippedItem();
-        if (event.useBlock != Result.ALLOW && itemStack != null && itemStack.getItem() instanceof ItemBlock)
-            return;
-        logEvent(new LogEventInteract(event));
+        GameType gameType = ((EntityPlayerMP) event.entityPlayer).theItemInWorldManager.getGameType();
+        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && gameType != GameType.CREATIVE)
+        {
+            logEvent(new LogEventInteract(event));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerPostInteractEvent(PlayerPostInteractEvent event)
+    {
+        if (event.stack != null)
+        {
+            Item item = event.stack.getItem();
+            if (item instanceof ItemBlock || item instanceof ItemRedstone || item instanceof ItemBed || item instanceof ItemDoor || item instanceof ItemSkull)
+                return;
+        }
+        logEvent(new LogEventPostInteract(event));
     }
 
     /* ------------------------------------------------------------ */
