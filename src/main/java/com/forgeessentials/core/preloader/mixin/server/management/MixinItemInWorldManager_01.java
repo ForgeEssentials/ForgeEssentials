@@ -7,9 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.fe.event.player.PlayerPostInteractItemEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -37,12 +39,16 @@ public abstract class MixinItemInWorldManager_01
                 .onPlayerInteract(p_73078_1_, Action.RIGHT_CLICK_BLOCK, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_2_);
         if (event.isCanceled())
         {
-            thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73078_4_, p_73078_5_, p_73078_6_, theWorld));
+            if (thisPlayerMP.playerNetServerHandler != null) // FE: Fix a Forge bug relating to null NSHs (fakeplayers)
+                thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73078_4_, p_73078_5_, p_73078_6_, theWorld));
             return false;
         }
 
+        // FE: Fix a Forge bug regarding destroyed items
         if (event.useItem != Event.Result.DENY && p_73078_3_ != null && p_73078_3_.getItem().onItemUseFirst(p_73078_3_, p_73078_1_, p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_))
         {
+            // FE: Add a PlayerLogger-friendly ItemInteractEvent
+            MinecraftForge.EVENT_BUS.post(new PlayerPostInteractItemEvent(p_73078_1_, p_73078_2_, p_73078_3_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_));
             if (p_73078_3_.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, p_73078_3_);
             return true;
         }
@@ -61,7 +67,8 @@ public abstract class MixinItemInWorldManager_01
             }
             else
             {
-                thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73078_4_, p_73078_5_, p_73078_6_, theWorld));
+                if (thisPlayerMP.playerNetServerHandler != null) // FE: Fix a Forge bug relating to null NSHs (fakeplayers)
+                    thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73078_4_, p_73078_5_, p_73078_6_, theWorld));
                 result = event.useItem != Event.Result.ALLOW;
             }
         }

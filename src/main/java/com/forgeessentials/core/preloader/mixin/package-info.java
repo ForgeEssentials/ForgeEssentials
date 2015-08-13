@@ -9,7 +9,7 @@
  *
  * MixinEntityTracker_01 and EntityTrackerHelper: For /vanish
  *
- * MixinItemInWorldManager_01: Fix a bug relating to mod compatibility and item use permissions
+ * MixinItemInWorldManager_01: Fixes some Forge bugs, and adds a PostItemInteractEvent
  *
  * net.minecraftforge.fe support:
  *
