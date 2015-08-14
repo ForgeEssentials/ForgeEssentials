@@ -33,4 +33,9 @@ public abstract class StatTracker<T>
 
     public abstract T getValue();
 
+    public int getInterval()
+    {
+        return interval;
+    }
+
 }

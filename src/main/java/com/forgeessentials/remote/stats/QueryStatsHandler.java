@@ -49,7 +49,7 @@ public class QueryStatsHandler extends GenericRemoteHandler<Request>
         if (request.data == null)
             return new RemoteResponse<Object>(request, StatsManager.getStats().keySet());
 
-        Map<String, List<?>> stats = new HashMap<>();
+        Map<String, GraphData> stats = new HashMap<>();
         for (String id : request.data)
         {
             StatTracker<?> tracker = StatsManager.getStats().get(id);
@@ -58,10 +58,25 @@ public class QueryStatsHandler extends GenericRemoteHandler<Request>
                 // TODO: Write better RingBuffer that can directly get reverse list and keeps track of internal size
                 ArrayList<?> data = tracker.getBuffer().getOrderedList();
                 Collections.reverse(data);
-                stats.put(id, data);
+                stats.put(id, new GraphData(data, tracker.getInterval()));
             }
         }
         return new RemoteResponse<Object>(request, stats);
+    }
+
+    public static class GraphData
+    {
+
+        public int interval;
+
+        public List<?> data;
+
+        public GraphData(List<?> data, int interval)
+        {
+            this.data = data;
+            this.interval = interval;
+        }
+
     }
 
     public static class Request extends HashSet<String>
