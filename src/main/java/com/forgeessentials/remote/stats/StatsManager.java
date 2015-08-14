@@ -3,6 +3,7 @@ package com.forgeessentials.remote.stats;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -16,11 +17,18 @@ public class StatsManager extends ServerEventHandler
 
     public StatsManager()
     {
-        addStatTracker("ram", new StatTracker<Long>(5, 60 * 60) {
+        addStatTracker("ram", new StatTracker<Long>(10, 60 * 60) {
             @Override
             public Long getValue()
             {
                 return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
+            }
+        });
+        addStatTracker("playercount", new StatTracker<Integer>(60 * 2, 60 * 60 * 24) {
+            @Override
+            public Integer getValue()
+            {
+                return ServerUtil.getPlayerList().size();
             }
         });
     }
