@@ -9,6 +9,8 @@
  *
  * MixinEntityTracker_01 and EntityTrackerHelper: For /vanish
  *
+ * MixinItemInWorldManager_01: Fixes some Forge bugs, and adds a PostItemInteractEvent
+ *
  * net.minecraftforge.fe support:
  *
  * MixinNetHandlerPlayServer_01: For net.minecraftforge.fe SignEditEvent

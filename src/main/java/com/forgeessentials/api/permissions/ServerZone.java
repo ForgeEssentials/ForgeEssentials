@@ -320,7 +320,6 @@ public class ServerZone extends Zone
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }
         }
-        result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
         return result;
     }
 
@@ -371,6 +370,7 @@ public class ServerZone extends Zone
                     result.addAll(z.getStoredPlayerGroupEntries(ident));
         if (result.isEmpty())
             result.add(new GroupEntry(this, GROUP_GUESTS));
+        result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
         return includeGroups(result);
     }
 
