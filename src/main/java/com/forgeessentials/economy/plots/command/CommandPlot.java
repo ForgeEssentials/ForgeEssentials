@@ -30,6 +30,7 @@ import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
@@ -209,7 +210,7 @@ public class CommandPlot extends ParserCommandBase
     {
         Plot plot = getPlot(arguments.senderPlayer);
         arguments.confirm(Translator.format("Plot \"%s\" has been deleted.", plot.getNameNotNull()));
-        plot.getZone().getWorldZone().removeAreaZone(plot.getZone());
+        Plot.deletePlot(plot);
     }
 
     public static void parseClaim(CommandParserArgs arguments)
@@ -228,6 +229,22 @@ public class CommandPlot extends ParserCommandBase
         Wallet wallet = APIRegistry.economy.getWallet(arguments.ident);
         if (!wallet.covers(price))
             throw new ModuleEconomy.CantAffordException();
+
+        int plotSize = selection.getXLength() * selection.getZLength() * (Plot.isColumnMode(selection.getDimension()) ? 1 : selection.getYLength());
+        int limitCount = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT), Integer.MAX_VALUE);
+        int limitSize = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_SIZE), Integer.MAX_VALUE);
+        int usedCount = 0;
+        long usedSize = 0;
+        for (Plot plot : Plot.getPlots())
+            if (arguments.ident.equals(plot.getOwner()))
+            {
+                usedCount++;
+                usedSize += plot.getAccountedSize();
+            }
+        if (usedCount + 1 > limitCount)
+            throw new TranslatedCommandException("You have reached your limit of %s plots already!", limitCount);
+        if (usedSize + plotSize > limitSize)
+            throw new TranslatedCommandException("You have reached your limit of %s blocks^2 already!", limitSize);
 
         try
         {

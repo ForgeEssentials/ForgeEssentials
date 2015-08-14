@@ -401,6 +401,12 @@ public class Plot
             }
     }
 
+    public static void deletePlot(Plot plot)
+    {
+        plot.getZone().getWorldZone().removeAreaZone(plot.getZone());
+        plots.remove(plot.getZone().getId());
+    }
+
     static void registerPermissions()
     {
         IPermissionsHelper perms = APIRegistry.perms;
