@@ -20,7 +20,7 @@ public class StatsManager extends ServerEventHandler
             @Override
             public Long getValue()
             {
-                return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
             }
         });
     }
