@@ -1,5 +1,7 @@
 package com.forgeessentials.remote.stats;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,7 +54,12 @@ public class QueryStatsHandler extends GenericRemoteHandler<Request>
         {
             StatTracker<?> tracker = StatsManager.getStats().get(id);
             if (tracker != null)
-                stats.put(id, tracker.getBuffer().getOrderedList());
+            {
+                // TODO: Write better RingBuffer that can directly get reverse list and keeps track of internal size
+                ArrayList<?> data = tracker.getBuffer().getOrderedList();
+                Collections.reverse(data);
+                stats.put(id, data);
+            }
         }
         return new RemoteResponse<Object>(request, stats);
     }
