@@ -13,12 +13,12 @@ public abstract class MixinEntityTracker_01 implements EntityTrackerHelper
 {
 
     @Shadow
-    private IntHashMap trackedEntityIDs = new IntHashMap();
+    private IntHashMap trackedEntityHashTable = new IntHashMap();
 
     @Override
     public EntityTrackerEntry getEntityTrackerEntry(Entity entity)
     {
-        return (EntityTrackerEntry) trackedEntityIDs.lookup(entity.getEntityId());
+        return (EntityTrackerEntry) trackedEntityHashTable.lookup(entity.getEntityId());
     }
 
 }
