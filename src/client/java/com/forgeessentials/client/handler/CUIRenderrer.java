@@ -21,7 +21,6 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-//Depreciated
 @SideOnly(value = Side.CLIENT)
 public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMessage>
 {

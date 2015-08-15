@@ -7,8 +7,10 @@ import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
@@ -50,6 +52,8 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -76,6 +80,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.Side;
 
 public class ProtectionEventHandler extends ServerEventHandler
@@ -216,6 +221,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
+            sendBlockBreakDenyInfo(ident, block);
             return;
         }
     }
@@ -571,6 +577,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         EntityPlayerMP player = (EntityPlayerMP) event.entityPlayer;
         UserIdent ident = UserIdent.get(player);
 
+        sendPermissionUpdate(ident, true);
+
         String inventoryGroup = APIRegistry.perms.getUserPermissionProperty(ident, event.afterPoint.toWorldPoint(), ModuleProtection.PERM_INVENTORY_GROUP);
         if (inventoryGroup == null)
             inventoryGroup = "default";
@@ -603,6 +611,36 @@ public class ProtectionEventHandler extends ServerEventHandler
         pi.setInventoryGroup(inventoryGroup);
 
         checkPlayerInventory(player);
+    }
+
+    public void sendPermissionUpdate(UserIdent ident, boolean reset)
+    {
+        if (!PlayerInfo.get(ident).getHasFEClient())
+            return;
+
+        Set<Integer> placeIds = new HashSet<Integer>();
+
+        ItemStack[] inventory = ident.getPlayer().inventory.mainInventory;
+        for (int i = 0; i < (reset ? inventory.length : 9); ++i)
+        {
+            ItemStack stack = inventory[i];
+            if (stack == null || !(stack.getItem() instanceof ItemBlock))
+                continue;
+            Block block = ((ItemBlock) stack.getItem()).field_150939_a;
+            String permission = ModuleProtection.getBlockPlacePermission(block, 0);
+            if (!APIRegistry.perms.checkUserPermission(ident, permission))
+                placeIds.add(GameData.getBlockRegistry().getId(block));
+        }
+
+        NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(reset, placeIds, null), ident.getPlayerMP());
+    }
+
+    public void sendBlockBreakDenyInfo(UserIdent ident, Block block)
+    {
+        int blockId = GameData.getBlockRegistry().getId(block);
+        Set<Integer> ids = new HashSet<Integer>();
+        ids.add(blockId);
+        NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
     }
 
     /* ------------------------------------------------------------ */
@@ -684,6 +722,12 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
         if (checkMajoritySleep)
             checkMajoritySleep();
+
+        if (ServerUtil.getOverworld().getWorldInfo().getWorldTotalTime() % (20 * 4) == 0)
+        {
+            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+                sendPermissionUpdate(UserIdent.get(player), false);
+        }
     }
 
     @SubscribeEvent

@@ -7,6 +7,7 @@ import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.handler.CUIRenderrer;
+import com.forgeessentials.client.handler.PermissionOverlay;
 import com.forgeessentials.client.handler.QRRenderer;
 import com.forgeessentials.client.handler.ReachDistanceHandler;
 import com.forgeessentials.commons.BuildInfo;
@@ -15,6 +16,7 @@ import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
 import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.Packet2Reach;
+import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.Packet5Noclip;
 import com.forgeessentials.commons.network.Packet7Remote;
 
@@ -58,6 +60,8 @@ public class ClientProxy extends CommonProxy
 
     private static QRRenderer qrCodeRenderer = new QRRenderer();
 
+    private static PermissionOverlay permissionOverlay = new PermissionOverlay();
+
     private ReachDistanceHandler reachDistanceHandler = new ReachDistanceHandler();
 
     /* ------------------------------------------------------------ */
@@ -95,6 +99,7 @@ public class ClientProxy extends CommonProxy
         });
         NetworkUtils.registerMessage(cuiRenderer, Packet1SelectionUpdate.class, 1, Side.CLIENT);
         NetworkUtils.registerMessage(reachDistanceHandler, Packet2Reach.class, 2, Side.CLIENT);
+        NetworkUtils.registerMessage(permissionOverlay, Packet3PlayerPermissions.class, 3, Side.CLIENT);
         NetworkUtils.registerMessage(new IMessageHandler<Packet5Noclip, IMessage>() {
             @Override
             public IMessage onMessage(Packet5Noclip message, MessageContext ctx)
