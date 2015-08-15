@@ -67,8 +67,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     public void serverStartingEvent(FEModuleServerInitEvent event)
     {
         APIRegistry.perms.registerPermissionDescription(PERM, "Worldborder permissions");
-        APIRegistry.perms.registerPermissionDescription(PERM_BYPASS, "Bypass worldborder events");
-        APIRegistry.perms.registerPermission(PERM_BYPASS, PermissionLevel.FALSE);
+        APIRegistry.perms.registerPermission(PERM_BYPASS, PermissionLevel.FALSE, "Ignore worldborders if granted");
     }
 
     @SubscribeEvent
@@ -127,16 +126,12 @@ public class ModuleWorldBorder extends ServerEventHandler
                 return;
             }
 
-            if (PermissionManager.checkPermission(player, PERM_BYPASS))
-            {
-                return;
-            }
-
             // Check which effects are active
             Set<WorldBorderEffect> newActiveEffects = new HashSet<>();
-            for (WorldBorderEffect effect : border.getEffects())
-                if (minBorderDistance <= effect.getTiggerDistance())
-                    newActiveEffects.add(effect);
+            if (!PermissionManager.checkPermission(player, PERM_BYPASS))
+                for (WorldBorderEffect effect : border.getEffects())
+                    if (minBorderDistance <= effect.getTiggerDistance())
+                        newActiveEffects.add(effect);
 
             // Deactivate old effects and update current ones
             Set<WorldBorderEffect> activeEffects = border.getOrCreateActiveEffects(player);
@@ -172,10 +167,6 @@ public class ModuleWorldBorder extends ServerEventHandler
         // Tick effects
         for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
-            if (PermissionManager.checkPermission(player, PERM_BYPASS))
-            {
-                continue;
-            }
             WorldBorder border = getBorder(player.worldObj);
             if (border != null)
             {
