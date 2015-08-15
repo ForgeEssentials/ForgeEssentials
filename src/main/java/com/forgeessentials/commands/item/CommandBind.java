@@ -8,12 +8,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class CommandBind extends FEcmdModuleCommands
 {
@@ -23,6 +27,18 @@ public class CommandBind extends FEcmdModuleCommands
     public String getCommandName()
     {
         return "bind";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/bind <left|right|clear> <command[args]> Bind a command to an object.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
     }
 
     @Override
@@ -91,12 +107,6 @@ public class CommandBind extends FEcmdModuleCommands
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1)
@@ -106,9 +116,36 @@ public class CommandBind extends FEcmdModuleCommands
         return null;
     }
 
-    @Override
-    public String getCommandUsage(ICommandSender sender)
+    @SubscribeEvent
+    public void playerInteractEvent(PlayerInteractEvent event)
     {
-        return "/bind <left|right|clear> <command[args]> Bind a command to an object.";
+        if (!(event.entityPlayer instanceof EntityPlayerMP))
+            return;
+        ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
+        if (stack == null || !stack.getTagCompound().hasKey("FEbinding"))
+            return;
+
+        NBTTagCompound nbt = stack.getTagCompound().getCompoundTag("FEbinding");
+
+        String cmd;
+        switch (event.action)
+        {
+        case LEFT_CLICK_BLOCK:
+            cmd = nbt.getString("left");
+            break;
+        case RIGHT_CLICK_AIR:
+        case RIGHT_CLICK_BLOCK:
+            cmd = nbt.getString("right");
+            break;
+        default:
+            return;
+        }
+
+        if (cmd.isEmpty())
+            return;
+
+        MinecraftServer.getServer().getCommandManager().executeCommand(event.entityPlayer, cmd);
+        event.setCanceled(true);
     }
+    
 }

@@ -1,25 +1,13 @@
 package com.forgeessentials.commands.util;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
-import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.commands.player.CommandNoClip;
-import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
@@ -56,66 +44,6 @@ public class CommandsEventHandler extends ServerEventHandler
     public CommandsEventHandler()
     {
         super();
-    }
-
-    @SubscribeEvent
-    public void playerInteractEvent(PlayerInteractEvent e)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-        {
-            return;
-        }
-
-        /*
-         * Jump with compass
-         */
-        if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK)
-        {
-            if (e.entityPlayer.getCurrentEquippedItem() != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
-            {
-                if (e.entityPlayer.getCurrentEquippedItem().getItem() == Items.compass)
-                {
-                    if (PermissionManager.checkPermission(e.entityPlayer, "fe.commands.jump"))
-                    {
-                        MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(e.entityPlayer, 500);
-                        if (mop != null)
-                        {
-                            int x = mop.blockX;
-                            int y = mop.blockY;
-                            int z = mop.blockZ;
-                            while (y < e.entityPlayer.worldObj.getHeight() + 2
-                                    && (!e.entityPlayer.worldObj.isAirBlock(x, y, z) || !e.entityPlayer.worldObj.isAirBlock(x, y + 1, z)))
-                                y++;
-                            ((EntityPlayerMP) e.entityPlayer).setPositionAndUpdate(x + 0.5, y, z + 0.5);
-                        }
-                    }
-                }
-            }
-        }
-        if (e.entityPlayer.getCurrentEquippedItem() != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
-        {
-            ItemStack is = e.entityPlayer.inventory.getCurrentItem();
-            if (is != null && is.getTagCompound() != null && is.getTagCompound().hasKey("FEbinding"))
-            {
-                String cmd = null;
-                NBTTagCompound nbt = is.getTagCompound().getCompoundTag("FEbinding");
-
-                if (e.action.equals(Action.LEFT_CLICK_BLOCK))
-                {
-                    cmd = nbt.getString("left");
-                }
-                else if (e.action.equals(Action.RIGHT_CLICK_AIR))
-                {
-                    cmd = nbt.getString("right");
-                }
-
-                if (!Strings.isNullOrEmpty(cmd))
-                {
-                    MinecraftServer.getServer().getCommandManager().executeCommand(e.entityPlayer, cmd);
-                    e.setCanceled(true);
-                }
-            }
-        }
     }
 
     @SubscribeEvent
