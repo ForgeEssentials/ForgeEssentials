@@ -2,18 +2,17 @@ package com.forgeessentials.remote.stats;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
-
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class StatsManager extends ServerEventHandler
 {
 
     protected static final Map<String, StatTracker<?>> stats = new HashMap<>();
+    
+    protected static Timer timer = new Timer();
 
     public StatsManager()
     {
@@ -33,18 +32,12 @@ public class StatsManager extends ServerEventHandler
         });
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void serverTickEvent(ServerTickEvent event)
-    {
-        for (StatTracker<?> tracker : stats.values())
-            tracker.tick();
-    }
-
-    public static void addStatTracker(String id, StatTracker<?> tacker)
+    public static void addStatTracker(String id, StatTracker<?> tracker)
     {
         if (stats.containsKey(id))
             throw new RuntimeException("Duplicate stat tracker ID used");
-        stats.put(id, tacker);
+        stats.put(id, tracker);
+        timer.scheduleAtFixedRate(tracker, tracker.getInterval(), tracker.getInterval());
     }
 
     public static Map<String, StatTracker<?>> getStats()

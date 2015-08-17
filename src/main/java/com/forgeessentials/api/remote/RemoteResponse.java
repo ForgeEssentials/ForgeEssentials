@@ -16,6 +16,8 @@ public class RemoteResponse<T>
 
     public String message;
 
+    public long timestamp = System.currentTimeMillis();
+
     public T data;
 
     private RemoteResponse(String id, int rid, boolean success, String message, T data)
