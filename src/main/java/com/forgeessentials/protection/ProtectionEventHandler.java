@@ -525,8 +525,11 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
 
         for (Iterator<ItemStack> iterator = event.drops.iterator(); iterator.hasNext();)
-            if (isItemBanned(point, iterator.next()))
+        {
+            ItemStack stack = iterator.next();
+            if (stack != null && isItemBanned(point, stack))
                 iterator.remove();
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

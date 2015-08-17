@@ -45,7 +45,7 @@ public class ModuleAfterlife
     {
         deathchest = new AfterlifeEventHandler();
         respawnDebuff = new RespawnDebuffHandler();
-        TileEntity.addMapping(FEskullTe.class, "FESkull");
+        TileEntity.addMapping(TileEntitySkullGrave.class, "FESkull");
     }
 
     @SubscribeEvent

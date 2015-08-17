@@ -7,10 +7,14 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.mojang.authlib.GameProfile;
 
-public class FEskullTe extends TileEntitySkull
+public class TileEntitySkullGrave extends TileEntitySkull
 {
 
-    public FEskullTe(GameProfile player)
+    public TileEntitySkullGrave()
+    {
+    }
+
+    public TileEntitySkullGrave(GameProfile player)
     {
         if (player != null)
             func_152106_a(player);
