@@ -7,11 +7,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayerFactory;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.network.ChatResponse;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -37,13 +39,15 @@ public class RemoteCommandSender implements ICommandSender
 
     public EntityPlayer getPlayer()
     {
-        return session.getUserIdent().getFakePlayer();
+        if (session.getUserIdent() != null)
+            return session.getUserIdent().getFakePlayer();
+        return FakePlayerFactory.get(ServerUtil.getOverworld(), ModuleRemote.FAKEPLAYER);
     }
 
     @Override
     public String getCommandSenderName()
     {
-        return session.getUserIdent().getUsernameOrUuid();
+        return session.getUserIdent() != null ? session.getUserIdent().getUsernameOrUuid() : "anonymous";
     }
 
     @Override
@@ -55,7 +59,7 @@ public class RemoteCommandSender implements ICommandSender
     @Override
     public void addChatMessage(IChatComponent chatComponent)
     {
-        if (session.getUserIdent().hasPlayer())
+        if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
         {
             ChatOutputHandler.sendMessage(session.getUserIdent().getPlayer(), chatComponent);
         }

@@ -43,7 +43,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
 
         final ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(commandName);
         if (command == null)
-            error(String.format("Command \"%s\" not found", commandName));
+            error(String.format("Command \"/%s\" not found", commandName));
 
         checkPermission(session, PermissionManager.getCommandPermission(command));
 
@@ -54,7 +54,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
                 try
                 {
                     ICommandSender sender;
-                    if (session.getUserIdent().hasPlayer())
+                    if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
                         sender = session.getUserIdent().getPlayer();
                     else
                         sender = new RemoteCommandSender(session);
@@ -67,6 +67,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
                 }
                 catch (Exception e)
                 {
+                    e.printStackTrace();
                     session.trySendMessage(RemoteResponse.error(request, "Exception: " + e.getMessage()));
                 }
             }
