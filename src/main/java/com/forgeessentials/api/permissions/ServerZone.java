@@ -370,6 +370,8 @@ public class ServerZone extends Zone
                     result.addAll(z.getStoredPlayerGroupEntries(ident));
         if (result.isEmpty())
             result.add(new GroupEntry(this, GROUP_GUESTS));
+        if (ident != null)
+            result.add(new GroupEntry(GROUP_PLAYERS, 1, 1));
         result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
         return includeGroups(result);
     }

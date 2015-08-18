@@ -440,6 +440,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
             e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[&cOP&f]");
         }
+        if (!e.serverZone.groupExists(Zone.GROUP_PLAYERS))
+        {
+            e.serverZone.setGroupPermission(Zone.GROUP_PLAYERS, FEPermissions.GROUP, true);
+            e.serverZone.setGroupPermissionProperty(Zone.GROUP_PLAYERS, FEPermissions.GROUP_PRIORITY, "1");
+        }
         if (!e.serverZone.groupExists(Zone.GROUP_FAKEPLAYERS))
         {
             // Configure FakePlayer group
@@ -766,7 +771,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public boolean isSystemGroup(String group)
     {
-        return group.equals(Zone.GROUP_DEFAULT) || group.equals(Zone.GROUP_OPERATORS) || group.equals(Zone.GROUP_GUESTS);
+        return Zone.GROUP_DEFAULT.equals(group) || //
+                Zone.GROUP_GUESTS.equals(group) || //
+                Zone.GROUP_OPERATORS.equals(group) || //
+                Zone.GROUP_CMDBLOCKS.equals(group) || //
+                Zone.GROUP_PLAYERS.equals(group) || //
+                Zone.GROUP_FAKEPLAYERS.equals(group);
     }
 
     @Override
