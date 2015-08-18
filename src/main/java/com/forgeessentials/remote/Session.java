@@ -141,9 +141,12 @@ public class Session implements Runnable, RemoteSession
                 RemoteResponse<?> response = handler.handle(this, request);
                 if (response != null)
                 {
+                    response.id = request.id;
                     response.rid = request.rid;
-                    sendMessage(response);
                 }
+                else
+                    response = RemoteResponse.success(request);
+                sendMessage(response);
             }
             catch (PermissionException e)
             {

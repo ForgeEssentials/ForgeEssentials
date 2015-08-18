@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.permission.PermissionLevel;
@@ -30,11 +31,14 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
 
     protected Map<RemoteSession, ChatFormat> formats = new WeakHashMap<>();
 
+    protected static PushChatHandler instance;
+
     public PushChatHandler()
     {
         super(PERM, Request.class);
         APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE, "Allows requesting chat push messages");
         MinecraftForge.EVENT_BUS.register(this);
+        instance = this;
     }
 
     @Override
@@ -54,6 +58,13 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
+        IChatComponent message = event.component;
+        String username = event.username;
+        pushMessage(message, username);
+    }
+
+    protected void pushMessage(IChatComponent message, String username)
+    {
         RemoteResponse<?>[] messages = new RemoteResponse<?>[ChatFormat.values().length];
         if (!pushSessions.isEmpty())
         {
@@ -70,10 +81,15 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
                 if (format == null)
                     format = ChatFormat.PLAINTEXT;
                 if (messages[format.ordinal()] == null)
-                    messages[format.ordinal()] = new RemoteResponse<>(RemoteMessageID.CHAT, new ChatResponse(event.username, format.format(event.component)));
+                    messages[format.ordinal()] = new RemoteResponse<>(RemoteMessageID.CHAT, new ChatResponse(username, format.format(message)));
                 session.trySendMessage(messages[format.ordinal()]);
             }
         }
+    }
+
+    public static void onMessage(IChatComponent message, String username)
+    {
+        instance.pushMessage(message, username);
     }
 
     public static class Request

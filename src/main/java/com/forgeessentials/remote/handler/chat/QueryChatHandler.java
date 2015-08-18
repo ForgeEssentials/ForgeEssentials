@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
@@ -58,10 +59,16 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
+        ChatComponentTranslation message = event.component;
+        onMessage(message);
+    }
+
+    public static void onMessage(IChatComponent message)
+    {
         Long key = System.currentTimeMillis();
         while (chatLog.containsKey(key))
             key++;
-        chatLog.put(key, event.component);
+        chatLog.put(key, message);
         while (chatLog.size() > BUFFER_SIZE)
         {
             Iterator<?> it = chatLog.entrySet().iterator();
