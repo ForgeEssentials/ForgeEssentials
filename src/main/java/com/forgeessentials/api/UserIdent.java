@@ -148,7 +148,12 @@ public class UserIdent
         if (ident == null)
         {
             ident = byUsername.get(player.getCommandSenderName().toLowerCase());
-            if (ident == null)
+            if (ident != null)
+            {
+                ident.uuid = player.getPersistentID();
+                byUuid.put(ident.uuid, ident);
+            }
+            else
                 ident = new UserIdent(player);
         }
         ident.player = new WeakReference<EntityPlayer>(player);
