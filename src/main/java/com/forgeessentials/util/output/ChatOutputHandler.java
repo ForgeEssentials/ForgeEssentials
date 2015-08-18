@@ -17,6 +17,8 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 
 public final class ChatOutputHandler extends ConfigLoaderBase
@@ -370,8 +372,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         Matcher matcher = FORMAT_CODE_PATTERN.matcher(message);
         while (matcher.find())
         {
-            for (; pos < matcher.start(); pos++)
-                sb.append(message.charAt(pos));
+            sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, matcher.start())));
             pos = matcher.end();
             char formatChar = matcher.group(1).charAt(0);
             for (EnumChatFormatting format : EnumChatFormatting.values())
@@ -386,8 +387,9 @@ public final class ChatOutputHandler extends ConfigLoaderBase
                 }
             }
         }
-        for (; pos < message.length(); pos++)
-            sb.append(message.charAt(pos));
+        sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, message.length())));
+        //for (; pos < message.length(); pos++)
+        //    sb.append(message.charAt(pos));
         for (int i = 0; i < tagCount; i++)
             sb.append("</span>");
         return sb.toString();
