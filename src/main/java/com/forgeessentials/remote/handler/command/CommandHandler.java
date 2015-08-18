@@ -71,7 +71,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
                 }
             }
         });
-        return null;
+        return new RemoteResponse.Ignore();
     }
 
 }

@@ -146,7 +146,8 @@ public class Session implements Runnable, RemoteSession
                 }
                 else
                     response = RemoteResponse.success(request);
-                sendMessage(response);
+                if (!(response instanceof RemoteResponse.Ignore))
+                    sendMessage(response);
             }
             catch (PermissionException e)
             {

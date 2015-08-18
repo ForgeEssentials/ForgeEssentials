@@ -109,4 +109,14 @@ public class RemoteResponse<T>
 
     }
 
+    public static class Ignore extends RemoteResponse<Object>
+    {
+
+        public Ignore()
+        {
+            super((String) null, null);
+        }
+
+    }
+
 }
