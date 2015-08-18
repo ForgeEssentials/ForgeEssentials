@@ -45,7 +45,8 @@ public class PushChatHandler extends GenericRemoteHandler<EnableRequest>
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
-        push(new RemoteResponse<>(RemoteMessageID.CHAT, new ChatResponse(event.username, event.message)));
+        if (!pushSessions.isEmpty())
+            push(new RemoteResponse<>(RemoteMessageID.CHAT, new ChatResponse(event.username, event.message)));
     }
 
 }

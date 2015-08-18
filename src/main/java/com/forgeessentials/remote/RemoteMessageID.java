@@ -16,6 +16,7 @@ public abstract class RemoteMessageID
 
     public static final String CHAT = "chat";
     public static final String PUSH_CHAT = "push_chat";
+    public static final String QUERY_CHAT = "query_chat";
 
     public static final String COMMAND = "command";
     public static final String COMMAND_LIST = "command_list";
