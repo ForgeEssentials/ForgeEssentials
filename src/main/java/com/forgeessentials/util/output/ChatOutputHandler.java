@@ -318,36 +318,36 @@ public final class ChatOutputHandler extends ConfigLoaderBase
             ChatStyle style = msg.getChatStyle();
             if (!isStyleEmpty(style))
             {
-                sb.append("<span class=\"mcf");
+                sb.append("<span class=\"");
                 EnumChatFormatting color = style.getColor();
                 if (color != null)
                 {
-                    sb.append(" ");
+                    sb.append(" mcf");
                     sb.append(color.getFormattingCode());
                 }
                 if (style.getBold())
                 {
-                    sb.append(" ");
+                    sb.append(" mcf");
                     sb.append(EnumChatFormatting.BOLD.getFormattingCode());
                 }
                 if (style.getItalic())
                 {
-                    sb.append(" ");
+                    sb.append(" mcf");
                     sb.append(EnumChatFormatting.ITALIC.getFormattingCode());
                 }
                 if (style.getUnderlined())
                 {
-                    sb.append(" ");
+                    sb.append(" mcf");
                     sb.append(EnumChatFormatting.UNDERLINE.getFormattingCode());
                 }
                 if (style.getObfuscated())
                 {
-                    sb.append(" ");
+                    sb.append(" mcf");
                     sb.append(EnumChatFormatting.OBFUSCATED.getFormattingCode());
                 }
                 if (style.getStrikethrough())
                 {
-                    sb.append(" ");
+                    sb.append(" mcf");
                     sb.append(EnumChatFormatting.STRIKETHROUGH.getFormattingCode());
                 }
                 sb.append("\">");
@@ -378,7 +378,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
             {
                 if (format.getFormattingCode() == formatChar)
                 {
-                    sb.append("<span class=\"mcf ");
+                    sb.append("<span class=\"mcf");
                     sb.append(formatChar);
                     sb.append("\">");
                     tagCount++;
@@ -397,6 +397,41 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     {
         return !style.getBold() && !style.getItalic() && !style.getObfuscated() && !style.getStrikethrough() && !style.getUnderlined()
                 && style.getColor() == null;
+    }
+
+    public static enum ChatFormat
+    {
+
+        PLAINTEXT, HTML, MINECRAFT, DETAIL;
+
+        public Object format(IChatComponent message)
+        {
+            switch (this)
+            {
+            case HTML:
+                return ChatOutputHandler.formatHtml(message);
+            case MINECRAFT:
+                return ChatOutputHandler.getFormattedMessage(message);
+            case DETAIL:
+                return message;
+            default:
+            case PLAINTEXT:
+                return ChatOutputHandler.stripFormatting(ChatOutputHandler.getUnformattedMessage(message));
+            }
+        }
+
+        public static ChatFormat fromString(String format)
+        {
+            try
+            {
+                return ChatFormat.valueOf(format.toUpperCase());
+            }
+            catch (IllegalArgumentException e)
+            {
+                return ChatFormat.PLAINTEXT;
+            }
+        }
+
     }
 
     /* ------------------------------------------------------------ */

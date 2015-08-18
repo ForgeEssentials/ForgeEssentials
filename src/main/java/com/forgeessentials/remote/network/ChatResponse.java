@@ -11,11 +11,11 @@ public class ChatResponse
 
     public String sender;
 
-    public String message;
+    public Object message;
 
     public Date timestamp;
 
-    public ChatResponse(String sender, String message)
+    public ChatResponse(String sender, Object message)
     {
         this.sender = sender;
         this.message = message;
