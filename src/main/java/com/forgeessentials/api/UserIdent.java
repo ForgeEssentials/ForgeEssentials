@@ -252,7 +252,7 @@ public class UserIdent
     public boolean hasPlayer()
     {
         EntityPlayer player = getPlayer();
-        if (player == null)
+        if (player == null || player instanceof FakePlayer)
             return false;
         return true;
         // return ServerUtil.getPlayerList().contains(player);
