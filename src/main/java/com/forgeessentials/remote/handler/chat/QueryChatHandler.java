@@ -28,6 +28,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class QueryChatHandler extends GenericRemoteHandler<Request>
 {
 
+    private static final int BUFFER_SIZE = 200;
+
     public static final String PERM = PERM_REMOTE + ".chat.query";
 
     private static Map<Long, IChatComponent> chatLog = new TreeMap<>();
@@ -60,7 +62,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
         while (chatLog.containsKey(key))
             key++;
         chatLog.put(key, event.component);
-        while (chatLog.size() > 1)
+        while (chatLog.size() > BUFFER_SIZE)
         {
             Iterator<?> it = chatLog.entrySet().iterator();
             it.next();
