@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
@@ -15,6 +16,7 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.remote.RemoteCommandSender;
 import com.forgeessentials.remote.RemoteMessageID;
 
 @FERemoteHandler(id = RemoteMessageID.COMMAND)
@@ -51,7 +53,12 @@ public class CommandHandler extends GenericRemoteHandler<String>
             {
                 try
                 {
-                    command.processCommand(session.getUserIdent().getFakePlayer(), args);
+                    ICommandSender sender;
+                    if (session.getUserIdent().hasPlayer())
+                        sender = session.getUserIdent().getPlayer();
+                    else
+                        sender = new RemoteCommandSender(session);
+                    command.processCommand(sender, args);
                     session.trySendMessage(RemoteResponse.success(request));
                 }
                 catch (CommandException e)

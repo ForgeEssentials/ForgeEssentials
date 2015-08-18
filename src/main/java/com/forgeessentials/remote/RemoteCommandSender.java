@@ -8,6 +8,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.network.ChatResponse;
@@ -27,6 +28,11 @@ public class RemoteCommandSender implements ICommandSender
     public RemoteSession getSession()
     {
         return session;
+    }
+
+    public UserIdent getUserIdent()
+    {
+        return session.getUserIdent();
     }
 
     public EntityPlayer getPlayer()
