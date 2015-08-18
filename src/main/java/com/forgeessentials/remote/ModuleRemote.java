@@ -61,7 +61,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     public static final String PERM = RemoteHandler.PERM_REMOTE;
     public static final String PERM_CONTROL = PERM + ".control";
 
-    public static final GameProfile FAKEPLAYER = new GameProfile(new UUID(1451412139, 514498498), "feremote");
+    public static final GameProfile FAKEPLAYER = new GameProfile(new UUID(1451412139, 514498498), "$FE_REMOTE");
 
     public static int passkeyLength = 6;
 

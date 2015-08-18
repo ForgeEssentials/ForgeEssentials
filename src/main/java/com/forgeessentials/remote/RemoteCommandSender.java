@@ -2,28 +2,30 @@ package com.forgeessentials.remote;
 
 import java.io.IOException;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.network.ChatResponse;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-public class RemoteCommandSender implements ICommandSender
+public class RemoteCommandSender extends DoAsCommandSender
 {
 
     private RemoteSession session;
 
     public RemoteCommandSender(RemoteSession session)
     {
+        super(session.getUserIdent());
+        if (session.getUserIdent() != null)
+            this.sender = session.getUserIdent().getFakePlayer();
+        else
+            this.sender = FakePlayerFactory.get(ServerUtil.getOverworld(), ModuleRemote.FAKEPLAYER);
         this.session = session;
     }
 
@@ -32,28 +34,16 @@ public class RemoteCommandSender implements ICommandSender
         return session;
     }
 
+    @Override
     public UserIdent getUserIdent()
     {
         return session.getUserIdent();
-    }
-
-    public EntityPlayer getPlayer()
-    {
-        if (session.getUserIdent() != null)
-            return session.getUserIdent().getFakePlayer();
-        return FakePlayerFactory.get(ServerUtil.getOverworld(), ModuleRemote.FAKEPLAYER);
     }
 
     @Override
     public String getCommandSenderName()
     {
         return session.getUserIdent() != null ? session.getUserIdent().getUsernameOrUuid() : "anonymous";
-    }
-
-    @Override
-    public IChatComponent func_145748_c_()
-    {
-        return getPlayer().func_145748_c_();
     }
 
     @Override
@@ -82,19 +72,7 @@ public class RemoteCommandSender implements ICommandSender
     @Override
     public boolean canCommandSenderUseCommand(int level, String cmd)
     {
-        return getPlayer().canCommandSenderUseCommand(level, cmd);
-    }
-
-    @Override
-    public ChunkCoordinates getPlayerCoordinates()
-    {
-        return getPlayer().getPlayerCoordinates();
-    }
-
-    @Override
-    public World getEntityWorld()
-    {
-        return getPlayer().getEntityWorld();
+        return sender.canCommandSenderUseCommand(level, cmd);
     }
 
 }

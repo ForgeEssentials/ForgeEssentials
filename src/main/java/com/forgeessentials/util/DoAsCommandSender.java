@@ -1,23 +1,42 @@
 package com.forgeessentials.util;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 
 public class DoAsCommandSender implements ICommandSender
 {
 
-    public final ICommandSender sender;
+    protected ICommandSender sender;
 
-    private final UserIdent ident;
+    protected UserIdent ident;
+
+    public DoAsCommandSender()
+    {
+        this.ident = ZonedPermissionHelper.SERVER_IDENT;
+        this.sender = MinecraftServer.getServer();
+    }
+
+    public DoAsCommandSender(UserIdent ident)
+    {
+        this.ident = ident;
+        this.sender = MinecraftServer.getServer();
+    }
 
     public DoAsCommandSender(UserIdent ident, ICommandSender sender)
     {
         this.ident = ident;
         this.sender = sender;
+    }
+
+    public ICommandSender getOriginalSender()
+    {
+        return sender;
     }
 
     public UserIdent getUserIdent()

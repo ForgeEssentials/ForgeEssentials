@@ -46,7 +46,6 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.remote.RemoteCommandSender;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
@@ -687,12 +686,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         WorldPoint loc = null;
         WorldArea area = null;
 
-        if (context.getSender() instanceof RemoteCommandSender)
-            ident = ((RemoteCommandSender) context.getSender()).getUserIdent();
+        if (context.getSender() instanceof DoAsCommandSender)
+            ident = ((DoAsCommandSender) context.getSender()).getUserIdent();
         else if (context.getSender() instanceof CommandBlockLogic)
             ident = CMDBLOCK_IDENT;
-        else if (context.getSender() instanceof DoAsCommandSender)
-            ident = ((DoAsCommandSender) context.getSender()).getUserIdent();
 
         if (context.getTargetLocationStart() != null)
         {
