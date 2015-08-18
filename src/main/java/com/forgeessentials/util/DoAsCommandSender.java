@@ -5,14 +5,24 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
-public class DoAsConsoleCommandSender implements ICommandSender
+import com.forgeessentials.api.UserIdent;
+
+public class DoAsCommandSender implements ICommandSender
 {
 
     public final ICommandSender sender;
 
-    public DoAsConsoleCommandSender(ICommandSender sender)
+    private final UserIdent ident;
+
+    public DoAsCommandSender(UserIdent ident, ICommandSender sender)
     {
+        this.ident = ident;
         this.sender = sender;
+    }
+
+    public UserIdent getUserIdent()
+    {
+        return ident;
     }
 
     @Override

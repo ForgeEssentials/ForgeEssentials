@@ -19,6 +19,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandSellCommand extends ForgeEssentialsCommandBase
@@ -100,7 +101,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
                 amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(player).toString()));
 
         args = Arrays.copyOfRange(args, 4, args.length);
-        MinecraftServer.getServer().getCommandManager().executeCommand(player, StringUtils.join(args, " "));
+        MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player), StringUtils.join(args, " "));
 
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {
@@ -117,4 +118,5 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
             }
         }
     }
+    
 }

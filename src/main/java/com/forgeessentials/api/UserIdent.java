@@ -445,7 +445,7 @@ public class UserIdent
 
     public static EntityPlayerMP getPlayerByUsername(String username)
     {
-        return MinecraftServer.getServer().getConfigurationManager().func_152612_a(username);
+        return MinecraftServer.getServer() == null ? null : MinecraftServer.getServer().getConfigurationManager().func_152612_a(username);
     }
 
     public static EntityPlayerMP getPlayerByMatchOrUsername(ICommandSender sender, String match)
