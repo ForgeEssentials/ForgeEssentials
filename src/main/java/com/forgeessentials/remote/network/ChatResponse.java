@@ -1,7 +1,5 @@
 package com.forgeessentials.remote.network;
 
-import java.util.Date;
-
 import com.forgeessentials.remote.RemoteMessageID;
 
 public class ChatResponse
@@ -13,13 +11,13 @@ public class ChatResponse
 
     public Object message;
 
-    public Date timestamp;
+    public long timestamp;
 
     public ChatResponse(String sender, Object message)
     {
         this.sender = sender;
         this.message = message;
-        this.timestamp = new Date();
+        this.timestamp = System.currentTimeMillis();
     }
 
 }
