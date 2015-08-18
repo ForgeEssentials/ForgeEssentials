@@ -11,6 +11,7 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -445,7 +446,11 @@ public class UserIdent
 
     public static EntityPlayerMP getPlayerByUsername(String username)
     {
-        return MinecraftServer.getServer() == null ? null : MinecraftServer.getServer().getConfigurationManager().func_152612_a(username);
+        MinecraftServer mc = MinecraftServer.getServer();
+        if (mc == null)
+            return null;
+        ServerConfigurationManager configurationManager = mc.getConfigurationManager();
+        return configurationManager == null ? null : configurationManager.func_152612_a(username);
     }
 
     public static EntityPlayerMP getPlayerByMatchOrUsername(ICommandSender sender, String match)
