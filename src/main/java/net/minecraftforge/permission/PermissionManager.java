@@ -20,6 +20,8 @@ public final class PermissionManager
 
     public static final String DEFAULT_COMMAND_NODE = "command.";
 
+    public static final String PERM_COMMANDBLOCK = "commandblock";
+
     protected static IPermissionProvider permissionProvider = new DefaultPermissionProvider();
 
     protected static PermissionManager instance = new PermissionManager();
@@ -29,6 +31,7 @@ public final class PermissionManager
     public PermissionManager()
     {
         MinecraftForge.EVENT_BUS.register(this);
+        registerDefaultPermissions();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -41,6 +44,11 @@ public final class PermissionManager
             msg.getChatStyle().setColor(EnumChatFormatting.RED);
             event.sender.addChatMessage(msg);
         }
+    }
+
+    public static void registerDefaultPermissions()
+    {
+        permissionProvider.registerPermission(PERM_COMMANDBLOCK, PermissionLevel.OP_2);
     }
 
     /* ------------------------------------------------------------ */
@@ -56,6 +64,7 @@ public final class PermissionManager
         }
         permissionProvider = provider;
         FMLLog.fine("Registered permission provider %s", permissionProvider.getClass().getName());
+        registerDefaultPermissions();
     }
 
     public static IPermissionProvider getPermissionProvider()

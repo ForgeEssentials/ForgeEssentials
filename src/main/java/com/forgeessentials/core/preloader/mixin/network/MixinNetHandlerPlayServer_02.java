@@ -176,7 +176,7 @@ public abstract class MixinNetHandlerPlayServer_02
                 {
                     playerEntity.addChatMessage(new ChatComponentTranslation("advMode.notEnabled", new Object[0]));
                 }
-                else if (PermissionManager.checkPermission(playerEntity, "mc.cmdblocks") && playerEntity.capabilities.isCreativeMode)
+                else if (PermissionManager.checkPermission(playerEntity, PermissionManager.PERM_COMMANDBLOCK)) // && playerEntity.capabilities.isCreativeMode)
                 {
                     packetbuffer = new PacketBuffer(Unpooled.wrappedBuffer(p_147349_1_.func_149558_e()));
 
