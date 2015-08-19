@@ -98,6 +98,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     protected boolean registeredPermission = true;
 
+    private boolean disableDebug;
+
     public Set<EntityPlayerMP> permissionDebugUsers = new HashSet<>();
 
     public List<String> permissionDebugFilters = new ArrayList<>();
@@ -392,6 +394,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value)
     {
+        if (disableDebug)
+            return;
         for (String filter : permissionDebugFilters)
         {
             if (node.startsWith(filter))
@@ -419,6 +423,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             ChatOutputHandler.sendMessage(player, msgC1);
             ChatOutputHandler.sendMessage(player, msgC2);
         }
+    }
+    
+    public void disableDebugMode(boolean disable)
+    {
+        disableDebug = disable;
     }
 
     // ------------------------------------------------------------

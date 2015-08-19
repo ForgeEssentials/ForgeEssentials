@@ -61,6 +61,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
 import com.forgeessentials.protection.effect.PotionEffect;
@@ -623,6 +624,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         Set<Integer> placeIds = new HashSet<Integer>();
 
+        ModulePermissions.permissionHelper.disableDebugMode(true);
+        
         ItemStack[] inventory = ident.getPlayer().inventory.mainInventory;
         for (int i = 0; i < (reset ? inventory.length : 9); ++i)
         {
@@ -634,6 +637,8 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (!APIRegistry.perms.checkUserPermission(ident, permission))
                 placeIds.add(GameData.getBlockRegistry().getId(block));
         }
+
+        ModulePermissions.permissionHelper.disableDebugMode(false);
 
         NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(reset, placeIds, null), ident.getPlayerMP());
     }
