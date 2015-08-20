@@ -401,7 +401,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (startTime != null)
             predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get(Action_.time), cb.literal(startTime)));
         if (endTime != null)
-            predicate.getExpressions().add(cb.lessThanOrEqualTo(root.get(Action_.time), cb.literal(endTime)));
+            predicate.getExpressions().add(cb.lessThan(root.get(Action_.time), cb.literal(endTime)));
         return predicate;
     }
 
