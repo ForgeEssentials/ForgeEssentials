@@ -43,12 +43,14 @@ public class RingBuffer<T> implements List<T>, Queue<T>
         return realIndex;
     }
 
-    public ArrayList<T> getOrderedList()
+    public ArrayList<T> getOrderedList(int maxElements)
     {
         ArrayList<T> list = new ArrayList<T>(data.size());
         int index = position;
         for (int i = 0; i < data.size(); i++)
         {
+            if (list.size() >= maxElements)
+                break;
             if (--index < 0)
                 index = data.size() - 1;
             T element = data.get(index);
@@ -57,6 +59,11 @@ public class RingBuffer<T> implements List<T>, Queue<T>
             list.add(element);
         }
         return list;
+    }
+
+    public ArrayList<T> getOrderedList()
+    {
+        return getOrderedList(Integer.MAX_VALUE);
     }
 
     @Override

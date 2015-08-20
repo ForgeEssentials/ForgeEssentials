@@ -16,6 +16,8 @@ public class RemoteResponse<T>
 
     public String message;
 
+    public long timestamp = System.currentTimeMillis();
+
     public T data;
 
     private RemoteResponse(String id, int rid, boolean success, String message, T data)
@@ -103,6 +105,16 @@ public class RemoteResponse<T>
         public JsonRemoteResponse(String id, JsonElement data)
         {
             super(id, data);
+        }
+
+    }
+
+    public static class Ignore extends RemoteResponse<Object>
+    {
+
+        public Ignore()
+        {
+            super((String) null, null);
         }
 
     }

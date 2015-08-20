@@ -11,6 +11,7 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -147,7 +148,12 @@ public class UserIdent
         if (ident == null)
         {
             ident = byUsername.get(player.getName().toLowerCase());
-            if (ident == null)
+            if (ident != null)
+            {
+                ident.uuid = player.getPersistentID();
+                byUuid.put(ident.uuid, ident);
+            }
+            else
                 ident = new UserIdent(player);
         }
         ident.player = new WeakReference<EntityPlayer>(player);
@@ -246,7 +252,7 @@ public class UserIdent
     public boolean hasPlayer()
     {
         EntityPlayer player = getPlayer();
-        if (player == null)
+        if (player == null || player instanceof FakePlayer)
             return false;
         return true;
         // return ServerUtil.getPlayerList().contains(player);
@@ -439,7 +445,11 @@ public class UserIdent
 
     public static EntityPlayerMP getPlayerByUsername(String username)
     {
-        return MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(username);
+        MinecraftServer mc = MinecraftServer.getServer();
+        if (mc == null)
+            return null;
+        ServerConfigurationManager configurationManager = mc.getConfigurationManager();
+        return configurationManager == null ? null : configurationManager.getPlayerByUsername(username);
     }
 
     public static EntityPlayerMP getPlayerByMatchOrUsername(ICommandSender sender, String match)

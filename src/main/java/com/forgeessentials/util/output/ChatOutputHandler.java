@@ -3,6 +3,7 @@ package com.forgeessentials.util.output;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.command.ICommandSender;
@@ -15,6 +16,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
+
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 
@@ -30,7 +33,8 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     /* ------------------------------------------------------------ */
 
     /**
-     * Sends a chat message to the given command sender (usually a player) with the given text and no special formatting.
+     * Sends a chat message to the given command sender (usually a player) with the given text and no special
+     * formatting.
      *
      * @param recipient
      *            The recipient of the chat message.
@@ -202,12 +206,14 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     }
 
     public static final Pattern FORMAT_CODE_PATTERN;
+
+    public static final char FORMAT_CHARACTERS[] = new char[EnumChatFormatting.values().length];
+
     static
     {
-        String codes = "";
         for (EnumChatFormatting code : EnumChatFormatting.values())
-            codes += code.toString().charAt(1);
-        FORMAT_CODE_PATTERN = Pattern.compile(COLOR_FORMAT_CHARACTER + "[" + codes + "]");
+            FORMAT_CHARACTERS[code.ordinal()] = code.toString().charAt(1);
+        FORMAT_CODE_PATTERN = Pattern.compile(COLOR_FORMAT_CHARACTER + "([" + new String(FORMAT_CHARACTERS) + "])");
     }
 
     /**
@@ -279,13 +285,157 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         {
             char formatChar = textFormats.charAt(i);
             for (EnumChatFormatting format : EnumChatFormatting.values())
-                if (format.toString().charAt(1) == formatChar)
+                if (FORMAT_CHARACTERS[format.ordinal()] == formatChar)
                 {
                     result.add(format);
                     break;
                 }
         }
         return result;
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public static String getUnformattedMessage(IChatComponent message)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (Object msg : message)
+            sb.append(((IChatComponent) msg).getUnformattedTextForChat());
+        return sb.toString();
+    }
+
+    public static String getFormattedMessage(IChatComponent message)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (Object msg : message)
+            sb.append(((IChatComponent) msg).getFormattedText());
+        return sb.toString();
+    }
+
+    public static String formatHtml(IChatComponent message)
+    {
+        // TODO: HTML formatting function
+        StringBuilder sb = new StringBuilder();
+        for (Object msgObj : message)
+        {
+            IChatComponent msg = (IChatComponent) msgObj;
+            ChatStyle style = msg.getChatStyle();
+            if (!isStyleEmpty(style))
+            {
+                sb.append("<span class=\"");
+                EnumChatFormatting color = style.getColor();
+                if (color != null)
+                {
+                    sb.append(" mcf");
+                    sb.append(FORMAT_CHARACTERS[color.ordinal()]);
+                }
+                if (style.getBold())
+                {
+                    sb.append(" mcf");
+                    sb.append(FORMAT_CHARACTERS[EnumChatFormatting.BOLD.ordinal()]);
+                }
+                if (style.getItalic())
+                {
+                    sb.append(" mcf");
+                    sb.append(FORMAT_CHARACTERS[EnumChatFormatting.ITALIC.ordinal()]);
+                }
+                if (style.getUnderlined())
+                {
+                    sb.append(" mcf");
+                    sb.append(FORMAT_CHARACTERS[EnumChatFormatting.UNDERLINE.ordinal()]);
+                }
+                if (style.getObfuscated())
+                {
+                    sb.append(" mcf");
+                    sb.append(FORMAT_CHARACTERS[EnumChatFormatting.OBFUSCATED.ordinal()]);
+                }
+                if (style.getStrikethrough())
+                {
+                    sb.append(" mcf");
+                    sb.append(FORMAT_CHARACTERS[EnumChatFormatting.STRIKETHROUGH.ordinal()]);
+                }
+                sb.append("\">");
+                sb.append(formatHtml(msg.getUnformattedTextForChat()));
+                sb.append("</span>");
+            }
+            else
+            {
+                sb.append(formatHtml(msg.getUnformattedTextForChat()));
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String formatHtml(String message)
+    {
+        StringBuilder sb = new StringBuilder();
+        int pos = 0;
+        int tagCount = 0;
+        Matcher matcher = FORMAT_CODE_PATTERN.matcher(message);
+        while (matcher.find())
+        {
+            sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, matcher.start())));
+            pos = matcher.end();
+            char formatChar = matcher.group(1).charAt(0);
+            for (EnumChatFormatting format : EnumChatFormatting.values())
+            {
+                if (FORMAT_CHARACTERS[format.ordinal()] == formatChar)
+                {
+                    sb.append("<span class=\"mcf");
+                    sb.append(formatChar);
+                    sb.append("\">");
+                    tagCount++;
+                    break;
+                }
+            }
+        }
+        sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, message.length())));
+        // for (; pos < message.length(); pos++)
+        // sb.append(message.charAt(pos));
+        for (int i = 0; i < tagCount; i++)
+            sb.append("</span>");
+        return sb.toString();
+    }
+
+    public static boolean isStyleEmpty(ChatStyle style)
+    {
+        return !style.getBold() && !style.getItalic() && !style.getObfuscated() && !style.getStrikethrough() && !style.getUnderlined()
+                && style.getColor() == null;
+    }
+
+    public static enum ChatFormat
+    {
+
+        PLAINTEXT, HTML, MINECRAFT, DETAIL;
+
+        public Object format(IChatComponent message)
+        {
+            switch (this)
+            {
+            case HTML:
+                return ChatOutputHandler.formatHtml(message);
+            case MINECRAFT:
+                return ChatOutputHandler.getFormattedMessage(message);
+            case DETAIL:
+                return message;
+            default:
+            case PLAINTEXT:
+                return ChatOutputHandler.stripFormatting(ChatOutputHandler.getUnformattedMessage(message));
+            }
+        }
+
+        public static ChatFormat fromString(String format)
+        {
+            try
+            {
+                return ChatFormat.valueOf(format.toUpperCase());
+            }
+            catch (IllegalArgumentException e)
+            {
+                return ChatFormat.PLAINTEXT;
+            }
+        }
+
     }
 
     /* ------------------------------------------------------------ */

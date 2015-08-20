@@ -16,7 +16,8 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.DoAsConsoleCommandSender;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandDoAs extends FEcmdModuleCommands
@@ -48,7 +49,7 @@ public class CommandDoAs extends FEcmdModuleCommands
                     {
                         cmd = cmd + " " + args[i];
                     }
-                    MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsConsoleCommandSender(player), cmd);
+                    MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ZonedPermissionHelper.SERVER_IDENT, player), cmd);
                 }
             }
         }

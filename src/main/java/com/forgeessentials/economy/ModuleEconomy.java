@@ -25,6 +25,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Economy;
 import com.forgeessentials.api.economy.Wallet;
+import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -56,6 +57,8 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 @FEModule(name = "Economy", parentMod = ForgeEssentials.class)
 public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
 {
+
+    public static final UserIdent ECONOMY_IDENT = UserIdent.get("$FE_ECONOMY");
 
     public static final String PERM = "fe.economy";
     public static final String PERM_COMMAND = PERM + ".command";
@@ -125,6 +128,12 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         for (Entry<UserIdent, PlayerWallet> wallet : wallets.entrySet())
             saveWallet(wallet.getKey().getOrGenerateUuid(), wallet.getValue());
+    }
+
+    @SubscribeEvent
+    public void permissionAfterLoadEvent(PermissionEvent.AfterLoad event)
+    {
+        event.serverZone.setPlayerPermission(ECONOMY_IDENT, "command.give", true);
     }
 
     /* ------------------------------------------------------------ */

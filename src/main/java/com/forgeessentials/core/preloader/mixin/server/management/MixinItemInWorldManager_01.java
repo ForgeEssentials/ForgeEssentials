@@ -94,7 +94,7 @@ public abstract class MixinItemInWorldManager_01
             }
 
             IBlockState blackState = world.getBlockState(pos);
-            boolean isAir = world.isAirBlock(pos);
+            // boolean isAir = world.isAirBlock(pos);
             boolean useBlock = !player.isSneaking() || player.getHeldItem() == null;
             if (!useBlock)
                 useBlock = player.getHeldItem().getItem().doesSneakBypassUse(world, pos, player);

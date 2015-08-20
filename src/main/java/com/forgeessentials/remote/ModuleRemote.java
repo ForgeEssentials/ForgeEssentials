@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
@@ -38,6 +39,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.Gson;
+import com.mojang.authlib.GameProfile;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
@@ -57,6 +59,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 
     public static final String PERM = RemoteHandler.PERM_REMOTE;
     public static final String PERM_CONTROL = PERM + ".control";
+
+    public static final GameProfile FAKEPLAYER = new GameProfile(new UUID(1451412139, 514498498), "$FE_REMOTE");
 
     public static int passkeyLength = 6;
 

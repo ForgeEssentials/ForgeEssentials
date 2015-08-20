@@ -306,7 +306,7 @@ public class ServerZone extends Zone
         return result;
     }
 
-    protected SortedSet<GroupEntry> getAdditionalPlayerGroups(UserIdent ident)
+    public SortedSet<GroupEntry> getAdditionalPlayerGroups(UserIdent ident, WorldPoint point)
     {
         SortedSet<GroupEntry> result = getStoredPlayerGroupEntries(ident);
         if (ident != null)
@@ -320,6 +320,18 @@ public class ServerZone extends Zone
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }
         }
+        // Check groups added through zones
+        if (point == null && ident != null && ident.hasPlayer())
+            point = new WorldPoint(ident.getPlayer());
+        if (ident != null && point != null)
+            for (Zone z : getZonesAt(point))
+                if (!(z instanceof ServerZone))
+                    result.addAll(z.getStoredPlayerGroupEntries(ident));
+        if (result.isEmpty())
+            result.add(new GroupEntry(this, GROUP_GUESTS));
+        if (ident != null)
+            result.add(new GroupEntry(GROUP_PLAYERS, 1, 1));
+        result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
         return result;
     }
 
@@ -360,18 +372,7 @@ public class ServerZone extends Zone
 
     public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident, WorldPoint point)
     {
-        SortedSet<GroupEntry> result = getAdditionalPlayerGroups(ident);
-        // Check groups added through zones
-        if (point == null && ident != null && ident.hasPlayer())
-            point = new WorldPoint(ident.getPlayer());
-        if (ident != null && point != null)
-            for (Zone z : getZonesAt(point))
-                if (!(z instanceof ServerZone))
-                    result.addAll(z.getStoredPlayerGroupEntries(ident));
-        if (result.isEmpty())
-            result.add(new GroupEntry(this, GROUP_GUESTS));
-        result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
-        return includeGroups(result);
+        return includeGroups(getAdditionalPlayerGroups(ident, point));
     }
 
     public SortedSet<GroupEntry> getPlayerGroups(UserIdent ident)

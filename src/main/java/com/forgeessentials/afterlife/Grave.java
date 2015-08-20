@@ -111,7 +111,7 @@ public class Grave
         point.getWorld().setBlockState(point.getBlockPos(), blockState);
         if (blockState == Blocks.skull)
         {
-            FEskullTe skull = new FEskullTe(UserIdent.getGameProfileByUuid(owner));
+            TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
             point.getWorld().setTileEntity(point.getBlockPos(), skull);
         }
     }
@@ -124,7 +124,7 @@ public class Grave
             point.getWorld().setBlockState(point.getBlockPos(), blockState);
             if (blockState == Blocks.skull)
             {
-                FEskullTe skull = new FEskullTe(UserIdent.getGameProfileByUuid(owner));
+                TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
                 point.getWorld().setTileEntity(point.getBlockPos(), skull);
             }
         }

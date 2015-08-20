@@ -7,10 +7,13 @@ import static net.minecraftforge.fml.common.eventhandler.Event.Result.DENY;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -52,6 +55,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -60,6 +64,8 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -67,6 +73,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
 import com.forgeessentials.protection.effect.PotionEffect;
@@ -217,6 +224,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
+            sendBlockBreakDenyInfo(ident, blockState);
             return;
         }
     }
@@ -521,8 +529,11 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
 
         for (Iterator<ItemStack> iterator = event.drops.iterator(); iterator.hasNext();)
-            if (isItemBanned(point, iterator.next()))
+        {
+            ItemStack stack = iterator.next();
+            if (stack != null && isItemBanned(point, stack))
                 iterator.remove();
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -573,6 +584,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         EntityPlayerMP player = (EntityPlayerMP) event.entityPlayer;
         UserIdent ident = UserIdent.get(player);
 
+        sendPermissionUpdate(ident, true);
+
         String inventoryGroup = APIRegistry.perms.getUserPermissionProperty(ident, event.afterPoint.toWorldPoint(), ModuleProtection.PERM_INVENTORY_GROUP);
         if (inventoryGroup == null)
             inventoryGroup = "default";
@@ -605,6 +618,40 @@ public class ProtectionEventHandler extends ServerEventHandler
         pi.setInventoryGroup(inventoryGroup);
 
         checkPlayerInventory(player);
+    }
+
+    public void sendPermissionUpdate(UserIdent ident, boolean reset)
+    {
+        if (!PlayerInfo.get(ident).getHasFEClient())
+            return;
+
+        Set<Integer> placeIds = new HashSet<Integer>();
+
+        ModulePermissions.permissionHelper.disableDebugMode(true);
+        
+        ItemStack[] inventory = ident.getPlayer().inventory.mainInventory;
+        for (int i = 0; i < (reset ? inventory.length : 9); ++i)
+        {
+            ItemStack stack = inventory[i];
+            if (stack == null || !(stack.getItem() instanceof ItemBlock))
+                continue;
+            Block block = ((ItemBlock) stack.getItem()).block;
+            String permission = ModuleProtection.getBlockPlacePermission(block, 0);
+            if (!APIRegistry.perms.checkUserPermission(ident, permission))
+                placeIds.add(GameData.getBlockRegistry().getId(block));
+        }
+
+        ModulePermissions.permissionHelper.disableDebugMode(false);
+
+        NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(reset, placeIds, null), ident.getPlayerMP());
+    }
+
+    public void sendBlockBreakDenyInfo(UserIdent ident, IBlockState blockState)
+    {
+        int blockId = GameData.getBlockRegistry().getId(blockState.getBlock());
+        Set<Integer> ids = new HashSet<Integer>();
+        ids.add(blockId);
+        NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
     }
 
     /* ------------------------------------------------------------ */
@@ -686,6 +733,12 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
         if (checkMajoritySleep)
             checkMajoritySleep();
+
+        if (ServerUtil.getOverworld().getWorldInfo().getWorldTotalTime() % (20 * 4) == 0)
+        {
+            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+                sendPermissionUpdate(UserIdent.get(player), false);
+        }
     }
 
     @SubscribeEvent

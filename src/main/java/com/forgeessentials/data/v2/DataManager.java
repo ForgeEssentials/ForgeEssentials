@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.minecraft.util.IChatComponent;
+
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.data.v2.types.UserIdentType;
@@ -30,7 +32,7 @@ import com.google.gson.annotations.Expose;
 
 public class DataManager implements ExclusionStrategy
 {
-    
+
     public static final String DEFAULT_GROUP = "default";
 
     public static interface DataType<T> extends JsonSerializer<T>, JsonDeserializer<T>
@@ -59,6 +61,7 @@ public class DataManager implements ExclusionStrategy
         addDataType(new UserIdentType());
         addDataType(new ItemStackType());
         addDataType(new NBTTagCompoundType());
+        addDataType(IChatComponent.class, new IChatComponent.Serializer());
     }
 
     public DataManager(File basePath)
@@ -82,6 +85,15 @@ public class DataManager implements ExclusionStrategy
     {
         serializers.put(type.getType(), type);
         deserializers.put(type.getType(), type);
+        formatsChanged = true;
+    }
+
+    public static void addDataType(Class<?> clazz, Object serializer)
+    {
+        if (serializer instanceof JsonSerializer<?>)
+            serializers.put(clazz, (JsonSerializer<?>) serializer);
+        if (deserializers instanceof JsonDeserializer<?>)
+            deserializers.put(clazz, (JsonDeserializer<?>) serializer);
         formatsChanged = true;
     }
 

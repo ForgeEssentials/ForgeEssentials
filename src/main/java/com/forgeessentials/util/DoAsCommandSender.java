@@ -3,19 +3,48 @@ package com.forgeessentials.util;
 import net.minecraft.command.CommandResultStats.Type;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class DoAsConsoleCommandSender implements ICommandSender
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
+
+public class DoAsCommandSender implements ICommandSender
 {
 
-    public final ICommandSender sender;
+    protected ICommandSender sender;
 
-    public DoAsConsoleCommandSender(ICommandSender sender)
+    protected UserIdent ident;
+
+    public DoAsCommandSender()
     {
+        this.ident = ZonedPermissionHelper.SERVER_IDENT;
+        this.sender = MinecraftServer.getServer();
+    }
+
+    public DoAsCommandSender(UserIdent ident)
+    {
+        this.ident = ident;
+        this.sender = MinecraftServer.getServer();
+    }
+
+    public DoAsCommandSender(UserIdent ident, ICommandSender sender)
+    {
+        this.ident = ident;
         this.sender = sender;
+    }
+
+    public ICommandSender getOriginalSender()
+    {
+        return sender;
+    }
+
+    public UserIdent getUserIdent()
+    {
+        return ident;
     }
 
     @Override

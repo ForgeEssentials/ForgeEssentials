@@ -3,10 +3,20 @@ package com.forgeessentials.teleport;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -15,6 +25,15 @@ import com.forgeessentials.util.PlayerUtil;
 
 public class CommandJump extends ForgeEssentialsCommandBase
 {
+
+    public static final String PERM = "fe.commands.jump";
+    public static final String PERM_TOOL = PERM + ".tool";
+
+    public CommandJump()
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
     @Override
     public String getCommandName()
     {
@@ -22,20 +41,9 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public String getCommandUsage(ICommandSender sender)
     {
-        MovingObjectPosition mo = PlayerUtil.getPlayerLookingSpot(sender, 500);
-        if (mo == null)
-            throw new TranslatedCommandException("The spot you are looking at is too far away to teleport.");
-        BlockPos pos = mo.func_178782_a();
-        TeleportHelper.teleport(sender, new WarpPoint(sender.getEntityWorld().provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(),
-                sender.rotationPitch, sender.rotationYaw));
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
+        return "/jump Teleport to the location you are looking at";
     }
 
     @Override
@@ -51,8 +59,56 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public void registerExtraPermissions()
     {
-        return "/jump Teleport to the location you are looking at.";
+        APIRegistry.perms.registerPermission(PERM_TOOL, PermissionLevel.OP, "Allow jumping with a tool (default compass)");
     }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
+    {
+        jump(player);
+    }
+
+    public static void jump(EntityPlayerMP player) throws CommandException
+    {
+        MovingObjectPosition mo = PlayerUtil.getPlayerLookingSpot(player, 500);
+        if (mo == null)
+            throw new TranslatedCommandException("The spot you are looking at is too far away to teleport.");
+        BlockPos pos = mo.func_178782_a();
+        TeleportHelper.teleport(player, new WarpPoint(player.getEntityWorld().provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(),
+                player.rotationPitch, player.rotationYaw));
+    }
+
+    @SubscribeEvent
+    public void playerInteractEvent(PlayerInteractEvent event)
+    {
+        if (!(event.entityPlayer instanceof EntityPlayerMP))
+            return;
+        if (event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK)
+            return;
+        ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
+        if (stack == null || stack.getItem() != Items.compass)
+            return;
+        if (!PermissionManager.checkPermission(event.entityPlayer, PERM_TOOL))
+            return;
+
+        try
+        {
+            jump((EntityPlayerMP) event.entityPlayer);
+        }
+        catch (CommandException ce)
+        {
+            ChatComponentTranslation msg = new ChatComponentTranslation(ce.getMessage(), ce.getErrorOjbects());
+            msg.getChatStyle().setColor(EnumChatFormatting.RED);
+            event.entityPlayer.addChatMessage(msg);
+        }
+    }
+
 }

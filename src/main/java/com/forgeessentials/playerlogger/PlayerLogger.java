@@ -31,6 +31,7 @@ import net.minecraft.item.ItemRedstone;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
@@ -400,7 +401,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (startTime != null)
             predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get(Action_.time), cb.literal(startTime)));
         if (endTime != null)
-            predicate.getExpressions().add(cb.lessThanOrEqualTo(root.get(Action_.time), cb.literal(endTime)));
+            predicate.getExpressions().add(cb.lessThan(root.get(Action_.time), cb.literal(endTime)));
         return predicate;
     }
 
@@ -481,17 +482,22 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void placeEvent(BlockEvent.PlaceEvent event)
     {
-        logEvent(new LogEventPlace(event));
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void multiPlaceEvent(BlockEvent.MultiPlaceEvent event)
-    {
-        if (em == null)
+        if (FMLCommonHandler.instance().getEffectiveSide() != Side.SERVER || em == null)
             return;
-        for (BlockSnapshot snapshot : event.getReplacedBlockSnapshots())
-            eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.player)));
-        startThread();
+        if (event instanceof BlockEvent.MultiPlaceEvent)
+        {
+            // Get only last state of all changes
+            Map<BlockPos, BlockSnapshot> changes = new HashMap<>();
+            for (BlockSnapshot snapshot : ((BlockEvent.MultiPlaceEvent) event).getReplacedBlockSnapshots())
+                changes.put(snapshot.pos, snapshot);
+            for (BlockSnapshot snapshot : changes.values())
+                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.player)));
+            startThread();
+        }
+        else
+        {
+            logEvent(new LogEventPlace(event));
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
