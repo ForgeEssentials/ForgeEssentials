@@ -482,17 +482,22 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void placeEvent(BlockEvent.PlaceEvent event)
     {
-        logEvent(new LogEventPlace(event));
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void multiPlaceEvent(BlockEvent.MultiPlaceEvent event)
-    {
-        if (em == null)
+        if (FMLCommonHandler.instance().getEffectiveSide() != Side.SERVER || em == null)
             return;
-        for (BlockSnapshot snapshot : event.getReplacedBlockSnapshots())
-            eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.player)));
-        startThread();
+        if (event instanceof BlockEvent.MultiPlaceEvent)
+        {
+            // Get only last state of all changes
+            Map<Point, BlockSnapshot> changes = new HashMap<>();
+            for (BlockSnapshot snapshot : ((BlockEvent.MultiPlaceEvent) event).getReplacedBlockSnapshots())
+                changes.put(new Point(snapshot.x, snapshot.y, snapshot.z), snapshot);
+            for (BlockSnapshot snapshot : changes.values())
+                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.player)));
+            startThread();
+        }
+        else
+        {
+            logEvent(new LogEventPlace(event));
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
