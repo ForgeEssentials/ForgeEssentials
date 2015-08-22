@@ -33,7 +33,7 @@ public abstract class BuildInfo
 
     public static final String MC_BASE_VERSION = "1.7.10";
 
-    public static final String BASE_VERSION = "1.4.2"; // update manually because gradle is a derp
+    public static final String BASE_VERSION = "1.4.3"; // update manually because gradle is a derp
 
     static
     {
