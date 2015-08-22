@@ -1,6 +1,5 @@
 package com.forgeessentials.economy.commands;
 
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,8 +15,6 @@ import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public class CommandSell extends ParserCommandBase
 {
@@ -71,24 +68,8 @@ public class CommandSell extends ParserCommandBase
         else
         {
             holdingItem = false;
-            // Parse item name, amount and meta
-            if (arguments.isTabCompletion && arguments.size() == 1)
-            {
-                for (Object item : GameData.getItemRegistry().getKeys())
-                    if (item.toString().startsWith(arguments.peek()))
-                        arguments.tabCompletion.add(item.toString());
-                for (Object item : GameData.getBlockRegistry().getKeys())
-                    if (item.toString().startsWith(arguments.peek()))
-                        arguments.tabCompletion.add(item.toString());
-                for (Object item : GameData.getItemRegistry().getKeys())
-                    if (item.toString().startsWith("minecraft:" + arguments.peek()))
-                        arguments.tabCompletion.add(item.toString().substring(10));
-                for (Object item : GameData.getBlockRegistry().getKeys())
-                    if (item.toString().startsWith("minecraft:" + arguments.peek()))
-                        arguments.tabCompletion.add(item.toString().substring(10));
-                return;
-            }
-            String itemName = arguments.remove();
+            // Parse item, amount and meta
+            Item item = arguments.parseItem();
 
             // Parse amount
             try
@@ -115,7 +96,6 @@ public class CommandSell extends ParserCommandBase
             else
                 meta = -1;
 
-            Item item = CommandBase.getItemByText(arguments.senderPlayer, itemName);
             itemStack = new ItemStack(item, amount, meta);
         }
 

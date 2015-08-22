@@ -9,11 +9,13 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 
+import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraftforge.permission.PermissionContext;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +26,8 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
+
+import cpw.mods.fml.common.registry.GameData;
 
 /**
  *
@@ -169,6 +173,38 @@ public class CommandParserArgs
                 result.add(player.getCommandSenderName());
         }
         return new ArrayList<String>(result);
+    }
+
+    public Item parseItem()
+    {
+        if (isTabCompletion && size() == 1)
+        {
+            for (Object item : GameData.getItemRegistry().getKeys())
+                if (item.toString().startsWith(peek()))
+                    tabCompletion.add(item.toString());
+            for (Object item : GameData.getItemRegistry().getKeys())
+                if (item.toString().startsWith("minecraft:" + peek()))
+                    tabCompletion.add(item.toString().substring(10));
+            throw new CancelParsingException();
+        }
+        String itemName = remove();
+        return CommandBase.getItemByText(sender, itemName);
+    }
+
+    public Block parseBlock()
+    {
+        if (isTabCompletion && size() == 1)
+        {
+            for (Object block : GameData.getBlockRegistry().getKeys())
+                if (block.toString().startsWith(peek()))
+                    tabCompletion.add(block.toString());
+            for (Object block : GameData.getBlockRegistry().getKeys())
+                if (block.toString().startsWith("minecraft:" + peek()))
+                    tabCompletion.add(block.toString().substring(10));
+            throw new CancelParsingException();
+        }
+        String itemName = remove();
+        return CommandBase.getBlockByText(sender, itemName);
     }
 
     public void checkPermission(String perm)

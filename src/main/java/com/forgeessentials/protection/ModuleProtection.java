@@ -44,7 +44,6 @@ import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -52,7 +51,6 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
-import com.forgeessentials.protection.commands.CommandUpgradePermissions;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -136,7 +134,6 @@ public class ModuleProtection
 
         FECommandManager.registerCommand(new CommandItemPermission());
         FECommandManager.registerCommand(new CommandProtectionDebug());
-        FECommandManager.registerCommand(new CommandUpgradePermissions());
         // FECommandManager.registerCommand(new CommandPlaceblock());
     }
 
@@ -265,16 +262,6 @@ public class ModuleProtection
                         p.getFoodStats().addStats(20, 1.0F);
             }
         }, 60 * 1000);
-    }
-
-    @SubscribeEvent
-    public void afterPermissionLoadEvent(PermissionEvent.AfterLoad event)
-    {
-        if (event.serverZone.checkGroupPermission(Zone.GROUP_DEFAULT, "fe.internal.newprotectionpermissions") == null)
-        {
-            CommandUpgradePermissions.upgradePermissions(event.serverZone);
-            event.serverZone.setGroupPermission(Zone.GROUP_DEFAULT, "fe.internal.newprotectionpermissions", true);
-        }
     }
 
     /* ------------------------------------------------------------ */

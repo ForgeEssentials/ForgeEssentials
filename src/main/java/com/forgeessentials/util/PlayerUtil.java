@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
@@ -80,6 +81,11 @@ public abstract class PlayerUtil
                     int amplifier = 0;
                     if (effectValues.length == 3)
                         amplifier = Integer.parseInt(effectValues[2]);
+                    if (potionID < 1 || potionID >= Potion.potionTypes.length)
+                    {
+                        LoggingHandler.felog.warn("Invalid potion ID %d", potionID);
+                        continue;
+                    }
                     player.addPotionEffect(new net.minecraft.potion.PotionEffect(potionID, effectDuration * 20, amplifier));
                 }
                 catch (NumberFormatException e)

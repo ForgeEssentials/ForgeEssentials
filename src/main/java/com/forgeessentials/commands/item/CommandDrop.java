@@ -1,9 +1,11 @@
 package com.forgeessentials.commands.item;
 
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
@@ -18,8 +20,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public class CommandDrop extends FEcmdModuleCommands
 {
@@ -74,8 +74,9 @@ public class CommandDrop extends FEcmdModuleCommands
             var6 = (int) this.func_82368_a(sender, ((TileEntity) sender).zCoord, args[2]);
         }
         String var7 = args[3];
+        Item item = CommandBase.getItemByText(sender, var7);
         int var8 = parseIntWithMin(sender, args[4], 0);
-        int var9 = parseIntBounded(sender, args[5], 1, GameData.getItemRegistry().getObject(var7).getItemStackLimit());
+        int var9 = parseIntBounded(sender, args[5], 1, item.getItemStackLimit());
         int var11;
         ItemStack var10000;
 
@@ -87,7 +88,7 @@ public class CommandDrop extends FEcmdModuleCommands
             {
                 if (var10.getStackInSlot(var11) == null)
                 {
-                    var10.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
+                    var10.setInventorySlotContents(var11, new ItemStack(item, var9, var8));
                     break;
                 }
 
@@ -113,7 +114,7 @@ public class CommandDrop extends FEcmdModuleCommands
             {
                 if (var13.getStackInSlot(var11) == null)
                 {
-                    var13.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
+                    var13.setInventorySlotContents(var11, new ItemStack(item, var9, var8));
                     break;
                 }
 
@@ -139,7 +140,7 @@ public class CommandDrop extends FEcmdModuleCommands
             {
                 if (var14.getStackInSlot(var11) == null)
                 {
-                    var14.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
+                    var14.setInventorySlotContents(var11, new ItemStack(item, var9, var8));
                     break;
                 }
 
@@ -165,7 +166,7 @@ public class CommandDrop extends FEcmdModuleCommands
             {
                 if (var12.getStackInSlot(var11) == null)
                 {
-                    var12.setInventorySlotContents(var11, new ItemStack(GameData.getItemRegistry().getObject(var7), var9, var8));
+                    var12.setInventorySlotContents(var11, new ItemStack(item, var9, var8));
                     var9 = 0;
                     break;
                 }
