@@ -244,7 +244,8 @@ public abstract class ServerUtil
     @SuppressWarnings("unchecked")
     public static List<EntityPlayerMP> getPlayerList()
     {
-        return MinecraftServer.getServer() == null ? new ArrayList<>() : MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+        MinecraftServer mc = MinecraftServer.getServer();
+        return mc == null || mc.getConfigurationManager() == null ? new ArrayList<>() : mc.getConfigurationManager().playerEntityList;
     }
 
     /**
