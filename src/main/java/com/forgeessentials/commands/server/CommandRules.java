@@ -43,13 +43,6 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
     public static ArrayList<String> rules;
     public static File rulesFile = new File(ForgeEssentials.getFEDirectory(), "rules.txt");
 
-    @Override
-    public void loadConfig(Configuration config, String category)
-    {
-        rulesFile = new File(ForgeEssentials.getFEDirectory(), config.get(category, "filename", "rules.txt").getString());
-        rules = loadRules();
-    }
-
     public ArrayList<String> loadRules()
     {
         ArrayList<String> rules = new ArrayList<String>();
@@ -407,6 +400,19 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
         {
             return "/rules [#|add|remove|move|change|help] Gets or sets the rules of the server.";
         }
+    }
+
+    @Override
+    public void loadConfig(Configuration config, String category)
+    {
+        rulesFile = new File(ForgeEssentials.getFEDirectory(), config.get(category, "filename", "rules.txt").getString());
+        rules = loadRules();
+    }
+
+    @Override
+    public void loadData()
+    {
+        /* do nothing */
     }
 
 }

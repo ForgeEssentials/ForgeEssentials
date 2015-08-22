@@ -16,6 +16,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.world.World;
 import net.minecraftforge.permission.PermissionContext;
 
 import org.apache.commons.lang3.StringUtils;
@@ -145,7 +146,7 @@ public class CommandParserArgs
             {
                 if (senderPlayer == null)
                     throw new TranslatedCommandException("_ME_ cannot be used in console.");
-                return UserIdent.get(senderPlayer);
+                return ident;
             }
             else
             {
@@ -232,6 +233,36 @@ public class CommandParserArgs
             return;
         tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList);
         throw new CancelParsingException();
+    }
+
+    public World parseWorld()
+    {
+        if (isTabCompletion && size() == 1)
+        {
+            tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), APIRegistry.namedWorldHandler.listWorldNames());
+            throw new CancelParsingException();
+        }
+        if (isEmpty())
+        {
+            if (senderPlayer != null)
+                return senderPlayer.worldObj;
+            else
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+        }
+        else
+        {
+            String name = remove();
+            if (name.equalsIgnoreCase("here"))
+            {
+                if (senderPlayer == null)
+                    throw new TranslatedCommandException("\"here\" cannot be used in console.");
+                return senderPlayer.worldObj;
+            }
+            else
+            {
+                return APIRegistry.namedWorldHandler.getWorld(name);
+            }
+        }
     }
 
     public int parseInt()

@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +13,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.util.IChatComponent;
+
+import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
@@ -133,6 +134,18 @@ public class DataManager implements ExclusionStrategy
         return file.delete();
     }
 
+    public void deleteAll(Class<?> clazz)
+    {
+        try
+        {
+            FileUtils.deleteDirectory(getTypePath(clazz));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public boolean exists(Class<?> clazz, String key)
     {
         File file = getTypeFile(clazz, key);
@@ -166,28 +179,6 @@ public class DataManager implements ExclusionStrategy
             if (obj instanceof Loadable)
                 ((Loadable) obj).afterLoad();
             return obj;
-        }
-        catch (JsonParseException e)
-        {
-            LoggingHandler.felog.error(String.format("Error parsing data file \"%s\"", file.getAbsolutePath()));
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            LoggingHandler.felog.error(String.format("Error loading data file \"%s\"", file.getAbsolutePath()));
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public <T> T load(Type type, String key)
-    {
-        File file = getTypeFile(type.getClass(), key);
-        if (!file.exists())
-            return null;
-        try (BufferedReader br = new BufferedReader(new FileReader(file)))
-        {
-            return getGson().fromJson(br, type);
         }
         catch (JsonParseException e)
         {

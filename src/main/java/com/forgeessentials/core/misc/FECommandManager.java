@@ -17,7 +17,11 @@ public class FECommandManager extends ConfigLoaderBase
 
     public static interface ConfigurableCommand
     {
+        
         public void loadConfig(Configuration config, String category);
+
+        public void loadData();
+        
     }
 
     public static final int COMMANDS_VERSION = 2;
@@ -51,11 +55,11 @@ public class FECommandManager extends ConfigLoaderBase
             return;
         String category = "Commands." + command.getCommandName();
         Property aliasesProperty = config.get(category, "aliases", command.getDefaultAliases());
-        
+
         if (newMappings)
             aliasesProperty.set(command.getDefaultAliases());
         command.setAliases(aliasesProperty.getStringList());
-        
+
         if (command instanceof ConfigurableCommand)
             ((ConfigurableCommand) command).loadConfig(config, category);
     }
@@ -78,6 +82,8 @@ public class FECommandManager extends ConfigLoaderBase
             {
                 registeredCommands.add(command);
                 command.register();
+                if (command instanceof ConfigurableCommand)
+                    ((ConfigurableCommand) command).loadData();
             }
     }
 

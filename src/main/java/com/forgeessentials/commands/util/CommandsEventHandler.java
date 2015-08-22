@@ -2,7 +2,6 @@ package com.forgeessentials.commands.util;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
 
 import com.forgeessentials.commands.player.CommandNoClip;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -44,70 +43,6 @@ public class CommandsEventHandler extends ServerEventHandler
     public CommandsEventHandler()
     {
         super();
-    }
-
-    @SubscribeEvent
-    public void doWorldTick(TickEvent.WorldTickEvent e)
-    {
-        /*
-         * Time settings
-         */
-        if (!CommandDataManager.WTmap.containsKey(e.world.provider.dimensionId))
-        {
-            WeatherTimeData wt = new WeatherTimeData(e.world.provider.dimensionId);
-            wt.freezeTime = e.world.getWorldTime();
-            CommandDataManager.WTmap.put(e.world.provider.dimensionId, wt);
-        }
-        else
-        {
-            WeatherTimeData wt = CommandDataManager.WTmap.get(e.world.provider.dimensionId);
-            /*
-             * Weather part
-             */
-            if (wt.weatherSpecified)
-            {
-                WorldInfo winfo = e.world.getWorldInfo();
-                if (!wt.rain)
-                {
-                    winfo.setRainTime(20 * 300);
-                    winfo.setRaining(false);
-                    winfo.setThunderTime(20 * 300);
-                    winfo.setThundering(false);
-                }
-                else if (!wt.storm)
-                {
-                    winfo.setThunderTime(20 * 300);
-                    winfo.setThundering(false);
-                }
-            }
-
-            /*
-             * Time part
-             */
-            if (wt.timeFreeze)
-            {
-                e.world.setWorldTime(wt.freezeTime);
-            }
-            else if (wt.timeSpecified)
-            {
-                int h = getWorldHour(e.world);
-
-                if (wt.day)
-                {
-                    if (h >= WeatherTimeData.dayTimeEnd)
-                    {
-                        makeWorldTimeHours(e.world, WeatherTimeData.dayTimeStart);
-                    }
-                }
-                else
-                {
-                    if (h >= WeatherTimeData.nightTimeEnd)
-                    {
-                        makeWorldTimeHours(e.world, WeatherTimeData.nightTimeStart);
-                    }
-                }
-            }
-        }
     }
 
     @SubscribeEvent
