@@ -190,13 +190,6 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
         return "/kit [name] OR [name] [set|del] <cooldown> Allows you to receive free kits which are pre-defined by the server owner.";
     }
 
-    @Override
-    public void loadConfig(Configuration config, String category)
-    {
-        kitForNewPlayers = config.get(category, "kitForNewPlayers", "", "Name of kit to issue to new players. If this is left blank, it will be ignored.")
-                .getString();
-    }
-
     @SubscribeEvent
     public void checkKitExistence(FEModuleServerPostInitEvent e)
     {
@@ -212,6 +205,19 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
         {
             kit.giveKit(e.entityPlayer);
         }
+    }
+
+    @Override
+    public void loadConfig(Configuration config, String category)
+    {
+        kitForNewPlayers = config.get(category, "kitForNewPlayers", "", "Name of kit to issue to new players. If this is left blank, it will be ignored.")
+                .getString();
+    }
+
+    @Override
+    public void loadData()
+    {
+        // TODO (1) Load Kit data here!
     }
 
 }

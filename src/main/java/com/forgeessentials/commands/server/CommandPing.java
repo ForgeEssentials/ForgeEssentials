@@ -15,12 +15,6 @@ public class CommandPing extends FEcmdModuleCommands implements ConfigurableComm
     public String response = "Pong! %time";
 
     @Override
-    public void loadConfig(Configuration config, String category)
-    {
-        response = config.get(category, "response", "Pong! %time").getString();
-    }
-
-    @Override
     public String getCommandName()
     {
         return "ping";
@@ -55,4 +49,17 @@ public class CommandPing extends FEcmdModuleCommands implements ConfigurableComm
     {
         return "/ping Ping the server.";
     }
+
+    @Override
+    public void loadConfig(Configuration config, String category)
+    {
+        response = config.get(category, "response", "Pong! %time").getString();
+    }
+
+    @Override
+    public void loadData()
+    {
+        /* do nothing */
+    }
+    
 }

@@ -10,18 +10,14 @@ public class CommandDataManager
 
     public static Map<String, Kit> kits = new HashMap<String, Kit>();
 
-    public static Map<Integer, WeatherTimeData> WTmap = new HashMap<Integer, WeatherTimeData>();
-
     public static void load()
     {
         loadKits();
-        loadWT();
     }
 
     public static void save()
     {
         saveKits();
-        saveWT();
     }
 
     /*
@@ -30,13 +26,6 @@ public class CommandDataManager
     public static void loadKits()
     {
         kits = DataManager.getInstance().loadAll(Kit.class);
-    }
-
-    public static void loadWT()
-    {
-        Map<String, WeatherTimeData> wtData = DataManager.getInstance().loadAll(WeatherTimeData.class);
-        for (WeatherTimeData wt : wtData.values())
-            WTmap.put(wt.dimID, wt);
     }
 
     /*
@@ -48,14 +37,6 @@ public class CommandDataManager
         for (Kit kit : kits.values())
         {
             DataManager.getInstance().save(kit, kit.getName());
-        }
-    }
-
-    public static void saveWT()
-    {
-        for (WeatherTimeData wt : WTmap.values())
-        {
-            DataManager.getInstance().save(wt, Integer.toString(wt.dimID));
         }
     }
 

@@ -21,13 +21,6 @@ public class CommandVirtualchest extends FEcmdModuleCommands implements Configur
     public static String name = "Vault 13";
 
     @Override
-    public void loadConfig(Configuration config, String category)
-    {
-        size = config.get(category, "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").getInt(6) * 9;
-        name = config.get(category, "VirtualChestName", "Vault 13", "Don't use special stuff....").getString();
-    }
-
-    @Override
     public String getCommandName()
     {
         return "virtualchest";
@@ -69,6 +62,19 @@ public class CommandVirtualchest extends FEcmdModuleCommands implements Configur
     public String getCommandUsage(ICommandSender sender)
     {
         return "/vchest Open a virtual chest";
+    }
+
+    @Override
+    public void loadConfig(Configuration config, String category)
+    {
+        size = config.get(category, "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").getInt(6) * 9;
+        name = config.get(category, "VirtualChestName", "Vault 13", "Don't use special stuff....").getString();
+    }
+
+    @Override
+    public void loadData()
+    {
+        /* do nothing */
     }
 
 }

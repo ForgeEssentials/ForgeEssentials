@@ -32,6 +32,11 @@ public class CommandFindblock extends FEcmdModuleCommands implements Configurabl
     }
 
     @Override
+    public void loadData()
+    {
+    }
+    
+    @Override
     public String[] getDefaultAliases()
     {
         return new String[] { "fb" };
@@ -107,4 +112,5 @@ public class CommandFindblock extends FEcmdModuleCommands implements Configurabl
 
         return "/fb <block> [meta] [max distance] [amount of blocks] [speed] Finds a block.";
     }
+
 }
