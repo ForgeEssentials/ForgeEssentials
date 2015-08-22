@@ -2,6 +2,7 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -67,10 +68,14 @@ public class CommandTop extends ForgeEssentialsCommandBase
     {
         WarpPoint point = new WarpPoint(player);
         point.setY(player.worldObj.getActualHeight());
-        while (player.worldObj.getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ()) == Blocks.air)
+        while (true)
         {
+            Block block = player.worldObj.getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ());
+            if (block != Blocks.air)
+                break;
             point.setY(point.getY() - 1);
         }
+        point.setY(point.getY() + 1);
         TeleportHelper.teleport(player, point);
     }
 
