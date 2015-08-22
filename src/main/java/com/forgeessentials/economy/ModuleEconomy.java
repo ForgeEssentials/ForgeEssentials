@@ -134,6 +134,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public void permissionAfterLoadEvent(PermissionEvent.AfterLoad event)
     {
         event.serverZone.setPlayerPermission(ECONOMY_IDENT, "command.give", true);
+        event.serverZone.setPlayerPermission(ECONOMY_IDENT, CommandWallet.PERM + ".*", true);
     }
 
     /* ------------------------------------------------------------ */
