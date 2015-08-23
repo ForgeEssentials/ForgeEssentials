@@ -1,10 +1,13 @@
 package com.forgeessentials.core.commands;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
@@ -149,6 +152,62 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
 
         ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(this);
         registerExtraPermissions();
+    }
+
+    public void deregister()
+    {
+        Map<?, ?> commandMap = ((CommandHandler)MinecraftServer.getServer().getCommandManager()).getCommands();
+
+        Field commandSetField;
+        Set<?> commandSet = null;
+        try
+        {
+            commandSetField = CommandHandler.class.getDeclaredField("commandSet");
+            commandSetField.setAccessible(true);
+            commandSet = (Set<?>)commandSetField.get((CommandHandler)MinecraftServer.getServer().getCommandManager());
+        }
+        catch (NoSuchFieldException e)
+        {
+            try
+            {
+                commandSetField = CommandHandler.class.getDeclaredField("field_71561_b");
+                commandSetField.setAccessible(true);
+                commandSet = (Set<?>)commandSetField.get((CommandHandler)MinecraftServer.getServer().getCommandManager());
+            }
+            catch (NoSuchFieldException e1)
+            {
+                LoggingHandler.felog.error("Unable to resolve access to command set - deregistration may not work properly");
+            }
+            catch (IllegalAccessException e2)
+            {
+                LoggingHandler.felog.error("Unable to resolve access to command set - deregistration may not work properly");
+            }
+        }
+        catch (IllegalAccessException e2)
+        {
+            LoggingHandler.felog.error("Unable to resolve access to command set - deregistration may not work properly");
+        }
+        if (commandMap.containsKey(getCommandName()))
+        {
+            commandMap.remove(getCommandName());
+            commandSet.remove(this);
+
+            if (getCommandAliases() != null && !getCommandAliases().isEmpty())
+            {
+                Iterator iterator = getCommandAliases().iterator();
+
+                while (iterator.hasNext())
+                {
+                    String s = (String)iterator.next();
+
+                    if (commandMap.containsKey(s))
+                    {
+                        commandMap.remove(s);
+                    }
+                }
+            }
+        }
+
     }
 
     /**
