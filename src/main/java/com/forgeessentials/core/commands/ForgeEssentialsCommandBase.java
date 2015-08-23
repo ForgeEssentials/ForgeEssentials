@@ -1,10 +1,8 @@
 package com.forgeessentials.core.commands;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +24,8 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.LoggingHandler;
 
+import cpw.mods.fml.relauncher.ReflectionHelper;
+
 public abstract class ForgeEssentialsCommandBase extends CommandBase implements PermissionObject
 {
 
@@ -33,7 +33,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
 
     // ------------------------------------------------------------
     // Command alias
-    
+
     @Override
     public abstract String getCommandUsage(ICommandSender sender);
 
@@ -154,60 +154,18 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         registerExtraPermissions();
     }
 
+    @SuppressWarnings("unchecked")
     public void deregister()
     {
-        Map<?, ?> commandMap = ((CommandHandler)MinecraftServer.getServer().getCommandManager()).getCommands();
-
-        Field commandSetField;
-        Set<?> commandSet = null;
-        try
+        CommandHandler cmdHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+        Map<String, ICommand> commandMap = cmdHandler.getCommands();
+        Set<ICommand> commandSet = (Set<ICommand>) ReflectionHelper.getPrivateValue(CommandHandler.class, cmdHandler, "field_71561_b", "commandSet");
+        commandSet.remove(this);
+        commandMap.remove(getCommandName());
+        for (String alias : getCommandAliases())
         {
-            commandSetField = CommandHandler.class.getDeclaredField("commandSet");
-            commandSetField.setAccessible(true);
-            commandSet = (Set<?>)commandSetField.get((CommandHandler)MinecraftServer.getServer().getCommandManager());
+            commandMap.remove(alias);
         }
-        catch (NoSuchFieldException e)
-        {
-            try
-            {
-                commandSetField = CommandHandler.class.getDeclaredField("field_71561_b");
-                commandSetField.setAccessible(true);
-                commandSet = (Set<?>)commandSetField.get((CommandHandler)MinecraftServer.getServer().getCommandManager());
-            }
-            catch (NoSuchFieldException e1)
-            {
-                LoggingHandler.felog.error("Unable to resolve access to command set - deregistration may not work properly");
-            }
-            catch (IllegalAccessException e2)
-            {
-                LoggingHandler.felog.error("Unable to resolve access to command set - deregistration may not work properly");
-            }
-        }
-        catch (IllegalAccessException e2)
-        {
-            LoggingHandler.felog.error("Unable to resolve access to command set - deregistration may not work properly");
-        }
-        if (commandMap.containsKey(getCommandName()))
-        {
-            commandMap.remove(getCommandName());
-            commandSet.remove(this);
-
-            if (getCommandAliases() != null && !getCommandAliases().isEmpty())
-            {
-                Iterator iterator = getCommandAliases().iterator();
-
-                while (iterator.hasNext())
-                {
-                    String s = (String)iterator.next();
-
-                    if (commandMap.containsKey(s))
-                    {
-                        commandMap.remove(s);
-                    }
-                }
-            }
-        }
-
     }
 
     /**
