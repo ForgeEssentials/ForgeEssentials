@@ -119,7 +119,7 @@ dependencies {
 
 	// Shade Mixin library
 	shade "org.spongepowered:mixin:0.4.4"
-	shadeClient "org.spongepowered:mixin:0.4.4"
+	shadeClient "org.spongepowered:mixin:0.4.5-SNAPSHOT"
 }
 
 /************************************************************
@@ -215,7 +215,8 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 	manifest {
 		from sharedManifest
 		attributes (
-			"TweakClass": "com.forgeessentials.client.mixin.FEClientLaunchHandler",
+			"MixinConfigs": "mixins.forgeessentials.client.json",
+            "TweakClass": "org.spongepowered.mixin.MixinTweaker",
 		)
 	}
 }

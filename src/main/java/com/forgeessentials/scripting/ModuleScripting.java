@@ -170,6 +170,7 @@ public class ModuleScripting extends ServerEventHandler
     @SubscribeEvent
     public void reload(ConfigReloadEvent e)
     {
+        PatternCommand.deregisterAll();
         loadScripts();
         PatternCommand.loadAll();
         createDefaultPatternCommands();

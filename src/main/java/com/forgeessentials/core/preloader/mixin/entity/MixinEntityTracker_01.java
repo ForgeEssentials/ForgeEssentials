@@ -8,6 +8,8 @@ import net.minecraft.util.IntHashMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import com.forgeessentials.core.preloader.api.EntityTrackerHelper;
+
 @Mixin(EntityTracker.class)
 public abstract class MixinEntityTracker_01 implements EntityTrackerHelper
 {

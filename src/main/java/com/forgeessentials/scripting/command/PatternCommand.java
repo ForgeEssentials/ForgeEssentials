@@ -96,6 +96,14 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
         DataManager.getInstance().saveAll(patternCommands);
     }
 
+    public static void deregisterAll()
+    {
+        for (PatternCommand pattern : patternCommands.values())
+        {
+            pattern.deregister();
+        }
+    }
+
     public Map<String, List<String>> getPatterns()
     {
         parser = null;

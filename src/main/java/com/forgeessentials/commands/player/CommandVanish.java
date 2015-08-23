@@ -17,7 +17,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.preloader.mixin.entity.EntityTrackerHelper;
+import com.forgeessentials.core.preloader.api.EntityTrackerHelper;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandVanish extends ParserCommandBase
