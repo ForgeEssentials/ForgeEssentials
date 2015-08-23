@@ -36,6 +36,7 @@ public class CommandWarp extends ParserCommandBase
     private static final String PERM_SET = PERM + ".set";
     private static final String PERM_DELETE = PERM + ".delete";
     private static final String PERM_LIMIT = PERM + ".max";
+    private static final String PERM_WARP = PERM + ".warp";
 
     @Override
     public String getCommandName()
@@ -114,6 +115,8 @@ public class CommandWarp extends ParserCommandBase
             WarpPoint point = warps.get(warpName);
             if (point == null)
                 throw new TranslatedCommandException("Warp by this name does not exist");
+            if (!arguments.hasPermission(PERM_WARP + "." + warpName))
+                throw new TranslatedCommandException("You don't have permission to use this warp");
             TeleportHelper.teleport(arguments.senderPlayer, point);
         }
         else
