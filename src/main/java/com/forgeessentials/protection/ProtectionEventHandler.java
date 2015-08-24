@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
@@ -275,7 +276,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void explosionEvent(ExplosionEvent.Start event)
+    public void explosionStartEvent(ExplosionEvent.Start event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
@@ -284,14 +285,23 @@ public class ProtectionEventHandler extends ServerEventHandler
         int cy = (int) Math.floor(event.explosion.explosionY);
         int cz = (int) Math.floor(event.explosion.explosionZ);
         int s = (int) Math.ceil(event.explosion.explosionSize);
+
+        if (!APIRegistry.perms.checkUserPermission(null, new WorldPoint(event.world, cx, cy, cz), ModuleProtection.PERM_EXPLOSION))
+        {
+            event.setCanceled(true);
+            return;
+        }
         for (int ix = -1; ix != 1; ix = 1)
             for (int iy = -1; iy != 1; iy = 1)
                 for (int iz = -1; iz != 1; iz = 1)
-                    if (!APIRegistry.perms.checkUserPermission(null, new WorldPoint(0, cx + s * ix, cy + s * iy, cz + s * iz), ModuleProtection.PERM_EXPLOSION))
+                {
+                    WorldPoint point = new WorldPoint(event.world, cx + s * ix, cy + s * iy, cz + s * iz);
+                    if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_EXPLOSION))
                     {
                         event.setCanceled(true);
                         return;
                     }
+                }
         // WorldArea area = new WorldArea(event.world, new Point(cx - s, cy - s, cz - s), new Point(cx + s, cy + s, cz +
         // s));
         // if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
@@ -299,6 +309,18 @@ public class ProtectionEventHandler extends ServerEventHandler
         // event.setCanceled(true);
         // return;
         // }
+    }
+
+    @SuppressWarnings("unchecked")
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void explosionDetonateEvent(ExplosionEvent.Detonate event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+        List<ChunkPosition> positions = event.explosion.affectedBlockPositions;
+        for (Iterator<ChunkPosition> it = positions.iterator(); it.hasNext();)
+            if (!APIRegistry.perms.checkUserPermission(null, new WorldPoint(event.world, it.next()), ModuleProtection.PERM_EXPLOSION_BLOCKDMG))
+                it.remove();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -44,6 +45,11 @@ public class WorldPoint extends Point {
     public WorldPoint(World world, ChunkCoordinates location)
     {
         this(world, location.posX, location.posY, location.posZ);
+    }
+
+    public WorldPoint(World world, ChunkPosition location)
+    {
+        this(world, location.chunkPosX, location.chunkPosY, location.chunkPosZ);
     }
 
     public WorldPoint(Entity entity)

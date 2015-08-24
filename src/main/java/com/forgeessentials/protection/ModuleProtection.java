@@ -81,6 +81,7 @@ public class ModuleProtection
     public final static String PERM_INVENTORY = BASE_PERM + ".inventory";
     public final static String PERM_EXIST = BASE_PERM + ".exist";
     public final static String PERM_EXPLOSION = BASE_PERM + ".explosion";
+    public final static String PERM_EXPLOSION_BLOCKDMG = PERM_EXPLOSION + ".blockdmg";
     public final static String PERM_NEEDSFOOD = BASE_PERM + ".needsfood";
     public static final String PERM_PRESSUREPLATE = BASE_PERM + ".pressureplate";
 
@@ -162,12 +163,13 @@ public class ModuleProtection
         APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default",
                 "Inventory group property - can be set to any identifier to separate inventories for certain regions");
         APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, PermissionLevel.TRUE, "Allow interacting with entities (villagers, dogs, horses)");
-        APIRegistry.perms.registerPermission(PERM_EXPLOSION, PermissionLevel.TRUE, "(global) Allows explosions.");
+        APIRegistry.perms.registerPermission(PERM_EXPLOSION, PermissionLevel.TRUE, "(global) Allows explosions");
+        APIRegistry.perms.registerPermission(PERM_EXPLOSION_BLOCKDMG, PermissionLevel.TRUE, "(global) Allows explosions to damage blocks");
         APIRegistry.perms.registerPermission(PERM_PRESSUREPLATE, PermissionLevel.TRUE, "Prevent players from triggering pressure plates");
 
         // ----------------------------------------
         // Damage
-        
+
         APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow damaging entities");
         APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow getting hurt by entities");
         for (Class<?> entityClass : damageEntityClasses)
@@ -222,8 +224,7 @@ public class ModuleProtection
         // Register blocks
         APIRegistry.perms.registerPermission(PERM_BREAK + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow breaking blocks");
         APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow placing blocks");
-        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, PermissionLevel.TRUE,
-                "Allow interacting with blocks (button, chest, workbench)");
+        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
             String blockPerm = "." + getBlockId(block) + Zone.ALL_PERMS;

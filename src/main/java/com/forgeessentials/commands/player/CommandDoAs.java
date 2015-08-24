@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.player;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
@@ -8,7 +9,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
@@ -17,7 +21,6 @@ import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 
 public class CommandDoAs extends FEcmdModuleCommands
 {
@@ -35,22 +38,18 @@ public class CommandDoAs extends FEcmdModuleCommands
             ChatOutputHandler.chatError(sender, getCommandUsage(sender));
             return;
         }
-        if ((sender instanceof EntityPlayerMP) && args[0].equals("[CONSOLE]"))
+        if ((sender instanceof EntityPlayerMP) && args[0].equalsIgnoreCase("[CONSOLE]"))
         {
             EntityPlayerMP player = (EntityPlayerMP) sender;
+            if (!PermissionManager.checkPermission(player, "fe.commands.doas.console"))
+                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
-            if (PermissionManager.checkPermission(player, "fe.commands.doas.console"))
-            {
-                if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER && args.length >= 2)
-                {
-                    String cmd = args[0];
-                    for (int i = 1; i < args.length; ++i)
-                    {
-                        cmd = cmd + " " + args[i];
-                    }
-                    MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ZonedPermissionHelper.SERVER_IDENT, player), cmd);
-                }
-            }
+            if (args.length < 2)
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                
+            args = Arrays.copyOfRange(args, 1, args.length);
+            String cmd = StringUtils.join(args, " ");
+            MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ZonedPermissionHelper.SERVER_IDENT, player), cmd);
         }
 
         StringBuilder cmd = new StringBuilder(args.toString().length());
