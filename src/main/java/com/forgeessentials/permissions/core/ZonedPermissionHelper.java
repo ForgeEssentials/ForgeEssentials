@@ -578,6 +578,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             for (Zone zone : worldZone.getAreaZones())
             {
+                // TODO (2) It should be possible in some way to change zone inclusion to isPartOfZone instead of isInZone
+                // This is necessary for inverse allowing permissions (like explosions e.g.)
                 if (point != null && zone.isInZone(point) || area != null && zone.isInZone(area))
                 {
                     zones.add(zone);

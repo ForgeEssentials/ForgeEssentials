@@ -54,9 +54,7 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet3PlayerPermissions;
-import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -285,14 +283,22 @@ public class ProtectionEventHandler extends ServerEventHandler
         int cx = (int) Math.floor(event.explosion.explosionX);
         int cy = (int) Math.floor(event.explosion.explosionY);
         int cz = (int) Math.floor(event.explosion.explosionZ);
-        WorldArea area = new WorldArea(event.world, new Point(cx - event.explosion.explosionSize, cy - event.explosion.explosionSize, cz
-                - event.explosion.explosionSize), new Point(cx + event.explosion.explosionSize, cy + event.explosion.explosionSize, cz
-                + event.explosion.explosionSize));
-        if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
-        {
-            event.setCanceled(true);
-            return;
-        }
+        int s = (int) Math.ceil(event.explosion.explosionSize);
+        for (int ix = -1; ix != 1; ix = 1)
+            for (int iy = -1; iy != 1; iy = 1)
+                for (int iz = -1; iz != 1; iz = 1)
+                    if (!APIRegistry.perms.checkUserPermission(null, new WorldPoint(0, cx + s * ix, cy + s * iy, cz + s * iz), ModuleProtection.PERM_EXPLOSION))
+                    {
+                        event.setCanceled(true);
+                        return;
+                    }
+        // WorldArea area = new WorldArea(event.world, new Point(cx - s, cy - s, cz - s), new Point(cx + s, cy + s, cz +
+        // s));
+        // if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
+        // {
+        // event.setCanceled(true);
+        // return;
+        // }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -625,7 +631,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         Set<Integer> placeIds = new HashSet<Integer>();
 
         ModulePermissions.permissionHelper.disableDebugMode(true);
-        
+
         ItemStack[] inventory = ident.getPlayer().inventory.mainInventory;
         for (int i = 0; i < (reset ? inventory.length : 9); ++i)
         {
