@@ -6,10 +6,13 @@ import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
 
@@ -132,6 +135,8 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     protected boolean debugMode = false;
 
+    public boolean logCommandsToConsole;
+
     /* ------------------------------------------------------------ */
 
     public ForgeEssentials()
@@ -140,6 +145,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
         FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Mod.EventHandler
@@ -398,16 +404,29 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void commandEvent(CommandEvent event)
+    {
+        if (logCommandsToConsole)
+        {
+            LoggingHandler.felog.info(String.format("Player \"%s\" used command \"/%s %s\"", event.sender.getCommandSenderName(),
+                    event.command.getCommandName(), StringUtils.join(event.parameters, " ")));
+        }
+    }
+
+    /* ------------------------------------------------------------ */
+
     @Override
     public void load(Configuration config, boolean isReload)
     {
         if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
             BuildInfo.cancelVersionCheck();
         configManager.setUseCanonicalConfig(config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false,
-                "For modules that support it, place their configs in this file.").getBoolean(false));
-        debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean(false);
+                "For modules that support it, place their configs in this file.").getBoolean());
+        debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean();
         HelpFixer.hideWorldEditCommands = config.get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true,
                 "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
+        logCommandsToConsole = config.get(FEConfig.CONFIG_CAT, "logCommands", false, "Log commands to console").getBoolean();
     }
 
     /* ------------------------------------------------------------ */
