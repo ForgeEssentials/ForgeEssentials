@@ -213,7 +213,7 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 		from sharedManifest
 		attributes (
 			"MixinConfigs": "mixins.forgeessentials.client.json",
-            "TweakClass": "org.spongepowered.mixin.MixinTweaker",
+            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
 		)
 	}
 }
