@@ -39,12 +39,12 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!APIRegistry.perms.checkPermission(event.entityPlayer, ModulePlayerLogger.PERM_WAND))
-            return;
         ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
         if (stack == null || stack.getItem() != Items.clock)
             return;
         if (event.action == Action.RIGHT_CLICK_AIR)
+            return;
+        if (!APIRegistry.perms.checkPermission(event.entityPlayer, ModulePlayerLogger.PERM_WAND))
             return;
         event.setCanceled(true);
 
