@@ -1,6 +1,7 @@
 package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,14 +20,17 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
+import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
+import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -66,9 +70,10 @@ public class PermissionCommandParser
     private static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "reload", "save", "debug" }; // "export",
                                                                                                                             // "promote",
     private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
-    private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms" };
+    private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
+            "denydefault" };
     private static final String[] parseGroupArgs = { "zone", "users", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
-            "priority", "parent", "include" };
+            "priority", "parent", "include", "denydefault" };
     private static final String[] parseUserGroupArgs = { "add", "remove", "set" };
     private static final String[] parseGroupIncludeArgs = { "add", "remove", "clear" };
     private static final String[] parseSpawnArgs = { "here", "clear", "bed" };
@@ -369,6 +374,10 @@ public class PermissionCommandParser
             break;
         case "value":
             parseUserPermissions(arguments, ident, zone, PermissionAction.VALUE);
+            break;
+        case "denydefault":
+            arguments.checkPermission(PERM_USER_PERMS);
+            denyDefault(zone.getPlayerPermissions(ident));
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
@@ -800,6 +809,10 @@ public class PermissionCommandParser
             break;
         case "value":
             parseGroupPermissions(arguments, group, zone, PermissionAction.VALUE);
+            break;
+        case "denydefault":
+            arguments.checkPermission(PERM_GROUP_PERMS);
+            denyDefault(zone.getGroupPermissions(group));
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
@@ -1259,4 +1272,32 @@ public class PermissionCommandParser
                 ChatOutputHandler.chatNotification(sender, "  " + player.getUsernameOrUuid());
     }
 
+    public static void denyDefault(PermissionList list)
+    {
+        List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT,
+                ModuleProtection.PERM_USE, ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_MOBSPAWN,
+                ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
+
+        RootZone rootZone = APIRegistry.perms.getServerZone().getRootZone();
+        mainLoop: for (Entry<String, String> perm : rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).entrySet())
+        {
+            if (Zone.PERMISSION_FALSE.equals(perm.getValue()))
+                continue;
+            if (list.containsKey(perm.getKey()))
+                continue;
+            if (perm.getKey().endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                continue;
+            for (String f : filter)
+                if (perm.getKey().startsWith(f))
+                    continue mainLoop;
+            list.put(perm.getKey(), perm.getValue());
+        }
+        list.put("*", Zone.PERMISSION_FALSE);
+        list.put(ModuleProtection.PERM_USE + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_EXIST + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_INVENTORY + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+    }
 }
