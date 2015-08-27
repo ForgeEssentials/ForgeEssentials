@@ -61,6 +61,7 @@ public class Plot
     public static final String PERM_SET = PERM_COMMAND + ".set";
     public static final String PERM_SET_PRICE = PERM_COMMAND + ".price";
     public static final String PERM_SET_FEE = PERM_COMMAND + ".fee";
+    public static final String PERM_SET_NAME = PERM_COMMAND + ".name";
 
     public static final String PERM_PERMS = PERM_COMMAND + ".perms";
     public static final String PERM_PERMS_BUILD = PERM_SET + ".build";

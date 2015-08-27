@@ -70,8 +70,9 @@ public class CommandPlot extends ParserCommandBase
             List<String> values = new ArrayList<>();
             for (PlotListingType type : values())
                 values.add(type.toString().toLowerCase());
-            return null;
+            return values;
         }
+        
     }
 
     @Override
@@ -104,12 +105,6 @@ public class CommandPlot extends ParserCommandBase
         return false;
     }
 
-    public static final String[] completeMain = new String[] { "define", "claim", "list", "select", "set", "perms", "userperms", "mods", "users", "limits",
-            "buy", "sell", "delete", };
-    public static final String[] completeSet = new String[] { "price", "fee", };
-    public static final String[] completePerms = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
-    public static final String[] completeTrueFalse = new String[] { "yes", "no", "true", "false", "allow", "deny", };
-
     @Override
     public void parse(final CommandParserArgs arguments)
     {
@@ -131,7 +126,7 @@ public class CommandPlot extends ParserCommandBase
             return;
         }
 
-        arguments.tabComplete(completeMain);
+        arguments.tabComplete("define", "claim", "list", "select", "set", "perms", "userperms", "mods", "users", "limits", "buy", "sell", "delete");
         String subcmd = arguments.remove().toLowerCase();
         switch (subcmd)
         {
@@ -172,7 +167,7 @@ public class CommandPlot extends ParserCommandBase
             parseBuyStart(arguments);
             break;
         case "sell":
-            arguments.error("Not yet implemented");
+            arguments.error("Not yet implemented. Use \"/plot set price\" instead.");
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
@@ -386,13 +381,15 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(Plot.PERM_SET_PRICE))
-                arguments.confirm(Translator.translate("/plot set price <amount>"));
+                arguments.confirm(Translator.translate("/plot set price: Put up plot for sale"));
             if (arguments.hasPermission(Plot.PERM_SET_FEE))
-                arguments.confirm(Translator.translate("/plot set fee <amount> <timeout>"));
+                arguments.confirm(Translator.translate("/plot set fee: Set a fee (WIP)")); // TODO WIP plots
+            if (arguments.hasPermission(Plot.PERM_SET_NAME))
+                arguments.confirm(Translator.translate("/plot set name: Set the plot name"));
             return;
         }
 
-        arguments.tabComplete(completeSet);
+        arguments.tabComplete("price", "fee", "name");
         String subcmd = arguments.remove().toLowerCase();
         switch (subcmd)
         {
@@ -401,6 +398,9 @@ public class CommandPlot extends ParserCommandBase
             break;
         case "fee":
             parseSetFee(arguments);
+            break;
+        case "name":
+            parseSetName(arguments);
             break;
         default:
             break;
@@ -412,22 +412,21 @@ public class CommandPlot extends ParserCommandBase
         Plot plot = getPlot(arguments.senderPlayer);
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.format("Current plot price: %s", APIRegistry.economy.toString(plot.getPrice())));
             if (arguments.hasPermission(Plot.PERM_SET_PRICE))
             {
                 arguments.confirm(Translator.translate("/plot set price <amount>: Offer plot for sale"));
                 arguments.confirm(Translator.translate("/plot set price clear: Remove plot from sale"));
             }
+            long price = plot.getPrice();
+            if (price >= 0)
+                arguments.notify(Translator.format("Current plot price: %s", APIRegistry.economy.toString(price)));
+            else
+                arguments.notify(Translator.format("Current plot is not up for sale"));
             return;
         }
         arguments.checkPermission(Plot.PERM_SET_PRICE);
-
-        if (arguments.isTabCompletion && arguments.size() == 1)
-        {
-            arguments.tabCompletion.add("clear");
-            return;
-        }
-
+        
+        arguments.tabComplete("clear");
         String priceStr = arguments.remove().toLowerCase();
         int price = -1;
         if (!priceStr.equals("clear"))
@@ -453,9 +452,9 @@ public class CommandPlot extends ParserCommandBase
         Plot plot = getPlot(arguments.senderPlayer);
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.format("Current plot fee: %s", APIRegistry.economy.toString(plot.getFee())));
             if (arguments.hasPermission(Plot.PERM_SET_FEE))
-                arguments.confirm(Translator.translate("/plot set fee <amount> <timeout>: Set fee"));
+                arguments.confirm(Translator.translate("/plot set fee <amount> <timeout>: Set fee (WIP)")); // TODO WIP plots
+            arguments.notify(Translator.format("Current plot fee: %s", APIRegistry.economy.toString(plot.getFee())));
             return;
         }
         arguments.checkPermission(Plot.PERM_SET_FEE);
@@ -467,23 +466,47 @@ public class CommandPlot extends ParserCommandBase
             return;
         plot.setFee(amount);
         plot.setFeeTimeout(timeout);
+        arguments.confirm(Translator.format("Set plot price to %s and timeout to %d", APIRegistry.economy.toString(amount), timeout));
+    }
+
+    public static void parseSetName(CommandParserArgs arguments)
+    {
+        Plot plot = getPlot(arguments.senderPlayer);
+        if (arguments.isEmpty())
+        {
+            if (arguments.hasPermission(Plot.PERM_SET_NAME))
+                arguments.confirm(Translator.translate("/plot set name <name>: Set plot name"));
+            String name = APIRegistry.perms.getGroupPermissionProperty(Plot.GROUP_ALL, Plot.PERM_NAME);
+            if (name == null || name.isEmpty())
+                name = "none";
+            arguments.notify(Translator.format("Current plot name: %s", name));
+            return;
+        }
+        String name = arguments.remove();
+        arguments.checkPermission(Plot.PERM_SET_NAME);
+        if (arguments.isTabCompletion)
+            return;
+        plot.getZone().setGroupPermissionProperty(Plot.GROUP_ALL, Plot.PERM_NAME, name);
+        arguments.confirm(Translator.format("Set plot name to \"%s\"", name));
     }
 
     public static void parsePerms(CommandParserArgs arguments, boolean userPerms)
     {
+        final String[] tabCompletion = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
+
         arguments.checkPermission(Plot.PERM_PERMS);
         Plot plot = getPlot(arguments.senderPlayer);
         if (arguments.isEmpty())
         {
             arguments.confirm(Translator.translate("/plot perms <type> true|false: Control what other players can do in a plot"));
-            arguments.confirm(Translator.format("Possible perms: %s", StringUtils.join(completePerms, ", ")));
+            arguments.confirm(Translator.format("Possible perms: %s", StringUtils.join(tabCompletion, ", ")));
             return;
         }
 
-        arguments.tabComplete(completePerms);
+        arguments.tabComplete(tabCompletion);
         String perm = arguments.remove().toLowerCase();
 
-        arguments.tabComplete(completeTrueFalse);
+        arguments.tabComplete("yes", "no", "true", "false", "allow", "deny");
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing argument");
         String allowDeny = arguments.remove().toLowerCase();
