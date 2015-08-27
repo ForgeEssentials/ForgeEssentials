@@ -173,6 +173,15 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         return false;
     }
 
+    public void clear()
+    {
+        ServerZone serverZone = new ServerZone();
+        rootZone.setServerZone(serverZone);
+        serverZone.rebuildZonesMap();
+        dirty = false;
+        APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
+    }
+
     public boolean isDirty()
     {
         return dirty;
@@ -394,11 +403,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value)
     {
-        if (disableDebug)
+        if (disableDebug || permissionDebugUsers.isEmpty())
             return;
         for (String filter : permissionDebugFilters)
         {
-            if (node.startsWith(filter))
+            if (permissionNode.startsWith(filter))
                 return;
         }
         String msg1 = String.format("\u00a7b%s\u00a7f = \u00a7%s%s", permissionNode, Zone.PERMISSION_FALSE.equals(value) ? "4" : "2", value);
@@ -424,7 +433,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             ChatOutputHandler.sendMessage(player, msgC2);
         }
     }
-    
+
     public void disableDebugMode(boolean disable)
     {
         disableDebug = disable;
@@ -578,7 +587,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             for (Zone zone : worldZone.getAreaZones())
             {
-                // TODO (2) It should be possible in some way to change zone inclusion to isPartOfZone instead of isInZone
+                // TODO (2) It should be possible in some way to change zone inclusion to isPartOfZone instead of
+                // isInZone
                 // This is necessary for inverse allowing permissions (like explosions e.g.)
                 if (point != null && zone.isInZone(point) || area != null && zone.isInZone(area))
                 {

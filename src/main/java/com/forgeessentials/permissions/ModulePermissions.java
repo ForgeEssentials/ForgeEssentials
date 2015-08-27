@@ -132,6 +132,7 @@ public class ModulePermissions extends ConfigLoaderBase
         // permissionHelper.verbosePermissionDebug = false;
         permissionHelper.disableAutoSave = false;
         permissionHelper.save();
+        permissionHelper.clear();
         permissionScheduler.saveAll();
     }
 
