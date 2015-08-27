@@ -1,5 +1,9 @@
 package com.forgeessentials.playerlogger;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
+import java.sql.Blob;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -62,12 +66,12 @@ import com.forgeessentials.playerlogger.event.LogEventPlace;
 import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Charsets;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.Side;
 
@@ -337,21 +341,63 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return data;
     }
 
-    protected SerialBlob getTileEntityBlob(TileEntity tileEntity)
+    /* ------------------------------------------------------------ */
+
+    public static SerialBlob tileEntityToBlob(TileEntity tileEntity)
     {
-        if (tileEntity == null)
-            return null;
-        NBTTagCompound nbt = new NBTTagCompound();
-        tileEntity.writeToNBT(nbt);
-        nbt.setString("ENTITY_CLASS", tileEntity.getClass().getName());
         try
         {
-            return new SerialBlob(nbt.toString().getBytes(Charsets.UTF_8));
+            if (tileEntity == null)
+                return null;
+            NBTTagCompound nbt = new NBTTagCompound();
+            tileEntity.writeToNBT(nbt);
+            nbt.setString("ENTITY_CLASS", tileEntity.getClass().getName());
+            ByteBuf buf = Unpooled.buffer();
+            ByteBufUtils.writeTag(buf, nbt);
+            return new SerialBlob(buf.array());
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            LoggingHandler.felog.error(ex.toString());
-            ex.printStackTrace();
+            LoggingHandler.felog.error(e.toString());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static TileEntity blobToTileEntity(Blob blob)
+    {
+        try
+        {
+            if (blob == null || blob.length() == 0)
+                return null;
+
+            ByteBuf buf = Unpooled.wrappedBuffer(blob.getBytes(1, (int) blob.length()));
+            NBTTagCompound nbt = ByteBufUtils.readTag(buf);
+            if (nbt == null)
+                return null;
+
+            String className = nbt.getString("ENTITY_CLASS");
+            if (className.isEmpty())
+                return null;
+
+            Class<?> clazz = Class.forName(className);
+            if (!TileEntity.class.isAssignableFrom(clazz))
+                return null;
+            Class<TileEntity> teClazz = (Class<TileEntity>) clazz;
+
+            TileEntity entity = teClazz.newInstance();
+            entity.readFromNBT(nbt);
+            return entity;
+        }
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
+        {
+            LoggingHandler.felog.error("Unable to load block metadata: " + e.toString());
+        }
+        catch (Exception e)
+        {
+            LoggingHandler.felog.error(e.toString());
+            e.printStackTrace();
         }
         return null;
     }
