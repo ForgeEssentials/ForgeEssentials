@@ -327,10 +327,12 @@ public class ServerZone extends Zone
             for (Zone z : getZonesAt(point))
                 if (!(z instanceof ServerZone))
                     result.addAll(z.getStoredPlayerGroupEntries(ident));
-        if (result.isEmpty())
-            result.add(new GroupEntry(this, GROUP_GUESTS));
         if (ident != null)
+        {
+            if (result.isEmpty())
+                result.add(new GroupEntry(this, GROUP_GUESTS));
             result.add(new GroupEntry(GROUP_PLAYERS, 1, 1));
+        }
         result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
         return result;
     }

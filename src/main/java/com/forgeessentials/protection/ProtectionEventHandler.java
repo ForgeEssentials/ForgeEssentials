@@ -25,6 +25,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
@@ -66,9 +67,7 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet3PlayerPermissions;
-import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -279,23 +278,53 @@ public class ProtectionEventHandler extends ServerEventHandler
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void explosionEvent(ExplosionEvent.Start event)
+    public void explosionStartEvent(ExplosionEvent.Start event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
-        Vec3 position = event.explosion.getPosition();
-        int cx = (int) Math.floor(position.xCoord);
-        int cy = (int) Math.floor(position.yCoord);
-        int cz = (int) Math.floor(position.zCoord);
+        Vec3 center = event.explosion.getPosition();
+        int cx = (int) Math.floor(center.xCoord);
+        int cy = (int) Math.floor(center.yCoord);
+        int cz = (int) Math.floor(center.zCoord);
         float size = ReflectionHelper.getPrivateValue(Explosion.class, event.explosion, "field_77280_f", "explosionSize");
+        int s = (int) Math.ceil(size);
 
-        WorldArea area = new WorldArea(event.world, new Point(cx - size, cy - size, cz - size), new Point(cx + size, cy + size, cz + size));
-        if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
+        if (!APIRegistry.perms.checkUserPermission(null, new WorldPoint(event.world, cx, cy, cz), ModuleProtection.PERM_EXPLOSION))
         {
             event.setCanceled(true);
             return;
         }
+        for (int ix = -1; ix != 1; ix = 1)
+            for (int iy = -1; iy != 1; iy = 1)
+                for (int iz = -1; iz != 1; iz = 1)
+                {
+                    WorldPoint point = new WorldPoint(event.world, cx + s * ix, cy + s * iy, cz + s * iz);
+                    if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_EXPLOSION))
+                    {
+                        event.setCanceled(true);
+                        return;
+                    }
+                }
+        // WorldArea area = new WorldArea(event.world, new Point(cx - s, cy - s, cz - s), new Point(cx + s, cy + s, cz +
+        // s));
+        // if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
+        // {
+        // event.setCanceled(true);
+        // return;
+        // }
+    }
+
+    @SuppressWarnings("unchecked")
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void explosionDetonateEvent(ExplosionEvent.Detonate event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+        List<BlockPos> positions = event.explosion.func_180343_e();
+        for (Iterator<BlockPos> it = positions.iterator(); it.hasNext();)
+            if (!APIRegistry.perms.checkUserPermission(null, new WorldPoint(event.world, it.next()), ModuleProtection.PERM_EXPLOSION_BLOCKDMG))
+                it.remove();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -628,7 +657,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         Set<Integer> placeIds = new HashSet<Integer>();
 
         ModulePermissions.permissionHelper.disableDebugMode(true);
-        
+
         ItemStack[] inventory = ident.getPlayer().inventory.mainInventory;
         for (int i = 0; i < (reset ? inventory.length : 9); ++i)
         {
