@@ -2,6 +2,8 @@ package com.forgeessentials.remote;
 
 import java.io.IOException;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
@@ -49,10 +51,11 @@ public class RemoteCommandSender extends DoAsCommandSender
     @Override
     public void addChatMessage(IChatComponent chatComponent)
     {
+        ICommandSender receiver = MinecraftServer.getServer();
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
-        {
-            ChatOutputHandler.sendMessage(session.getUserIdent().getPlayer(), chatComponent);
-        }
+            receiver = session.getUserIdent().getPlayer();
+        ChatOutputHandler.sendMessage(receiver, chatComponent);
+        
         if (!session.isClosed())
         {
             try
