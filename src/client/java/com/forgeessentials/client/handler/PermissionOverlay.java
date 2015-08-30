@@ -12,12 +12,10 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.opengl.GL11;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.core.ClientProxy;
 import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -37,11 +35,6 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
     public PermissionOverlay()
     {
-        if (!ClientProxy.allowPermissionRender)
-        {
-            return;
-        }
-        MinecraftForge.EVENT_BUS.register(this);
         deniedPlaceTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(), "textures/gui/denied_place.png");
         deniedBreakTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(), "textures/gui/denied_break.png");
         zLevel = 100;
