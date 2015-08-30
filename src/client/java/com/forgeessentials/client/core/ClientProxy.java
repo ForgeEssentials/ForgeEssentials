@@ -131,17 +131,10 @@ public class ClientProxy extends CommonProxy
 
         if (allowCUI)
             MinecraftForge.EVENT_BUS.register(cuiRenderer);
-        else
-            MinecraftForge.EVENT_BUS.unregister(cuiRenderer);
-
         if (allowQRCodeRender)
             MinecraftForge.EVENT_BUS.register(qrCodeRenderer);
-        else
-            MinecraftForge.EVENT_BUS.unregister(qrCodeRenderer);
-
-        // unregister the current permission overlay, and register a new one
-        MinecraftForge.EVENT_BUS.unregister(permissionOverlay);
-        permissionOverlay = new PermissionOverlay();
+        if (allowPermissionRender)
+            MinecraftForge.EVENT_BUS.register(permissionOverlay);
 
         config.save();
     }
