@@ -32,6 +32,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -149,17 +150,15 @@ public class PermissionCommandParser
             case "debug":
                 if (arguments.isTabCompletion)
                     return;
-                if (arguments.senderPlayer == null)
-                    throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 arguments.checkPermission(PERM_DEBUG);
-                if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(arguments.senderPlayer))
+                if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(arguments.sender))
                 {
-                    ModulePermissions.permissionHelper.permissionDebugUsers.remove(arguments.senderPlayer);
+                    ModulePermissions.permissionHelper.permissionDebugUsers.remove(arguments.sender);
                     arguments.confirm("Permission debug mode off");
                 }
                 else
                 {
-                    ModulePermissions.permissionHelper.permissionDebugUsers.add(arguments.senderPlayer);
+                    ModulePermissions.permissionHelper.permissionDebugUsers.add(arguments.sender);
                     arguments.confirm("Permission debug mode on");
                 }
                 break;
@@ -218,8 +217,6 @@ public class PermissionCommandParser
     {
         if (arguments.args.isEmpty())
             throw new TranslatedCommandException("Missing permission argument!");
-        if (arguments.senderPlayer == null)
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
         arguments.checkPermission(PERM_TEST);
 
         if (arguments.isTabCompletion)
@@ -238,8 +235,12 @@ public class PermissionCommandParser
             return;
         }
 
+        UserIdent ident = arguments.ident;
+        if (arguments.sender instanceof DoAsCommandSender)
+            ident = ((DoAsCommandSender) arguments.sender).getUserIdent();
+
         String permissionNode = arguments.args.remove();
-        String result = APIRegistry.perms.getPermissionProperty(arguments.senderPlayer, permissionNode);
+        String result = APIRegistry.perms.getUserPermissionProperty(ident, permissionNode);
         if (result == null)
         {
             arguments.confirm(permissionNode + " = \u00a7etrue (not set)");

@@ -17,9 +17,10 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandBlockLogic;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -100,7 +101,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     private boolean disableDebug;
 
-    public Set<EntityPlayerMP> permissionDebugUsers = new HashSet<>();
+    public Set<ICommandSender> permissionDebugUsers = new HashSet<>();
 
     public List<String> permissionDebugFilters = new ArrayList<>();
 
@@ -425,12 +426,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
         IChatComponent msgC1 = ChatOutputHandler.confirmation(msg1);
         IChatComponent msgC2 = ChatOutputHandler.confirmation(msg2);
-        for (EntityPlayerMP player : permissionDebugUsers)
+        for (ICommandSender sender : permissionDebugUsers)
         {
-            if (point != null && new WorldPoint(player).distance(point) > 32)
+            if (point != null && sender instanceof Entity && new WorldPoint((Entity) sender).distance(point) > 32)
                 continue;
-            ChatOutputHandler.sendMessage(player, msgC1);
-            ChatOutputHandler.sendMessage(player, msgC2);
+            ChatOutputHandler.sendMessage(sender, msgC1);
+            ChatOutputHandler.sendMessage(sender, msgC2);
         }
     }
 
