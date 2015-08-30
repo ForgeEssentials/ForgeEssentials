@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.security.GeneralSecurityException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.net.ssl.SSLContext;
@@ -61,7 +62,7 @@ public class Server implements Runnable
     /**
      * Terminates the server
      */
-    public void close()
+    public synchronized void close()
     {
         try
         {
@@ -89,9 +90,13 @@ public class Server implements Runnable
         {
             try
             {
+                cleanSessions();
                 Socket s = serverSocket.accept();
                 Session session = new Session(s);
-                sessions.add(session);
+                synchronized (this)
+                {
+                    sessions.add(session);
+                }
             }
             catch (SocketException e)
             {
@@ -106,6 +111,19 @@ public class Server implements Runnable
         }
     }
 
+    public synchronized void cleanSessions()
+    {
+        for (Iterator<Session> it = sessions.iterator(); it.hasNext();)
+        {
+            Session session = it.next();
+            if (session.isClosed())
+            {
+                RemoteCommandSender.unload(session);
+                it.remove();
+            }
+        }
+    }
+
     /**
      * @return the sessions
      */
@@ -117,7 +135,7 @@ public class Server implements Runnable
     /**
      * @return the session
      */
-    public Session getSession(UserIdent ident)
+    public synchronized Session getSession(UserIdent ident)
     {
         for (Session session : sessions)
             if (session.getUserIdent().equals(ident))

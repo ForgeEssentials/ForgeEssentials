@@ -1,6 +1,9 @@
 package com.forgeessentials.remote;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -19,9 +22,32 @@ import com.forgeessentials.util.output.LoggingHandler;
 public class RemoteCommandSender extends DoAsCommandSender
 {
 
-    private RemoteSession session;
+    protected static Map<RemoteSession, RemoteCommandSender> sessions = new WeakHashMap<>();
 
-    public RemoteCommandSender(RemoteSession session)
+    public static RemoteCommandSender get(RemoteSession session)
+    {
+        RemoteCommandSender result = sessions.get(session);
+        if (result == null)
+        {
+            result = new RemoteCommandSender(session);
+            sessions.put(session, result);
+        }
+        return result;
+    }
+
+    public static void unload(RemoteSession session)
+    {
+        sessions.remove(session);
+        for (Iterator<RemoteSession> it = sessions.keySet().iterator(); it.hasNext();)
+            if (it.next().isClosed())
+                it.remove();
+    }
+
+    /* ------------------------------------------------------------ */
+
+    protected RemoteSession session;
+
+    private RemoteCommandSender(RemoteSession session)
     {
         super(session.getUserIdent());
         if (session.getUserIdent() != null)
@@ -55,7 +81,7 @@ public class RemoteCommandSender extends DoAsCommandSender
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
             receiver = session.getUserIdent().getPlayer();
         ChatOutputHandler.sendMessage(receiver, chatComponent);
-        
+
         if (!session.isClosed())
         {
             try
@@ -70,6 +96,8 @@ public class RemoteCommandSender extends DoAsCommandSender
                 e.printStackTrace();
             }
         }
+        
+        ModuleRemote.getInstance().getServer().cleanSessions();
     }
 
     @Override
