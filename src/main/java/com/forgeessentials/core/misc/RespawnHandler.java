@@ -1,11 +1,16 @@
 package com.forgeessentials.core.misc;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.WeakHashMap;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -19,9 +24,12 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
+import de.schlichtherle.io.File;
 
 public class RespawnHandler
 {
+
+    protected Set<EntityPlayerMP> respawnPlayers = Collections.newSetFromMap(new WeakHashMap<EntityPlayerMP, Boolean>());
 
     public RespawnHandler()
     {
@@ -82,9 +90,8 @@ public class RespawnHandler
     {
         if (!e.entity.getClass().equals(EntityPlayerMP.class))
             return;
-
         EntityPlayerMP player = (EntityPlayerMP) e.entity;
-        if (!PlayerInfo.exists(player.getPersistentID()))
+        if (respawnPlayers.remove(player))
         {
             WarpPoint p = getPlayerSpawn(player, null, true);
             if (p != null)
@@ -93,15 +100,36 @@ public class RespawnHandler
     }
 
     @SubscribeEvent
-    public void doRespawn(PlayerRespawnEvent e)
+    public void playerLoadFromFile(PlayerEvent.LoadFromFile event)
     {
-        WarpPoint lastDeathLocation = PlayerInfo.get(e.player.getPersistentID()).getLastDeathLocation();
-        if (lastDeathLocation == null)
-            lastDeathLocation = new WarpPoint(e.player);
+        EntityPlayerMP player = (EntityPlayerMP) event.entityPlayer;
+        File f = new File(event.playerDirectory, event.playerUUID + ".dat");
+        if (!f.exists())
+        {
+            WarpPoint p = getPlayerSpawn(player, null, true);
+            if (p != null)
+            {
+                if (player.dimension != p.getDimension())
+                    respawnPlayers.add(player);
+                else
+                    player.setPositionAndRotation(p.getX(), p.getY(), p.getZ(), p.getYaw(), p.getPitch());
+            }
+        }
+    }
 
-        WarpPoint p = getPlayerSpawn(e.player, lastDeathLocation, true);
+    @SubscribeEvent
+    public void doRespawn(PlayerRespawnEvent event)
+    {
+        EntityPlayerMP player = (EntityPlayerMP) event.player;
+        player.playerNetServerHandler.playerEntity = player;
+
+        WarpPoint lastDeathLocation = PlayerInfo.get(player.getPersistentID()).getLastDeathLocation();
+        if (lastDeathLocation == null)
+            lastDeathLocation = new WarpPoint(player);
+
+        WarpPoint p = getPlayerSpawn(player, lastDeathLocation, true);
         if (p != null)
-            TeleportHelper.doTeleport((EntityPlayerMP) e.player, p);
+            TeleportHelper.doTeleport(player, p);
     }
 
 }
