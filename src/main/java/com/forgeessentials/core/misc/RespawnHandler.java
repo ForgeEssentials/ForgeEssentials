@@ -1,5 +1,6 @@
 package com.forgeessentials.core.misc;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -24,7 +25,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
-import de.schlichtherle.io.File;
 
 public class RespawnHandler
 {
