@@ -829,7 +829,7 @@ public class PermissionCommandParser
         String fixName = isSuffix ? "suffix" : "prefix";
         if (arguments.args.isEmpty())
         {
-            String fix = APIRegistry.perms.getServerZone().getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
+            String fix = zone.getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (fix == null || fix.isEmpty())
                 fix = "empty";
             arguments.confirm(String.format("%s's %s is %s", group, fixName, fix));
@@ -840,12 +840,12 @@ public class PermissionCommandParser
             if (fix.equalsIgnoreCase("clear"))
             {
                 arguments.confirm(String.format("%s's %s cleared", group, fixName));
-                APIRegistry.perms.getServerZone().clearGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
+                zone.clearGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             }
             else
             {
                 arguments.confirm(String.format("%s's %s set to %s", group, fixName, fix));
-                APIRegistry.perms.getServerZone().setGroupPermissionProperty(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
+                zone.setGroupPermissionProperty(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
             }
         }
     }

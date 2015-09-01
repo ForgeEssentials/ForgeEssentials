@@ -566,23 +566,6 @@ public class ServerZone extends Zone
                 }
             }
         }
-
-        // Check default permissions
-        for (String node : nodes)
-        {
-            // Check group permissions
-            for (Zone zone : zones)
-            {
-                String result = zone.getGroupPermission(GROUP_DEFAULT, node);
-                if (result != null)
-                {
-                    if (rootZone.permissionDebugger != null)
-                        rootZone.permissionDebugger.debugPermission(zone, null, GROUP_DEFAULT, permissionNode, node, result);
-                    return result;
-                }
-            }
-        }
-
         if (rootZone.permissionDebugger != null)
             rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE);
         return null;
@@ -629,21 +612,8 @@ public class ServerZone extends Zone
                 }
             }
         }
-
-        // Check group permissions
-        for (Zone zone : zones)
-        {
-            String result = zone.getGroupPermission(GROUP_DEFAULT, node);
-            if (result != null)
-            {
-                if (rootZone.permissionDebugger != null)
-                    rootZone.permissionDebugger.debugPermission(zone, null, GROUP_DEFAULT, node, node, result);
-                return result;
-            }
-        }
-
         if (rootZone.permissionDebugger != null)
-            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, PERMISSION_TRUE);
+            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, "null");
         return null;
     }
 
