@@ -673,6 +673,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public void sendBlockBreakDenyInfo(UserIdent ident, Block block)
     {
+        if (!PlayerInfo.get(ident).getHasFEClient())
+            return;
         int blockId = GameData.getBlockRegistry().getId(block);
         Set<Integer> ids = new HashSet<Integer>();
         ids.add(blockId);
