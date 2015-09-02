@@ -162,9 +162,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         Set<ICommand> commandSet = (Set<ICommand>) ReflectionHelper.getPrivateValue(CommandHandler.class, cmdHandler, "field_71561_b", "commandSet");
         commandSet.remove(this);
         commandMap.remove(getCommandName());
-        for (String alias : getCommandAliases())
+        if (getCommandAliases() != null && !getCommandAliases().isEmpty())
         {
-            commandMap.remove(alias);
+            for (String alias : getCommandAliases())
+            {
+                commandMap.remove(alias);
+            }
         }
     }
 

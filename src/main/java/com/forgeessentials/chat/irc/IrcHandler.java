@@ -49,6 +49,7 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -116,6 +117,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public IrcHandler()
     {
         ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
 
         registerCommand(new CommandHelp());
