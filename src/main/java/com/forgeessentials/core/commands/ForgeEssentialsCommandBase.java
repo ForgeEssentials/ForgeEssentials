@@ -160,11 +160,15 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         CommandHandler cmdHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
         Map<String, ICommand> commandMap = cmdHandler.getCommands();
         Set<ICommand> commandSet = (Set<ICommand>) ReflectionHelper.getPrivateValue(CommandHandler.class, cmdHandler, "field_71561_b", "commandSet");
+
+        String commandName = getCommandName();
+        List<String> commandAliases = getCommandAliases();
         commandSet.remove(this);
-        commandMap.remove(getCommandName());
-        if (getCommandAliases() != null && !getCommandAliases().isEmpty())
+        if (commandName != null)
+            commandMap.remove(commandName);
+        if (commandAliases != null && !commandAliases.isEmpty())
         {
-            for (String alias : getCommandAliases())
+            for (String alias : commandAliases)
             {
                 commandMap.remove(alias);
             }
