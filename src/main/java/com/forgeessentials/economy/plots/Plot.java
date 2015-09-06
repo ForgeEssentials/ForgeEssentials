@@ -23,6 +23,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.ServerUtil;
@@ -40,6 +41,8 @@ public class Plot
     public static final String GROUP_PLOT_USER = "PLOT_USER";
 
     public static final String SERVER_OWNER = "SERVER";
+
+    public static final String CATEGORY = "Plots";
 
     // Internal data permission properties (should NEVER be edited by hand)
     public static final String PERM_OWNER = FEPermissions.FE_INTERNAL + ".plot.owner";
@@ -457,6 +460,13 @@ public class Plot
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SELL, true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_PERMS, true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_MODS, true);
+
+        CommandFeSettings.addAlias(CATEGORY, "price", PERM_PRICE);
+        CommandFeSettings.addAlias(CATEGORY, "limit.count", PERM_LIMIT_COUNT);
+        CommandFeSettings.addAlias(CATEGORY, "limit.size", PERM_LIMIT_SIZE);
+        CommandFeSettings.addAlias(CATEGORY, "columnMode", PERM_COLUMN);
+        CommandFeSettings.addAlias(CATEGORY, "size.min", PERM_SIZE_MIN);
+        CommandFeSettings.addAlias(CATEGORY, "size.max", PERM_SIZE_MAX);
     }
 
     public static class PlotRedefinedException extends Exception
