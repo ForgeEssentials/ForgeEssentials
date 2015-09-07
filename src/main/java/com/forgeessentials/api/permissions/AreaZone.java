@@ -120,6 +120,11 @@ public class AreaZone extends Zone implements Comparable<AreaZone>
         return area;
     }
 
+    public WorldArea getWorldArea()
+    {
+        return new WorldArea(worldZone.getDimensionID(), area);
+    }
+
     public void setArea(AreaBase area)
     {
         this.area = area;
@@ -182,5 +187,6 @@ public class AreaZone extends Zone implements Comparable<AreaZone>
         else
             clearGroupPermission(GROUP_DEFAULT, FEPermissions.ZONE_HIDDEN);
     }
+
 
 }

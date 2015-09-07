@@ -20,6 +20,7 @@ import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
+import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -226,21 +227,7 @@ public class CommandPlot extends ParserCommandBase
         if (!wallet.covers(price))
             throw new ModuleEconomy.CantAffordException();
 
-        int plotSize = selection.getXLength() * selection.getZLength() * (Plot.isColumnMode(selection.getDimension()) ? 1 : selection.getYLength());
-        int limitCount = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT), Integer.MAX_VALUE);
-        int limitSize = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_SIZE), Integer.MAX_VALUE);
-        int usedCount = 0;
-        long usedSize = 0;
-        for (Plot plot : Plot.getPlots())
-            if (arguments.ident.equals(plot.getOwner()))
-            {
-                usedCount++;
-                usedSize += plot.getAccountedSize();
-            }
-        if (usedCount + 1 > limitCount)
-            throw new TranslatedCommandException("You have reached your limit of %s plots already!", limitCount);
-        if (usedSize + plotSize > limitSize)
-            throw new TranslatedCommandException("You have reached your limit of %s blocks^2 already!", limitSize);
+        checkLimits(arguments, selection);
 
         try
         {
@@ -256,6 +243,25 @@ public class CommandPlot extends ParserCommandBase
         {
             throw new TranslatedCommandException("Plot creation cancelled");
         }
+    }
+
+    private static void checkLimits(CommandParserArgs arguments, WorldArea newArea)
+    {
+        int plotSize = newArea.getXLength() * newArea.getZLength() * (Plot.isColumnMode(newArea.getDimension()) ? 1 : newArea.getYLength());
+        int limitCount = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT), Integer.MAX_VALUE);
+        int limitSize = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_SIZE), Integer.MAX_VALUE);
+        int usedCount = 0;
+        long usedSize = 0;
+        for (Plot plot : Plot.getPlots())
+            if (arguments.ident.equals(plot.getOwner()))
+            {
+                usedCount++;
+                usedSize += plot.getAccountedSize();
+            }
+        if (usedCount + 1 > limitCount)
+            throw new TranslatedCommandException("You have reached your limit of %s plots already!", limitCount);
+        if (usedSize + plotSize > limitSize)
+            throw new TranslatedCommandException("You have reached your limit of %s blocks^2 already!", limitSize);
     }
 
     public static void parseList(final CommandParserArgs arguments)
@@ -606,6 +612,10 @@ public class CommandPlot extends ParserCommandBase
         final Plot plot = getPlot(arguments.sender);
         if (plot == null)
             throw new TranslatedCommandException("There is no plot at this position");
+        if (plot.getOwner() != null && plot.getOwner().equals(arguments.ident))
+            throw new TranslatedCommandException("You already own this plot");
+        
+        checkLimits(arguments, plot.getZone().getWorldArea());
 
         final long plotPrice = plot.getCalculatedPrice();
         final long sellPrice = plot.getPrice();
