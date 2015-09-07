@@ -116,11 +116,15 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
 
         arguments.tabComplete(Zone.PERMISSION_TRUE, Zone.PERMISSION_FALSE);
         String value = arguments.remove();
-
-        APIRegistry.perms.registerPermissionProperty(perm, value);
+        if (arguments.isTabCompletion)
+            return;
+        
         String[] aliasParts = key.split("\\.");
         config.get(aliasParts[0], aliasParts[1], "").set(value);
         config.save();
+
+        APIRegistry.perms.registerPermissionProperty(perm, value);
+        arguments.confirm(Translator.format("Changed setting \"%s\" to \"%s\"", key, value));
     }
 
     public void loadSettings()
