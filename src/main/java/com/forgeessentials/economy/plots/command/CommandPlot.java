@@ -402,6 +402,9 @@ public class CommandPlot extends ParserCommandBase
         case "name":
             parseSetName(arguments);
             break;
+        case "owner":
+            parseSetOwner(arguments);
+            break;
         default:
             break;
         }
@@ -488,6 +491,27 @@ public class CommandPlot extends ParserCommandBase
             return;
         plot.getZone().setGroupPermissionProperty(Plot.GROUP_ALL, Plot.PERM_NAME, name);
         arguments.confirm(Translator.format("Set plot name to \"%s\"", name));
+    }
+
+    public static void parseSetOwner(CommandParserArgs arguments)
+    {
+        Plot plot = getPlot(arguments.senderPlayer);
+        if (arguments.isEmpty())
+        {
+            if (arguments.hasPermission(Plot.PERM_SET_NAME))
+                arguments.confirm(Translator.translate("/plot set name <name>: Set plot name"));
+            String name = APIRegistry.perms.getGroupPermissionProperty(Plot.GROUP_ALL, Plot.PERM_NAME);
+            if (name == null || name.isEmpty())
+                name = "none";
+            arguments.notify(Translator.format("Current plot name: %s", name));
+            return;
+        }
+        UserIdent newOwner = arguments.parsePlayer(true, false);
+        arguments.checkPermission(Plot.PERM_SET_NAME);
+        if (arguments.isTabCompletion)
+            return;
+        plot.setOwner(newOwner);
+        arguments.confirm(Translator.format("Set plot owner to \"%s\"", newOwner.getUsernameOrUuid()));
     }
 
     public static void parsePerms(CommandParserArgs arguments, boolean userPerms)
