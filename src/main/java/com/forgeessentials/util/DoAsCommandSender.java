@@ -83,6 +83,16 @@ public class DoAsCommandSender implements ICommandSender
         return sender.getEntityWorld();
     }
 
+    public UserIdent getIdent()
+    {
+        return ident;
+    }
+
+    public void setIdent(UserIdent ident)
+    {
+        this.ident = ident;
+    }
+
     public void setHideChatMessages(boolean hideChatMessages)
     {
         this.hideChatMessages = hideChatMessages;

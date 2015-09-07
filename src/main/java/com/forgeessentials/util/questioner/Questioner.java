@@ -11,6 +11,7 @@ import com.forgeessentials.util.events.ServerEventHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
 public class Questioner extends ServerEventHandler
 {
@@ -57,6 +58,13 @@ public class Questioner extends ServerEventHandler
             question.doAnswer(answer);
     }
 
+    public static synchronized void tick()
+    {
+        for (Entry<ICommandSender, QuestionData> question : questions.entrySet())
+            if (question.getValue().isTimeout())
+                cancel(question.getKey());
+    }
+
     public static void cancel(ICommandSender target)
     {
         answer(target, null);
@@ -75,12 +83,8 @@ public class Questioner extends ServerEventHandler
     @SubscribeEvent
     public void tickStart(TickEvent.ServerTickEvent event)
     {
-        synchronized (Questioner.class)
-        {
-            for (Entry<ICommandSender, QuestionData> question : questions.entrySet())
-                if (question.getValue().isTimeout())
-                    cancel(question.getKey());
-        }
+        if (event.phase == Phase.START)
+            tick();
     }
 
 }

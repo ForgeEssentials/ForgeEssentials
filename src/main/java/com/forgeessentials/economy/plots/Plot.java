@@ -63,9 +63,9 @@ public class Plot
     public static final String PERM_MODS = PERM_COMMAND + ".mods";
 
     public static final String PERM_SET = PERM_COMMAND + ".set";
-    public static final String PERM_SET_PRICE = PERM_COMMAND + ".price";
-    public static final String PERM_SET_FEE = PERM_COMMAND + ".fee";
-    public static final String PERM_SET_NAME = PERM_COMMAND + ".name";
+    public static final String PERM_SET_PRICE = PERM_SET + ".price";
+    public static final String PERM_SET_FEE = PERM_SET + ".fee";
+    public static final String PERM_SET_NAME = PERM_SET + ".name";
 
     public static final String PERM_PERMS = PERM_COMMAND + ".perms";
     public static final String PERM_PERMS_BUILD = PERM_SET + ".build";
@@ -449,7 +449,7 @@ public class Plot
         perms.registerPermission(PERM_LIST_OWN, PermissionLevel.TRUE, "List own plots");
         perms.registerPermission(PERM_LIST_SALE, PermissionLevel.TRUE, "List plots open for sale");
 
-        perms.registerPermission(PERM_SET, PermissionLevel.OP, "Control plot settings");
+        perms.registerPermission(PERM_SET + ".*", PermissionLevel.OP, "Control plot settings");
 
         perms.registerPermission(PERM_PERMS, PermissionLevel.OP, "Control plot settings");
         perms.registerPermission(PERM_PERMS_BUILD, PermissionLevel.OP, "Control build permissions");
@@ -457,7 +457,7 @@ public class Plot
         perms.registerPermission(PERM_PERMS_INTERACT, PermissionLevel.OP, "Control interaction permissions");
         perms.registerPermission(PERM_PERMS_CHEST, PermissionLevel.OP, "Control chest permissions");
 
-        root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SET, true);
+        root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SET + ".*", true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SELL, true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_PERMS, true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_MODS, true);

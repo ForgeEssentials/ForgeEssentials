@@ -106,6 +106,7 @@ public class ScriptParser
         case '/':
         case '$':
         case '?':
+        case '*':
         {
             ICommandSender cmdSender = sender;
             if (cmd.equals("p") || cmd.equals("feperm"))
@@ -120,6 +121,7 @@ public class ScriptParser
                 case '$':
                     if (!(cmdSender instanceof DoAsCommandSender))
                         cmdSender = new DoAsCommandSender(ZonedPermissionHelper.SERVER_IDENT, sender);
+                    ((DoAsCommandSender) cmdSender).setIdent(ZonedPermissionHelper.SERVER_IDENT);
                     break;
                 case '?':
                     ignoreErrors = true;

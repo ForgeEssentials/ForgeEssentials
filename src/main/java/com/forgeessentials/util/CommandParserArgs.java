@@ -16,6 +16,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.permission.PermissionContext;
 
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -52,7 +54,8 @@ public class CommandParserArgs
         this.args = new LinkedList<String>(Arrays.asList(args));
         this.sender = sender;
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
-        this.ident = (senderPlayer == null) ? null : UserIdent.get(senderPlayer);
+        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent
+                .get(senderPlayer);
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
@@ -375,4 +378,9 @@ public class CommandParserArgs
         return StringUtils.join(args.toArray(), " ");
     }
 
+    public WorldPoint getSenderPoint()
+    {
+        ICommandSender s = sender != null ? sender : MinecraftServer.getServer();
+        return new WorldPoint(s.getEntityWorld(), s.getPlayerCoordinates());
+    }
 }

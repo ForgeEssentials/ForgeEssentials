@@ -30,6 +30,7 @@ import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -72,7 +73,7 @@ public class CommandPlot extends ParserCommandBase
                 values.add(type.toString().toLowerCase());
             return values;
         }
-        
+
     }
 
     @Override
@@ -278,7 +279,7 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        final WorldPoint playerRef = arguments.senderPlayer != null ? new WorldPoint(arguments.senderPlayer).setY(0) : new WorldPoint(0, 0, 0, 0);
+        final WorldPoint playerRef = arguments.senderPlayer != null ? arguments.getSenderPoint().setY(0) : new WorldPoint(0, 0, 0, 0);
         SortedSet<Plot> plots = new TreeSet<Plot>(new Comparator<Plot>() {
             @Override
             public int compare(Plot a, Plot b)
@@ -428,7 +429,7 @@ public class CommandPlot extends ParserCommandBase
             return;
         }
         arguments.checkPermission(Plot.PERM_SET_PRICE);
-        
+
         arguments.tabComplete("clear");
         String priceStr = arguments.remove().toLowerCase();
         int price = -1;
@@ -456,7 +457,8 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(Plot.PERM_SET_FEE))
-                arguments.confirm(Translator.translate("/plot set fee <amount> <timeout>: Set fee (WIP)")); // TODO WIP plots
+                arguments.confirm(Translator.translate("/plot set fee <amount> <timeout>: Set fee (WIP)")); // TODO WIP
+                                                                                                            // plots
             arguments.notify(Translator.format("Current plot fee: %s", APIRegistry.economy.toString(plot.getFee())));
             return;
         }
@@ -601,7 +603,7 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseBuyStart(final CommandParserArgs arguments)
     {
-        final Plot plot = Plot.getPlot(new WorldPoint(arguments.senderPlayer));
+        final Plot plot = getPlot(arguments.sender);
         if (plot == null)
             throw new TranslatedCommandException("There is no plot at this position");
 
@@ -640,8 +642,10 @@ public class CommandPlot extends ParserCommandBase
                 }
                 if (sellPrice < 0 || sellPrice > buyPrice)
                 {
+                    if (sellPrice < 0 && !plot.getOwner().hasPlayer())
+                        throw new TranslatedCommandException("You cannot buy this plot because the owner is not online.");
                     String message = Translator.format("Player %s wants to buy your plot \"%s\" for %s.", //
-                            arguments.senderPlayer.getCommandSenderName(), plot.getName(), buyPriceStr);
+                            arguments.ident.getUsernameOrUuid(), plot.getName(), buyPriceStr);
                     if (buyPrice < sellPrice && sellPrice >= 0)
                         message += " \u00a7c" + Translator.format("This is below the price of %s you set up!", APIRegistry.economy.toString(sellPrice));
                     if (buyPrice < plotPrice)
@@ -681,6 +685,11 @@ public class CommandPlot extends ParserCommandBase
                 }
             }
         };
+        if (arguments.sender instanceof DoAsCommandSender)
+        {
+            handler.respond(true);
+            return;
+        }
         try
         {
             String message = Translator.format("Really buy this plot for %s", buyPriceStr);
