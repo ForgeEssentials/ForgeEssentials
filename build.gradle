@@ -111,8 +111,8 @@ dependencies {
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-	buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-mc1.7.10", version: "6.0.2-SNAPSHOT", classifier: "dev", changing: true
-	includeMod files("lib/worldedit-forge-mc1.7.10-6.0.2-SNAPSHOT-dist.jar")
+	buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-mc1.7.10", version: "6.1.1-SNAPSHOT", classifier: "dev", changing: true
+	includeMod files("lib/worldedit-forge-mc1.7.10-6.1.1-SNAPSHOT-dist.jar")
 
 	// Shade Mixin library
 	shade "org.spongepowered:mixin:0.4.4"
