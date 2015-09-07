@@ -397,7 +397,7 @@ public class CommandPlot extends ParserCommandBase
             return;
         }
 
-        arguments.tabComplete("price", "fee", "name");
+        arguments.tabComplete("price", "fee", "name", "owner");
         String subcmd = arguments.remove().toLowerCase();
         switch (subcmd)
         {

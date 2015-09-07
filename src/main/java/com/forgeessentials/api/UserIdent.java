@@ -137,6 +137,8 @@ public class UserIdent
 
     public static synchronized UserIdent getFromUuid(String uuid)
     {
+        if (uuid == null)
+            return null;
         try
         {
             return get(UUID.fromString(uuid));
