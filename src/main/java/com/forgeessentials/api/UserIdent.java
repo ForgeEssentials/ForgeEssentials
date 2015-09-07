@@ -135,6 +135,18 @@ public class UserIdent
         return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));
     }
 
+    public static synchronized UserIdent getFromUuid(String uuid)
+    {
+        try
+        {
+            return get(UUID.fromString(uuid));
+        }
+        catch (IllegalArgumentException e)
+        {
+            return null;
+        }
+    }
+
     public static synchronized UserIdent get(EntityPlayer player)
     {
         return player instanceof EntityPlayerMP ? get((EntityPlayerMP) player) : null;
@@ -314,8 +326,8 @@ public class UserIdent
     }
 
     /**
-     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that
-     * there is always a UUID available (for example for storage in maps).
+     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that there is always a UUID available (for example for storage in
+     * maps).
      * 
      * @return
      */

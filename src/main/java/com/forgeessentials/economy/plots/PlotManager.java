@@ -71,14 +71,15 @@ public class PlotManager extends ServerEventHandler
             {
                 message += " " + Translator.format("owned by %s", plot.getOwnerName());
                 ChatOutputHandler.chatConfirmation(event.entityPlayer, message);
-
-                long price = plot.getPrice();
-                if (price >= 0)
-                    ChatOutputHandler
-                            .chatNotification(event.entityPlayer, Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
-
-                // TODO: fee check
             }
+
+            // TODO: fee check
+
+            long price = plot.getPrice();
+            if (price == 0)
+                ChatOutputHandler.chatNotification(event.entityPlayer, Translator.translate("You can buy this plot for free"));
+            else if (price > 0)
+                ChatOutputHandler.chatNotification(event.entityPlayer, Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
         }
     }
 }

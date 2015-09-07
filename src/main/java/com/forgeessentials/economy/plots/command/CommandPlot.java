@@ -28,6 +28,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
@@ -506,16 +507,16 @@ public class CommandPlot extends ParserCommandBase
         Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
         {
-            if (arguments.hasPermission(Plot.PERM_SET_NAME))
-                arguments.confirm(Translator.translate("/plot set name <name>: Set plot name"));
-            String name = APIRegistry.perms.getGroupPermissionProperty(Plot.GROUP_ALL, Plot.PERM_NAME);
-            if (name == null || name.isEmpty())
-                name = "none";
-            arguments.notify(Translator.format("Current plot name: %s", name));
+            if (arguments.hasPermission(Plot.PERM_SET_OWNER))
+                arguments.confirm(Translator.translate("/plot set owner <player>: Set plot owner"));
+            UserIdent owner = plot.getOwner();
+            if (owner == null)
+                owner = ZonedPermissionHelper.SERVER_IDENT;
+            arguments.notify(Translator.format("Current plot owner: %s", owner.getUsernameOrUuid()));
             return;
         }
         UserIdent newOwner = arguments.parsePlayer(true, false);
-        arguments.checkPermission(Plot.PERM_SET_NAME);
+        arguments.checkPermission(Plot.PERM_SET_OWNER);
         if (arguments.isTabCompletion)
             return;
         plot.setOwner(newOwner);
@@ -614,7 +615,7 @@ public class CommandPlot extends ParserCommandBase
             throw new TranslatedCommandException("There is no plot at this position");
         if (plot.getOwner() != null && plot.getOwner().equals(arguments.ident))
             throw new TranslatedCommandException("You already own this plot");
-        
+
         checkLimits(arguments, plot.getZone().getWorldArea());
 
         final long plotPrice = plot.getCalculatedPrice();
