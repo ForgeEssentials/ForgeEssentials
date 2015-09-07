@@ -203,7 +203,7 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseDelete(CommandParserArgs arguments)
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         arguments.confirm(Translator.format("Plot \"%s\" has been deleted.", plot.getNameNotNull()));
         Plot.deletePlot(plot);
     }
@@ -333,14 +333,14 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseSelect(CommandParserArgs arguments)
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         SelectionHandler.selectionProvider.select(arguments.senderPlayer, plot.getDimension(), plot.getZone().getArea());
         arguments.confirm("Selected plot");
     }
 
     public static void parseMods(CommandParserArgs arguments, boolean modifyUsers)
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         String type = modifyUsers ? "users" : "mods";
         String group = modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD;
 
@@ -412,7 +412,7 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseSetPrice(CommandParserArgs arguments)
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(Plot.PERM_SET_PRICE))
@@ -452,7 +452,7 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseSetFee(CommandParserArgs arguments)
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(Plot.PERM_SET_FEE))
@@ -474,7 +474,7 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseSetName(CommandParserArgs arguments)
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(Plot.PERM_SET_NAME))
@@ -495,7 +495,7 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseSetOwner(CommandParserArgs arguments)
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(Plot.PERM_SET_NAME))
@@ -519,7 +519,7 @@ public class CommandPlot extends ParserCommandBase
         final String[] tabCompletion = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
 
         arguments.checkPermission(Plot.PERM_PERMS);
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
         {
             arguments.confirm(Translator.translate("/plot perms <type> true|false: Control what other players can do in a plot"));
@@ -724,9 +724,9 @@ public class CommandPlot extends ParserCommandBase
         plot.setPrice(-1);
     }
 
-    public static Plot getPlot(EntityPlayerMP player)
+    public static Plot getPlot(ICommandSender sender)
     {
-        Plot plot = Plot.getPlot(new WorldPoint(player));
+        Plot plot = Plot.getPlot(new WorldPoint(sender.getEntityWorld(), sender.getPlayerCoordinates()));
         if (plot == null)
             throw new TranslatedCommandException("There is no plot at this position");
         return plot;

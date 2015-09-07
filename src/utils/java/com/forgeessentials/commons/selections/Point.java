@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 
 public class Point {
@@ -36,6 +37,11 @@ public class Point {
 		y = (int) Math.floor(entity.posY);
 		z = (int) Math.floor(entity.posZ);
 	}
+
+    public Point(ChunkCoordinates location)
+    {
+        this(location.posX, location.posY, location.posZ);
+    }
 
 	public Point(Vec3 vector)
 	{

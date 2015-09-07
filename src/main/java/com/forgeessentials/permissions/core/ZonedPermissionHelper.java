@@ -68,9 +68,9 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 public class ZonedPermissionHelper extends ServerEventHandler implements IPermissionsHelper, PermissionDebugger
 {
 
-    public static final UserIdent SERVER_IDENT = UserIdent.get("$SERVER");
+    public static final UserIdent SERVER_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefefe", "$SERVER");
 
-    public static final UserIdent CMDBLOCK_IDENT = UserIdent.get("$COMMANDBLOCK");
+    public static final UserIdent CMDBLOCK_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefecb", "$COMMANDBLOCK");
 
     public static final String PERMISSIONS_LIST_FILE = "PermissionsList.txt";
 
