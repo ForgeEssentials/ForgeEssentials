@@ -17,6 +17,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
+import com.forgeessentials.scripting.ModuleScripting;
 import com.forgeessentials.scripting.ScriptParser;
 import com.forgeessentials.scripting.ScriptParser.MissingPermissionException;
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
@@ -88,12 +89,12 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
 
     public static void loadAll()
     {
-        patternCommands = DataManager.getInstance().loadAll(PatternCommand.class);
+        patternCommands = DataManager.loadAll(PatternCommand.class, ModuleScripting.commandsDir);
     }
 
     public static void saveAll()
     {
-        DataManager.getInstance().saveAll(patternCommands);
+        DataManager.saveAll(patternCommands, ModuleScripting.commandsDir);
     }
 
     public static void deregisterAll()

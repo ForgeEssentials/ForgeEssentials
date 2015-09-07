@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -165,7 +166,7 @@ public class Plot
             name = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, PERM_NAME);
         if (name == null)
             return null;
-        return name.replaceAll("@p", owner.getUsernameOrUuid());
+        return name.replaceAll("@p", Matcher.quoteReplacement(owner.getUsernameOrUuid()));
     }
 
     public String getNameNotNull()
