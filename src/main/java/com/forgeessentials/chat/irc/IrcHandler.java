@@ -28,6 +28,7 @@ import org.pircbotx.User;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -522,6 +523,12 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void onDisconnect(DisconnectEvent<PircBotX> event) throws Exception
     {
         mcSendMessage("IRC bot disconnected from the network");
+    }
+
+    @Override
+    public void onAction(ActionEvent<PircBotX> event) throws Exception
+    {
+        mcSendMessage(Translator.format("* %s %s", event.getUser().getNick(), event.getMessage()));
     }
 
     /* ------------------------------------------------------------ */
