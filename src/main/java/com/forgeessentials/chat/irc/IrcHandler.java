@@ -20,9 +20,11 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.exception.IrcException;
@@ -98,6 +100,8 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     private String ircHeader;
 
     private String ircHeaderGlobal;
+
+    private String mcSayHeader;
 
     private String mcHeader;
 
@@ -233,6 +237,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         ircHeader = config.get(CATEGORY, "ircHeader", "[\u00a7cIRC\u00a7r]<%s> ", "Header for messages sent from IRC. Must contain one \"%s\"").getString();
         ircHeaderGlobal = config.get(CATEGORY, "ircHeaderGlobal", "[\u00a7cIRC\u00a7r] ", "Header for IRC events. Must NOT contain any \"%s\"").getString();
         mcHeader = config.get(CATEGORY, "mcHeader", "<%s> %s", "Header for messages sent from MC to IRC. Must contain two \"%s\"").getString();
+        mcSayHeader = config.get(CATEGORY, "mcSayHeader", "[%s] %s", "Header for messages sent with the /say command from MC to IRC. Must contain two \"%s\"").getString();
         messageDelay = config.get(CATEGORY, "messageDelay", 0, "Delay between messages sent to IRC").getInt();
         allowCommands = config.get(CATEGORY, "allowCommands", true, "If enabled, allows usage of bot commands").getBoolean();
         allowMcCommands = config.get(CATEGORY, "allowMcCommands", true,
@@ -414,6 +419,19 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
             return;
         if (showGameEvents)
             sendMessage(Translator.format("%s died", event.entityLiving.getCommandSenderName()));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void handleSay(CommandEvent event)
+    {
+        if (event.command.getCommandName().equals("say"))
+        {
+            sendMessage(Translator.format(mcSayHeader, event.sender.getCommandSenderName(), StringUtils.join(event.parameters, " ")));
+        }
+        else if (event.command.getCommandName().equals("me"))
+        {
+            sendMessage(Translator.format("* %s %s", event.sender.getCommandSenderName(), StringUtils.join(event.parameters, " ")));
+        }
     }
 
     /* ------------------------------------------------------------ */
