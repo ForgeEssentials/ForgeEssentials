@@ -66,7 +66,7 @@ public abstract class PlayerUtil
             String[] effectValues = poisonEffect.split(":");
             if (effectValues.length < 2)
             {
-                LoggingHandler.felog.warn("Too few arguments for potion effects");
+                // LoggingHandler.felog.warn("Too few arguments for potion effects");
             }
             else if (effectValues.length > 3)
             {

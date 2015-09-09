@@ -221,7 +221,13 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
-            sendBlockBreakDenyInfo(ident, block);
+            if (PlayerInfo.get(ident).getHasFEClient())
+            {
+                int blockId = GameData.getBlockRegistry().getId(block);
+                Set<Integer> ids = new HashSet<Integer>();
+                ids.add(blockId);
+                NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
+            }
             return;
         }
     }
@@ -363,6 +369,13 @@ public class ProtectionEventHandler extends ServerEventHandler
                 ChatOutputHandler.chatNotification(event.entityPlayer, permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             event.useItem = allow ? ALLOW : DENY;
+            if (!allow && PlayerInfo.get(ident).getHasFEClient())
+            {
+                int itemId = GameData.getItemRegistry().getId(stack.getItem());
+                Set<Integer> ids = new HashSet<Integer>();
+                ids.add(itemId);
+                NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, ids, null), ident.getPlayerMP());
+            }
         }
 
         if (anyCreativeModeAtPoint(event.entityPlayer, point)
@@ -669,16 +682,6 @@ public class ProtectionEventHandler extends ServerEventHandler
         ModulePermissions.permissionHelper.disableDebugMode(false);
 
         NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(reset, placeIds, null), ident.getPlayerMP());
-    }
-
-    public void sendBlockBreakDenyInfo(UserIdent ident, Block block)
-    {
-        if (!PlayerInfo.get(ident).getHasFEClient())
-            return;
-        int blockId = GameData.getBlockRegistry().getId(block);
-        Set<Integer> ids = new HashSet<Integer>();
-        ids.add(blockId);
-        NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
     }
 
     /* ------------------------------------------------------------ */
