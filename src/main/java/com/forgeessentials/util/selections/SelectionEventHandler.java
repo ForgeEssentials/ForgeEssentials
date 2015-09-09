@@ -51,7 +51,7 @@ public class SelectionEventHandler extends ServerEventHandler
         if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
         {
             SelectionHandler.selectionProvider.setStart((EntityPlayerMP) event.entityPlayer, point);
-            String message = Translator.format("Pos1 set to %d, %d, %d", event.pos);
+            String message = Translator.format("Pos1 set to %d, %d, %d", event.pos.getX(), event.pos.getY(), event.pos.getZ());
             ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
             event.setCanceled(true);
         }
@@ -59,7 +59,7 @@ public class SelectionEventHandler extends ServerEventHandler
         else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
         {
             SelectionHandler.selectionProvider.setEnd((EntityPlayerMP) event.entityPlayer, point);
-            String message = Translator.format("Pos2 set to %d, %d, %d", event.pos);
+            String message = Translator.format("Pos2 set to %d, %d, %d", event.pos.getX(), event.pos.getY(), event.pos.getZ());
             ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
             event.setCanceled(true);
         }
