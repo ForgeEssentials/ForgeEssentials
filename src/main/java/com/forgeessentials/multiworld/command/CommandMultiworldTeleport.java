@@ -1,28 +1,24 @@
 package com.forgeessentials.multiworld.command;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-/**
- * @author Olee
- */
-public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase
+public class CommandMultiworldTeleport extends ParserCommandBase
 {
 
     @Override
@@ -38,53 +34,58 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] argsArray)
+    public String getPermissionNode()
     {
-        switch (argsArray.length)
-        {
-        case 1:
-            return ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(argsArray[0], ModuleMultiworld.getMultiworldManager().getWorldMap().keySet());
-        case 2:
-            return ForgeEssentialsCommandBase.completePlayername(argsArray[1]);
-        case 0:
-        default:
-            return null;
-        }
+        return ModuleMultiworld.PERM_TELEPORT;
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] argsArray)
+    public PermissionLevel getPermissionLevel()
     {
-        EntityPlayerMP player = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
-        Queue<String> args = new LinkedList<>(Arrays.asList(argsArray));
+        return PermissionLevel.OP;
+    }
 
-        if (args.isEmpty())
-            throw new TranslatedCommandException("Missing world argument.");
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-        String worldName = args.remove();
-        if (args.isEmpty())
+    @Override
+    public void parse(CommandParserArgs arguments)
+    {
+        if (arguments.isEmpty())
         {
-            if (player == null)
-                throw new TranslatedCommandException("Missing player-name argument.");
+            arguments.confirm(Translator.translate("/mwtp <world> [player] [x y z]"));
+            return;
         }
-        else
+
+        List<String> worldNames = APIRegistry.namedWorldHandler.listWorldNames();
+        worldNames.add(0, "list");
+        arguments.tabComplete(worldNames);
+        
+        String worldName = arguments.remove();
+
+        if (worldName.equalsIgnoreCase("list"))
         {
-            String playerName = args.remove();
-            player = UserIdent.getPlayerByMatchOrUsername(sender, playerName);
-            if (player == null)
-                throw new TranslatedCommandException("Could not find player " + playerName);
+            arguments.confirm(Translator.format("List of worlds: %s", StringUtils.join(worldNames, ", ")));
+            return;
         }
+
+        EntityPlayerMP player = arguments.parsePlayer(true, true).getPlayerMP();
+        if (player == null)
+            throw new TranslatedCommandException("Missing player-name argument.");
 
         double x = Math.floor(player.posX) + 0.5;
         double y = Math.floor(player.posY);
         double z = Math.floor(player.posZ) + 0.5;
-        if (!args.isEmpty())
+        if (!arguments.isEmpty())
         {
-            if (args.size() < 3)
+            if (arguments.size() < 3)
                 throw new TranslatedCommandException("Too few arguments for location.");
-            x = parseDouble(sender, args.remove());
-            y = parseDouble(sender, args.remove());
-            z = parseDouble(sender, args.remove());
+            x = arguments.parseDouble();
+            y = arguments.parseDouble();
+            z = arguments.parseDouble();
         }
 
         Multiworld multiworld = ModuleMultiworld.getMultiworldManager().getMultiworld(worldName);
@@ -122,24 +123,6 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBase
         msg = Translator.format(msg + " at [%.0f, %.0f, %.0f]", x, y, z);
         ChatOutputHandler.chatConfirmation(player, msg);
         Multiworld.teleport(player, world, x, y, z, false);
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleMultiworld.PERM_TELEPORT;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
     }
 
 }

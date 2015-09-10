@@ -23,7 +23,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class)
+@FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false)
 public class ModuleAuth extends ConfigLoaderBase
 {
 

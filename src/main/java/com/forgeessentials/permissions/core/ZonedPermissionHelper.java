@@ -62,8 +62,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
 /**
- * 
- * @author Olee
+ * Main permission management class
  */
 public class ZonedPermissionHelper extends ServerEventHandler implements IPermissionsHelper, PermissionDebugger
 {

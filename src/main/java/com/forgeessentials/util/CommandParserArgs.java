@@ -296,32 +296,10 @@ public class CommandParserArgs
         }
     }
 
-    public Float parseFloat()
+    public double parseDouble()
     {
         checkTabCompletion();
-        String value = remove();
-        try
-        {
-            return Float.parseFloat(value);
-        }
-        catch (NumberFormatException e)
-        {
-            throw new TranslatedCommandException("Invalid number: %s", value);
-        }
-    }
-
-    public Double parseDouble()
-    {
-        checkTabCompletion();
-        String value = remove();
-        try
-        {
-            return Double.parseDouble(value);
-        }
-        catch (NumberFormatException e)
-        {
-            throw new TranslatedCommandException("Invalid number: %s", value);
-        }
+        return CommandBase.parseDouble(sender, remove());
     }
 
     public boolean parseBoolean()
