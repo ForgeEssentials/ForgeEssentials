@@ -1276,7 +1276,7 @@ public class PermissionCommandParser
     public static void denyDefault(PermissionList list)
     {
         List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT,
-                ModuleProtection.PERM_USE, ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_MOBSPAWN,
+                ModuleProtection.PERM_USE, ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_CRAFT, ModuleProtection.PERM_MOBSPAWN,
                 ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
 
         RootZone rootZone = APIRegistry.perms.getServerZone().getRootZone();
@@ -1298,6 +1298,7 @@ public class PermissionCommandParser
         list.put(ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
         list.put(ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
         list.put(ModuleProtection.PERM_EXIST + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_CRAFT + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
         list.put(ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
         list.put(ModuleProtection.PERM_INVENTORY + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
     }

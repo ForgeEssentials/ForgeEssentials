@@ -219,13 +219,17 @@ public class ModuleProtection
                 "Allow having item in inventory. Item will be dropped if not allowed.");
         APIRegistry.perms.registerPermission(PERM_EXIST + Zone.ALL_PERMS, PermissionLevel.TRUE,
                 "Allow having item in inventory. Item will be destroyed if not allowed.");
+        APIRegistry.perms.registerPermission(PERM_CRAFT + Zone.ALL_PERMS, PermissionLevel.TRUE,
+                "Allow crafting of items. Not necessarily works with modded crafting tables");
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
                 String itemPerm = "." + getItemId(item) + Zone.ALL_PERMS;
-                APIRegistry.perms.registerPermission(PERM_USE + itemPerm, PermissionLevel.TRUE, "USE " + getItemName(item));
-                APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, PermissionLevel.TRUE, "INVENTORY " + getItemName(item));
-                APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, PermissionLevel.TRUE, "EXIST " + getItemName(item));
+                String itemName = getItemName(item);
+                APIRegistry.perms.registerPermission(PERM_USE + itemPerm, PermissionLevel.TRUE, "USE " + itemName);
+                APIRegistry.perms.registerPermission(PERM_CRAFT + itemPerm, PermissionLevel.TRUE, "CRAFT " + itemName);
+                APIRegistry.perms.registerPermission(PERM_EXIST + itemPerm, PermissionLevel.TRUE, "EXIST " + itemName);
+                APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, PermissionLevel.TRUE, "INVENTORY " + itemName);
             }
 
         // ----------------------------------------
@@ -236,9 +240,10 @@ public class ModuleProtection
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
             String blockPerm = "." + getBlockId(block) + Zone.ALL_PERMS;
-            APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, PermissionLevel.TRUE, "BREAK " + block.getLocalizedName());
-            APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, PermissionLevel.TRUE, "PLACE " + block.getLocalizedName());
-            APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, PermissionLevel.TRUE, "INTERACT " + block.getLocalizedName());
+            String blockName = block.getLocalizedName();
+            APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, PermissionLevel.TRUE, "BREAK " + blockName);
+            APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, PermissionLevel.TRUE, "PLACE " + blockName);
+            APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, PermissionLevel.TRUE, "INTERACT " + blockName);
         }
 
         // ----------------------------------------
