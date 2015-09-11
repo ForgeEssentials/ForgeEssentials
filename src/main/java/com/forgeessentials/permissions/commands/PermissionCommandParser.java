@@ -1182,9 +1182,8 @@ public class PermissionCommandParser
                         boolean printedZone = false;
                         for (Entry<String, String> perm : zone.getValue().entrySet())
                         {
-                            if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
-                                    || perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
-                                    || perm.getKey().equals(FEPermissions.SUFFIX))
+                            if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_PRIORITY)
+                                    || perm.getKey().equals(FEPermissions.PREFIX) || perm.getKey().equals(FEPermissions.SUFFIX))
                                 continue;
                             if (!printedGroup)
                             {
@@ -1214,9 +1213,8 @@ public class PermissionCommandParser
                 boolean printedZone = false;
                 for (Entry<String, String> perm : zone.getValue().entrySet())
                 {
-                    if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
-                            || perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
-                            || perm.getKey().equals(FEPermissions.SUFFIX))
+                    if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_PRIORITY)
+                            || perm.getKey().equals(FEPermissions.PREFIX) || perm.getKey().equals(FEPermissions.SUFFIX))
                         continue;
                     if (!printedZone)
                     {
@@ -1276,8 +1274,8 @@ public class PermissionCommandParser
     public static void denyDefault(PermissionList list)
     {
         List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT,
-                ModuleProtection.PERM_USE, ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_CRAFT, ModuleProtection.PERM_MOBSPAWN,
-                ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
+                ModuleProtection.PERM_USE, ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_CRAFT,
+                ModuleProtection.PERM_MOBSPAWN, ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
 
         RootZone rootZone = APIRegistry.perms.getServerZone().getRootZone();
         mainLoop: for (Entry<String, String> perm : rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).entrySet())

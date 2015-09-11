@@ -33,7 +33,7 @@ public final class FEPermissions
     public static final String SPAWN_BED = FE_INTERNAL + ".spawn.bed";
 
     public static final String GROUP = FE_INTERNAL + ".group";
-    public static final String GROUP_ID = GROUP + ".id";
+    public static final String GROUP_NAME = GROUP + ".name";
     public static final String GROUP_PRIORITY = GROUP + ".priority";
     public static final String GROUP_INCLUDES = GROUP + ".includes";
     public static final String GROUP_PARENTS = GROUP + ".parents";
