@@ -84,6 +84,8 @@ public class ConfigServerVote extends ConfigLoaderBase
             Item item = GameData.getItemRegistry().getObject(temp);
 
             ItemStack stack = new ItemStack(item, amount, meta);
+            
+            if (stack == null) continue;
 
             LoggingHandler.felog.debug(stack.getUnlocalizedName());
 
