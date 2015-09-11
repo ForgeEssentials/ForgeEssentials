@@ -1,9 +1,8 @@
 package com.forgeessentials.protection;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TimerTask;
 import java.util.UUID;
 
@@ -35,9 +34,11 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.permission.PermissionLevel;
@@ -55,6 +56,7 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameData;
@@ -121,7 +123,7 @@ public class ModuleProtection
             DamageSource.fallingBlock, DamageSource.generic, DamageSource.inFire, DamageSource.inWall, DamageSource.lava, DamageSource.magic,
             DamageSource.onFire, DamageSource.outOfWorld, DamageSource.starve, DamageSource.wither };
 
-    public static Set<UUID> debugModePlayers = new HashSet<>();
+    public static Map<UUID, String> debugModePlayers = new HashMap<>();
 
     /* ------------------------------------------------------------ */
 
@@ -267,17 +269,30 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static void setDebugMode(EntityPlayer player, boolean value)
+    public static void setDebugMode(EntityPlayer player, String commandBase)
     {
-        if (value)
-            debugModePlayers.add(player.getPersistentID());
+        if (commandBase != null)
+            debugModePlayers.put(player.getPersistentID(), commandBase);
         else
             debugModePlayers.remove(player.getPersistentID());
     }
 
     public static boolean isDebugMode(EntityPlayer player)
     {
-        return debugModePlayers.contains(player.getPersistentID());
+        return debugModePlayers.containsKey(player.getPersistentID());
+    }
+
+    public static void debugPermission(EntityPlayer player, String permission)
+    {
+        String cmdBase = debugModePlayers.get(player.getPersistentID());
+        if (cmdBase == null)
+            return;
+
+        ChatComponentTranslation msg = new ChatComponentTranslation(permission);
+        msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
+        msg.getChatStyle().setColor(ChatOutputHandler.chatNotificationColor);
+        msg.getChatStyle().setUnderlined(true);
+        ChatOutputHandler.sendMessage(player, msg);
     }
 
     /* ------------------------------------------------------------ */

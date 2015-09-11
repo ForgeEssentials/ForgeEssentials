@@ -119,8 +119,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         WorldPoint targetPos = new WorldPoint(event.target);
 
         String permission = ModuleProtection.PERM_DAMAGE_TO + "." + EntityList.getEntityString(target);
-        if (ModuleProtection.isDebugMode(source))
-            ChatOutputHandler.chatNotification(source, permission);
+        ModuleProtection.debugPermission(source, permission);
         if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
         {
             event.setCanceled(true);
@@ -128,8 +127,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
 
         permission = MobType.getMobType(target).getDamageToPermission();
-        if (ModuleProtection.isDebugMode(source))
-            ChatOutputHandler.chatNotification(source, permission);
+        ModuleProtection.debugPermission(source, permission);
         if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
         {
             event.setCanceled(true);
@@ -152,8 +150,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             EntityPlayer target = (EntityPlayer) event.entityLiving;
             {
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + event.source.damageType;
-                if (ModuleProtection.isDebugMode(target))
-                    ChatOutputHandler.chatNotification(target, permission);
+                ModuleProtection.debugPermission(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
                     event.setCanceled(true);
@@ -166,16 +163,14 @@ public class ProtectionEventHandler extends ServerEventHandler
                 // non-player-entity (mob) -> player
                 Entity source = event.source.getEntity();
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + EntityList.getEntityString(source);
-                if (ModuleProtection.isDebugMode(target))
-                    ChatOutputHandler.chatNotification(target, permission);
+                ModuleProtection.debugPermission(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
                     event.setCanceled(true);
                     return;
                 }
                 permission = MobType.getMobType(source).getDamageByPermission();
-                if (ModuleProtection.isDebugMode(target))
-                    ChatOutputHandler.chatNotification(target, permission);
+                ModuleProtection.debugPermission(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
                     event.setCanceled(true);
@@ -194,8 +189,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         UserIdent ident = UserIdent.get(event.entityPlayer);
         WorldPoint point = new WorldPoint(event.entityPlayer.dimension, (int) event.target.posX, (int) event.target.posY, (int) event.target.posZ);
         String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(event.target);
-        if (ModuleProtection.isDebugMode(event.entityPlayer))
-            ChatOutputHandler.chatNotification(event.entityPlayer, permission);
+        ModuleProtection.debugPermission(event.entityPlayer, permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
@@ -215,8 +209,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         UserIdent ident = UserIdent.get(event.getPlayer());
         Block block = event.world.getBlock(event.x, event.y, event.z);
         String permission = ModuleProtection.getBlockBreakPermission(block, event.world, event.x, event.y, event.z);
-        if (ModuleProtection.isDebugMode(event.getPlayer()))
-            ChatOutputHandler.chatNotification(event.getPlayer(), permission);
+        ModuleProtection.debugPermission(event.getPlayer(), permission);
         WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.x, event.y, event.z);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
@@ -241,8 +234,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         UserIdent ident = UserIdent.get(event.player);
         Block block = event.world.getBlock(event.x, event.y, event.z);
         String permission = ModuleProtection.getBlockPlacePermission(block, event.world, event.x, event.y, event.z);
-        if (ModuleProtection.isDebugMode(event.player))
-            ChatOutputHandler.chatNotification(event.player, permission);
+        ModuleProtection.debugPermission(event.player, permission);
         WorldPoint point = new WorldPoint(event.player.dimension, event.x, event.y, event.z);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
@@ -268,8 +260,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             Block block = event.world.getBlock(b.x, b.y, b.z);
             String permission = ModuleProtection.getBlockPlacePermission(block, event.world, event.x, event.y, event.z);
-            if (ModuleProtection.isDebugMode(event.player))
-                ChatOutputHandler.chatNotification(event.player, permission);
+            ModuleProtection.debugPermission(event.player, permission);
             WorldPoint point = new WorldPoint(event.player.dimension, b.x, b.y, b.z);
             if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
             {
@@ -354,8 +345,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             Block block = event.world.getBlock(event.x, event.y, event.z);
             String permission = ModuleProtection.getBlockInteractPermission(block, event.world, event.x, event.y, event.z);
-            if (ModuleProtection.isDebugMode(event.entityPlayer))
-                ChatOutputHandler.chatNotification(event.entityPlayer, permission);
+            ModuleProtection.debugPermission(event.entityPlayer, permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             event.useBlock = allow ? ALLOW : DENY;
         }
@@ -365,8 +355,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (stack != null && !(stack.getItem() instanceof ItemBlock))
         {
             String permission = ModuleProtection.getItemUsePermission(stack);
-            if (ModuleProtection.isDebugMode(event.entityPlayer))
-                ChatOutputHandler.chatNotification(event.entityPlayer, permission);
+            ModuleProtection.debugPermission(event.entityPlayer, permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             event.useItem = allow ? ALLOW : DENY;
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
@@ -399,8 +388,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             EntityPlayerMP player = (EntityPlayerMP) event.entity;
             ident = UserIdent.get(player);
-            if (ModuleProtection.isDebugMode(player))
-                ChatOutputHandler.chatNotification(player, ModuleProtection.PERM_PRESSUREPLATE);
+            ModuleProtection.debugPermission(player, ModuleProtection.PERM_PRESSUREPLATE);
         }
         if (!APIRegistry.perms.checkUserPermission(ident, ModuleProtection.PERM_PRESSUREPLATE))
             event.setCanceled(true);
