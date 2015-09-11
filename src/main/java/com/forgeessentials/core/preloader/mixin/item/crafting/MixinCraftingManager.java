@@ -3,11 +3,7 @@ package com.forgeessentials.core.preloader.mixin.item.crafting;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -19,14 +15,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import com.forgeessentials.protection.ModuleProtection;
 
 @Mixin(CraftingManager.class)
 public abstract class MixinCraftingManager
 {
-
-    private static final String PERMISSION_BASE = "craft.";
 
     @Shadow
     private List<IRecipe> recipes;
@@ -71,55 +64,20 @@ public abstract class MixinCraftingManager
         }
         else
         {
-            EntityPlayer player = getCraftingPlayer(inventory);
+            EntityPlayer player = ModuleProtection.getCraftingPlayer(inventory);
             for (j = 0; j < this.recipes.size(); ++j)
             {
                 IRecipe irecipe = this.recipes.get(j);
                 if (irecipe.matches(inventory, world))
                 {
                     ItemStack result = irecipe.getCraftingResult(inventory);
-                    String permission = getCraftingPermission(result);
+                    String permission = ModuleProtection.getCraftingPermission(result);
                     if (PermissionManager.checkPermission(player, permission))
                         return result;
                 }
             }
             return null;
         }
-    }
-
-    private static String getItemId(Item item)
-    {
-        return GameData.getItemRegistry().getNameForObject(item).replace(':', '.');
-    }
-
-    private static String getItemPermission(ItemStack stack, boolean checkMeta)
-    {
-        int dmg = stack.getItemDamage();
-        if (!checkMeta || dmg == 0 || dmg == 32767)
-            return getItemId(stack.getItem());
-        else
-            return getItemId(stack.getItem()) + "." + dmg;
-    }
-
-    private static String getCraftingPermission(ItemStack stack)
-    {
-        return PERMISSION_BASE + getItemPermission(stack, true);
-    }
-
-    private static EntityPlayer getCraftingPlayer(InventoryCrafting inventory)
-    {
-        Container abstractContainer = ReflectionHelper.getPrivateValue(InventoryCrafting.class, inventory, "field_70465_c", "eventHandler");
-        if (abstractContainer instanceof ContainerPlayer)
-        {
-            ContainerPlayer container = (ContainerPlayer) abstractContainer;
-            return ReflectionHelper.getPrivateValue(ContainerPlayer.class, container, "field_82862_h", "thePlayer");
-        }
-        else if (abstractContainer instanceof ContainerWorkbench)
-        {
-            SlotCrafting slot = (SlotCrafting) abstractContainer.getSlot(0);
-            return ReflectionHelper.getPrivateValue(SlotCrafting.class, slot, "field_75238_b", "thePlayer");
-        }
-        return null;
     }
 
 }

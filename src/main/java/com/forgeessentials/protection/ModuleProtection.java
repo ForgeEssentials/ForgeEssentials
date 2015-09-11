@@ -35,6 +35,11 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.event.ClickEvent;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerPlayer;
+import net.minecraft.inventory.ContainerWorkbench;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -59,6 +64,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 @FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false)
 public class ModuleProtection
@@ -81,6 +87,7 @@ public class ModuleProtection
     public final static String PERM_DAMAGE_BY = BASE_PERM + ".damageby";
     public final static String PERM_INVENTORY = BASE_PERM + ".inventory";
     public final static String PERM_EXIST = BASE_PERM + ".exist";
+    public static final String PERM_CRAFT = BASE_PERM + ".craft";
     public final static String PERM_EXPLOSION = BASE_PERM + ".explosion";
     public final static String PERM_EXPLOSION_BLOCKDMG = PERM_EXPLOSION + ".blockdmg";
     public final static String PERM_NEEDSFOOD = BASE_PERM + ".needsfood";
@@ -260,7 +267,7 @@ public class ModuleProtection
             public void run()
             {
                 for (EntityPlayerMP p : ServerUtil.getPlayerList())
-                    if (!APIRegistry.perms.checkPermission(p, ModuleProtection.PERM_NEEDSFOOD))
+                    if (!APIRegistry.perms.checkPermission(p, PERM_NEEDSFOOD))
                         p.getFoodStats().addStats(20, 1.0F);
             }
         }, 60 * 1000);
@@ -316,32 +323,32 @@ public class ModuleProtection
 
     public static String getBlockBreakPermission(Block block, World world, int x, int y, int z)
     {
-        return ModuleProtection.PERM_BREAK + "." + getBlockPermission(block, world, x, y, z);
+        return PERM_BREAK + "." + getBlockPermission(block, world, x, y, z);
     }
 
     public static String getBlockPlacePermission(Block block, World world, int x, int y, int z)
     {
-        return ModuleProtection.PERM_PLACE + "." + getBlockPermission(block, world, x, y, z);
+        return PERM_PLACE + "." + getBlockPermission(block, world, x, y, z);
     }
 
     public static String getBlockInteractPermission(Block block, World world, int x, int y, int z)
     {
-        return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(block, world, x, y, z);
+        return PERM_INTERACT + "." + getBlockPermission(block, world, x, y, z);
     }
 
     public static String getBlockBreakPermission(Block block, int meta)
     {
-        return ModuleProtection.PERM_BREAK + "." + getBlockPermission(block, meta);
+        return PERM_BREAK + "." + getBlockPermission(block, meta);
     }
 
     public static String getBlockPlacePermission(Block block, int meta)
     {
-        return ModuleProtection.PERM_PLACE + "." + getBlockPermission(block, meta);
+        return PERM_PLACE + "." + getBlockPermission(block, meta);
     }
 
     public static String getBlockInteractPermission(Block block, int meta)
     {
-        return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(block, meta);
+        return PERM_INTERACT + "." + getBlockPermission(block, meta);
     }
 
     /* ------------------------------------------------------------ */
@@ -367,17 +374,40 @@ public class ModuleProtection
 
     public static String getItemUsePermission(ItemStack stack)
     {
-        return ModuleProtection.PERM_USE + "." + getItemPermission(stack);
+        return PERM_USE + "." + getItemPermission(stack);
     }
 
     public static String getItemBanPermission(ItemStack stack)
     {
-        return ModuleProtection.PERM_EXIST + "." + getItemPermission(stack);
+        return PERM_EXIST + "." + getItemPermission(stack);
     }
 
     public static String getItemInventoryPermission(ItemStack stack)
     {
-        return ModuleProtection.PERM_INVENTORY + "." + getItemPermission(stack);
+        return PERM_INVENTORY + "." + getItemPermission(stack);
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public static EntityPlayer getCraftingPlayer(InventoryCrafting inventory)
+    {
+        Container abstractContainer = ReflectionHelper.getPrivateValue(InventoryCrafting.class, inventory, "field_70465_c", "eventHandler");
+        if (abstractContainer instanceof ContainerPlayer)
+        {
+            ContainerPlayer container = (ContainerPlayer) abstractContainer;
+            return ReflectionHelper.getPrivateValue(ContainerPlayer.class, container, "field_82862_h", "thePlayer");
+        }
+        else if (abstractContainer instanceof ContainerWorkbench)
+        {
+            SlotCrafting slot = (SlotCrafting) abstractContainer.getSlot(0);
+            return ReflectionHelper.getPrivateValue(SlotCrafting.class, slot, "field_75238_b", "thePlayer");
+        }
+        return null;
+    }
+
+    public static String getCraftingPermission(ItemStack stack)
+    {
+        return PERM_CRAFT + "." + getItemPermission(stack, true);
     }
 
 }
