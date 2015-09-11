@@ -89,7 +89,10 @@ public class ConfigServerVote extends ConfigLoaderBase
 
             LoggingHandler.felog.debug(stack.getUnlocalizedName());
 
-            freeStuff.add(stack);
+            if (stack != null)
+            {
+                freeStuff.add(stack);
+            }
         }
 
         loadKeys();
