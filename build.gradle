@@ -191,6 +191,7 @@ jar {
 		from sharedManifest
 		attributes (
 			"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
+			"FMLAT": "forgeessentials_at.cfg",
 		)
 	}
 }
