@@ -48,12 +48,12 @@ public class CommandProtectionDebug extends ParserCommandBase
     {
         if (arguments.isTabCompletion)
             return;
-        
+
         EntityPlayerMP player = arguments.senderPlayer;
         if (player == null)
             throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
 
-        if (ModuleProtection.isDebugMode(player))
+        if (ModuleProtection.isDebugMode(player) && arguments.isEmpty())
         {
             ModuleProtection.setDebugMode(player, null);
             arguments.confirm("Disabled protection debug-mode");
@@ -66,7 +66,8 @@ public class CommandProtectionDebug extends ParserCommandBase
             cmd = "/p " + cmd + " ";
 
             ModuleProtection.setDebugMode(player, cmd);
-            arguments.confirm("Enabled protection debug-mode");
+            if (!ModuleProtection.isDebugMode(player))
+                arguments.confirm("Enabled protection debug-mode");
             arguments.notify("Command: " + cmd + "<perm>");
         }
     }
