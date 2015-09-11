@@ -47,6 +47,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
@@ -413,6 +414,13 @@ public class ModuleProtection
     public static String getCraftingPermission(ItemStack stack)
     {
         return PERM_CRAFT + "." + getItemPermission(stack, true);
+    }
+
+    public static boolean canCraft(EntityPlayer player, ItemStack result)
+    {
+        String permission = ModuleProtection.getCraftingPermission(result);
+        debugPermission(player, permission);
+        return PermissionManager.checkPermission(player, permission);
     }
 
 }

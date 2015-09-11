@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
-import net.minecraftforge.permission.PermissionManager;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -71,8 +70,7 @@ public abstract class MixinCraftingManager
                 if (irecipe.matches(inventory, world))
                 {
                     ItemStack result = irecipe.getCraftingResult(inventory);
-                    String permission = ModuleProtection.getCraftingPermission(result);
-                    if (PermissionManager.checkPermission(player, permission))
+                    if (ModuleProtection.canCraft(player, result))
                         return result;
                 }
             }
