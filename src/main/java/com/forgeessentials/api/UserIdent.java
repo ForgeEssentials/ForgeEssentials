@@ -171,7 +171,18 @@ public class UserIdent
             else
                 ident = new UserIdent(player);
         }
-        ident.player = new WeakReference<EntityPlayer>(player);
+        else
+        {
+            String name = player.getCommandSenderName();
+            if (name != null && !name.equals(ident.username))
+            {
+                byUsername.remove(ident.username);
+                ident.username = name;
+                byUsername.put(ident.username, ident);
+            }
+        }
+        if (ident.player == null || ident.player.get() != player)
+            ident.player = new WeakReference<EntityPlayer>(player);
         return ident;
     }
 
@@ -328,8 +339,8 @@ public class UserIdent
     }
 
     /**
-     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that there is always a UUID available (for example for storage in
-     * maps).
+     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that
+     * there is always a UUID available (for example for storage in maps).
      * 
      * @return
      */
