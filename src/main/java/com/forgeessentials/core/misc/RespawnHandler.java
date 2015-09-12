@@ -37,6 +37,22 @@ public class RespawnHandler
         FMLCommonHandler.instance().bus().register(this);
     }
 
+    public static WarpPoint getSpawn(EntityPlayer player, WarpPoint location)
+    {
+        UserIdent ident = UserIdent.get(player);
+        if (location == null)
+            location = new WarpPoint(player);
+        String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null,
+                GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN_LOC, true);
+        if (spawnProperty != null)
+        {
+            WorldPoint point = WorldPoint.fromString(spawnProperty);
+            if (point != null)
+                return new WarpPoint(point, player.cameraYaw, player.cameraPitch);
+        }
+        return new WarpPoint(0, player.worldObj.getSpawnPoint(), player.cameraYaw, player.cameraPitch);
+    }
+
     public static WarpPoint getPlayerSpawn(EntityPlayer player, WarpPoint location, boolean doDefaultSpawn)
     {
         UserIdent ident = UserIdent.get(player);

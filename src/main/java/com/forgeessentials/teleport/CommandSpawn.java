@@ -44,7 +44,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
             }
 
-            WarpPoint point = RespawnHandler.getPlayerSpawn(player, null, false);
+            WarpPoint point = RespawnHandler.getSpawn(player, null);
             if (point == null)
                 throw new TranslatedCommandException("There is no spawnpoint set for that player.");
             TeleportHelper.teleport(player, point);
@@ -53,7 +53,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
         {
             EntityPlayerMP player = sender;
 
-            WarpPoint point = RespawnHandler.getPlayerSpawn(player, null, false);
+            WarpPoint point = RespawnHandler.getSpawn(player, null);
             if (point == null)
             {
                 throw new TranslatedCommandException("There is no spawnpoint set for that player.");
@@ -83,7 +83,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
 
-        WarpPoint point = RespawnHandler.getPlayerSpawn(player, null, false);
+        WarpPoint point = RespawnHandler.getSpawn(player, null);
         if (point == null)
         {
             throw new TranslatedCommandException("There is no spawnpoint set for that player.");
