@@ -30,7 +30,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.economy.commands.CommandCalculatePriceList;
+import com.forgeessentials.economy.commands.CommandSellprice;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
 import com.forgeessentials.economy.commands.CommandSell;
@@ -100,7 +100,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         FECommandManager.registerCommand(new CommandPaidCommand());
         FECommandManager.registerCommand(new CommandSellCommand());
         FECommandManager.registerCommand(new CommandTrade());
-        FECommandManager.registerCommand(new CommandCalculatePriceList());
+        FECommandManager.registerCommand(new CommandSellprice());
     }
 
     @SubscribeEvent

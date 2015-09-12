@@ -28,6 +28,7 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -192,7 +193,10 @@ public class CommandParserArgs
             throw new CancelParsingException();
         }
         String itemName = remove();
-        return CommandBase.getItemByText(sender, itemName);
+        Item item = CommandBase.getItemByText(sender, itemName);
+        if (item == null)
+            error(Translator.format("Item %s not found", itemName));
+        return item;
     }
 
     public Block parseBlock()

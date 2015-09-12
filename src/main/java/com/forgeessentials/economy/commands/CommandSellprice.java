@@ -37,24 +37,27 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 
 import cpw.mods.fml.common.registry.GameData;
 
-public class CommandCalculatePriceList extends ParserCommandBase
+public class CommandSellprice extends ParserCommandBase
 {
+
+    private static File priceFile = new File(ForgeEssentials.getFEDirectory(), "prices.txt");
 
     @Override
     public String getCommandName()
     {
-        return "calcpricelist";
+        return "sellprice";
     }
 
     @Override
     public String getPermissionNode()
     {
-        return ModuleEconomy.PERM_COMMAND + ".calcpricelist";
+        return ModuleEconomy.PERM_COMMAND + ".sellprice";
     }
 
     @Override
@@ -66,7 +69,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/calcpricelist [save]: Generate (and optionally directly apply) new price list";
+        return "/sellprice calc|set: Manage item sell prices";
     }
 
     @Override
@@ -89,7 +92,25 @@ public class CommandCalculatePriceList extends ParserCommandBase
     @Override
     public void parse(final CommandParserArgs arguments)
     {
-        calcPriceList(arguments);
+        if (arguments.isEmpty())
+        {
+            calcPriceList(arguments, false);
+            return;
+        }
+
+        arguments.tabComplete("save", "set");
+        String subArg = arguments.remove().toLowerCase();
+        switch (subArg)
+        {
+        case "save":
+            calcPriceList(arguments, true);
+            break;
+        case "set":
+            parseSetprice(arguments);
+            break;
+        default:
+            break;
+        }
     }
 
     public static int getItemDamage(ItemStack stack)
@@ -104,7 +125,27 @@ public class CommandCalculatePriceList extends ParserCommandBase
         }
     }
 
-    public static void calcPriceList(CommandParserArgs arguments)
+    public static void parseSetprice(CommandParserArgs arguments)
+    {
+        if (arguments.isEmpty())
+        {
+            arguments.confirm("/sellprice baseprice <item> [price]");
+            return;
+        }
+
+        Item item = arguments.parseItem();
+        double price = arguments.parseDouble();
+        if (arguments.isTabCompletion)
+            return;
+
+        String itemId = getItemId(item);
+        Map<String, Double> priceMap = loadPriceList(arguments);
+        priceMap.put(itemId, price);
+        writeMap(priceMap, priceFile);
+        arguments.confirm(Translator.format("Set price for %s to %d", itemId, (int) price));
+    }
+
+    public static void calcPriceList(CommandParserArgs arguments, boolean save)
     {
         /*
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
@@ -113,38 +154,11 @@ public class CommandCalculatePriceList extends ParserCommandBase
          * GameData.getItemRegistry().getNameForObject(a); String bId = GameData.getItemRegistry().getNameForObject(b);
          * return aId.compareTo(bId); } catch (Exception e) { return 0; } } });
          */
-        Map<String, Double> priceMap = new TreeMap<>();
+        Map<String, Double> priceMap = loadPriceList(arguments);
         Map<String, Double> priceMapFull = new TreeMap<>();
 
-        File priceFile = new File(ForgeEssentials.getFEDirectory(), "prices.txt");
         File allPricesFile = new File(ForgeEssentials.getFEDirectory(), "prices_all.txt");
         File priceLogFile = new File(ForgeEssentials.getFEDirectory(), "prices_log.txt");
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(priceFile)))
-        {
-            Pattern pattern = Pattern.compile("\\s*I:\"([^\"]+)\"\\s*=\\s*(.*)");
-            while (reader.ready())
-            {
-                String line = reader.readLine();
-                Matcher match = pattern.matcher(line);
-                if (!match.matches())
-                    continue;
-                try
-                {
-                    priceMap.put(match.group(1), Double.parseDouble(match.group(2)));
-                }
-                catch (NumberFormatException e)
-                {
-                    /* do nothing */
-                }
-            }
-        }
-        catch (IOException e)
-        {
-            arguments.warn(String.format("Could not load %s. Using default values", priceFile.getName()));
-            initializeDefaultPrices(priceMap);
-        }
-
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(priceLogFile)))
         {
             // for (Entry<String, Double> entry : priceMap.entrySet())
@@ -281,7 +295,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
         priceMapFull.putAll(priceMap);
         writeMap(priceMapFull, allPricesFile);
 
-        if (!arguments.isEmpty() && arguments.remove().equalsIgnoreCase("save"))
+        if (save)
         {
             Configuration config = ForgeEssentials.getConfigManager().getConfig(ModuleEconomy.CONFIG_CATEGORY);
             ConfigCategory category = config.getCategory(ModuleEconomy.CATEGORY_ITEM);
@@ -299,6 +313,36 @@ public class CommandCalculatePriceList extends ParserCommandBase
             arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
             arguments.confirm("You can also use [/calcpricelist save] to directly save the calculated prices");
         }
+    }
+
+    private static Map<String, Double> loadPriceList(CommandParserArgs arguments)
+    {
+        Map<String, Double> priceMap = new TreeMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(priceFile)))
+        {
+            Pattern pattern = Pattern.compile("\\s*I:\"([^\"]+)\"\\s*=\\s*(.*)");
+            while (reader.ready())
+            {
+                String line = reader.readLine();
+                Matcher match = pattern.matcher(line);
+                if (!match.matches())
+                    continue;
+                try
+                {
+                    priceMap.put(match.group(1), Double.parseDouble(match.group(2)));
+                }
+                catch (NumberFormatException e)
+                {
+                    /* do nothing */
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            arguments.warn(String.format("Could not load %s. Using default values", priceFile.getName()));
+            initializeDefaultPrices(priceMap);
+        }
+        return priceMap;
     }
 
     private static void initializeDefaultPrices(Map<String, Double> priceMap)
