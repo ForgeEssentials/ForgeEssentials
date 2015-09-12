@@ -7,6 +7,7 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet2Reach;
 import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 
@@ -64,6 +65,7 @@ public class CommandReach extends ParserCommandBase
 
         NetworkUtils.netHandler.sendTo(new Packet2Reach(distance), arguments.senderPlayer);
         arguments.senderPlayer.theItemInWorldManager.setBlockReachDistance(distance);
+        arguments.confirm(Translator.format("Set reach distance to %d", (int) distance));
     }
 
 }
