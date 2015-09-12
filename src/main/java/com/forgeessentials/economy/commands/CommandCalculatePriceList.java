@@ -92,6 +92,18 @@ public class CommandCalculatePriceList extends ParserCommandBase
         calcPriceList(arguments);
     }
 
+    public static int getItemDamage(ItemStack stack)
+    {
+        try
+        {
+            return stack.getItemDamage();
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+    }
+
     public static void calcPriceList(CommandParserArgs arguments)
     {
         /*
@@ -168,7 +180,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                         List<?> recipeItems = getRecipeItems(recipe);
                         if (recipeItems == null)
                             continue;
-                        craftRecipes.write(String.format("%s:%d\n", getItemId(recipe.getRecipeOutput().getItem()), recipe.getRecipeOutput().getItemDamage()));
+                        craftRecipes.write(String.format("%s:%d\n", getItemId(recipe.getRecipeOutput().getItem()), getItemDamage(recipe.getRecipeOutput())));
                         for (Object stacks : recipeItems)
                             if (stacks != null)
                             {
@@ -181,7 +193,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                                 else
                                     stack = (ItemStack) stacks;
                                 if (stack != null)
-                                    craftRecipes.write(String.format("  %s:%d\n", getItemId(stack.getItem()), stack.getItemDamage()));
+                                    craftRecipes.write(String.format("  %s:%d\n", getItemId(stack.getItem()), getItemDamage(stack)));
                             }
                     }
                 }
@@ -207,8 +219,8 @@ public class CommandCalculatePriceList extends ParserCommandBase
                                 priceMap.put(ModuleEconomy.getItemIdentifier(recipe.getRecipeOutput()), price);
                                 changedPrice = true;
 
-                                String msg = String.format("%s:%d = %.0f -> %s", getItemId(recipe.getRecipeOutput().getItem()), recipe.getRecipeOutput()
-                                        .getItemDamage(), resultPrice == null ? 0 : resultPrice, (int) price);
+                                String msg = String.format("%s:%d = %.0f -> %s", getItemId(recipe.getRecipeOutput().getItem()),
+                                        getItemDamage(recipe.getRecipeOutput()), resultPrice == null ? 0 : resultPrice, (int) price);
                                 for (Object stacks : getRecipeItems(recipe))
                                     if (stacks != null)
                                     {
@@ -222,7 +234,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                                             stack = (ItemStack) stacks;
                                         if (stack != null)
                                             msg += String.format("\n  %.0f - %s:%d", priceMap.get(ModuleEconomy.getItemIdentifier(stack)),
-                                                    getItemId(stack.getItem()), stack.getItemDamage());
+                                                    getItemId(stack.getItem()), getItemDamage(stack));
                                     }
                                 writer.write(msg + "\n");
                             }
@@ -241,8 +253,8 @@ public class CommandCalculatePriceList extends ParserCommandBase
                             if (resultPrice == null || outPrice < resultPrice)
                             {
                                 priceMap.put(ModuleEconomy.getItemIdentifier(recipe.getValue()), outPrice);
-                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", getItemId(recipe.getValue().getItem()), recipe.getValue()
-                                        .getItemDamage(), resultPrice == null ? 0 : resultPrice, (int) outPrice, getItemId(recipe.getKey().getItem())));
+                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", getItemId(recipe.getValue().getItem()), getItemDamage(recipe
+                                        .getValue()), resultPrice == null ? 0 : resultPrice, (int) outPrice, getItemId(recipe.getKey().getItem())));
                                 changedPrice = true;
                             }
                         }
