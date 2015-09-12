@@ -485,6 +485,8 @@ public class CommandSellprice extends ParserCommandBase
                 {
                     for (Object stack : (Collection<?>) stacks)
                     {
+                        if (stack == null)
+                            continue;
                         String id = ModuleEconomy.getItemIdentifier((ItemStack) stack);
                         priceMapFull.put(id, 0.0);
                         Double p = priceMap.get(id);
