@@ -82,17 +82,22 @@ public class ConfigServerVote extends ConfigLoaderBase
             }
 
             Item item = GameData.getItemRegistry().getObject(temp);
-
+            
+            if (item == null) 
+            {
+                LoggingHandler.felog.warn("Found invalid item:" + temp);
+                continue;
+            }
+            
             ItemStack stack = new ItemStack(item, amount, meta);
             
-            if (stack == null) continue;
-
-            LoggingHandler.felog.debug(stack.getUnlocalizedName());
-
-            if (stack != null)
+            if (stack == null) 
             {
-                freeStuff.add(stack);
+                continue;
             }
+
+            LoggingHandler.felog.debug("Added reward item stack: " + stack.getUnlocalizedName());
+            freeStuff.add(stack);
         }
 
         loadKeys();
