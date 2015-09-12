@@ -296,6 +296,8 @@ public class ModuleProtection
 
     public static void debugPermission(EntityPlayer player, String permission)
     {
+        if (player == null)
+            return;
         String cmdBase = debugModePlayers.get(player.getPersistentID());
         if (cmdBase == null)
             return;
