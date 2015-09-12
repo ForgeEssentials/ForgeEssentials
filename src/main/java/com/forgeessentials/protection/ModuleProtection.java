@@ -1,9 +1,8 @@
 package com.forgeessentials.protection;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TimerTask;
 import java.util.UUID;
 
@@ -35,9 +34,16 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerPlayer;
+import net.minecraft.inventory.ContainerWorkbench;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.permission.PermissionLevel;
@@ -55,9 +61,11 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 @FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false)
 public class ModuleProtection
@@ -80,6 +88,7 @@ public class ModuleProtection
     public final static String PERM_DAMAGE_BY = BASE_PERM + ".damageby";
     public final static String PERM_INVENTORY = BASE_PERM + ".inventory";
     public final static String PERM_EXIST = BASE_PERM + ".exist";
+    public static final String PERM_CRAFT = BASE_PERM + ".craft";
     public final static String PERM_EXPLOSION = BASE_PERM + ".explosion";
     public final static String PERM_EXPLOSION_BLOCKDMG = PERM_EXPLOSION + ".blockdmg";
     public final static String PERM_NEEDSFOOD = BASE_PERM + ".needsfood";
@@ -121,7 +130,7 @@ public class ModuleProtection
             DamageSource.fallingBlock, DamageSource.generic, DamageSource.inFire, DamageSource.inWall, DamageSource.lava, DamageSource.magic,
             DamageSource.onFire, DamageSource.outOfWorld, DamageSource.starve, DamageSource.wither };
 
-    public static Set<UUID> debugModePlayers = new HashSet<>();
+    public static Map<UUID, String> debugModePlayers = new HashMap<>();
 
     /* ------------------------------------------------------------ */
 
@@ -211,13 +220,17 @@ public class ModuleProtection
                 "Allow having item in inventory. Item will be dropped if not allowed.");
         APIRegistry.perms.registerPermission(PERM_EXIST + Zone.ALL_PERMS, PermissionLevel.TRUE,
                 "Allow having item in inventory. Item will be destroyed if not allowed.");
+        APIRegistry.perms.registerPermission(PERM_CRAFT + Zone.ALL_PERMS, PermissionLevel.TRUE,
+                "Allow crafting of items. Not necessarily works with modded crafting tables");
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
                 String itemPerm = "." + getItemId(item) + Zone.ALL_PERMS;
-                APIRegistry.perms.registerPermission(PERM_USE + itemPerm, PermissionLevel.TRUE, "USE " + getItemName(item));
-                APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, PermissionLevel.TRUE, "INVENTORY " + getItemName(item));
-                APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, PermissionLevel.TRUE, "EXIST " + getItemName(item));
+                String itemName = getItemName(item);
+                APIRegistry.perms.registerPermission(PERM_USE + itemPerm, PermissionLevel.TRUE, "USE " + itemName);
+                APIRegistry.perms.registerPermission(PERM_CRAFT + itemPerm, PermissionLevel.TRUE, "CRAFT " + itemName);
+                APIRegistry.perms.registerPermission(PERM_EXIST + itemPerm, PermissionLevel.TRUE, "EXIST " + itemName);
+                APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, PermissionLevel.TRUE, "INVENTORY " + itemName);
             }
 
         // ----------------------------------------
@@ -228,9 +241,10 @@ public class ModuleProtection
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
             String blockPerm = "." + getBlockId(block) + Zone.ALL_PERMS;
-            APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, PermissionLevel.TRUE, "BREAK " + block.getLocalizedName());
-            APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, PermissionLevel.TRUE, "PLACE " + block.getLocalizedName());
-            APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, PermissionLevel.TRUE, "INTERACT " + block.getLocalizedName());
+            String blockName = block.getLocalizedName();
+            APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, PermissionLevel.TRUE, "BREAK " + blockName);
+            APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, PermissionLevel.TRUE, "PLACE " + blockName);
+            APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, PermissionLevel.TRUE, "INTERACT " + blockName);
         }
 
         // ----------------------------------------
@@ -259,7 +273,7 @@ public class ModuleProtection
             public void run()
             {
                 for (EntityPlayerMP p : ServerUtil.getPlayerList())
-                    if (!PermissionManager.checkPermission(p, ModuleProtection.PERM_NEEDSFOOD))
+                    if (!APIRegistry.perms.checkPermission(p, PERM_NEEDSFOOD))
                         p.getFoodStats().addStats(20, 1.0F);
             }
         }, 60 * 1000);
@@ -267,17 +281,30 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static void setDebugMode(EntityPlayer player, boolean value)
+    public static void setDebugMode(EntityPlayer player, String commandBase)
     {
-        if (value)
-            debugModePlayers.add(player.getPersistentID());
+        if (commandBase != null)
+            debugModePlayers.put(player.getPersistentID(), commandBase);
         else
             debugModePlayers.remove(player.getPersistentID());
     }
 
     public static boolean isDebugMode(EntityPlayer player)
     {
-        return debugModePlayers.contains(player.getPersistentID());
+        return debugModePlayers.containsKey(player.getPersistentID());
+    }
+
+    public static void debugPermission(EntityPlayer player, String permission)
+    {
+        String cmdBase = debugModePlayers.get(player.getPersistentID());
+        if (cmdBase == null)
+            return;
+
+        ChatComponentTranslation msg = new ChatComponentTranslation(permission);
+        msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
+        msg.getChatStyle().setColor(ChatOutputHandler.chatNotificationColor);
+        msg.getChatStyle().setUnderlined(true);
+        ChatOutputHandler.sendMessage(player, msg);
     }
 
     /* ------------------------------------------------------------ */
@@ -302,32 +329,32 @@ public class ModuleProtection
 
     public static String getBlockBreakPermission(Block block, World world, int x, int y, int z)
     {
-        return ModuleProtection.PERM_BREAK + "." + getBlockPermission(block, world, x, y, z);
+        return PERM_BREAK + "." + getBlockPermission(block, world, x, y, z);
     }
 
     public static String getBlockPlacePermission(Block block, World world, int x, int y, int z)
     {
-        return ModuleProtection.PERM_PLACE + "." + getBlockPermission(block, world, x, y, z);
+        return PERM_PLACE + "." + getBlockPermission(block, world, x, y, z);
     }
 
     public static String getBlockInteractPermission(Block block, World world, int x, int y, int z)
     {
-        return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(block, world, x, y, z);
+        return PERM_INTERACT + "." + getBlockPermission(block, world, x, y, z);
     }
 
     public static String getBlockBreakPermission(Block block, int meta)
     {
-        return ModuleProtection.PERM_BREAK + "." + getBlockPermission(block, meta);
+        return PERM_BREAK + "." + getBlockPermission(block, meta);
     }
 
     public static String getBlockPlacePermission(Block block, int meta)
     {
-        return ModuleProtection.PERM_PLACE + "." + getBlockPermission(block, meta);
+        return PERM_PLACE + "." + getBlockPermission(block, meta);
     }
 
     public static String getBlockInteractPermission(Block block, int meta)
     {
-        return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(block, meta);
+        return PERM_INTERACT + "." + getBlockPermission(block, meta);
     }
 
     /* ------------------------------------------------------------ */
@@ -353,17 +380,47 @@ public class ModuleProtection
 
     public static String getItemUsePermission(ItemStack stack)
     {
-        return ModuleProtection.PERM_USE + "." + getItemPermission(stack);
+        return PERM_USE + "." + getItemPermission(stack);
     }
 
     public static String getItemBanPermission(ItemStack stack)
     {
-        return ModuleProtection.PERM_EXIST + "." + getItemPermission(stack);
+        return PERM_EXIST + "." + getItemPermission(stack);
     }
 
     public static String getItemInventoryPermission(ItemStack stack)
     {
-        return ModuleProtection.PERM_INVENTORY + "." + getItemPermission(stack);
+        return PERM_INVENTORY + "." + getItemPermission(stack);
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public static EntityPlayer getCraftingPlayer(InventoryCrafting inventory)
+    {
+        Container abstractContainer = ReflectionHelper.getPrivateValue(InventoryCrafting.class, inventory, "field_70465_c", "eventHandler");
+        if (abstractContainer instanceof ContainerPlayer)
+        {
+            ContainerPlayer container = (ContainerPlayer) abstractContainer;
+            return ReflectionHelper.getPrivateValue(ContainerPlayer.class, container, "field_82862_h", "thePlayer");
+        }
+        else if (abstractContainer instanceof ContainerWorkbench)
+        {
+            SlotCrafting slot = (SlotCrafting) abstractContainer.getSlot(0);
+            return ReflectionHelper.getPrivateValue(SlotCrafting.class, slot, "field_75238_b", "thePlayer");
+        }
+        return null;
+    }
+
+    public static String getCraftingPermission(ItemStack stack)
+    {
+        return PERM_CRAFT + "." + getItemPermission(stack, true);
+    }
+
+    public static boolean canCraft(EntityPlayer player, ItemStack result)
+    {
+        String permission = ModuleProtection.getCraftingPermission(result);
+        debugPermission(player, permission);
+        return PermissionManager.checkPermission(player, permission);
     }
 
 }

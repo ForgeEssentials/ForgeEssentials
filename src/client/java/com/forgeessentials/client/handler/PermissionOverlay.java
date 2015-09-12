@@ -2,10 +2,10 @@ package com.forgeessentials.client.handler;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -51,6 +51,19 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
         {
             permissions.placeIds.addAll(message.placeIds);
             permissions.breakIds.addAll(message.breakIds);
+
+            EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+            ItemStack stack = player.getCurrentEquippedItem();
+            if (stack != null)
+            {
+                int itemId = GameData.getItemRegistry().getId(stack.getItem());
+                for (int id : message.placeIds)
+                    if (itemId == id)
+                    {
+                        player.stopUsingItem();
+                        break;
+                    }
+            }
         }
         return null;
     }
@@ -72,11 +85,10 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             for (int i = 0; i < 9; ++i)
             {
                 ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.mainInventory[i];
-                if (stack == null || !(stack.getItem() instanceof ItemBlock))
+                if (stack == null)
                     continue;
-                Block block = ((ItemBlock) stack.getItem()).field_150939_a;
-                int blockId = GameData.getBlockRegistry().getId(block);
-                if (!permissions.placeIds.contains(blockId))
+                int id = GameData.getItemRegistry().getId(stack.getItem());
+                if (!permissions.placeIds.contains(id))
                     continue;
                 int x = width / 2 - 90 + i * 20 + 2;
                 int y = height - 16 - 3;

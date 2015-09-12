@@ -494,7 +494,7 @@ public class CommandPlot extends ParserCommandBase
             arguments.notify(Translator.format("Current plot name: %s", name));
             return;
         }
-        String name = arguments.remove();
+        String name = arguments.toString();
         arguments.checkPermission(Plot.PERM_SET_NAME);
         if (arguments.isTabCompletion)
             return;

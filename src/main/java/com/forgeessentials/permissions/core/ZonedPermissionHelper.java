@@ -62,8 +62,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
 /**
- * 
- * @author Olee
+ * Main permission management class
  */
 public class ZonedPermissionHelper extends ServerEventHandler implements IPermissionsHelper, PermissionDebugger
 {
@@ -452,23 +451,27 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             event.serverZone.setGroupPermission(Zone.GROUP_DEFAULT, FEPermissions.GROUP, true);
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_PRIORITY, "0");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "global");
         }
         if (!event.serverZone.groupExists(Zone.GROUP_GUESTS))
         {
             event.serverZone.setGroupPermission(Zone.GROUP_GUESTS, FEPermissions.GROUP, true);
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_GUESTS, FEPermissions.GROUP_PRIORITY, "10");
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_GUESTS, FEPermissions.PREFIX, "[GUEST]");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "guests");
         }
         if (!event.serverZone.groupExists(Zone.GROUP_OPERATORS))
         {
             event.serverZone.setGroupPermission(Zone.GROUP_OPERATORS, FEPermissions.GROUP, true);
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[&cOP&f]");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "OPs");
         }
         if (!event.serverZone.groupExists(Zone.GROUP_PLAYERS))
         {
             event.serverZone.setGroupPermission(Zone.GROUP_PLAYERS, FEPermissions.GROUP, true);
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_PLAYERS, FEPermissions.GROUP_PRIORITY, "1");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "players");
         }
         if (!event.serverZone.groupExists(Zone.GROUP_FAKEPLAYERS))
         {

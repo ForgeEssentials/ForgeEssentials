@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.config.Configuration;
 
@@ -77,7 +77,12 @@ public class Censor extends ConfigLoaderBase
             filterList.add(new CensoredWord(word));
     }
 
-    public String filter(EntityPlayerMP player, String message)
+    public String filter(String message)
+    {
+        return filter(message, null);
+    }
+
+    public String filter(String message, EntityPlayer player)
     {
         if (!enabled)
             return message;
@@ -89,7 +94,7 @@ public class Censor extends ConfigLoaderBase
                 if (filter.blank == null)
                     filter.blank = Strings.repeat(censorSymbol, m.end() - m.start());
                 message = m.replaceAll(filter.blank);
-                if (censorSlap != 0)
+                if (player != null && censorSlap != 0)
                     player.attackEntityFrom(DamageSource.generic, censorSlap);
             }
         }

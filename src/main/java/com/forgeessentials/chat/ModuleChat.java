@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -31,6 +32,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
+import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.chat.command.CommandGroupMessage;
 import com.forgeessentials.chat.command.CommandIrc;
 import com.forgeessentials.chat.command.CommandIrcBot;
 import com.forgeessentials.chat.command.CommandIrcPm;
@@ -98,7 +101,7 @@ public class ModuleChat
 
     private PrintWriter logWriter;
 
-    public Censor censor;
+    public static Censor censor;
 
     public Mailer mailer;
 
@@ -172,6 +175,7 @@ public class ModuleChat
         FECommandManager.registerCommand(new CommandReply());
         FECommandManager.registerCommand(new CommandTimedMessages());
         FECommandManager.registerCommand(new CommandUnmute());
+        FECommandManager.registerCommand(new CommandGroupMessage());
 
         FECommandManager.registerCommand(new CommandIrc());
         FECommandManager.registerCommand(new CommandIrcPm());
@@ -230,27 +234,8 @@ public class ModuleChat
         logChatMessage(event.player.getCommandSenderName(), event.message);
 
         // Initialize parameters
-        String message = processChatReplacements(event.player, censor.filter(event.player, event.message));
-        String playerName = getPlayerNickname(event.player);
-
-        // Get player name formatting
-        String playerFormat = APIRegistry.perms.getUserPermissionProperty(ident, ModuleChat.PERM_PLAYERFORMAT);
-        if (playerFormat == null)
-            playerFormat = "";
-
-        // Initialize header
-        String playerCmd = "/msg " + event.player.getCommandSenderName() + " ";
-        IChatComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
-        IChatComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
-        IChatComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
-        IChatComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
-        IChatComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
-        IChatComponent header = new ChatComponentTranslation(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
-                groupPrefix != null ? groupPrefix : "", //
-                playerPrefix != null ? playerPrefix : "", //
-                playerText, //
-                playerSuffix != null ? playerSuffix : "", //
-                groupSuffix != null ? groupSuffix : "");
+        String message = processChatReplacements(event.player, censor.filter(event.message, event.player));
+        IChatComponent header = getChatHeader(ident);
 
         // Apply colors
         if (event.message.contains("&") && ident.checkPermission(PERM_COLOR))
@@ -278,6 +263,31 @@ public class ModuleChat
             }
             event.setCanceled(true);
         }
+    }
+
+    public static IChatComponent getChatHeader(UserIdent ident)
+    {
+        String playerName = ident.hasPlayer() ? getPlayerNickname(ident.getPlayer()) : ident.getUsernameOrUuid();
+
+        // Get player name formatting
+        String playerFormat = APIRegistry.perms.getUserPermissionProperty(ident, ModuleChat.PERM_PLAYERFORMAT);
+        if (playerFormat == null)
+            playerFormat = "";
+
+        // Initialize header
+        String playerCmd = "/msg " + ident.getUsernameOrUuid() + " ";
+        IChatComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
+        IChatComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
+        IChatComponent header = new ChatComponentTranslation(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
+                groupPrefix != null ? groupPrefix : "", //
+                playerPrefix != null ? playerPrefix : "", //
+                playerText, //
+                playerSuffix != null ? playerSuffix : "", //
+                groupSuffix != null ? groupSuffix : "");
+        return header;
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -490,4 +500,40 @@ public class ModuleChat
         ModuleCommandsEventHandler.checkAfkMessage(target, message);
     }
 
+    public static void tellGroup(ICommandSender sender, String message, String group)
+    {
+        ServerZone sz = APIRegistry.perms.getServerZone();
+        for (String g : sz.getGroups())
+            if (group.equalsIgnoreCase(g))
+            {
+                group = g;
+                break;
+            }
+        String groupName = sz.getGroupPermission(group, FEPermissions.GROUP_NAME);
+        if (groupName == null)
+            groupName = group;
+
+        IChatComponent msg;
+        EntityPlayer player = sender instanceof EntityPlayer ? (EntityPlayer) sender : null;
+        msg = player != null ? getChatHeader(UserIdent.get((EntityPlayer) sender)) : new ChatComponentTranslation("SERVER ");
+        String censored = censor.filter(message, player);
+        String formatted = processChatReplacements(sender, censored);
+
+        IChatComponent msgGroup = new ChatComponentText("@" + groupName + "@ ");
+        msgGroup.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(true);
+        msg.appendSibling(msgGroup);
+
+        IChatComponent msgBody = new ChatComponentText(formatted);
+        msgBody.getChatStyle().setColor(EnumChatFormatting.GRAY);
+        msg.appendSibling(msgBody);
+
+        for (EntityPlayerMP p : ServerUtil.getPlayerList())
+        {
+            List<String> groups = GroupEntry.toList(sz.getPlayerGroups(UserIdent.get(p)));
+            if (groups.contains(group))
+            {
+                ChatOutputHandler.sendMessage(p, msg);
+            }
+        }
+    }
 }

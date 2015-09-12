@@ -58,7 +58,7 @@ public class CommandReach extends ParserCommandBase
             return;
         }
 
-        float distance = arguments.parseFloat();
+        float distance = (float) arguments.parseDouble();
         if (distance < 1)
             distance = 5;
 

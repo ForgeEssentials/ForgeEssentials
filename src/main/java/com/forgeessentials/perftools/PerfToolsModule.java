@@ -15,7 +15,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@FEModule(name = "perftools", parentMod = ForgeEssentials.class)
+@FEModule(name = "perftools", parentMod = ForgeEssentials.class, defaultModule = false)
 public class PerfToolsModule extends ConfigLoaderBase
 {
     private MemoryWatchdog watchdog;
