@@ -5,6 +5,7 @@ import com.forgeessentials.commands.item.CommandBind;
 import com.forgeessentials.commands.item.CommandCraft;
 import com.forgeessentials.commands.item.CommandDechant;
 import com.forgeessentials.commands.item.CommandDrop;
+import com.forgeessentials.commands.item.CommandDuplicate;
 import com.forgeessentials.commands.item.CommandEnchant;
 import com.forgeessentials.commands.item.CommandEnderchest;
 import com.forgeessentials.commands.item.CommandKit;
@@ -110,6 +111,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandBiome());
         FECommandManager.registerCommand(new CommandReach());
         FECommandManager.registerCommand(new CommandVanish());
+        FECommandManager.registerCommand(new CommandDuplicate());
     }
 
     public static CommandsEventHandler oldEventHandler = new CommandsEventHandler();
