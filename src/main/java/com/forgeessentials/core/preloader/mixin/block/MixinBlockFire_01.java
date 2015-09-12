@@ -24,7 +24,7 @@ public abstract class MixinBlockFire_01 extends Block
         super(material);
     }
 
-    @Inject(method = "Lnet.minecraft.block.BlockFire;tryCatchFire (Lnet/minecraft/world/World;IIIILjava/util/Random;I)V", at = @At("HEAD"), remap = false)
+    @Inject(method = "Lnet/minecraft/block/BlockFire;tryCatchFire(Lnet/minecraft/world/World;IIIILjava/util/Random;ILnet/minecraftforge/common/util/ForgeDirection;)V", at = @At("HEAD"), remap = false)
     public void handleTryCatchFire(World world, int x, int y, int z, int p_149841_5_, Random p_149841_6_, int p_149841_7_, ForgeDirection face, CallbackInfo ci)
     {
         if (MinecraftForge.EVENT_BUS.post(new BlockDestroyedByFireEvent(x, y, z, world, this,p_149841_7_ )))
