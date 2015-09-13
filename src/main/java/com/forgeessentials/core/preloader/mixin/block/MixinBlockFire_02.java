@@ -143,8 +143,9 @@ public abstract class MixinBlockFire_02 extends Block
 
                                             // FE: Throw event
                                             if (!MinecraftForge.EVENT_BUS.post(new FireSpreadEvent(i1, k1, j1, p_149674_1_, this, k2, p_149674_2_, p_149674_3_, p_149674_4_)))
-
-                                            p_149674_1_.setBlock(i1, k1, j1, this, k2, 3);
+                                            {
+                                                p_149674_1_.setBlock(i1, k1, j1, this, k2, 3);
+                                            }
                                         }
                                     }
                                 }
