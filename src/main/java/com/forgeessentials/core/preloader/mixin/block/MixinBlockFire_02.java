@@ -31,7 +31,7 @@ public abstract class MixinBlockFire_02 extends Block
         super(material);
     }
 
-    @Shadow
+    @Shadow(remap = false) // Forge method
     public abstract boolean canCatchFire(IBlockAccess world, int x, int y, int z, ForgeDirection face);
 
     @Shadow
@@ -40,7 +40,7 @@ public abstract class MixinBlockFire_02 extends Block
     @Shadow
     abstract int getChanceOfNeighborsEncouragingFire(World p_149845_1_, int p_149845_2_, int p_149845_3_, int p_149845_4_);
 
-    @Shadow
+    @Shadow(remap = false) // Forge method
     abstract void tryCatchFire(World p_149841_1_, int p_149841_2_, int p_149841_3_, int p_149841_4_, int p_149841_5_, Random p_149841_6_, int p_149841_7_, ForgeDirection face);
 
     @Overwrite
@@ -141,6 +141,7 @@ public abstract class MixinBlockFire_02 extends Block
                                                 k2 = 15;
                                             }
 
+                                            // FE: Throw event
                                             if (!MinecraftForge.EVENT_BUS.post(new FireSpreadEvent(i1, k1, j1, p_149674_1_, this, k2, p_149674_2_, p_149674_3_, p_149674_4_)))
 
                                             p_149674_1_.setBlock(i1, k1, j1, this, k2, 3);
