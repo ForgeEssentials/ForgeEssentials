@@ -184,7 +184,10 @@ public class FELaunchHandler implements ITweaker
 
     private void loadLibraries(LaunchClassLoader classLoader)
     {
-        for (File f : libDirectory.listFiles(JAR_FILTER))
+        File[] files = libDirectory.listFiles(JAR_FILTER);
+        if (files == null)
+            return;
+        for (File f : files)
         {
             try
             {

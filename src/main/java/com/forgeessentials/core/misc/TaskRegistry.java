@@ -123,7 +123,7 @@ public class TaskRegistry extends ServerEventHandler
         }
         catch (IllegalStateException e)
         {
-            LoggingHandler.felog.warn("Could not schedule timer");
+            LoggingHandler.felog.warn("Exception scheduling timer");
             e.printStackTrace();
         }
     }

@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -45,7 +46,7 @@ public class CommandParserArgs
     public final EntityPlayerMP senderPlayer;
     public final UserIdent ident;
     public final boolean isTabCompletion;
-    private final PermissionContext permissionContext;
+    public final PermissionContext permissionContext;
 
     public List<String> tabCompletion;
 
@@ -242,6 +243,14 @@ public class CommandParserArgs
         throw new CancelParsingException();
     }
 
+    public void tabCompleteWord(String completion)
+    {
+        if (!isTabCompletion || args.size() != 1 || completion == null || completion.isEmpty())
+            return;
+        if (completion.startsWith(args.peek()))
+            tabCompletion.add(completion);
+    }
+
     public World parseWorld()
     {
         if (isTabCompletion && size() == 1)
@@ -365,4 +374,12 @@ public class CommandParserArgs
         ICommandSender s = sender != null ? sender : MinecraftServer.getServer();
         return new WorldPoint(s.getEntityWorld(), s.getPlayerCoordinates());
     }
+
+    public WorldZone getWorldZone()
+    {
+        if (senderPlayer == null)
+            throw new TranslatedCommandException("Player needed");
+        return APIRegistry.perms.getServerZone().getWorldZone(senderPlayer.dimension);
+    }
+
 }
