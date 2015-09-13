@@ -43,7 +43,8 @@ public class WEIntegration
 
         if (!Environment.hasWorldEdit())
         {
-            LoggingHandler.felog.error("You cannot run the FE integration tools for WorldEdit without installing WorldEdit Forge.");
+            LoggingHandler.felog.error("The FE integration tools for WorldEdit will not work without installing WorldEdit Forge.");
+            LoggingHandler.felog.error("You are highly recommended to install WorldEdit Forge for the optimal FE experience.");
             return false;
         }
 

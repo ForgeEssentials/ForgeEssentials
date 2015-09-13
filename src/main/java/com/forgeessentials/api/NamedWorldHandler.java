@@ -1,5 +1,6 @@
 package com.forgeessentials.api;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,8 +68,9 @@ public interface NamedWorldHandler
         @Override
         public List<String> listWorldNames()
         {
-            return Arrays.asList(WORLD_NAME_SURFACE, WORLD_NAME_NETHER, WORLD_NAME_END);
+            return new ArrayList<>(Arrays.asList(WORLD_NAME_SURFACE, WORLD_NAME_NETHER, WORLD_NAME_END));
         }
 
     }
+    
 }

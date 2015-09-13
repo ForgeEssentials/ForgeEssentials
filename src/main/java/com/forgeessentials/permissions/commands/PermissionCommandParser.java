@@ -1,6 +1,7 @@
 package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -20,15 +21,19 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
+import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
+import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -67,9 +72,10 @@ public class PermissionCommandParser
     private static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "reload", "save", "debug" }; // "export",
                                                                                                                             // "promote",
     private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
-    private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms" };
+    private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
+            "denydefault" };
     private static final String[] parseGroupArgs = { "zone", "users", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
-            "priority", "parent", "include" };
+            "priority", "parent", "include", "denydefault" };
     private static final String[] parseUserGroupArgs = { "add", "remove", "set" };
     private static final String[] parseGroupIncludeArgs = { "add", "remove", "clear" };
     private static final String[] parseSpawnArgs = { "here", "clear", "bed" };
@@ -145,17 +151,15 @@ public class PermissionCommandParser
             case "debug":
                 if (arguments.isTabCompletion)
                     return;
-                if (arguments.senderPlayer == null)
-                    throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 arguments.checkPermission(PERM_DEBUG);
-                if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(arguments.senderPlayer))
+                if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(arguments.sender))
                 {
-                    ModulePermissions.permissionHelper.permissionDebugUsers.remove(arguments.senderPlayer);
+                    ModulePermissions.permissionHelper.permissionDebugUsers.remove(arguments.sender);
                     arguments.confirm("Permission debug mode off");
                 }
                 else
                 {
-                    ModulePermissions.permissionHelper.permissionDebugUsers.add(arguments.senderPlayer);
+                    ModulePermissions.permissionHelper.permissionDebugUsers.add(arguments.sender);
                     arguments.confirm("Permission debug mode on");
                 }
                 break;
@@ -214,8 +218,6 @@ public class PermissionCommandParser
     {
         if (arguments.args.isEmpty())
             throw new TranslatedCommandException("Missing permission argument!");
-        if (arguments.senderPlayer == null)
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
         arguments.checkPermission(PERM_TEST);
 
         if (arguments.isTabCompletion)
@@ -234,8 +236,12 @@ public class PermissionCommandParser
             return;
         }
 
+        UserIdent ident = arguments.ident;
+        if (arguments.sender instanceof DoAsCommandSender)
+            ident = ((DoAsCommandSender) arguments.sender).getUserIdent();
+
         String permissionNode = arguments.args.remove();
-        String result = APIRegistry.perms.getPermissionProperty(arguments.senderPlayer, permissionNode);
+        String result = APIRegistry.perms.getUserPermissionProperty(ident, permissionNode);
         if (result == null)
         {
             arguments.confirm(permissionNode + " = \u00a7etrue (not set)");
@@ -370,6 +376,10 @@ public class PermissionCommandParser
             break;
         case "value":
             parseUserPermissions(arguments, ident, zone, PermissionAction.VALUE);
+            break;
+        case "denydefault":
+            arguments.checkPermission(PERM_USER_PERMS);
+            denyDefault(zone.getPlayerPermissions(ident));
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
@@ -802,6 +812,10 @@ public class PermissionCommandParser
         case "value":
             parseGroupPermissions(arguments, group, zone, PermissionAction.VALUE);
             break;
+        case "denydefault":
+            arguments.checkPermission(PERM_GROUP_PERMS);
+            denyDefault(zone.getGroupPermissions(group));
+            break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
@@ -816,7 +830,7 @@ public class PermissionCommandParser
         String fixName = isSuffix ? "suffix" : "prefix";
         if (arguments.args.isEmpty())
         {
-            String fix = APIRegistry.perms.getServerZone().getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
+            String fix = zone.getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (fix == null || fix.isEmpty())
                 fix = "empty";
             arguments.confirm(String.format("%s's %s is %s", group, fixName, fix));
@@ -827,12 +841,12 @@ public class PermissionCommandParser
             if (fix.equalsIgnoreCase("clear"))
             {
                 arguments.confirm(String.format("%s's %s cleared", group, fixName));
-                APIRegistry.perms.getServerZone().clearGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
+                zone.clearGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             }
             else
             {
                 arguments.confirm(String.format("%s's %s set to %s", group, fixName, fix));
-                APIRegistry.perms.getServerZone().setGroupPermissionProperty(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
+                zone.setGroupPermissionProperty(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
             }
         }
     }
@@ -1169,9 +1183,8 @@ public class PermissionCommandParser
                         boolean printedZone = false;
                         for (Entry<String, String> perm : zone.getValue().entrySet())
                         {
-                            if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
-                                    || perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
-                                    || perm.getKey().equals(FEPermissions.SUFFIX))
+                            if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_PRIORITY)
+                                    || perm.getKey().equals(FEPermissions.PREFIX) || perm.getKey().equals(FEPermissions.SUFFIX))
                                 continue;
                             if (!printedGroup)
                             {
@@ -1201,9 +1214,8 @@ public class PermissionCommandParser
                 boolean printedZone = false;
                 for (Entry<String, String> perm : zone.getValue().entrySet())
                 {
-                    if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_ID)
-                            || perm.getKey().equals(FEPermissions.GROUP_PRIORITY) || perm.getKey().equals(FEPermissions.PREFIX)
-                            || perm.getKey().equals(FEPermissions.SUFFIX))
+                    if (perm.getKey().equals(FEPermissions.GROUP) || perm.getKey().equals(FEPermissions.GROUP_PRIORITY)
+                            || perm.getKey().equals(FEPermissions.PREFIX) || perm.getKey().equals(FEPermissions.SUFFIX))
                         continue;
                     if (!printedZone)
                     {
@@ -1260,4 +1272,33 @@ public class PermissionCommandParser
                 ChatOutputHandler.chatNotification(sender, "  " + player.getUsernameOrUuid());
     }
 
+    public static void denyDefault(PermissionList list)
+    {
+        List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT,
+                ModuleProtection.PERM_USE, ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_CRAFT,
+                ModuleProtection.PERM_MOBSPAWN, ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
+
+        RootZone rootZone = APIRegistry.perms.getServerZone().getRootZone();
+        mainLoop: for (Entry<String, String> perm : rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).entrySet())
+        {
+            if (Zone.PERMISSION_FALSE.equals(perm.getValue()))
+                continue;
+            if (list.containsKey(perm.getKey()))
+                continue;
+            if (perm.getKey().endsWith(FEPermissions.DESCRIPTION_PROPERTY))
+                continue;
+            for (String f : filter)
+                if (perm.getKey().startsWith(f))
+                    continue mainLoop;
+            list.put(perm.getKey(), perm.getValue());
+        }
+        list.put("*", Zone.PERMISSION_FALSE);
+        list.put(ModuleProtection.PERM_USE + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_EXIST + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_CRAFT + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+        list.put(ModuleProtection.PERM_INVENTORY + Zone.ALL_PERMS, Zone.PERMISSION_TRUE);
+    }
 }

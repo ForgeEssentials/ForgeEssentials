@@ -3,6 +3,7 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
@@ -14,10 +15,11 @@ import com.google.gson.annotations.Expose;
 /**
  * Point which stores dimension as well
  */
-public class WorldPoint extends Point {
+public class WorldPoint extends Point
+{
 
     protected int dim;
-    
+
     @Expose(serialize = false)
     protected World world;
 
@@ -33,7 +35,7 @@ public class WorldPoint extends Point {
     {
         this(dimension, location.getX(), location.getY(), location.getZ());
     }
-    
+
     public WorldPoint(World world, int x, int y, int z)
     {
         super(x, y, z);
@@ -72,6 +74,11 @@ public class WorldPoint extends Point {
     public WorldPoint(WarpPoint other)
     {
         this(other.getDimension(), other.getBlockX(), other.getBlockY(), other.getBlockZ());
+    }
+
+    public static WorldPoint create(ICommandSender sender)
+    {
+        return new WorldPoint(sender.getEntityWorld(), sender.getPosition());
     }
 
     // ------------------------------------------------------------
@@ -165,13 +172,13 @@ public class WorldPoint extends Point {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int h = 1 + x;
         h = h * 31 + y;
         h = h * 31 + z;
         h = h * 31 + dim;
         return h;
     }
-
 
 }

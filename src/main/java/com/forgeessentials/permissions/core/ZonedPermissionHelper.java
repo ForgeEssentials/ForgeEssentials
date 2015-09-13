@@ -6,9 +6,9 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,10 +16,12 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.WeakHashMap;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandBlockLogic;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -60,15 +62,14 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
- * 
- * @author Olee
+ * Main permission management class
  */
 public class ZonedPermissionHelper extends ServerEventHandler implements IPermissionsHelper, PermissionDebugger
 {
 
-    public static final UserIdent SERVER_IDENT = UserIdent.get("$SERVER");
+    public static final UserIdent SERVER_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefefe", "$SERVER");
 
-    public static final UserIdent CMDBLOCK_IDENT = UserIdent.get("$COMMANDBLOCK");
+    public static final UserIdent CMDBLOCK_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefecb", "$COMMANDBLOCK");
 
     public static final String PERMISSIONS_LIST_FILE = "PermissionsList.txt";
 
@@ -100,7 +101,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     private boolean disableDebug;
 
-    public Set<EntityPlayerMP> permissionDebugUsers = new HashSet<>();
+    public Set<ICommandSender> permissionDebugUsers = Collections.newSetFromMap(new WeakHashMap<ICommandSender, Boolean>());
 
     public List<String> permissionDebugFilters = new ArrayList<>();
 
@@ -123,9 +124,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         permissionDebugFilters.add("fe.protection.gamemode");
         permissionDebugFilters.add("fe.protection.inventory");
         permissionDebugFilters.add("fe.protection.exist");
+        permissionDebugFilters.add("fe.protection.pressureplate");
         permissionDebugFilters.add("fe.commands.afk.autotime");
         // permissionDebugFilters.add("fe.economy.cmdprice");
         permissionDebugFilters.add("worldedit.limit.unrestricted");
+        permissionDebugFilters.add("fe.worldborder.bypass");
     }
 
     // ------------------------------------------------------------
@@ -425,12 +428,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
         IChatComponent msgC1 = ChatOutputHandler.confirmation(msg1);
         IChatComponent msgC2 = ChatOutputHandler.confirmation(msg2);
-        for (EntityPlayerMP player : permissionDebugUsers)
+        for (ICommandSender sender : permissionDebugUsers)
         {
-            if (point != null && new WorldPoint(player).distance(point) > 32)
+            if (point != null && sender instanceof Entity && new WorldPoint((Entity) sender).distance(point) > 32)
                 continue;
-            ChatOutputHandler.sendMessage(player, msgC1);
-            ChatOutputHandler.sendMessage(player, msgC2);
+            ChatOutputHandler.sendMessage(sender, msgC1);
+            ChatOutputHandler.sendMessage(sender, msgC2);
         }
     }
 
@@ -450,23 +453,27 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             event.serverZone.setGroupPermission(Zone.GROUP_DEFAULT, FEPermissions.GROUP, true);
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_PRIORITY, "0");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "global");
         }
         if (!event.serverZone.groupExists(Zone.GROUP_GUESTS))
         {
             event.serverZone.setGroupPermission(Zone.GROUP_GUESTS, FEPermissions.GROUP, true);
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_GUESTS, FEPermissions.GROUP_PRIORITY, "10");
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_GUESTS, FEPermissions.PREFIX, "[GUEST]");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "guests");
         }
         if (!event.serverZone.groupExists(Zone.GROUP_OPERATORS))
         {
             event.serverZone.setGroupPermission(Zone.GROUP_OPERATORS, FEPermissions.GROUP, true);
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[&cOP&f]");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "OPs");
         }
         if (!event.serverZone.groupExists(Zone.GROUP_PLAYERS))
         {
             event.serverZone.setGroupPermission(Zone.GROUP_PLAYERS, FEPermissions.GROUP, true);
             event.serverZone.setGroupPermissionProperty(Zone.GROUP_PLAYERS, FEPermissions.GROUP_PRIORITY, "1");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "players");
         }
         if (!event.serverZone.groupExists(Zone.GROUP_FAKEPLAYERS))
         {

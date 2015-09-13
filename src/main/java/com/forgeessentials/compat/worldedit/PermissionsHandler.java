@@ -19,7 +19,8 @@ public class PermissionsHandler implements ForgePermissionsProvider
     @Override
     public void registerPermission(ICommand command, String permission)
     {
-        PermissionManager.registerPermission(permission, PermissionLevel.OP);
+        boolean isOp = permission.startsWith("worldedit.selection");
+        PermissionManager.registerPermission(permission, isOp ? PermissionLevel.OP : PermissionLevel.TRUE);
     }
 
 }

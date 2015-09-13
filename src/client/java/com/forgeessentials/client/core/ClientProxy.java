@@ -47,9 +47,7 @@ public class ClientProxy extends CommonProxy
 
     /* ------------------------------------------------------------ */
 
-    public static boolean allowCUI;
-
-    public static boolean allowQRCodeRender;
+    public static boolean allowCUI, allowQRCodeRender, allowPermissionRender;
 
     public static float reachDistance;
 
@@ -126,17 +124,16 @@ public class ClientProxy extends CommonProxy
 
         allowCUI = config.getBoolean("allowCUI", Configuration.CATEGORY_GENERAL, true, "Set to false to disable graphical selections.");
         allowQRCodeRender = config.get(Configuration.CATEGORY_GENERAL, "allowQRCodeRender", true,
-                "Set to false to disable QR code rendering when you enter /remote qr..").getBoolean(true);
+                "Set to false to disable QR code rendering when you enter /remote qr.").getBoolean(true);
+        allowPermissionRender = config.get(Configuration.CATEGORY_GENERAL, "allowPermRender", true,
+                "Set to false to disable visual indication of block/item permissions").getBoolean(true);
 
         if (allowCUI)
             MinecraftForge.EVENT_BUS.register(cuiRenderer);
-        else
-            MinecraftForge.EVENT_BUS.unregister(cuiRenderer);
-
         if (allowQRCodeRender)
             MinecraftForge.EVENT_BUS.register(qrCodeRenderer);
-        else
-            MinecraftForge.EVENT_BUS.unregister(qrCodeRenderer);
+        if (allowPermissionRender)
+            MinecraftForge.EVENT_BUS.register(permissionOverlay);
 
         config.save();
     }

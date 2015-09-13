@@ -19,6 +19,8 @@ public class DoAsCommandSender implements ICommandSender
 
     protected UserIdent ident;
 
+    protected boolean hideChatMessages;
+
     public DoAsCommandSender()
     {
         this.ident = ZonedPermissionHelper.SERVER_IDENT;
@@ -62,7 +64,8 @@ public class DoAsCommandSender implements ICommandSender
     @Override
     public void addChatMessage(IChatComponent message)
     {
-        sender.addChatMessage(message);
+        if (!hideChatMessages)
+            sender.addChatMessage(message);
     }
 
     @Override
@@ -105,6 +108,26 @@ public class DoAsCommandSender implements ICommandSender
     public void func_174794_a(Type p_174794_1_, int p_174794_2_)
     {
         sender.func_174794_a(p_174794_1_, p_174794_2_);
+    }
+
+    public UserIdent getIdent()
+    {
+        return ident;
+    }
+
+    public void setIdent(UserIdent ident)
+    {
+        this.ident = ident;
+    }
+
+    public void setHideChatMessages(boolean hideChatMessages)
+    {
+        this.hideChatMessages = hideChatMessages;
+    }
+
+    public boolean isHideChatMessages()
+    {
+        return hideChatMessages;
     }
 
 }

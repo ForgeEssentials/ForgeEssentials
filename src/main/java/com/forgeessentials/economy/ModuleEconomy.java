@@ -34,7 +34,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.economy.commands.CommandCalculatePriceList;
+import com.forgeessentials.economy.commands.CommandSellprice;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
 import com.forgeessentials.economy.commands.CommandSell;
@@ -58,7 +58,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
 {
 
-    public static final UserIdent ECONOMY_IDENT = UserIdent.get("$FE_ECONOMY");
+    public static final UserIdent ECONOMY_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefeec", "$FE_ECONOMY");
 
     public static final String PERM = "fe.economy";
     public static final String PERM_COMMAND = PERM + ".command";
@@ -99,7 +99,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         FECommandManager.registerCommand(new CommandPaidCommand());
         FECommandManager.registerCommand(new CommandSellCommand());
         FECommandManager.registerCommand(new CommandTrade());
-        FECommandManager.registerCommand(new CommandCalculatePriceList());
+        FECommandManager.registerCommand(new CommandSellprice());
     }
 
     @SubscribeEvent

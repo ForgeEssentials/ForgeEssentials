@@ -20,18 +20,22 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -96,6 +100,8 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     private String ircHeaderGlobal;
 
+    private String mcSayHeader;
+
     private String mcHeader;
 
     private int messageDelay;
@@ -115,6 +121,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public IrcHandler()
     {
         ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
 
         registerCommand(new CommandHelp());
@@ -229,6 +236,8 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         ircHeader = config.get(CATEGORY, "ircHeader", "[\u00a7cIRC\u00a7r]<%s> ", "Header for messages sent from IRC. Must contain one \"%s\"").getString();
         ircHeaderGlobal = config.get(CATEGORY, "ircHeaderGlobal", "[\u00a7cIRC\u00a7r] ", "Header for IRC events. Must NOT contain any \"%s\"").getString();
         mcHeader = config.get(CATEGORY, "mcHeader", "<%s> %s", "Header for messages sent from MC to IRC. Must contain two \"%s\"").getString();
+        mcSayHeader = config.get(CATEGORY, "mcSayHeader", "[%s] %s", "Header for messages sent with the /say command from MC to IRC. Must contain two \"%s\"")
+                .getString();
         messageDelay = config.get(CATEGORY, "messageDelay", 0, "Delay between messages sent to IRC").getInt();
         allowCommands = config.get(CATEGORY, "allowCommands", true, "If enabled, allows usage of bot commands").getBoolean();
         allowMcCommands = config.get(CATEGORY, "allowMcCommands", true,
@@ -291,7 +300,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     private void mcSendMessage(String message, User user)
     {
-        String filteredMessage = ModuleChat.instance.censor.filterIRC(message);
+        String filteredMessage = ModuleChat.censor.filterIRC(message);
         ModuleChat.instance.logChatMessage("IRC-" + user.getNick(), filteredMessage);
 
         String headerText = String.format(ircHeader, user.getNick());
@@ -302,7 +311,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     private void mcSendMessage(String message)
     {
-        String filteredMessage = ModuleChat.instance.censor.filterIRC(message);
+        String filteredMessage = ModuleChat.censor.filterIRC(message);
         IChatComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
         IChatComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
         ChatOutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
@@ -412,6 +421,19 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
             sendMessage(Translator.format("%s died", event.entityLiving.getName()));
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void handleSay(CommandEvent event)
+    {
+        if (event.command.getCommandName().equals("say"))
+        {
+            sendMessage(Translator.format(mcSayHeader, event.sender.getName(), StringUtils.join(event.parameters, " ")));
+        }
+        else if (event.command.getCommandName().equals("me"))
+        {
+            sendMessage(Translator.format("* %s %s", event.sender.getName(), StringUtils.join(event.parameters, " ")));
+        }
+    }
+
     /* ------------------------------------------------------------ */
 
     @Override
@@ -519,6 +541,12 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void onDisconnect(DisconnectEvent<PircBotX> event) throws Exception
     {
         mcSendMessage("IRC bot disconnected from the network");
+    }
+
+    @Override
+    public void onAction(ActionEvent<PircBotX> event) throws Exception
+    {
+        mcSendMessage(Translator.format("* %s %s", event.getUser().getNick(), event.getMessage()));
     }
 
     /* ------------------------------------------------------------ */

@@ -9,6 +9,7 @@ import java.util.Map;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.DimensionManager;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,11 +20,13 @@ import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.scripting.ScriptParser.MissingPermissionException;
 import com.forgeessentials.scripting.ScriptParser.MissingPlayerException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
@@ -211,6 +214,22 @@ public final class ScriptMethods
         public String getHelp()
         {
             return "Send error message to all players and fail script execution";
+        }
+    };
+
+    public static final ScriptMethod permset = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args) throws CommandException
+        {
+            CommandParserArgs arguments = new CommandParserArgs(null, args, MinecraftServer.getServer());
+            PermissionCommandParser.parseMain(arguments);
+            return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Modify permissions (like /p command)";
         }
     };
 

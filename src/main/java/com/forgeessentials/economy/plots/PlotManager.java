@@ -8,9 +8,9 @@ import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.plots.command.CommandPlot;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -45,11 +45,7 @@ public class PlotManager extends ServerEventHandler
         // Plot plot = Plot.getPlot(event.afterZone.getId());
         if (oldPlot != plot && plot != null)
         {
-            String plotName = plot.getName();
-            if (plotName == null)
-                plotName = "<unnamed>";
-
-            String message = Translator.format("You entered \"%s\"", plotName);
+            String message = Translator.format("You entered \"%s\"", plot.getNameNotNull());
 
             UserIdent ident = UserIdent.get(event.entityPlayer);
             Set<String> groups = plot.getZone().getStoredPlayerGroups(ident);
@@ -75,14 +71,15 @@ public class PlotManager extends ServerEventHandler
             {
                 message += " " + Translator.format("owned by %s", plot.getOwnerName());
                 ChatOutputHandler.chatConfirmation(event.entityPlayer, message);
-
-                long price = plot.getPrice();
-                if (price >= 0)
-                    ChatOutputHandler
-                            .chatNotification(event.entityPlayer, Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
-
-                // TODO: fee check
             }
+
+            // TODO: fee check
+
+            long price = plot.getPrice();
+            if (price == 0)
+                ChatOutputHandler.chatNotification(event.entityPlayer, Translator.translate("You can buy this plot for free"));
+            else if (price > 0)
+                ChatOutputHandler.chatNotification(event.entityPlayer, Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
         }
     }
 }

@@ -134,6 +134,20 @@ public class UserIdent
         return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));
     }
 
+    public static synchronized UserIdent getFromUuid(String uuid)
+    {
+        if (uuid == null)
+            return null;
+        try
+        {
+            return get(UUID.fromString(uuid));
+        }
+        catch (IllegalArgumentException e)
+        {
+            return null;
+        }
+    }
+
     public static synchronized UserIdent get(EntityPlayer player)
     {
         return player instanceof EntityPlayerMP ? get((EntityPlayerMP) player) : null;
@@ -156,7 +170,18 @@ public class UserIdent
             else
                 ident = new UserIdent(player);
         }
-        ident.player = new WeakReference<EntityPlayer>(player);
+        else
+        {
+            String name = player.getName();
+            if (name != null && !name.equals(ident.username))
+            {
+                byUsername.remove(ident.username);
+                ident.username = name;
+                byUsername.put(ident.username, ident);
+            }
+        }
+        if (ident.player == null || ident.player.get() != player)
+            ident.player = new WeakReference<EntityPlayer>(player);
         return ident;
     }
 

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -23,7 +24,9 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.economy.ModuleEconomy;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
@@ -40,6 +43,8 @@ public class Plot
     public static final String GROUP_PLOT_USER = "PLOT_USER";
 
     public static final String SERVER_OWNER = "SERVER";
+
+    public static final String CATEGORY = "Plots";
 
     // Internal data permission properties (should NEVER be edited by hand)
     public static final String PERM_OWNER = FEPermissions.FE_INTERNAL + ".plot.owner";
@@ -59,8 +64,10 @@ public class Plot
     public static final String PERM_MODS = PERM_COMMAND + ".mods";
 
     public static final String PERM_SET = PERM_COMMAND + ".set";
-    public static final String PERM_SET_PRICE = PERM_COMMAND + ".price";
-    public static final String PERM_SET_FEE = PERM_COMMAND + ".fee";
+    public static final String PERM_SET_PRICE = PERM_SET + ".price";
+    public static final String PERM_SET_FEE = PERM_SET + ".fee";
+    public static final String PERM_SET_NAME = PERM_SET + ".name";
+    public static final String PERM_SET_OWNER = PERM_SET + ".owner";
 
     public static final String PERM_PERMS = PERM_COMMAND + ".perms";
     public static final String PERM_PERMS_BUILD = PERM_SET + ".build";
@@ -119,7 +126,7 @@ public class Plot
 
     public boolean hasOwner()
     {
-        return owner != null;
+        return owner != null && !owner.equals(ZonedPermissionHelper.SERVER_IDENT);
     }
 
     public UserIdent getOwner()
@@ -129,7 +136,9 @@ public class Plot
 
     public void setOwner(UserIdent newOwner)
     {
-        if (newOwner == owner || (newOwner != null && newOwner.equals(owner)))
+        if (newOwner == null)
+            throw new IllegalArgumentException();
+        if (newOwner == owner || newOwner.equals(owner))
             return;
         OwnerChanged event = new PlotEvent.OwnerChanged(this, owner);
         if (owner != null)
@@ -137,12 +146,8 @@ public class Plot
 
         // Set new owner
         owner = newOwner;
-        if (owner == null)
-            zone.clearGroupPermission(GROUP_ALL, PERM_OWNER);
-        else
-            zone.setGroupPermissionProperty(GROUP_ALL, PERM_OWNER, owner.getOrGenerateUuid().toString());
-        if (owner != null)
-            zone.addPlayerToGroup(newOwner, GROUP_PLOT_OWNER);
+        zone.setGroupPermissionProperty(GROUP_ALL, PERM_OWNER, owner.getOrGenerateUuid().toString());
+        zone.addPlayerToGroup(newOwner, GROUP_PLOT_OWNER);
         APIRegistry.getFEEventBus().post(event);
     }
 
@@ -161,7 +166,7 @@ public class Plot
             name = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, PERM_NAME);
         if (name == null)
             return null;
-        return name.replaceAll("@p", owner.getUsernameOrUuid());
+        return name.replaceAll("@p", Matcher.quoteReplacement(owner.getUsernameOrUuid()));
     }
 
     public String getNameNotNull()
@@ -178,8 +183,7 @@ public class Plot
     }
 
     /**
-     * Gets the size that counts for price / limit calculation. Depending on whether the column flag is set or not, this
-     * is the area or volume of the plot.
+     * Gets the size that counts for price / limit calculation. Depending on whether the column flag is set or not, this is the area or volume of the plot.
      * 
      * @return accounted size
      */
@@ -318,8 +322,7 @@ public class Plot
     }
 
     /**
-     * Gets the size that counts for price / limit calculation. Depending on whether the column flag is set or not, this
-     * is the area or volume of the plot.
+     * Gets the size that counts for price / limit calculation. Depending on whether the column flag is set or not, this is the area or volume of the plot.
      * 
      * @return accounted size
      */
@@ -395,9 +398,9 @@ public class Plot
         for (Zone zone : APIRegistry.perms.getZones())
             if (zone instanceof AreaZone)
             {
-                String ownerId = zone.getGroupPermission(GROUP_ALL, PERM_OWNER);
-                if (ownerId != null)
-                    registerPlot(new Plot((AreaZone) zone, ownerId.equals(SERVER_OWNER) ? null : UserIdent.get(ownerId)));
+                UserIdent ownerIdent = UserIdent.getFromUuid(zone.getGroupPermission(GROUP_ALL, PERM_OWNER));
+                if (ownerIdent != null)
+                    registerPlot(new Plot((AreaZone) zone, ownerIdent));
             }
     }
 
@@ -444,7 +447,7 @@ public class Plot
         perms.registerPermission(PERM_LIST_OWN, PermissionLevel.TRUE, "List own plots");
         perms.registerPermission(PERM_LIST_SALE, PermissionLevel.TRUE, "List plots open for sale");
 
-        perms.registerPermission(PERM_SET, PermissionLevel.OP, "Control plot settings");
+        perms.registerPermission(PERM_SET + ".*", PermissionLevel.OP, "Control plot settings");
 
         perms.registerPermission(PERM_PERMS, PermissionLevel.OP, "Control plot settings");
         perms.registerPermission(PERM_PERMS_BUILD, PermissionLevel.OP, "Control build permissions");
@@ -452,14 +455,22 @@ public class Plot
         perms.registerPermission(PERM_PERMS_INTERACT, PermissionLevel.OP, "Control interaction permissions");
         perms.registerPermission(PERM_PERMS_CHEST, PermissionLevel.OP, "Control chest permissions");
 
-        root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SET, true);
+        root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SET + ".*", true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SELL, true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_PERMS, true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_MODS, true);
+
+        CommandFeSettings.addAlias(CATEGORY, "price", PERM_PRICE);
+        CommandFeSettings.addAlias(CATEGORY, "limit.count", PERM_LIMIT_COUNT);
+        CommandFeSettings.addAlias(CATEGORY, "limit.size", PERM_LIMIT_SIZE);
+        CommandFeSettings.addAlias(CATEGORY, "columnMode", PERM_COLUMN);
+        CommandFeSettings.addAlias(CATEGORY, "size.min", PERM_SIZE_MIN);
+        CommandFeSettings.addAlias(CATEGORY, "size.max", PERM_SIZE_MAX);
     }
 
     public static class PlotRedefinedException extends Exception
     {
+        /* */
     }
 
 }
