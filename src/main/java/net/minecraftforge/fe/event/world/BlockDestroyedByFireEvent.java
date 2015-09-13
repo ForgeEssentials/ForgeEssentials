@@ -6,6 +6,10 @@ import net.minecraftforge.event.world.BlockEvent;
 
 import cpw.mods.fml.common.eventhandler.Cancelable;
 
+/**
+ * Fired when a block is destroyed by fire.
+ */
+
 @Cancelable
 public class BlockDestroyedByFireEvent extends BlockEvent
 {

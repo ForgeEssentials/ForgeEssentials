@@ -10,6 +10,7 @@
 		"entity.MixinEntity_01",
         "server.management.MixinItemInWorldManager_01",
         "item.crafting.MixinCraftingManager",
-        "block.MixinBlockFire_01"
+        "block.MixinBlockFire_01",
+        "block.MixinBlockFire_02"
 	]
 }

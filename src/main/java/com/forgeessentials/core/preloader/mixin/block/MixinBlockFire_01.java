@@ -28,7 +28,7 @@ public abstract class MixinBlockFire_01 extends Block
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlock(IIILnet/minecraft/block/Block;II)Z"), cancellable = true, remap = false)
     public void handleTryCatchFireA(World world, int x, int y, int z, int p_149841_5_, Random p_149841_6_, int p_149841_7_, ForgeDirection face, CallbackInfo ci)
     {
-        if (MinecraftForge.EVENT_BUS.post(new BlockDestroyedByFireEvent(x, y, z, world, this,p_149841_7_ )))
+        if (MinecraftForge.EVENT_BUS.post(new BlockDestroyedByFireEvent(x, y, z, world, this, p_149841_7_ )))
         {
             ci.cancel();
         }
@@ -38,7 +38,7 @@ public abstract class MixinBlockFire_01 extends Block
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockToAir(III)Z"), cancellable = true, remap = false)
     public void handleTryCatchFireB(World world, int x, int y, int z, int p_149841_5_, Random p_149841_6_, int p_149841_7_, ForgeDirection face, CallbackInfo ci)
     {
-        if (MinecraftForge.EVENT_BUS.post(new BlockDestroyedByFireEvent(x, y, z, world, this,p_149841_7_ )))
+        if (MinecraftForge.EVENT_BUS.post(new BlockDestroyedByFireEvent(x, y, z, world, this, p_149841_7_ )))
         {
             ci.cancel();
         }
