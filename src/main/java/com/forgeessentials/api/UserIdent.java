@@ -365,9 +365,20 @@ public class UserIdent
     {
         EntityPlayer player = getPlayer();
         if (player != null)
-            return player.getGameProfile();
-        else
-            return new GameProfile(getOrGenerateUuid(), username);
+        {
+            if (player.getGameProfile().getId() == null)
+            {
+                // Safeguard against stupid mods who set UUID to null
+                UserIdent playerIdent = UserIdent.byUsername.get(player.getCommandSenderName());
+                if (playerIdent != this)
+                    return playerIdent.getGameProfile();
+            }
+            else
+            {
+                return player.getGameProfile();
+            }
+        }
+        return new GameProfile(getOrGenerateUuid(), username);
     }
 
     /* ------------------------------------------------------------ */
