@@ -14,7 +14,6 @@ import java.util.TreeSet;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.FakePlayer;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -311,7 +310,7 @@ public class ServerZone extends Zone
         SortedSet<GroupEntry> result = getStoredPlayerGroupEntries(ident);
         if (ident != null)
         {
-            if (ident.hasPlayer() && ident.getPlayer() instanceof FakePlayer)
+            if (ident.isFakePlayer())
             {
                 result.add(new GroupEntry(this, GROUP_FAKEPLAYERS));
             }
@@ -331,7 +330,8 @@ public class ServerZone extends Zone
         {
             if (result.isEmpty())
                 result.add(new GroupEntry(this, GROUP_GUESTS));
-            result.add(new GroupEntry(GROUP_PLAYERS, 1, 1));
+            if (!ident.isFakePlayer())
+                result.add(new GroupEntry(GROUP_PLAYERS, 1, 1));
         }
         result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
         return result;
