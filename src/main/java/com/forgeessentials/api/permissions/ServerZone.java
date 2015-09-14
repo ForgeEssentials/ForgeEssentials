@@ -490,8 +490,12 @@ public class ServerZone extends Zone
 
     public void registerPlayer(UserIdent ident)
     {
-        if (ident != null)
-            knownPlayers.add(ident);
+        if (ident == null || knownPlayers.contains(ident))
+            return;
+        knownPlayers.add(ident);
+        PermissionList map = getOrCreatePlayerPermissions(ident);
+        if (map.isEmpty())
+            map.put(FEPermissions.PLAYER_KNOWN, PERMISSION_TRUE);
     }
 
     public Set<UserIdent> getKnownPlayers()
