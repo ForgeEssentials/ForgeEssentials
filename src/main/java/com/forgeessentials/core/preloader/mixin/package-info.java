@@ -20,5 +20,9 @@
  * MixinCommandHandler_01 and MixinEntityPlayer_01: For net.minecraftforge.fe Permissions API
  *
  * MixinEntity_01: For net.minecraftforge.fe EntityTriggerPressurePlateEvent
+ *
+ * MixinBlockFire_01: For net.minecraftforge.fe.BlockDestroyedByFireEvent
+ *
+ * MixinBlockFire_02: For net.minecraftforge.fe FireSpreadEvent
  */
 package com.forgeessentials.core.preloader.mixin;

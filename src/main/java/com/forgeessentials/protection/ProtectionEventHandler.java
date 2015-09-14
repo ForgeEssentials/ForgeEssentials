@@ -46,6 +46,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
 
 import com.forgeessentials.api.APIRegistry;
@@ -267,6 +268,20 @@ public class ProtectionEventHandler extends ServerEventHandler
                 event.setCanceled(true);
                 return;
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void fireEvent(FireEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+        String permission = (event instanceof FireEvent.Spread) ? ModuleProtection.PERM_FIRE_SPREAD : ModuleProtection.PERM_FIRE_DESTROY;
+        WorldPoint point = new WorldPoint(event.world.provider.dimensionId, event.x, event.y, event.z);
+        if (!APIRegistry.perms.checkUserPermission(null, point, permission))
+        {
+            event.setCanceled(true);
+            return;
         }
     }
 
