@@ -1,8 +1,10 @@
 package com.forgeessentials.protection.effect;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.scripting.ScriptParser;
+import com.forgeessentials.util.output.LoggingHandler;
 
 public class CommandEffect extends ZoneEffect
 {
@@ -18,7 +20,14 @@ public class CommandEffect extends ZoneEffect
     @Override
     public void execute()
     {
-        ScriptParser.run(command, player, null);
+        try
+        {
+            ScriptParser.run(command, player, null);
+        }
+        catch (CommandException e)
+        {
+            LoggingHandler.felog.error(String.format("Error executing zone command: %s", e.getMessage()));
+        }
     }
 
 }
