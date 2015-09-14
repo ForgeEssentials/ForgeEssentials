@@ -117,8 +117,8 @@ dependencies {
 	includeMod files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dist.jar')
 
 	// Shade Mixin library
-	shade "org.spongepowered:mixin:0.4.5-SNAPSHOT"
-	shadeClient "org.spongepowered:mixin:0.4.5-SNAPSHOT"
+	shade group: "org.spongepowered", name: "mixin", version: "0.4.5-SNAPSHOT", changing: true
+	shadeClient group: "org.spongepowered", name: "mixin", version: "0.4.5-SNAPSHOT", changing: true
 }
 
 /************************************************************
