@@ -115,7 +115,7 @@ dependencies {
 	includeMod files("lib/worldedit-forge-mc1.7.10-6.1.1-SNAPSHOT-dist.jar")
 
 	// Shade Mixin library
-	shade "org.spongepowered:mixin:0.4.4"
+	shade "org.spongepowered:mixin:0.4.5-SNAPSHOT"
 	shadeClient "org.spongepowered:mixin:0.4.5-SNAPSHOT"
 }
 
