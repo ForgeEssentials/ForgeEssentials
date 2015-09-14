@@ -404,7 +404,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     }
 
     @Override
-    public void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value)
+    public void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value, WorldPoint point)
     {
         if (disableDebug || permissionDebugUsers.isEmpty())
             return;
@@ -421,10 +421,6 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] group [\u00a75%s\u00a7f]", zone.getName(), group);
         else
             msg2 = String.format("\u00a7f  zone [\u00a75%s\u00a7f] user [\u00a75%s\u00a7f]", zone.getName(), ident.getUsernameOrUuid());
-
-        WorldPoint point = null;
-        if (ident != null && ident.hasPlayer())
-            point = new WorldPoint(ident.getPlayer());
 
         IChatComponent msgC1 = ChatOutputHandler.confirmation(msg1);
         IChatComponent msgC2 = ChatOutputHandler.confirmation(msg2);
@@ -608,9 +604,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         zones.add(rootZone);
 
         if (isProperty)
-            return getServerZone().getPermissionProperty(zones, ident, groups, permissionNode);
+            return getServerZone().getPermissionProperty(zones, ident, groups, permissionNode, point);
         else
-            return getServerZone().getPermission(zones, ident, groups, permissionNode, false);
+            return getServerZone().getPermission(zones, ident, groups, permissionNode, point, false);
     }
 
     // ------------------------------------------------------------
@@ -955,13 +951,13 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public boolean checkUserPermission(UserIdent ident, Zone zone, String permissionNode)
     {
         return checkBooleanPermission(getServerZone().getPermission(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode,
-                false));
+                null, false));
     }
 
     @Override
     public String getUserPermissionProperty(UserIdent ident, Zone zone, String permissionNode)
     {
-        return getServerZone().getPermissionProperty(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode);
+        return getServerZone().getPermissionProperty(getGlobalZones(zone), ident, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, null);
     }
 
     // ------------------------------------------------------------
@@ -969,37 +965,37 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public String getGroupPermissionProperty(String group, String permissionNode)
     {
-        return getServerZone().getPermissionProperty(getGlobalZones(), null, Arrays.asList(group), permissionNode);
+        return getServerZone().getPermissionProperty(getGlobalZones(), null, Arrays.asList(group), permissionNode, null);
     }
 
     @Override
     public String getGroupPermissionProperty(String group, Zone zone, String permissionNode)
     {
-        return getServerZone().getPermissionProperty(getGlobalZones(zone), null, Arrays.asList(group), permissionNode);
+        return getServerZone().getPermissionProperty(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, null);
     }
 
     @Override
     public boolean checkGroupPermission(String group, String permissionNode)
     {
-        return checkBooleanPermission(getServerZone().getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, false));
+        return checkBooleanPermission(getServerZone().getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, null, false));
     }
 
     @Override
     public boolean checkGroupPermission(String group, Zone zone, String permissionNode)
     {
-        return checkBooleanPermission(getServerZone().getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, false));
+        return checkBooleanPermission(getServerZone().getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, null, false));
     }
 
     @Override
     public String getGroupPermissionProperty(String group, WorldPoint point, String permissionNode)
     {
-        return getServerZone().getPermissionProperty(getServerZone().getZonesAt(point), null, Arrays.asList(group), permissionNode);
+        return getServerZone().getPermissionProperty(getServerZone().getZonesAt(point), null, Arrays.asList(group), permissionNode, point);
     }
 
     @Override
     public boolean checkGroupPermission(String group, WorldPoint point, String permissionNode)
     {
-        return checkBooleanPermission(getServerZone().getPermission(getServerZone().getZonesAt(point), null, Arrays.asList(group), permissionNode, false));
+        return checkBooleanPermission(getServerZone().getPermission(getServerZone().getZonesAt(point), null, Arrays.asList(group), permissionNode, point, false));
     }
 
     // ------------------------------------------------------------

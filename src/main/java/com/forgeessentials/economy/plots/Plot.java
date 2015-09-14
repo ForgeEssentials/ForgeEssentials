@@ -317,7 +317,7 @@ public class Plot
         zones.add(s.getWorldZone(dimension));
         zones.add(s);
         zones.add(s.getRootZone());
-        String permValue = s.getPermissionProperty(zones, null, Arrays.asList(GROUP_ALL), PERM_COLUMN);
+        String permValue = s.getPermissionProperty(zones, null, Arrays.asList(GROUP_ALL), PERM_COLUMN, null);
         return APIRegistry.perms.checkBooleanPermission(permValue);
     }
 

@@ -505,7 +505,7 @@ public class ServerZone extends Zone
 
     // ------------------------------------------------------------
 
-    public String getPermission(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String permissionNode, boolean isProperty)
+    public String getPermission(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String permissionNode, WorldPoint point, boolean isProperty)
     {
         // Build node list
         List<String> nodes = new ArrayList<String>();
@@ -536,7 +536,7 @@ public class ServerZone extends Zone
                     if (result != null)
                     {
                         if (rootZone.permissionDebugger != null)
-                            rootZone.permissionDebugger.debugPermission(zone, ident, null, permissionNode, node, result);
+                            rootZone.permissionDebugger.debugPermission(zone, ident, null, permissionNode, node, result, point);
                         return result;
                     }
                 }
@@ -563,7 +563,7 @@ public class ServerZone extends Zone
                         if (result != null)
                         {
                             if (rootZone.permissionDebugger != null)
-                                rootZone.permissionDebugger.debugPermission(zone, null, group, permissionNode, node, result);
+                                rootZone.permissionDebugger.debugPermission(zone, null, group, permissionNode, node, result, point);
                             return result;
                         }
                     }
@@ -571,11 +571,11 @@ public class ServerZone extends Zone
             }
         }
         if (rootZone.permissionDebugger != null)
-            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE);
+            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE, point);
         return null;
     }
 
-    public String getPermissionProperty(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String node)
+    public String getPermissionProperty(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String node, WorldPoint point)
     {
         // Check player permissions
         if (ident != null)
@@ -586,7 +586,7 @@ public class ServerZone extends Zone
                 if (result != null)
                 {
                     if (rootZone.permissionDebugger != null)
-                        rootZone.permissionDebugger.debugPermission(zone, ident, null, node, node, result);
+                        rootZone.permissionDebugger.debugPermission(zone, ident, null, node, node, result, point);
                     return result;
                 }
             }
@@ -610,21 +610,21 @@ public class ServerZone extends Zone
                     if (result != null)
                     {
                         if (rootZone.permissionDebugger != null)
-                            rootZone.permissionDebugger.debugPermission(zone, null, group, node, node, result);
+                            rootZone.permissionDebugger.debugPermission(zone, null, group, node, node, result, point);
                         return result;
                     }
                 }
             }
         }
         if (rootZone.permissionDebugger != null)
-            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, "null");
+            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, "null", point);
         return null;
     }
 
     public static interface PermissionDebugger
     {
 
-        void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value);
+        void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value, WorldPoint point);
 
     }
 
