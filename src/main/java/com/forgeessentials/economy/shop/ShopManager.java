@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -30,7 +31,9 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ProtectionEventHandler;
@@ -46,13 +49,17 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class ShopManager extends ServerEventHandler
+public class ShopManager extends ServerEventHandler implements ConfigLoader
 {
 
     public static final String PERM_BASE = ModuleEconomy.PERM + ".shop";
     public static final String PERM_CREATE = PERM_BASE + ".create";
     public static final String PERM_DESTROY = PERM_BASE + ".destroy";
     public static final String PERM_USE = PERM_BASE + ".use";
+
+    public static final String CONFIG_FILE = "EconomyConfig";
+
+    public static final Set<String> shopTags = new HashSet<String>();
 
     protected static Set<ShopData> shops = new HashSet<ShopData>();
 
@@ -62,6 +69,12 @@ public class ShopManager extends ServerEventHandler
 
     /* ------------------------------------------------------------ */
     /* Data */
+
+    public ShopManager()
+    {
+        shopTags.add("[FEShop]");
+        ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
+    }
 
     @Override
     @SubscribeEvent
@@ -158,7 +171,7 @@ public class ShopManager extends ServerEventHandler
             if (!ItemUtil.isSign(block))
                 return;
             String[] text = ItemUtil.getSignText(point);
-            if (text == null || text.length < 1 || !text[0].equals(ShopData.SHOP_ID))
+            if (text == null || text.length < 1 || !shopTags.contains(text[0]))
                 return;
             if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_CREATE))
             {
@@ -281,6 +294,29 @@ public class ShopManager extends ServerEventHandler
         shops.add(shop);
         shopSignMap.put(shop.pos, shop);
         shopFrameMap.put(shop.itemFrameId, shop);
+    }
+
+    /* ------------------------------------------------------------ */
+
+    @Override
+    public void load(Configuration config, boolean isReload)
+    {
+        String[] tags = config.get(CONFIG_FILE, "shopTags", shopTags.toArray(new String[shopTags.size()])).getStringList();
+        shopTags.clear();
+        for (String tag : tags)
+            shopTags.add(tag);
+    }
+
+    @Override
+    public void save(Configuration config)
+    {
+        /* do nothing */
+    }
+
+    @Override
+    public boolean supportsCanonicalConfig()
+    {
+        return true;
     }
 
 }

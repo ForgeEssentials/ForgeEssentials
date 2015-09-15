@@ -334,7 +334,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                     if (entry.getKey().equals(item.getUnlocalizedName()))
                     {
                         String id = GameData.getItemRegistry().getNameForObject(item);
-                        config.get(CATEGORY_ITEM, id, DEFAULT_ITEM_PRICE).set(entry.getValue().getInt(DEFAULT_ITEM_PRICE));;
+                        config.get(CATEGORY_ITEM, id, DEFAULT_ITEM_PRICE).set(entry.getValue().getInt(DEFAULT_ITEM_PRICE));
                         break;
                     }
             }

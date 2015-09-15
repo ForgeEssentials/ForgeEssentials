@@ -30,8 +30,6 @@ public class ShopData
 
     public static final Pattern PATTERN_AMOUNT = Pattern.compile("amount\\s+(\\d+)");
 
-    public static final String SHOP_ID = "[FEShop]";
-
     /* ------------------------------------------------------------ */
 
     protected final WorldPoint pos;
@@ -76,7 +74,7 @@ public class ShopData
 
         // if (!ItemUtil.isSign(signPosition.getBlock())) return;
         String[] text = ItemUtil.getSignText(pos);
-        if (text == null || text.length < 2 || !text[0].equals(SHOP_ID))
+        if (text == null || text.length < 2 || !ShopManager.shopTags.contains(text[0]))
         {
             error = Translator.translate("Sign header missing");
             return;
