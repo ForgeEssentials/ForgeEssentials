@@ -211,7 +211,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         Block block = event.world.getBlock(event.x, event.y, event.z);
         String permission = ModuleProtection.getBlockBreakPermission(block, event.world, event.x, event.y, event.z);
         ModuleProtection.debugPermission(event.getPlayer(), permission);
-        WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.x, event.y, event.z);
+        WorldPoint point = new WorldPoint(event);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);

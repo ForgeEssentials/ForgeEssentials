@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,14 +31,15 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.economy.commands.CommandSellprice;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
 import com.forgeessentials.economy.commands.CommandSell;
 import com.forgeessentials.economy.commands.CommandSellCommand;
+import com.forgeessentials.economy.commands.CommandSellprice;
 import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.plots.PlotManager;
+import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -155,11 +157,12 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static int tryRemoveItems(EntityPlayerMP player, ItemStack itemStack, int amount)
     {
         int foundStacks = 0;
+        int itemDamage = ItemUtil.getItemDamage(itemStack);
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {
             ItemStack stack = player.inventory.mainInventory[slot];
             if (stack != null && stack.getItem() == itemStack.getItem()
-                    && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
+                    && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
                 foundStacks += stack.stackSize;
         }
         foundStacks = amount = Math.min(foundStacks, amount);
@@ -167,7 +170,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         {
             ItemStack stack = player.inventory.mainInventory[slot];
             if (stack != null && stack.getItem() == itemStack.getItem()
-                    && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
+                    && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
             {
                 int removeCount = Math.min(stack.stackSize, foundStacks);
                 player.inventory.decrStackSize(slot, removeCount);
@@ -213,10 +216,18 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (deathtoll == null || deathtoll <= 0)
                 return;
             Wallet wallet = APIRegistry.economy.getWallet(ident);
+            long newAmount;
             if (deathtoll < 1)
-                wallet.set(wallet.get() * deathtoll);
+                newAmount = wallet.get() * deathtoll;
             else if (deathtoll >= 1)
-                wallet.set(Math.min(0, wallet.get() - deathtoll));
+                newAmount = Math.min(0, wallet.get() - deathtoll);
+            else
+                return;
+            long loss = wallet.get() - newAmount;
+            if (loss <= 0)
+                return;
+            wallet.set(newAmount);
+            ChatOutputHandler.chatNotification((ICommandSender) e.entity, Translator.format("You lost %s from dying", APIRegistry.economy.currency(loss)));
         }
     }
 
@@ -280,18 +291,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     /* ------------------------------------------------------------ */
 
-    public static String getItemIdentifier(ItemStack itemStack)
-    {
-        String id = GameData.getItemRegistry().getNameForObject(itemStack.getItem());
-        if (itemStack.getItemDamage() == 0 || itemStack.getItemDamage() == 32767)
-            return id;
-        else
-            return id + ":" + itemStack.getItemDamage();
-    }
-
     public static String getItemPricePermission(ItemStack itemStack)
     {
-        return PERM_PRICE + "." + getItemIdentifier(itemStack);
+        return PERM_PRICE + "." + ItemUtil.getItemIdentifier(itemStack);
     }
 
     public static Long getItemPrice(ItemStack itemStack, UserIdent ident)

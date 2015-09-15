@@ -10,6 +10,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.event.world.BlockEvent;
 
 import com.google.gson.annotations.Expose;
 
@@ -80,6 +81,11 @@ public class WorldPoint extends Point
     public WorldPoint(WarpPoint other)
     {
         this(other.getDimension(), other.getBlockX(), other.getBlockY(), other.getBlockZ());
+    }
+
+    public WorldPoint(BlockEvent event)
+    {
+        this(event.world, event.x, event.y, event.z);
     }
 
     public static WorldPoint create(ICommandSender sender)
