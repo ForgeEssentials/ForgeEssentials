@@ -46,6 +46,7 @@ public final class PermissionManager
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static void registerDefaultPermissions()
     {
         permissionProvider.registerPermission(PERM_COMMANDBLOCK, PermissionLevel.OP_2);

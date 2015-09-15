@@ -1,5 +1,6 @@
 package com.forgeessentials.remote;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -316,6 +317,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         return passkey;
     }
 
+    private static File getSaveFile()
+    {
+        return new File(DataManager.getInstance().getBasePath(), "RemotePasskeys.json");
+    }
+    
     /**
      * Set and save a new passkey for a user
      * 
@@ -328,7 +334,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
             passkeys.remove(userIdent);
         else
             passkeys.put(userIdent, passkey);
-        DataManager.getInstance().save(passkeys, "passkeys");
+        DataManager.save(passkeys, getSaveFile());
     }
 
     /**
@@ -336,7 +342,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
      */
     public void loadPasskeys()
     {
-        passkeys = DataManager.getInstance().load(PasskeyMap.class, "passkeys");
+        passkeys = DataManager.load(PasskeyMap.class, getSaveFile());
         if (passkeys == null)
             passkeys = new PasskeyMap();
     }
@@ -349,7 +355,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     @Override
     public Gson getGson()
     {
-        return DataManager.getInstance().getGson();
+        return DataManager.getGson();
     }
 
     /**

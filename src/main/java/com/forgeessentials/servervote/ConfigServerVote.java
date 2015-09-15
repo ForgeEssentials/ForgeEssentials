@@ -12,6 +12,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
+
 import javax.xml.bind.DatatypeConverter;
 
 import net.minecraft.item.Item;
@@ -90,14 +91,8 @@ public class ConfigServerVote extends ConfigLoaderBase
             }
             
             ItemStack stack = new ItemStack(item, amount, meta);
-            
-            if (stack == null) 
-            {
-                continue;
-            }
-
-            LoggingHandler.felog.debug("Added reward item stack: " + stack.getUnlocalizedName());
             freeStuff.add(stack);
+            LoggingHandler.felog.debug("Added reward item stack: " + stack.getUnlocalizedName());
         }
 
         loadKeys();

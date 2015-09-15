@@ -300,7 +300,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     private void mcSendMessage(String message, User user)
     {
-        String filteredMessage = ModuleChat.instance.censor.filterIRC(message);
+        String filteredMessage = ModuleChat.censor.filterIRC(message);
         ModuleChat.instance.logChatMessage("IRC-" + user.getNick(), filteredMessage);
 
         String headerText = String.format(ircHeader, user.getNick());
@@ -311,7 +311,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     private void mcSendMessage(String message)
     {
-        String filteredMessage = ModuleChat.instance.censor.filterIRC(message);
+        String filteredMessage = ModuleChat.censor.filterIRC(message);
         IChatComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
         IChatComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
         ChatOutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
