@@ -24,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.ChunkPosition;
@@ -59,6 +60,7 @@ import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
@@ -215,6 +217,9 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
+            TileEntity te = event.world.getTileEntity(event.x, event.y, event.z);
+            if (te != null)
+                updateBrokenTileEntity((EntityPlayerMP) event.getPlayer(), te);
             if (PlayerInfo.get(ident).getHasFEClient())
             {
                 int blockId = GameData.getBlockRegistry().getId(block);
@@ -348,12 +353,12 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(event.entityPlayer);
             if (mop == null)
-                point = new WorldPoint(event.entityPlayer.dimension, event.x, event.y, event.z);
+                point = new WorldPoint(event.world, event.x, event.y, event.z);
             else
-                point = new WorldPoint(event.entityPlayer.dimension, mop.blockX, mop.blockY, mop.blockZ);
+                point = new WorldPoint(event.world, mop.blockX, mop.blockY, mop.blockZ);
         }
         else
-            point = new WorldPoint(event.entityPlayer.dimension, event.x, event.y, event.z);
+            point = new WorldPoint(event.world, event.x, event.y, event.z);
 
         // Check for block interaction
         if (event.action == Action.RIGHT_CLICK_BLOCK || event.action == Action.LEFT_CLICK_BLOCK)
@@ -781,6 +786,17 @@ public class ProtectionEventHandler extends ServerEventHandler
     }
 
     /* ------------------------------------------------------------ */
+
+    public static void updateBrokenTileEntity(final EntityPlayerMP player, final TileEntity te)
+    {
+        TaskRegistry.runLater(new Runnable() {
+            @Override
+            public void run()
+            {
+                player.playerNetServerHandler.sendPacket(te.getDescriptionPacket());
+            }
+        });
+    }
 
     public static GameType stringToGameType(String gm)
     {

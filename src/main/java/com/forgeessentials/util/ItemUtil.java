@@ -1,7 +1,14 @@
 package com.forgeessentials.util;
 
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityHanging;
+import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntitySign;
 
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -33,6 +40,27 @@ public final class ItemUtil
             return id;
         else
             return id + ":" + itemDamage;
+    }
+
+    public static boolean isItemFrame(EntityHanging entity)
+    {
+        return entity instanceof EntityItemFrame;
+    }
+
+    public static boolean isSign(Block block)
+    {
+        return block == Blocks.wall_sign;
+    }
+
+    public static String[] getSignText(WorldPoint point)
+    {
+        TileEntity te = point.getTileEntity();
+        if (te instanceof TileEntitySign)
+        {
+            TileEntitySign sign = (TileEntitySign) te;
+            return sign.signText;
+        }
+        return null;
     }
 
 }

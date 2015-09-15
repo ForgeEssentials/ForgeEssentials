@@ -183,7 +183,8 @@ public class CommandSellprice extends ParserCommandBase
                         List<?> recipeItems = getRecipeItems(recipe);
                         if (recipeItems == null)
                             continue;
-                        craftRecipes.write(String.format("%s:%d\n", getItemId(recipe.getRecipeOutput().getItem()), ItemUtil.getItemDamage(recipe.getRecipeOutput())));
+                        craftRecipes.write(String.format("%s:%d\n", getItemId(recipe.getRecipeOutput().getItem()),
+                                ItemUtil.getItemDamage(recipe.getRecipeOutput())));
                         for (Object stacks : recipeItems)
                             if (stacks != null)
                             {
@@ -487,8 +488,11 @@ public class CommandSellprice extends ParserCommandBase
                 {
                     ItemStack stack = (ItemStack) stacks;
                     String id = ItemUtil.getItemIdentifier(stack);
-                    priceMapFull.put(id, 0.0);
-                    itemPrice = priceMap.get(id);
+                    if (id != null)
+                    {
+                        priceMapFull.put(id, 0.0);
+                        itemPrice = priceMap.get(id);
+                    }
                 }
                 if (itemPrice == null)
                     return -1;

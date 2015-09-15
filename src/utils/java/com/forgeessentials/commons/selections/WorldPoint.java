@@ -3,8 +3,10 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.ChunkPosition;
@@ -138,6 +140,16 @@ public class WorldPoint extends Point
     {
         return new WarpPoint(this, rotationPitch, rotationYaw);
     }
+    
+    public Block getBlock()
+    {
+        return getWorld().getBlock(x, y, z);
+    }
+
+    public TileEntity getTileEntity()
+    {
+        return getWorld().getTileEntity(x, y, z);
+    }
 
     // ------------------------------------------------------------
 
@@ -192,5 +204,6 @@ public class WorldPoint extends Point
         h = h * 31 + dim;
         return h;
     }
+
 
 }

@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,6 +40,7 @@ import com.forgeessentials.economy.commands.CommandSellprice;
 import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.plots.PlotManager;
+import com.forgeessentials.economy.shop.ShopManager;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -85,6 +87,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     protected PlotManager plotManager;
 
+    protected ShopManager shopManager;
+
     protected HashMap<UserIdent, PlayerWallet> wallets = new HashMap<>();
 
     /* ------------------------------------------------------------ */
@@ -95,6 +99,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         APIRegistry.economy = this;
         plotManager = new PlotManager();
+        shopManager = new ShopManager();
 
         FECommandManager.registerCommand(new CommandWallet());
         FECommandManager.registerCommand(new CommandPay());
@@ -108,7 +113,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        APIRegistry.perms.registerPermissionProperty(PERM_XP_MULTIPLIER, "1",
+        APIRegistry.perms.registerPermissionProperty(PERM_XP_MULTIPLIER, "0",
                 "XP to currency conversion rate (integer, a zombie drops around 5 XP, 0 to disable)");
         APIRegistry.perms.registerPermissionProperty(PERM_CURRENCY, "coins", "Name of currency (plural)");
         APIRegistry.perms.registerPermissionProperty(PERM_CURRENCY_SINGULAR, "coin", "Name of currency (singular)");
@@ -154,23 +159,21 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
     }
 
-    public static int tryRemoveItems(EntityPlayerMP player, ItemStack itemStack, int amount)
+    public static int tryRemoveItems(EntityPlayer player, ItemStack itemStack, int amount)
     {
         int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemStack);
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {
             ItemStack stack = player.inventory.mainInventory[slot];
-            if (stack != null && stack.getItem() == itemStack.getItem()
-                    && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
                 foundStacks += stack.stackSize;
         }
         foundStacks = amount = Math.min(foundStacks, amount);
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {
             ItemStack stack = player.inventory.mainInventory[slot];
-            if (stack != null && stack.getItem() == itemStack.getItem()
-                    && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
             {
                 int removeCount = Math.min(stack.stackSize, foundStacks);
                 player.inventory.decrStackSize(slot, removeCount);
@@ -178,6 +181,19 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             }
         }
         return amount;
+    }
+
+    public static int countInventoryItems(EntityPlayer player, ItemStack itemType)
+    {
+        int foundStacks = 0;
+        int itemDamage = ItemUtil.getItemDamage(itemType);
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+        {
+            ItemStack stack = player.inventory.mainInventory[slot];
+            if (stack != null && stack.getItem() == itemType.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+                foundStacks += stack.stackSize;
+        }
+        return foundStacks;
     }
 
     /* ------------------------------------------------------------ */
@@ -353,4 +369,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             super("You can't afford that");
         }
     }
+
+
 }
