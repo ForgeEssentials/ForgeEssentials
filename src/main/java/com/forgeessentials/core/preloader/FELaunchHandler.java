@@ -30,7 +30,7 @@ public class FELaunchHandler implements ITweaker
 
     public static final String FE_DIRECTORY = "ForgeEssentials";
 
-    public static final String FE_LIB_VERSION = "1";
+    public static final String FE_LIB_VERSION = "2";
 
     public static final FilenameFilter JAR_FILTER = new FilenameFilter() {
         @Override
@@ -134,7 +134,7 @@ public class FELaunchHandler implements ITweaker
     {
         try
         {
-            libDirectory.delete();
+            FileUtils.deleteDirectory(libDirectory);
             libDirectory.mkdirs();
             // TODO Check for other stuff like WorldEdit!
 

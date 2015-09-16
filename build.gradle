@@ -101,7 +101,12 @@ configurations {
 // Configure dependencies (build-only, shaded and packed libraries)
 dependencies {
 	// IRC
-	serverLib "org.pircbotx:pircbotx:2.0.1"
+	serverLib("org.pircbotx:pircbotx:2.0.1") {
+        // these are all packaged with the minecraft server jar
+        exclude module: 'guava'
+        exclude module: 'commons-lang3'
+        exclude module: 'commons-codec'
+    }
 	
 	// Database libraries
 	serverLib "com.h2database:h2:1.3.175"

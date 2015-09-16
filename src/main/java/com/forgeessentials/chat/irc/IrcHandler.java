@@ -194,7 +194,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
         builder.addListener(this);
         builder.setName(botName);
-        builder.setLogin(botName);
+        builder.setLogin("FEIRCBot");
         builder.setAutoNickChange(true);
         builder.setMessageDelay(messageDelay);
         builder.setCapEnabled(!twitchMode);
