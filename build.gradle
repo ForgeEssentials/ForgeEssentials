@@ -101,7 +101,7 @@ configurations {
 // Configure dependencies (build-only, shaded and packed libraries)
 dependencies {
 	// IRC
-	serverLib "org.pircbotx:pircbotx:1.9"
+	serverLib "org.pircbotx:pircbotx:2.0.1"
 	
 	// Database libraries
 	serverLib "com.h2database:h2:1.3.175"
