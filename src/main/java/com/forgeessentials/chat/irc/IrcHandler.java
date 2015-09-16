@@ -19,7 +19,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -28,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.exception.IrcException;
-import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -36,6 +34,7 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -65,7 +64,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     private static final String CHANNELS_HELP = "List of channels to connect to, together with the # character";
 
-    private static final String ADMINS_HELP = "List of priviliged users that can use more commands via the IRC bot";
+    private static final String ADMINS_HELP = "List of privileged users that can use more commands via the IRC bot";
 
     public static final String COMMAND_CHAR = "%";
 
@@ -111,6 +110,8 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     private boolean allowMcCommands;
 
+    private static Thread connectionThread;
+
     public final Map<String, IrcCommand> commands = new HashMap<>();
 
     // This map is used to keep the ICommandSender from being recycled by the garbage collector,
@@ -148,56 +149,69 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (bot != null)
             disconnect();
 
-        LoggingHandler.felog.info("Initializing IRC connection");
-        bot = new PircBotX();
-        bot.getListenerManager().addListener(this);
-        bot.setName(botName);
-        bot.setLogin(botName);
-        bot.setVerbose(false);
-        bot.setAutoNickChange(true);
-        bot.setMessageDelay(messageDelay);
+        LoggingHandler.felog.info("Initializing IRC connection. This may take a while.");
 
-        bot.setCapEnabled(!twitchMode);
-        if (twitchMode)
-            // Prevent pesky messages from jtv because we are sending too fast
-            bot.setMessageDelay(3000);
+        bot = new PircBotX(constructConfig());
 
-        try
-        {
-            LoggingHandler.felog.info(String.format("Attempting to join IRC server %s on port %d", server, port));
-            bot.connect(server, port, serverPassword.isEmpty() ? null : serverPassword);
-            bot.identify(nickPassword);
-
-            LoggingHandler.felog.info("Attempting to join channels...");
-            for (String channel : channels)
+        LoggingHandler.felog.info(String.format("Attempting to join IRC server %s on port %d", server, port));
+        connectionThread = new Thread(new Runnable() {
+            @Override
+            public void run()
             {
-                LoggingHandler.felog.info(String.format("Attempting to join #%s", channel));
-                bot.joinChannel(channel);
+                try
+                {
+                    bot.startBot();
+                }
+                catch (IOException e)
+                {
+                    LoggingHandler.felog.warn("[IRC] Connection failed, could not reach the server");
+                }
+                catch (IrcException e)
+                {
+                    LoggingHandler.felog.warn("[IRC] Connection failed: " + e.getMessage());
+                }
+
             }
-            LoggingHandler.felog.info("IRC bot connected");
-        }
-        catch (NickAlreadyInUseException e)
-        {
-            LoggingHandler.felog.warn("[IRC] Connection failed, assigned nick already in use");
-        }
-        catch (IOException e)
-        {
-            LoggingHandler.felog.warn("[IRC] Connection failed, could not reach the server");
-        }
-        catch (IrcException e)
-        {
-            LoggingHandler.felog.warn("[IRC] Connection failed: " + e.getMessage());
-        }
+        });
+
+        connectionThread.start();
+
     }
 
     public void disconnect()
     {
-        if (bot != null)
+        if (bot != null && bot.isConnected())
         {
-            bot.shutdown();
+            bot.sendIRC().quitServer();
             ircUserCache.clear();
             bot = null;
         }
+    }
+
+    public org.pircbotx.Configuration constructConfig()
+    {
+        org.pircbotx.Configuration.Builder builder = new org.pircbotx.Configuration.Builder();
+
+        builder.addListener(this);
+        builder.setName(botName);
+        builder.setLogin("FEIRCBot");
+        builder.setAutoNickChange(true);
+        builder.setMessageDelay(messageDelay);
+        builder.setCapEnabled(!twitchMode);
+        builder.setServer(server, port, serverPassword.isEmpty() ? "" : serverPassword);
+
+        if (!nickPassword.isEmpty())
+            builder.setNickservPassword(nickPassword);
+
+        if (twitchMode)
+            // Prevent pesky messages from jtv because we are sending too fast
+            builder.setMessageDelay(3000);
+        for (String channel : channels)
+        {
+            builder.addAutoJoinChannel(channel);
+        }
+
+        return builder.buildConfiguration();
     }
 
     public boolean isConnected()
@@ -207,13 +221,13 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     public Set<User> getIrcUsers()
     {
-        return bot.getUsers();
+        return bot.getUserChannelDao().getAllUsers();
     }
 
     public Collection<String> getIrcUserNames()
     {
         List<String> users = new ArrayList<>();
-        for (User user : bot.getUsers())
+        for (User user : bot.getUserChannelDao().getAllUsers())
             users.add(user.getNick());
         return users;
     }
@@ -221,7 +235,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     /* ------------------------------------------------------------ */
 
     @Override
-    public void load(Configuration config, boolean isReload)
+    public void load(net.minecraftforge.common.config.Configuration config, boolean isReload)
     {
         config.addCustomCategoryComment(CATEGORY, "Configure the built-in IRC bot here");
         server = config.get(CATEGORY, "server", "irc.something.com", "Server address").getString();
@@ -262,7 +276,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     }
 
     @Override
-    public void save(Configuration config)
+    public void save(net.minecraftforge.common.config.Configuration config)
     {
         // TODO Auto-generated method stub
     }
@@ -282,14 +296,14 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         // ignore messages to jtv
         if (twitchMode && user.getNick() == "jtv")
             return;
-        user.sendMessage(message);
+        user.send().message(message);
     }
 
     public void sendMessage(String message)
     {
         if (isConnected())
             for (String channel : channels)
-                bot.sendMessage(channel, message);
+                bot.sendIRC().message(channel, message);
     }
 
     public void sendPlayerMessage(ICommandSender sender, IChatComponent message)
@@ -321,7 +335,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     {
         if (!isConnected())
             return null;
-        for (User user : bot.getUsers())
+        for (User user : bot.getUserChannelDao().getAllUsers())
         {
             if (user.getNick().equals(username))
             {
@@ -488,12 +502,12 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (event.getRecipient() != bot.getUserBot())
         {
             if (showEvents)
-                mcSendMessage(String.format("%s has been kicked from %s by %s: %s", event.getRecipient().getNick(), event.getChannel().getName(), event
-                        .getSource().getNick(), event.getReason()));
+                mcSendMessage(String.format("%s has been kicked from %s by %s: %s", event.getRecipient().getNick(), event.getChannel().getName(),
+                        event.getUser().getNick(), event.getReason()));
         }
         else
         {
-            LoggingHandler.felog.warn(String.format("The IRC bot was kicked from %s by %s: ", event.getChannel().getName(), event.getSource().getNick(),
+            LoggingHandler.felog.warn(String.format("The IRC bot was kicked from %s by %s: ", event.getChannel().getName(), event.getUser().getNick(),
                     event.getReason()));
         }
     }
@@ -547,6 +561,12 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void onAction(ActionEvent<PircBotX> event) throws Exception
     {
         mcSendMessage(Translator.format("* %s %s", event.getUser().getNick(), event.getMessage()));
+    }
+
+    @Override
+    public void onNickAlreadyInUse(NickAlreadyInUseEvent<PircBotX> event) throws Exception
+    {
+        LoggingHandler.felog.warn(Translator.format("Nick %s already in use, switching to nick %s", event.getUsedNick(), event.getAutoNewNick()));
     }
 
     /* ------------------------------------------------------------ */

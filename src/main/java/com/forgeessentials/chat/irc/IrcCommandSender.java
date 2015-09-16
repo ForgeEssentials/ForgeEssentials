@@ -42,7 +42,7 @@ public class IrcCommandSender implements ICommandSender
     public void addChatMessage(IChatComponent chatComponent)
     {
         if (user.getBot().isConnected())
-            user.sendMessage(ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
+            user.send().message(ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
     }
 
     @Override
