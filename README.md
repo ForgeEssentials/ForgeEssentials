@@ -1,4 +1,4 @@
-ForgeEssentialsMain [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain)
+ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain)
 ===================
 
 The code on this branch is for Minecraft 1.7.10.  
