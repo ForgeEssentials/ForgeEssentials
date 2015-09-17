@@ -11,6 +11,9 @@
         "server.management.MixinItemInWorldManager_01",
         "item.crafting.MixinCraftingManager",
         "block.MixinBlockFire_01",
-        "block.MixinBlockFire_02"
+        "block.MixinBlockFire_02",
+        
+        "block.MixinBlock",
+        "fml.common.MixinEventBus"
 	]
 }
