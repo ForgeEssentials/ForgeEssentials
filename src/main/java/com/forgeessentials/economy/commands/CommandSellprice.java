@@ -146,10 +146,42 @@ public class CommandSellprice extends ParserCommandBase
         Map<String, Double> priceMap = loadPriceList(arguments);
         Map<String, Double> priceMapFull = new TreeMap<>();
 
+        File craftRecipesFile = new File(ForgeEssentials.getFEDirectory(), "craft_recipes.txt");
         File allPricesFile = new File(ForgeEssentials.getFEDirectory(), "prices_all.txt");
         File priceLogFile = new File(ForgeEssentials.getFEDirectory(), "prices_log.txt");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(priceLogFile)))
         {
+            try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
+            {
+                @SuppressWarnings("unchecked")
+                List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
+                for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
+                {
+                    IRecipe recipe = iterator.next();
+                    if (recipe.getRecipeOutput() == null)
+                        continue;
+                    List<?> recipeItems = getRecipeItems(recipe);
+                    if (recipeItems == null)
+                        continue;
+                    craftRecipes
+                            .write(String.format("%s:%d\n", getItemId(recipe.getRecipeOutput().getItem()), ItemUtil.getItemDamage(recipe.getRecipeOutput())));
+                    for (Object stacks : recipeItems)
+                        if (stacks != null)
+                        {
+                            ItemStack stack = null;
+                            if (stacks instanceof List<?>)
+                            {
+                                if (!((List<?>) stacks).isEmpty())
+                                    stack = (ItemStack) ((List<?>) stacks).get(0);
+                            }
+                            else
+                                stack = (ItemStack) stacks;
+                            if (stack != null)
+                                craftRecipes.write(String.format("  %s:%d\n", getItemId(stack.getItem()), ItemUtil.getItemDamage(stack)));
+                        }
+                }
+            }
+
             // for (Entry<String, Double> entry : priceMap.entrySet())
             // writer.write(String.format("%0$-40s = %d\n", entry.getKey(), (int) Math.floor(entry.getValue())));
             // writer.write("\n");
@@ -171,36 +203,6 @@ public class CommandSellprice extends ParserCommandBase
                 Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.smelting().getSmeltingList());
                 @SuppressWarnings("unchecked")
                 List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
-
-                File craftRecipesFile = new File(ForgeEssentials.getFEDirectory(), "craft_recipes.txt");
-                try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
-                {
-                    for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
-                    {
-                        IRecipe recipe = iterator.next();
-                        if (recipe.getRecipeOutput() == null)
-                            continue;
-                        List<?> recipeItems = getRecipeItems(recipe);
-                        if (recipeItems == null)
-                            continue;
-                        craftRecipes.write(String.format("%s:%d\n", getItemId(recipe.getRecipeOutput().getItem()),
-                                ItemUtil.getItemDamage(recipe.getRecipeOutput())));
-                        for (Object stacks : recipeItems)
-                            if (stacks != null)
-                            {
-                                ItemStack stack = null;
-                                if (stacks instanceof List<?>)
-                                {
-                                    if (!((List<?>) stacks).isEmpty())
-                                        stack = (ItemStack) ((List<?>) stacks).get(0);
-                                }
-                                else
-                                    stack = (ItemStack) stacks;
-                                if (stack != null)
-                                    craftRecipes.write(String.format("  %s:%d\n", getItemId(stack.getItem()), ItemUtil.getItemDamage(stack)));
-                            }
-                    }
-                }
 
                 boolean changedPrice;
                 do
