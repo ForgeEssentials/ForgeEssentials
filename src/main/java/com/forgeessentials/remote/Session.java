@@ -69,7 +69,7 @@ public class Session implements Runnable, RemoteSession
                 }
                 catch (IOException e)
                 {
-                    LoggingHandler.felog.warn("[remote] Socket error: " + e.getMessage());
+                    LoggingHandler.felog.debug("[remote] Socket error: " + e.getMessage());
                     break;
                 }
             }
