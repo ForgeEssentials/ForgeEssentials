@@ -11,7 +11,6 @@ import java.util.Scanner;
 import javax.imageio.ImageIO;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.resources.DefaultResourcePack;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -181,7 +180,7 @@ public final class MapperUtil
 
     public static InputStream getResourceStream(ResourceLocation p_110605_1_)
     {
-        return DefaultResourcePack.class.getResourceAsStream("/assets/" + p_110605_1_.getResourceDomain() + "/" + p_110605_1_.getResourcePath());
+        return Object.class.getResourceAsStream("/assets/" + p_110605_1_.getResourceDomain() + "/" + p_110605_1_.getResourcePath());
     }
 
     public static InputStream getInputStream(ResourceLocation loc) throws IOException
