@@ -318,7 +318,7 @@ public class ModuleProtection
 
     public static String getBlockId(Block block)
     {
-        return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.');
+        return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.').replace(' ', '_');
     }
 
     public static String getBlockPermission(Block block, int meta)
@@ -368,7 +368,7 @@ public class ModuleProtection
 
     public static String getItemId(Item item)
     {
-        return GameData.getItemRegistry().getNameForObject(item).replace(':', '.');
+        return GameData.getItemRegistry().getNameForObject(item).replace(':', '.').replace(' ', '_');
     }
 
     public static String getItemPermission(ItemStack stack, boolean checkMeta)
