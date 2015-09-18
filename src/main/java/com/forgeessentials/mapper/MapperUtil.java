@@ -157,6 +157,8 @@ public final class MapperUtil
         {
             if (datacolors[id] == null)
                 datacolors[id] = new Color[16][];
+            if (datacolors[id][meta] == null)
+                datacolors[id][meta] = new Color[5];
             datacolors[id][meta][0] = color;
             datacolors[id][meta][1] = color;
             datacolors[id][meta][2] = color;
