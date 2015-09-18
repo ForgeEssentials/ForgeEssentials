@@ -14,9 +14,10 @@ import net.minecraft.block.Block;
 import net.minecraft.client.resources.DefaultResourcePack;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
 
 import com.forgeessentials.core.preloader.api.ServerBlock;
@@ -28,6 +29,7 @@ public final class MapperUtil
 
     public static final int CHUNK_BLOCKS = 1 << 4;
     public static final int REGION_CHUNKS = 1 << 5;
+    public static final int REGION_CHUNK_COUNT = REGION_CHUNKS * REGION_CHUNKS;
     public static final int REGION_BLOCKS = CHUNK_BLOCKS << 5;
 
     public static final String BASE_PATH = "textures/blocks";
@@ -66,9 +68,8 @@ public final class MapperUtil
         }
     }
 
-    public static BufferedImage renderChunk(World world, int chunkX, int chunkZ)
+    public static BufferedImage renderChunk(Chunk chunk)
     {
-        Chunk chunk = world.getChunkFromChunkCoords(chunkX, chunkZ);
         BufferedImage image = new BufferedImage(16, 16, BufferedImage.TYPE_3BYTE_BGR);
         renderChunk(image, 0, 0, chunk);
         return image;
@@ -76,23 +77,40 @@ public final class MapperUtil
 
     public static BufferedImage renderRegion(WorldServer world, int regionX, int regionZ)
     {
-        int chunkStartX = regionX * REGION_CHUNKS;
-        int chunkStartZ = regionZ * REGION_CHUNKS;
+        int chunkStartX = regionX * MapperUtil.REGION_CHUNKS;
+        int chunkStartZ = regionZ * MapperUtil.REGION_CHUNKS;
         // File regionFile = new File(file2, "r." + regionX + "." + regionZ + ".mca");
-        BufferedImage image = new BufferedImage(REGION_BLOCKS, REGION_BLOCKS, BufferedImage.TYPE_3BYTE_BGR);
-        for (int rx = 0; rx < REGION_CHUNKS; rx++)
+        BufferedImage image = new BufferedImage(MapperUtil.REGION_BLOCKS, MapperUtil.REGION_BLOCKS, BufferedImage.TYPE_3BYTE_BGR);
+        for (int rx = 0; rx < MapperUtil.REGION_CHUNKS; rx++)
         {
-            for (int rz = 0; rz < REGION_CHUNKS; rz++)
+            for (int rz = 0; rz < MapperUtil.REGION_CHUNKS; rz++)
             {
                 int cx = chunkStartX + rx;
                 int cz = chunkStartZ + rz;
-                if (!chunkExists(world, cx, cz))
+                if (!MapperUtil.chunkExists(world, cx, cz))
                     continue;
-                Chunk chunk = world.getChunkFromChunkCoords(cx, cz);
-                renderChunk(image, rx * CHUNK_BLOCKS, rz * CHUNK_BLOCKS, chunk);
+                Chunk chunk = loadChunk(world, cx, cz);
+                MapperUtil.renderChunk(image, rx * MapperUtil.CHUNK_BLOCKS, rz * MapperUtil.CHUNK_BLOCKS, chunk);
             }
         }
         return image;
+    }
+
+    public static Chunk loadChunk(WorldServer world, int cx, int cz)
+    {
+        Chunk chunk = (Chunk) world.theChunkProviderServer.loadedChunkHashMap.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(cx, cz));
+        if (chunk != null)
+            return chunk;
+        try
+        {
+            AnvilChunkLoader loader = (AnvilChunkLoader) world.theChunkProviderServer.currentChunkLoader;
+            Object[] data = loader.loadChunk__Async(world, cx, cz);
+            return (Chunk) data[0];
+        }
+        catch (IOException e)
+        {
+            return null;
+        }
     }
 
     public static boolean chunkExists(WorldServer world, int cx, int cz)
@@ -171,7 +189,8 @@ public final class MapperUtil
         InputStream is = getResourceStream(loc);
         if (is != null)
             return is;
-        // String fileName = String.format("%s/%s/%s", new Object[] { "assets", loc.getResourceDomain(), loc.getResourcePath() });
+        // String fileName = String.format("%s/%s/%s", new Object[] { "assets", loc.getResourceDomain(),
+        // loc.getResourcePath() });
         return null;
     }
 
@@ -490,6 +509,16 @@ public final class MapperUtil
     public static int worldToRegion(int v)
     {
         return v >> 9;
+    }
+
+    public static int chunkToRegion(int v)
+    {
+        return v >> 5;
+    }
+
+    public static int regionToChunk(int v)
+    {
+        return v << 5;
     }
 
 }

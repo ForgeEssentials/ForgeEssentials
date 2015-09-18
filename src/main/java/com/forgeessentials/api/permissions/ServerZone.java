@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
@@ -332,6 +333,20 @@ public class ServerZone extends Zone
                 result.add(new GroupEntry(this, GROUP_GUESTS));
             if (!ident.isFakePlayer())
                 result.add(new GroupEntry(GROUP_PLAYERS, 1, 1));
+            
+            EntityPlayerMP player = ident.getPlayerMP();
+            if (player != null)
+                switch (player.theItemInWorldManager.getGameType())
+                {
+                case ADVENTURE:
+                    result.add(new GroupEntry(this, GROUP_ADVENTURE));
+                    break;
+                case CREATIVE:
+                    result.add(new GroupEntry(this, GROUP_CREATIVE));
+                    break;
+                default:
+                    break;
+                }
         }
         result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
         return result;

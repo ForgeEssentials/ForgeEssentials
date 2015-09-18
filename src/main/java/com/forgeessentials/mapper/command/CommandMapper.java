@@ -3,17 +3,19 @@ package com.forgeessentials.mapper.command;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.imageio.ImageIO;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.mapper.MapperUtil;
+import com.forgeessentials.mapper.ModuleMapper;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandMapper extends ParserCommandBase
@@ -55,20 +57,25 @@ public class CommandMapper extends ParserCommandBase
         // TODO Auto-generated method stub
         int x = (int) Math.floor(arguments.senderPlayer.posX);
         int z = (int) Math.floor(arguments.senderPlayer.posZ);
+        int chunkX = MapperUtil.worldToChunk(x);
+        int chunkZ = MapperUtil.worldToChunk(z);
+        WorldServer world = (WorldServer) arguments.senderPlayer.worldObj;
 
-        MapperUtil.loadColorScheme(Object.class.getResourceAsStream("/mapper_colorscheme.txt"));
-        
-        BufferedImage img = MapperUtil.renderChunk(MinecraftServer.getServer().getEntityWorld(), MapperUtil.worldToChunk(x), MapperUtil.worldToChunk(z));
+        Future<BufferedImage> image = ModuleMapper.getInstance().getChunkImageAsync(world, chunkX, chunkZ);
         try
         {
-            ImageIO.write(img, "png", new File(ForgeEssentials.getFEDirectory(), "chunk.png"));
+            ImageIO.write(image.get(), "png", new File(ForgeEssentials.getFEDirectory(), "chunk.png"));
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+        catch (InterruptedException | ExecutionException e)
+        {
+            e.printStackTrace();
+        }
 
-        img = MapperUtil.renderRegion((WorldServer) MinecraftServer.getServer().getEntityWorld(), MapperUtil.worldToRegion(x), MapperUtil.worldToRegion(z));
+        BufferedImage img = ModuleMapper.getInstance().getRegionImage(world, MapperUtil.chunkToRegion(chunkX), MapperUtil.chunkToRegion(chunkZ));
         try
         {
             ImageIO.write(img, "png", new File(ForgeEssentials.getFEDirectory(), "region.png"));

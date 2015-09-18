@@ -39,6 +39,8 @@ public abstract class Zone
     public static final String GROUP_PLAYERS = "_PLAYERS_";
     public static final String GROUP_OPERATORS = "_OPS_";
     public static final String GROUP_FAKEPLAYERS = "_FAKEPLAYERS_";
+    public static final String GROUP_CREATIVE = "_CREATIVE_";
+    public static final String GROUP_ADVENTURE = "_ADVENTURE_";
 
     public static final String PERMISSION_ASTERIX = "*";
     public static final String PERMISSION_FALSE = "false";

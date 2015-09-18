@@ -480,6 +480,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             event.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, ModuleProtection.BASE_PERM + ".*", true);
             // e.serverZone.groupParentAdd(Zone.GROUP_FAKEPLAYERS, Zone.GROUP_OPERATORS);
         }
+
+        event.serverZone.setGroupPermission(Zone.GROUP_CREATIVE, FEPermissions.GROUP, true);
+        event.serverZone.setGroupPermission(Zone.GROUP_ADVENTURE, FEPermissions.GROUP, true);
+
         event.serverZone.setPlayerPermission(SERVER_IDENT, "*", true);
         event.serverZone.setPlayerPermission(CMDBLOCK_IDENT, "*", true);
     }
