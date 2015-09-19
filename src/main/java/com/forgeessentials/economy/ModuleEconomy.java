@@ -236,7 +236,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (deathtoll < 1)
                 newAmount = wallet.get() * deathtoll;
             else if (deathtoll >= 1)
-                newAmount = Math.min(0, wallet.get() - deathtoll);
+                newAmount = Math.max(0, wallet.get() - deathtoll);
             else
                 return;
             long loss = wallet.get() - newAmount;
