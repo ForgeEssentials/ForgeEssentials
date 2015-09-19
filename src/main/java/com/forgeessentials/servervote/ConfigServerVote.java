@@ -31,7 +31,7 @@ public class ConfigServerVote extends ConfigLoaderBase
     public static boolean allowOfflineVotes;
     public static String msgAll = "";
     public static String msgVoter = "";
-    public static ArrayList<ItemStack> freeStuff = new ArrayList<ItemStack>();
+    public static ArrayList<ItemStack> freeStuff = new ArrayList<>();
 
     public File keyFolder;
 
@@ -63,30 +63,62 @@ public class ConfigServerVote extends ConfigLoaderBase
         String[] tempArray = config.get(category, "rewards", new String[] {}, "Format is like this: [amount]x<id>[:meta]").getStringList();
 
         freeStuff.clear();
+
         for (String temp : tempArray)
         {
             int amount = 1;
             int meta = 0;
+            int itemId = 0;
+
+            String temp1 = temp;
 
             if (temp.contains("x"))
             {
-                String[] temp2 = temp.split("x");
-                amount = Integer.parseInt(temp2[0]);
-                temp = temp2[1];
+                String[] temp2 = temp.split("x", 2);
+                try
+                {
+                    amount = Integer.parseInt(temp2[0]);
+                    temp = temp2[1];
+                }
+                catch (NumberFormatException notANumber)
+                {
+                    // do nothing, this is a part of item name
+                }
             }
 
-            if (temp.contains(":"))
+            String[] temp2 = temp.split(":", 3);
+            if (temp2.length == 1)
             {
-                String[] temp2 = temp.split(":");
+                //this is item id
+                itemId = Integer.parseInt(temp2[0]);
+            }
+            else if (temp2.length == 2)
+            {
+                try
+                {
+                    //this is item id:meta
+                    itemId = Integer.parseInt(temp2[0]);
+                    meta = Integer.parseInt(temp2[1]);
+                }
+                catch (NumberFormatException notAnId)
+                {
+                    //this is mod id:item name
+                }
+            }
+            else if (temp2.length == 3)
+            {
+                //this is mod id:item name:meta
                 meta = Integer.parseInt(temp2[2]);
                 temp = temp2[0] + ":" + temp2[1];
             }
 
-            Item item = GameData.getItemRegistry().getObject(temp);
-            
+            Item item = itemId == 0 ?
+                    GameData.getItemRegistry().getObject(temp) :
+                    GameData.getItemRegistry().getObjectById(itemId);
+
             if (item == null) 
             {
-                LoggingHandler.felog.warn("Found invalid item:" + temp);
+                LoggingHandler.felog.warn("Found invalid token:\n" + temp1);
                 continue;
             }
             
