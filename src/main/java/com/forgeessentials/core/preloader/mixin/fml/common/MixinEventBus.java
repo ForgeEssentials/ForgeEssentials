@@ -23,7 +23,6 @@ public class MixinEventBus extends EventBus
     @Override
     public void unregister(Object object)
     {
-        System.out.println("Called unregister");
         ArrayList<IEventListener> list = listeners.remove(object);
         if (list == null)
             return;
