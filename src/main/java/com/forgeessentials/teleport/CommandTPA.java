@@ -69,7 +69,7 @@ public class CommandTPA extends ParserCommandBase
             return;
         }
 
-        final UserIdent player = arguments.parsePlayer(true);
+        final UserIdent player = arguments.parsePlayer(true, true);
         if (arguments.isEmpty())
         {
             if (arguments.isTabCompletion)

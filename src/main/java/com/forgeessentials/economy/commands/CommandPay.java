@@ -53,7 +53,7 @@ public class CommandPay extends ParserCommandBase
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Player needed");
-        UserIdent player = arguments.parsePlayer(true);
+        UserIdent player = arguments.parsePlayer(true, false);
 
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing value");

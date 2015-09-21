@@ -1,6 +1,7 @@
 package com.forgeessentials.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -247,7 +248,8 @@ public abstract class ServerUtil
     @SuppressWarnings("unchecked")
     public static List<EntityPlayerMP> getPlayerList()
     {
-        return MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+        MinecraftServer mc = MinecraftServer.getServer();
+        return mc == null || mc.getConfigurationManager() == null ? new ArrayList<>() : mc.getConfigurationManager().playerEntityList;
     }
 
     /**

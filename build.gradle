@@ -57,7 +57,7 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-ext.baseVersion = "1.8.0"
+ext.baseVersion = "1.8.3"
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
@@ -111,16 +111,14 @@ dependencies {
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-	// buildDep group: "com.sk89q.worldedit", name: "worldedit-core", version: "6.1.1-SNAPSHOT", changing: true
-	// buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-mc1.8", version: "6.1.1-SNAPSHOT", classifier: "dev", changing: true
-	buildDep files('lib/worldedit-core-6.1.1-SNAPSHOT-dist.jar')
-	buildDep files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dev.jar')
+	buildDep group: "com.sk89q.worldedit", name: "worldedit-core", version: "6.1.1-SNAPSHOT", changing: true
+	buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-mc1.8", version: "6.1.1-SNAPSHOT", classifier: "dev", changing: true
 	includeMod files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dist.jar')
 
 	// Shade Mixin library
-	shade "org.spongepowered:mixin:0.4.4"
-	shadeClient "org.spongepowered:mixin:0.4.4"
-
+	shade group: "org.spongepowered", name: "mixin", version: "0.4.5-SNAPSHOT", changing: true
+	shadeClient group: "org.spongepowered", name: "mixin", version: "0.4.5-SNAPSHOT", changing: true
+    
     // Sponge
     buildDep "org.spongepowered:sponge:1.8-1446-2.1DEV-515"
 }
@@ -197,6 +195,7 @@ jar {
 		from sharedManifest
 		attributes (
 			"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
+			"FMLAT": "forgeessentials_at.cfg",
 		)
 	}
 }
@@ -218,7 +217,8 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 	manifest {
 		from sharedManifest
 		attributes (
-			"TweakClass": "com.forgeessentials.client.mixin.FEClientLaunchHandler",
+			"MixinConfigs": "mixins.forgeessentials.client.json",
+            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
 		)
 	}
 }
@@ -289,14 +289,15 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
  */
 
 def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
+def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
 afterEvaluate {
 	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
-	tasks.compileUtilsJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
-	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
+	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}"]
 }
 
 reobf {
 	addExtraSrgFile mixinSrg
+	addExtraSrgFile mixinClientSrg
 	reobf (clientJar) { reobfSpec ->
 		reobfSpec.classpath = sourceSets.main.compileClasspath
 	}

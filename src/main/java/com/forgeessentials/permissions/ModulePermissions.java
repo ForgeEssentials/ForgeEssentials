@@ -132,6 +132,7 @@ public class ModulePermissions extends ConfigLoaderBase
         // permissionHelper.verbosePermissionDebug = false;
         permissionHelper.disableAutoSave = false;
         permissionHelper.save();
+        permissionHelper.clear();
         permissionScheduler.saveAll();
     }
 
@@ -142,7 +143,7 @@ public class ModulePermissions extends ConfigLoaderBase
                 "Internal permissions - DO NOT TOUCH THESE UNLESS YOU KNOW WHAT YOU DO (WHICH YOU DON'T!)");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP,
                 "(optional) Permission to keep groups saved, even if they have no permissions set.");
-        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_ID, "Group ID");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_NAME, "Group name for display purposes");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PRIORITY, "Group priority");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_INCLUDES, "Groups that are included using the included group's priority");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PARENTS, "Groups that are included using the including group's priority");

@@ -7,10 +7,14 @@ import java.util.regex.Pattern;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class ScriptParser
@@ -93,46 +97,64 @@ public class ScriptParser
         String cmd = args[0].toLowerCase();
         args = args.length > 1 ? args[1].split(" ") : new String[0];
         args = processArguments(sender, args, argumentValues);
+        if (cmd.isEmpty())
+            throw new SyntaxException("Could not handle script action \"%s\"", action);
 
-        if (cmd.length() > 1 && cmd.charAt(0) == '/')
+        char c = cmd.charAt(0);
+        switch (c)
         {
-            // Run command
-            cmd = cmd.substring(1);
-            boolean ignorePermissions = cmd.equals("p") || cmd.equals("feperm");
-            ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
-            mcCommand.processCommand(ignorePermissions ? MinecraftServer.getServer() : sender, args);
-        }
-        else if (cmd.length() > 2 && cmd.charAt(0) == '?' && cmd.charAt(1) == '/')
+        case '/':
+        case '$':
+        case '?':
+        case '*':
         {
-            // Run command silently (execution won't fail if command fails)
-            cmd = cmd.substring(2);
-            boolean ignorePermissions = cmd.equals("p") || cmd.equals("feperm");
+            ICommandSender cmdSender = sender;
+            if (cmd.equals("p") || cmd.equals("feperm"))
+                cmdSender = MinecraftServer.getServer();
+
+            boolean ignoreErrors = false;
+            modifierLoop: while (true)
+            {
+                cmd = cmd.substring(1);
+                switch (c)
+                {
+                case '$':
+                    if (!(cmdSender instanceof DoAsCommandSender))
+                        cmdSender = new DoAsCommandSender(ZonedPermissionHelper.SERVER_IDENT, sender);
+                    ((DoAsCommandSender) cmdSender).setIdent(ZonedPermissionHelper.SERVER_IDENT);
+                    break;
+                case '?':
+                    ignoreErrors = true;
+                    break;
+                case '*':
+                    if (sender instanceof EntityPlayer)
+                    {
+                        if (!(cmdSender instanceof DoAsCommandSender))
+                            cmdSender = new DoAsCommandSender(UserIdent.get((EntityPlayer) sender), sender);
+                        ((DoAsCommandSender) cmdSender).setHideChatMessages(true);
+                    }
+                    break;
+                case '/':
+                    break modifierLoop;
+                default:
+                    throw new SyntaxException("Could not handle script action \"%s\"", action);
+                }
+                c = cmd.charAt(0);
+            }
             ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
             try
             {
-                mcCommand.processCommand(ignorePermissions ? MinecraftServer.getServer() : sender, args);
+                mcCommand.processCommand(cmdSender, args);
             }
             catch (CommandException e)
             {
+                if (!ignoreErrors)
+                    throw e;
                 LoggingHandler.felog.info(String.format("Silent script command /%s %s failed: %s", cmd, StringUtils.join(args, " "), e.getMessage()));
             }
+            return true;
         }
-        else if (cmd.length() > 2 && cmd.charAt(0) == '$' && cmd.charAt(1) == '/')
-        {
-            // Run command as server
-            cmd = cmd.substring(2);
-            ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
-            try
-            {
-                mcCommand.processCommand(MinecraftServer.getServer(), args);
-            }
-            catch (CommandException e)
-            {
-                LoggingHandler.felog.info(String.format("Silent script command /%s %s failed: %s", cmd, StringUtils.join(args, " "), e.getMessage()));
-            }
-        }
-        else
-        {
+        default:
             boolean canFail = false;
             if (cmd.length() > 1 && cmd.charAt(0) == '?')
             {
@@ -144,7 +166,6 @@ public class ScriptParser
                 throw new SyntaxException("Unknown script method \"%s\"", cmd);
             return method.process(sender, args) | canFail;
         }
-        return true;
     }
 
     public static class ScriptException extends RuntimeException

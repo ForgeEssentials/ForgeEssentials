@@ -1,30 +1,80 @@
 package com.forgeessentials.commands.world;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.CommandDataManager;
-import com.forgeessentials.commands.util.CommandsEventHandler;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
-import com.forgeessentials.commands.util.WeatherTimeData;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.commands.world.CommandWeather.WeatherData;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandTime extends FEcmdModuleCommands
+public class CommandTime extends ParserCommandBase implements ConfigurableCommand
 {
+
+    public static final int dayTimeStart = 1;
+    public static final int dayTimeEnd = 11;
+    public static final int nightTimeStart = 14;
+    public static final int nightTimeEnd = 22;
+
+    public static class TimeData
+    {
+        Long frozenTime;
+    }
+
+    protected static HashMap<Integer, TimeData> timeData = new HashMap<>();
+
+    protected static TimeData getTimeData(int dim)
+    {
+        TimeData td = timeData.get(dim);
+        if (td == null)
+        {
+            td = new TimeData();
+            timeData.put(dim, td);
+        }
+        return td;
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public CommandTime()
+    {
+        FMLCommonHandler.instance().bus().register(this);
+    }
+
     @Override
     public String getCommandName()
     {
         return "time";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/time freeze|set|add [day|night|<t>]: Manipulate time.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".time";
     }
 
     @Override
@@ -34,168 +84,188 @@ public class CommandTime extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
-    {
-        if (args.length != 0 && ServerUtil.isNumeric(args[0]))
-        {
-            String[] newArgs = new String[args.length - 1];
-            for (int i = 0; i < args.length - 1; i++)
-            {
-                newArgs[i] = args[i + 1];
-            }
-            String msg = doCmd(sender, DimensionManager.getWorld(parseInt(args[0])), newArgs);
-            if (msg != null)
-            {
-                ChatOutputHandler.chatConfirmation(sender, msg);
-            }
-        }
-        else
-        {
-            String msg = null;
-            for (World world : DimensionManager.getWorlds())
-            {
-                msg = doCmd(sender, world, args);
-            }
-            if (msg != null)
-            {
-                ChatOutputHandler.chatConfirmation(sender, msg);
-            }
-        }
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
-    {
-        if (args.length != 0 && ServerUtil.isNumeric(args[0]))
-        {
-            String[] newArgs = new String[args.length - 1];
-            for (int i = 0; i < args.length - 1; i++)
-            {
-                newArgs[i] = args[i + 1];
-            }
-            String msg = doCmd(sender, DimensionManager.getWorld(parseInt(args[0])), newArgs);
-            if (msg != null)
-            {
-                ChatOutputHandler.chatConfirmation(sender, msg);
-            }
-        }
-        else
-        {
-            String msg = null;
-            for (World world : DimensionManager.getWorlds())
-            {
-                msg = doCmd(sender, world, args);
-            }
-            if (msg != null)
-            {
-                ChatOutputHandler.chatConfirmation(sender, msg);
-            }
-        }
-    }
-
-    public String doCmd(ICommandSender sender, World world, String[] args) throws CommandException
-    {
-        if (args.length == 0)
-        {
-            throw new TranslatedCommandException(getCommandUsage(sender));
-        }
-
-        switch (args[0])
-        {
-        case "set":
-        {
-            if (args[1].equalsIgnoreCase("day"))
-            {
-                CommandsEventHandler.makeWorldTimeHours(world, WeatherTimeData.dayTimeStart);
-            }
-            else if (args[1].equalsIgnoreCase("night"))
-            {
-                CommandsEventHandler.makeWorldTimeHours(world, WeatherTimeData.nightTimeStart);
-            }
-            else
-            {
-                world.setWorldTime(parseInt(args[1]));
-            }
-            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.getDimensionId());
-            wt.freezeTime = world.getWorldTime();
-            return Translator.format("Set time to %s.", args[1]);
-        }
-        case "add":
-        {
-            if (args.length == 1)
-            {
-                throw new TranslatedCommandException(
-                        "Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
-            }
-            world.setWorldTime(world.getWorldTime() + parseInt(args[1]));
-            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.getDimensionId());
-            wt.freezeTime = world.getWorldTime();
-            return Translator.format("Added %d to the current time.", args[1]);
-
-        }
-        case "freeze":
-        {
-            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.getDimensionId());
-            wt.freezeTime = world.getWorldTime();
-            wt.timeFreeze = !wt.timeFreeze;
-            return "Time freeze" + (wt.timeFreeze ? "on" : "off");
-        }
-        case "lock":
-        {
-            WeatherTimeData wt = CommandDataManager.WTmap.get(world.provider.getDimensionId());
-            if (args.length == 1)
-            {
-                wt.timeSpecified = !wt.timeSpecified;
-            }
-            else
-            {
-                wt.timeSpecified = true;
-                if (args[1].equalsIgnoreCase("day"))
-                {
-                    wt.day = true;
-                }
-                else if (args[1].equalsIgnoreCase("night"))
-                {
-                    wt.day = false;
-                }
-                else
-                {
-                    throw new TranslatedCommandException(
-                            "Improper syntax. Please try this instead: [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night>");
-                }
-            }
-            return Translator.format("Locked time to %s.", args[1]);
-        }
-        default:
-        {
-            throw new TranslatedCommandException(getCommandUsage(sender));
-        }
-        }
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
-        if (args.length == 1)
+        if (arguments.isEmpty())
         {
-            return getListOfStringsMatchingLastWord(args, "freeze", "set", "add", "lock");
+            arguments.confirm("/time set|add <t> [dim]");
+            arguments.confirm("/time freeze [dim]");
+            return;
         }
-        if (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("lock"))
+
+        arguments.tabComplete("freeze", "set", "add");
+        String subCmd = arguments.remove().toLowerCase();
+        switch (subCmd)
         {
-            return getListOfStringsMatchingLastWord(args, "day", "night");
+        case "freeze":
+            parseFreeze(arguments);
+            break;
+        case "set":
+            parseTime(arguments, false);
+            break;
+        case "add":
+            parseTime(arguments, true);
+            break;
+        default:
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
-        return null;
+    }
+
+    public static void parseFreeze(CommandParserArgs arguments) throws CommandException
+    {
+        World world = arguments.isEmpty() ? null : arguments.parseWorld();
+        if (arguments.isTabCompletion)
+            return;
+
+        if (world == null)
+        {
+            boolean freeze = getTimeData(0).frozenTime == null;
+            for (World w : DimensionManager.getWorlds())
+            {
+                TimeData td = getTimeData(w.provider.getDimensionId());
+                td.frozenTime = freeze ? w.getWorldInfo().getWorldTime() : null;
+            }
+            if (freeze)
+                arguments.confirm(Translator.translate("Froze time in all worlds"));
+            else
+                arguments.confirm(Translator.translate("Unfroze time in all worlds"));
+        }
+        else
+        {
+            TimeData td = getTimeData(world.provider.getDimensionId());
+            td.frozenTime = (td.frozenTime == null) ? world.getWorldInfo().getWorldTime() : null;
+            if (td.frozenTime != null)
+                arguments.confirm(Translator.translate("Froze time"));
+            else
+                arguments.confirm(Translator.translate("Unfroze time"));
+        }
+        save();
+    }
+
+    public static void parseTime(CommandParserArgs arguments, boolean addTime) throws CommandException
+    {
+        long time;
+        if (!addTime)
+        {
+            arguments.tabComplete("day", "midday", "dusk", "night", "midnight");
+            String timeStr = arguments.remove().toLowerCase();
+            switch (timeStr)
+            {
+            case "day":
+                time = 1000;
+                break;
+            case "midday":
+                time = 6 * 1000;
+                break;
+            case "dusk":
+                time = 12 * 1000;
+                break;
+            case "night":
+                time = 14 * 1000;
+                break;
+            case "midnight":
+                time = 18 * 1000;
+                break;
+            default:
+                time = parseInt(timeStr);
+                break;
+            }
+        }
+        else
+        {
+            time = parseInt(arguments.remove());
+        }
+
+        World world = arguments.isEmpty() ? null : arguments.parseWorld();
+        if (arguments.isTabCompletion)
+            return;
+
+        if (world == null)
+        {
+            for (World w : DimensionManager.getWorlds())
+            {
+                if (addTime)
+                    w.getWorldInfo().setWorldTime(w.getWorldInfo().getWorldTime() + time);
+                else
+                    w.getWorldInfo().setWorldTime(time);
+                TimeData td = getTimeData(w.provider.getDimensionId());
+                if (td.frozenTime != null)
+                    td.frozenTime = w.getWorldInfo().getWorldTime();
+            }
+            arguments.confirm(Translator.format("Set time to %s in all worlds", time));
+        }
+        else
+        {
+            if (addTime)
+                world.getWorldInfo().setWorldTime(world.getWorldInfo().getWorldTime() + time);
+            else
+                world.getWorldInfo().setWorldTime(time);
+            TimeData td = getTimeData(world.provider.getDimensionId());
+            if (td.frozenTime != null)
+                td.frozenTime = world.getWorldInfo().getWorldTime();
+            arguments.confirm(Translator.format("Set time to %s", time));
+        }
+    }
+
+    /* ------------------------------------------------------------ */
+
+    @SubscribeEvent
+    public void doWorldTick(TickEvent.WorldTickEvent event)
+    {
+        if (event.phase == Phase.START)
+            return;
+        World world = event.world;
+        WorldInfo wi = world.getWorldInfo();
+        if (wi.getWorldTotalTime() % 10 == 0)
+            updateWorld(world);
+    }
+
+    public static void updateWorld(World world)
+    {
+        TimeData td = getTimeData(world.provider.getDimensionId());
+        if (td.frozenTime != null)
+            world.getWorldInfo().setWorldTime(td.frozenTime);
+    }
+
+    public static void save()
+    {
+        DataManager.getInstance().deleteAll(WeatherData.class);
+        for (Entry<Integer, TimeData> state : timeData.entrySet())
+        {
+            DataManager.getInstance().save(state.getValue(), state.getKey().toString());
+        }
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public void loadData()
     {
-        return "/time [dimID, none for all] <freeze|lock|set|add> <time (number)|day|night> Manipulate time.";
+        Map<String, TimeData> states = DataManager.getInstance().loadAll(TimeData.class);
+        timeData.clear();
+        for (Entry<String, TimeData> state : states.entrySet())
+        {
+            if (state.getValue() == null)
+                continue;
+            try
+            {
+                timeData.put(Integer.parseInt(state.getKey()), state.getValue());
+            }
+            catch (NumberFormatException e)
+            {
+                /* do nothing or log message */
+            }
+        }
     }
+
+    @Override
+    public void loadConfig(Configuration config, String category)
+    {
+        /* do nothing */
+    }
+
 }

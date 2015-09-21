@@ -20,6 +20,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandSellCommand extends ForgeEssentialsCommandBase
@@ -40,19 +41,19 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return ModuleEconomy.PERM_COMMAND + ".soldcommand";
+        return ModuleEconomy.PERM_COMMAND + ".sellcommand";
     }
 
     @Override
     public PermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.FALSE;
+        return PermissionLevel.OP;
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/sellcommand <player> <['amount'x]item[:'meta']> <command [args]>";
+        return "/sellcommand <player> <item> <amount> <meta> <command...>";
     }
 
     @Override
@@ -62,10 +63,10 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
     }
 
     /*
-     * Expected structure: "/sellcommand <player> <item> <amount> <meta> <command [args]>"
+     * Expected structure: "/sellcommand <player> <item> <amount> <meta> <command...>"
      */
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 5)
             throw new InvalidSyntaxException(getCommandUsage(sender));
@@ -101,7 +102,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
                 amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(player).toString()));
 
         args = Arrays.copyOfRange(args, 4, args.length);
-        MinecraftServer.getServer().getCommandManager().executeCommand(player, StringUtils.join(args, " "));
+        MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player), StringUtils.join(args, " "));
 
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import net.minecraft.server.MinecraftServer;
 
@@ -92,12 +93,12 @@ public class Session implements Runnable, RemoteSession
         {
             JsonRemoteRequest request = getGson().fromJson(message, JsonRemoteRequest.class);
 
-            LoggingHandler.felog.info(String.format("[remote] Request [%s]: %s", request.id, request.data == null ? "null" : request.data.toString()));
+            LoggingHandler.felog.debug(String.format("[remote] Request [%s]: %s", request.id, request.data == null ? "null" : request.data.toString()));
 
             if (request.auth != null)
             {
                 ident = UserIdent.get(request.auth.username);
-                if (!request.auth.password.equals(ModuleRemote.getInstance().getPasskey(ident)))
+                if (!ModuleRemote.getInstance().getPasskey(ident).equals(request.auth.password))
                 {
                     close("authentication failed", request);
                     return;
@@ -140,9 +141,13 @@ public class Session implements Runnable, RemoteSession
                 RemoteResponse<?> response = handler.handle(this, request);
                 if (response != null)
                 {
+                    response.id = request.id;
                     response.rid = request.rid;
-                    sendMessage(response);
                 }
+                else
+                    response = RemoteResponse.success(request);
+                if (!(response instanceof RemoteResponse.Ignore))
+                    sendMessage(response);
             }
             catch (PermissionException e)
             {
@@ -178,7 +183,7 @@ public class Session implements Runnable, RemoteSession
     @Override
     public synchronized void sendMessage(RemoteResponse<?> message) throws IOException
     {
-        OutputStreamWriter ow = new OutputStreamWriter(socket.getOutputStream());
+        OutputStreamWriter ow = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
         ow.write(getGson().toJson(message) + SEPARATOR);
         ow.flush();
     }

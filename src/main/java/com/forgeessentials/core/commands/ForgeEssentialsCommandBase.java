@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -16,6 +17,7 @@ import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.permission.PermissionManager;
 import net.minecraftforge.permission.PermissionObject;
 
@@ -32,7 +34,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
 
     // ------------------------------------------------------------
     // Command alias
-    
+
     @Override
     public abstract String getCommandUsage(ICommandSender sender);
 
@@ -132,6 +134,27 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
 
         ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(this);
         registerExtraPermissions();
+    }
+
+    @SuppressWarnings("unchecked")
+    public void deregister()
+    {
+        CommandHandler cmdHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+        Map<String, ICommand> commandMap = cmdHandler.getCommands();
+        Set<ICommand> commandSet = (Set<ICommand>) ReflectionHelper.getPrivateValue(CommandHandler.class, cmdHandler, "field_71561_b", "commandSet");
+
+        String commandName = getCommandName();
+        List<String> commandAliases = getCommandAliases();
+        commandSet.remove(this);
+        if (commandName != null)
+            commandMap.remove(commandName);
+        if (commandAliases != null && !commandAliases.isEmpty())
+        {
+            for (String alias : commandAliases)
+            {
+                commandMap.remove(alias);
+            }
+        }
     }
 
     /**

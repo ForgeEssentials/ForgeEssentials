@@ -52,7 +52,7 @@ public class CommandUuid extends ParserCommandBase
         }
         else
         {
-            UserIdent player = arguments.parsePlayer(false);
+            UserIdent player = arguments.parsePlayer(false, false);
             arguments.confirm("UUID = " + player.getOrGenerateUuid());
         }
     }

@@ -1,7 +1,5 @@
 package com.forgeessentials.teleport;
 
-import java.util.EnumSet;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -9,7 +7,6 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.command.server.CommandTeleport;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionObject;
@@ -55,54 +52,50 @@ public class CommandTp extends CommandTeleport implements PermissionObject
                     CommandBase.CoordinateArg argX = func_175770_a(entity.posX, args[b0], true);
                     CommandBase.CoordinateArg argY = func_175767_a(entity.posY, args[i++], 0, 0, false);
                     CommandBase.CoordinateArg argZ = func_175770_a(entity.posZ, args[i++], true);
-                    CommandBase.CoordinateArg argYaw = func_175770_a(entity.rotationYaw, args.length > i ? args[i++] : "~", false);
-                    CommandBase.CoordinateArg argPitch = func_175770_a(entity.rotationPitch, args.length > i ? args[i] : "~", false);
-                    float f;
+                    CommandBase.CoordinateArg argPitch = func_175770_a(entity.rotationYaw, args.length > i ? args[i++] : "~", false);
+                    CommandBase.CoordinateArg argYaw = func_175770_a(entity.rotationPitch, args.length > i ? args[i] : "~", false);
+                    float pitch;
 
                     if (entity instanceof EntityPlayerMP)
                     {
-                        EnumSet enumset = EnumSet.noneOf(S08PacketPlayerPosLook.EnumFlags.class);
-                        if (argX.func_179630_c())
-                            enumset.add(S08PacketPlayerPosLook.EnumFlags.X);
-                        if (argY.func_179630_c())
-                            enumset.add(S08PacketPlayerPosLook.EnumFlags.Y);
-                        if (argZ.func_179630_c())
-                            enumset.add(S08PacketPlayerPosLook.EnumFlags.Z);
-                        if (argPitch.func_179630_c())
-                            enumset.add(S08PacketPlayerPosLook.EnumFlags.X_ROT);
-                        if (argYaw.func_179630_c())
-                            enumset.add(S08PacketPlayerPosLook.EnumFlags.Y_ROT);
-
-                        f = (float) argYaw.func_179629_b();
-                        if (!argYaw.func_179630_c())
-                            f = MathHelper.wrapAngleTo180_float(f);
-
-                        float f1 = (float) argPitch.func_179629_b();
+                        pitch = (float) argPitch.func_179629_b();
                         if (!argPitch.func_179630_c())
-                            f1 = MathHelper.wrapAngleTo180_float(f1);
-
-                        if (f1 > 90.0F || f1 < -90.0F)
+                            pitch = MathHelper.wrapAngleTo180_float(pitch);
+                        float yaw = (float) argYaw.func_179629_b();
+                        if (!argYaw.func_179630_c())
+                            yaw = MathHelper.wrapAngleTo180_float(yaw);
+                        if (yaw > 90.0F || yaw < -90.0F)
                         {
-                            f1 = MathHelper.wrapAngleTo180_float(180.0F - f1);
-                            f = MathHelper.wrapAngleTo180_float(f + 180.0F);
+                            yaw = MathHelper.wrapAngleTo180_float(180.0F - yaw);
+                            pitch = MathHelper.wrapAngleTo180_float(pitch + 180.0F);
                         }
 
                         WarpPoint pos = new WarpPoint(entity.worldObj.provider.getDimensionId(), argX.func_179629_b(), argY.func_179629_b(),
-                                argZ.func_179629_b(), f, f1);
+                                argZ.func_179629_b(), pitch, yaw);
+                        if (argX.func_179630_c())
+                            pos.setX(pos.getX() + entity.posX);
+                        if (argY.func_179630_c())
+                            pos.setX(pos.getY() + entity.posY);
+                        if (argZ.func_179630_c())
+                            pos.setX(pos.getZ() + entity.posZ);
+                        if (argPitch.func_179630_c())
+                            pos.setPitch(pos.getPitch() + entity.rotationPitch);
+                        if (argYaw.func_179630_c())
+                            pos.setYaw(pos.getYaw() + entity.rotationYaw);
                         TeleportHelper.teleport((EntityPlayerMP) entity, pos);
                     }
                     else
                     {
-                        float f2 = (float) MathHelper.wrapAngleTo180_double(argYaw.func_179628_a());
-                        f = (float) MathHelper.wrapAngleTo180_double(argPitch.func_179628_a());
+                        float f2 = (float) MathHelper.wrapAngleTo180_double(argPitch.func_179628_a());
+                        pitch = (float) MathHelper.wrapAngleTo180_double(argYaw.func_179628_a());
 
-                        if (f > 90.0F || f < -90.0F)
+                        if (pitch > 90.0F || pitch < -90.0F)
                         {
-                            f = MathHelper.wrapAngleTo180_float(180.0F - f);
+                            pitch = MathHelper.wrapAngleTo180_float(180.0F - pitch);
                             f2 = MathHelper.wrapAngleTo180_float(f2 + 180.0F);
                         }
 
-                        entity.setLocationAndAngles(argX.func_179628_a(), argY.func_179628_a(), argZ.func_179628_a(), f2, f);
+                        entity.setLocationAndAngles(argX.func_179628_a(), argY.func_179628_a(), argZ.func_179628_a(), f2, pitch);
                         entity.setRotationYawHead(f2);
                     }
 
@@ -116,11 +109,10 @@ public class CommandTp extends CommandTeleport implements PermissionObject
                 if (targetEntity instanceof EntityPlayerMP)
                 {
                     WarpPoint pos = new WarpPoint(targetEntity.worldObj.provider.getDimensionId(), targetEntity.posX, targetEntity.posY, targetEntity.posZ,
-                            targetEntity.rotationYaw, targetEntity.rotationPitch);
-                    TeleportHelper.teleport((EntityPlayerMP) targetEntity, pos);
-                    return;
+                            targetEntity.rotationPitch, targetEntity.rotationYaw);
+                    TeleportHelper.teleport((EntityPlayerMP) entity, pos);
                 }
-                if (targetEntity.worldObj != entity.worldObj)
+                else if (targetEntity.worldObj != entity.worldObj)
                 {
                     throw new CommandException("commands.tp.notSameDimension", new Object[0]);
                 }
@@ -131,12 +123,12 @@ public class CommandTp extends CommandTeleport implements PermissionObject
                     if (entity instanceof EntityPlayerMP)
                     {
                         ((EntityPlayerMP) entity).playerNetServerHandler.setPlayerLocation(targetEntity.posX, targetEntity.posY, targetEntity.posZ,
-                                targetEntity.rotationYaw, targetEntity.rotationPitch);
+                                targetEntity.rotationPitch, targetEntity.rotationYaw);
                     }
                     else
                     {
-                        entity.setLocationAndAngles(targetEntity.posX, targetEntity.posY, targetEntity.posZ, targetEntity.rotationYaw,
-                                targetEntity.rotationPitch);
+                        entity.setLocationAndAngles(targetEntity.posX, targetEntity.posY, targetEntity.posZ, targetEntity.rotationPitch,
+                                targetEntity.rotationYaw);
                     }
 
                     notifyOperators(sender, this, "commands.tp.success", new Object[] { targetEntity.getName(), targetEntity.getName() });

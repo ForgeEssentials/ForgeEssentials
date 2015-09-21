@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
@@ -35,6 +37,7 @@ public class ModuleWorldBorder extends ServerEventHandler
 
     public static final String PERM = "fe.worldborder";
     public static final String PERM_ADMIN = PERM + ".admin";
+    public static final String PERM_BYPASS = PERM + ".bypass";
 
     public static final int DEFAULT_SIZE = 32768;
 
@@ -64,6 +67,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     public void serverStartingEvent(FEModuleServerInitEvent event)
     {
         APIRegistry.perms.registerPermissionDescription(PERM, "Worldborder permissions");
+        APIRegistry.perms.registerPermission(PERM_BYPASS, PermissionLevel.FALSE, "Ignore worldborders if granted");
     }
 
     @SubscribeEvent
@@ -124,9 +128,10 @@ public class ModuleWorldBorder extends ServerEventHandler
 
             // Check which effects are active
             Set<WorldBorderEffect> newActiveEffects = new HashSet<>();
-            for (WorldBorderEffect effect : border.getEffects())
-                if (minBorderDistance <= effect.getTiggerDistance())
-                    newActiveEffects.add(effect);
+            if (!PermissionManager.checkPermission(player, PERM_BYPASS))
+                for (WorldBorderEffect effect : border.getEffects())
+                    if (minBorderDistance <= effect.getTiggerDistance())
+                        newActiveEffects.add(effect);
 
             // Deactivate old effects and update current ones
             Set<WorldBorderEffect> activeEffects = border.getOrCreateActiveEffects(player);

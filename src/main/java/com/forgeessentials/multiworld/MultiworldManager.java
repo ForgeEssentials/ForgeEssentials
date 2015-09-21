@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -190,6 +191,14 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         if (mw != null)
             return mw.getName();
         return parentNamedWorldHandler.getWorldName(dimId);
+    }
+
+    @Override
+    public List<String> listWorldNames()
+    {
+        List<String> names = parentNamedWorldHandler.listWorldNames();
+        names.addAll(worlds.keySet());
+        return names;
     }
 
     /**

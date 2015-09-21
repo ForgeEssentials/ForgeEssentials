@@ -5,7 +5,7 @@ import net.minecraft.block.BlockPortal;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(BlockPortal.class)
-public abstract class BlockPortal_01 extends BlockPortal
+public abstract class MixinBlockPortal_01 extends BlockPortal
 {
 
 //    @Override

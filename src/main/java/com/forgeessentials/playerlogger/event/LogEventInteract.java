@@ -22,7 +22,7 @@ public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
     @Override
     public void process(EntityManager em)
     {
-        if (event.action == Action.RIGHT_CLICK_AIR)
+        if (event.action != Action.LEFT_CLICK_BLOCK)
             return;
         ActionBlock action = new ActionBlock();
         action.time = new Date();

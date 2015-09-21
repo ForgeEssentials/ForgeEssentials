@@ -32,6 +32,11 @@ public class CommandFindblock extends FEcmdModuleCommands implements Configurabl
     }
 
     @Override
+    public void loadData()
+    {
+    }
+    
+    @Override
     public String[] getDefaultAliases()
     {
         return new String[] { "fb" };
@@ -49,15 +54,15 @@ public class CommandFindblock extends FEcmdModuleCommands implements Configurabl
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
-        if (args.length < 2)
+        if (args.length < 1)
         {
             throw new TranslatedCommandException(getCommandUsage(sender));
         }
         String id = args[0];
-        int meta = parseInt(args[1]);
-        int range = (args.length < 2) ? defaultRange : parseInt(args[2], 1, Integer.MAX_VALUE);
-        int amount = (args.length < 3) ? defaultCount : parseInt(args[3], 1, Integer.MAX_VALUE);
-        int speed = (args.length < 4) ? defaultSpeed : parseInt(args[4], 1, Integer.MAX_VALUE);
+        int meta = (args.length < 2) ? 0 : parseInt(args[1]);
+        int range = (args.length < 3) ? defaultRange : parseInt(args[2], 1, Integer.MAX_VALUE);
+        int amount = (args.length < 4) ? defaultCount : parseInt(args[3], 1, Integer.MAX_VALUE);
+        int speed = (args.length < 5) ? defaultSpeed : parseInt(args[4], 1, Integer.MAX_VALUE);
 
         new TickTaskBlockFinder(sender, id, meta, range, amount, speed);
     }
@@ -105,6 +110,7 @@ public class CommandFindblock extends FEcmdModuleCommands implements Configurabl
     public String getCommandUsage(ICommandSender sender)
     {
 
-        return "/fb <block> [max distance] [amount of blocks] [speed] Finds a block.";
+        return "/fb <block> [meta] [max distance] [amount of blocks] [speed] Finds a block.";
     }
+
 }

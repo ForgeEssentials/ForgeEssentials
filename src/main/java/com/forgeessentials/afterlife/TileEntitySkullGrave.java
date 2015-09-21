@@ -2,29 +2,22 @@ package com.forgeessentials.afterlife;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.mojang.authlib.GameProfile;
 
-public class FEskullTe extends TileEntitySkull
+public class TileEntitySkullGrave extends TileEntitySkull
 {
 
-    public FEskullTe(GameProfile player)
+    public TileEntitySkullGrave()
     {
-        // Set player profile
-        if (player != null)
-            setPlayerProfile(player);
     }
 
-    public static FEskullTe createPlayerSkull(GameProfile player, World world, BlockPos pos)
+    public TileEntitySkullGrave(GameProfile player)
     {
-        FEskullTe skull = new FEskullTe(player);
-        world.setBlockState(pos, Blocks.skull.getStateFromMeta(1), 1);
-        world.setTileEntity(pos, skull);
-        return skull;
+        if (player != null)
+            setPlayerProfile(player);
     }
 
     @Override

@@ -6,10 +6,9 @@ import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -59,6 +58,20 @@ public class Questioner extends ServerEventHandler
             question.doAnswer(answer);
     }
 
+    public static synchronized void tick()
+    {
+        for (Entry<ICommandSender, QuestionData> question : questions.entrySet())
+            if (question.getValue().isTimeout())
+                try
+                {
+                    cancel(question.getKey());
+                }
+                catch (CommandException e)
+                {
+                    e.printStackTrace();
+                }
+    }
+
     public static void cancel(ICommandSender target) throws CommandException
     {
         answer(target, null);
@@ -77,23 +90,8 @@ public class Questioner extends ServerEventHandler
     @SubscribeEvent
     public void tickStart(TickEvent.ServerTickEvent event)
     {
-        synchronized (Questioner.class)
-        {
-            for (Entry<ICommandSender, QuestionData> question : questions.entrySet())
-                if (question.getValue().isTimeout())
-                {
-                    try
-                    {
-                        cancel(question.getKey());
-                    }
-                    catch (CommandException e)
-                    {
-                        ChatComponentTranslation msg = new ChatComponentTranslation(e.getMessage(), e.getErrorOjbects());
-                        msg.getChatStyle().setColor(EnumChatFormatting.RED);
-                        question.getValue().getTarget().addChatMessage(msg);
-                    }
-                }
-        }
+        if (event.phase == Phase.START)
+            tick();
     }
 
 }

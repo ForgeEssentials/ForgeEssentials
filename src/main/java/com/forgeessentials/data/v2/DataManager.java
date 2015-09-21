@@ -5,13 +5,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import net.minecraft.util.IChatComponent;
+
+import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
@@ -28,9 +31,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.Expose;
 
-public class DataManager implements ExclusionStrategy
+public class DataManager
 {
-    
+
     public static final String DEFAULT_GROUP = "default";
 
     public static interface DataType<T> extends JsonSerializer<T>, JsonDeserializer<T>
@@ -48,17 +51,18 @@ public class DataManager implements ExclusionStrategy
 
     private static boolean formatsChanged;
 
+    private static Set<String> defaultSerializationGroups = new HashSet<String>(Arrays.asList(DEFAULT_GROUP));
+
+    private static Set<String> serializationGroups = defaultSerializationGroups;
+
     private File basePath;
-
-    private Set<String> defaultSerializationGroups = new HashSet<String>(Arrays.asList(DEFAULT_GROUP));
-
-    private Set<String> serializationGroups = defaultSerializationGroups;
 
     static
     {
         addDataType(new UserIdentType());
         addDataType(new ItemStackType());
         addDataType(new NBTTagCompoundType());
+        addDataType(IChatComponent.class, new IChatComponent.Serializer());
     }
 
     public DataManager(File basePath)
@@ -85,6 +89,15 @@ public class DataManager implements ExclusionStrategy
         formatsChanged = true;
     }
 
+    public static void addDataType(Class<?> clazz, Object serializer)
+    {
+        if (serializer instanceof JsonSerializer<?>)
+            serializers.put(clazz, (JsonSerializer<?>) serializer);
+        if (deserializers instanceof JsonDeserializer<?>)
+            deserializers.put(clazz, (JsonDeserializer<?>) serializer);
+        formatsChanged = true;
+    }
+
     public static <T> void addSerializer(Class<T> clazz, JsonSerializer<T> type)
     {
         serializers.put(clazz, type);
@@ -99,7 +112,12 @@ public class DataManager implements ExclusionStrategy
 
     public void save(Object src, String key)
     {
-        try (FileWriter out = new FileWriter(getTypeFile(src.getClass(), key)))
+        save(src, getTypeFile(src.getClass(), key));
+    }
+
+    public static void save(Object src, File file)
+    {
+        try (FileWriter out = new FileWriter(file))
         {
             toJson(src, out);
         }
@@ -115,10 +133,28 @@ public class DataManager implements ExclusionStrategy
             save(element.getValue(), element.getKey().toString());
     }
 
+    public static void saveAll(Map<?, ?> dataMap, File path)
+    {
+        for (Entry<?, ?> element : dataMap.entrySet())
+            save(element.getValue(), new File(path, element.getKey() + ".json"));
+    }
+
     public boolean delete(Class<?> clazz, String key)
     {
         File file = getTypeFile(clazz, key);
         return file.delete();
+    }
+
+    public void deleteAll(Class<?> clazz)
+    {
+        try
+        {
+            FileUtils.deleteDirectory(getTypePath(clazz));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public boolean exists(Class<?> clazz, String key)
@@ -129,23 +165,34 @@ public class DataManager implements ExclusionStrategy
 
     public <T> Map<String, T> loadAll(Class<T> clazz)
     {
-        File[] files = getTypePath(clazz).listFiles();
+        return loadAll(clazz, getTypePath(clazz));
+    }
+
+    public static <T> Map<String, T> loadAll(Class<T> clazz, File path)
+    {
+        File[] files = path.exists() ? path.listFiles() : new File[0];
         Map<String, T> objects = new HashMap<>();
         if (files != null)
             for (File file : files)
                 if (!file.isDirectory() && file.getName().endsWith(".json"))
                 {
-                    String key = file.getName().replace(".json", "");
-                    T o = load(clazz, key);
+                    T o = load(clazz, file);
                     if (o != null)
+                    {
+                        String key = file.getName().replace(".json", "");
                         objects.put(key, o);
+                    }
                 }
         return objects;
     }
 
     public <T> T load(Class<T> clazz, String key)
     {
-        File file = getTypeFile(clazz, key);
+        return load(clazz, getTypeFile(clazz, key));
+    }
+
+    public static <T> T load(Class<T> clazz, File file)
+    {
         if (!file.exists())
             return null;
         try (BufferedReader br = new BufferedReader(new FileReader(file)))
@@ -168,55 +215,33 @@ public class DataManager implements ExclusionStrategy
         return null;
     }
 
-    public <T> T load(Type type, String key)
-    {
-        File file = getTypeFile(type.getClass(), key);
-        if (!file.exists())
-            return null;
-        try (BufferedReader br = new BufferedReader(new FileReader(file)))
-        {
-            return getGson().fromJson(br, type);
-        }
-        catch (JsonParseException e)
-        {
-            LoggingHandler.felog.error(String.format("Error parsing data file \"%s\"", file.getAbsolutePath()));
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            LoggingHandler.felog.error(String.format("Error loading data file \"%s\"", file.getAbsolutePath()));
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public boolean shouldSkipField(FieldAttributes f)
-    {
-        Expose expose = f.getAnnotation(Expose.class);
-        if (expose != null && (!expose.serialize() || !expose.deserialize()))
-            return true;
-
-        SerializationGroup groupAnnot = f.getAnnotation(SerializationGroup.class);
-        if (groupAnnot != null && !serializationGroups.contains(groupAnnot.name()))
-            return true;
-
-        return false;
-    }
-
-    @Override
-    public boolean shouldSkipClass(Class<?> clazz)
-    {
-        return false;
-    }
-
-    public Gson getGson()
+    public static Gson getGson()
     {
         if (gson == null || formatsChanged)
         {
             GsonBuilder builder = new GsonBuilder();
             builder.setPrettyPrinting();
-            builder.setExclusionStrategies(this);
+            builder.setExclusionStrategies(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f)
+                {
+                    Expose expose = f.getAnnotation(Expose.class);
+                    if (expose != null && (!expose.serialize() || !expose.deserialize()))
+                        return true;
+
+                    SerializationGroup groupAnnot = f.getAnnotation(SerializationGroup.class);
+                    if (groupAnnot != null && !serializationGroups.contains(groupAnnot.name()))
+                        return true;
+
+                    return false;
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz)
+                {
+                    return false;
+                }
+            });
 
             for (Entry<Class<?>, JsonSerializer<?>> format : serializers.entrySet())
                 builder.registerTypeAdapter(format.getKey(), format.getValue());
@@ -228,7 +253,7 @@ public class DataManager implements ExclusionStrategy
         return gson;
     }
 
-    public String toJson(Object src, String... groups)
+    public static String toJson(Object src, String... groups)
     {
         try
         {
@@ -242,7 +267,7 @@ public class DataManager implements ExclusionStrategy
         }
     }
 
-    public void toJson(Object src, Appendable writer, String... groups) throws JsonIOException
+    public static void toJson(Object src, Appendable writer, String... groups) throws JsonIOException
     {
         try
         {

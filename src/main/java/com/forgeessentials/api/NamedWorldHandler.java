@@ -1,5 +1,9 @@
 package com.forgeessentials.api;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
@@ -14,12 +18,15 @@ public interface NamedWorldHandler
 
     String getWorldName(int dimId);
 
+    List<String> listWorldNames();
+
     public static class DefaultNamedWorldHandler implements NamedWorldHandler
     {
 
         @Override
         public WorldServer getWorld(String name)
         {
+            name = name.toLowerCase();
             switch (name)
             {
             case WORLD_NAME_SURFACE:
@@ -58,5 +65,12 @@ public interface NamedWorldHandler
             }
         }
 
+        @Override
+        public List<String> listWorldNames()
+        {
+            return new ArrayList<>(Arrays.asList(WORLD_NAME_SURFACE, WORLD_NAME_NETHER, WORLD_NAME_END));
+        }
+
     }
+    
 }

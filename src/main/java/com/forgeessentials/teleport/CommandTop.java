@@ -72,6 +72,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
         {
             point.setY(point.getY() - 1);
         }
+        point.setY(point.getY() + 1);
         TeleportHelper.teleport(player, point);
     }
 

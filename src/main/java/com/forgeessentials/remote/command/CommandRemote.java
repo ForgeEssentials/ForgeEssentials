@@ -50,7 +50,7 @@ public class CommandRemote extends ParserCommandBase
         {
             if (!args.hasPlayer())
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            showPasskey(args, args.ident);
+            showPasskey(args, args.ident, false);
         }
         else
         {
@@ -69,19 +69,19 @@ public class CommandRemote extends ParserCommandBase
             }
             case "regen":
             {
-                UserIdent ident = args.parsePlayer(false);
+                UserIdent ident = args.parsePlayer(false, false);
                 if (!ident.equals(args.ident))
                     args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isTabCompletion)
                     return;
                 ModuleRemote.getInstance().setPasskey(ident, ModuleRemote.getInstance().generatePasskey());
                 args.confirm("Generated new passkey");
-                showPasskey(args, ident);
+                showPasskey(args, ident, false);
                 return;
             }
             case "setkey":
             {
-                UserIdent ident = args.parsePlayer(false);
+                UserIdent ident = args.parsePlayer(false, false);
                 if (!ident.equals(args.ident))
                     args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isEmpty())
@@ -91,12 +91,12 @@ public class CommandRemote extends ParserCommandBase
                     return;
                 ModuleRemote.getInstance().setPasskey(ident, key);
                 args.confirm(Translator.format("Passkey of %s changed to %s", ident.getUsernameOrUuid(), key));
-                showPasskey(args, ident);
+                showPasskey(args, ident, true);
                 return;
             }
             case "block":
             {
-                UserIdent ident = args.parsePlayer(true);
+                UserIdent ident = args.parsePlayer(true, false);
                 if (!ident.hasUuid())
                     throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUuid());
                 args.checkPermission(ModuleRemote.PERM_CONTROL);
@@ -108,7 +108,7 @@ public class CommandRemote extends ParserCommandBase
             }
             case "kick":
             {
-                UserIdent ident = args.parsePlayer(true);
+                UserIdent ident = args.parsePlayer(true, false);
                 if (!ident.hasUuid())
                     throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUuid());
                 args.checkPermission(ModuleRemote.PERM_CONTROL);
@@ -151,10 +151,10 @@ public class CommandRemote extends ParserCommandBase
             }
             case "qr":
             {
-                UserIdent ident = args.parsePlayer(true);
+                UserIdent ident = args.parsePlayer(true, true);
                 if (!PlayerInfo.get(ident.getPlayerMP()).getHasFEClient())
                 {
-                    showPasskey(args, args.ident);
+                    showPasskey(args, args.ident, false);
                 }
                 else
                 {
@@ -175,11 +175,14 @@ public class CommandRemote extends ParserCommandBase
      * @param args
      * @param ident
      */
-    public void showPasskey(CommandParserArgs args, UserIdent ident)
+    public void showPasskey(CommandParserArgs args, UserIdent ident, boolean hideKey)
     {
+        String passkey = ModuleRemote.getInstance().getPasskey(ident);
+        if (hideKey && !ident.hasPlayer())
+            passkey = passkey.replaceAll(".", "*");
         String connectString = ModuleRemote.getInstance().getConnectString(ident);
         String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-        ChatComponentTranslation msg = new ChatComponentTranslation("Remote passkey = " + ModuleRemote.getInstance().getPasskey(ident) + " ");
+        ChatComponentTranslation msg = new ChatComponentTranslation("Remote passkey = " + passkey + " ");
 
         IChatComponent qrLink = new ChatComponentText("[QR code]");
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())

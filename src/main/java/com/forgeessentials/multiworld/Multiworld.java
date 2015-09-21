@@ -15,6 +15,7 @@ import net.minecraftforge.common.DimensionManager;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.WorldUtil;
 import com.google.gson.annotations.Expose;
 
@@ -80,9 +81,7 @@ public class Multiworld
     public void removeAllPlayersFromWorld()
     {
         WorldServer overworld = MinecraftServer.getServer().worldServerForDimension(0);
-        @SuppressWarnings("unchecked")
-        List<EntityPlayerMP> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
-        for (EntityPlayerMP player : players)
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
             if (player.dimension == dimensionId)
             {

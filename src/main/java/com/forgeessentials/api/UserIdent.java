@@ -1,5 +1,6 @@
 package com.forgeessentials.api;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -10,6 +11,7 @@ import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -53,25 +55,22 @@ public class UserIdent
     private int hashCode;
 
     @Expose(serialize = false)
-    protected EntityPlayer player;
-
-    @Expose(serialize = false)
-    protected GameProfile gameProfile;
+    protected WeakReference<EntityPlayer> player;
 
     /* ------------------------------------------------------------ */
 
-    private UserIdent(EntityPlayer player)
+    private UserIdent(EntityPlayerMP player)
     {
-        this.player = player;
+        this.player = new WeakReference<EntityPlayer>(player);
         this.uuid = player.getPersistentID();
         this.username = player.getName();
         byUuid.put(uuid, this);
         byUsername.put(username.toLowerCase(), this);
     }
 
-    private UserIdent(UUID uuid, String username, EntityPlayer player)
+    private UserIdent(UUID uuid, String username, EntityPlayerMP player)
     {
-        this.player = player;
+        this.player = player == null ? null : new WeakReference<EntityPlayer>(player);
         if (player != null)
         {
             this.uuid = player.getPersistentID();
@@ -108,7 +107,11 @@ public class UserIdent
         {
             UserIdent ident = byUsername.get(username.toLowerCase());
             if (ident != null)
+            {
+                if (uuid != null && ident.uuid == null)
+                    ident.uuid = uuid;
                 return ident;
+            }
         }
 
         return new UserIdent(uuid, username, UserIdent.getPlayerByUuid(uuid));
@@ -131,7 +134,26 @@ public class UserIdent
         return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));
     }
 
+    public static synchronized UserIdent getFromUuid(String uuid)
+    {
+        if (uuid == null)
+            return null;
+        try
+        {
+            return get(UUID.fromString(uuid));
+        }
+        catch (IllegalArgumentException e)
+        {
+            return null;
+        }
+    }
+
     public static synchronized UserIdent get(EntityPlayer player)
+    {
+        return player instanceof EntityPlayerMP ? get((EntityPlayerMP) player) : null;
+    }
+
+    public static synchronized UserIdent get(EntityPlayerMP player)
     {
         if (player == null)
             throw new IllegalArgumentException();
@@ -140,10 +162,26 @@ public class UserIdent
         if (ident == null)
         {
             ident = byUsername.get(player.getName().toLowerCase());
-            if (ident == null)
+            if (ident != null)
+            {
+                ident.uuid = player.getPersistentID();
+                byUuid.put(ident.uuid, ident);
+            }
+            else
                 ident = new UserIdent(player);
         }
-        ident.player = player;
+        else
+        {
+            String name = player.getName();
+            if (name != null && !name.equals(ident.username))
+            {
+                byUsername.remove(ident.username);
+                ident.username = name;
+                byUsername.put(ident.username, ident);
+            }
+        }
+        if (ident.player == null || ident.player.get() != player)
+            ident.player = new WeakReference<EntityPlayer>(player);
         return ident;
     }
 
@@ -161,10 +199,10 @@ public class UserIdent
             if (ident != null)
                 return ident;
 
-            EntityPlayer player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
+            EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
                     UserIdent.getPlayerByUsername(uuidOrUsername);
             if (player != null)
-                return get(player.getPersistentID());
+                return get(player);
 
             return mustExist ? null : new UserIdent(null, uuidOrUsername, null);
         }
@@ -185,7 +223,7 @@ public class UserIdent
         return get(uuidOrUsername, false);
     }
 
-    public static synchronized void login(EntityPlayer player)
+    public static synchronized void login(EntityPlayerMP player)
     {
         UserIdent ident = byUuid.get(player.getPersistentID());
         UserIdent usernameIdent = byUsername.get(player.getName().toLowerCase());
@@ -200,17 +238,16 @@ public class UserIdent
                 byUuid.put(player.getPersistentID(), ident);
             }
         }
-        ident.player = player;
+        ident.player = new WeakReference<EntityPlayer>(player);
         ident.username = player.getName();
         ident.uuid = player.getPersistentID();
-        ident.gameProfile = null;
 
         if (usernameIdent != null && usernameIdent != ident)
         {
             APIRegistry.getFEEventBus().post(new UserIdentInvalidatedEvent(usernameIdent, ident));
 
             // Change data for already existing references to old UserIdent
-            usernameIdent.player = player;
+            usernameIdent.player = new WeakReference<EntityPlayer>(player);
             usernameIdent.username = player.getName();
 
             // Replace entry in username map by the one from uuid map
@@ -219,7 +256,7 @@ public class UserIdent
         }
     }
 
-    public static synchronized void logout(EntityPlayer player)
+    public static synchronized void logout(EntityPlayerMP player)
     {
         UserIdent ident = UserIdent.get(player);
         ident.player = null;
@@ -239,12 +276,16 @@ public class UserIdent
 
     public boolean hasPlayer()
     {
-        return player != null;
+        EntityPlayer player = getPlayer();
+        if (player == null || player instanceof FakePlayer)
+            return false;
+        return true;
+        // return ServerUtil.getPlayerList().contains(player);
     }
 
     public boolean isFakePlayer()
     {
-        return player instanceof FakePlayer;
+        return getPlayer() instanceof FakePlayer;
     }
 
     /* ------------------------------------------------------------ */
@@ -266,21 +307,23 @@ public class UserIdent
 
     public void refreshPlayer()
     {
-        player = UserIdent.getPlayerByUuid(uuid);
+        EntityPlayerMP player = UserIdent.getPlayerByUuid(uuid);
+        this.player = player == null ? null : new WeakReference<EntityPlayer>(player);
     }
 
     public EntityPlayer getPlayer()
     {
-        return player;
+        return player == null ? null : player.get();
     }
 
     public EntityPlayerMP getPlayerMP()
     {
-        return (EntityPlayerMP) player;
+        return player == null ? null : (EntityPlayerMP) player.get();
     }
 
-    public EntityPlayer getFakePlayer()
+    public EntityPlayerMP getFakePlayer()
     {
+        EntityPlayerMP player = getPlayerMP();
         if (player != null)
             return player;
         return FakePlayerFactory.get(MinecraftServer.getServer().worldServers[0], getGameProfile());
@@ -288,14 +331,15 @@ public class UserIdent
 
     public EntityPlayerMP getFakePlayer(WorldServer world)
     {
+        EntityPlayerMP player = getPlayerMP();
         if (player != null)
-            return (EntityPlayerMP) player;
+            return player;
         return FakePlayerFactory.get(world, getGameProfile());
     }
 
     /**
-     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that there is always a UUID available (for example for storage in
-     * maps).
+     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that
+     * there is always a UUID available (for example for storage in maps).
      * 
      * @return
      */
@@ -318,14 +362,11 @@ public class UserIdent
 
     public GameProfile getGameProfile()
     {
-        if (gameProfile == null)
-        {
-            if (player != null)
-                gameProfile = player.getGameProfile();
-            else
-                gameProfile = new GameProfile(getOrGenerateUuid(), username);
-        }
-        return gameProfile;
+        EntityPlayer player = getPlayer();
+        if (player != null)
+            return player.getGameProfile();
+        else
+            return new GameProfile(getOrGenerateUuid(), username);
     }
 
     /* ------------------------------------------------------------ */
@@ -403,9 +444,9 @@ public class UserIdent
         {
             return other.equals(uuid);
         }
-        else if (other instanceof EntityPlayer)
+        else if (other instanceof EntityPlayerMP)
         {
-            return ((EntityPlayer) other).getPersistentID().equals(uuid);
+            return ((EntityPlayerMP) other).getPersistentID().equals(uuid);
         }
         else
         {
@@ -429,7 +470,11 @@ public class UserIdent
 
     public static EntityPlayerMP getPlayerByUsername(String username)
     {
-        return MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(username);
+        MinecraftServer mc = MinecraftServer.getServer();
+        if (mc == null)
+            return null;
+        ServerConfigurationManager configurationManager = mc.getConfigurationManager();
+        return configurationManager == null ? null : configurationManager.getPlayerByUsername(username);
     }
 
     public static EntityPlayerMP getPlayerByMatchOrUsername(ICommandSender sender, String match)

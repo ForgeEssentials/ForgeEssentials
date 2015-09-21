@@ -3,19 +3,50 @@ package com.forgeessentials.util;
 import net.minecraft.command.CommandResultStats.Type;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class DoAsConsoleCommandSender implements ICommandSender
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
+
+public class DoAsCommandSender implements ICommandSender
 {
 
-    public final ICommandSender sender;
+    protected ICommandSender sender;
 
-    public DoAsConsoleCommandSender(ICommandSender sender)
+    protected UserIdent ident;
+
+    protected boolean hideChatMessages;
+
+    public DoAsCommandSender()
     {
+        this.ident = ZonedPermissionHelper.SERVER_IDENT;
+        this.sender = MinecraftServer.getServer();
+    }
+
+    public DoAsCommandSender(UserIdent ident)
+    {
+        this.ident = ident;
+        this.sender = MinecraftServer.getServer();
+    }
+
+    public DoAsCommandSender(UserIdent ident, ICommandSender sender)
+    {
+        this.ident = ident;
         this.sender = sender;
+    }
+
+    public ICommandSender getOriginalSender()
+    {
+        return sender;
+    }
+
+    public UserIdent getUserIdent()
+    {
+        return ident;
     }
 
     @Override
@@ -33,7 +64,8 @@ public class DoAsConsoleCommandSender implements ICommandSender
     @Override
     public void addChatMessage(IChatComponent message)
     {
-        sender.addChatMessage(message);
+        if (!hideChatMessages)
+            sender.addChatMessage(message);
     }
 
     @Override
@@ -76,6 +108,26 @@ public class DoAsConsoleCommandSender implements ICommandSender
     public void func_174794_a(Type p_174794_1_, int p_174794_2_)
     {
         sender.func_174794_a(p_174794_1_, p_174794_2_);
+    }
+
+    public UserIdent getIdent()
+    {
+        return ident;
+    }
+
+    public void setIdent(UserIdent ident)
+    {
+        this.ident = ident;
+    }
+
+    public void setHideChatMessages(boolean hideChatMessages)
+    {
+        this.hideChatMessages = hideChatMessages;
+    }
+
+    public boolean isHideChatMessages()
+    {
+        return hideChatMessages;
     }
 
 }

@@ -63,9 +63,7 @@ public class CommandTrade extends ParserCommandBase
             return;
         }
 
-        final UserIdent buyer = arguments.parsePlayer(true);
-        if (!buyer.hasPlayer())
-            throw new TranslatedCommandException("Player %s is not online", buyer.getUsernameOrUuid());
+        final UserIdent buyer = arguments.parsePlayer(true, true);
 
         // if (arguments.isEmpty())
         // throw new TranslatedCommandException("Missing argument");

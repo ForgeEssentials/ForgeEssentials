@@ -6,9 +6,9 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,10 +16,12 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.WeakHashMap;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandBlockLogic;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -46,6 +48,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.protection.ModuleProtection;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -59,19 +62,22 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
- * 
- * @author Olee
+ * Main permission management class
  */
 public class ZonedPermissionHelper extends ServerEventHandler implements IPermissionsHelper, PermissionDebugger
 {
 
-    private static final String NEW_LINE = System.getProperty("line.separator");
+    public static final UserIdent SERVER_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefefe", "$SERVER");
+
+    public static final UserIdent CMDBLOCK_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefecb", "$COMMANDBLOCK");
 
     public static final String PERMISSIONS_LIST_FILE = "PermissionsList.txt";
 
     public static final String PERMISSIONS_LIST_ITEMS_FILE = "PermissionList_Items.txt";
 
     public static final String PERMISSIONS_LIST_BLOCKS_FILE = "PermissionList_Blocks.txt";
+
+    private static final String NEW_LINE = System.getProperty("line.separator");
 
     protected RootZone rootZone;
 
@@ -93,7 +99,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     protected boolean registeredPermission = true;
 
-    public Set<EntityPlayerMP> permissionDebugUsers = new HashSet<>();
+    private boolean disableDebug;
+
+    public Set<ICommandSender> permissionDebugUsers = Collections.newSetFromMap(new WeakHashMap<ICommandSender, Boolean>());
 
     public List<String> permissionDebugFilters = new ArrayList<>();
 
@@ -116,9 +124,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         permissionDebugFilters.add("fe.protection.gamemode");
         permissionDebugFilters.add("fe.protection.inventory");
         permissionDebugFilters.add("fe.protection.exist");
+        permissionDebugFilters.add("fe.protection.pressureplate");
         permissionDebugFilters.add("fe.commands.afk.autotime");
         // permissionDebugFilters.add("fe.economy.cmdprice");
         permissionDebugFilters.add("worldedit.limit.unrestricted");
+        permissionDebugFilters.add("fe.worldborder.bypass");
     }
 
     // ------------------------------------------------------------
@@ -164,6 +174,15 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             }
         }
         return false;
+    }
+
+    public void clear()
+    {
+        ServerZone serverZone = new ServerZone();
+        rootZone.setServerZone(serverZone);
+        serverZone.rebuildZonesMap();
+        dirty = false;
+        APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
     }
 
     public boolean isDirty()
@@ -387,9 +406,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value)
     {
+        if (disableDebug || permissionDebugUsers.isEmpty())
+            return;
         for (String filter : permissionDebugFilters)
         {
-            if (node.startsWith(filter))
+            if (permissionNode.startsWith(filter))
                 return;
         }
         String msg1 = String.format("\u00a7b%s\u00a7f = \u00a7%s%s", permissionNode, Zone.PERMISSION_FALSE.equals(value) ? "4" : "2", value);
@@ -407,13 +428,18 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
         IChatComponent msgC1 = ChatOutputHandler.confirmation(msg1);
         IChatComponent msgC2 = ChatOutputHandler.confirmation(msg2);
-        for (EntityPlayerMP player : permissionDebugUsers)
+        for (ICommandSender sender : permissionDebugUsers)
         {
-            if (point != null && new WorldPoint(player).distance(point) > 32)
+            if (point != null && sender instanceof Entity && new WorldPoint((Entity) sender).distance(point) > 32)
                 continue;
-            ChatOutputHandler.sendMessage(player, msgC1);
-            ChatOutputHandler.sendMessage(player, msgC2);
+            ChatOutputHandler.sendMessage(sender, msgC1);
+            ChatOutputHandler.sendMessage(sender, msgC2);
         }
+    }
+
+    public void disableDebugMode(boolean disable)
+    {
+        disableDebug = disable;
     }
 
     // ------------------------------------------------------------
@@ -421,40 +447,45 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // ------------------------------------------------------------
 
     @SubscribeEvent
-    public void permissionAfterLoadEvent(PermissionEvent.AfterLoad e)
+    public void permissionAfterLoadEvent(PermissionEvent.AfterLoad event)
     {
-        if (!e.serverZone.groupExists(Zone.GROUP_DEFAULT))
+        if (!event.serverZone.groupExists(Zone.GROUP_DEFAULT))
         {
-            e.serverZone.setGroupPermission(Zone.GROUP_DEFAULT, FEPermissions.GROUP, true);
-            e.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_PRIORITY, "0");
+            event.serverZone.setGroupPermission(Zone.GROUP_DEFAULT, FEPermissions.GROUP, true);
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_PRIORITY, "0");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "global");
         }
-        if (!e.serverZone.groupExists(Zone.GROUP_GUESTS))
+        if (!event.serverZone.groupExists(Zone.GROUP_GUESTS))
         {
-            e.serverZone.setGroupPermission(Zone.GROUP_GUESTS, FEPermissions.GROUP, true);
-            e.serverZone.setGroupPermissionProperty(Zone.GROUP_GUESTS, FEPermissions.GROUP_PRIORITY, "10");
-            e.serverZone.setGroupPermissionProperty(Zone.GROUP_GUESTS, FEPermissions.PREFIX, "[GUEST]");
+            event.serverZone.setGroupPermission(Zone.GROUP_GUESTS, FEPermissions.GROUP, true);
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_GUESTS, FEPermissions.GROUP_PRIORITY, "10");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_GUESTS, FEPermissions.PREFIX, "[GUEST]");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "guests");
         }
-        if (!e.serverZone.groupExists(Zone.GROUP_OPERATORS))
+        if (!event.serverZone.groupExists(Zone.GROUP_OPERATORS))
         {
-            e.serverZone.setGroupPermission(Zone.GROUP_OPERATORS, FEPermissions.GROUP, true);
-            e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
-            e.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[&cOP&f]");
+            event.serverZone.setGroupPermission(Zone.GROUP_OPERATORS, FEPermissions.GROUP, true);
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.GROUP_PRIORITY, "50");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, FEPermissions.PREFIX, "[&cOP&f]");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "OPs");
         }
-        if (!e.serverZone.groupExists(Zone.GROUP_FAKEPLAYERS))
+        if (!event.serverZone.groupExists(Zone.GROUP_PLAYERS))
+        {
+            event.serverZone.setGroupPermission(Zone.GROUP_PLAYERS, FEPermissions.GROUP, true);
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_PLAYERS, FEPermissions.GROUP_PRIORITY, "1");
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, FEPermissions.GROUP_NAME, "players");
+        }
+        if (!event.serverZone.groupExists(Zone.GROUP_FAKEPLAYERS))
         {
             // Configure FakePlayer group
             // It can either use allow-all or inherit the permissions of another (OPs) group
-            e.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, FEPermissions.GROUP, true);
-            e.serverZone.setGroupPermissionProperty(Zone.GROUP_FAKEPLAYERS, FEPermissions.GROUP_PRIORITY, "15");
-            e.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, ModuleProtection.BASE_PERM + ".*", true);
+            event.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, FEPermissions.GROUP, true);
+            event.serverZone.setGroupPermissionProperty(Zone.GROUP_FAKEPLAYERS, FEPermissions.GROUP_PRIORITY, "15");
+            event.serverZone.setGroupPermission(Zone.GROUP_FAKEPLAYERS, ModuleProtection.BASE_PERM + ".*", true);
             // e.serverZone.groupParentAdd(Zone.GROUP_FAKEPLAYERS, Zone.GROUP_OPERATORS);
         }
-        if (!e.serverZone.groupExists(Zone.GROUP_CMDBLOCKS))
-        {
-            e.serverZone.setGroupPermission(Zone.GROUP_CMDBLOCKS, FEPermissions.GROUP, true);
-            e.serverZone.setGroupPermissionProperty(Zone.GROUP_CMDBLOCKS, FEPermissions.GROUP_PRIORITY, "15");
-            e.serverZone.setGroupPermission(Zone.GROUP_CMDBLOCKS, "*", true);
-        }
+        event.serverZone.setPlayerPermission(SERVER_IDENT, "*", true);
+        event.serverZone.setPlayerPermission(CMDBLOCK_IDENT, "*", true);
     }
 
     @SubscribeEvent
@@ -563,6 +594,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             for (Zone zone : worldZone.getAreaZones())
             {
+                // TODO (2) It should be possible in some way to change zone inclusion to isPartOfZone instead of
+                // isInZone
+                // This is necessary for inverse allowing permissions (like explosions e.g.)
                 if (point != null && zone.isInZone(point) || area != null && zone.isInZone(area))
                 {
                     zones.add(zone);
@@ -680,6 +714,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         WorldPoint loc = null;
         WorldArea area = null;
 
+        if (context.getSender() instanceof DoAsCommandSender)
+            ident = ((DoAsCommandSender) context.getSender()).getUserIdent();
+        else if (context.getSender() instanceof CommandBlockLogic)
+            ident = CMDBLOCK_IDENT;
+
         if (context.getTargetLocationStart() != null)
         {
             if (context.getTargetLocationEnd() != null)
@@ -696,8 +735,6 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         }
 
         SortedSet<GroupEntry> groups = getPlayerGroups(ident);
-        if (context.getSender() instanceof CommandBlockLogic)
-            groups.add(new GroupEntry(rootZone.getServerZone(), Zone.GROUP_CMDBLOCKS));
         return checkBooleanPermission(getPermission(ident, loc, area, GroupEntry.toList(groups), permissionNode, false));
     }
 
@@ -766,7 +803,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public boolean isSystemGroup(String group)
     {
-        return group.equals(Zone.GROUP_DEFAULT) || group.equals(Zone.GROUP_OPERATORS) || group.equals(Zone.GROUP_GUESTS);
+        return Zone.GROUP_DEFAULT.equals(group) || //
+                Zone.GROUP_GUESTS.equals(group) || //
+                Zone.GROUP_OPERATORS.equals(group) || //
+                Zone.GROUP_PLAYERS.equals(group) || //
+                Zone.GROUP_FAKEPLAYERS.equals(group);
     }
 
     @Override

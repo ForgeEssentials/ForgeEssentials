@@ -17,7 +17,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.preloader.mixin.vanish.EntityTrackerHelper;
+import com.forgeessentials.core.preloader.api.EntityTrackerHelper;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandVanish extends ParserCommandBase
@@ -81,7 +81,7 @@ public class CommandVanish extends ParserCommandBase
         {
             if (!arguments.hasPermission(PERM_OTHERS))
                 throw new TranslatedCommandException("You don't have permission to vanish other players");
-            player = arguments.parsePlayer(true);
+            player = arguments.parsePlayer(true, true);
         }
         if (arguments.isTabCompletion)
             return;

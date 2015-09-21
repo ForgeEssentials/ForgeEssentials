@@ -1,5 +1,9 @@
 package com.forgeessentials.playerlogger;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
+import java.sql.Blob;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,29 +26,29 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBed;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemDoor;
+import net.minecraft.item.ItemRedstone;
+import net.minecraft.item.ItemSkull;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 
 import org.hibernate.jpa.criteria.predicate.CompoundPredicate;
@@ -66,11 +70,10 @@ import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
 import com.forgeessentials.playerlogger.event.LogEventInteract;
 import com.forgeessentials.playerlogger.event.LogEventPlace;
+import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Charsets;
 
 public class PlayerLogger extends ServerEventHandler implements Runnable
 {
@@ -338,21 +341,63 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return data;
     }
 
-    protected SerialBlob getTileEntityBlob(TileEntity tileEntity)
+    /* ------------------------------------------------------------ */
+
+    public static SerialBlob tileEntityToBlob(TileEntity tileEntity)
     {
-        if (tileEntity == null)
-            return null;
-        NBTTagCompound nbt = new NBTTagCompound();
-        tileEntity.writeToNBT(nbt);
-        nbt.setString("ENTITY_CLASS", tileEntity.getClass().getName());
         try
         {
-            return new SerialBlob(nbt.toString().getBytes(Charsets.UTF_8));
+            if (tileEntity == null)
+                return null;
+            NBTTagCompound nbt = new NBTTagCompound();
+            tileEntity.writeToNBT(nbt);
+            nbt.setString("ENTITY_CLASS", tileEntity.getClass().getName());
+            ByteBuf buf = Unpooled.buffer();
+            ByteBufUtils.writeTag(buf, nbt);
+            return new SerialBlob(buf.array());
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            LoggingHandler.felog.error(ex.toString());
-            ex.printStackTrace();
+            LoggingHandler.felog.error(e.toString());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static TileEntity blobToTileEntity(Blob blob)
+    {
+        try
+        {
+            if (blob == null || blob.length() == 0)
+                return null;
+
+            ByteBuf buf = Unpooled.wrappedBuffer(blob.getBytes(1, (int) blob.length()));
+            NBTTagCompound nbt = ByteBufUtils.readTag(buf);
+            if (nbt == null)
+                return null;
+
+            String className = nbt.getString("ENTITY_CLASS");
+            if (className.isEmpty())
+                return null;
+
+            Class<?> clazz = Class.forName(className);
+            if (!TileEntity.class.isAssignableFrom(clazz))
+                return null;
+            Class<TileEntity> teClazz = (Class<TileEntity>) clazz;
+
+            TileEntity entity = teClazz.newInstance();
+            entity.readFromNBT(nbt);
+            return entity;
+        }
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
+        {
+            LoggingHandler.felog.error("Unable to load block metadata: " + e.toString());
+        }
+        catch (Exception e)
+        {
+            LoggingHandler.felog.error(e.toString());
+            e.printStackTrace();
         }
         return null;
     }
@@ -402,7 +447,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (startTime != null)
             predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get(Action_.time), cb.literal(startTime)));
         if (endTime != null)
-            predicate.getExpressions().add(cb.lessThanOrEqualTo(root.get(Action_.time), cb.literal(endTime)));
+            predicate.getExpressions().add(cb.lessThan(root.get(Action_.time), cb.literal(endTime)));
         return predicate;
     }
 
@@ -466,15 +511,15 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /* World events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public synchronized void worldLoad(WorldEvent.Load e)
+    public synchronized void worldLoad(WorldEvent.Load event)
     {
-        WorldData world = em.find(WorldData.class, e.world.provider.getDimensionId());
+        WorldData world = em.find(WorldData.class, event.world.provider.getDimensionId());
         if (world == null)
         {
             em.getTransaction().begin();
             world = new WorldData();
-            world.id = e.world.provider.getDimensionId();
-            world.name = e.world.provider.getDimensionName();
+            world.id = event.world.provider.getDimensionId();
+            world.name = event.world.provider.getDimensionName();
             em.persist(world);
             em.getTransaction().commit();
         }
@@ -483,29 +528,34 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void placeEvent(BlockEvent.PlaceEvent event)
     {
-        logEvent(new LogEventPlace(event));
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void multiPlaceEvent(BlockEvent.MultiPlaceEvent e)
-    {
-        if (em == null)
+        if (FMLCommonHandler.instance().getEffectiveSide() != Side.SERVER || em == null)
             return;
-        for (BlockSnapshot snapshot : e.getReplacedBlockSnapshots())
-            eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, e.player)));
-        startThread();
+        if (event instanceof BlockEvent.MultiPlaceEvent)
+        {
+            // Get only last state of all changes
+            Map<BlockPos, BlockSnapshot> changes = new HashMap<>();
+            for (BlockSnapshot snapshot : ((BlockEvent.MultiPlaceEvent) event).getReplacedBlockSnapshots())
+                changes.put(snapshot.pos, snapshot);
+            for (BlockSnapshot snapshot : changes.values())
+                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.player)));
+            startThread();
+        }
+        else
+        {
+            logEvent(new LogEventPlace(event));
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void breakEvent(BlockEvent.BreakEvent e)
+    public void breakEvent(BlockEvent.BreakEvent event)
     {
-        logEvent(new LogEventBreak(e));
+        logEvent(new LogEventBreak(event));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void explosionEvent(ExplosionEvent.Detonate e)
+    public void explosionEvent(ExplosionEvent.Detonate event)
     {
-        logEvent(new LogEventExplosion(e));
+        logEvent(new LogEventExplosion(event));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -513,106 +563,119 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.useBlock == Result.DENY && event.useItem == Result.DENY))
             return;
-        ItemStack itemStack = event.entityPlayer.getCurrentEquippedItem();
-        if (event.useBlock != Result.ALLOW && itemStack != null && itemStack.getItem() instanceof ItemBlock)
-            return;
-        logEvent(new LogEventInteract(event));
+        GameType gameType = ((EntityPlayerMP) event.entityPlayer).theItemInWorldManager.getGameType();
+        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && gameType != GameType.CREATIVE)
+        {
+            logEvent(new LogEventInteract(event));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerPostInteractEvent(PlayerPostInteractEvent event)
+    {
+        if (event.stack != null)
+        {
+            Item item = event.stack.getItem();
+            if (item instanceof ItemBlock || item instanceof ItemRedstone || item instanceof ItemBed || item instanceof ItemDoor || item instanceof ItemSkull)
+                return;
+        }
+        logEvent(new LogEventPostInteract(event));
     }
 
     /* ------------------------------------------------------------ */
     /* Other events */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void commandEvent(CommandEvent e)
+    public void commandEvent(CommandEvent event)
     {
-        logEvent(new LogEventCommand(e));
+        logEvent(new LogEventCommand(event));
     }
 
     /* ------------------------------------------------------------ */
     /* Player events */
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerChangedDimensionEvent(PlayerEvent.PlayerChangedDimensionEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerChangedZoneEvent(PlayerChangedZone e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerOpenContainerEvent(PlayerOpenContainerEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void itemPickupEvent(EntityItemPickupEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void dropItemEvent(StartTracking e)
-    {
-        // TODO
-    }
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerChangedDimensionEvent(PlayerEvent.PlayerChangedDimensionEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerChangedZoneEvent(PlayerChangedZone event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void playerOpenContainerEvent(PlayerOpenContainerEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void itemPickupEvent(EntityItemPickupEvent event)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void dropItemEvent(StartTracking event)
+    // {
+    // // TODO
+    // }
 
     /* ------------------------------------------------------------ */
     /* Interact events */
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void attackEntityEvent(AttackEntityEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void livingHurtEvent(LivingHurtEvent e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void entityInteractEvent(EntityInteractEvent e)
-    {
-        // TODO
-    }
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void attackEntityEvent(AttackEntityEvent e)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void livingHurtEvent(LivingHurtEvent e)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void entityInteractEvent(EntityInteractEvent e)
+    // {
+    // // TODO
+    // }
 
     /* ------------------------------------------------------------ */
     /* Spawn events */
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void checkSpawnEvent(CheckSpawn e)
-    {
-        // TODO
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void specialSpawnEvent(SpecialSpawn e)
-    {
-        // TODO
-    }
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void checkSpawnEvent(CheckSpawn e)
+    // {
+    // // TODO
+    // }
+    //
+    // @SubscribeEvent(priority = EventPriority.LOWEST)
+    // public void specialSpawnEvent(SpecialSpawn e)
+    // {
+    // // TODO
+    // }
 
 }

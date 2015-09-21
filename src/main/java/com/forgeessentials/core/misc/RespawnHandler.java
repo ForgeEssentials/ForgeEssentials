@@ -1,11 +1,17 @@
 package com.forgeessentials.core.misc;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.Set;
+import java.util.WeakHashMap;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,10 +28,28 @@ import com.forgeessentials.util.PlayerInfo;
 public class RespawnHandler
 {
 
+    protected Set<EntityPlayerMP> respawnPlayers = Collections.newSetFromMap(new WeakHashMap<EntityPlayerMP, Boolean>());
+
     public RespawnHandler()
     {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
+    }
+
+    public static WarpPoint getSpawn(EntityPlayer player, WarpPoint location)
+    {
+        UserIdent ident = UserIdent.get(player);
+        if (location == null)
+            location = new WarpPoint(player);
+        String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null,
+                GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN_LOC, true);
+        if (spawnProperty != null)
+        {
+            WorldPoint point = WorldPoint.fromString(spawnProperty);
+            if (point != null)
+                return new WarpPoint(point, player.cameraYaw, player.cameraPitch);
+        }
+        return new WarpPoint(0, player.worldObj.getSpawnPoint(), player.cameraYaw, player.cameraPitch);
     }
 
     public static WarpPoint getPlayerSpawn(EntityPlayer player, WarpPoint location, boolean doDefaultSpawn)
@@ -81,9 +105,8 @@ public class RespawnHandler
     {
         if (!e.entity.getClass().equals(EntityPlayerMP.class))
             return;
-
         EntityPlayerMP player = (EntityPlayerMP) e.entity;
-        if (!PlayerInfo.exists(player.getPersistentID()))
+        if (respawnPlayers.remove(player))
         {
             WarpPoint p = getPlayerSpawn(player, null, true);
             if (p != null)
@@ -92,15 +115,36 @@ public class RespawnHandler
     }
 
     @SubscribeEvent
-    public void doRespawn(PlayerRespawnEvent e)
+    public void playerLoadFromFile(PlayerEvent.LoadFromFile event)
     {
-        WarpPoint lastDeathLocation = PlayerInfo.get(e.player.getPersistentID()).getLastDeathLocation();
-        if (lastDeathLocation == null)
-            lastDeathLocation = new WarpPoint(e.player);
+        EntityPlayerMP player = (EntityPlayerMP) event.entityPlayer;
+        File f = new File(event.playerDirectory, event.playerUUID + ".dat");
+        if (!f.exists())
+        {
+            WarpPoint p = getPlayerSpawn(player, null, true);
+            if (p != null)
+            {
+                if (player.dimension != p.getDimension())
+                    respawnPlayers.add(player);
+                else
+                    player.setPositionAndRotation(p.getX(), p.getY(), p.getZ(), p.getYaw(), p.getPitch());
+            }
+        }
+    }
 
-        WarpPoint p = getPlayerSpawn(e.player, lastDeathLocation, true);
+    @SubscribeEvent
+    public void doRespawn(PlayerRespawnEvent event)
+    {
+        EntityPlayerMP player = (EntityPlayerMP) event.player;
+        player.playerNetServerHandler.playerEntity = player;
+
+        WarpPoint lastDeathLocation = PlayerInfo.get(player.getPersistentID()).getLastDeathLocation();
+        if (lastDeathLocation == null)
+            lastDeathLocation = new WarpPoint(player);
+
+        WarpPoint p = getPlayerSpawn(player, lastDeathLocation, true);
         if (p != null)
-            TeleportHelper.doTeleport((EntityPlayerMP) e.player, p);
+            TeleportHelper.doTeleport(player, p);
     }
 
 }

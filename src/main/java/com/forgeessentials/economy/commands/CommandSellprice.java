@@ -18,6 +18,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,23 +39,26 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
 
-public class CommandCalculatePriceList extends ParserCommandBase
+public class CommandSellprice extends ParserCommandBase
 {
+
+    private static File priceFile = new File(ForgeEssentials.getFEDirectory(), "prices.txt");
 
     @Override
     public String getCommandName()
     {
-        return "calcpricelist";
+        return "sellprice";
     }
 
     @Override
     public String getPermissionNode()
     {
-        return ModuleEconomy.PERM_COMMAND + ".calcpricelist";
+        return ModuleEconomy.PERM_COMMAND + ".sellprice";
     }
 
     @Override
@@ -66,7 +70,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/calcpricelist [save]: Generate (and optionally directly apply) new price list";
+        return "/sellprice calc|set: Manage item sell prices";
     }
 
     @Override
@@ -82,12 +86,62 @@ public class CommandCalculatePriceList extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
-        calcPriceList(arguments);
+        if (arguments.isEmpty())
+        {
+            calcPriceList(arguments, false);
+            return;
+        }
+
+        arguments.tabComplete("save", "set");
+        String subArg = arguments.remove().toLowerCase();
+        switch (subArg)
+        {
+        case "save":
+            calcPriceList(arguments, true);
+            break;
+        case "set":
+            parseSetprice(arguments);
+            break;
+        default:
+            break;
+        }
     }
 
-    public static void calcPriceList(CommandParserArgs arguments)
+    public static int getItemDamage(ItemStack stack)
+    {
+        try
+        {
+            return stack.getItemDamage();
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+    }
+
+    public static void parseSetprice(CommandParserArgs arguments) throws CommandException
+    {
+        if (arguments.isEmpty())
+        {
+            arguments.confirm("/sellprice baseprice <item> [price]");
+            return;
+        }
+
+        Item item = arguments.parseItem();
+        double price = arguments.parseDouble();
+        if (arguments.isTabCompletion)
+            return;
+
+        String itemId = ServerUtil.getItemName(item);
+        Map<String, Double> priceMap = loadPriceList(arguments);
+        priceMap.put(itemId, price);
+        writeMap(priceMap, priceFile);
+        arguments.confirm(Translator.format("Set price for %s to %d", itemId, (int) price));
+    }
+
+    public static void calcPriceList(CommandParserArgs arguments, boolean save)
     {
         /*
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
@@ -96,38 +150,11 @@ public class CommandCalculatePriceList extends ParserCommandBase
          * GameData.getItemRegistry().getNameForObject(a); String bId = GameData.getItemRegistry().getNameForObject(b);
          * return aId.compareTo(bId); } catch (Exception e) { return 0; } } });
          */
-        Map<String, Double> priceMap = new TreeMap<>();
+        Map<String, Double> priceMap = loadPriceList(arguments);
         Map<String, Double> priceMapFull = new TreeMap<>();
 
-        File priceFile = new File(ForgeEssentials.getFEDirectory(), "prices.txt");
         File allPricesFile = new File(ForgeEssentials.getFEDirectory(), "prices_all.txt");
         File priceLogFile = new File(ForgeEssentials.getFEDirectory(), "prices_log.txt");
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(priceFile)))
-        {
-            Pattern pattern = Pattern.compile("\\s*I:\"([^\"]+)\"\\s*=\\s*(.*)");
-            while (reader.ready())
-            {
-                String line = reader.readLine();
-                Matcher match = pattern.matcher(line);
-                if (!match.matches())
-                    continue;
-                try
-                {
-                    priceMap.put(match.group(1), Double.parseDouble(match.group(2)));
-                }
-                catch (NumberFormatException e)
-                {
-                    /* do nothing */
-                }
-            }
-        }
-        catch (IOException e)
-        {
-            arguments.warn(String.format("Could not load %s. Using default values", priceFile.getName()));
-            initializeDefaultPrices(priceMap);
-        }
-
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(priceLogFile)))
         {
             // for (Entry<String, Double> entry : priceMap.entrySet())
@@ -163,8 +190,8 @@ public class CommandCalculatePriceList extends ParserCommandBase
                         List<?> recipeItems = getRecipeItems(recipe);
                         if (recipeItems == null)
                             continue;
-                        craftRecipes.write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()), recipe.getRecipeOutput()
-                                .getItemDamage()));
+                        craftRecipes.write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
+                                getItemDamage(recipe.getRecipeOutput())));
                         for (Object stacks : recipeItems)
                             if (stacks != null)
                             {
@@ -177,7 +204,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                                 else
                                     stack = (ItemStack) stacks;
                                 if (stack != null)
-                                    craftRecipes.write(String.format("  %s:%d\n", ServerUtil.getItemName(stack.getItem()), stack.getItemDamage()));
+                                    craftRecipes.write(String.format("  %s:%d\n", ServerUtil.getItemName(stack.getItem()), getItemDamage(stack)));
                             }
                     }
                 }
@@ -203,8 +230,8 @@ public class CommandCalculatePriceList extends ParserCommandBase
                                 priceMap.put(ModuleEconomy.getItemIdentifier(recipe.getRecipeOutput()), price);
                                 changedPrice = true;
 
-                                String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()), recipe
-                                        .getRecipeOutput().getItemDamage(), resultPrice == null ? 0 : resultPrice, (int) price);
+                                String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
+                                        getItemDamage(recipe.getRecipeOutput()), resultPrice == null ? 0 : resultPrice, (int) price);
                                 for (Object stacks : getRecipeItems(recipe))
                                     if (stacks != null)
                                     {
@@ -218,7 +245,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
                                             stack = (ItemStack) stacks;
                                         if (stack != null)
                                             msg += String.format("\n  %.0f - %s:%d", priceMap.get(ModuleEconomy.getItemIdentifier(stack)),
-                                                    ServerUtil.getItemName(stack.getItem()), stack.getItemDamage());
+                                                    ServerUtil.getItemName(stack.getItem()), getItemDamage(stack));
                                     }
                                 writer.write(msg + "\n");
                             }
@@ -237,9 +264,9 @@ public class CommandCalculatePriceList extends ParserCommandBase
                             if (resultPrice == null || outPrice < resultPrice)
                             {
                                 priceMap.put(ModuleEconomy.getItemIdentifier(recipe.getValue()), outPrice);
-                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()), recipe.getValue()
-                                        .getItemDamage(), resultPrice == null ? 0 : resultPrice, (int) outPrice, ServerUtil.getItemName(recipe.getKey()
-                                        .getItem())));
+                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()),
+                                        getItemDamage(recipe.getValue()), resultPrice == null ? 0 : resultPrice, (int) outPrice,
+                                        ServerUtil.getItemName(recipe.getKey().getItem())));
                                 changedPrice = true;
                             }
                         }
@@ -266,7 +293,7 @@ public class CommandCalculatePriceList extends ParserCommandBase
         priceMapFull.putAll(priceMap);
         writeMap(priceMapFull, allPricesFile);
 
-        if (!arguments.isEmpty() && arguments.remove().equalsIgnoreCase("save"))
+        if (save)
         {
             Configuration config = ForgeEssentials.getConfigManager().getConfig(ModuleEconomy.CONFIG_CATEGORY);
             ConfigCategory category = config.getCategory(ModuleEconomy.CATEGORY_ITEM);
@@ -284,6 +311,36 @@ public class CommandCalculatePriceList extends ParserCommandBase
             arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
             arguments.confirm("You can also use [/calcpricelist save] to directly save the calculated prices");
         }
+    }
+
+    private static Map<String, Double> loadPriceList(CommandParserArgs arguments)
+    {
+        Map<String, Double> priceMap = new TreeMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(priceFile)))
+        {
+            Pattern pattern = Pattern.compile("\\s*I:\"([^\"]+)\"\\s*=\\s*(.*)");
+            while (reader.ready())
+            {
+                String line = reader.readLine();
+                Matcher match = pattern.matcher(line);
+                if (!match.matches())
+                    continue;
+                try
+                {
+                    priceMap.put(match.group(1), Double.parseDouble(match.group(2)));
+                }
+                catch (NumberFormatException e)
+                {
+                    /* do nothing */
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            arguments.warn(String.format("Could not load %s. Using default values", priceFile.getName()));
+            initializeDefaultPrices(priceMap);
+        }
+        return priceMap;
     }
 
     private static void initializeDefaultPrices(Map<String, Double> priceMap)
@@ -426,6 +483,8 @@ public class CommandCalculatePriceList extends ParserCommandBase
                 {
                     for (Object stack : (Collection<?>) stacks)
                     {
+                        if (stack == null)
+                            continue;
                         String id = ModuleEconomy.getItemIdentifier((ItemStack) stack);
                         priceMapFull.put(id, 0.0);
                         Double p = priceMap.get(id);

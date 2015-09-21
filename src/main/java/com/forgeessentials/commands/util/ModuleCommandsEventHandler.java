@@ -31,10 +31,8 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
     private static final Set<UserIdent> afkPlayers = new HashSet<>();
 
-    @Override
-    public void register()
+    public ModuleCommandsEventHandler()
     {
-        super.register();
         TaskRegistry.scheduleRepeated(this, 1000 * 2);
     }
 

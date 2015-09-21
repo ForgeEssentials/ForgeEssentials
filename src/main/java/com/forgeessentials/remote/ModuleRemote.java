@@ -10,9 +10,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -34,11 +39,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.Gson;
-
-import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import com.mojang.authlib.GameProfile;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
@@ -58,6 +59,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 
     public static final String PERM = RemoteHandler.PERM_REMOTE;
     public static final String PERM_CONTROL = PERM + ".control";
+
+    public static final GameProfile FAKEPLAYER = new GameProfile(new UUID(1451412139, 514498498), "$FE_REMOTE");
 
     public static int passkeyLength = 6;
 
@@ -100,34 +103,14 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 
     protected PasskeyMap passkeys = new PasskeyMap();
 
-    private static ASMDataTable asmdata;
+    protected boolean mcServerStarted;
 
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
-    public void getASMDataTable(FEModulePreInitEvent e)
+    public void getASMDataTable(FEModulePreInitEvent event)
     {
-        asmdata = ((FMLPreInitializationEvent) e.getFMLEvent()).getAsmData();
-    }
-
-    /**
-     * Register remote module and basic handlers
-     */
-    @SuppressWarnings("deprecation")
-    @SubscribeEvent
-    public void load(FEModuleInitEvent e)
-    {
-        APIRegistry.remoteManager = this;
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Allows login to remote module");
-        APIRegistry.perms.registerPermission(PERM_CONTROL, PermissionLevel.OP,
-                "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
-
-        registerRemoteHandlers();
-        FECommandManager.registerCommand(new CommandRemote());
-    }
-
-    private void registerRemoteHandlers()
-    {
+        ASMDataTable asmdata = ((FMLPreInitializationEvent) event.getFMLEvent()).getAsmData();
         for (ASMData asm : asmdata.getAll(FERemoteHandler.class.getName()))
         {
             try
@@ -148,31 +131,41 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     }
 
     /**
+     * Register remote module and basic handlers
+     */
+    @SuppressWarnings("deprecation")
+    @SubscribeEvent
+    public void load(FEModuleInitEvent event)
+    {
+        APIRegistry.remoteManager = this;
+        APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Allows login to remote module");
+        APIRegistry.perms.registerPermission(PERM_CONTROL, PermissionLevel.OP,
+                "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
+
+        FECommandManager.registerCommand(new CommandRemote());
+    }
+
+    /**
      * Initialize passkeys, server and commands
      */
-    @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void serverStarting(FEModuleServerInitEvent event)
     {
         loadPasskeys();
         startServer();
+        mcServerStarted = true;
     }
 
     /**
      * Stop remote server when the MC-server stops
      */
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FEModuleServerStopEvent event)
     {
         stopServer();
+        mcServerStarted = false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.forgeessentials.core.moduleLauncher.config.IConfigLoader#load(net.minecraftforge.common.config.Configuration,
-     * boolean)
-     */
     @Override
     public void load(Configuration config, boolean isReload)
     {
@@ -182,7 +175,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         useSSL = config.get(CONFIG_CAT, "use_ssl", false,
                 "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
         passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6, "Length of the randomly generated passkeys").getInt();
-        if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning())
+        if (mcServerStarted)
             startServer();
     }
 

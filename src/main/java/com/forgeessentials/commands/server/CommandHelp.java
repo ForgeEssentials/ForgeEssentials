@@ -53,6 +53,12 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "?" };
+    }
+
+    @Override
     public String getCommandUsage(ICommandSender sender)
     {
         return "/help <page|text>: List or search for commands";

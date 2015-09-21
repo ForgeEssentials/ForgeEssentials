@@ -22,18 +22,18 @@ public class AfterlifeEventHandler extends ServerEventHandler
     public List<Grave> newGraves = new ArrayList<>();
 
     @SubscribeEvent
-    public void playerDeathDropEvent(PlayerDropsEvent e)
+    public void playerDeathDropEvent(PlayerDropsEvent event)
     {
-        Grave grave = Grave.createGrave(e.entityPlayer, e.drops);
+        Grave grave = Grave.createGrave(event.entityPlayer, event.drops);
         if (grave != null)
         {
             newGraves.add(grave);
-            e.setCanceled(true);
+            event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
-    public void serverTickEvent(TickEvent.ServerTickEvent e)
+    public void serverTickEvent(TickEvent.ServerTickEvent event)
     {
         for (Grave grave : newGraves)
             grave.updateBlocks();
@@ -52,10 +52,6 @@ public class AfterlifeEventHandler extends ServerEventHandler
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
-
-        // Block block = e.entity.worldObj.getBlock(e.x, e.y, e.z);
-        // if (block != Blocks.skull && block != Blocks.chest && block != Blocks.fence)
-        // return;
 
         grave.interact((EntityPlayerMP) event.entityPlayer);
         event.setCanceled(true);

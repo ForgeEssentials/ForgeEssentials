@@ -6,7 +6,9 @@ import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -32,6 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
 
@@ -43,6 +46,7 @@ import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
 import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.Packet2Reach;
+import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.Packet5Noclip;
 import com.forgeessentials.commons.network.Packet7Remote;
 import com.forgeessentials.compat.CompatReiMinimap;
@@ -130,6 +134,8 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     protected boolean debugMode = false;
 
+    public boolean logCommandsToConsole;
+
     /* ------------------------------------------------------------ */
 
     public ForgeEssentials()
@@ -138,6 +144,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
         FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Mod.EventHandler
@@ -232,6 +239,9 @@ public class ForgeEssentials extends ConfigLoaderBase
             /* dummy */
         });
         NetworkUtils.registerMessageProxy(Packet2Reach.class, 2, Side.CLIENT, new NullMessageHandler<Packet2Reach>() {
+            /* dummy */
+        });
+        NetworkUtils.registerMessageProxy(Packet3PlayerPermissions.class, 3, Side.CLIENT, new NullMessageHandler<Packet3PlayerPermissions>() {
             /* dummy */
         });
         NetworkUtils.registerMessageProxy(Packet5Noclip.class, 5, Side.CLIENT, new NullMessageHandler<Packet5Noclip>() {
@@ -338,8 +348,8 @@ public class ForgeEssentials extends ConfigLoaderBase
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, PermissionLevel.TRUE, "Allow being teleported from a certain location / dimension");
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, PermissionLevel.TRUE, "Allow being teleported to a certain location / dimension");
 
-        CommandFeSettings.addAlias("teleport_warmup", TeleportHelper.TELEPORT_WARMUP);
-        CommandFeSettings.addAlias("teleport_cooldown", TeleportHelper.TELEPORT_COOLDOWN);
+        CommandFeSettings.addAlias("Teleport", "warmup", TeleportHelper.TELEPORT_WARMUP);
+        CommandFeSettings.addAlias("Teleport", "cooldown", TeleportHelper.TELEPORT_COOLDOWN);
     }
 
     /* ------------------------------------------------------------ */
@@ -347,38 +357,60 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerLoggedInEvent(PlayerLoggedInEvent event)
     {
-        UserIdent.login(event.player);
-        PlayerInfo.login(event.player.getPersistentID());
-
-        if (FEConfig.checkSpacesInNames)
+        if (event.player instanceof EntityPlayerMP)
         {
-            Pattern pattern = Pattern.compile("\\s");
-            Matcher matcher = pattern.matcher(event.player.getGameProfile().getName());
-            if (matcher.find())
-            {
-                String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getName());
-                ((EntityPlayerMP) event.player).playerNetServerHandler.kickPlayerFromServer(msg);
-            }
-        }
+            EntityPlayerMP player = (EntityPlayerMP) event.player;
+            UserIdent.login(player);
+            PlayerInfo.login(player.getPersistentID());
 
-        // Show version notification
-        if (BuildInfo.isOutdated() && UserIdent.get(event.player).checkPermission(PERM_VERSIONINFO))
-            ChatOutputHandler.chatWarning(event.player,
-                    String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
-                            BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
+            if (FEConfig.checkSpacesInNames)
+            {
+                Pattern pattern = Pattern.compile("\\s");
+                Matcher matcher = pattern.matcher(player.getGameProfile().getName());
+                if (matcher.find())
+                {
+                    String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getName());
+                    ((EntityPlayerMP) event.player).playerNetServerHandler.kickPlayerFromServer(msg);
+                }
+            }
+
+            // Show version notification
+            if (BuildInfo.isOutdated() && UserIdent.get(player).checkPermission(PERM_VERSIONINFO))
+                ChatOutputHandler.chatWarning(player,
+                        String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
+                                BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoggedOutEvent(PlayerLoggedOutEvent event)
     {
-        PlayerInfo.logout(event.player.getPersistentID());
-        UserIdent.logout(event.player);
+        if (event.player instanceof EntityPlayerMP)
+        {
+            PlayerInfo.logout(event.player.getPersistentID());
+            UserIdent.logout((EntityPlayerMP) event.player);
+        }
     }
 
     @SubscribeEvent
-    public void playerRespawnEvent(PlayerRespawnEvent e)
+    public void playerRespawnEvent(PlayerRespawnEvent event)
     {
-        UserIdent.get(e.player);
+        if (event.player instanceof EntityPlayerMP)
+        {
+            UserIdent.get((EntityPlayerMP) event.player);
+        }
+    }
+
+    /* ------------------------------------------------------------ */
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void commandEvent(CommandEvent event)
+    {
+        if (logCommandsToConsole)
+        {
+            LoggingHandler.felog.info(String.format("Player \"%s\" used command \"/%s %s\"", event.sender.getName(),
+                    event.command.getCommandName(), StringUtils.join(event.parameters, " ")));
+        }
     }
 
     /* ------------------------------------------------------------ */
@@ -389,10 +421,11 @@ public class ForgeEssentials extends ConfigLoaderBase
         if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
             BuildInfo.cancelVersionCheck();
         configManager.setUseCanonicalConfig(config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false,
-                "For modules that support it, place their configs in this file.").getBoolean(false));
-        debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean(false);
+                "For modules that support it, place their configs in this file.").getBoolean());
+        debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean();
         HelpFixer.hideWorldEditCommands = config.get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true,
                 "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
+        logCommandsToConsole = config.get(FEConfig.CONFIG_CAT, "logCommands", false, "Log commands to console").getBoolean();
     }
 
     /* ------------------------------------------------------------ */

@@ -27,7 +27,7 @@ public class GroupEntry implements Comparable<GroupEntry>
 
     public GroupEntry(String group, int priority)
     {
-        this(group, priority, priority);
+        this(group, priority, Integer.MAX_VALUE);
     }
 
     public GroupEntry(ServerZone zone, String group)

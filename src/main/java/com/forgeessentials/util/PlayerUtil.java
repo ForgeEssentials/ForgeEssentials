@@ -7,6 +7,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
@@ -64,7 +66,7 @@ public abstract class PlayerUtil
             String[] effectValues = poisonEffect.split(":");
             if (effectValues.length < 2)
             {
-                LoggingHandler.felog.warn("Too few arguments for potion effects");
+                // LoggingHandler.felog.warn("Too few arguments for potion effects");
             }
             else if (effectValues.length > 3)
             {
@@ -79,6 +81,11 @@ public abstract class PlayerUtil
                     int amplifier = 0;
                     if (effectValues.length == 3)
                         amplifier = Integer.parseInt(effectValues[2]);
+                    if (potionID < 1 || potionID >= Potion.potionTypes.length)
+                    {
+                        LoggingHandler.felog.warn("Invalid potion ID %d", potionID);
+                        continue;
+                    }
                     player.addPotionEffect(new net.minecraft.potion.PotionEffect(potionID, effectDuration * 20, amplifier));
                 }
                 catch (NumberFormatException e)
@@ -87,6 +94,20 @@ public abstract class PlayerUtil
                 }
             }
         }
+    }
+
+    /**
+     * Get the player persisted NBT tag
+     * 
+     * @param player
+     * @return
+     */
+    public static NBTTagCompound getPersistedTag(EntityPlayer player, boolean createIfMissing)
+    {
+        NBTTagCompound tag = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        if (createIfMissing)
+            player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+        return tag;
     }
 
     /* ------------------------------------------------------------ */

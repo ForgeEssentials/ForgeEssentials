@@ -29,7 +29,9 @@ public class CommandAFK extends FEcmdModuleCommands
 
     public CommandAFK()
     {
-        CommandFeSettings.addAlias("afktime", PERM_AUTOTIME);
+        CommandFeSettings.addAlias("Afk", "timeout", PERM_AUTOTIME);
+        CommandFeSettings.addAlias("Afk", "auto_kick", PERM_AUTOKICK);
+        CommandFeSettings.addAlias("Afk", "warmup", PERM_WARMUP);
     }
 
     @Override

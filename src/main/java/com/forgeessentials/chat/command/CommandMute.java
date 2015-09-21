@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -14,6 +13,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandMute extends ForgeEssentialsCommandBase
@@ -58,7 +58,7 @@ public class CommandMute extends ForgeEssentialsCommandBase
             if (receiver == null)
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
-            receiver.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setBoolean("mute", true);
+            PlayerUtil.getPersistedTag(receiver, true).setBoolean("mute", true);
             ChatOutputHandler.chatError(sender, Translator.format("You muted %s.", args[0]));
             ChatOutputHandler.chatError(receiver, Translator.format("You were muted by %s.", sender.getName()));
         }

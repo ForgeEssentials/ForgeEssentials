@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -35,6 +36,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
+import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.chat.command.CommandGroupMessage;
 import com.forgeessentials.chat.command.CommandIrc;
 import com.forgeessentials.chat.command.CommandIrcBot;
 import com.forgeessentials.chat.command.CommandIrcPm;
@@ -52,6 +55,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
+import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -96,7 +100,7 @@ public class ModuleChat
 
     private PrintWriter logWriter;
 
-    public Censor censor;
+    public static Censor censor;
 
     public Mailer mailer;
 
@@ -170,6 +174,7 @@ public class ModuleChat
         FECommandManager.registerCommand(new CommandReply());
         FECommandManager.registerCommand(new CommandTimedMessages());
         FECommandManager.registerCommand(new CommandUnmute());
+        FECommandManager.registerCommand(new CommandGroupMessage());
 
         FECommandManager.registerCommand(new CommandIrc());
         FECommandManager.registerCommand(new CommandIrcPm());
@@ -210,7 +215,7 @@ public class ModuleChat
             return;
         }
 
-        if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
+        if (PlayerUtil.getPersistedTag(event.player, false).getBoolean("mute"))
         {
             ChatOutputHandler.chatWarning(event.player, "You are currently muted.");
             event.setCanceled(true);
@@ -228,27 +233,8 @@ public class ModuleChat
         logChatMessage(event.player.getName(), event.message);
 
         // Initialize parameters
-        String message = processChatReplacements(event.player, censor.filter(event.player, event.message));
-        String playerName = getPlayerNickname(event.player);
-
-        // Get player name formatting
-        String playerFormat = APIRegistry.perms.getUserPermissionProperty(ident, ModuleChat.PERM_PLAYERFORMAT);
-        if (playerFormat == null)
-            playerFormat = "";
-
-        // Initialize header
-        String playerCmd = "/msg " + event.player.getName() + " ";
-        IChatComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
-        IChatComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
-        IChatComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
-        IChatComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
-        IChatComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
-        IChatComponent header = new ChatComponentTranslation(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
-                groupPrefix != null ? groupPrefix : "", //
-                playerPrefix != null ? playerPrefix : "", //
-                playerText, //
-                playerSuffix != null ? playerSuffix : "", //
-                groupSuffix != null ? groupSuffix : "");
+        String message = processChatReplacements(event.player, censor.filter(event.message, event.player));
+        IChatComponent header = getChatHeader(ident);
 
         // Apply colors
         if (event.message.contains("&") && ident.checkPermission(PERM_COLOR))
@@ -278,13 +264,38 @@ public class ModuleChat
         }
     }
 
+    public static IChatComponent getChatHeader(UserIdent ident)
+    {
+        String playerName = ident.hasPlayer() ? getPlayerNickname(ident.getPlayer()) : ident.getUsernameOrUuid();
+
+        // Get player name formatting
+        String playerFormat = APIRegistry.perms.getUserPermissionProperty(ident, ModuleChat.PERM_PLAYERFORMAT);
+        if (playerFormat == null)
+            playerFormat = "";
+
+        // Initialize header
+        String playerCmd = "/msg " + ident.getUsernameOrUuid() + " ";
+        IChatComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
+        IChatComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
+        IChatComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
+        IChatComponent header = new ChatComponentTranslation(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
+                groupPrefix != null ? groupPrefix : "", //
+                playerPrefix != null ? playerPrefix : "", //
+                playerText, //
+                playerSuffix != null ? playerSuffix : "", //
+                groupSuffix != null ? groupSuffix : "");
+        return header;
+    }
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public void commandEvent(CommandEvent event)
     {
         if (!(event.sender instanceof EntityPlayerMP))
             return;
         EntityPlayerMP player = (EntityPlayerMP) event.sender;
-        if (!player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getBoolean("mute"))
+        if (!PlayerUtil.getPersistedTag(player, false).getBoolean("mute"))
             return;
         if (!ChatConfig.mutedCommands.contains(event.command.getCommandName()))
             return;
@@ -318,9 +329,10 @@ public class ModuleChat
 
     public static IChatComponent appendGroupPrefixSuffix(IChatComponent header, UserIdent ident, boolean isSuffix)
     {
-        for (GroupEntry group : APIRegistry.perms.getPlayerGroups(ident))
+        WorldPoint point = ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : new WorldPoint(0, 0, 0, 0);
+        for (GroupEntry group : APIRegistry.perms.getServerZone().getAdditionalPlayerGroups(ident, new WorldPoint(ident.getPlayer())))
         {
-            String text = APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
+            String text = APIRegistry.perms.getGroupPermissionProperty(group.getGroup(), point, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (text != null)
             {
                 IChatComponent component = clickChatComponent(text, Action.SUGGEST_COMMAND, "/gmsg " + group.getGroup() + " ");
@@ -458,14 +470,14 @@ public class ModuleChat
     public static void setPlayerNickname(EntityPlayer player, String nickname)
     {
         if (nickname == null)
-            player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).removeTag("nickname");
+            PlayerUtil.getPersistedTag(player, false).removeTag("nickname");
         else
-            player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", nickname);
+            PlayerUtil.getPersistedTag(player, true).setString("nickname", nickname);
     }
 
     public static String getPlayerNickname(EntityPlayer player)
     {
-        String nickname = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
+        String nickname = PlayerUtil.getPersistedTag(player, false).getString("nickname");
         if (nickname == null || nickname.isEmpty())
             nickname = player.getName();
         return nickname;
@@ -485,5 +497,41 @@ public class ModuleChat
         ChatOutputHandler.sendMessage(sender, senderMsg);
         CommandReply.messageSent(sender, target);
         ModuleCommandsEventHandler.checkAfkMessage(target, message);
+    }
+    public static void tellGroup(ICommandSender sender, String message, String group)
+    {
+        ServerZone sz = APIRegistry.perms.getServerZone();
+        for (String g : sz.getGroups())
+            if (group.equalsIgnoreCase(g))
+            {
+                group = g;
+                break;
+            }
+        String groupName = sz.getGroupPermission(group, FEPermissions.GROUP_NAME);
+        if (groupName == null)
+            groupName = group;
+
+        IChatComponent msg;
+        EntityPlayer player = sender instanceof EntityPlayer ? (EntityPlayer) sender : null;
+        msg = player != null ? getChatHeader(UserIdent.get((EntityPlayer) sender)) : new ChatComponentTranslation("SERVER ");
+        String censored = censor.filter(message, player);
+        String formatted = processChatReplacements(sender, censored);
+
+        IChatComponent msgGroup = new ChatComponentText("@" + groupName + "@ ");
+        msgGroup.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(true);
+        msg.appendSibling(msgGroup);
+
+        IChatComponent msgBody = new ChatComponentText(formatted);
+        msgBody.getChatStyle().setColor(EnumChatFormatting.GRAY);
+        msg.appendSibling(msgBody);
+
+        for (EntityPlayerMP p : ServerUtil.getPlayerList())
+        {
+            List<String> groups = GroupEntry.toList(sz.getPlayerGroups(UserIdent.get(p)));
+            if (groups.contains(group))
+            {
+                ChatOutputHandler.sendMessage(p, msg);
+            }
+        }
     }
 }

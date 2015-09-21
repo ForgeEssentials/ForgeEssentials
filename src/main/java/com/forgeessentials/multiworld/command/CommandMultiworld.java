@@ -58,7 +58,7 @@ public class CommandMultiworld extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("Multiworld usage:");
-            arguments.confirm("/mw create: Create a new world (? for usage)");
+            arguments.confirm("/mw create: Create a new world");
             arguments.confirm("/mw info <world>: Show world info");
             arguments.confirm("/mw delete <world>: Delete a world");
             arguments.confirm("/mw list [worlds|providers|worldtypes]");

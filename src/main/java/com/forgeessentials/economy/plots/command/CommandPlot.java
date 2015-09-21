@@ -21,6 +21,7 @@ import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
+import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -28,9 +29,12 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.DoAsCommandSender;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
@@ -70,8 +74,9 @@ public class CommandPlot extends ParserCommandBase
             List<String> values = new ArrayList<>();
             for (PlotListingType type : values())
                 values.add(type.toString().toLowerCase());
-            return null;
+            return values;
         }
+
     }
 
     @Override
@@ -104,12 +109,6 @@ public class CommandPlot extends ParserCommandBase
         return false;
     }
 
-    public static final String[] completeMain = new String[] { "define", "claim", "list", "select", "set", "perms", "userperms", "mods", "users", "limits",
-            "buy", "sell", "delete", };
-    public static final String[] completeSet = new String[] { "price", "fee", };
-    public static final String[] completePerms = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
-    public static final String[] completeTrueFalse = new String[] { "yes", "no", "true", "false", "allow", "deny", };
-
     @Override
     public void parse(final CommandParserArgs arguments) throws CommandException
     {
@@ -131,7 +130,7 @@ public class CommandPlot extends ParserCommandBase
             return;
         }
 
-        arguments.tabComplete(completeMain);
+        arguments.tabComplete("define", "claim", "list", "select", "set", "perms", "userperms", "mods", "users", "limits", "buy", "sell", "delete");
         String subcmd = arguments.remove().toLowerCase();
         switch (subcmd)
         {
@@ -172,7 +171,7 @@ public class CommandPlot extends ParserCommandBase
             parseBuyStart(arguments);
             break;
         case "sell":
-            arguments.error("Not yet implemented");
+            arguments.error("Not yet implemented. Use \"/plot set price\" instead.");
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
@@ -208,9 +207,9 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseDelete(CommandParserArgs arguments) throws CommandException
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         arguments.confirm(Translator.format("Plot \"%s\" has been deleted.", plot.getNameNotNull()));
-        plot.getZone().getWorldZone().removeAreaZone(plot.getZone());
+        Plot.deletePlot(plot);
     }
 
     public static void parseClaim(CommandParserArgs arguments) throws CommandException
@@ -230,6 +229,8 @@ public class CommandPlot extends ParserCommandBase
         if (!wallet.covers(price))
             throw new ModuleEconomy.CantAffordException();
 
+        checkLimits(arguments, selection);
+
         try
         {
             Plot.define(selection, arguments.ident);
@@ -244,6 +245,25 @@ public class CommandPlot extends ParserCommandBase
         {
             throw new TranslatedCommandException("Plot creation cancelled");
         }
+    }
+
+    private static void checkLimits(CommandParserArgs arguments, WorldArea newArea) throws CommandException
+    {
+        int plotSize = newArea.getXLength() * newArea.getZLength() * (Plot.isColumnMode(newArea.getDimension()) ? 1 : newArea.getYLength());
+        int limitCount = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT), Integer.MAX_VALUE);
+        int limitSize = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_SIZE), Integer.MAX_VALUE);
+        int usedCount = 0;
+        long usedSize = 0;
+        for (Plot plot : Plot.getPlots())
+            if (arguments.ident.equals(plot.getOwner()))
+            {
+                usedCount++;
+                usedSize += plot.getAccountedSize();
+            }
+        if (usedCount + 1 > limitCount)
+            throw new TranslatedCommandException("You have reached your limit of %s plots already!", limitCount);
+        if (usedSize + plotSize > limitSize)
+            throw new TranslatedCommandException("You have reached your limit of %s blocks^2 already!", limitSize);
     }
 
     public static void parseList(final CommandParserArgs arguments) throws CommandException
@@ -267,7 +287,7 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        final WorldPoint playerRef = arguments.senderPlayer != null ? new WorldPoint(arguments.senderPlayer).setY(0) : new WorldPoint(0, 0, 0, 0);
+        final WorldPoint playerRef = arguments.senderPlayer != null ? arguments.getSenderPoint().setY(0) : new WorldPoint(0, 0, 0, 0);
         SortedSet<Plot> plots = new TreeSet<Plot>(new Comparator<Plot>() {
             @Override
             public int compare(Plot a, Plot b)
@@ -322,14 +342,14 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseSelect(CommandParserArgs arguments) throws CommandException
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         SelectionHandler.selectionProvider.select(arguments.senderPlayer, plot.getDimension(), plot.getZone().getArea());
         arguments.confirm("Selected plot");
     }
 
     public static void parseMods(CommandParserArgs arguments, boolean modifyUsers) throws CommandException
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         String type = modifyUsers ? "users" : "mods";
         String group = modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD;
 
@@ -346,7 +366,7 @@ public class CommandPlot extends ParserCommandBase
         arguments.tabComplete("add", "remove");
         String action = arguments.remove().toLowerCase();
 
-        UserIdent player = arguments.parsePlayer(true);
+        UserIdent player = arguments.parsePlayer(true, false);
         if (arguments.isTabCompletion)
             return;
 
@@ -370,13 +390,15 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(Plot.PERM_SET_PRICE))
-                arguments.confirm(Translator.translate("/plot set price <amount>"));
+                arguments.confirm(Translator.translate("/plot set price: Put up plot for sale"));
             if (arguments.hasPermission(Plot.PERM_SET_FEE))
-                arguments.confirm(Translator.translate("/plot set fee <amount> <timeout>"));
+                arguments.confirm(Translator.translate("/plot set fee: Set a fee (WIP)")); // TODO WIP plots
+            if (arguments.hasPermission(Plot.PERM_SET_NAME))
+                arguments.confirm(Translator.translate("/plot set name: Set the plot name"));
             return;
         }
 
-        arguments.tabComplete(completeSet);
+        arguments.tabComplete("price", "fee", "name", "owner");
         String subcmd = arguments.remove().toLowerCase();
         switch (subcmd)
         {
@@ -386,6 +408,12 @@ public class CommandPlot extends ParserCommandBase
         case "fee":
             parseSetFee(arguments);
             break;
+        case "name":
+            parseSetName(arguments);
+            break;
+        case "owner":
+            parseSetOwner(arguments);
+            break;
         default:
             break;
         }
@@ -393,25 +421,24 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseSetPrice(CommandParserArgs arguments) throws CommandException
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.format("Current plot price: %s", APIRegistry.economy.toString(plot.getPrice())));
             if (arguments.hasPermission(Plot.PERM_SET_PRICE))
             {
                 arguments.confirm(Translator.translate("/plot set price <amount>: Offer plot for sale"));
                 arguments.confirm(Translator.translate("/plot set price clear: Remove plot from sale"));
             }
+            long price = plot.getPrice();
+            if (price >= 0)
+                arguments.notify(Translator.format("Current plot price: %s", APIRegistry.economy.toString(price)));
+            else
+                arguments.notify(Translator.format("Current plot is not up for sale"));
             return;
         }
         arguments.checkPermission(Plot.PERM_SET_PRICE);
 
-        if (arguments.isTabCompletion && arguments.size() == 1)
-        {
-            arguments.tabCompletion.add("clear");
-            return;
-        }
-
+        arguments.tabComplete("clear");
         String priceStr = arguments.remove().toLowerCase();
         int price = -1;
         if (!priceStr.equals("clear"))
@@ -434,12 +461,13 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseSetFee(CommandParserArgs arguments) throws CommandException
     {
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.format("Current plot fee: %s", APIRegistry.economy.toString(plot.getFee())));
             if (arguments.hasPermission(Plot.PERM_SET_FEE))
-                arguments.confirm(Translator.translate("/plot set fee <amount> <timeout>: Set fee"));
+                arguments.confirm(Translator.translate("/plot set fee <amount> <timeout>: Set fee (WIP)")); // TODO WIP
+                                                                                                            // plots
+            arguments.notify(Translator.format("Current plot fee: %s", APIRegistry.economy.toString(plot.getFee())));
             return;
         }
         arguments.checkPermission(Plot.PERM_SET_FEE);
@@ -451,23 +479,68 @@ public class CommandPlot extends ParserCommandBase
             return;
         plot.setFee(amount);
         plot.setFeeTimeout(timeout);
+        arguments.confirm(Translator.format("Set plot price to %s and timeout to %d", APIRegistry.economy.toString(amount), timeout));
+    }
+
+    public static void parseSetName(CommandParserArgs arguments) throws CommandException
+    {
+        Plot plot = getPlot(arguments.sender);
+        if (arguments.isEmpty())
+        {
+            if (arguments.hasPermission(Plot.PERM_SET_NAME))
+                arguments.confirm(Translator.translate("/plot set name <name>: Set plot name"));
+            String name = APIRegistry.perms.getGroupPermissionProperty(Plot.GROUP_ALL, Plot.PERM_NAME);
+            if (name == null || name.isEmpty())
+                name = "none";
+            arguments.notify(Translator.format("Current plot name: %s", name));
+            return;
+        }
+        String name = arguments.toString();
+        arguments.checkPermission(Plot.PERM_SET_NAME);
+        if (arguments.isTabCompletion)
+            return;
+        plot.getZone().setGroupPermissionProperty(Plot.GROUP_ALL, Plot.PERM_NAME, name);
+        arguments.confirm(Translator.format("Set plot name to \"%s\"", name));
+    }
+
+    public static void parseSetOwner(CommandParserArgs arguments) throws CommandException
+    {
+        Plot plot = getPlot(arguments.sender);
+        if (arguments.isEmpty())
+        {
+            if (arguments.hasPermission(Plot.PERM_SET_OWNER))
+                arguments.confirm(Translator.translate("/plot set owner <player>: Set plot owner"));
+            UserIdent owner = plot.getOwner();
+            if (owner == null)
+                owner = ZonedPermissionHelper.SERVER_IDENT;
+            arguments.notify(Translator.format("Current plot owner: %s", owner.getUsernameOrUuid()));
+            return;
+        }
+        UserIdent newOwner = arguments.parsePlayer(true, false);
+        arguments.checkPermission(Plot.PERM_SET_OWNER);
+        if (arguments.isTabCompletion)
+            return;
+        plot.setOwner(newOwner);
+        arguments.confirm(Translator.format("Set plot owner to \"%s\"", newOwner.getUsernameOrUuid()));
     }
 
     public static void parsePerms(CommandParserArgs arguments, boolean userPerms) throws CommandException
     {
+        final String[] tabCompletion = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
+
         arguments.checkPermission(Plot.PERM_PERMS);
-        Plot plot = getPlot(arguments.senderPlayer);
+        Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
         {
             arguments.confirm(Translator.translate("/plot perms <type> true|false: Control what other players can do in a plot"));
-            arguments.confirm(Translator.format("Possible perms: %s", StringUtils.join(completePerms, ", ")));
+            arguments.confirm(Translator.format("Possible perms: %s", StringUtils.join(tabCompletion, ", ")));
             return;
         }
 
-        arguments.tabComplete(completePerms);
+        arguments.tabComplete(tabCompletion);
         String perm = arguments.remove().toLowerCase();
 
-        arguments.tabComplete(completeTrueFalse);
+        arguments.tabComplete("yes", "no", "true", "false", "allow", "deny");
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing argument");
         String allowDeny = arguments.remove().toLowerCase();
@@ -538,9 +611,13 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseBuyStart(final CommandParserArgs arguments) throws CommandException
     {
-        final Plot plot = Plot.getPlot(new WorldPoint(arguments.senderPlayer));
+        final Plot plot = getPlot(arguments.sender);
         if (plot == null)
             throw new TranslatedCommandException("There is no plot at this position");
+        if (plot.getOwner() != null && plot.getOwner().equals(arguments.ident))
+            throw new TranslatedCommandException("You already own this plot");
+
+        checkLimits(arguments, plot.getZone().getWorldArea());
 
         final long plotPrice = plot.getCalculatedPrice();
         final long sellPrice = plot.getPrice();
@@ -577,8 +654,10 @@ public class CommandPlot extends ParserCommandBase
                 }
                 if (sellPrice < 0 || sellPrice > buyPrice)
                 {
+                    if (sellPrice < 0 && !plot.getOwner().hasPlayer())
+                        throw new TranslatedCommandException("You cannot buy this plot because the owner is not online.");
                     String message = Translator.format("Player %s wants to buy your plot \"%s\" for %s.", //
-                            arguments.senderPlayer.getName(), plot.getName(), buyPriceStr);
+                            arguments.ident.getUsernameOrUuid(), plot.getName(), buyPriceStr);
                     if (buyPrice < sellPrice && sellPrice >= 0)
                         message += " \u00a7c" + Translator.format("This is below the price of %s you set up!", APIRegistry.economy.toString(sellPrice));
                     if (buyPrice < plotPrice)
@@ -618,6 +697,11 @@ public class CommandPlot extends ParserCommandBase
                 }
             }
         };
+        if (arguments.sender instanceof DoAsCommandSender)
+        {
+            handler.respond(true);
+            return;
+        }
         try
         {
             String message = Translator.format("Really buy this plot for %s", buyPriceStr);
@@ -661,9 +745,9 @@ public class CommandPlot extends ParserCommandBase
         plot.setPrice(-1);
     }
 
-    public static Plot getPlot(EntityPlayerMP player) throws CommandException
+    public static Plot getPlot(ICommandSender sender) throws CommandException
     {
-        Plot plot = Plot.getPlot(new WorldPoint(player));
+        Plot plot = Plot.getPlot(new WorldPoint(sender.getEntityWorld(), sender.getPosition()));
         if (plot == null)
             throw new TranslatedCommandException("There is no plot at this position");
         return plot;

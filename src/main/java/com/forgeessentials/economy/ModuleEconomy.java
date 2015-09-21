@@ -25,6 +25,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Economy;
 import com.forgeessentials.api.economy.Wallet;
+import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -33,7 +34,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.economy.commands.CommandCalculatePriceList;
+import com.forgeessentials.economy.commands.CommandSellprice;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
 import com.forgeessentials.economy.commands.CommandSell;
@@ -56,6 +57,8 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 @FEModule(name = "Economy", parentMod = ForgeEssentials.class)
 public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
 {
+
+    public static final UserIdent ECONOMY_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefeec", "$FE_ECONOMY");
 
     public static final String PERM = "fe.economy";
     public static final String PERM_COMMAND = PERM + ".command";
@@ -96,7 +99,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         FECommandManager.registerCommand(new CommandPaidCommand());
         FECommandManager.registerCommand(new CommandSellCommand());
         FECommandManager.registerCommand(new CommandTrade());
-        FECommandManager.registerCommand(new CommandCalculatePriceList());
+        FECommandManager.registerCommand(new CommandSellprice());
     }
 
     @SubscribeEvent
@@ -111,11 +114,11 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHTOLL, "",
                 "Penalty for players to pay when they die. If set to lesser than 1, value is taken as a factor of the player's wallet balance.");
 
-        CommandFeSettings.addAlias("money_per_xp", PERM_XP_MULTIPLIER);
-        CommandFeSettings.addAlias("start_budget", PERM_STARTBUDGET);
-        CommandFeSettings.addAlias("currency_name", PERM_CURRENCY);
-        CommandFeSettings.addAlias("currency_name_singular", PERM_CURRENCY_SINGULAR);
-        CommandFeSettings.addAlias("death_toll", PERM_DEATHTOLL);
+        CommandFeSettings.addAlias("Economy", "money_per_xp", PERM_XP_MULTIPLIER);
+        CommandFeSettings.addAlias("Economy", "start_budget", PERM_STARTBUDGET);
+        CommandFeSettings.addAlias("Economy", "currency_name", PERM_CURRENCY);
+        CommandFeSettings.addAlias("Economy", "currency_name_singular", PERM_CURRENCY_SINGULAR);
+        CommandFeSettings.addAlias("Economy", "death_toll", PERM_DEATHTOLL);
 
         PlotManager.serverStarting();
     }
@@ -125,6 +128,13 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         for (Entry<UserIdent, PlayerWallet> wallet : wallets.entrySet())
             saveWallet(wallet.getKey().getOrGenerateUuid(), wallet.getValue());
+    }
+
+    @SubscribeEvent
+    public void permissionAfterLoadEvent(PermissionEvent.AfterLoad event)
+    {
+        event.serverZone.setPlayerPermission(ECONOMY_IDENT, "command.give", true);
+        event.serverZone.setPlayerPermission(ECONOMY_IDENT, CommandWallet.PERM + ".*", true);
     }
 
     /* ------------------------------------------------------------ */

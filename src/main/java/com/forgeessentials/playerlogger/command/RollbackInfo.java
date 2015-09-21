@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
+import com.forgeessentials.playerlogger.PlayerLogger;
 import com.forgeessentials.playerlogger.entity.ActionBlock;
 import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
 import com.google.common.collect.Lists;
@@ -124,6 +125,7 @@ public class RollbackInfo
                 WorldServer world = DimensionManager.getWorld(change.world.id);
                 Block block = GameData.getBlockRegistry().getObject(change.block.name);
                 world.setBlockState(change.getBlockPos(), block.getStateFromMeta(change.metadata), 3);
+                world.setTileEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
                 System.out.println(change.time + " RESTORED " + change.block.name + ":" + change.metadata);
             }
         }

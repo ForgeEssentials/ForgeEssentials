@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin.vanish;
+package com.forgeessentials.core.preloader.api;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTrackerEntry;

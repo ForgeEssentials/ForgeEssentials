@@ -7,7 +7,7 @@ To use ForgeEssentials and its powerful permission framework with from another m
   (E.g., `./gradlew setupDecompWorkspace eclipse` when using eclipse)
 - Configure the annotation processor as outlined [below](#Configuring-Annotation-Processing)
 - Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler` to the launch arguments of the server
-- Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --tweakClass com.forgeessentials.client.mixin.FEClientLaunchHandler` to the launch arguments of the client
+- Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.forgeessentials.client.json` to the launch arguments of the client
 From here, you may refer to ForgeGradle instructions for importing a project.
 
 # Configuring Annotation Processing

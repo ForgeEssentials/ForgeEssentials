@@ -42,7 +42,7 @@ public class PortalManager extends ServerEventHandler
     {
         super();
         instance = this;
-        mixinLoaded = FEMixinConfig.getInjectedPatches().contains("block.BlockPortal_01");
+        mixinLoaded = FEMixinConfig.getInjectedPatches().contains("block.MixinBlockPortal_01");
         if (!mixinLoaded)
         {
             LoggingHandler.felog.error("Unable to apply portal block mixin. Will revert to glass panes for portals.");
@@ -188,7 +188,8 @@ public class PortalManager extends ServerEventHandler
                     for (int iz = portal.getPortalArea().getLowPoint().getZ(); iz <= portal.getPortalArea().getHighPoint().getZ(); iz++)
                     {
                         BlockPos pos = new BlockPos(ix, iy, iz);
-                        if (world.getBlockState(pos).getBlock() == portalBlock)
+                        Block block = world.getBlockState(pos).getBlock();
+                        if (block == portalBlock || block == Blocks.portal)
                             world.setBlockState(pos, Blocks.air.getDefaultState());
                     }
         }

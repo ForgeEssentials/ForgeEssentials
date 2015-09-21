@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FileUtils;
 
@@ -25,13 +26,13 @@ import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.command.CommandTimedTask;
 import com.forgeessentials.scripting.command.PatternCommand;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -50,12 +51,17 @@ public class ModuleScripting extends ServerEventHandler
     @FEModule.ModuleDir
     public static File moduleDir;
 
+    public static File commandsDir;
+
     // Map < event name, List of scripts < lines of code > >
     public Map<ServerEventType, Map<String, List<String>>> scripts = new HashMap<>();
 
     @SubscribeEvent
     public void load(FEModuleInitEvent event)
     {
+        commandsDir = new File(moduleDir, "commands");
+        commandsDir.mkdirs();
+        
         try (PrintWriter writer = new PrintWriter(new File(moduleDir, "arguments.txt")))
         {
             writer.println("# Script arguments");
@@ -151,27 +157,31 @@ public class ModuleScripting extends ServerEventHandler
         if (!PatternCommand.patternCommands.containsKey("god"))
         {
             cmd = new PatternCommand("god", "/god on|off [player]", null);
-            cmd.getPatterns().put("on @p", Arrays.asList(new String[] { //
-                    "permcheck fe.commands.god.others", "/p user @1 deny fe.protection.damageby.*", "/heal @player", "echo God mode turned ON for @1", }));
+            cmd.getPatterns().put("on @p", Arrays.asList(new String[] { "permcheck fe.commands.god.others", //
+                    "permset user @1 deny fe.protection.damageby.*", "$*/heal @player", "echo God mode turned ON for @1" }));
             cmd.getPatterns().put("off @p", Arrays.asList(new String[] { //
-                    "permcheck fe.commands.god.others", "/p user %@ clear fe.protection.damageby.*", "echo God mode turned OFF for @1", }));
+                    "permcheck fe.commands.god.others", "permset user %@ clear fe.protection.damageby.*", "echo God mode turned OFF for @1", }));
             cmd.getPatterns().put("on", Arrays.asList(new String[] { //
-                    "permcheck fe.commands.god", "/p user @player deny fe.protection.damageby.*", "/heal", "echo God mode ON", }));
+                    "permcheck fe.commands.god", "permset user @player deny fe.protection.damageby.*", "$*/heal", "echo God mode ON", }));
             cmd.getPatterns().put("off", Arrays.asList(new String[] { //
-                    "/p user @player clear fe.protection.damageby.*", "echo God mode OFF", }));
+                    "permset user @player clear fe.protection.damageby.*", "echo God mode OFF", }));
             cmd.getPatterns().put("", Arrays.asList(new String[] { //
                     "echo Usage: /god on|off [player]", }));
+            cmd.getExtraPermissions().put("fe.commands.god", PermissionLevel.OP);
+            cmd.registerExtraPermissions();
         }
     }
 
     @SubscribeEvent
     public void reload(ConfigReloadEvent e)
     {
+        PatternCommand.deregisterAll();
+        
         loadScripts();
         PatternCommand.loadAll();
         createDefaultPatternCommands();
         PatternCommand.saveAll();
-}
+    }
 
     public void runEventScripts(ServerEventType eventType, ICommandSender sender)
     {

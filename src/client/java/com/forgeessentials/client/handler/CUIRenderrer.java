@@ -21,7 +21,6 @@ import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
-//Depreciated
 @SideOnly(value = Side.CLIENT)
 public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMessage>
 {
