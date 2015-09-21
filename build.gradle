@@ -192,6 +192,7 @@ jar {
 		from sharedManifest
 		attributes (
 			"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
+            "MixinConfigs": "mixins.forgeessentials.json",
 			"FMLAT": "forgeessentials_at.cfg",
 		)
 	}
