@@ -18,10 +18,6 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
 {
@@ -34,17 +30,18 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
 
     private Configuration config;
 
+    private static CommandFeSettings instache;
+
     public CommandFeSettings()
     {
+        instache = this;
         APIRegistry.getFEEventBus().register(this);
         ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void serverStartedEvent(FEModuleServerPostInitEvent event)
+    public static CommandFeSettings getInstance()
     {
-        loadSettings();
-        config.save();
+        return instache;
     }
 
     public static void addAlias(String category, String alias, String permission)
@@ -118,7 +115,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
         String value = arguments.remove();
         if (arguments.isTabCompletion)
             return;
-        
+
         String[] aliasParts = key.split("\\.", 2);
         config.get(aliasParts[0], aliasParts[1], "").set(value);
         config.save();
@@ -144,6 +141,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
             if (!value.isEmpty())
                 APIRegistry.perms.registerPermissionProperty(setting.getValue(), value);
         }
+        config.save();
     }
 
     @Override

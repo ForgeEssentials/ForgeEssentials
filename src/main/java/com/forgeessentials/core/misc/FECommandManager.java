@@ -9,6 +9,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
 
@@ -85,6 +86,7 @@ public class FECommandManager extends ConfigLoaderBase
                 if (command instanceof ConfigurableCommand)
                     ((ConfigurableCommand) command).loadData();
             }
+        CommandFeSettings.getInstance().loadSettings();
     }
 
     public static void clearRegisteredCommands()
