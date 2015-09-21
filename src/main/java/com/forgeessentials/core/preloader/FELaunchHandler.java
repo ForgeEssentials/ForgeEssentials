@@ -9,11 +9,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import net.minecraft.launchwrapper.ITweaker;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
 import org.apache.commons.io.FileUtils;
@@ -52,8 +54,6 @@ public class FELaunchHandler implements ITweaker
 
     private static File jarLocation;
 
-    private static MixinTweaker mixinTweaker;
-
     /* ------------------------------------------------------------ */
 
     @Override
@@ -71,10 +71,12 @@ public class FELaunchHandler implements ITweaker
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
     {
-        // Initialize Mixin
-        mixinTweaker = new MixinTweaker();
-        mixinTweaker.acceptOptions(args, gameDir, assetsDir, profile);
-        MixinEnvironment.getDefaultEnvironment().addConfiguration("mixins.forgeessentials.json");
+        // initialize mixin, if someone hasn't already done it for us
+        ArrayList tweaks = (ArrayList)Launch.blackboard.get("TweakClasses");
+        if (!tweaks.contains("org.spongepowered.asm.launch.MixinTweaker"))
+        {
+            tweaks.add("org.spongepowered.asm.launch.MixinTweaker");
+        }
 
         // Enable FastCraft compatibility mode
         System.setProperty("fastcraft.asm.permissive", "true");
@@ -104,7 +106,6 @@ public class FELaunchHandler implements ITweaker
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader)
     {
-        mixinTweaker.injectIntoClassLoader(classLoader);
         if (shouldExtractLibraries())
             extractLibraries();
         loadLibraries(classLoader);
