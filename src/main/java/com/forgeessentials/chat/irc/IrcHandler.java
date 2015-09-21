@@ -24,6 +24,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.exception.IrcException;
@@ -188,10 +189,9 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         }
     }
 
-    public org.pircbotx.Configuration constructConfig()
+    public Configuration<PircBotX> constructConfig()
     {
-        org.pircbotx.Configuration.Builder builder = new org.pircbotx.Configuration.Builder();
-
+        Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
         builder.addListener(this);
         builder.setName(botName);
         builder.setLogin("FEIRCBot");
@@ -251,7 +251,8 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         ircHeader = config.get(CATEGORY, "ircHeader", "[\u00a7cIRC\u00a7r]<%s> ", "Header for messages sent from IRC. Must contain one \"%s\"").getString();
         ircHeaderGlobal = config.get(CATEGORY, "ircHeaderGlobal", "[\u00a7cIRC\u00a7r] ", "Header for IRC events. Must NOT contain any \"%s\"").getString();
         mcHeader = config.get(CATEGORY, "mcHeader", "<%s> %s", "Header for messages sent from MC to IRC. Must contain two \"%s\"").getString();
-        mcSayHeader = config.get(CATEGORY, "mcSayHeader", "[%s] %s", "Header for messages sent with the /say command from MC to IRC. Must contain two \"%s\"").getString();
+        mcSayHeader = config.get(CATEGORY, "mcSayHeader", "[%s] %s", "Header for messages sent with the /say command from MC to IRC. Must contain two \"%s\"")
+                .getString();
         messageDelay = config.get(CATEGORY, "messageDelay", 0, "Delay between messages sent to IRC").getInt();
         allowCommands = config.get(CATEGORY, "allowCommands", true, "If enabled, allows usage of bot commands").getBoolean();
         allowMcCommands = config.get(CATEGORY, "allowMcCommands", true,
@@ -502,8 +503,8 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (event.getRecipient() != bot.getUserBot())
         {
             if (showEvents)
-                mcSendMessage(String.format("%s has been kicked from %s by %s: %s", event.getRecipient().getNick(), event.getChannel().getName(),
-                        event.getUser().getNick(), event.getReason()));
+                mcSendMessage(String.format("%s has been kicked from %s by %s: %s", event.getRecipient().getNick(), event.getChannel().getName(), event
+                        .getUser().getNick(), event.getReason()));
         }
         else
         {

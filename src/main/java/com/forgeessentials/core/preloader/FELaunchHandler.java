@@ -22,8 +22,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.launch.MixinTweaker;
-import org.spongepowered.asm.mixin.MixinEnvironment;
 
 public class FELaunchHandler implements ITweaker
 {
@@ -69,10 +67,11 @@ public class FELaunchHandler implements ITweaker
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
     {
         // initialize mixin, if someone hasn't already done it for us
-        ArrayList tweaks = (ArrayList)Launch.blackboard.get("TweakClasses");
+        ArrayList<String> tweaks = (ArrayList<String>) Launch.blackboard.get("TweakClasses");
         if (!tweaks.contains("org.spongepowered.asm.launch.MixinTweaker"))
         {
             tweaks.add("org.spongepowered.asm.launch.MixinTweaker");
