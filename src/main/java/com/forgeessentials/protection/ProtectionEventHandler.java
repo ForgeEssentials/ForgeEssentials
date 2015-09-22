@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
@@ -789,11 +790,16 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static void updateBrokenTileEntity(final EntityPlayerMP player, final TileEntity te)
     {
+        if (player == null)
+            return;
+        final Packet packet = te.getDescriptionPacket();
+        if (packet == null)
+            return;
         TaskRegistry.runLater(new Runnable() {
             @Override
             public void run()
             {
-                player.playerNetServerHandler.sendPacket(te.getDescriptionPacket());
+                player.playerNetServerHandler.sendPacket(packet);
             }
         });
     }
