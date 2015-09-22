@@ -1,11 +1,11 @@
-ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentialsMain)
+ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials)
 ===================
 
 The code on this branch is for Minecraft 1.7.10.  
 **We are looking for developers. Please contact us on IRC if you are interested in contributing!**
 
 # Help
-For general help about ForgeEssentials and tutorials, please check the **[Wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki)** pages.  
+For general help about ForgeEssentials and tutorials, please check the **[Wiki](https://github.com/ForgeEssentials/ForgeEssentials/wiki)** pages.
 If you need help or have suggestions, **please join us on our IRC channel** [*#forgeessentials*](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on [esper.net](http://esper.net).  
 There are many people there who can help you and it is the quickest way to reach us. Please try to not open issues for simple questions and directly contact us on IRC instead.
 

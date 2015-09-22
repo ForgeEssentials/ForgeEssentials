@@ -1,13 +1,13 @@
 # Integrating ForgeEssentials with another mod
-To use ForgeEssentials and its powerful permission framework with from another mod, please take a look at the [developer documentation in the wiki](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Developer-documentation).
+To use ForgeEssentials and its powerful permission framework with from another mod, please take a look at the [developer documentation in the wiki](https://github.com/ForgeEssentials/ForgeEssentials/wiki/Developer-documentation).
 
 # Developing ForgeEssentials
 - Download ForgeEssentials with git
 - Run ForgeGradle setup  
   (E.g., `./gradlew setupDecompWorkspace eclipse` when using eclipse)
 - Configure the annotation processor as outlined [below](#Configuring-Annotation-Processing)
-- Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler` to the launch arguments of the server
-- Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.forgeessentials.client.json` to the launch arguments of the client
+- Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --mixin mixins.forgeessentials.json` to the launch arguments of the server
+- Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --mixin mixins.forgeessentials.json --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.forgeessentials.client.json` to the launch arguments of the client
 From here, you may refer to ForgeGradle instructions for importing a project.
 
 # Configuring Annotation Processing
