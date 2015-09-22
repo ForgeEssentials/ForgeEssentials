@@ -3,8 +3,6 @@ package com.forgeessentials.mapper.command;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import javax.imageio.ImageIO;
 
@@ -54,28 +52,10 @@ public class CommandMapper extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments)
     {
-        // TODO Auto-generated method stub
         int x = (int) Math.floor(arguments.senderPlayer.posX);
         int z = (int) Math.floor(arguments.senderPlayer.posZ);
-        int chunkX = MapperUtil.worldToChunk(x);
-        int chunkZ = MapperUtil.worldToChunk(z);
         WorldServer world = (WorldServer) arguments.senderPlayer.worldObj;
-
-        Future<BufferedImage> image = ModuleMapper.getInstance().getChunkImageAsync(world, chunkX, chunkZ);
-        try
-        {
-            ImageIO.write(image.get(), "png", new File(ForgeEssentials.getFEDirectory(), "chunk.png"));
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InterruptedException | ExecutionException e)
-        {
-            e.printStackTrace();
-        }
-
-        BufferedImage img = ModuleMapper.getInstance().getRegionImage(world, MapperUtil.chunkToRegion(chunkX), MapperUtil.chunkToRegion(chunkZ));
+        BufferedImage img = ModuleMapper.getInstance().getRegionImage(world, MapperUtil.worldToRegion(x), MapperUtil.worldToRegion(z));
         try
         {
             ImageIO.write(img, "png", new File(ForgeEssentials.getFEDirectory(), "region.png"));

@@ -20,6 +20,7 @@ import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
 
 import com.forgeessentials.core.preloader.api.ServerBlock;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -30,8 +31,6 @@ public final class MapperUtil
     public static final int REGION_CHUNKS = 1 << 5;
     public static final int REGION_CHUNK_COUNT = REGION_CHUNKS * REGION_CHUNKS;
     public static final int REGION_BLOCKS = CHUNK_BLOCKS << 5;
-
-    public static final String BASE_PATH = "textures/blocks";
 
     public static Map<Block, Integer[]> colorMap = new HashMap<Block, Integer[]>();
 
@@ -180,47 +179,36 @@ public final class MapperUtil
 
     /* ------------------------------------------------------------ */
 
-    public static InputStream getResourceStream(ResourceLocation p_110605_1_)
-    {
-        return Object.class.getResourceAsStream("/assets/" + p_110605_1_.getResourceDomain() + "/" + p_110605_1_.getResourcePath());
-    }
-
-    public static InputStream getInputStream(ResourceLocation loc) throws IOException
-    {
-        InputStream is = getResourceStream(loc);
-        if (is != null)
-            return is;
-        // String fileName = String.format("%s/%s/%s", new Object[] { "assets", loc.getResourceDomain(),
-        // loc.getResourcePath() });
-        return null;
-    }
-
-    public static ResourceLocation completeResourceLocation(ResourceLocation loc, int mipmap)
-    {
-        if (mipmap == 0)
-            return new ResourceLocation(loc.getResourceDomain(), String.format("%s/%s%s", new Object[] { BASE_PATH, loc.getResourcePath(), ".png" }));
-        return new ResourceLocation(loc.getResourceDomain(), String.format("%s/mipmaps/%s.%d%s",
-                new Object[] { BASE_PATH, loc.getResourcePath(), Integer.valueOf(mipmap), ".png" }));
-    }
-
     public static BufferedImage getBlockImage(Block block)
     {
         try
         {
             String textureName = ((ServerBlock) block).getTextureNameServer();
             ResourceLocation relLoc = new ResourceLocation(textureName);
-            ResourceLocation absLoc = completeResourceLocation(relLoc, 0);
+            String resourceName = "/assets/" + relLoc.getResourceDomain() + "/textures/blocks/" + relLoc.getResourcePath();
 
-            InputStream is = getInputStream(absLoc);
-            if (is == null)
-                return null;
-
-            return ImageIO.read(is);
+            String[] endings = { "_top", "" };
+            for (String ending : endings)
+            {
+                InputStream is = Object.class.getResourceAsStream(resourceName + ending + ".png");
+                if (is != null)
+                    return ImageIO.read(is);
+            }
+            // Pattern resourcePattern = Pattern.compile(Pattern.quote(resourceName) + ".*\\.png");
+            // List<String> resources = ResourceList.getResources(resourcePattern);
+            // if (resources.isEmpty())
+            // return null;
+            // resourceName = resources.get(0);
+            // InputStream is = Object.class.getResourceAsStream(resourceName);
+            // if (is == null)
+            // return null;
+            // return ImageIO.read(is);
         }
         catch (IOException e)
         {
-            return null;
+            LoggingHandler.felog.warn(String.format("Unable to get texture for block %s", GameData.getBlockRegistry().getNameForObject(block)));
         }
+        return null;
     }
 
     public static Color getAverageColor(BufferedImage image)
