@@ -538,7 +538,7 @@ public class ServerZone extends Zone
         }
         nodes.add(PERMISSION_ASTERIX);
 
-        PermissionCheckEvent event = postPermissionCheckEvent(zones, ident, groups, nodes);
+        PermissionCheckEvent event = postPermissionCheckEvent(zones, ident, groups, nodes, false);
         if (event.result != null)
             return event.result;
 
@@ -594,7 +594,7 @@ public class ServerZone extends Zone
 
     public String getPermissionProperty(Collection<Zone> zones, UserIdent ident, List<String> groups, String node, WorldPoint point)
     {
-        PermissionCheckEvent event = postPermissionCheckEvent(zones, ident, groups, Arrays.asList(node));
+        PermissionCheckEvent event = postPermissionCheckEvent(zones, ident, groups, Arrays.asList(node), true);
         if (event.result != null)
             return event.result;
 
@@ -642,9 +642,9 @@ public class ServerZone extends Zone
         return null;
     }
 
-    public static PermissionCheckEvent postPermissionCheckEvent(Collection<Zone> zones, UserIdent ident, List<String> groups, List<String> nodes)
+    public static PermissionCheckEvent postPermissionCheckEvent(Collection<Zone> zones, UserIdent ident, List<String> groups, List<String> nodes, boolean isProperty)
     {
-        PermissionCheckEvent event = new PermissionCheckEvent(ident, zones, groups, nodes);
+        PermissionCheckEvent event = new PermissionCheckEvent(ident, zones, groups, nodes, isProperty);
         APIRegistry.FE_EVENTBUS.post(event);
         return event;
     }

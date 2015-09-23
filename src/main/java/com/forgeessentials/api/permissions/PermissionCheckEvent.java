@@ -18,14 +18,17 @@ public class PermissionCheckEvent extends Event
 
     public final List<String> nodes;
 
+    public final boolean isProperty;
+
     public String result = null;
 
-    public PermissionCheckEvent(UserIdent ident, Collection<Zone> zones, List<String> groups, List<String> nodes)
+    public PermissionCheckEvent(UserIdent ident, Collection<Zone> zones, List<String> groups, List<String> nodes, boolean isProperty)
     {
         this.ident = ident;
         this.zones = zones;
         this.groups = groups;
         this.nodes = nodes;
+        this.isProperty = isProperty;
     }
 
 }
