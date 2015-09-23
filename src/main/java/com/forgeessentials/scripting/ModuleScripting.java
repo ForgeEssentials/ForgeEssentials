@@ -13,7 +13,9 @@ import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FileUtils;
@@ -45,7 +47,7 @@ public class ModuleScripting extends ServerEventHandler
 
     public static enum ServerEventType
     {
-        START, STOP, LOGIN, LOGOUT;
+        START, STOP, LOGIN, LOGOUT, DEATH;
     }
 
     @FEModule.ModuleDir
@@ -61,7 +63,7 @@ public class ModuleScripting extends ServerEventHandler
     {
         commandsDir = new File(moduleDir, "commands");
         commandsDir.mkdirs();
-        
+
         try (PrintWriter writer = new PrintWriter(new File(moduleDir, "arguments.txt")))
         {
             writer.println("# Script arguments");
@@ -176,7 +178,7 @@ public class ModuleScripting extends ServerEventHandler
     public void reload(ConfigReloadEvent e)
     {
         PatternCommand.deregisterAll();
-        
+
         loadScripts();
         PatternCommand.loadAll();
         createDefaultPatternCommands();
@@ -221,6 +223,15 @@ public class ModuleScripting extends ServerEventHandler
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
     {
         runEventScripts(ServerEventType.LOGOUT, event.player);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onPlayerDeath(LivingDeathEvent event)
+    {
+        if (event.entityLiving instanceof EntityPlayerMP)
+        {
+            runEventScripts(ServerEventType.DEATH, (EntityPlayerMP) event.entityLiving);
+        }
     }
 
 }
