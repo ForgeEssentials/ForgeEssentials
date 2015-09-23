@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.FakePlayer;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 
 public final class ChatOutputHandler extends ConfigLoaderBase
 {

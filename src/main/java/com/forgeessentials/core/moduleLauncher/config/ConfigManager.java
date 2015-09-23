@@ -117,7 +117,8 @@ public class ConfigManager
         {
             file.config.load();
             for (ConfigLoader loader : file.loaders)
-                loader.save(file.config);
+                if (loader instanceof ConfigSaver)
+                    ((ConfigSaver) loader).save(file.config);
             file.config.save();
         }
     }
@@ -126,7 +127,8 @@ public class ConfigManager
     {
         ConfigFile file = getConfigFile(configName);
         for (ConfigLoader loader : file.loaders)
-            loader.save(file.config);
+            if (loader instanceof ConfigSaver)
+                ((ConfigSaver) loader).save(file.config);
         file.config.save();
     }
 

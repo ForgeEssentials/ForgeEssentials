@@ -308,12 +308,6 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     }
 
     @Override
-    public void save(Configuration config)
-    {
-        /* do nothing */
-    }
-
-    @Override
     public boolean supportsCanonicalConfig()
     {
         return true;

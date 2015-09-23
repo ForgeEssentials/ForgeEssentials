@@ -2,7 +2,7 @@ package com.forgeessentials.playerlogger;
 
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 
 public class PlayerLoggerConfig extends ConfigLoaderBase
 {

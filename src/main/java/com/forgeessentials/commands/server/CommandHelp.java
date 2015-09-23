@@ -183,12 +183,6 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public void save(Configuration config)
-    {
-        /* do nothing */
-    }
-
-    @Override
     public boolean supportsCanonicalConfig()
     {
         return true;

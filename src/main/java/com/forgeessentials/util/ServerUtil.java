@@ -296,6 +296,11 @@ public abstract class ServerUtil
         return MinecraftServer.getServer().worldServers[0].getWorldInfo().getWorldTime();
     }
 
+    public static boolean isServerRunning()
+    {
+        return MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning();
+    }
+    
     /* ------------------------------------------------------------ */
 
     public static void replaceCommand(Class<CommandMessage> clazz, ICommand newCommand)

@@ -349,12 +349,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     }
 
     @Override
-    public void save(Configuration config)
-    {
-        /* do nothing */
-    }
-
-    @Override
     public boolean supportsCanonicalConfig()
     {
         return false;

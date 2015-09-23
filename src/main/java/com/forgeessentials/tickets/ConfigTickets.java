@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class ConfigTickets extends ConfigLoaderBase

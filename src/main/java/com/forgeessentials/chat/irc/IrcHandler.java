@@ -277,12 +277,6 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     }
 
     @Override
-    public void save(net.minecraftforge.common.config.Configuration config)
-    {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
     public boolean supportsCanonicalConfig()
     {
         return true;
