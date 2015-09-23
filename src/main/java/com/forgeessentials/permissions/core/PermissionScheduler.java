@@ -28,6 +28,8 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 public class PermissionScheduler extends ServerEventHandler implements ConfigLoader
 {
 
+    public static final int CHECK_INTERVAL = 1000;
+
     private static final String HELP = "Enable the permission scheduler which can toggle permissions based on game / server time";
 
     public static class PermissionEntry
@@ -83,7 +85,7 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent e)
     {
-        if (System.currentTimeMillis() - lastCheck >= 1000)
+        if (System.currentTimeMillis() - lastCheck >= CHECK_INTERVAL)
         {
             lastCheck = System.currentTimeMillis();
             checkSchedules(false);
@@ -179,12 +181,14 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        loadAll();
         enabled = config.get("PermissionScheduler", "enabled", false, HELP).getBoolean();
         if (ServerUtil.isServerRunning())
         {
             if (enabled)
+            {
                 register();
+                loadAll();
+            }
             else
                 unregister();
         }
