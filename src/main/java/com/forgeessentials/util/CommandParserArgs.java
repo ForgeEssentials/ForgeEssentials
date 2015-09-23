@@ -216,6 +216,27 @@ public class CommandParserArgs
         return CommandBase.getBlockByText(sender, itemName);
     }
 
+    public String parsePermission()
+    {
+        if (isTabCompletion && size() == 1)
+        {
+            String permission = peek();
+            Set<String> permissionSet = APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions();
+            Set<String> result = new TreeSet<String>();
+            for (String perm : permissionSet)
+            {
+                int nodeIndex = perm.indexOf('.', permission .length());
+                if (nodeIndex >= 0)
+                    perm = perm.substring(0, nodeIndex);
+                if (CommandBase.doesStringStartWith(permission, perm))
+                    result.add(perm);
+            }
+            tabCompletion = new ArrayList<String>(result);
+            throw new CancelParsingException();
+        }
+        return remove();
+    }
+
     public void checkPermission(String perm)
     {
         if (!isTabCompletion && sender != null && !hasPermission(perm))

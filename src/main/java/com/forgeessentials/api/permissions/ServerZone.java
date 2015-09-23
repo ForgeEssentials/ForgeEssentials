@@ -1,6 +1,7 @@
 package com.forgeessentials.api.permissions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -333,7 +334,7 @@ public class ServerZone extends Zone
                 result.add(new GroupEntry(this, GROUP_GUESTS));
             if (!ident.isFakePlayer())
                 result.add(new GroupEntry(GROUP_PLAYERS, 1, 1));
-            
+
             EntityPlayerMP player = ident.getPlayerMP();
             if (player != null)
                 switch (player.theItemInWorldManager.getGameType())
@@ -520,25 +521,26 @@ public class ServerZone extends Zone
 
     // ------------------------------------------------------------
 
-    public String getPermission(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String permissionNode, WorldPoint point, boolean isProperty)
+    public String getPermission(Collection<Zone> zones, UserIdent ident, List<String> groups, String permissionNode, WorldPoint point)
     {
         // Build node list
         List<String> nodes = new ArrayList<String>();
         nodes.add(permissionNode);
-        if (!isProperty)
+        String[] nodeParts = permissionNode.split("\\.");
+        for (int i = nodeParts.length; i > 0; i--)
         {
-            String[] nodeParts = permissionNode.split("\\.");
-            for (int i = nodeParts.length; i > 0; i--)
+            String node = "";
+            for (int j = 0; j < i; j++)
             {
-                String node = "";
-                for (int j = 0; j < i; j++)
-                {
-                    node += nodeParts[j] + ".";
-                }
-                nodes.add(node + PERMISSION_ASTERIX);
+                node += nodeParts[j] + ".";
             }
-            nodes.add(PERMISSION_ASTERIX);
+            nodes.add(node + PERMISSION_ASTERIX);
         }
+        nodes.add(PERMISSION_ASTERIX);
+
+        PermissionCheckEvent event = postPermissionCheckEvent(zones, ident, groups, nodes);
+        if (event.result != null)
+            return event.result;
 
         // Check player permissions
         if (ident != null)
@@ -590,8 +592,12 @@ public class ServerZone extends Zone
         return null;
     }
 
-    public String getPermissionProperty(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String node, WorldPoint point)
+    public String getPermissionProperty(Collection<Zone> zones, UserIdent ident, List<String> groups, String node, WorldPoint point)
     {
+        PermissionCheckEvent event = postPermissionCheckEvent(zones, ident, groups, Arrays.asList(node));
+        if (event.result != null)
+            return event.result;
+
         // Check player permissions
         if (ident != null)
         {
@@ -634,6 +640,13 @@ public class ServerZone extends Zone
         if (rootZone.permissionDebugger != null)
             rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, "null", point);
         return null;
+    }
+
+    public static PermissionCheckEvent postPermissionCheckEvent(Collection<Zone> zones, UserIdent ident, List<String> groups, List<String> nodes)
+    {
+        PermissionCheckEvent event = new PermissionCheckEvent(ident, zones, groups, nodes);
+        APIRegistry.FE_EVENTBUS.post(event);
+        return event;
     }
 
     public static interface PermissionDebugger

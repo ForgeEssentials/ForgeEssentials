@@ -17,10 +17,12 @@ import com.forgeessentials.core.mcstats.Metrics.Plotter;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.permissions.commands.CommandItemPermission;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandPromote;
 import com.forgeessentials.permissions.commands.CommandZone;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
+import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.permissions.core.PermissionScheduler;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
@@ -56,12 +58,16 @@ public class ModulePermissions extends ConfigLoaderBase
 
     private PermissionScheduler permissionScheduler;
 
+    @SuppressWarnings("unused")
+    private ItemPermissionManager itemPermissionManager;
+    
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preLoad(FEModulePreInitEvent e)
     {
         // Create permission manager
         permissionHelper = new ZonedPermissionHelper();
         permissionScheduler = new PermissionScheduler();
+        itemPermissionManager = new ItemPermissionManager();
         APIRegistry.perms = permissionHelper;
         PermissionManager.setPermissionProvider(permissionHelper);
 
@@ -71,6 +77,7 @@ public class ModulePermissions extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandZone());
         FECommandManager.registerCommand(new CommandPermissions());
         FECommandManager.registerCommand(new CommandPromote());
+        FECommandManager.registerCommand(new CommandItemPermission());
 
         ForgeEssentials.getMcStatsGeneralGraph().addPlotter(new Plotter("Areas") {
             @Override

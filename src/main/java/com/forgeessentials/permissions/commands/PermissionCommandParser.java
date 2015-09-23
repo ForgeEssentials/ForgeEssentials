@@ -649,12 +649,7 @@ public class PermissionCommandParser
         // Auto-complete group name
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = new ArrayList<String>();
-            for (String group : APIRegistry.perms.getServerZone().getGroups())
-            {
-                if (CommandBase.doesStringStartWith(arguments.args.peek(), group))
-                    arguments.tabCompletion.add(group);
-            }
+            arguments.tabComplete(APIRegistry.perms.getServerZone().getGroups());
             return;
         }
 

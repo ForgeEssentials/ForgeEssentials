@@ -1,6 +1,7 @@
 package com.forgeessentials.api.permissions;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.SortedSet;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +41,7 @@ public interface IPermissionsHelper extends IPermissionProvider
      */
     public boolean checkBooleanPermission(String permissionValue);
 
-    String getPermission(UserIdent ident, WorldPoint point, WorldArea area, Collection<String> groups, String permissionNode, boolean isProperty);
+    String getPermission(UserIdent ident, WorldPoint point, WorldArea area, List<String> groups, String permissionNode, boolean isProperty);
 
     /**
      * Checks a permission for a player
