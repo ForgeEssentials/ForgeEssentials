@@ -1,7 +1,7 @@
 package com.forgeessentials.permissions.core;
 
 import java.util.Map.Entry;
-import java.util.SortedSet;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,7 +23,7 @@ public abstract class ZonePersistenceProvider
             serverZone.clearPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
 
         // Add groups to players
-        for (Entry<UserIdent, SortedSet<String>> entry : serverZone.getPlayerGroups().entrySet())
+        for (Entry<UserIdent, Set<String>> entry : serverZone.getPlayerGroups().entrySet())
             serverZone.setPlayerPermissionProperty(entry.getKey(), FEPermissions.PLAYER_GROUPS, StringUtils.join(entry.getValue(), ","));
     }
 
