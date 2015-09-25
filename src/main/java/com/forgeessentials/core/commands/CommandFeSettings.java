@@ -107,7 +107,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
             if (globalValue != null && !globalValue.equals(rootValue))
                 arguments.warn(Translator.format("%s = %s, but global permission value is set to %s", key, rootValue, globalValue));
             else
-                arguments.confirm(Translator.format("%s = %s", key, rootValue));
+                arguments.confirm("%s = %s", key, rootValue);
             return;
         }
 
@@ -121,7 +121,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
         config.save();
 
         APIRegistry.perms.registerPermissionProperty(perm, value);
-        arguments.confirm(Translator.format("Changed setting \"%s\" to \"%s\"", key, value));
+        arguments.confirm("Changed setting \"%s\" to \"%s\"", key, value);
     }
 
     public void loadSettings()

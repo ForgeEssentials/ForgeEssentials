@@ -180,14 +180,14 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
                 wi.setRaining(true);
                 wi.setThundering(true);
             }
-            arguments.confirm(Translator.format("Started %s in world %d", typeName, dim));
+            arguments.confirm("Started %s in world %d", typeName, dim);
             break;
         case STOP:
             if (type == WeatherType.RAIN)
                 wi.setRaining(false);
             else
                 wi.setThundering(false);
-            arguments.confirm(Translator.format("Stopped %s in world %d", typeName, dim));
+            arguments.confirm("Stopped %s in world %d", typeName, dim);
             break;
         default:
             WeatherData worldData = weatherStates.get(dim);

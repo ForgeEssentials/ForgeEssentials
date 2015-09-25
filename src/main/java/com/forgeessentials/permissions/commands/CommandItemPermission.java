@@ -13,7 +13,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.util.CommandParserArgs;
 
@@ -129,7 +128,7 @@ public class CommandItemPermission extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
         getSettingsTag(stack).appendTag(new NBTTagString(permission + "=" + value));
-        arguments.confirm(Translator.format("Set permission %s=%s for item", permission, value));
+        arguments.confirm("Set permission %s=%s for item", permission, value);
     }
 
     public static void parseGroup(CommandParserArgs arguments, ItemStack stack)
@@ -143,7 +142,7 @@ public class CommandItemPermission extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
         getSettingsTag(stack).appendTag(new NBTTagString(group));
-        arguments.confirm(Translator.format("Added group %s to item", group));
+        arguments.confirm("Added group %s to item", group);
     }
 
     public static NBTTagCompound getOrCreatePermissionTag(ItemStack stack)

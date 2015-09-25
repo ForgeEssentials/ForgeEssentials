@@ -439,7 +439,7 @@ public class PermissionCommandParser
             {
                 if (arguments.args.isEmpty())
                 {
-                    arguments.confirm(Translator.format("Value of %s = %s", permissionNode, zone.getPlayerPermission(ident, permissionNode)));
+                    arguments.confirm("Value of %s = %s", permissionNode, zone.getPlayerPermission(ident, permissionNode));
                     return;
                 }
                 value = StringUtils.join(arguments.args, ' ');
@@ -864,7 +864,7 @@ public class PermissionCommandParser
             {
                 if (arguments.args.isEmpty())
                 {
-                    arguments.confirm(Translator.format("Value of %s = %s", permissionNode, zone.getGroupPermission(group, permissionNode)));
+                    arguments.confirm("Value of %s = %s", permissionNode, zone.getGroupPermission(group, permissionNode));
                     return;
                 }
                 value = StringUtils.join(arguments.args, ' ');

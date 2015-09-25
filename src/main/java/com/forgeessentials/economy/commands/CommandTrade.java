@@ -57,8 +57,8 @@ public class CommandTrade extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.translate("/trade <player> [price-per-item]:"));
-            arguments.confirm(Translator.translate("  Trade the item you are holding in your hand"));
+            arguments.confirm("/trade <player> [price-per-item]:");
+            arguments.confirm("  Trade the item you are holding in your hand");
             return;
         }
 
@@ -117,7 +117,7 @@ public class CommandTrade extends ParserCommandBase
                         else if (response == false)
                         {
                             ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Trade declined"));
-                            arguments.error(Translator.format("Player %s declined the trade", buyer.getUsernameOrUuid()));
+                            arguments.confirm("Player %s declined the trade", buyer.getUsernameOrUuid());
                             return;
                         }
 
@@ -165,7 +165,7 @@ public class CommandTrade extends ParserCommandBase
                                 APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize),
                                 arguments.sender.getCommandSenderName());
                     Questioner.add(buyer.getPlayerMP(), message, buyerHandler, 60);
-                    arguments.confirm(Translator.format("Waiting on %s...", buyer.getUsernameOrUuid()));
+                    arguments.confirm("Waiting on %s...", buyer.getUsernameOrUuid());
                 }
                 catch (QuestionerStillActiveException e)
                 {
