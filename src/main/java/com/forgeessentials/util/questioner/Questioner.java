@@ -16,6 +16,8 @@ import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 public class Questioner extends ServerEventHandler
 {
 
+    public static final String MSG_STILL_ACTIVE = "Error. There is still an unanswered question left";
+
     private static Map<ICommandSender, QuestionData> questions = new HashMap<>();
 
     public static int DEFAULT_TIMEOUT = 120;
