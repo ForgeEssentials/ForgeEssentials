@@ -249,8 +249,8 @@ public class CommandPlot extends ParserCommandBase
     {
         int plotSize = newArea.getXLength() * newArea.getZLength() * (Plot.isColumnMode(newArea.getDimension()) ? 1 : newArea.getYLength());
 
-        int minAxis = Integer.parseInt(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MIN));
-        int maxAxis = Integer.parseInt(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MAX));
+        int minAxis = ServerUtil.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MIN), Integer.MIN_VALUE);
+        int maxAxis = ServerUtil.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MAX), Integer.MAX_VALUE);
 
         if (newArea.getXLength() < minAxis || newArea.getZLength() < minAxis)
         {
