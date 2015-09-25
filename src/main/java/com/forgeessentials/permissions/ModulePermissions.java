@@ -61,15 +61,19 @@ public class ModulePermissions extends ConfigLoaderBase
     @SuppressWarnings("unused")
     private ItemPermissionManager itemPermissionManager;
     
+    public ModulePermissions()
+    {
+        // Earliest initialization of permission system possible
+        permissionHelper = new ZonedPermissionHelper();
+        APIRegistry.perms = permissionHelper;
+        PermissionManager.setPermissionProvider(permissionHelper);
+    }
+    
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preLoad(FEModulePreInitEvent e)
     {
-        // Create permission manager
-        permissionHelper = new ZonedPermissionHelper();
         permissionScheduler = new PermissionScheduler();
         itemPermissionManager = new ItemPermissionManager();
-        APIRegistry.perms = permissionHelper;
-        PermissionManager.setPermissionProvider(permissionHelper);
 
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);

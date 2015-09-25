@@ -343,8 +343,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
         ConfigCategory category = config.getCategory(CATEGORY_ITEM);
         for (Entry<String, Property> entry : category.entrySet())
-            if (entry.getKey() != null && entry.getValue() != null)
-                APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString(entry.getValue().getInt(DEFAULT_ITEM_PRICE)));
+            APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString(entry.getValue().getInt(DEFAULT_ITEM_PRICE)));
     }
 
     @Override
