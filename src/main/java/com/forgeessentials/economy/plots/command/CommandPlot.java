@@ -248,6 +248,20 @@ public class CommandPlot extends ParserCommandBase
     private static void checkLimits(CommandParserArgs arguments, WorldArea newArea)
     {
         int plotSize = newArea.getXLength() * newArea.getZLength() * (Plot.isColumnMode(newArea.getDimension()) ? 1 : newArea.getYLength());
+
+        int minAxis = Integer.parseInt(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MIN));
+        int maxAxis = Integer.parseInt(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MAX));
+
+        if (newArea.getXLength() < minAxis || newArea.getZLength() < minAxis)
+        {
+            throw new TranslatedCommandException("Plot is too small!");
+        }
+
+        if (newArea.getXLength() > maxAxis || newArea.getZLength() > maxAxis)
+        {
+            throw new TranslatedCommandException("Plot is too big!");
+        }
+
         int limitCount = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT), Integer.MAX_VALUE);
         int limitSize = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_SIZE), Integer.MAX_VALUE);
         int usedCount = 0;
