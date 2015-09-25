@@ -43,7 +43,7 @@ public class ServerZone extends Zone
     @Expose(serialize = false)
     private int maxZoneID;
 
-    private Map<UserIdent, Set<String>> playerGroups = new HashMap<UserIdent, Set<String>>();
+    private Map<UserIdent, SortedSet<String>> playerGroups = new HashMap<UserIdent, SortedSet<String>>();
 
     @Expose(serialize = false)
     private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
@@ -241,7 +241,7 @@ public class ServerZone extends Zone
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
-        Set<String> groupSet = playerGroups.get(ident);
+        SortedSet<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
             groupSet = new TreeSet<String>();
@@ -271,7 +271,7 @@ public class ServerZone extends Zone
 
     // ------------------------------------------------------------
 
-    public Map<UserIdent, Set<String>> getPlayerGroups()
+    public Map<UserIdent, SortedSet<String>> getPlayerGroups()
     {
         return playerGroups;
     }
@@ -279,7 +279,7 @@ public class ServerZone extends Zone
     public Map<String, Set<UserIdent>> getGroupPlayers()
     {
         Map<String, Set<UserIdent>> groupPlayers = new HashMap<String, Set<UserIdent>>();
-        for (Entry<UserIdent, Set<String>> player : playerGroups.entrySet())
+        for (Entry<UserIdent, SortedSet<String>> player : playerGroups.entrySet())
         {
             for (String group : player.getValue())
             {

@@ -69,28 +69,28 @@ public class CommandParserArgs
         this(command, args, sender, false);
     }
 
-    public void confirm(String message)
+    public void confirm(String message, Object... args)
     {
         if (!isTabCompletion)
-            ChatOutputHandler.chatConfirmation(sender, message);
+            ChatOutputHandler.chatConfirmation(sender, Translator.format(message, args));
     }
 
-    public void notify(String message)
+    public void notify(String message, Object... args)
     {
         if (!isTabCompletion)
-            ChatOutputHandler.chatNotification(sender, message);
+            ChatOutputHandler.chatNotification(sender, Translator.format(message, args));
     }
 
-    public void warn(String message)
+    public void warn(String message, Object... args)
     {
         if (!isTabCompletion)
-            ChatOutputHandler.chatWarning(sender, message);
+            ChatOutputHandler.chatWarning(sender, Translator.format(message, args));
     }
 
-    public void error(String message)
+    public void error(String message, Object... args)
     {
         if (!isTabCompletion)
-            ChatOutputHandler.chatError(sender, message);
+            ChatOutputHandler.chatError(sender, Translator.format(message, args));
     }
 
     public int size()
@@ -196,7 +196,7 @@ public class CommandParserArgs
         String itemName = remove();
         Item item = CommandBase.getItemByText(sender, itemName);
         if (item == null)
-            error(Translator.format("Item %s not found", itemName));
+            throw new TranslatedCommandException("Item %s not found", itemName);
         return item;
     }
 
@@ -225,7 +225,7 @@ public class CommandParserArgs
             Set<String> result = new TreeSet<String>();
             for (String perm : permissionSet)
             {
-                int nodeIndex = perm.indexOf('.', permission .length());
+                int nodeIndex = perm.indexOf('.', permission.length());
                 if (nodeIndex >= 0)
                     perm = perm.substring(0, nodeIndex);
                 if (CommandBase.doesStringStartWith(permission, perm))
@@ -252,7 +252,7 @@ public class CommandParserArgs
     {
         if (!isTabCompletion || args.size() != 1)
             return;
-        tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList);
+        tabCompletion.addAll(ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList));
         throw new CancelParsingException();
     }
 
@@ -260,7 +260,7 @@ public class CommandParserArgs
     {
         if (!isTabCompletion || args.size() != 1)
             return;
-        tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList);
+        tabCompletion.addAll(ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList));
         throw new CancelParsingException();
     }
 
@@ -401,6 +401,12 @@ public class CommandParserArgs
         if (senderPlayer == null)
             throw new TranslatedCommandException("Player needed");
         return APIRegistry.perms.getServerZone().getWorldZone(senderPlayer.dimension);
+    }
+
+    public void needsPlayer()
+    {
+        if (senderPlayer == null)
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
 }

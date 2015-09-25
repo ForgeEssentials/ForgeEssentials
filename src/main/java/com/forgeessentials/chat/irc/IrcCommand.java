@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import net.minecraft.command.ICommandSender;
 
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -37,10 +38,10 @@ public interface IrcCommand
             }
 
             @Override
-            public void error(String message)
+            public void error(String message, Object... args)
             {
                 if (!isTabCompletion)
-                    ChatOutputHandler.chatError(sender, "Error: " + message);
+                    ChatOutputHandler.chatError(sender, "Error: " + Translator.format(message, args));
             }
 
         }

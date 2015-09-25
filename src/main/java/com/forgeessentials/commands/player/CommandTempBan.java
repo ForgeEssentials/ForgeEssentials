@@ -80,4 +80,5 @@ public class CommandTempBan extends FEcmdModuleCommands
             player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You have been banned for %s",
                     ChatOutputHandler.formatTimeDurationReadable(duration, true)));
     }
+    
 }

@@ -170,8 +170,7 @@ public class CommandPlot extends ParserCommandBase
             parseBuyStart(arguments);
             break;
         case "sell":
-            arguments.error("Not yet implemented. Use \"/plot set price\" instead.");
-            break;
+            throw new TranslatedCommandException("Not yet implemented. Use \"/plot set price\" instead.");
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
         }

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionManager;
@@ -207,8 +208,7 @@ public class PermissionCommandParser
                 listGroups(arguments.sender);
                 break;
             default:
-                arguments.error("Unknown command argument");
-                break;
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
             }
         }
     }
@@ -668,17 +668,12 @@ public class PermissionCommandParser
             else
             {
                 String groupArg = arguments.args.remove();
-                if (groupArg.equalsIgnoreCase("create"))
-                {
-                    if (APIRegistry.perms.createGroup(group))
-                        arguments.confirm(String.format("Created group %s", group));
-                    else
-                        arguments.confirm(String.format("Could not create group %s. Cancelled.", group));
-                }
+                if (!groupArg.equalsIgnoreCase("create"))
+                    throw new CommandException("Group %s does not exist", group);
+                if (APIRegistry.perms.createGroup(group))
+                    arguments.confirm(String.format("Created group %s", group));
                 else
-                {
-                    arguments.error(String.format("Group %s does not exist", group));
-                }
+                    arguments.confirm(String.format("Could not create group %s. Cancelled.", group));
             }
             return;
         }
