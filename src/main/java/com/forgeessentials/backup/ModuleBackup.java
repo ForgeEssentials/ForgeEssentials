@@ -182,6 +182,7 @@ public class ModuleBackup extends ConfigLoaderBase
         keepBackups = config.get(CONFIG_CAT, "keep_backups", 12, "Keep at least this amount of last backups").getInt();
         dailyBackups = config.get(CONFIG_CAT, "keep_daily_backups", 7, "Keep at least one daily backup for this last number of last days").getInt();
         weeklyBackups = config.get(CONFIG_CAT, "keep_weekly_backups", 8, "Keep at least one weekly backup for this last number of weeks").getInt();
+        baseFolder = new File(config.get(CONFIG_CAT, "base_folder", moduleDir.getPath(), "Folder to store the backups in. Can be anywhere writable in the file system.").getString());
 
         config.get(CONFIG_CAT_WORLDS, "0", true).getBoolean(); // Create default entry
         ConfigCategory worldCat = config.getCategory(CONFIG_CAT_WORLDS);
@@ -375,7 +376,7 @@ public class ModuleBackup extends ConfigLoaderBase
 
     private static File getBackupFile(WorldServer world)
     {
-        return new File(moduleDir, String.format("%s/DIM_%d/%s.zip", //
+        return new File(baseFolder, String.format("%s/DIM_%d/%s.zip", //
                 world.getWorldInfo().getWorldName(), //
                 world.provider.dimensionId, //
                 FILE_FORMAT.format(new Date())));
@@ -408,7 +409,7 @@ public class ModuleBackup extends ConfigLoaderBase
 
     private static void cleanBackups()
     {
-        File baseDir = new File(moduleDir, DimensionManager.getWorld(0).getWorldInfo().getWorldName());
+        File baseDir = new File(baseFolder, DimensionManager.getWorld(0).getWorldInfo().getWorldName());
         if (!baseDir.exists())
             return;
         for (File backupDir : baseDir.listFiles())
