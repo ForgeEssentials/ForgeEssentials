@@ -1,47 +1,47 @@
 package com.forgeessentials.commands.item;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commands.util.CommandDataManager;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.commands.util.Kit;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
- *
- * @author Dries007
  */
 
-public class CommandKit extends FEcmdModuleCommands implements ConfigurableCommand
+public class CommandKit extends ParserCommandBase implements ConfigurableCommand
 {
 
     public static final String PERM = ModuleCommands.PERM + ".kit";
     public static final String PERM_ADMIN = ModuleCommands.PERM + ".admin";
     public static final String PERM_BYPASS_COOLDOWN = PERM + ".bypasscooldown";
 
-    public static final String[] tabCompletionArg2 = new String[] { "set", "del" };
+    public static String kitForNewPlayers;
 
-    protected String kitForNewPlayers;
+    public static Map<String, Kit> kits = new HashMap<String, Kit>();
 
     public CommandKit()
     {
@@ -55,93 +55,21 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public String getCommandUsage(ICommandSender sender)
     {
-        /*
-         * Print kits
-         */
-        if (args.length == 0)
-        {
-            ChatOutputHandler.chatNotification(sender, "Available kits:");
-            String msg = "";
-            for (Kit kit : CommandDataManager.kits.values())
-            {
-                if (PermissionManager.checkPermission(sender, getPermissionNode() + "." + kit.getName()))
-                {
-                    msg = kit.getName() + ", " + msg;
-                }
-            }
-            ChatOutputHandler.chatNotification(sender, msg);
-            return;
-        }
-        /*
-         * Give kit
-         */
-        if (args.length == 1)
-        {
-            if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
-                throw new TranslatedCommandException("Kit %s does not exist.", args[0]);
-            if (!PermissionManager.checkPermission(sender, getPermissionNode() + "." + args[0].toLowerCase()))
-                throw new TranslatedCommandException(
-                        "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
-            CommandDataManager.kits.get(args[0].toLowerCase()).giveKit(sender);
-            return;
-        }
-
-        /*
-         * Make kit
-         */
-        if (args.length >= 2 && args[1].equalsIgnoreCase("set") && PermissionManager.checkPermission(sender, getPermissionNode() + ".admin"))
-        {
-            if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
-            {
-                int cooldown = -1;
-                if (args.length == 3)
-                {
-                    cooldown = parseIntWithMin(sender, args[2], -1);
-                }
-                new Kit(sender, args[0].toLowerCase(), cooldown);
-                ChatOutputHandler.chatConfirmation(sender,
-                        Translator.format("Kit created successfully. %s cooldown.", ChatOutputHandler.formatTimeDurationReadable(cooldown, true)));
-            }
-            else
-            {
-                try
-                {
-                    Questioner.add(sender, Translator.format("Kit %s already exists. overwrite?", args[0].toLowerCase()), new HandleKitOverrides(sender, args));
-                }
-                catch (QuestionerStillActiveException e)
-                {
-                    throw new QuestionerStillActiveException.CommandException();
-                }
-            }
-            return;
-        }
-
-        /*
-         * Delete kit
-         */
-        if (args.length == 2 && args[1].equalsIgnoreCase("del") && PermissionManager.checkPermission(sender, getPermissionNode() + ".admin"))
-        {
-            if (args.length == 2)
-            {
-                if (!CommandDataManager.kits.containsKey(args[0].toLowerCase()))
-                    throw new TranslatedCommandException("Kit %s does not exist.", args[0]);
-                CommandDataManager.removeKit(CommandDataManager.kits.get(args[0].toLowerCase()));
-                ChatOutputHandler.chatConfirmation(sender, "Kit removed.");
-            }
-        }
-
-        /*
-         * You're doing it wrong!
-         */
-        throw new TranslatedCommandException(getCommandUsage(sender));
+        return "/kit [name] [set|del] [cooldown]: Use and modify item kits";
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return false;
+        return PERM;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.TRUE;
     }
 
     @Override
@@ -152,78 +80,86 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public boolean canConsoleUseCommand()
     {
-        if (args.length == 0)
-        {
-            List<String> kits = new ArrayList<String>();
-            for (Kit kit : CommandDataManager.kits.values())
-                kits.add(kit.getName());
-            return getListOfStringsMatchingLastWord(args, kits);
-        }
-        else if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, tabCompletionArg2);
-        return null;
+        return false;
+    }
+
+    public List<String> getAvailableKits(CommandParserArgs arguments)
+    {
+        List<String> availableKits = new ArrayList<String>();
+        for (Kit kit : kits.values())
+            if (arguments.hasPermission(PERM + "." + kit.getName()))
+                availableKits.add(kit.getName());
+        return availableKits;
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public void parse(final CommandParserArgs arguments)
     {
-        return PermissionLevel.TRUE;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/kit [name] OR [name] [set|del] <cooldown> Allows you to receive free kits which are pre-defined by the server owner.";
-    }
-
-    @SubscribeEvent
-    public void checkKitExistence(FEModuleServerPostInitEvent e)
-    {
-        if (!CommandDataManager.kits.containsKey(kitForNewPlayers))
-            kitForNewPlayers = null;
-    }
-
-    @SubscribeEvent
-    public void issueWelcomeKit(NoPlayerInfoEvent e)
-    {
-        Kit kit = CommandDataManager.kits.get(kitForNewPlayers);
-        if (kit != null)
+        if (arguments.isEmpty())
         {
-            kit.giveKit(e.entityPlayer);
-        }
-    }
-
-    static class HandleKitOverrides implements QuestionerCallback
-    {
-
-        private String[] args;
-
-        private EntityPlayerMP sender;
-
-        private HandleKitOverrides(EntityPlayerMP sender, String[] args)
-        {
-            this.args = args;
-            this.sender = sender;
+            if (!arguments.isTabCompletion)
+                arguments.confirm("Available kits: %s", StringUtils.join(getAvailableKits(arguments), ", "));
+            return;
         }
 
-        @Override
-        public void respond(Boolean response)
+        arguments.tabComplete(getAvailableKits(arguments));
+        final String kitName = arguments.remove().toLowerCase();
+        Kit kit = kits.get(kitName);
+
+        if (arguments.isEmpty())
         {
-            if (response != null && response == true)
-            {
-                int cooldown = -1;
-                if (args.length == 3)
+            if (kit == null)
+                throw new TranslatedCommandException("Kit %s does not exist", kitName);
+            if (!arguments.hasPermission(PERM + "." + kit.getName()))
+                throw new TranslatedCommandException("You are not allowed to use this kit");
+            kit.giveKit(arguments.senderPlayer);
+        }
+
+        arguments.checkPermission(PERM_ADMIN);
+
+        arguments.tabComplete("set", "del");
+        String subCommand = arguments.remove().toLowerCase();
+        switch (subCommand)
+        {
+        case "set":
+            QuestionerCallback callback = new QuestionerCallback() {
+                @Override
+                public void respond(Boolean response)
                 {
-                    cooldown = parseIntWithMin(sender, args[2], -1);
+                    if (response == null)
+                        arguments.error("Question timed out");
+                    else if (!response)
+                        return;
+                    int cooldown = -1;
+                    if (!arguments.isEmpty())
+                        cooldown = arguments.parseInt();
+                    addKit(new Kit(arguments.senderPlayer, kitName, cooldown));
+                    arguments.confirm("Kit %s saved with cooldown %s", kitName, ChatOutputHandler.formatTimeDurationReadable(cooldown, true));
                 }
-                new Kit(sender, args[0].toLowerCase(), cooldown);
-                ChatOutputHandler.chatConfirmation(sender,
-                        Translator.format("Kit created successfully. %s cooldown.", ChatOutputHandler.formatTimeDurationReadable(cooldown, true)));
-            }
+            };
+            if (kit == null)
+                callback.respond(true);
+            else
+                Questioner.addChecked(arguments.sender, Translator.format("Overwrite kit %s?", kitName), callback);
+            break;
+        case "del":
+        case "delete":
+            removeKit(kit);
+            arguments.confirm("Deleted kit %s", kitName);
+            break;
+        default:
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
         }
+    }
 
+    @SubscribeEvent
+    public void newPlayerEvent(NoPlayerInfoEvent event)
+    {
+        Kit kit = kits.get(kitForNewPlayers);
+        if (kit != null)
+            kit.giveKit(event.entityPlayer);
     }
 
     @Override
@@ -236,7 +172,19 @@ public class CommandKit extends FEcmdModuleCommands implements ConfigurableComma
     @Override
     public void loadData()
     {
-        // TODO (1) Load Kit data here!
+        kits = DataManager.getInstance().loadAll(Kit.class);
+    }
+
+    public static void removeKit(Kit kit)
+    {
+        kits.remove(kit.getName());
+        DataManager.getInstance().delete(Kit.class, kit.getName());
+    }
+
+    public static void addKit(Kit kit)
+    {
+        kits.put(kit.getName(), kit);
+        DataManager.getInstance().save(kit, kit.getName());
     }
 
 }

@@ -38,8 +38,6 @@ public class Kit
         for (int i = 0; i < 4; i++)
             if (player.inventory.armorInventory[i] != null)
                 armor[i] = player.inventory.armorInventory[i].copy();
-
-        CommandDataManager.addKit(this);
     }
 
     public String getName()

@@ -17,7 +17,6 @@ import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
 public class CommandTrade extends ParserCommandBase
 {
@@ -154,39 +153,25 @@ public class CommandTrade extends ParserCommandBase
                         ChatOutputHandler.chatNotification(buyer.getPlayerMP(), buyerMsg);
                     }
                 };
-                try
-                {
-                    String message;
-                    if (itemStack.stackSize == 1)
-                        message = Translator.format("Buy one %s for %s from %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price),
-                                arguments.sender.getCommandSenderName());
-                    else
-                        message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?", itemStack.stackSize, itemStack.getDisplayName(),
-                                APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize),
-                                arguments.sender.getCommandSenderName());
-                    Questioner.add(buyer.getPlayerMP(), message, buyerHandler, 60);
-                    arguments.confirm("Waiting on %s...", buyer.getUsernameOrUuid());
-                }
-                catch (QuestionerStillActiveException e)
-                {
-                    throw new QuestionerStillActiveException.CommandException();
-                }
+                String message;
+                if (itemStack.stackSize == 1)
+                    message = Translator.format("Buy one %s for %s from %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price),
+                            arguments.sender.getCommandSenderName());
+                else
+                    message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?", itemStack.stackSize, itemStack.getDisplayName(),
+                            APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize),
+                            arguments.sender.getCommandSenderName());
+                Questioner.addChecked(buyer.getPlayerMP(), message, buyerHandler, 60);
+                arguments.confirm("Waiting on %s...", buyer.getUsernameOrUuid());
             }
         };
-        try
-        {
-            String message;
-            if (itemStack.stackSize == 1)
-                message = Translator.format("Sell one %s for %s to %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price),
-                        buyer.getUsernameOrUuid());
-            else
-                message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.stackSize, itemStack.getDisplayName(),
-                        APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize), buyer.getUsernameOrUuid());
-            Questioner.add(arguments.sender, message, sellerHandler, 20);
-        }
-        catch (QuestionerStillActiveException e)
-        {
-            throw new QuestionerStillActiveException.CommandException();
-        }
+        String message;
+        if (itemStack.stackSize == 1)
+            message = Translator
+                    .format("Sell one %s for %s to %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price), buyer.getUsernameOrUuid());
+        else
+            message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.stackSize, itemStack.getDisplayName(),
+                    APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize), buyer.getUsernameOrUuid());
+        Questioner.addChecked(arguments.sender, message, sellerHandler, 20);
     }
 }

@@ -13,7 +13,6 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
 public class CommandTPA extends ParserCommandBase
 {
@@ -73,27 +72,21 @@ public class CommandTPA extends ParserCommandBase
         {
             if (arguments.isTabCompletion)
                 return;
-            try
-            {
-                arguments.confirm("Waiting for response by %s", player.getUsernameOrUuid());
-                Questioner.add(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getCommandSenderName()),
-                        new QuestionerCallback() {
-                            @Override
-                            public void respond(Boolean response)
-                            {
-                                if (response == null)
-                                    arguments.error("TPA request timed out");
-                                else if (response == false)
-                                    arguments.error("TPA declined");
-                                else
-                                    TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
-                            }
-                        }, 20);
-            }
-            catch (QuestionerStillActiveException e)
-            {
-                throw new QuestionerStillActiveException.CommandException();
-            }
+            arguments.confirm("Waiting for response by %s", player.getUsernameOrUuid());
+            QuestionerCallback callback = new QuestionerCallback() {
+                @Override
+                public void respond(Boolean response)
+                {
+                    if (response == null)
+                        arguments.error("TPA request timed out");
+                    else if (response == false)
+                        arguments.error("TPA declined");
+                    else
+                        TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
+                }
+            };
+            Questioner.addChecked(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getCommandSenderName()),
+                    callback, 20);
             return;
         }
 
@@ -119,25 +112,18 @@ public class CommandTPA extends ParserCommandBase
 
         if (arguments.isTabCompletion)
             return;
-        try
-        {
-            Questioner.add(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
-                @Override
-                public void respond(Boolean response)
-                {
-                    if (response == null)
-                        arguments.error("TPA request timed out");
-                    else if (response == false)
-                        arguments.error("TPA declined");
-                    else
-                        TeleportHelper.teleport(player.getPlayerMP(), point);
-                }
-            }, 20);
-        }
-        catch (QuestionerStillActiveException e)
-        {
-            throw new QuestionerStillActiveException.CommandException();
-        }
+        Questioner.addChecked(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
+            @Override
+            public void respond(Boolean response)
+            {
+                if (response == null)
+                    arguments.error("TPA request timed out");
+                else if (response == false)
+                    arguments.error("TPA declined");
+                else
+                    TeleportHelper.teleport(player.getPlayerMP(), point);
+            }
+        }, 20);
     }
 
 }

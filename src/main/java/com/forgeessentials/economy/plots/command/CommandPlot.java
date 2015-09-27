@@ -38,7 +38,6 @@ import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 import com.forgeessentials.util.selections.SelectionHandler;
 
 public class CommandPlot extends ParserCommandBase
@@ -694,14 +693,7 @@ public class CommandPlot extends ParserCommandBase
                             buyPlot(arguments, plot, plotPrice);
                         }
                     };
-                    try
-                    {
-                        Questioner.add(plot.getOwner().getPlayerMP(), message, handler, 60);
-                    }
-                    catch (QuestionerStillActiveException e)
-                    {
-                        throw new QuestionerStillActiveException.CommandException();
-                    }
+                    Questioner.addChecked(plot.getOwner().getPlayerMP(), message, handler, 60);
                 }
                 else
                 {
@@ -714,15 +706,8 @@ public class CommandPlot extends ParserCommandBase
             handler.respond(true);
             return;
         }
-        try
-        {
-            String message = Translator.format("Really buy this plot for %s", buyPriceStr);
-            Questioner.add(arguments.sender, message, handler, 30);
-        }
-        catch (QuestionerStillActiveException e)
-        {
-            throw new QuestionerStillActiveException.CommandException();
-        }
+        String message = Translator.format("Really buy this plot for %s", buyPriceStr);
+        Questioner.addChecked(arguments.sender, message, handler, 30);
     }
 
     public static void buyPlot(CommandParserArgs arguments, Plot plot, long price)
