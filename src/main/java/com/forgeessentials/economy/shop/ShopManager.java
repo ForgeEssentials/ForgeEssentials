@@ -16,12 +16,14 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -56,6 +58,8 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     public static final String PERM_CREATE = PERM_BASE + ".create";
     public static final String PERM_DESTROY = PERM_BASE + ".destroy";
     public static final String PERM_USE = PERM_BASE + ".use";
+
+    public static final String MSG_MODIFY_DENIED = "You are not allowed to modify shops!";
 
     public static final String CONFIG_FILE = "EconomyConfig";
 
@@ -133,7 +137,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         UserIdent ident = UserIdent.get(event.getPlayer());
         if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_DESTROY))
         {
-            ChatOutputHandler.chatError(event.getPlayer(), Translator.translate("You are not allowed to destroy shops!"));
+            ChatOutputHandler.chatError(event.getPlayer(), Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
             TileEntity te = event.world.getTileEntity(event.x, event.y, event.z);
             if (te != null)
@@ -146,15 +150,35 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
+    public void entityInteractEvent(EntityInteractEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+        ShopData shop = shopFrameMap.get(event.target.getPersistentID());
+        if (shop == null)
+            return;
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.entityPlayer), new WorldPoint(event.target), PERM_CREATE))
+        {
+            ChatOutputHandler.chatError(event.entityPlayer, Translator.translate(MSG_MODIFY_DENIED));
+            event.setCanceled(true);
+            return;
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(final PlayerInteractEvent event)
     {
         if (event.action == Action.LEFT_CLICK_BLOCK || FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        UserIdent ident = UserIdent.get(event.entityPlayer);
+
+        ItemStack equippedStack = event.entityPlayer.getCurrentEquippedItem();
+        Item equippedItem = equippedStack != null ? equippedStack.getItem() : null;
 
         WorldPoint point;
         if (event.action == RIGHT_CLICK_AIR)
         {
+            if (!(equippedItem instanceof ItemBlock))
+                return;
             MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(event.entityPlayer);
             if (mop == null)
                 return;
@@ -163,6 +187,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         else
             point = new WorldPoint(event.world, event.x, event.y, event.z);
 
+        UserIdent ident = UserIdent.get(event.entityPlayer);
         ShopData shop = shopSignMap.get(point);
         boolean newShop = shop == null;
         if (newShop)
@@ -215,10 +240,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             return;
         }
 
-        ItemStack equipped = event.entityPlayer.getCurrentEquippedItem();
-        Item equippedItem = equipped != null ? equipped.getItem() : null;
         boolean sameItem = shop.getItemStack().getItem() == equippedItem;
-
         ItemStack transactionStack = shop.getItemStack().copy();
         transactionStack.stackSize = shop.amount;
         IChatComponent itemName = transactionStack.func_151000_E();
@@ -237,9 +259,9 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             int removedAmount = 0;
             if (sameItem)
             {
-                removedAmount = Math.min(equipped.stackSize, transactionStack.stackSize);
-                equipped.stackSize -= removedAmount;
-                if (equipped.stackSize <= 0)
+                removedAmount = Math.min(equippedStack.stackSize, transactionStack.stackSize);
+                equippedStack.stackSize -= removedAmount;
+                if (equippedStack.stackSize <= 0)
                     event.entityPlayer.inventory.mainInventory[event.entityPlayer.inventory.currentItem] = null;
             }
             if (removedAmount < transactionStack.stackSize)
