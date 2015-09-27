@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.DimensionManager;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
@@ -26,7 +28,7 @@ import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
 
@@ -261,7 +263,11 @@ public final class ScriptMethods
             if (args.length < 1)
                 throw new SyntaxException("Invalid argument count for permcheck");
             if (!APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
+            {
+                if (args.length > 1)
+                    error.process(sender, Arrays.copyOfRange(args, 1, args.length));
                 return false;
+            }
             return true;
         }
 
@@ -292,21 +298,19 @@ public final class ScriptMethods
             }
             else if (args.length == 4)
             {
-                Integer x = ServerUtil.tryParseInt(args[1]);
-                Integer y = ServerUtil.tryParseInt(args[2]);
-                Integer z = ServerUtil.tryParseInt(args[3]);
-                if (x == null || y == null || z == null)
-                    return false;
+                int x = Integer.parseInt(args[1]);
+                int y = Integer.parseInt(args[2]);
+                int z = Integer.parseInt(args[3]);
                 EntityPlayerMP p = player.getPlayerMP();
                 TeleportHelper.teleport(p, new WarpPoint(p.dimension, x, y, z, p.cameraPitch, p.cameraYaw));
             }
             else if (args.length == 5)
             {
-                Integer x = ServerUtil.tryParseInt(args[1]);
-                Integer y = ServerUtil.tryParseInt(args[2]);
-                Integer z = ServerUtil.tryParseInt(args[3]);
-                Integer dim = ServerUtil.tryParseInt(args[4]);
-                if (x == null || y == null || z == null || dim == 0 || !DimensionManager.isDimensionRegistered(dim))
+                int x = Integer.parseInt(args[1]);
+                int y = Integer.parseInt(args[2]);
+                int z = Integer.parseInt(args[3]);
+                int dim = Integer.parseInt(args[4]);
+                if (!DimensionManager.isDimensionRegistered(dim))
                     return false;
                 EntityPlayerMP p = player.getPlayerMP();
                 TeleportHelper.teleport(p, new WarpPoint(dim, x, y, z, p.cameraPitch, p.cameraYaw));
@@ -333,37 +337,79 @@ public final class ScriptMethods
                 throw new SyntaxException("Missing amount for pay command");
             if (args.length > 2)
                 throw new SyntaxException("Too many arguments");
-            try
+            long amount = Long.parseLong(args[0]);
+            Wallet src = APIRegistry.economy.getWallet((EntityPlayerMP) sender);
+            Wallet dst = null;
+            if (args.length == 2)
             {
-                long amount = Long.parseLong(args[0]);
-                Wallet src = APIRegistry.economy.getWallet((EntityPlayerMP) sender);
-                Wallet dst = null;
-                if (args.length == 2)
-                {
-                    UserIdent dstIdent = UserIdent.get(args[1], sender);
-                    if (!dstIdent.hasUuid())
-                        throw new ScriptException("Player %s not found", args[1]);
-                    dst = APIRegistry.economy.getWallet(dstIdent);
-                }
-                if (!src.withdraw(amount))
-                {
-                    ChatOutputHandler.chatError(sender, Translator.translate("You can't afford that!"));
-                    return false;
-                }
-                if (dst != null)
-                    dst.add(amount);
-                return true;
+                UserIdent dstIdent = UserIdent.get(args[1], sender);
+                if (!dstIdent.hasUuid())
+                    throw new ScriptException("Player %s not found", args[1]);
+                dst = APIRegistry.economy.getWallet(dstIdent);
             }
-            catch (NumberFormatException e)
+            if (!src.withdraw(amount))
             {
+                ChatOutputHandler.chatError(sender, Translator.translate("You can't afford that!"));
                 return false;
             }
+            if (dst != null)
+                dst.add(amount);
+            return true;
         }
 
         @Override
         public String getHelp()
         {
             return "`pay <amount> [to-player]`  \nMake the player pay some amount of money and fail, if he can't afford it";
+        }
+    };
+
+    public static final ScriptMethod checkTimeout = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args)
+        {
+            if (!(sender instanceof EntityPlayer))
+                throw new MissingPlayerException();
+            if (args.length < 1)
+                throw new SyntaxException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            PlayerInfo pi = PlayerInfo.get((EntityPlayer) sender);
+            if (!pi.checkTimeout(args[0]))
+            {
+                if (args.length > 1)
+                {
+                    String msg = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
+                    String timeout = ChatOutputHandler.formatTimeDurationReadable(pi.getRemainingTimeout(args[0]) / 1000, true);
+                    ChatOutputHandler.chatError(sender, String.format(msg, timeout));
+                }
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`checkTimeout <id> [error msg...]`  \nCheck, if a timeout finished. Use \u0025s in error message to print the remaining time.";
+        }
+    };
+
+    public static final ScriptMethod startTimeout = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args)
+        {
+            if (!(sender instanceof EntityPlayer))
+                throw new MissingPlayerException();
+            if (args.length < 2)
+                throw new SyntaxException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            PlayerInfo pi = PlayerInfo.get((EntityPlayer) sender);
+            pi.startTimeout(args[0], Integer.parseInt(args[1]));
+            return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`startTimeout <id> <t>`  \nStart a timeout";
         }
     };
 

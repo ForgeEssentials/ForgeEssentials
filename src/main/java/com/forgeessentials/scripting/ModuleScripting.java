@@ -22,8 +22,8 @@ import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.scripting.ScriptParser.MissingPermissionException;
 import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
+import com.forgeessentials.scripting.ScriptParser.ScriptErrorException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.command.CommandTimedTask;
@@ -195,15 +195,9 @@ public class ModuleScripting extends ServerEventHandler
             {
                 ScriptParser.run(script.getValue(), sender);
             }
-            catch (CommandException e)
+            catch (CommandException | ScriptErrorException e)
             {
-                ChatOutputHandler.chatError(sender, e.getMessage());
-                // ChatOutputHandler.felog.info(String.format("Error in script \"%s\": %s", script.getKey(),
-                // e.getMessage()));
-            }
-            catch (MissingPermissionException e)
-            {
-                if (!e.getMessage().isEmpty())
+                if (e.getMessage() != null && !e.getMessage().isEmpty())
                     ChatOutputHandler.chatError(sender, e.getMessage());
             }
             catch (ScriptException e)
