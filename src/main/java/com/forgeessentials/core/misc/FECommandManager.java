@@ -18,14 +18,14 @@ public class FECommandManager extends ConfigLoaderBase
 
     public static interface ConfigurableCommand
     {
-        
+
         public void loadConfig(Configuration config, String category);
 
         public void loadData();
-        
+
     }
 
-    public static final int COMMANDS_VERSION = 2;
+    public static final int COMMANDS_VERSION = 3;
 
     protected static Map<String, ForgeEssentialsCommandBase> commands = new HashMap<>();
 
@@ -45,7 +45,10 @@ public class FECommandManager extends ConfigLoaderBase
     {
         FECommandManager.config = config;
         if (config.get("CommandsConfig", "version", COMMANDS_VERSION).getInt() < COMMANDS_VERSION)
+        {
             newMappings = true;
+            config.get("CommandsConfig", "version", COMMANDS_VERSION).set(COMMANDS_VERSION);
+        }
         for (ForgeEssentialsCommandBase command : commands.values())
             loadCommandConfig(command);
     }
