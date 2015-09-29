@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraftforge.common.ForgeVersion;
+
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -43,6 +45,10 @@ public class FEMixinConfig implements IMixinConfigPlugin
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName)
     {
+        if (mixinClassName.contains("fml.common.MixinEventBus"))
+        {
+            return (!(ForgeVersion.buildVersion < 1517));
+        }
         return true;
     }
 
