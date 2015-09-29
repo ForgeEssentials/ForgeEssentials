@@ -204,13 +204,10 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseDelete(CommandParserArgs arguments)
     {
-        if (arguments.hasPermission(Plot.PERM_DELETE))
-        {
-            Plot plot = getPlot(arguments.sender);
-            arguments.confirm("Plot \"%s\" has been deleted.", plot.getNameNotNull());
-            Plot.deletePlot(plot);
-        }
-        else throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+        arguments.checkPermission(Plot.PERM_DELETE);
+        Plot plot = getPlot(arguments.sender);
+        arguments.confirm("Plot \"%s\" has been deleted.", plot.getNameNotNull());
+        Plot.deletePlot(plot);
     }
 
     public static void parseClaim(CommandParserArgs arguments)

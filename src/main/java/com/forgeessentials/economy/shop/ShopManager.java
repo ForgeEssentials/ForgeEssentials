@@ -23,6 +23,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
@@ -34,6 +35,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
@@ -147,6 +149,34 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
 
         removeShop(shop);
         ChatOutputHandler.chatNotification(event.getPlayer(), Translator.translate("Shop destroyed"));
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void attackEntityEvent(final AttackEntityEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+        final ShopData shop = shopFrameMap.get(event.target.getPersistentID());
+        if (shop == null)
+            return;
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.entityPlayer), new WorldPoint(event.target), PERM_DESTROY))
+        {
+            ChatOutputHandler.chatError(event.entityPlayer, Translator.translate(MSG_MODIFY_DENIED));
+            event.setCanceled(true);
+            return;
+        }
+        TaskRegistry.runLater(new Runnable() {
+            @Override
+            public void run()
+            {
+                shop.update();
+                if (!shop.isValid)
+                {
+                    removeShop(shop);
+                    ChatOutputHandler.chatNotification(event.entityPlayer, Translator.translate("Shop destroyed"));
+                }
+            }
+        });
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
