@@ -27,9 +27,6 @@ public abstract class MixinBlockFire_02 extends Block
         super(material);
     }
 
-    @Shadow
-    PropertyInteger field_176543_a;
-
     @Shadow(remap = false) // Forge method
     public abstract boolean canCatchFire(IBlockAccess world, BlockPos pos, EnumFacing face);
 
@@ -65,11 +62,11 @@ public abstract class MixinBlockFire_02 extends Block
             }
             else
             {
-                int i = ((Integer)state.getValue(field_176543_a)).intValue();
+                int i = ((Integer)state.getValue(BlockFire.field_176543_a)).intValue();
 
                 if (i < 15)
                 {
-                    state = state.withProperty(field_176543_a, Integer.valueOf(i + rand.nextInt(3) / 2));
+                    state = state.withProperty(BlockFire.field_176543_a, Integer.valueOf(i + rand.nextInt(3) / 2));
                     worldIn.setBlockState(pos, state, 4);
                 }
 
@@ -145,8 +142,8 @@ public abstract class MixinBlockFire_02 extends Block
                                             l1 = 15;
                                         }
 
-                                        if (!MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(worldIn, pos, state.withProperty(field_176543_a, Integer.valueOf(l1)), blockpos1)));
-                                        worldIn.setBlockState(blockpos1, state.withProperty(field_176543_a, Integer.valueOf(l1)), 3);
+                                        if (!MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(worldIn, pos, state.withProperty(BlockFire.field_176543_a, Integer.valueOf(l1)), blockpos1)));
+                                        worldIn.setBlockState(blockpos1, state.withProperty(BlockFire.field_176543_a, Integer.valueOf(l1)), 3);
                                     }
                                 }
                             }
