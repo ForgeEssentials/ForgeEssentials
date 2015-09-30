@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.CommandParserArgs.CancelParsingException;
 
 public abstract class ParserCommandBase extends ForgeEssentialsCommandBase
 {
@@ -15,7 +16,14 @@ public abstract class ParserCommandBase extends ForgeEssentialsCommandBase
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         CommandParserArgs arguments = new CommandParserArgs(this, args, sender);
-        parse(arguments);
+        try
+        {
+            parse(arguments);
+        }
+        catch (CancelParsingException e)
+        {
+            /* do nothing */
+        }
     }
 
     @Override

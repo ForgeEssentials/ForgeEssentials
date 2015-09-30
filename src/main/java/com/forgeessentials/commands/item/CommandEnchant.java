@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandEnchant extends ParserCommandBase
@@ -76,7 +75,7 @@ public class CommandEnchant extends ParserCommandBase
         {
             if (arguments.isTabCompletion)
                 return;
-            arguments.confirm(Translator.format("Possible enchantments: %s", StringUtils.join(validEnchantmentNames, ", ")));
+            arguments.confirm("Possible enchantments: %s", StringUtils.join(validEnchantmentNames, ", "));
             return;
         }
 

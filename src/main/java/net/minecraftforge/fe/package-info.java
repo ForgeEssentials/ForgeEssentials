@@ -5,7 +5,7 @@
  *
  * apiVersion will change when the build of forge we build FE on changes, or we add new hooks/APIs.
  */
-@API(owner = "ForgeEssentials", provides = "Forge-FEHooks", apiVersion = "1291.1")
+@API(owner = "ForgeEssentials", provides = "Forge-FEHooks", apiVersion = "1448.2")
 package net.minecraftforge.fe;
 
 import net.minecraftforge.fml.common.API;

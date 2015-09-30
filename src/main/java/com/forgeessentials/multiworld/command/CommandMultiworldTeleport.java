@@ -57,7 +57,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.translate("/mwtp <world> [player] [x y z]"));
+            arguments.confirm("/mwtp <world> [player] [x y z]");
             return;
         }
 
@@ -69,7 +69,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
 
         if (worldName.equalsIgnoreCase("list"))
         {
-            arguments.confirm(Translator.format("List of worlds: %s", StringUtils.join(worldNames, ", ")));
+            arguments.confirm("List of worlds: %s", StringUtils.join(worldNames, ", "));
             return;
         }
 

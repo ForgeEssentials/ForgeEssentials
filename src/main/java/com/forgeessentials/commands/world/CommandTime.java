@@ -22,7 +22,6 @@ import com.forgeessentials.commands.world.CommandWeather.WeatherData;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 
@@ -132,18 +131,18 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
                 td.frozenTime = freeze ? w.getWorldInfo().getWorldTime() : null;
             }
             if (freeze)
-                arguments.confirm(Translator.translate("Froze time in all worlds"));
+                arguments.confirm("Froze time in all worlds");
             else
-                arguments.confirm(Translator.translate("Unfroze time in all worlds"));
+                arguments.confirm("Unfroze time in all worlds");
         }
         else
         {
             TimeData td = getTimeData(world.provider.getDimensionId());
             td.frozenTime = (td.frozenTime == null) ? world.getWorldInfo().getWorldTime() : null;
             if (td.frozenTime != null)
-                arguments.confirm(Translator.translate("Froze time"));
+                arguments.confirm("Froze time");
             else
-                arguments.confirm(Translator.translate("Unfroze time"));
+                arguments.confirm("Unfroze time");
         }
         save();
     }
@@ -198,7 +197,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
                 if (td.frozenTime != null)
                     td.frozenTime = w.getWorldInfo().getWorldTime();
             }
-            arguments.confirm(Translator.format("Set time to %s in all worlds", time));
+            arguments.confirm("Set time to %s in all worlds", time);
         }
         else
         {
@@ -209,7 +208,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
             TimeData td = getTimeData(world.provider.getDimensionId());
             if (td.frozenTime != null)
                 td.frozenTime = world.getWorldInfo().getWorldTime();
-            arguments.confirm(Translator.format("Set time to %s", time));
+            arguments.confirm("Set time to %s", time);
         }
     }
 

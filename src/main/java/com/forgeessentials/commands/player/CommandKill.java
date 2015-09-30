@@ -24,7 +24,13 @@ public class CommandKill extends FEcmdModuleCommands
     @Override
     public String getCommandName()
     {
-        return "kill";
+        return "fekill";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "kill" };
     }
 
     @Override

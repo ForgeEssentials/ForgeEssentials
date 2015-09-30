@@ -317,7 +317,7 @@ public class Plot
         zones.add(s.getWorldZone(dimension));
         zones.add(s);
         zones.add(s.getRootZone());
-        String permValue = s.getPermissionProperty(zones, null, Arrays.asList(GROUP_ALL), PERM_COLUMN);
+        String permValue = s.getPermissionProperty(zones, null, Arrays.asList(GROUP_ALL), PERM_COLUMN, null);
         return APIRegistry.perms.checkBooleanPermission(permValue);
     }
 
@@ -438,6 +438,7 @@ public class Plot
         perms.registerPermission(PERM_COMMAND, PermissionLevel.TRUE, "Plot management command");
         perms.registerPermission(PERM_DEFINE, PermissionLevel.OP, "Allows to define plots without paying");
         perms.registerPermission(PERM_CLAIM, PermissionLevel.TRUE, "Allows to claim plots in exchange for money");
+        perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allows a player to delete plots.");
         perms.registerPermission(PERM_BUY, PermissionLevel.TRUE, "Allows buying plots");
         perms.registerPermission(PERM_SELL, PermissionLevel.OP, "Allows selling plots");
         perms.registerPermission(PERM_MODS, PermissionLevel.OP, "Allows managing plot administrators");

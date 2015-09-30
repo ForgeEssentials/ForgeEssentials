@@ -9,19 +9,28 @@ import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-public class PermissionScheduler extends ServerEventHandler
+public class PermissionScheduler extends ServerEventHandler implements ConfigLoader
 {
+
+    public static final int CHECK_INTERVAL = 1000;
+
+    private static final String HELP = "Enable the permission scheduler which can toggle permissions based on game / server time";
 
     public static class PermissionEntry
     {
@@ -66,14 +75,29 @@ public class PermissionScheduler extends ServerEventHandler
 
     protected long lastCheck;
 
+    protected boolean enabled;
+
+    public PermissionScheduler()
+    {
+        ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+    }
+
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent e)
     {
-        if (System.currentTimeMillis() - lastCheck >= 1000)
+        if (System.currentTimeMillis() - lastCheck >= CHECK_INTERVAL)
         {
             lastCheck = System.currentTimeMillis();
             checkSchedules(false);
         }
+    }
+
+    @Override
+    @SubscribeEvent
+    public void serverAboutToStart(FEModuleServerPreInitEvent event)
+    {
+        if (enabled)
+            super.serverAboutToStart(event);
     }
 
     public void checkSchedules(boolean initialize)
@@ -131,7 +155,6 @@ public class PermissionScheduler extends ServerEventHandler
     public void loadAll()
     {
         schedules = DataManager.getInstance().loadAll(PermissionSchedule.class);
-
         if (schedules.isEmpty())
         {
             PermissionSchedule schedule;
@@ -146,10 +169,6 @@ public class PermissionScheduler extends ServerEventHandler
             schedule.permissions.put("some.test.permission", new PermissionEntry("true", "false"));
             schedules.put("sample_mc", schedule);
         }
-        // TODO: Remove this after beta7 release!!!!
-        schedules.remove("sample_delay");
-        DataManager.getInstance().delete(PermissionSchedule.class, "sample_delay");
-
         checkSchedules(true);
     }
 
@@ -157,6 +176,28 @@ public class PermissionScheduler extends ServerEventHandler
     {
         for (Entry<String, PermissionSchedule> task : schedules.entrySet())
             DataManager.getInstance().save(task.getValue(), task.getKey());
+    }
+
+    @Override
+    public void load(Configuration config, boolean isReload)
+    {
+        enabled = config.get("PermissionScheduler", "enabled", false, HELP).getBoolean();
+        if (ServerUtil.isServerRunning())
+        {
+            if (enabled)
+            {
+                register();
+                loadAll();
+            }
+            else
+                unregister();
+        }
+    }
+
+    @Override
+    public boolean supportsCanonicalConfig()
+    {
+        return true;
     }
 
 }

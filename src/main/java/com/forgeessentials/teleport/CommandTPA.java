@@ -77,21 +77,29 @@ public class CommandTPA extends ParserCommandBase
             try
             {
                 arguments.confirm(Translator.format("Waiting for response by %s", player.getUsernameOrUuid()));
-                Questioner.add(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getName()),
-                        new QuestionerCallback() {
+                Questioner.addChecked(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getDisplayName().getUnformattedTextForChat()),
+                        new QuestionerCallback()
+                        {
                             @Override
-                            public void respond(Boolean response) throws CommandException
+                            public void respond(Boolean response)
                             {
                                 if (response == null)
                                     arguments.error("TPA request timed out");
                                 else if (response == false)
                                     arguments.error("TPA declined");
                                 else
+                                try
+                                {
                                     TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
+                                }
+                                catch (CommandException e)
+                                {
+                                    arguments.error(e.getMessage());
+                                }
                             }
                         }, 20);
             }
-            catch (QuestionerStillActiveException e)
+            catch (QuestionerStillActiveException.CommandException e)
             {
                 throw new QuestionerStillActiveException.CommandException();
             }
@@ -122,20 +130,28 @@ public class CommandTPA extends ParserCommandBase
             return;
         try
         {
-            Questioner.add(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
+            Questioner.addChecked(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback()
+            {
                 @Override
-                public void respond(Boolean response) throws CommandException
+                public void respond(Boolean response)
                 {
                     if (response == null)
                         arguments.error("TPA request timed out");
                     else if (response == false)
                         arguments.error("TPA declined");
                     else
-                        TeleportHelper.teleport(player.getPlayerMP(), point);
+                        try
+                        {
+                            TeleportHelper.teleport(player.getPlayerMP(), point);
+                        }
+                        catch (CommandException e)
+                        {
+                            arguments.error(e.getMessage());
+                        }
                 }
             }, 20);
         }
-        catch (QuestionerStillActiveException e)
+        catch (QuestionerStillActiveException.CommandException e)
         {
             throw new QuestionerStillActiveException.CommandException();
         }

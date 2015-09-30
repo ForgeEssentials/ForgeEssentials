@@ -12,7 +12,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.multiworld.MultiworldException;
@@ -234,7 +233,7 @@ public class CommandMultiworld extends ParserCommandBase
             // Check all gamerules
             if (!arguments.isTabCompletion)
             {
-                arguments.confirm(Translator.format("Game rules for %s:", world.getName()));
+                arguments.confirm("Game rules for %s:", world.getName());
                 for (String rule : rules.getRules())
                     arguments.confirm(rule + " = " + rules.getGameRuleStringValue(rule));
             }
@@ -257,7 +256,7 @@ public class CommandMultiworld extends ParserCommandBase
             return;
         String value = arguments.remove();
         rules.setOrCreateGameRule(rule, value);
-        arguments.confirm(Translator.format("Set gamerule %s = %s for world %s", rule, value, world.getName()));
+        arguments.confirm("Set gamerule %s = %s for world %s", rule, value, world.getName());
     }
 
     public static Multiworld parseWorld(CommandParserArgs arguments) throws CommandException

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -215,6 +216,30 @@ public class DataManager
         return null;
     }
 
+    public static <T> T load(Type t, File file)
+    {
+        if (!file.exists())
+            return null;
+        try (BufferedReader br = new BufferedReader(new FileReader(file)))
+        {
+            T obj = getGson().fromJson(br, t);
+            if (obj instanceof Loadable)
+                ((Loadable) obj).afterLoad();
+            return obj;
+        }
+        catch (JsonParseException e)
+        {
+            LoggingHandler.felog.error(String.format("Error parsing data file \"%s\"", file.getAbsolutePath()));
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            LoggingHandler.felog.error(String.format("Error loading data file \"%s\"", file.getAbsolutePath()));
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static Gson getGson()
     {
         if (gson == null || formatsChanged)
@@ -281,14 +306,19 @@ public class DataManager
         }
     }
 
-    private File getTypePath(Class<?> clazz)
+    public File getBasePath()
+    {
+        return basePath;
+    }
+
+    public File getTypePath(Class<?> clazz)
     {
         File path = new File(basePath, clazz.getSimpleName());
         path.mkdirs();
         return path;
     }
 
-    private File getTypeFile(Class<?> clazz, String key)
+    public File getTypeFile(Class<?> clazz, String key)
     {
         return new File(getTypePath(clazz), key + ".json");
     }

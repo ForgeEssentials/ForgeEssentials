@@ -51,7 +51,7 @@ public abstract class PlayerLoggerEvent<T extends Event>
 
     public Blob getTileEntityBlob(TileEntity tileEntity)
     {
-        return ModulePlayerLogger.getLogger().tileEntityToBlob(tileEntity);
+        return PlayerLogger.tileEntityToBlob(tileEntity);
     }
 
 }

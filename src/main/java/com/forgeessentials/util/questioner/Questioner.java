@@ -16,6 +16,8 @@ import com.forgeessentials.util.events.ServerEventHandler;
 public class Questioner extends ServerEventHandler
 {
 
+    public static final String MSG_STILL_ACTIVE = "Error. There is still an unanswered question left";
+
     private static Map<ICommandSender, QuestionData> questions = new HashMap<>();
 
     public static int DEFAULT_TIMEOUT = 120;
@@ -49,6 +51,44 @@ public class Questioner extends ServerEventHandler
     public static void add(ICommandSender target, String question, QuestionerCallback callback) throws QuestionerStillActiveException
     {
         add(target, question, callback, DEFAULT_TIMEOUT);
+    }
+
+    public static void addChecked(ICommandSender target, String question, QuestionerCallback callback, int timeout, ICommandSender source)
+            throws QuestionerStillActiveException.CommandException
+    {
+        try
+        {
+            add(new QuestionData(target, question, callback, timeout, source));
+        }
+        catch (QuestionerStillActiveException e)
+        {
+            throw new QuestionerStillActiveException.CommandException();
+        }
+    }
+
+    public static void addChecked(ICommandSender target, String question, QuestionerCallback callback, int timeout)
+            throws QuestionerStillActiveException.CommandException
+    {
+        try
+        {
+            add(target, question, callback, timeout, null);
+        }
+        catch (QuestionerStillActiveException e)
+        {
+            throw new QuestionerStillActiveException.CommandException();
+        }
+    }
+
+    public static void addChecked(ICommandSender target, String question, QuestionerCallback callback) throws QuestionerStillActiveException.CommandException
+    {
+        try
+        {
+            add(target, question, callback, DEFAULT_TIMEOUT);
+        }
+        catch (QuestionerStillActiveException e)
+        {
+            throw new QuestionerStillActiveException.CommandException();
+        }
     }
 
     public static synchronized void answer(ICommandSender target, Boolean answer) throws CommandException

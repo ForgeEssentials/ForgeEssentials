@@ -1,6 +1,7 @@
 package com.forgeessentials.api.permissions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
@@ -242,7 +244,7 @@ public class ServerZone extends Zone
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet == null)
         {
-            groupSet = new TreeSet<String>();
+            groupSet = new HashSet<String>();
             playerGroups.put(ident, groupSet);
         }
         if (!groupSet.contains(group))
@@ -332,8 +334,22 @@ public class ServerZone extends Zone
                 result.add(new GroupEntry(this, GROUP_GUESTS));
             if (!ident.isFakePlayer())
                 result.add(new GroupEntry(GROUP_PLAYERS, 1, 1));
+
+            EntityPlayerMP player = ident.getPlayerMP();
+            if (player != null)
+                switch (player.theItemInWorldManager.getGameType())
+                {
+                case ADVENTURE:
+                    result.add(new GroupEntry(this, GROUP_ADVENTURE));
+                    break;
+                case CREATIVE:
+                    result.add(new GroupEntry(this, GROUP_CREATIVE));
+                    break;
+                default:
+                    break;
+                }
         }
-        result.add(new GroupEntry(GROUP_DEFAULT, 0, 0));
+        result.add(new GroupEntry(GROUP_DEFAULT, -1, -1));
         return result;
     }
 
@@ -490,8 +506,12 @@ public class ServerZone extends Zone
 
     public void registerPlayer(UserIdent ident)
     {
-        if (ident != null)
-            knownPlayers.add(ident);
+        if (ident == null || knownPlayers.contains(ident))
+            return;
+        knownPlayers.add(ident);
+        PermissionList map = getOrCreatePlayerPermissions(ident);
+        if (map.isEmpty())
+            map.put(FEPermissions.PLAYER_KNOWN, PERMISSION_TRUE);
     }
 
     public Set<UserIdent> getKnownPlayers()
@@ -501,25 +521,26 @@ public class ServerZone extends Zone
 
     // ------------------------------------------------------------
 
-    public String getPermission(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String permissionNode, boolean isProperty)
+    public String getPermission(Collection<Zone> zones, UserIdent ident, List<String> groups, String permissionNode, WorldPoint point)
     {
         // Build node list
         List<String> nodes = new ArrayList<String>();
         nodes.add(permissionNode);
-        if (!isProperty)
+        String[] nodeParts = permissionNode.split("\\.");
+        for (int i = nodeParts.length; i > 0; i--)
         {
-            String[] nodeParts = permissionNode.split("\\.");
-            for (int i = nodeParts.length; i > 0; i--)
+            String node = "";
+            for (int j = 0; j < i; j++)
             {
-                String node = "";
-                for (int j = 0; j < i; j++)
-                {
-                    node += nodeParts[j] + ".";
-                }
-                nodes.add(node + PERMISSION_ASTERIX);
+                node += nodeParts[j] + ".";
             }
-            nodes.add(PERMISSION_ASTERIX);
+            nodes.add(node + PERMISSION_ASTERIX);
         }
+        nodes.add(PERMISSION_ASTERIX);
+
+        PermissionCheckEvent event = postPermissionCheckEvent(zones, ident, groups, nodes, false);
+        if (event.result != null)
+            return event.result;
 
         // Check player permissions
         if (ident != null)
@@ -532,7 +553,7 @@ public class ServerZone extends Zone
                     if (result != null)
                     {
                         if (rootZone.permissionDebugger != null)
-                            rootZone.permissionDebugger.debugPermission(zone, ident, null, permissionNode, node, result);
+                            rootZone.permissionDebugger.debugPermission(zone, ident, null, permissionNode, node, result, point);
                         return result;
                     }
                 }
@@ -559,7 +580,7 @@ public class ServerZone extends Zone
                         if (result != null)
                         {
                             if (rootZone.permissionDebugger != null)
-                                rootZone.permissionDebugger.debugPermission(zone, null, group, permissionNode, node, result);
+                                rootZone.permissionDebugger.debugPermission(zone, null, group, permissionNode, node, result, point);
                             return result;
                         }
                     }
@@ -567,12 +588,16 @@ public class ServerZone extends Zone
             }
         }
         if (rootZone.permissionDebugger != null)
-            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE);
+            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE, point);
         return null;
     }
 
-    public String getPermissionProperty(Collection<Zone> zones, UserIdent ident, Collection<String> groups, String node)
+    public String getPermissionProperty(Collection<Zone> zones, UserIdent ident, List<String> groups, String node, WorldPoint point)
     {
+        PermissionCheckEvent event = postPermissionCheckEvent(zones, ident, groups, Arrays.asList(node), true);
+        if (event.result != null)
+            return event.result;
+
         // Check player permissions
         if (ident != null)
         {
@@ -582,7 +607,7 @@ public class ServerZone extends Zone
                 if (result != null)
                 {
                     if (rootZone.permissionDebugger != null)
-                        rootZone.permissionDebugger.debugPermission(zone, ident, null, node, node, result);
+                        rootZone.permissionDebugger.debugPermission(zone, ident, null, node, node, result, point);
                     return result;
                 }
             }
@@ -606,21 +631,28 @@ public class ServerZone extends Zone
                     if (result != null)
                     {
                         if (rootZone.permissionDebugger != null)
-                            rootZone.permissionDebugger.debugPermission(zone, null, group, node, node, result);
+                            rootZone.permissionDebugger.debugPermission(zone, null, group, node, node, result, point);
                         return result;
                     }
                 }
             }
         }
         if (rootZone.permissionDebugger != null)
-            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, "null");
+            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, "null", point);
         return null;
+    }
+
+    public static PermissionCheckEvent postPermissionCheckEvent(Collection<Zone> zones, UserIdent ident, List<String> groups, List<String> nodes, boolean isProperty)
+    {
+        PermissionCheckEvent event = new PermissionCheckEvent(ident, zones, groups, nodes, isProperty);
+        APIRegistry.FE_EVENTBUS.post(event);
+        return event;
     }
 
     public static interface PermissionDebugger
     {
 
-        void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value);
+        void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value, WorldPoint point);
 
     }
 

@@ -40,7 +40,6 @@ import com.forgeessentials.commands.server.CommandModlist;
 import com.forgeessentials.commands.server.CommandPing;
 import com.forgeessentials.commands.server.CommandRules;
 import com.forgeessentials.commands.server.CommandServerSettings;
-import com.forgeessentials.commands.util.CommandDataManager;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
@@ -55,9 +54,8 @@ import com.forgeessentials.commands.world.CommandWeather;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
 @FEModule(name = "Commands", parentMod = ForgeEssentials.class)
 public class ModuleCommands
@@ -65,7 +63,18 @@ public class ModuleCommands
 
     public static final String PERM = "fe.commands";
 
-    static
+    public static CommandsEventHandler oldEventHandler = new CommandsEventHandler();
+
+    public static ModuleCommandsEventHandler eventHandler = new ModuleCommandsEventHandler();
+
+    @SubscribeEvent
+    public void preLoad(FEModulePreInitEvent e)
+    {
+        MobTypeLoader.preLoad((FMLPreInitializationEvent) e.getFMLEvent());
+    }
+
+    @SubscribeEvent
+    public void load(FEModuleInitEvent event)
     {
         FECommandManager.registerCommand(new CommandTime());
         FECommandManager.registerCommand(new CommandEnchant());
@@ -112,29 +121,8 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandReach());
         FECommandManager.registerCommand(new CommandVanish());
         FECommandManager.registerCommand(new CommandDuplicate());
-    }
 
-    public static CommandsEventHandler oldEventHandler = new CommandsEventHandler();
-
-    public static ModuleCommandsEventHandler eventHandler = new ModuleCommandsEventHandler();
-
-    @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
-    {
-        MobTypeLoader.preLoad((FMLPreInitializationEvent) e.getFMLEvent());
-    }
-
-    @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
-    {
-        CommandDataManager.load();
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
-    }
-
-    @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
-    {
-        CommandDataManager.save();
     }
 
 }

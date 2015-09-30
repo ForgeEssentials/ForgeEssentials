@@ -12,13 +12,14 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
+
 import javax.xml.bind.DatatypeConverter;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.fml.common.registry.GameData;
@@ -90,14 +91,8 @@ public class ConfigServerVote extends ConfigLoaderBase
             }
             
             ItemStack stack = new ItemStack(item, amount, meta);
-            
-            if (stack == null) 
-            {
-                continue;
-            }
-
-            LoggingHandler.felog.debug("Added reward item stack: " + stack.getUnlocalizedName());
             freeStuff.add(stack);
+            LoggingHandler.felog.debug("Added reward item stack: " + stack.getUnlocalizedName());
         }
 
         loadKeys();

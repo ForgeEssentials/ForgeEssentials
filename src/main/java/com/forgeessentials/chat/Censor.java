@@ -10,7 +10,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Strings;
 

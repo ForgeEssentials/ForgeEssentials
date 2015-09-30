@@ -164,7 +164,14 @@ public class ScriptParser
             ScriptMethod method = ScriptMethods.get(cmd);
             if (method == null)
                 throw new SyntaxException("Unknown script method \"%s\"", cmd);
-            return method.process(sender, args) | canFail;
+            try
+            {
+                return method.process(sender, args) | canFail;
+            }
+            catch (NumberFormatException e)
+            {
+                throw new CommandException(e.getMessage());
+            }
         }
     }
 
@@ -198,7 +205,27 @@ public class ScriptParser
 
     }
 
-    public static class MissingPlayerException extends ScriptException
+    public static class ScriptErrorException extends ScriptException
+    {
+
+        public ScriptErrorException()
+        {
+            super();
+        }
+
+        public ScriptErrorException(String message)
+        {
+            super(message);
+        }
+
+        public ScriptErrorException(String message, Object... args)
+        {
+            super(message, args);
+        }
+
+    }
+
+    public static class MissingPlayerException extends ScriptErrorException
     {
 
         public MissingPlayerException()
@@ -208,7 +235,7 @@ public class ScriptParser
 
     }
 
-    public static class MissingPermissionException extends ScriptException
+    public static class MissingPermissionException extends ScriptErrorException
     {
 
         public final String permission;

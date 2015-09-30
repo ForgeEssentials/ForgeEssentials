@@ -208,8 +208,7 @@ public class PermissionCommandParser
                 listGroups(arguments.sender);
                 break;
             default:
-                arguments.error("Unknown command argument");
-                break;
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
             }
         }
     }
@@ -440,7 +439,7 @@ public class PermissionCommandParser
             {
                 if (arguments.args.isEmpty())
                 {
-                    arguments.confirm(Translator.format("Value of %s = %s", permissionNode, zone.getPlayerPermission(ident, permissionNode)));
+                    arguments.confirm("Value of %s = %s", permissionNode, zone.getPlayerPermission(ident, permissionNode));
                     return;
                 }
                 value = StringUtils.join(arguments.args, ' ');
@@ -650,12 +649,7 @@ public class PermissionCommandParser
         // Auto-complete group name
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = new ArrayList<String>();
-            for (String group : APIRegistry.perms.getServerZone().getGroups())
-            {
-                if (CommandBase.doesStringStartWith(arguments.args.peek(), group))
-                    arguments.tabCompletion.add(group);
-            }
+            arguments.tabComplete(APIRegistry.perms.getServerZone().getGroups());
             return;
         }
 
@@ -674,17 +668,12 @@ public class PermissionCommandParser
             else
             {
                 String groupArg = arguments.args.remove();
-                if (groupArg.equalsIgnoreCase("create"))
-                {
-                    if (APIRegistry.perms.createGroup(group))
-                        arguments.confirm(String.format("Created group %s", group));
-                    else
-                        arguments.confirm(String.format("Could not create group %s. Cancelled.", group));
-                }
+                if (!groupArg.equalsIgnoreCase("create"))
+                    throw new CommandException("Group %s does not exist", group);
+                if (APIRegistry.perms.createGroup(group))
+                    arguments.confirm(String.format("Created group %s", group));
                 else
-                {
-                    arguments.error(String.format("Group %s does not exist", group));
-                }
+                    arguments.confirm(String.format("Could not create group %s. Cancelled.", group));
             }
             return;
         }
@@ -875,7 +864,7 @@ public class PermissionCommandParser
             {
                 if (arguments.args.isEmpty())
                 {
-                    arguments.confirm(Translator.format("Value of %s = %s", permissionNode, zone.getGroupPermission(group, permissionNode)));
+                    arguments.confirm("Value of %s = %s", permissionNode, zone.getGroupPermission(group, permissionNode));
                     return;
                 }
                 value = StringUtils.join(arguments.args, ' ');

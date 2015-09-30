@@ -21,7 +21,6 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 
 public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
 {
@@ -34,17 +33,18 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
 
     private Configuration config;
 
+    private static CommandFeSettings instache;
+
     public CommandFeSettings()
     {
+        instache = this;
         APIRegistry.getFEEventBus().register(this);
         ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void serverStartedEvent(FEModuleServerPostInitEvent event)
+    public static CommandFeSettings getInstance()
     {
-        loadSettings();
-        config.save();
+        return instache;
     }
 
     public static void addAlias(String category, String alias, String permission)
@@ -110,7 +110,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
             if (globalValue != null && !globalValue.equals(rootValue))
                 arguments.warn(Translator.format("%s = %s, but global permission value is set to %s", key, rootValue, globalValue));
             else
-                arguments.confirm(Translator.format("%s = %s", key, rootValue));
+                arguments.confirm("%s = %s", key, rootValue);
             return;
         }
 
@@ -118,13 +118,13 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
         String value = arguments.remove();
         if (arguments.isTabCompletion)
             return;
-        
+
         String[] aliasParts = key.split("\\.", 2);
         config.get(aliasParts[0], aliasParts[1], "").set(value);
         config.save();
 
         APIRegistry.perms.registerPermissionProperty(perm, value);
-        arguments.confirm(Translator.format("Changed setting \"%s\" to \"%s\"", key, value));
+        arguments.confirm("Changed setting \"%s\" to \"%s\"", key, value);
     }
 
     public void loadSettings()
@@ -144,6 +144,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
             if (!value.isEmpty())
                 APIRegistry.perms.registerPermissionProperty(setting.getValue(), value);
         }
+        config.save();
     }
 
     @Override
@@ -152,12 +153,6 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
         this.config = config;
         if (isReload)
             loadSettings();
-    }
-
-    @Override
-    public void save(Configuration config)
-    {
-        /* do nothing */
     }
 
     @Override

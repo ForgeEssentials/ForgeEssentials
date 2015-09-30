@@ -42,6 +42,7 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 
 public class CommandSellprice extends ParserCommandBase
@@ -109,18 +110,6 @@ public class CommandSellprice extends ParserCommandBase
         }
     }
 
-    public static int getItemDamage(ItemStack stack)
-    {
-        try
-        {
-            return stack.getItemDamage();
-        }
-        catch (Exception e)
-        {
-            return 0;
-        }
-    }
-
     public static void parseSetprice(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
@@ -153,10 +142,42 @@ public class CommandSellprice extends ParserCommandBase
         Map<String, Double> priceMap = loadPriceList(arguments);
         Map<String, Double> priceMapFull = new TreeMap<>();
 
+        File craftRecipesFile = new File(ForgeEssentials.getFEDirectory(), "craft_recipes.txt");
         File allPricesFile = new File(ForgeEssentials.getFEDirectory(), "prices_all.txt");
         File priceLogFile = new File(ForgeEssentials.getFEDirectory(), "prices_log.txt");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(priceLogFile)))
         {
+            try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
+            {
+                @SuppressWarnings("unchecked")
+                List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
+                for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
+                {
+                    IRecipe recipe = iterator.next();
+                    if (recipe.getRecipeOutput() == null)
+                        continue;
+                    List<?> recipeItems = getRecipeItems(recipe);
+                    if (recipeItems == null)
+                        continue;
+                    craftRecipes
+                            .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()), ItemUtil.getItemDamage(recipe.getRecipeOutput())));
+                    for (Object stacks : recipeItems)
+                        if (stacks != null)
+                        {
+                            ItemStack stack = null;
+                            if (stacks instanceof List<?>)
+                            {
+                                if (!((List<?>) stacks).isEmpty())
+                                    stack = (ItemStack) ((List<?>) stacks).get(0);
+                            }
+                            else
+                                stack = (ItemStack) stacks;
+                            if (stack != null)
+                                craftRecipes.write(String.format("  %s:%d\n", ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack)));
+                        }
+                }
+            }
+
             // for (Entry<String, Double> entry : priceMap.entrySet())
             // writer.write(String.format("%0$-40s = %d\n", entry.getKey(), (int) Math.floor(entry.getValue())));
             // writer.write("\n");
@@ -179,36 +200,6 @@ public class CommandSellprice extends ParserCommandBase
                 @SuppressWarnings("unchecked")
                 List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
 
-                File craftRecipesFile = new File(ForgeEssentials.getFEDirectory(), "craft_recipes.txt");
-                try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
-                {
-                    for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
-                    {
-                        IRecipe recipe = iterator.next();
-                        if (recipe.getRecipeOutput() == null)
-                            continue;
-                        List<?> recipeItems = getRecipeItems(recipe);
-                        if (recipeItems == null)
-                            continue;
-                        craftRecipes.write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
-                                getItemDamage(recipe.getRecipeOutput())));
-                        for (Object stacks : recipeItems)
-                            if (stacks != null)
-                            {
-                                ItemStack stack = null;
-                                if (stacks instanceof List<?>)
-                                {
-                                    if (!((List<?>) stacks).isEmpty())
-                                        stack = (ItemStack) ((List<?>) stacks).get(0);
-                                }
-                                else
-                                    stack = (ItemStack) stacks;
-                                if (stack != null)
-                                    craftRecipes.write(String.format("  %s:%d\n", ServerUtil.getItemName(stack.getItem()), getItemDamage(stack)));
-                            }
-                    }
-                }
-
                 boolean changedPrice;
                 do
                 {
@@ -224,14 +215,14 @@ public class CommandSellprice extends ParserCommandBase
                         {
                             iterator.remove();
                             price /= recipe.getRecipeOutput().stackSize;
-                            Double resultPrice = priceMap.get(ModuleEconomy.getItemIdentifier(recipe.getRecipeOutput()));
+                            Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()));
                             if (resultPrice == null || price < resultPrice)
                             {
-                                priceMap.put(ModuleEconomy.getItemIdentifier(recipe.getRecipeOutput()), price);
+                                priceMap.put(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()), price);
                                 changedPrice = true;
 
                                 String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
-                                        getItemDamage(recipe.getRecipeOutput()), resultPrice == null ? 0 : resultPrice, (int) price);
+                                        ItemUtil.getItemDamage(recipe.getRecipeOutput()), resultPrice == null ? 0 : resultPrice, (int) price);
                                 for (Object stacks : getRecipeItems(recipe))
                                     if (stacks != null)
                                     {
@@ -244,8 +235,8 @@ public class CommandSellprice extends ParserCommandBase
                                         else
                                             stack = (ItemStack) stacks;
                                         if (stack != null)
-                                            msg += String.format("\n  %.0f - %s:%d", priceMap.get(ModuleEconomy.getItemIdentifier(stack)),
-                                                    ServerUtil.getItemName(stack.getItem()), getItemDamage(stack));
+                                            msg += String.format("\n  %.0f - %s:%d", priceMap.get(ItemUtil.getItemIdentifier(stack)),
+                                                    ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack));
                                     }
                                 writer.write(msg + "\n");
                             }
@@ -255,18 +246,17 @@ public class CommandSellprice extends ParserCommandBase
                     for (Iterator<Entry<ItemStack, ItemStack>> iterator = furnaceRecipes.entrySet().iterator(); iterator.hasNext();)
                     {
                         Entry<ItemStack, ItemStack> recipe = iterator.next();
-                        Double inPrice = priceMap.get(ModuleEconomy.getItemIdentifier(recipe.getKey()));
+                        Double inPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getKey()));
                         if (inPrice != null)
                         {
                             iterator.remove();
                             double outPrice = inPrice * recipe.getKey().stackSize / recipe.getValue().stackSize;
-                            Double resultPrice = priceMap.get(ModuleEconomy.getItemIdentifier(recipe.getValue()));
+                            Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getValue()));
                             if (resultPrice == null || outPrice < resultPrice)
                             {
-                                priceMap.put(ModuleEconomy.getItemIdentifier(recipe.getValue()), outPrice);
-                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()),
-                                        getItemDamage(recipe.getValue()), resultPrice == null ? 0 : resultPrice, (int) outPrice,
-                                        ServerUtil.getItemName(recipe.getKey().getItem())));
+                                priceMap.put(ItemUtil.getItemIdentifier(recipe.getValue()), outPrice);
+                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()), ItemUtil.getItemDamage(
+                                        recipe.getValue()), resultPrice == null ? 0 : resultPrice, (int) outPrice, ServerUtil.getItemName(recipe.getKey().getItem())));
                                 changedPrice = true;
                             }
                         }
@@ -485,7 +475,7 @@ public class CommandSellprice extends ParserCommandBase
                     {
                         if (stack == null)
                             continue;
-                        String id = ModuleEconomy.getItemIdentifier((ItemStack) stack);
+                        String id = ItemUtil.getItemIdentifier((ItemStack) stack);
                         priceMapFull.put(id, 0.0);
                         Double p = priceMap.get(id);
                         if (p != null && (itemPrice == null || p < itemPrice))
@@ -495,9 +485,12 @@ public class CommandSellprice extends ParserCommandBase
                 else
                 {
                     ItemStack stack = (ItemStack) stacks;
-                    String id = ModuleEconomy.getItemIdentifier(stack);
-                    priceMapFull.put(id, 0.0);
-                    itemPrice = priceMap.get(id);
+                    String id = ItemUtil.getItemIdentifier(stack);
+                    if (id != null)
+                    {
+                        priceMapFull.put(id, 0.0);
+                        itemPrice = priceMap.get(id);
+                    }
                 }
                 if (itemPrice == null)
                     return -1;

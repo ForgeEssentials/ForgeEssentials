@@ -24,8 +24,10 @@ import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
@@ -48,6 +50,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
@@ -70,6 +73,7 @@ import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
@@ -212,10 +216,13 @@ public class ProtectionEventHandler extends ServerEventHandler
         IBlockState blockState = event.world.getBlockState(event.pos);
         String permission = ModuleProtection.getBlockBreakPermission(blockState);
         ModuleProtection.debugPermission(event.getPlayer(), permission);
-        WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.pos);
+        WorldPoint point = new WorldPoint(event);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
+            TileEntity te = event.world.getTileEntity(event.pos);
+            if (te != null)
+                updateBrokenTileEntity((EntityPlayerMP) event.getPlayer(), te);
             if (PlayerInfo.get(ident).getHasFEClient())
             {
                 int blockId = GameData.getBlockRegistry().getId(blockState.getBlock());
@@ -269,6 +276,20 @@ public class ProtectionEventHandler extends ServerEventHandler
                 event.setCanceled(true);
                 return;
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void fireEvent(FireEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+        String permission = (event instanceof FireEvent.Spread) ? ModuleProtection.PERM_FIRE_SPREAD : ModuleProtection.PERM_FIRE_DESTROY;
+        WorldPoint point = new WorldPoint(event.world.provider.getDimensionId(), event.pos);
+        if (!APIRegistry.perms.checkUserPermission(null, point, permission))
+        {
+            event.setCanceled(true);
+            return;
         }
     }
 
@@ -770,6 +791,22 @@ public class ProtectionEventHandler extends ServerEventHandler
     }
 
     /* ------------------------------------------------------------ */
+
+    public static void updateBrokenTileEntity(final EntityPlayerMP player, final TileEntity te)
+    {
+        if (player == null)
+            return;
+        final Packet packet = te.getDescriptionPacket();
+        if (packet == null)
+            return;
+        TaskRegistry.runLater(new Runnable() {
+            @Override
+            public void run()
+            {
+                player.playerNetServerHandler.sendPacket(packet);
+            }
+        });
+    }
 
     public static GameType stringToGameType(String gm)
     {

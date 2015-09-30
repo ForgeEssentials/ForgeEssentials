@@ -135,26 +135,23 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
         try
         {
             ParseResult<CommandPattern> result = parser.parse(cmd, sender);
-            try
-            {
-                ScriptParser.run(result.pattern.script, sender, result.arguments);
-            }
-            catch (MissingPlayerException e)
-            {
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND, name);
-            }
-            catch (MissingPermissionException e)
-            {
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-            }
-            catch (SyntaxException e)
-            {
-                throw new TranslatedCommandException("Error in script \"%s\": %s", name, e.getMessage());
-            }
-            catch (ScriptException e)
-            {
-                throw new CommandException(e.getMessage());
-            }
+            ScriptParser.run(result.pattern.script, sender, result.arguments);
+        }
+        catch (MissingPlayerException e)
+        {
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND, name);
+        }
+        catch (MissingPermissionException e)
+        {
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+        }
+        catch (SyntaxException e)
+        {
+            throw new TranslatedCommandException("Error in script \"%s\": %s", name, e.getMessage());
+        }
+        catch (ScriptException e)
+        {
+            throw new CommandException(e.getMessage());
         }
         catch (PatternMatchException e)
         {

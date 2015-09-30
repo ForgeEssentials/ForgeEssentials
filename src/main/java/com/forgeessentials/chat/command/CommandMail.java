@@ -100,7 +100,7 @@ public class CommandMail extends ParserCommandBase
             if (arguments.isEmpty())
                 throw new TranslatedCommandException("No message specified");
             Mailer.sendMail(arguments.ident, receiver, arguments.toString());
-            arguments.confirm(Translator.format("You sent a mail to %s", receiver.getUsernameOrUuid()));
+            arguments.confirm("You sent a mail to %s", receiver.getUsernameOrUuid());
             break;
         }
         default:

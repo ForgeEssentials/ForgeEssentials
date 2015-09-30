@@ -15,7 +15,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandPm extends ParserCommandBase
@@ -87,7 +86,7 @@ public class CommandPm extends ParserCommandBase
             if (arguments.sender == player.getPlayer())
                 throw new PlayerNotFoundException("commands.message.sameTarget");
             setTarget(arguments.sender, player.getPlayer());
-            arguments.confirm(Translator.format("Set PM target to %s", player.getUsernameOrUuid()));
+            arguments.confirm("Set PM target to %s", player.getUsernameOrUuid());
         }
         else
         {
@@ -96,7 +95,7 @@ public class CommandPm extends ParserCommandBase
             if (arguments.isEmpty())
             {
                 clearTarget(arguments.sender);
-                arguments.confirm(Translator.translate("Cleared PM target"));
+                arguments.confirm("Cleared PM target");
             }
             else
             {

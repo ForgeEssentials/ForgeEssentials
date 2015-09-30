@@ -9,22 +9,23 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 
 public class FECommandManager extends ConfigLoaderBase
 {
 
     public static interface ConfigurableCommand
     {
-        
+
         public void loadConfig(Configuration config, String category);
 
         public void loadData();
-        
+
     }
 
-    public static final int COMMANDS_VERSION = 2;
+    public static final int COMMANDS_VERSION = 3;
 
     protected static Map<String, ForgeEssentialsCommandBase> commands = new HashMap<>();
 
@@ -44,7 +45,10 @@ public class FECommandManager extends ConfigLoaderBase
     {
         FECommandManager.config = config;
         if (config.get("CommandsConfig", "version", COMMANDS_VERSION).getInt() < COMMANDS_VERSION)
+        {
             newMappings = true;
+            config.get("CommandsConfig", "version", COMMANDS_VERSION).set(COMMANDS_VERSION);
+        }
         for (ForgeEssentialsCommandBase command : commands.values())
             loadCommandConfig(command);
     }
@@ -85,6 +89,7 @@ public class FECommandManager extends ConfigLoaderBase
                 if (command instanceof ConfigurableCommand)
                     ((ConfigurableCommand) command).loadData();
             }
+        CommandFeSettings.getInstance().loadSettings();
     }
 
     public static void clearRegisteredCommands()

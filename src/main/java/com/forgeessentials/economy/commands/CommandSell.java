@@ -15,7 +15,6 @@ import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
 public class CommandSell extends ParserCommandBase
 {
@@ -145,16 +144,9 @@ public class CommandSell extends ParserCommandBase
                 ModuleEconomy.confirmNewWalletAmount(arguments.ident, wallet);
             }
         };
-        try
-        {
-            String message = Translator.format("Sell %d x %s each for %s (total: %s)?", amount, itemStack.getDisplayName(),
-                    APIRegistry.economy.toString(price), APIRegistry.economy.toString(amount * price));
-            Questioner.add(arguments.sender, message, handler, 20);
-        }
-        catch (QuestionerStillActiveException e)
-        {
-            throw new QuestionerStillActiveException.CommandException();
-        }
+        String message = Translator.format("Sell %d x %s each for %s (total: %s)?", amount, itemStack.getDisplayName(), APIRegistry.economy.toString(price),
+                APIRegistry.economy.toString(amount * price));
+        Questioner.addChecked(arguments.sender, message, handler, 20);
     }
 
 }

@@ -25,7 +25,6 @@ import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
@@ -129,7 +128,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
                 EnumChatFormatting color = ChatOutputHandler.chatConfirmationColor;
                 if (results.size() > 1 || command == null)
-                    arguments.notify(Translator.format("Searching commands by \"%s\"", name));
+                    arguments.confirm("Searching commands by \"%s\"", name);
 
                 if (command != null)
                 {
@@ -182,12 +181,6 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     public void load(Configuration config, boolean isReload)
     {
         messages = config.get(FEConfig.CONFIG_CAT, "custom_help", new String[] {}, CONFIG_HELP).getStringList();
-    }
-
-    @Override
-    public void save(Configuration config)
-    {
-        /* do nothing */
     }
 
     @Override

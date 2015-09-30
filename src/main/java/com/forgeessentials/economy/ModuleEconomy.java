@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,14 +36,16 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.economy.commands.CommandSellprice;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
 import com.forgeessentials.economy.commands.CommandSell;
 import com.forgeessentials.economy.commands.CommandSellCommand;
+import com.forgeessentials.economy.commands.CommandSellprice;
 import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.plots.PlotManager;
+import com.forgeessentials.economy.shop.ShopManager;
+import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -82,6 +86,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     protected PlotManager plotManager;
 
+    protected ShopManager shopManager;
+
     protected HashMap<UserIdent, PlayerWallet> wallets = new HashMap<>();
 
     /* ------------------------------------------------------------ */
@@ -92,6 +98,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         APIRegistry.economy = this;
         plotManager = new PlotManager();
+        shopManager = new ShopManager();
 
         FECommandManager.registerCommand(new CommandWallet());
         FECommandManager.registerCommand(new CommandPay());
@@ -105,7 +112,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        APIRegistry.perms.registerPermissionProperty(PERM_XP_MULTIPLIER, "1",
+        APIRegistry.perms.registerPermissionProperty(PERM_XP_MULTIPLIER, "0",
                 "XP to currency conversion rate (integer, a zombie drops around 5 XP, 0 to disable)");
         APIRegistry.perms.registerPermissionProperty(PERM_CURRENCY, "coins", "Name of currency (plural)");
         APIRegistry.perms.registerPermissionProperty(PERM_CURRENCY_SINGULAR, "coin", "Name of currency (singular)");
@@ -151,22 +158,21 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
     }
 
-    public static int tryRemoveItems(EntityPlayerMP player, ItemStack itemStack, int amount)
+    public static int tryRemoveItems(EntityPlayer player, ItemStack itemStack, int amount)
     {
         int foundStacks = 0;
+        int itemDamage = ItemUtil.getItemDamage(itemStack);
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {
             ItemStack stack = player.inventory.mainInventory[slot];
-            if (stack != null && stack.getItem() == itemStack.getItem()
-                    && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
+            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
                 foundStacks += stack.stackSize;
         }
         foundStacks = amount = Math.min(foundStacks, amount);
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {
             ItemStack stack = player.inventory.mainInventory[slot];
-            if (stack != null && stack.getItem() == itemStack.getItem()
-                    && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
+            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
             {
                 int removeCount = Math.min(stack.stackSize, foundStacks);
                 player.inventory.decrStackSize(slot, removeCount);
@@ -174,6 +180,19 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             }
         }
         return amount;
+    }
+
+    public static int countInventoryItems(EntityPlayer player, ItemStack itemType)
+    {
+        int foundStacks = 0;
+        int itemDamage = ItemUtil.getItemDamage(itemType);
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+        {
+            ItemStack stack = player.inventory.mainInventory[slot];
+            if (stack != null && stack.getItem() == itemType.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+                foundStacks += stack.stackSize;
+        }
+        return foundStacks;
     }
 
     /* ------------------------------------------------------------ */
@@ -212,10 +231,18 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (deathtoll == null || deathtoll <= 0)
                 return;
             Wallet wallet = APIRegistry.economy.getWallet(ident);
+            long newAmount;
             if (deathtoll < 1)
-                wallet.set(wallet.get() * deathtoll);
+                newAmount = wallet.get() * deathtoll;
             else if (deathtoll >= 1)
-                wallet.set(Math.min(0, wallet.get() - deathtoll));
+                newAmount = Math.max(0, wallet.get() - deathtoll);
+            else
+                return;
+            long loss = wallet.get() - newAmount;
+            if (loss <= 0)
+                return;
+            wallet.set(newAmount);
+            ChatOutputHandler.chatNotification((ICommandSender) e.entity, Translator.format("You lost %s from dying", APIRegistry.economy.currency(loss)));
         }
     }
 
@@ -279,18 +306,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     /* ------------------------------------------------------------ */
 
-    public static String getItemIdentifier(ItemStack itemStack)
-    {
-        String id = ServerUtil.getItemName(itemStack.getItem());
-        if (itemStack.getItemDamage() == 0 || itemStack.getItemDamage() == 32767)
-            return id;
-        else
-            return id + ":" + itemStack.getItemDamage();
-    }
-
     public static String getItemPricePermission(ItemStack itemStack)
     {
-        return PERM_PRICE + "." + getItemIdentifier(itemStack);
+        return PERM_PRICE + "." + ItemUtil.getItemIdentifier(itemStack);
     }
 
     public static Long getItemPrice(ItemStack itemStack, UserIdent ident)
@@ -315,7 +333,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                     if (entry.getKey().equals(item.getUnlocalizedName()))
                     {
                         String id = ServerUtil.getItemName(item);
-                        config.get(CATEGORY_ITEM, id, DEFAULT_ITEM_PRICE).set(entry.getValue().getInt(DEFAULT_ITEM_PRICE));;
+                        config.get(CATEGORY_ITEM, id, DEFAULT_ITEM_PRICE).set(entry.getValue().getInt(DEFAULT_ITEM_PRICE));
                         break;
                     }
             }
@@ -324,15 +342,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
         ConfigCategory category = config.getCategory(CATEGORY_ITEM);
         for (Entry<String, Property> entry : category.entrySet())
-        {
             APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString(entry.getValue().getInt(DEFAULT_ITEM_PRICE)));
-        }
-    }
-
-    @Override
-    public void save(Configuration config)
-    {
-        /* do nothing */
     }
 
     @Override
@@ -350,4 +360,5 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             super("You can't afford that");
         }
     }
+
 }

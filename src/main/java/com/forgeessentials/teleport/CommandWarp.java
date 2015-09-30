@@ -17,7 +17,6 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
@@ -138,13 +137,13 @@ public class CommandWarp extends ParserCommandBase
                     throw new TranslatedCommandException("You reached the warp limit");
 
                 DataManager.getInstance().save(new Warp(arguments.senderPlayer), warpName);
-                arguments.confirm(Translator.format("Set warp \"%s\" to current location", warpName));
+                arguments.confirm("Set warp \"%s\" to current location", warpName);
                 break;
             case "del":
             case "delete":
                 arguments.checkPermission(PERM_DELETE);
                 DataManager.getInstance().delete(Warp.class, warpName);
-                arguments.confirm(Translator.format("Deleted warp \"%s\"", warpName));
+                arguments.confirm("Deleted warp \"%s\"", warpName);
                 break;
             default:
                 throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);

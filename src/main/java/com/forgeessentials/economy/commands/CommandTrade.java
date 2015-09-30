@@ -58,8 +58,8 @@ public class CommandTrade extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.translate("/trade <player> [price-per-item]:"));
-            arguments.confirm(Translator.translate("  Trade the item you are holding in your hand"));
+            arguments.confirm("/trade <player> [price-per-item]:");
+            arguments.confirm("  Trade the item you are holding in your hand");
             return;
         }
 
@@ -118,7 +118,7 @@ public class CommandTrade extends ParserCommandBase
                         else if (response == false)
                         {
                             ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Trade declined"));
-                            arguments.error(Translator.format("Player %s declined the trade", buyer.getUsernameOrUuid()));
+                            arguments.confirm("Player %s declined the trade", buyer.getUsernameOrUuid());
                             return;
                         }
 
@@ -165,30 +165,23 @@ public class CommandTrade extends ParserCommandBase
                         message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?", itemStack.stackSize, itemStack.getDisplayName(),
                                 APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize),
                                 arguments.sender.getName());
-                    Questioner.add(buyer.getPlayerMP(), message, buyerHandler, 60);
+                    Questioner.addChecked(buyer.getPlayerMP(), message, buyerHandler, 60);
                     arguments.confirm(Translator.format("Waiting on %s...", buyer.getUsernameOrUuid()));
                 }
-                catch (QuestionerStillActiveException e)
+                catch (QuestionerStillActiveException.CommandException e)
                 {
                     throw new QuestionerStillActiveException.CommandException();
                 }
             }
         };
-        try
-        {
-            String message;
-            if (itemStack.stackSize == 1)
-                message = Translator.format("Sell one %s for %s to %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price),
-                        buyer.getUsernameOrUuid());
-            else
-                message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.stackSize, itemStack.getDisplayName(),
-                        APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize), buyer.getUsernameOrUuid());
-            Questioner.add(arguments.sender, message, sellerHandler, 20);
-        }
-        catch (QuestionerStillActiveException e)
-        {
-            throw new QuestionerStillActiveException.CommandException();
-        }
+        String message;
+        if (itemStack.stackSize == 1)
+            message = Translator
+                    .format("Sell one %s for %s to %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price), buyer.getUsernameOrUuid());
+        else
+            message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.stackSize, itemStack.getDisplayName(),
+                    APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.stackSize), buyer.getUsernameOrUuid());
+        Questioner.addChecked(arguments.sender, message, sellerHandler, 20);
     }
     
 }

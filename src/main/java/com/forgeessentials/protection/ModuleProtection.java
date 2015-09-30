@@ -81,6 +81,9 @@ public class ModuleProtection
     public final static String PERM_USE = BASE_PERM + ".use";
     public final static String PERM_BREAK = BASE_PERM + ".break";
     public final static String PERM_PLACE = BASE_PERM + ".place";
+    public final static String PERM_FIRE = BASE_PERM + ".fire";
+    public final static String PERM_FIRE_DESTROY = PERM_FIRE + ".destroy";
+    public final static String PERM_FIRE_SPREAD = PERM_FIRE + ".spread";
     public final static String PERM_INTERACT = BASE_PERM + ".interact";
     public final static String PERM_INTERACT_ENTITY = BASE_PERM + ".interact.entity";
     public final static String PERM_DAMAGE_TO = BASE_PERM + ".damageto";
@@ -174,6 +177,8 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_EXPLOSION, PermissionLevel.TRUE, "(global) Allows explosions");
         APIRegistry.perms.registerPermission(PERM_EXPLOSION_BLOCKDMG, PermissionLevel.TRUE, "(global) Allows explosions to damage blocks");
         APIRegistry.perms.registerPermission(PERM_PRESSUREPLATE, PermissionLevel.TRUE, "Prevent players from triggering pressure plates");
+        APIRegistry.perms.registerPermission(PERM_FIRE_DESTROY, PermissionLevel.TRUE, "Allow fire to destroy blocks");
+        APIRegistry.perms.registerPermission(PERM_FIRE_SPREAD, PermissionLevel.TRUE, "Allow fire to spread");
 
         // ----------------------------------------
         // Damage

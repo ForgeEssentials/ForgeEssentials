@@ -75,7 +75,7 @@ public class CommandSeen extends FEcmdModuleCommands
 
         if (player.hasPlayer())
         {
-            arguments.confirm(Translator.format("Player %s is currently online", player.getUsernameOrUuid()));
+            arguments.confirm("Player %s is currently online", player.getUsernameOrUuid());
             return;
         }
 

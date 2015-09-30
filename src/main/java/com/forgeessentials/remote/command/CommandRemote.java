@@ -103,7 +103,7 @@ public class CommandRemote extends ParserCommandBase
                 if (args.isTabCompletion)
                     return;
                 ModuleRemote.getInstance().setPasskey(ident, null);
-                args.confirm(Translator.format("User %s has been blocked from remote until he generates a new passkey", ident.getUsernameOrUuid()));
+                args.confirm("User %s has been blocked from remote until he generates a new passkey", ident.getUsernameOrUuid());
                 return;
             }
             case "kick":
@@ -117,11 +117,11 @@ public class CommandRemote extends ParserCommandBase
                 RemoteSession session = ModuleRemote.getInstance().getServer().getSession(ident);
                 if (session == null)
                 {
-                    args.confirm(Translator.format("User %s is not logged in on remote", ident.getUsernameOrUuid()));
+                    args.confirm("User %s is not logged in on remote", ident.getUsernameOrUuid());
                     return;
                 }
                 session.close("kick", 0);
-                args.confirm(Translator.format("User %s has been kicked from remote", ident.getUsernameOrUuid()));
+                args.confirm("User %s has been kicked from remote", ident.getUsernameOrUuid());
                 return;
             }
             case "start":

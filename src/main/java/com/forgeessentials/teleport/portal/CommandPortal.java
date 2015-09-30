@@ -10,7 +10,6 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.NamedWorldArea;
 import com.forgeessentials.util.NamedWorldPoint;
@@ -142,7 +141,7 @@ public class CommandPortal extends ParserCommandBase
 
         Portal portal = new Portal(new NamedWorldArea(selection.getDimension(), selection), target, frame);
         PortalManager.getInstance().add(name, portal);
-        arguments.confirm(Translator.format("Created new portal leading to %s", target.toString()));
+        arguments.confirm("Created new portal leading to %s", target.toString());
     }
 
     private static void parseTarget(CommandParserArgs arguments) throws CommandException
@@ -178,7 +177,7 @@ public class CommandPortal extends ParserCommandBase
             return;
 
         PortalManager.getInstance().get(name).target = target;
-        arguments.confirm(Translator.format("Set target for portal %s to %s", name, target.toString()));
+        arguments.confirm("Set target for portal %s to %s", name, target.toString());
     }
 
     private static void parseDelete(CommandParserArgs arguments) throws CommandException

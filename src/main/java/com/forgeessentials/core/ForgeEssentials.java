@@ -64,7 +64,7 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
@@ -89,7 +89,7 @@ import com.forgeessentials.util.selections.SelectionEventHandler;
  * Main mod class
  */
 
-@Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", version = BuildInfo.BASE_VERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.2.1258,);after:WorldEdit")
+@Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", version = BuildInfo.BASE_VERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.4.1448,);after:WorldEdit")
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
@@ -150,7 +150,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        LoggingHandler.felog = event.getModLog();
         LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
 
         // Initialize core configuration

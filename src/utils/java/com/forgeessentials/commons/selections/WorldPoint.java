@@ -3,12 +3,15 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.event.world.BlockEvent;
 
 import com.google.gson.annotations.Expose;
 
@@ -76,6 +79,11 @@ public class WorldPoint extends Point
         this(other.getDimension(), other.getBlockX(), other.getBlockY(), other.getBlockZ());
     }
 
+    public WorldPoint(BlockEvent event)
+    {
+        this(event.world, event.pos);
+    }
+
     public static WorldPoint create(ICommandSender sender)
     {
         return new WorldPoint(sender.getEntityWorld(), sender.getPosition());
@@ -125,6 +133,16 @@ public class WorldPoint extends Point
     public WarpPoint toWarpPoint(float rotationPitch, float rotationYaw)
     {
         return new WarpPoint(this, rotationPitch, rotationYaw);
+    }
+    
+    public Block getBlock()
+    {
+        return getWorld().getBlockState(getBlockPos()).getBlock();
+    }
+
+    public TileEntity getTileEntity()
+    {
+        return getWorld().getTileEntity(getBlockPos());
     }
 
     // ------------------------------------------------------------
@@ -180,5 +198,6 @@ public class WorldPoint extends Point
         h = h * 31 + dim;
         return h;
     }
+
 
 }

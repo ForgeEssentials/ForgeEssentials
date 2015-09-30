@@ -12,6 +12,8 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import com.forgeessentials.core.ForgeEssentials;
+
 public class LoggingHandler
 {
 
@@ -22,7 +24,7 @@ public class LoggingHandler
     // TODO: Make STDERR appear in log!
     public static final QueueLogAppender logCache = new QueueLogAppender("fe_server_log_queue", null, MC_PATTERN, true, MAX_LOG_LENGTH);
 
-    public static org.apache.logging.log4j.Logger felog;
+    public static final org.apache.logging.log4j.Logger felog = LogManager.getLogger(ForgeEssentials.MODID);
 
     static
     {

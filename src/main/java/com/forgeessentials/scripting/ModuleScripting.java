@@ -13,15 +13,17 @@ import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.scripting.ScriptParser.MissingPermissionException;
 import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
+import com.forgeessentials.scripting.ScriptParser.ScriptErrorException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
 import com.forgeessentials.scripting.command.CommandTimedTask;
@@ -45,7 +47,7 @@ public class ModuleScripting extends ServerEventHandler
 
     public static enum ServerEventType
     {
-        START, STOP, LOGIN, LOGOUT;
+        START, STOP, LOGIN, LOGOUT, DEATH;
     }
 
     @FEModule.ModuleDir
@@ -61,7 +63,7 @@ public class ModuleScripting extends ServerEventHandler
     {
         commandsDir = new File(moduleDir, "commands");
         commandsDir.mkdirs();
-        
+
         try (PrintWriter writer = new PrintWriter(new File(moduleDir, "arguments.txt")))
         {
             writer.println("# Script arguments");
@@ -176,7 +178,7 @@ public class ModuleScripting extends ServerEventHandler
     public void reload(ConfigReloadEvent e)
     {
         PatternCommand.deregisterAll();
-        
+
         loadScripts();
         PatternCommand.loadAll();
         createDefaultPatternCommands();
@@ -193,15 +195,9 @@ public class ModuleScripting extends ServerEventHandler
             {
                 ScriptParser.run(script.getValue(), sender);
             }
-            catch (CommandException e)
+            catch (CommandException | ScriptErrorException e)
             {
-                ChatOutputHandler.chatError(sender, e.getMessage());
-                // ChatOutputHandler.felog.info(String.format("Error in script \"%s\": %s", script.getKey(),
-                // e.getMessage()));
-            }
-            catch (MissingPermissionException e)
-            {
-                if (!e.getMessage().isEmpty())
+                if (e.getMessage() != null && !e.getMessage().isEmpty())
                     ChatOutputHandler.chatError(sender, e.getMessage());
             }
             catch (ScriptException e)
@@ -221,6 +217,15 @@ public class ModuleScripting extends ServerEventHandler
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
     {
         runEventScripts(ServerEventType.LOGOUT, event.player);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onPlayerDeath(LivingDeathEvent event)
+    {
+        if (event.entityLiving instanceof EntityPlayerMP)
+        {
+            runEventScripts(ServerEventType.DEATH, (EntityPlayerMP) event.entityLiving);
+        }
     }
 
 }
