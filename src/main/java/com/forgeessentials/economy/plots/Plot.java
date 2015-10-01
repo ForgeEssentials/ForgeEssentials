@@ -378,7 +378,7 @@ public class Plot
     {
         WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(area.getDimension());
         for (AreaZone zone : worldZone.getAreaZones())
-            if (isPlot(zone) && zone.getArea().contains(area))
+            if (isPlot(zone) && (zone.getArea().contains(area) || zone.getArea().intersectsWith(area)))
                 throw new PlotRedefinedException();
 
         if (isColumnMode(area.getDimension()))
@@ -438,7 +438,7 @@ public class Plot
         perms.registerPermission(PERM_COMMAND, PermissionLevel.TRUE, "Plot management command");
         perms.registerPermission(PERM_DEFINE, PermissionLevel.OP, "Allows to define plots without paying");
         perms.registerPermission(PERM_CLAIM, PermissionLevel.TRUE, "Allows to claim plots in exchange for money");
-        perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allows a player to delete plots.");
+        perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allows a player to delete any plots, including plots not owned by him.");
         perms.registerPermission(PERM_BUY, PermissionLevel.TRUE, "Allows buying plots");
         perms.registerPermission(PERM_SELL, PermissionLevel.OP, "Allows selling plots");
         perms.registerPermission(PERM_MODS, PermissionLevel.OP, "Allows managing plot administrators");
