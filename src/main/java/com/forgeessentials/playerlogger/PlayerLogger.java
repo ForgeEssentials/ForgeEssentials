@@ -116,6 +116,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
      */
     protected void loadDatabase()
     {
+        if (!PlayerLoggerConfig.databaseUrl.startsWith("./"))
+            PlayerLoggerConfig.databaseUrl = "./" + PlayerLoggerConfig.databaseUrl;
+
         close();
 
         // Set log level
