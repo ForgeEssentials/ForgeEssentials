@@ -400,7 +400,7 @@ public class ModuleChat
         if (!ChatConfig.welcomeMessage.isEmpty())
         {
             String message = processChatReplacements(event.getPlayer(), ChatConfig.welcomeMessage);
-            ChatOutputHandler.broadcast(new ChatComponentText(message));
+            ChatOutputHandler.broadcast(filterChatLinks(message));
         }
     }
 
@@ -416,7 +416,7 @@ public class ModuleChat
         for (String message : ChatConfig.loginMessage)
         {
             message = processChatReplacements(sender, message);
-            ChatOutputHandler.sendMessage(sender, message);
+            ChatOutputHandler.sendMessage(sender, filterChatLinks(message));
         }
     }
 
