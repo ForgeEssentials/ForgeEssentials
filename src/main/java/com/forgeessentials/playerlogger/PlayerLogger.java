@@ -116,9 +116,6 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
      */
     protected void loadDatabase()
     {
-        if (!PlayerLoggerConfig.databaseUrl.startsWith("./"))
-            PlayerLoggerConfig.databaseUrl = "./" + PlayerLoggerConfig.databaseUrl;
-
         close();
 
         // Set log level
@@ -128,6 +125,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         switch (PlayerLoggerConfig.databaseType)
         {
         case "h2":
+            if (!PlayerLoggerConfig.databaseUrl.startsWith("./"))
+                PlayerLoggerConfig.databaseUrl = "./" + PlayerLoggerConfig.databaseUrl;
+
             properties.setProperty("hibernate.connection.url", "jdbc:h2:" + PlayerLoggerConfig.databaseUrl);
             break;
         case "mysql":
