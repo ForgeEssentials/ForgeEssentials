@@ -377,9 +377,11 @@ public class Plot
     public static Plot define(WorldArea area, UserIdent owner) throws EventCancelledException, PlotRedefinedException
     {
         WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(area.getDimension());
-        for (AreaZone zone : worldZone.getAreaZones())
-            if (isPlot(zone) && (zone.getArea().contains(area) || zone.getArea().intersectsWith(area)))
+        for (Plot zone : plots.values())
+            if (zone.getZone().getArea().contains(area) || zone.getZone().getArea().intersectsWith(area))
+            {
                 throw new PlotRedefinedException();
+            }
 
         if (isColumnMode(area.getDimension()))
             area = new WorldArea(area.getDimension(), area.getHighPoint().setY(MinecraftServer.getServer().getBuildLimit()), area.getLowPoint().setY(0));
