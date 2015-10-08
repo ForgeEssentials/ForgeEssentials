@@ -30,6 +30,7 @@ import com.forgeessentials.commons.network.Packet7Remote;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.CommandFEInfo;
+import com.forgeessentials.core.commands.CommandFEWorldInfo;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.environment.Environment;
@@ -259,6 +260,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandFeSettings());
         FECommandManager.registerCommand(new CommandWand());
         FECommandManager.registerCommand(new CommandUuid());
+        FECommandManager.registerCommand(new CommandFEWorldInfo());
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
             FECommandManager.registerCommand(new CommandPos(1));
