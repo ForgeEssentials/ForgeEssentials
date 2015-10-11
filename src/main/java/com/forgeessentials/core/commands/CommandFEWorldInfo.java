@@ -46,6 +46,6 @@ public class CommandFEWorldInfo extends ParserCommandBase
     @Override
     public PermissionLevel getPermissionLevel()
     {
-        return null;
+        return PermissionLevel.OP;
     }
 }
