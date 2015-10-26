@@ -70,7 +70,7 @@ public class CommandButcher extends FEcmdModuleCommands
             if (radiusValue.equalsIgnoreCase("world"))
                 radius = -1;
             else
-                radius = parseIntWithMin(sender, radiusValue, 0);
+                radius = parseIntWithMin(sender, radiusValue, -1);
         }
 
         if (!argsStack.isEmpty())
