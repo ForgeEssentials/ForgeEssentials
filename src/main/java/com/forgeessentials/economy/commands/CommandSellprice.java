@@ -70,7 +70,7 @@ public class CommandSellprice extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/sellprice calc|set: Manage item sell prices";
+        return "/sellprice save|set: Manage item sell prices";
     }
 
     @Override
