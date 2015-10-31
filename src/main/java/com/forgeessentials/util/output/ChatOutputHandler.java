@@ -3,6 +3,7 @@ package com.forgeessentials.util.output;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -438,12 +439,6 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
-    public static final long SECOND = 1;
-    public static final long MINUTE_SECONDS = 60 * SECOND;
-    public static final long HOUR_SECONDS = 60 * MINUTE_SECONDS;
-    public static final long DAY_SECONDS = 24 * HOUR_SECONDS;
-    public static final long WEEK_SECONDS = 7 * DAY_SECONDS;
-
     /**
      * Gets a nice string with only needed elements. Max time is weeks
      *
@@ -452,15 +447,11 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static String formatTimeDurationReadable(long time, boolean showSeconds)
     {
-        long weeks = time / WEEK_SECONDS;
-        time -= WEEK_SECONDS * weeks;
-        long days = time / DAY_SECONDS;
-        time -= DAY_SECONDS * days;
-        long hours = time / HOUR_SECONDS;
-        time -= HOUR_SECONDS * hours;
-        long minutes = time / MINUTE_SECONDS;
-        time -= MINUTE_SECONDS * minutes;
-        long seconds = time / SECOND;
+        int weeks = (int) (TimeUnit.SECONDS.toDays(time) / 7);
+        int days = (int) (TimeUnit.SECONDS.toDays(time) - 7 * weeks);
+        long hours = TimeUnit.SECONDS.toHours(time) - (TimeUnit.SECONDS.toDays(time) *24);
+        long minutes = TimeUnit.SECONDS.toMinutes(time) - (TimeUnit.SECONDS.toHours(time)* 60);
+        long seconds = TimeUnit.SECONDS.toSeconds(time) - (TimeUnit.SECONDS.toMinutes(time) *60);
 
         StringBuilder sb = new StringBuilder();
         if (weeks != 0)
