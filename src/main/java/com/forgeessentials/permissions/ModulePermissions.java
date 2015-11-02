@@ -72,7 +72,6 @@ public class ModulePermissions extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preLoad(FEModulePreInitEvent e)
     {
-        permissionScheduler = new PermissionScheduler();
         itemPermissionManager = new ItemPermissionManager();
 
         MinecraftForge.EVENT_BUS.register(this);
@@ -95,6 +94,7 @@ public class ModulePermissions extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void serverStarting(FEModuleServerInitEvent e)
     {
+        permissionScheduler = new PermissionScheduler();
         // Backup FEData directory
         try
         {
