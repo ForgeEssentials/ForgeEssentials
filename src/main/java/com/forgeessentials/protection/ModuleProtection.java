@@ -373,6 +373,8 @@ public class ModuleProtection
 
     public static String getItemPermission(ItemStack stack, boolean checkMeta)
     {
+        if (stack == null || stack.getItem() == null)
+            return "minecraft.air";
         int dmg = stack.getItemDamage();
         if (!checkMeta || dmg == 0 || dmg == 32767)
             return getItemId(stack.getItem());
