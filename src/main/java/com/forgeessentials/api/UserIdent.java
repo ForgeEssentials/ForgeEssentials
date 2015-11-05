@@ -69,24 +69,24 @@ public class UserIdent
         byUsername.put(username.toLowerCase(), this);
     }
 
-    private UserIdent(UUID uuid, String username, EntityPlayerMP player)
+    private UserIdent(UUID identUuid, String identUsername, EntityPlayerMP identPlayer)
     {
-        this.player = player == null ? null : new WeakReference<EntityPlayer>(player);
-        if (player != null)
+        player = identPlayer == null ? null : new WeakReference<EntityPlayer>(identPlayer);
+        if (identPlayer != null)
         {
-            this.uuid = player.getPersistentID();
-            this.username = player.getCommandSenderName();
+            uuid = identPlayer.getPersistentID();
+            username = identPlayer.getCommandSenderName();
             byUuid.put(uuid, this);
             byUsername.put(username.toLowerCase(), this);
         }
         else
         {
-            this.uuid = uuid;
-            this.username = username;
+            uuid = identUuid;
+            username = identUsername;
             if (uuid != null)
-                byUuid.put(uuid, this);
-            if (username != null)
-                byUsername.put(username.toLowerCase(), this);
+                byUuid.put(this.uuid, this);
+            if (identUsername != null && identUsername.charAt(0) != '@')
+                byUsername.put(identUsername.toLowerCase(), this);
         }
     }
 
