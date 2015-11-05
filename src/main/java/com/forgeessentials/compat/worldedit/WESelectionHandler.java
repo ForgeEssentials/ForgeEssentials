@@ -19,6 +19,7 @@ import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.regions.selector.CuboidRegionSelector;
 import com.sk89q.worldedit.regions.selector.CylinderRegionSelector;
 import com.sk89q.worldedit.regions.selector.EllipsoidRegionSelector;
+import com.sk89q.worldedit.regions.selector.ExtendingCuboidRegionSelector;
 import com.sk89q.worldedit.regions.selector.Polygonal2DRegionSelector;
 
 public class WESelectionHandler implements ISelectionProvider
@@ -139,10 +140,14 @@ public class WESelectionHandler implements ISelectionProvider
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         ForgeWorld world = ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(dimension));
-        RegionSelector selector = session.getRegionSelector(world);
-        selector.setWorld(world);
+        CuboidRegionSelector selector;
+        if (session.getRegionSelector(world) instanceof ExtendingCuboidRegionSelector)
+            selector = new ExtendingCuboidRegionSelector(world);
+        else
+            selector = new CuboidRegionSelector(world);
         selector.selectPrimary(new Vector(area.getLowPoint().getX(), area.getLowPoint().getY(), area.getLowPoint().getZ()), null);
         selector.selectSecondary(new Vector(area.getHighPoint().getX(), area.getHighPoint().getY(), area.getHighPoint().getZ()), null);
+        session.setRegionSelector(world, selector);
         SelectionHandler.sendUpdate(player);
     }
 

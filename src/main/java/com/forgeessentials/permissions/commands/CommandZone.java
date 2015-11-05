@@ -286,10 +286,7 @@ public class CommandZone extends ParserCommandBase
             throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
 
         AreaBase area = areaZone.getArea();
-        SelectionHandler.selectionProvider.setDimension(arguments.senderPlayer, worldZone.getDimensionID());
-        SelectionHandler.selectionProvider.setStart(arguments.senderPlayer, area.getLowPoint());
-        SelectionHandler.selectionProvider.setEnd(arguments.senderPlayer, area.getHighPoint());
-        SelectionHandler.sendUpdate(arguments.senderPlayer);
+        SelectionHandler.selectionProvider.select(arguments.senderPlayer, worldZone.getDimensionID(), area);
         arguments.confirm(String.format("Area \"%s\" has been selected.", areaName));
     }
 
