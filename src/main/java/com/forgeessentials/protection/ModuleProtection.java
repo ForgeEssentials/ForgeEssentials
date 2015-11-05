@@ -425,6 +425,8 @@ public class ModuleProtection
 
     public static boolean canCraft(EntityPlayer player, ItemStack result)
     {
+        if (result == null)
+            return true;
         String permission = ModuleProtection.getCraftingPermission(result);
         debugPermission(player, permission);
         return PermissionManager.checkPermission(player, permission);
