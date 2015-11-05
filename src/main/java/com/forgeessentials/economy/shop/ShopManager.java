@@ -47,6 +47,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.reflect.TypeToken;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -226,6 +227,9 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             if (!ItemUtil.isSign(block))
                 return;
             String[] text = ItemUtil.getSignText(point);
+            LoggingHandler.felog.info("DEBUG text = " + text + " / type of text = " + text[0].getClass().getName());
+            if (!shopTags.isEmpty())
+                LoggingHandler.felog.info("DEBUG shopTags(0) type = " + shopTags.iterator().next());
             if (text == null || text.length < 1 || !shopTags.contains(text[0]))
                 return;
             if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_CREATE))
