@@ -230,7 +230,7 @@ public class CommandZone extends ParserCommandBase
             area.setArea(selection);
             if (shape != null)
                 area.setShape(shape);
-            arguments.confirm(String.format("Area \"%s\" has been redefined.", areaName));
+            arguments.confirm("Area \"%s\" has been redefined.", areaName);
         }
         else
         {
@@ -239,7 +239,7 @@ public class CommandZone extends ParserCommandBase
                 area = new AreaZone(worldZone, areaName, selection);
                 if (shape != null)
                     area.setShape(shape);
-                arguments.confirm(String.format("Area \"%s\" has been defined.", areaName));
+                arguments.confirm("Area \"%s\" has been defined.", areaName);
             }
             catch (EventCancelledException e)
             {
@@ -265,7 +265,7 @@ public class CommandZone extends ParserCommandBase
         if (areaZone == null)
             throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
         areaZone.getWorldZone().removeAreaZone(areaZone);
-        arguments.confirm(String.format("Area \"%s\" has been deleted.", areaZone.getName()));
+        arguments.confirm("Area \"%s\" has been deleted.", areaZone.getName());
     }
 
     public static void parseSelect(CommandParserArgs arguments)
@@ -287,7 +287,7 @@ public class CommandZone extends ParserCommandBase
 
         AreaBase area = areaZone.getArea();
         SelectionHandler.selectionProvider.select(arguments.senderPlayer, worldZone.getDimensionID(), area);
-        arguments.confirm(String.format("Area \"%s\" has been selected.", areaName));
+        arguments.confirm("Area \"%s\" has been selected.", areaName);
     }
 
     public static void parseInfo(CommandParserArgs arguments)
@@ -308,7 +308,7 @@ public class CommandZone extends ParserCommandBase
             throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
         AreaBase area = areaZone.getArea();
 
-        arguments.confirm(String.format("Area \"%s\"", areaZone.getName()));
+        arguments.confirm("Area \"%s\"", areaZone.getName());
         arguments.notify("  start = " + area.getLowPoint().toString());
         arguments.notify("  end   = " + area.getHighPoint().toString());
     }

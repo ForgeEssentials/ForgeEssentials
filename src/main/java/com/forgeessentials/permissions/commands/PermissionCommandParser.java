@@ -278,7 +278,7 @@ public class PermissionCommandParser
         // Parse player
         UserIdent ident = arguments.parsePlayer(false, false);
         if (!ident.hasUuid())
-            arguments.error(String.format("Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername()));
+            arguments.error("Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername());
 
         parseUserInner(arguments, ident, null);
     }
@@ -290,7 +290,7 @@ public class PermissionCommandParser
         {
             if (zone == null)
             {
-                arguments.confirm(String.format("Groups for player %s:", ident.getUsernameOrUuid()));
+                arguments.confirm("Groups for player %s:", ident.getUsernameOrUuid());
                 for (GroupEntry group : APIRegistry.perms.getPlayerGroups(ident))
                 {
                     arguments.confirm("  " + group);
@@ -325,12 +325,12 @@ public class PermissionCommandParser
         {
             if (zone != null)
             {
-                arguments.error(String.format("Zone already set!"));
+                arguments.error("Zone already set!");
                 return;
             }
             if (arguments.args.isEmpty())
             {
-                arguments.error(String.format("Expected zone identifier."));
+                arguments.error("Expected zone identifier.");
                 return;
             }
             zone = parseZone(arguments, arguments.args.remove());
@@ -397,19 +397,19 @@ public class PermissionCommandParser
             String fix = zone.getPlayerPermission(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (fix == null || fix.isEmpty())
                 fix = "empty";
-            arguments.confirm(String.format("%s's %s is %s", ident.getUsernameOrUuid(), fixName, fix));
+            arguments.confirm("%s's %s is %s", ident.getUsernameOrUuid(), fixName, fix);
         }
         else
         {
             String fix = StringUtils.join(arguments.args, " ");
             if (fix.equalsIgnoreCase("clear"))
             {
-                arguments.confirm(String.format("%s's %s cleared", ident.getUsernameOrUuid(), fixName));
+                arguments.confirm("%s's %s cleared", ident.getUsernameOrUuid(), fixName);
                 zone.clearPlayerPermission(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             }
             else
             {
-                arguments.confirm(String.format("%s's %s set to %s", ident.getUsernameOrUuid(), fixName, fix));
+                arguments.confirm("%s's %s set to %s", ident.getUsernameOrUuid(), fixName, fix);
                 zone.setPlayerPermissionProperty(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
             }
         }
@@ -461,11 +461,11 @@ public class PermissionCommandParser
                 break;
             case VALUE:
                 zone.setPlayerPermissionProperty(ident, permissionNode, value);
-                arguments.confirm(String.format("Set %s for %s to %s in zone %s", permissionNode, ident.getUsernameOrUuid(), value, zone.getName()));
+                arguments.confirm("Set %s for %s to %s in zone %s", permissionNode, ident.getUsernameOrUuid(), value, zone.getName());
                 break;
             }
             if (msg != null)
-                arguments.confirm(String.format(msg, ident.getUsernameOrUuid(), permissionNode, zone.getName()));
+                arguments.confirm(msg, ident.getUsernameOrUuid(), permissionNode, zone.getName());
         }
     }
 
@@ -502,12 +502,12 @@ public class PermissionCommandParser
             if (val.equals("true") | val.equals("enable"))
             {
                 zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, true);
-                arguments.confirm(String.format("Enabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName()));
+                arguments.confirm("Enabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
             }
             else if (val.equals("false") | val.equals("disable"))
             {
                 zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, false);
-                arguments.confirm(String.format("Disabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName()));
+                arguments.confirm("Disabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
             }
             arguments.confirm("Invalid argument. Use enable or disable.");
             return;
@@ -537,12 +537,12 @@ public class PermissionCommandParser
         if (point == null)
         {
             zone.clearPlayerPermission(ident, FEPermissions.SPAWN_LOC);
-            arguments.confirm(String.format("Cleared spawn-rule for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName()));
+            arguments.confirm("Cleared spawn-rule for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
         }
         else
         {
             zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN_LOC, point.toString());
-            arguments.confirm(String.format("Set spawn for user %s to %s in zone %s", ident.getUsernameOrUuid(), point.toString(), zone.getName()));
+            arguments.confirm("Set spawn for user %s to %s in zone %s", ident.getUsernameOrUuid(), point.toString(), zone.getName());
         }
     }
 
@@ -556,9 +556,9 @@ public class PermissionCommandParser
         if (arguments.args.isEmpty())
         {
             if (zone instanceof ServerZone)
-                arguments.confirm(String.format("Groups for player %s (without includes):", ident.getUsernameOrUuid()));
+                arguments.confirm("Groups for player %s (without includes):", ident.getUsernameOrUuid());
             else
-                arguments.confirm(String.format("Groups for player %s (without includes) in %s:", ident.getUsernameOrUuid(), zone.getName()));
+                arguments.confirm("Groups for player %s (without includes) in %s:", ident.getUsernameOrUuid(), zone.getName());
             for (GroupEntry g : zone.getStoredPlayerGroupEntries(ident))
             {
                 arguments.confirm("  " + g);
@@ -597,7 +597,7 @@ public class PermissionCommandParser
                 for (String group : groups)
                     if (!APIRegistry.perms.groupExists(group))
                     {
-                        arguments.error(String.format("Group %s not found.", group));
+                        arguments.error("Group %s not found.", group);
                         return;
                     }
 
@@ -606,19 +606,19 @@ public class PermissionCommandParser
                 case "add":
                     for (String group : groups)
                         zone.addPlayerToGroup(ident, group);
-                    arguments.confirm(String.format("Player %s added to group(s) %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", ")));
+                    arguments.confirm("Player %s added to group(s) %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", "));
                     break;
                 case "remove":
                     for (String group : groups)
                         zone.removePlayerFromGroup(ident, group);
-                    arguments.confirm(String.format("Player %s removed from group(s) %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", ")));
+                    arguments.confirm("Player %s removed from group(s) %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", "));
                     break;
                 case "set":
                     for (GroupEntry g : APIRegistry.perms.getStoredPlayerGroups(ident))
                         zone.removePlayerFromGroup(ident, g.getGroup());
                     for (String group : groups)
                         zone.addPlayerToGroup(ident, group);
-                    arguments.confirm(String.format("Set %s's group(s) to %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", ")));
+                    arguments.confirm("Set %s's group(s) to %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", "));
                     break;
                 }
             }
@@ -663,7 +663,7 @@ public class PermissionCommandParser
             }
             if (arguments.args.isEmpty())
             {
-                arguments.confirm(String.format("Group %s does not exist", group));
+                arguments.confirm("Group %s does not exist", group);
             }
             else
             {
@@ -671,9 +671,9 @@ public class PermissionCommandParser
                 if (!groupArg.equalsIgnoreCase("create"))
                     throw new CommandException("Group %s does not exist", group);
                 if (APIRegistry.perms.createGroup(group))
-                    arguments.confirm(String.format("Created group %s", group));
+                    arguments.confirm("Created group %s", group);
                 else
-                    arguments.confirm(String.format("Could not create group %s. Cancelled.", group));
+                    arguments.confirm("Could not create group %s. Cancelled.", group);
             }
             return;
         }
@@ -728,12 +728,12 @@ public class PermissionCommandParser
         {
             if (zone != null)
             {
-                arguments.error(String.format("Zone already set!"));
+                arguments.error("Zone already set!");
                 return;
             }
             if (arguments.args.isEmpty())
             {
-                arguments.error(String.format("Expected zone identifier."));
+                arguments.error("Expected zone identifier.");
                 return;
             }
             if (arguments.isTabCompletion && arguments.args.size() == 1)
@@ -822,19 +822,19 @@ public class PermissionCommandParser
             String fix = zone.getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (fix == null || fix.isEmpty())
                 fix = "empty";
-            arguments.confirm(String.format("%s's %s is %s", group, fixName, fix));
+            arguments.confirm("%s's %s is %s", group, fixName, fix);
         }
         else
         {
             String fix = StringUtils.join(arguments.args, " ");
             if (fix.equalsIgnoreCase("clear"))
             {
-                arguments.confirm(String.format("%s's %s cleared", group, fixName));
+                arguments.confirm("%s's %s cleared", group, fixName);
                 zone.clearGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             }
             else
             {
-                arguments.confirm(String.format("%s's %s set to %s", group, fixName, fix));
+                arguments.confirm("%s's %s set to %s", group, fixName, fix);
                 zone.setGroupPermissionProperty(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
             }
         }
@@ -886,11 +886,11 @@ public class PermissionCommandParser
                 break;
             case VALUE:
                 zone.setGroupPermissionProperty(group, permissionNode, value);
-                arguments.confirm(String.format("Set %s for group %s to %s in zone %s", permissionNode, group, value, zone.getName()));
+                arguments.confirm("Set %s for group %s to %s in zone %s", permissionNode, group, value, zone.getName());
                 break;
             }
             if (msg != null)
-                arguments.confirm(String.format(msg, group, permissionNode, zone.getName()));
+                arguments.confirm(msg, group, permissionNode, zone.getName());
             if (type == PermissionAction.VALUE)
                 return;
         }
@@ -937,12 +937,12 @@ public class PermissionCommandParser
             if (val.equals("true") | val.equals("enable"))
             {
                 zone.setGroupPermission(group, FEPermissions.SPAWN_BED, true);
-                arguments.confirm(String.format("Enabled bed-spawning for group %s in zone %s", group, zone.getName()));
+                arguments.confirm("Enabled bed-spawning for group %s in zone %s", group, zone.getName());
             }
             else if (val.equals("false") | val.equals("disable"))
             {
                 zone.setGroupPermission(group, FEPermissions.SPAWN_BED, false);
-                arguments.confirm(String.format("Disabled bed-spawning for group %s in zone %s", group, zone.getName()));
+                arguments.confirm("Disabled bed-spawning for group %s in zone %s", group, zone.getName());
             }
             arguments.confirm("Invalid argument. Use enable or disable.");
             return;
@@ -972,12 +972,12 @@ public class PermissionCommandParser
         if (point == null)
         {
             zone.clearGroupPermission(group, FEPermissions.SPAWN_LOC);
-            arguments.confirm(String.format("Cleared spawn-rule for group %s in zone %s", group, zone.getName()));
+            arguments.confirm("Cleared spawn-rule for group %s in zone %s", group, zone.getName());
         }
         else
         {
             zone.setGroupPermissionProperty(group, FEPermissions.SPAWN_LOC, point.toString());
-            arguments.confirm(String.format("Set spawn for group %s to %s in zone %s", group, point.toString(), zone.getName()));
+            arguments.confirm("Set spawn for group %s to %s in zone %s", group, point.toString(), zone.getName());
         }
     }
 
@@ -993,11 +993,11 @@ public class PermissionCommandParser
         try
         {
             APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_PRIORITY, Integer.toString(Integer.parseInt(priorityValue)));
-            arguments.confirm(String.format("Set priority for group %s to %s", group, priorityValue));
+            arguments.confirm("Set priority for group %s to %s", group, priorityValue);
         }
         catch (NumberFormatException e)
         {
-            arguments.error(String.format("The string %s is not a valid integer", priorityValue));
+            arguments.error("The string %s is not a valid integer", priorityValue);
         }
     }
 
@@ -1019,7 +1019,7 @@ public class PermissionCommandParser
         {
             // arguments.info("/feperm group " + group + " " + displayName1 + " add|remove <group>");
             // arguments.info("/feperm group " + group + " " + displayName1 + " clear");
-            arguments.confirm(String.format((isParent ? "Parented" : "Included") + " groups for %s:", group));
+            arguments.confirm((isParent ? "Parented" : "Included") + " groups for %s:", group);
             for (String includedGroup : groups)
                 arguments.confirm("  " + includedGroup);
             return;
@@ -1029,7 +1029,7 @@ public class PermissionCommandParser
         if (cmd.equals("clear"))
         {
             APIRegistry.perms.getServerZone().clearGroupPermission(group, isParent ? FEPermissions.GROUP_PARENTS : FEPermissions.GROUP_INCLUDES);
-            arguments.confirm(String.format("Cleared group-" + displayName1 + "s for group %s", group));
+            arguments.confirm("Cleared group-" + displayName1 + "s for group %s", group);
             return;
         }
 
@@ -1059,11 +1059,11 @@ public class PermissionCommandParser
         {
         case "add":
             groups.add(groupsName);
-            arguments.confirm(String.format("Added group-" + displayName1 + " of %s to group %s", groupsName, group));
+            arguments.confirm("Added group-" + displayName1 + " of %s to group %s", groupsName, group);
             break;
         case "remove":
             groups.remove(groupsName);
-            arguments.confirm(String.format("Removed group-" + displayName1 + " of %s to group %s", groupsName, group));
+            arguments.confirm("Removed group-" + displayName1 + " of %s to group %s", groupsName, group);
             break;
         default:
             arguments.error(FEPermissions.MSG_INVALID_SYNTAX);
@@ -1104,7 +1104,7 @@ public class PermissionCommandParser
             int intId = Integer.parseInt(zoneId);
             if (intId < 1)
             {
-                arguments.error(String.format("Zone ID must be greater than 0!"));
+                arguments.error("Zone ID must be greater than 0!");
                 return null;
             }
 
@@ -1112,7 +1112,7 @@ public class PermissionCommandParser
             if (zone != null)
                 return zone;
 
-            arguments.error(String.format("No zone by the ID %s exists!", zoneId));
+            arguments.error("No zone by the ID %s exists!", zoneId);
             return null;
         }
         catch (NumberFormatException e)
@@ -1131,7 +1131,7 @@ public class PermissionCommandParser
             if (zone != null)
                 return zone;
 
-            arguments.error(String.format("No zone by the name %s exists!", zoneId));
+            arguments.error("No zone by the name %s exists!", zoneId);
             return null;
         }
     }

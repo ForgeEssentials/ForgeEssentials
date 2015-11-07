@@ -118,7 +118,7 @@ public class CommandWorldBorder extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(String.format("Worldborder center at %s", border.getCenter()));
+            arguments.confirm("Worldborder center at %s", border.getCenter());
             arguments.confirm("/wb center here: Set worldborder center");
             return;
         }
@@ -144,7 +144,7 @@ public class CommandWorldBorder extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(String.format("Worldborder size: %d x %d", border.getSize().getX(), border.getSize().getZ()));
+            arguments.confirm("Worldborder size: %d x %d", border.getSize().getX(), border.getSize().getZ());
             arguments.confirm("/wb size <xz> [z]: Set worldborder size");
             return;
         }
@@ -162,14 +162,14 @@ public class CommandWorldBorder extends ParserCommandBase
         }
         border.updateArea();
         border.save();
-        arguments.confirm(String.format("Worldborder size set to %d x %d", border.getSize().getX(), border.getSize().getZ()));
+        arguments.confirm("Worldborder size set to %d x %d", border.getSize().getX(), border.getSize().getZ());
     }
 
     public static void parseShape(CommandParserArgs arguments, WorldBorder border)
     {
         if (arguments.isEmpty())
         {
-            arguments.notify(String.format("Worldborder shape: %s", border.getShape() == AreaShape.BOX ? "box" : "ellipse"));
+            arguments.notify("Worldborder shape: %s", border.getShape() == AreaShape.BOX ? "box" : "ellipse");
             arguments.confirm("/wb shape box|ellipse");
             return;
         }

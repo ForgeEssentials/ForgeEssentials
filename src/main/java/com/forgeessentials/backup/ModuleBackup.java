@@ -45,6 +45,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.ServerUtil;
@@ -182,7 +183,8 @@ public class ModuleBackup extends ConfigLoaderBase
         keepBackups = config.get(CONFIG_CAT, "keep_backups", 12, "Keep at least this amount of last backups").getInt();
         dailyBackups = config.get(CONFIG_CAT, "keep_daily_backups", 7, "Keep at least one daily backup for this last number of last days").getInt();
         weeklyBackups = config.get(CONFIG_CAT, "keep_weekly_backups", 8, "Keep at least one weekly backup for this last number of weeks").getInt();
-        baseFolder = new File(config.get(CONFIG_CAT, "base_folder", moduleDir.getPath(), "Folder to store the backups in. Can be anywhere writable in the file system.").getString());
+        baseFolder = new File(config.get(CONFIG_CAT, "base_folder", moduleDir.getPath(),
+                "Folder to store the backups in. Can be anywhere writable in the file system.").getString());
 
         config.get(CONFIG_CAT_WORLDS, "0", true).getBoolean(); // Create default entry
         ConfigCategory worldCat = config.getCategory(CONFIG_CAT_WORLDS);
@@ -238,7 +240,7 @@ public class ModuleBackup extends ConfigLoaderBase
                             backupDims.add(world.provider.dimensionId);
                             backupWorlds.add(world);
                         }
-                    ModuleBackup.notify(String.format("Starting backup of dimensions %s", StringUtils.join(backupDims, ", ")));
+                    ModuleBackup.notify(Translator.format("Starting backup of dimensions %s", StringUtils.join(backupDims, ", ")));
                     for (WorldServer worldServer : backupWorlds)
                         backup(worldServer, false);
                     cleanBackups();
@@ -263,7 +265,7 @@ public class ModuleBackup extends ConfigLoaderBase
         final WorldServer world = DimensionManager.getWorld(dimension);
         if (world == null)
         {
-            ModuleBackup.notify(String.format("Dimension %d does not exist or is not loaded", dimension));
+            ModuleBackup.notify(Translator.format("Dimension %d does not exist or is not loaded", dimension));
             return;
         }
         backupThread = new Thread(new Runnable() {

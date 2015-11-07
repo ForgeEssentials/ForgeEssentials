@@ -1,20 +1,19 @@
 package com.forgeessentials.core.misc;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Map.Entry;
-import java.util.Properties;
+import java.util.TreeMap;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.google.common.base.Charsets;
 
 public final class Translator
 {
@@ -25,7 +24,7 @@ public final class Translator
             + "All texts appearing here are found dynamically while running the server.\n" + "You can put translations after the \"=\" beind each entry.\n"
             + "FE is NOT responsible for translations and we do NOT guarantee that all texts can be translated.";
 
-    protected static Map<String, String> translations = new HashMap<String, String>();
+    public static final TreeMap<String, String> translations = new TreeMap<String, String>();
 
     public static String format(String text, Object... args)
     {
@@ -38,17 +37,29 @@ public final class Translator
         if (translated != null)
             return translated;
         translations.put(text, null);
+        save();
         return text;
     }
 
     public static void save()
     {
-        Properties properties = new Properties();
-        for (Entry<String, String> translation : translations.entrySet())
-            properties.put(translation.getKey(), translation.getValue() == null ? "" : translation.getValue());
-        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(new File(ForgeEssentials.getFEDirectory(), TRANSLATOR_FILE))))
+        File file = new File(ForgeEssentials.getFEDirectory(), TRANSLATOR_FILE);
+        try (OutputStreamWriter w = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(file)), Charsets.UTF_8))
         {
-            properties.store(os, COMMENT);
+            for (String line : COMMENT.split("\n"))
+            {
+                w.write("# ");
+                w.write(line);
+                w.write(System.lineSeparator());
+            }
+            for (Entry<String, String> translation : translations.entrySet())
+            {
+                w.write(translation.getKey());
+                w.write('=');
+                if (translation.getValue() != null)
+                    w.write(translation.getValue());
+                w.write(System.lineSeparator());
+            }
         }
         catch (IOException e)
         {
@@ -58,14 +69,16 @@ public final class Translator
 
     public static void load()
     {
-        Properties p = new Properties();
-        try (InputStream is = new BufferedInputStream(new FileInputStream(new File(ForgeEssentials.getFEDirectory(), TRANSLATOR_FILE))))
+        File file = new File(ForgeEssentials.getFEDirectory(), TRANSLATOR_FILE);
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)))
         {
-            p.load(is);
-            for (Entry<Object, Object> message : p.entrySet())
+            String line;
+            while ((line = r.readLine()) != null)
             {
-                String value = message.getValue().toString();
-                translations.put(message.getKey().toString(), value.isEmpty() ? null : value);
+                if (line.charAt(0) == '#')
+                    continue;
+                String[] parts = line.split("=", 2);
+                translations.put(parts[0], parts[1].isEmpty() ? null : parts[1]);
             }
         }
         catch (IOException e)
@@ -73,5 +86,4 @@ public final class Translator
             LoggingHandler.felog.warn("Error loading translation file.");
         }
     }
-
 }

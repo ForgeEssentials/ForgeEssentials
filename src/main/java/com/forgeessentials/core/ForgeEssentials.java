@@ -155,7 +155,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
 
         // Initialize core configuration
-        Translator.load();
         initConfiguration();
         registerNetworkMessages();
 
@@ -420,6 +419,9 @@ public class ForgeEssentials extends ConfigLoaderBase
     @Override
     public void load(Configuration config, boolean isReload)
     {
+        if (isReload)
+            Translator.translations.clear();
+        Translator.load();
         if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
             BuildInfo.cancelVersionCheck();
         configManager.setUseCanonicalConfig(config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false,
