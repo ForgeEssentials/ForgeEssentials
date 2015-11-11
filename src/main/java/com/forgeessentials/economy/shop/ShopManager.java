@@ -225,7 +225,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             if (!ItemUtil.isSign(block))
                 return;
             IChatComponent[] text = ItemUtil.getSignText(point);
-            if (text == null || text.length < 1 || !shopTags.contains(text[0]))
+            if (text == null || text.length < 1 || !shopTags.contains(text[0].getUnformattedText()))
                 return;
             if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_CREATE))
             {

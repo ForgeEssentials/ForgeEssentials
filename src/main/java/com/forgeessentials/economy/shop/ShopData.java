@@ -75,7 +75,7 @@ public class ShopData
 
         // if (!ItemUtil.isSign(signPosition.getBlock())) return;
         IChatComponent[] text = ItemUtil.getSignText(pos);
-        if (text == null || text.length < 2 || !ShopManager.shopTags.contains(text[0]))
+        if (text == null || text.length < 2 || !ShopManager.shopTags.contains(text[0].getUnformattedText()))
         {
             error = Translator.translate("Sign header missing");
             return;
