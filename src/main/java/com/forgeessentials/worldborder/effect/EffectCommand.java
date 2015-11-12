@@ -13,7 +13,7 @@ public class EffectCommand extends WorldBorderEffect
 
     public String command = "/say @player Go back while you still can!";
 
-    public int interval = 0;
+    public long interval = 0;
 
     @Override
     public void activate(WorldBorder border, EntityPlayerMP player)

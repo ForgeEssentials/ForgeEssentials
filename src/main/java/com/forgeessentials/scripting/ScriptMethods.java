@@ -402,7 +402,7 @@ public final class ScriptMethods
             if (args.length < 2)
                 throw new SyntaxException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             PlayerInfo pi = PlayerInfo.get((EntityPlayer) sender);
-            pi.startTimeout(args[0], Integer.parseInt(args[1]));
+            pi.startTimeout(args[0], Long.parseLong(args[1]));
             return true;
         }
 

@@ -294,7 +294,7 @@ public class PlayerInfo implements Loadable
      * @param milliseconds
      *            Timeout in milliseconds
      */
-    public void startTimeout(String name, int milliseconds)
+    public void startTimeout(String name, long milliseconds)
     {
         Date date = new Date();
         date.setTime(date.getTime() + milliseconds);

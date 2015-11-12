@@ -10,7 +10,7 @@ import com.forgeessentials.worldborder.WorldBorderEffect;
 public class EffectDamage extends WorldBorderEffect
 {
 
-    private static final int INTERVAL = 1000;
+    private static final long INTERVAL = 1000L;
 
     private int damage = 1;
 
