@@ -373,11 +373,21 @@ public class ModuleProtection
 
     public static String getItemPermission(ItemStack stack, boolean checkMeta)
     {
-        int dmg = stack.getItemDamage();
-        if (!checkMeta || dmg == 0 || dmg == 32767)
-            return getItemId(stack.getItem());
-        else
-            return getItemId(stack.getItem()) + "." + dmg;
+        try
+        {
+            int dmg = stack.getItemDamage();
+            if (!checkMeta || dmg == 0 || dmg == 32767)
+                return getItemId(stack.getItem());
+            else
+                return getItemId(stack.getItem()) + "." + dmg;
+        }
+        catch (Exception e)
+        {
+            if (stack.getItem() == null)
+                throw new RuntimeException("Error getting item permission. Stack item is null");
+            else
+                throw new RuntimeException(String.format("Error getting item permission for item %s", stack.getItem().getClass().getName()));
+        }
     }
 
     public static String getItemPermission(ItemStack stack)
