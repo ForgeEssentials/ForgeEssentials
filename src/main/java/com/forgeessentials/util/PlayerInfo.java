@@ -44,7 +44,6 @@ public class PlayerInfo implements Loadable
 
     private WarpPoint lastDeathLocation;
 
-    @Expose(serialize = false)
     private long lastTeleportTime = 0;
 
     /* ------------------------------------------------------------ */
