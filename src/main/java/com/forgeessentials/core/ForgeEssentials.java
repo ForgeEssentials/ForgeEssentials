@@ -157,6 +157,10 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void preInit(FMLPreInitializationEvent event)
     {
         LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+        if (safeMode)
+        {
+            LoggingHandler.felog.warn("You are running FE in safe mode. Please only do so if requested to by the ForgeEssentials team.");
+        }
 
         // Initialize core configuration
         initConfiguration();
