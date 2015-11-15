@@ -65,7 +65,7 @@ public class CommandWallet extends ParserCommandBase
         {
             if (!arguments.hasPlayer())
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            arguments.confirm(Translator.format("Your wallet contains %s", APIRegistry.economy.getWallet(arguments.senderPlayer).toString()));
+            arguments.confirm(Translator.format("Your wallet contains %s", APIRegistry.economy.getWallet(arguments.ident).toString()));
             return;
         }
 

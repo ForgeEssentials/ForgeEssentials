@@ -279,7 +279,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         transactionStack.stackSize = shop.amount;
         IChatComponent itemName = transactionStack.func_151000_E();
 
-        Wallet wallet = APIRegistry.economy.getWallet((EntityPlayerMP) event.entityPlayer);
+        Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((EntityPlayerMP) event.entityPlayer));
 
         if (shop.sellPrice >= 0 && (shop.buyPrice < 0 || sameItem))
         {

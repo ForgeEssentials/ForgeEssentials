@@ -338,7 +338,7 @@ public final class ScriptMethods
             if (args.length > 2)
                 throw new SyntaxException("Too many arguments");
             long amount = Long.parseLong(args[0]);
-            Wallet src = APIRegistry.economy.getWallet((EntityPlayerMP) sender);
+            Wallet src = APIRegistry.economy.getWallet(UserIdent.get((EntityPlayerMP) sender));
             Wallet dst = null;
             if (args.length == 2)
             {

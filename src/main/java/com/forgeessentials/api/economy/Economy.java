@@ -1,7 +1,5 @@
 package com.forgeessentials.api.economy;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-
 import com.forgeessentials.api.UserIdent;
 
 public interface Economy
@@ -14,14 +12,6 @@ public interface Economy
      * @return
      */
     public Wallet getWallet(UserIdent player);
-
-    /**
-     * Get the wallet for a player
-     * 
-     * @param player
-     * @return
-     */
-    public Wallet getWallet(EntityPlayerMP player);
 
     /**
      * Gets the singular or plural term of the currency used
