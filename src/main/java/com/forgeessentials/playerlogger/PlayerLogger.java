@@ -1,5 +1,6 @@
 package com.forgeessentials.playerlogger;
 
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -63,6 +64,7 @@ import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
 import com.forgeessentials.playerlogger.event.LogEventInteract;
 import com.forgeessentials.playerlogger.event.LogEventPlace;
+import com.forgeessentials.playerlogger.event.LogEventPlayerTrackers;
 import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -594,30 +596,30 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /* ------------------------------------------------------------ */
     /* Player events */
 
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
-    // {
-    // // TODO
-    // }
-    //
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
-    // {
-    // // TODO
-    // }
-    //
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent event)
-    // {
-    // // TODO
-    // }
-    //
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void playerChangedDimensionEvent(PlayerEvent.PlayerChangedDimensionEvent event)
-    // {
-    // // TODO
-    // }
-    //
+     @SubscribeEvent(priority = EventPriority.LOWEST)
+     public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
+     {
+         logEvent(new LogEventPlayerTrackers.Login(event));
+     }
+
+     @SubscribeEvent(priority = EventPriority.LOWEST)
+     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
+     {
+         logEvent(new LogEventPlayerTrackers.Logout(event));
+     }
+
+     @SubscribeEvent(priority = EventPriority.LOWEST)
+     public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent event)
+     {
+         logEvent(new LogEventPlayerTrackers.Respawn(event));
+     }
+
+     @SubscribeEvent(priority = EventPriority.LOWEST)
+     public void playerChangedDimensionEvent(PlayerEvent.PlayerChangedDimensionEvent event)
+     {
+         logEvent(new LogEventPlayerTrackers.ChangeDim(event));
+     }
+
     // @SubscribeEvent(priority = EventPriority.LOWEST)
     // public void playerChangedZoneEvent(PlayerChangedZone event)
     // {
