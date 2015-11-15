@@ -62,6 +62,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameData;
@@ -383,10 +384,15 @@ public class ModuleProtection
         }
         catch (Exception e)
         {
+            String msg;
             if (stack.getItem() == null)
-                throw new RuntimeException("Error getting item permission. Stack item is null");
+                msg = "Error getting item permission. Stack item is null";
             else
-                throw new RuntimeException(String.format("Error getting item permission for item %s", stack.getItem().getClass().getName()));
+                msg = String.format("Error getting item permission for item %s", stack.getItem().getClass().getName());
+            if (!ForgeEssentials.isSafeMode())
+                throw new RuntimeException(msg);
+            LoggingHandler.felog.error(msg);
+            return "fe.error";
         }
     }
 
