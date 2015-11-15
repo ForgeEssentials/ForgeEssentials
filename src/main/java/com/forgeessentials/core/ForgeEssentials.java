@@ -144,6 +144,8 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
+        safeMode = Boolean.parseBoolean(System.getProperty("fe.safemode"));
+
         LoggingHandler.init();
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
@@ -429,8 +431,9 @@ public class ForgeEssentials extends ConfigLoaderBase
         configManager.setUseCanonicalConfig(config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false,
                 "For modules that support it, place their configs in this file.").getBoolean());
         debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean();
-        safeMode = config.get(FEConfig.CONFIG_CAT, "safeMode", false, "Activates safe mode with will ignore some errors which would normally crash the game. " //
-                + "Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!").getBoolean();
+        // safeMode = config.get(FEConfig.CONFIG_CAT, "safeMode", false,
+        // "Activates safe mode with will ignore some errors which would normally crash the game. "  +
+        // "Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!").getBoolean();
         HelpFixer.hideWorldEditCommands = config.get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true,
                 "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
         logCommandsToConsole = config.get(FEConfig.CONFIG_CAT, "logCommands", false, "Log commands to console").getBoolean();
