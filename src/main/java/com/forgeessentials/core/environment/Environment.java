@@ -1,5 +1,6 @@
 package com.forgeessentials.core.environment;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -71,8 +72,11 @@ public class Environment
 
             LoggingHandler.felog.error("Bad things may happen. DO NOT BOTHER ANYONE ABOUT THIS CRASH - YOU WILL BE IGNORED");
             LoggingHandler.felog.error("Please uninstall FE from this Cauldron server installation. We recommend to use bukkit plugins instead.");
-            LoggingHandler.felog.error("The server will now shut down as a precaution against data loss.");
-            throw new RuntimeException("Sanity check failed: Detected Cauldron, bad things may happen to your server. Shutting down as a precaution.");
+            if (!ForgeEssentials.isSafeMode())
+            {
+                LoggingHandler.felog.error("The server will now shut down as a precaution against data loss.");
+                throw new RuntimeException("Sanity check failed: Detected Cauldron, bad things may happen to your server. Shutting down as a precaution.");
+            }
         }
     }
 
