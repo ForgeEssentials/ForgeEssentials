@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @DiscriminatorValue(value = "1")
-public class ActionBlock extends Action
+public class Action01Block extends Action
 {
 
     @Column(name = "type")

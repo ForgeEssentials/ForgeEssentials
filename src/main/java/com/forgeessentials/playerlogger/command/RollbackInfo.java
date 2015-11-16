@@ -15,8 +15,8 @@ import net.minecraftforge.common.DimensionManager;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
-import com.forgeessentials.playerlogger.entity.ActionBlock;
-import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
+import com.forgeessentials.playerlogger.entity.Action01Block;
+import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 import com.google.common.collect.Lists;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -30,7 +30,7 @@ public class RollbackInfo
 
     private Date time;
 
-    List<ActionBlock> changes;
+    List<Action01Block> changes;
 
     private int timeStep = -60;
 
@@ -61,7 +61,7 @@ public class RollbackInfo
 
     public void previewChanges()
     {
-        List<ActionBlock> lastChanges = changes;
+        List<Action01Block> lastChanges = changes;
         if (lastChanges == null)
             lastChanges = new ArrayList<>();
 
@@ -70,7 +70,7 @@ public class RollbackInfo
         {
             for (int i = lastChanges.size(); i < changes.size(); i++)
             {
-                ActionBlock change = changes.get(i);
+                Action01Block change = changes.get(i);
                 if (change.type == ActionBlockType.PLACE)
                 {
                     sendBlockChange(player, change, Blocks.air, 0);
@@ -89,7 +89,7 @@ public class RollbackInfo
         {
             for (int i = lastChanges.size() - 1; i >= changes.size(); i--)
             {
-                ActionBlock change = lastChanges.get(i);
+                Action01Block change = lastChanges.get(i);
                 if (change.type == ActionBlockType.PLACE)
                 {
                     sendBlockChange(player, change, GameData.getBlockRegistry().getObject(change.block.name), change.metadata);
@@ -110,7 +110,7 @@ public class RollbackInfo
     {
         if (task != null)
             task.cancel();
-        for (ActionBlock change : changes)
+        for (Action01Block change : changes)
         {
             if (change.type == ActionBlockType.PLACE)
             {
@@ -132,7 +132,7 @@ public class RollbackInfo
     {
         if (task != null)
             task.cancel();
-        for (ActionBlock change : Lists.reverse(changes))
+        for (Action01Block change : Lists.reverse(changes))
             player.playerNetServerHandler.sendPacket(new S23PacketBlockChange(change.x, change.y, change.z, DimensionManager.getWorld(change.world.id)));
     }
 
@@ -154,7 +154,7 @@ public class RollbackInfo
      * @param newBlock
      * @param newMeta
      */
-    public static void sendBlockChange(EntityPlayerMP player, ActionBlock change, Block newBlock, int newMeta)
+    public static void sendBlockChange(EntityPlayerMP player, Action01Block change, Block newBlock, int newMeta)
     {
         S23PacketBlockChange packet = new S23PacketBlockChange(change.x, change.y, change.z, DimensionManager.getWorld(change.world.id));
         packet.field_148883_d = newBlock;

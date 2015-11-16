@@ -35,7 +35,7 @@ import javax.persistence.TemporalType;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "action", discriminatorType = DiscriminatorType.INTEGER)
 @DiscriminatorValue(value = "0")
-public class Action
+public abstract class Action
 {
 
     @Id

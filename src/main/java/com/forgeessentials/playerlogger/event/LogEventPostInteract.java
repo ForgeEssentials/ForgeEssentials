@@ -7,8 +7,8 @@ import javax.persistence.EntityManager;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
-import com.forgeessentials.playerlogger.entity.ActionBlock;
-import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
+import com.forgeessentials.playerlogger.entity.Action01Block;
+import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 
 public class LogEventPostInteract extends PlayerLoggerEvent<PlayerPostInteractEvent>
 {
@@ -21,7 +21,7 @@ public class LogEventPostInteract extends PlayerLoggerEvent<PlayerPostInteractEv
     @Override
     public void process(EntityManager em)
     {
-        ActionBlock action = new ActionBlock();
+        Action01Block action = new Action01Block();
         action.time = new Date();
         action.player = getPlayer(event.entityPlayer.getPersistentID());
         action.world = getWorld(event.world.provider.dimensionId);

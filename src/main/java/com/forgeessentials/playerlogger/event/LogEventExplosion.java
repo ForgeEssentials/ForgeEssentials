@@ -9,8 +9,8 @@ import net.minecraft.world.ChunkPosition;
 import net.minecraftforge.event.world.ExplosionEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
-import com.forgeessentials.playerlogger.entity.ActionBlock;
-import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
+import com.forgeessentials.playerlogger.entity.Action01Block;
+import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 import com.forgeessentials.playerlogger.entity.WorldData;
 
 public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate>
@@ -31,7 +31,7 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
         WorldData worldData = getWorld(event.world.provider.dimensionId);
         for (CachedBlockData blockData : blocks)
         {
-            ActionBlock action = new ActionBlock();
+            Action01Block action = new Action01Block();
             action.time = date;
             action.world = worldData;
             action.block = getBlock(blockData.block);

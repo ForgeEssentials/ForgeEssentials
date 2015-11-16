@@ -10,7 +10,7 @@ import net.minecraftforge.event.CommandEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
-import com.forgeessentials.playerlogger.entity.ActionCommand;
+import com.forgeessentials.playerlogger.entity.Action02Command;
 
 public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
 {
@@ -23,7 +23,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
     @Override
     public void process(EntityManager em)
     {
-        ActionCommand action = new ActionCommand();
+        Action02Command action = new Action02Command();
         action.time = date;
         action.command = event.command.getCommandName();
         if (event.parameters.length > 0)
